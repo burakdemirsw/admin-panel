@@ -1,0 +1,96 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Products Tables</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+        <li class="breadcrumb-item">Tables</li>
+        <li class="breadcrumb-item active">General</li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="card">
+      <div class="card-body">
+
+        <h5 class="card-title">Products</h5>
+        <a class="btn btn-success" data-bs-toggle="dropdown">+Opertions </a>
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+
+          <li><a class="dropdown-item">Add New Product</a></li>
+          <li><a class="dropdown-item">Export To The Excel</a></li>
+          <li><a class="dropdown-item">Delete All Selected</a></li>
+        </ul>
+        <div style="overflow-x: auto;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Select</th>
+                <th scope="col">Image</th>
+                <th scope="col">Id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Color</th>
+                <th scope="col">Category</th>
+
+                <th scope="col">Stock Code</th>
+                <th scope="col">Stok Amount</th>
+                <th scope="col">Barcode</th>
+                <th scope="col">Last Updated Day</th>
+                <th scope="col">Created Day</th>
+                <th scope="col">New Product</th>
+                <th scope="col">Operations</th>
+
+              </tr>
+            </thead>
+            <tbody>
+
+
+              <tr *ngFor="let product of products">
+                <td><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></td>
+                <td class="image-icon-td">
+                  <div class="image-icon-container" *ngIf="(product.url)?.length !== 0" (mouseover)="showImage = true"
+                    (mouseout)="showImage = false">
+                    <i class="fa fa-image"></i>
+                    <img *ngIf="showImage" [src]="product.url" class="product-image">
+                  </div>
+                  <ng-template #noImage>-</ng-template>
+                </td>
+                <th scope="row">{{product.id}}</th>
+                <td>{{product.productName}}</td>
+                <td>{{product.colorDescription}}</td>
+                <td>{{product.categoryDescription}}</td>
+
+                <td>{{product.stockCode}}</td>
+                <td>{{product.stockAmount}}</td>
+                <td>{{product.barcode}}</td>
+
+                <td>2023-04-01</td>
+                <td>2023-04-01</td>
+                <td>{{(product.new) ? "New" : "Old" | uppercase }}</td>
+                <td>
+                  <div class="btn-group">
+                    <div class="btn btn-dark" data-text="Ürün Özellikleri"><i class="fas fa-cog"></i> </div>
+                    <div class="btn" [ngClass]="{'btn-success': product.blocked, 'btn-danger': !product.blocked}"
+                      data-text="Görünürlük">
+                      <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="btn  btn-dark" data-text="Varyasyonlar"><i class="fas fa-sliders-h"></i> </div>
+                    <div class="btn  btn-success" data-text="Para"><i class="fas fa-dollar-sign"></i> </div>
+                    <div class="btn  btn-dark" data-text="Resim Ekle"><i class="fas fa-image"></i></div>
+                    <div class="btn  btn-success" data-text="Kopyala"><i class="fas fa-copy"></i> </div>
+                  </div>
+                </td>
+                <style>
+
+
+                </style>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>

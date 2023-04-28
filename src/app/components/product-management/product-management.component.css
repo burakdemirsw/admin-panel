@@ -1,0 +1,52 @@
+.image-box {
+  width: 10px;
+  height: 10px;
+}
+
+.btn-group {
+  white-space: nowrap;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn:hover::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #000;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+
+
+.image-icon-container {
+  position: relative;
+}
+
+.product-image {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: auto;
+  padding: 5%;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  z-index: 1;
+}

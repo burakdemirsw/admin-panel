@@ -1,0 +1,133 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Form Layouts</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+        <li class="breadcrumb-item">Forms</li>
+        <li class="breadcrumb-item active">Layouts</li>
+      </ol>
+    </nav>
+  </div>
+
+
+
+
+
+
+  <section class="section">
+    <div class="row">
+      <div style="width: 100%;">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Product Card </h5>
+            <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
+              <li class="nav-item" role="presentation">
+                <a class="nav-link active" [class.active]="activeTab === 1" (click)="activeTab = 1">Base Props</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" [class.active]="activeTab === 2" (click)="activeTab = 2">Scripts</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" [class.active]="activeTab === 3" (click)="activeTab = 3">Prices</a>
+              </li>
+            </ul>
+
+            <div class="tab-content" id="ex2-content">
+              <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1" role="tabpanel"
+                aria-labelledby="ex3-tab-1">
+                <form [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
+                  <div class="row mb-3">
+                    <div class="row mb-3">
+                      <div class="form-group">
+                        <label for="id">ID:</label>
+                        <input type="number" id="id" class="form-control" formControlName="id">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="form-group">
+                        <label for="productName">Product Name:</label>
+                        <input type="text" id="productName" class="form-control" formControlName="productName">
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="form-group">
+                        <label for="stockAmount">Stock Amount:</label>
+                        <input type="number" id="stockAmount" class="form-control" formControlName="stockAmount">
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="form-group">
+                        <label for="barcode">Barcode:</label>
+                        <input type="text" id="barcode" class="form-control" formControlName="barcode">
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="form-group">
+                        <label for="stockCode">Stock Code:</label>
+                        <input type="text" id="stockCode" class="form-control" formControlName="stockCode">
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="form-group">
+                        <label for="url">URL:</label>
+                        <input type="text" id="url" class="form-control" formControlName="url">
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="form-group">
+                        <label for="createdDay">Created Day:</label>
+                        <input type="date" id="createdDay" class="form-control" formControlName="createdDay">
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="form-group">
+                        <label for="updatedDay">Updated Day:</label>
+                        <input type="date" id="updatedDay" class="form-control" formControlName="updatedDay">
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="form-group">
+                        <label for="categoryDescription">Category Description:</label>
+                        <input type="text" id="categoryDescription" class="form-control"
+                          formControlName="categoryDescription">
+                      </div>
+                      <div class="row mb-3">
+                        <div class="form-group">
+                          <label for="colorDescription">Color Description:</label>
+                          <input type="text" id="colorDescription" class="form-control"
+                            formControlName="colorDescription">
+                        </div>
+                      </div>
+                      <div class="row mb-3">
+                        <div class="form-check">
+                          <input type="checkbox" id="blocked" class="form-check-input" formControlName="blocked">
+                          <label for="blocked" class="form-check-label">Blocked</label>
+                        </div>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2" role="tabpanel-2"
+                aria-labelledby="ex3-tab-2">
+                <app-payment></app-payment>
+              </div>
+              <div class="tab-pane fade show" [class.active]="activeTab === 3" id="ex3-tabs-3" role="tabpanel-3"
+                aria-labelledby="ex3-tab-3">
+                Prices
+              </div>
+            </div>
+
+
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+</main>
