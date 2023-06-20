@@ -18,8 +18,7 @@ export class ProductOperationComponent implements OnInit {
 
 
   formGenerator(){
-    this.productForm = this.formBuilder.group({
-      id: [],
+    this.productForm = this.formBuilder.group({   
       productName: [],
       stockAmount: [],
       barcode: [],
