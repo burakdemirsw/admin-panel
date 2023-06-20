@@ -10,11 +10,6 @@
     </nav>
   </div>
 
-
-
-
-
-
   <section class="section">
     <div class="row">
       <div style="width: 100%;">
@@ -38,12 +33,6 @@
                 aria-labelledby="ex3-tab-1">
                 <form [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
                   <div class="row mb-3">
-                    <div class="row mb-3">
-                      <div class="form-group">
-                        <label for="id">ID:</label>
-                        <input type="number" id="id" class="form-control" formControlName="id">
-                      </div>
-                    </div>
 
                     <div class="row mb-3">
                       <div class="form-group">
@@ -57,6 +46,42 @@
                         <input type="number" id="stockAmount" class="form-control" formControlName="stockAmount">
                       </div>
                     </div>
+
+                    <div class="row mb-3">
+                      <div class="form-group">
+                        <label for="brand">Brand:</label>
+                        <input type="text" id="brandId" class="form-control" formControlName="brandId">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="form-group">
+                        <label for="dimention">Dimention:</label>
+                        <input type="text" id="dimention" class="form-control" formControlName="dimention">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="form-group">
+                        <label for="purchasePrice">Purchase Price:</label>
+                        <input type="number" id="purchasePrice" class="form-control" formControlName="purchasePrice">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="form-group">
+                        <label for="sellingPrice">Selling Price:</label>
+                        <input type="number" id="sellingPrice" class="form-control" formControlName="sellingPrice">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="form-group">
+                        <label for="stockAmount">Stock Amount:</label>
+                        <input type="number" id="stockAmount" class="form-control" formControlName="stockAmount">
+                      </div>
+                    </div>
+
                     <div class="row mb-3">
                       <div class="form-group">
                         <label for="barcode">Barcode:</label>
@@ -75,35 +100,41 @@
                         <input type="text" id="url" class="form-control" formControlName="url">
                       </div>
                     </div>
+
                     <div class="row mb-3">
                       <div class="form-group">
-                        <label for="createdDay">Created Day:</label>
-                        <input type="date" id="createdDay" class="form-control" formControlName="createdDay">
-                      </div>
-                    </div>
-                    <div class="row mb-3">
-                      <div class="form-group">
-                        <label for="updatedDay">Updated Day:</label>
-                        <input type="date" id="updatedDay" class="form-control" formControlName="updatedDay">
-                      </div>
-                    </div>
-                    <div class="row mb-3">
-                      <div class="form-group">
-                        <label for="categoryDescription">Category Description:</label>
-                        <input type="text" id="categoryDescription" class="form-control"
-                          formControlName="categoryDescription">
+                        <label for="subCategoryId">Category:</label>
+                        <input type="number" id="subCategoryId" class="form-control" formControlName="subCategoryId">
                       </div>
                       <div class="row mb-3">
                         <div class="form-group">
-                          <label for="colorDescription">Color Description:</label>
-                          <input type="text" id="colorDescription" class="form-control"
-                            formControlName="colorDescription">
+                          <label for="colorId">Color:</label>
+                          <input type="text" id="colorId" class="form-control" formControlName="colorId">
+                        </div>
+                      </div>
+                      <!-- <div class="row mb-3">
+                        <div class="form-group">
+                          <label for="createdDay">Created Day:</label>
+                          <input type="date" id="createdDay" class="form-control" formControlName="createdDay">
                         </div>
                       </div>
                       <div class="row mb-3">
+                        <div class="form-group">
+                          <label for="updatedDay">Updated Day:</label>
+                          <input type="date" id="updatedDay" class="form-control" formControlName="updatedDay">
+                        </div>
+                      </div> -->
+                      <div class="row mb-3">
                         <div class="form-check">
-                          <input type="checkbox" id="blocked" class="form-check-input" formControlName="blocked">
+                          <input type="checkbox" id="blocked" class="form-check-input" formControlName="blocked" checked="false">
                           <label for="blocked" class="form-check-label">Blocked</label>
+                        </div>
+                      </div>
+
+                      <div class="row mb-3">
+                        <div class="form-check">
+                          <input type="checkbox" id="new" class="form-check-input" formControlName="new" checked="false">
+                          <label for="new" class="form-check-label">New</label>
                         </div>
                       </div>
                       <button type="submit" class="btn btn-primary">Save</button>
@@ -129,5 +160,6 @@
       </div>
 
     </div>
+
   </section>
 </main>

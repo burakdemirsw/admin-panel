@@ -4,13 +4,15 @@ export class ProductModel{
   id ?: number
   productName ?: string
   stockAmount ?: number
-  barcode ?: string
   stockCode ?: string
   url ?: string
   createdDay  ?: Date
   updatedDay ?: Date
   categoryDescription ?: string
-  colorDescription ?: string
+  brand ?: string
+
   blocked ?: boolean
   new?: boolean
+  sellingPrice ?: number
+  purchasePrice ?: number
 }

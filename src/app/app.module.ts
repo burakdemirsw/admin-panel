@@ -1,7 +1,10 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './layouts/header/header.component';
@@ -43,6 +46,15 @@ import { ProductManagementComponent } from './components/product-management/prod
 import { HttpClientModule } from '@angular/common/http';
 import { ProductOperationComponent } from './components/product-operation/product-operation.component';
 import { PaymentComponent } from './components/payment/payment.component';
+import { AlertifyService } from './services/ui/alertify.service';
+import { NgxPopper } from 'angular-popper';
+import { HomepageComponent } from './components/homepage/homepage.component';
+import { OrderOperationComponent } from './components/order-operation/order-operation.component';
+import { CategoryOperationComponent } from './components/category-operation/category-operation.component';
+import { OrderManagamentComponent } from './components/order-managament/order-managament.component';
+import { CategoryManagamentComponent } from './components/category-managament/category-managament.component';
+import { ShelvesManagamentComponent } from './components/shelves-managament/shelves-managament.component';
+import { ShelveOperationComponent } from './components/shelve-operation/shelve-operation.component';
 
 @NgModule({
   declarations: [
@@ -85,17 +97,27 @@ import { PaymentComponent } from './components/payment/payment.component';
     ProductManagementComponent,
     ProductOperationComponent,
     PaymentComponent,
-
+    HomepageComponent,
+    OrderOperationComponent,
+    CategoryOperationComponent,
+    OrderManagamentComponent,
+    CategoryManagamentComponent,
+    ShelvesManagamentComponent,
+    ShelveOperationComponent
   ],
+
+
   imports: [
     FormsModule,
-
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    BrowserAnimationsModule,
+    NgxSpinnerModule.forRoot({ type: 'line-scale-pulse-out' }),
     ReactiveFormsModule
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  providers: [AlertifyService, NgModule, NgxPopper, NgxSpinnerModule],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -13,14 +13,13 @@
   <section class="section">
     <div class="card">
       <div class="card-body">
-
         <h5 class="card-title">Products</h5>
         <a class="btn btn-success" data-bs-toggle="dropdown">+Opertions </a>
         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
 
           <li><a class="dropdown-item">Add New Product</a></li>
           <li><a class="dropdown-item">Export To The Excel</a></li>
-          <li><a class="dropdown-item">Delete All Selected</a></li>
+          <li><a class="dropdown-item"  (click)="DeleteAllSelectedProducts()">Delete All Selected</a></li>
         </ul>
         <div style="overflow-x: auto;">
           <table class="table">
@@ -30,12 +29,13 @@
                 <th scope="col">Image</th>
                 <th scope="col">Id</th>
                 <th scope="col">Name</th>
-                <th scope="col">Color</th>
+
                 <th scope="col">Category</th>
+                <th scope="col">Price</th>
+                <th scope="col">Brand</th>
 
                 <th scope="col">Stock Code</th>
-                <th scope="col">Stok Amount</th>
-                <th scope="col">Barcode</th>
+                <th scope="col">Total Stok Amount</th>
                 <th scope="col">Last Updated Day</th>
                 <th scope="col">Created Day</th>
                 <th scope="col">New Product</th>
@@ -47,7 +47,7 @@
 
 
               <tr *ngFor="let product of products">
-                <td><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></td>
+                <td><input class="form-check-input" type="checkbox" value="" id="cb{{product.id}}" (click)="product.id && SelectedProductListManager(product.id)"></td>
                 <td class="image-icon-td">
                   <div class="image-icon-container" *ngIf="(product.url)?.length !== 0" (mouseover)="showImage = true"
                     (mouseout)="showImage = false">
@@ -58,12 +58,12 @@
                 </td>
                 <th scope="row">{{product.id}}</th>
                 <td>{{product.productName}}</td>
-                <td>{{product.colorDescription}}</td>
-                <td>{{product.categoryDescription}}</td>
 
+                <td>{{product.categoryDescription}}</td>
+                <td>{{product.sellingPrice}}</td>
+                <td>{{product.brand}}</td>
                 <td>{{product.stockCode}}</td>
                 <td>{{product.stockAmount}}</td>
-                <td>{{product.barcode}}</td>
 
                 <td>2023-04-01</td>
                 <td>2023-04-01</td>

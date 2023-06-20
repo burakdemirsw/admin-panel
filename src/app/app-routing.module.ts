@@ -34,6 +34,13 @@ import { PagesRegisterComponent } from './pages/pages-register/pages-register.co
 import { UsersProfileComponent } from './pages/users-profile/users-profile.component';
 import { ProductManagementComponent } from './components/product-management/product-management.component';
 import { ProductOperationComponent } from './components/product-operation/product-operation.component';
+import { HomepageComponent } from './components/homepage/homepage.component';
+import { CategoryOperationComponent } from './components/category-operation/category-operation.component';
+import { OrderOperationComponent } from './components/order-operation/order-operation.component';
+import { OrderManagamentComponent } from './components/order-managament/order-managament.component';
+import { CategoryManagamentComponent } from './components/category-managament/category-managament.component';
+import { ShelvesManagamentComponent } from './components/shelves-managament/shelves-managament.component';
+import { ShelveOperationComponent } from './components/shelve-operation/shelve-operation.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -71,6 +78,15 @@ const routes: Routes = [
   { path: 'user-profile', component: UsersProfileComponent },
   { path: 'product', component: ProductManagementComponent },
   { path: 'operation', component: ProductOperationComponent },
+  { path: 'home', component: HomepageComponent },
+  {path : 'category-operation', component: CategoryOperationComponent},
+  {path:  'order-operation', component: OrderOperationComponent},
+  {path : 'categories-managament', component: CategoryManagamentComponent},
+  {path:  'orders-managament', component: OrderManagamentComponent},
+  {path:  'order-operation/:orderNumber', component: OrderOperationComponent},
+  {path:  'shelves-managament', component: ShelvesManagamentComponent},
+  {path:  'shelf-operation/:id', component: ShelveOperationComponent},
+  {path:  'shelf-operation', component: ShelveOperationComponent}
 
 
 ];

@@ -7,13 +7,18 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
   title = 'admindashboard';
-  constructor(private elementRef: ElementRef,  public  _router: Router) { }
+  constructor(private elementRef: ElementRef,  public  _router: Router) {
+
+
+  }
 
   ngOnInit() {
 
     var s = document.createElement("script");
     s.type = "text/javascript";
     s.src = "../assets/js/main.js";
-    this.elementRef.nativeElement.appendChild(s);
+
+
+
   }
 }

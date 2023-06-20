@@ -1,0 +1,55 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Categories Tables</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+        <li class="breadcrumb-item">Tables</li>
+        <li class="breadcrumb-item active">General</li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Categories</h5>
+        <a class="btn btn-success" data-bs-toggle="dropdown">+Opertions </a>
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+
+          <li><a class="dropdown-item">Add New Category</a></li>
+          <li><a class="dropdown-item">Export To The Excel</a></li>
+          <li><a class="dropdown-item">Delete All Selected</a></li>
+        </ul>
+        <div style="overflow-x: auto;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Kategori ID</th>
+                <th scope="col">Üst Kategori</th>
+                <th scope="col">Alt Kategori 1</th>
+                <th scope="col">Alt Kategori 2</th>
+                <th scope="col">Alt Kategori 3</th>
+                <th scope="col">Alt Kategori 4</th>
+                <th scope="col">Alt Kategori 5</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let category of categories">
+                <td>{{ category.kategoriID }}</td>
+                <td>{{ category.ustKategori }}</td>
+                <td>{{ category.altKategori1 }}</td>
+                <td>{{ category.altKategori2 }}</td>
+                <td>{{ category.altKategori3 }}</td>
+                <td>{{ category.altKategori4 }}</td>
+                <td>{{ category.altKategori5 }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>

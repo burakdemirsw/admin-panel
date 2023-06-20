@@ -35,6 +35,9 @@ export class HttpClientService {
     });
   }
 
+
+
+
   post<T>(
     requestParameter: Partial<RequestParameters>,
     body: Partial<T>
@@ -45,6 +48,7 @@ export class HttpClientService {
       url = `${this.url(requestParameter)}${
         requestParameter.queryString ? `?${requestParameter.queryString}` : ''
       }`;
+
 
     return this.httpClient.post<T>(url, body, {
       headers: requestParameter.headers,
@@ -71,7 +75,7 @@ export class HttpClientService {
 
   delete<T>(
     requestParameter: Partial<RequestParameters>,
-    id: string
+    id: number
   ): Observable<T> {
     let url: string = '';
     if (requestParameter.fullEndPoint) url = requestParameter.fullEndPoint;
@@ -82,7 +86,7 @@ export class HttpClientService {
 
     return this.httpClient.delete<T>(url, {
       headers: requestParameter.headers,
-      responseType: requestParameter.responseType as 'json',
+     responseType: requestParameter.responseType as 'json',
     });
   }
 }

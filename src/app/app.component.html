@@ -1,5 +1,21 @@
-<app-header *ngIf="!(_router.url === '/pages-register' || _router.url === '/pages-login' || _router.url === '/pages-error404')" ></app-header>
-<app-sidebar *ngIf="!(_router.url === '/pages-register' || _router.url === '/pages-login' || _router.url === '/pages-error404')" ></app-sidebar>
-<router-outlet></router-outlet>
-<app-footer *ngIf="!(_router.url === '/pages-register' || _router.url === '/pages-login' || _router.url === '/pages-error404')" ></app-footer>
+<app-header
+  *ngIf="!(_router.url === '/pages-register' || _router.url === '/pages-login' || _router.url === '/pages-error404')">
+</app-header>
+<app-sidebar
+  *ngIf="!(_router.url === '/pages-register' || _router.url === '/pages-login' || _router.url === '/pages-error404')">
+</app-sidebar>
+<router-outlet>
+
+  <ngx-spinner type="line-scale-pulse-out"
+  size="large"
+  color="#fff"
+
+  ></ngx-spinner>
+
+</router-outlet>
+
+<app-footer
+*ngIf="!(_router.url === '/pages-register' || _router.url === '/pages-login' || _router.url === '/pages-error404')">
+</app-footer>
+
 
