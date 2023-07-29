@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { ProductCreateModel } from 'src/app/models/model/productCreateModel';
+import { ProductCreateModel } from 'src/app/models/model/product/productCreateModel';
 import { HttpClientService } from '../http-client.service';
 import { AlertifyService } from '../ui/alertify.service';
-import { ShelfModel } from 'src/app/models/model/ShelfModel';
+import { ShelfModel } from 'src/app/models/model/shelf/ShelfModel';
 
 @Injectable({
   providedIn: 'root'

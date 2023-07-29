@@ -1,0 +1,152 @@
+<main id="main" class="main">
+    <!-- <div class="pagetitle">
+        <h1>Raf Düzenleme</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+                <li class="breadcrumb-item">Forms</li>
+                <li class="breadcrumb-item active">Layouts</li>
+            </ol>
+        </nav>
+    </div> -->
+
+    <section class="section">
+        <div class="row">
+            <div style="width: 100%">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Sipariş Faturalaştırma Paneli</h5>
+                        <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
+                            <!-- <li class="nav-item" role="presentation">
+                                <a class="nav-link active" [class.active]="activeTab === 1" (click)="activeTab = 1">Raf
+                                    Düzenleme</a>
+                            </li> -->
+                        </ul>
+
+                        <div class="tab-content" id="ex2-content">
+                            <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1"
+                                role="tabpanel" aria-labelledby="ex3-tab-1">
+                                <form [formGroup]="orderBillingForm" (ngSubmit)="onSubmit(orderBillingForm.value)">
+                                    <div class="row mb-3">
+                                        <label for="orderNo">Sipariş Numarası:</label>
+                                        <div class="input-group">
+                                            <input type="text" id="orderNo" class="form-control"
+                                                formControlName="orderNo" >
+                                                <!-- (ngModelChange)="onModelChanged($event)" -->
+                                        </div>
+                                    </div>
+                                    <div class=" row mb-3">
+                                        <div class="form-group">
+                                            <label for="totalValue">Toplam Tutar:</label>
+                                            <input type="text" id="totalValue" class="form-control"
+                                                formControlName="totalValue" />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="form-group">
+                                            <label for="discount1">İskonto 1:</label>
+                                            <input type="text" id="discount1" class="form-control"
+                                                formControlName="discount1" />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="form-group">
+                                            <label for="discount2">İskonto 2:</label>
+                                            <input type="text" id="discount2" class="form-control"
+                                                formControlName="discount2" />
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="form-group col">
+                                            <label for="dropdown1">Ödeme Tipi</label>
+                                            <select id="paymentType" class="form-control" formControlName="paymentType">
+                                                <option>Nakıt</option>
+                                                <option>Kredi Kartı</option>
+                                                <option>Havale</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group col">
+                                            <div class="form-group">
+                                                <label for="paymentMethod">Ödeme Yöntemi</label>
+                                                <input type="text" id="paymentMethod" class="form-control"
+                                                    formControlName="paymentMethod" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col">
+                                            <div class="form-group">
+                                                <div class="form-group">
+                                                    <label for="dropdown2">Resmi/Gayriresmi</label>
+                                                    <select id="official_informal" class="form-control"
+                                                        formControlName="official_informal">
+                                                        <option>Resmi</option>
+                                                        <option>Gayriresmi</option>
+
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+
+
+                                    <button type="button" class="btn btn-primary"
+                                        (click)="onSubmit(orderBillingForm.value)">
+                                        Ekle
+                                    </button>
+
+                                </form>
+                            </div>
+                            <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2"
+                                role="tabpanel-2" aria-labelledby="ex3-tab-2"></div>
+                            <div class="tab-pane fade show" [class.active]="activeTab === 3" id="ex3-tabs-3"
+                                role="tabpanel-3" aria-labelledby="ex3-tab-3">
+                                Prices
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" *ngIf="itemBillingModels.length > 0">
+                    <div class="card-body">
+                        <h5 class="card-title">Eklenen Ürünler</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Ürün Kodu</th>
+                                        <th scope="col">Ürün Açıklaması</th>
+                                        <th scope="col">Miktar</th>
+                                        <th scope="col">Fiyat</th>
+                                        <th scope="col">Toplam</th>
+                                        <th scope="col">İşlemler</th> <!-- Yeni sütun: İşlemler -->
+
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of itemBillingModels; let i = index">
+                                        <td>{{ item.itemcode }}</td>
+                                        <td>{{ item.itemDescription }}</td>
+                                        <td>{{ item.qty1 }}</td>
+                                        <td>{{ item.loc_PriceVI }}</td>
+                                        <td>{{ item.total }}</td>
+                                        
+                                        <td>
+                                            <button class="btn btn-danger" (click)="deleteRow(i)">Sil</button>
+                                            <!-- Silme butonu ve tıklama olayı -->
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</main>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AlertifyService } from '../ui/alertify.service';
-import { BarcodeAddModel } from 'src/app/models/model/barcodeAddModel';
+import { BarcodeAddModel } from 'src/app/models/model/product/barcodeAddModel';
 import { HttpClientService } from '../http-client.service';
 
 @Injectable({

@@ -1,0 +1,126 @@
+<main id="main" class="main">
+  <!-- <div class="pagetitle">
+    <h1>Kategori Ekleme Sayfası</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+        <li class="breadcrumb-item">Forms</li>
+        <li class="breadcrumb-item active">Layouts</li>
+      </ol>
+    </nav>
+  </div> -->
+
+
+  <section class="section">
+    <div class="row">
+      <div style="width: 100%;">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Kategori </h5>
+            <!-- <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
+              <li class="nav-item" role="presentation">
+                <a class="nav-link active" [class.active]="activeTab === 1" (click)="activeTab = 1">Kategori
+                  İçerikleri</a>
+              </li>
+  
+            </ul> -->
+
+            <div class="tab-content" id="ex2-content">
+
+              <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1" role="tabpanel"
+                aria-labelledby="ex3-tab-1">
+                <form [formGroup]="categoryForm" (ngSubmit)="onSubmit(categoryForm.value)">
+                  <div class="row mb-3">
+                    <div class="form-group">
+                      <label for="description">Açıklama:</label>
+                      <input type="text" id="description" class="form-control" formControlName="description">
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="form-group">
+                      <label for="topCategory">Üst Kategori:</label>
+                      <input type="text" id="topCategory" class="form-control" formControlName="topCategory">
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="form-group">
+                      <label for="subCategory">Alt Kategori:</label>
+                      <input type="text" id="subCategory" class="form-control" formControlName="subCategory">
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="form-group">
+                      <label for="subCategory2">Alt Kategori 2:</label>
+                      <input type="text" id="subCategory2" class="form-control" formControlName="subCategory2">
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="form-group">
+                      <label for="subCategory3">Alt Kategori 3:</label>
+                      <input type="text" id="subCategory3" class="form-control" formControlName="subCategory3">
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="form-group">
+                      <label for="subCategory4">Alt Kategori 4:</label>
+                      <input type="text" id="subCategory4" class="form-control" formControlName="subCategory4">
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="form-group">
+                      <label for="subCategory5">Alt Kategori 5:</label>
+                      <input type="text" id="subCategory5" class="form-control" formControlName="subCategory5">
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary" click=onSubmit(categoryForm.value)>Kaydet</button>
+                  <span style="margin-left: 10px;"></span>
+
+                  <button type="button" class="btn btn-danger" (click)="openModal()">
+                    Sil
+                  </button>
+
+
+
+
+
+                </form>
+
+              </div>
+
+            </div>
+
+
+
+
+
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="myModalLabel">Kategori Silincektir!</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            İşlemi Onaylıyor Musunuz?
+          </div>
+          <div class="modal-footer">
+            <button type="button" (click)="closeModal()" class="btn btn-secondary" data-dismiss="modal">Hayır</button>
+            <button type="button" class="btn btn-primary">Evet</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</main>

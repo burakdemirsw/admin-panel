@@ -1,0 +1,112 @@
+<main id="main" class="main">
+    <!-- <div class="pagetitle">
+          <h1>Raf Düzenleme</h1>
+          <nav>
+              <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+                  <li class="breadcrumb-item">Forms</li>
+                  <li class="breadcrumb-item active">Layouts</li>
+              </ol>
+          </nav>
+      </div> -->
+
+    <section class="section">
+        <div class="row">
+            <div style="width: 100%">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Ürün Transfer Paneli</h5>
+                        <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
+
+                        </ul>
+
+                        <div class="tab-content" id="ex2-content">
+                            <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1"
+                                role="tabpanel" aria-labelledby="ex3-tab-1">
+                                <form [formGroup]="warehouseConfirmForm"
+                                    (ngSubmit)="onSubmit(warehouseConfirmForm.value)">
+
+
+                                    
+                                    <div class="row mb-3">
+                                        <div class="form-group">
+                                            <label for="shelfNo">Raf:</label>
+                                            <input type="text" id="shelfNo" class="form-control"   (keydown.enter)="focusNextInput('barcode')"
+                                                formControlName="shelfNo" />
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3"> 
+                                        <div class="form-group">
+                                            <label for="itemCode">Barkod:</label>
+                                            <input type="text" id="barcode" class="form-control"
+                                                formControlName="barcode" (keydown.enter)="getProductDetailAndDropFromList()" />
+                                        </div>
+                                    </div>
+
+
+
+                                    <button type="button" class="btn btn-primary"
+                                        (click)="onSubmit(warehouseConfirmForm.value)">
+                                        Ekle
+                                    </button>
+                                    <span style="margin-left: 10px"></span>
+                                    <button type="button" class="btn btn-warning" (click)="postModel()" style="color: white">
+                                        NEBIME AKTAR
+                                    </button>
+                                </form>
+
+                            </div>
+                            <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2"
+                                role="tabpanel-2" aria-labelledby="ex3-tab-2"></div>
+                            <div class="tab-pane fade show" [class.active]="activeTab === 3" id="ex3-tabs-3"
+                                role="tabpanel-3" aria-labelledby="ex3-tab-3">
+                                Prices
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Yeni kart: Toplanan Ürünler -->
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Toplanan Ürünler</h5>
+                        <h1 class="display-1">{{ totalProductNumber  }}</h1>
+                        <p class="card-text">Adet Ürün Toplandı</p>
+                    </div>
+                </div>
+                <div class="card" *ngIf="warehosueOperationDetail  .length > 0">
+                    <div class="card-body">
+                        <h5 class="card-title">Eklenen Ürünler</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+
+                                        <th scope="col">Ürün Kodu</th>
+                                        <th scope="col">Renk Kodu</th>
+                                        <th scope="col">Beden</th>
+                                        <th scope="col">Miktar</th>
+                                        <th scope="col">Parti</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let operation of warehosueOperationDetail">
+
+                                        <td>{{ operation.itemCode }}</td>
+                                        <td>{{ operation.colorCode }}</td>
+                                        <td>{{ operation.itemDim1Code }}</td>
+                                        <td>{{ operation.qty1 }}</td>
+                                        <td>{{ operation.batchCode }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</main>

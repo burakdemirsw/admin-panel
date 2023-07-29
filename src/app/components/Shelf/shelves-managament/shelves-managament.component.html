@@ -1,0 +1,149 @@
+<main id="main" class="main">
+  <!-- <div class="pagetitle">
+    <h1>Shelves Tables</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+        <li class="breadcrumb-item">Tables</li>
+        <li class="breadcrumb-item active">General</li>
+      </ol>
+    </nav>
+  </div> -->
+<style>
+
+  .card{
+    box-shadow: none !important;
+  }
+</style>
+  <section class="section">
+    <div class="card" >
+      <div class="card-body">
+        <h5 class="card-title">Raflar</h5>
+        <div class="dropdown">
+          <div class="btn-group mb-3">
+            <button class="btn btn-success" type="button" data-bs-toggle="collapse"
+              data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+              Filtrele
+            </button>
+            <button type="button" class="btn btn-primary mr-2" routerLink="/shelf-operation">Raf Ekle</button>
+
+          </div>
+          
+          <div class="collapse" id="filterCollapse" style="margin-top: 2%;">
+            <div class="card card-body">
+              <div class="row">
+                <!-- <div class="col">
+                  <input type="text" class="form-control" placeholder="Id" >
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" placeholder="Raf No"  >
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" placeholder="Ürün Kodu"  >
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" placeholder="Parti"  >
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" placeholder="Envanter" >
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" placeholder="Paket Id"  >
+                </div> -->
+                <div class="col">
+                  <select class="form-control" [(ngModel)]="filterText">
+                    <option value="" disabled selected>Depo Seçin</option>
+                    <option value="Warehouse1">Warehouse1</option>
+                    <option value="Warehouse2">Warehouse2</option>
+                    <option value="Warehouse3">Warehouse3</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>  
+        <!-- <a class="btn btn-success" data-bs-toggle="dropdown">+İşlemler </a>
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+
+          <li><a class="dropdown-item">Yeni Raf Ekle</a></li>
+          <li><a class="dropdown-item">Rafları Excele Aktar</a></li>
+          <li><a class="dropdown-item">Seçili Rafları Sil</a></li>
+          <li><a class="dropdown-item">Seçili Rafları Yazdır</a></li>
+        </ul> -->
+        <div style="overflow-x: auto;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Seç</th>
+                <!-- <th scope="col">Qr</th> -->
+                <th scope="col">Id</th>
+                <th scope="col">Raf No</th>
+                <th scope="col">Ürün Kodu</th>
+                <th scope="col">Parti</th>
+                <th scope="col">Envanter</th>
+                <th scope="col">Paket Id</th>
+                <th scope="col">Depo</th>
+                <th scope="col">Düzenle</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let shelf of shelveModels | filterShelves:filterText">
+                <td>
+                  <input class="form-check-input" type="checkbox" [value]="shelf.id" [id]="shelf.id"
+                    *ngIf="shelf.id as id" (click)="addIdToList(id)">
+                </td>
+                <!-- <td>
+                  <img [src]="shelf.qrString ? generateQRCode(shelf.qrString) : ''" alt="QR Code" width="50" height="50"
+                    data-bs-toggle="modal" [attr.data-bs-target]="shelf.qrString ? '#modal-' + shelf.qrString : ''">
+                </td> -->
+                <td>{{ shelf.id }}</td>
+                <td>{{ shelf.shelfNo }}</td>
+                <td>{{ shelf.itemCode }}</td>
+                <td>{{ shelf.party }}</td>
+                <td>{{ shelf.inventory }}</td>
+                <td>{{ shelf.packageId }}</td>
+                <td>{{ shelf.warehouse }}</td>
+                <td>
+                  <div class="btn-group">
+                    <div class="btn btn-success" data-text="Raf Düzenle">
+                      <i routerLink="/shelf-operation/{{shelf.id}}" class="fas fa-sliders-h"></i>
+                    </div>
+                  </div>
+                  <div class="btn-group">
+                    <div class="btn btn-success" data-text="Yazdır"
+                      (click)="shelf.id ? printQRCode(shelf.id.toString()) : 0">
+                      <i class="fas fa-print"></i>
+                    </div>
+
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+
+
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Modal -->
+  <div *ngFor="let shelf of shelveModels" class="modal fade" [id]="'modal-' + shelf.qrString" tabindex="-1"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Model Gösterimi</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-center">
+            <img [src]="shelf.qrString ? generateQRCode(shelf.qrString) : ''" alt="QR Code" width="300" height="300">
+            <p>Model detayları burada görüntülenebilir</p>
+            <!-- Diğer model detayları buraya eklenebilir -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ProductCreateModel } from 'src/app/models/model/productCreateModel';
+import { ProductCreateModel } from 'src/app/models/model/product/productCreateModel';
 import { AlertifyService } from '../ui/alertify.service';
 import { HttpClientService } from '../http-client.service';
 
