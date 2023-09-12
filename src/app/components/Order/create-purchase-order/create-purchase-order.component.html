@@ -1,0 +1,177 @@
+<main id="main" class="main">
+
+    <section class="section">
+        <div class="row">
+            <div style="width: 100%">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Alış Fatura Oluşturma Paneli</h5>
+                        <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
+
+                        </ul>
+
+                        <div class="tab-content" id="ex2-content">
+                            <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1"
+                                role="tabpanel" aria-labelledby="ex3-tab-1">
+                                <form [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
+
+                                    
+                                    <div class="row mb-3">
+                                        <div class="form-group col">
+                                            <label for="office">Gelen Ofis</label>
+                                            <select id="office" class="form-control" formControlName="office"
+                                                (change)="getSelectedOffice()">
+                                                <option *ngFor="let office of officeModels" [value]="office.officeCode">
+                                                    {{ office.officeCode }}</option>
+                                            </select>
+                                            <div *ngIf="productForm.get('office')?.hasError('required')"
+                                                class="text-danger">
+                                                Ofis seçmek zorunludur.
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group col">
+                                            <label for="warehouse">Gelen Depo</label>
+                                            <select id="warehouse" class="form-control" formControlName="warehouse">
+                                                <option *ngFor="let warehouse of warehouseModels"
+                                                    [value]=" warehouse.warehouseCode ">{{
+                                                    warehouse.warehouseDescription }}</option>
+                                            </select>
+                                            <div *ngIf="productForm.get('warehouse')?.hasError('warehouse')"
+                                            class="text-danger">
+                                            Depo seçmek zorunludur.
+                                        </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="form-group col">
+                                            <label for="currAccCode">Müşteriler</label>
+                                            <select id="currAccCode" class="form-control" formControlName="currAccCode">
+                                                <option *ngFor="let customer of customerList"
+                                                    [value]="customer.currAccCode">{{customer.currAccDescription}}
+                                                </option>
+                                            </select>
+                                            <div *ngIf="productForm.get('currAccCode')?.hasError('required')"
+                                                class="text-danger">
+                                                Müşteri seçmek zorunludur.
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row mb-3">
+                                        <div class="form-group">
+                                            <label for="shelfNo">Raf:</label>
+                                            <input type="text" id="shelfNo" class="form-control"
+                                                formControlName="shelfNo" (keydown.enter)="focusNextInput('barcode')" />
+                                            <div *ngIf="productForm.get('shelfNo')?.hasError('required')"
+                                                class="text-danger">
+                                                Raf numarası zorunludur.
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+                                    <div class="row mb-3">
+                                        <div class="form-group">
+                                            <label for="barcode">Barkod:</label>
+                                            <input type="text" id="barcode" class="form-control"
+                                                formControlName="barcode"   (keydown.enter)="onSubmit(productForm.value)"/>
+                                            <div *ngIf="productForm.get('barcode')?.hasError('required')"
+                                                class="text-danger">
+                                                Barkod zorunludur.
+                                            </div>
+                                            <div *ngIf="productForm.get('barcode')?.hasError('pattern')"
+                                                class="text-danger">
+                                                Geçerli bir barkod giriniz (12 haneli sayı).
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="form-group">
+                                            <label for="quantity">Miktar</label>
+                                            <input type="text" id="quantity" class="form-control"
+                                                formControlName="quantity" (keydown.enter)="onSubmit(productForm.value)" />
+                                            <div *ngIf="productForm.get('quantity')?.hasError('required')"
+                                                class="text-danger">
+                                                Miktar zorunludur.
+                                            </div>
+                                            <div *ngIf="productForm.get('quantity')?.hasError('min')"
+                                                class="text-danger">
+                                                Miktar en az 1 olmalıdır.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="button" class="btn btn-primary" (click)="onSubmit(productForm.value)">
+                                        Ekle
+                                    </button>
+                                    <span style="margin-left: 10px"></span>
+                                    <button type="button" class="btn btn-warning" style="color: white" (click)=" collectAndPack()">
+                                        NEBIME AKTAR
+                                    </button>
+                                </form>
+
+                            </div>
+                            <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2"
+                                role="tabpanel-2" aria-labelledby="ex3-tab-2"></div>
+                            <div class="tab-pane fade show" [class.active]="activeTab === 3" id="ex3-tabs-3"
+                                role="tabpanel-3" aria-labelledby="ex3-tab-3">
+                                Prices
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="card" *ngIf="invoiceProducts.length > 0 ">
+                    <div class="card-body">
+                        <h5 class="card-title">Toplanacak Siparişler</h5>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Müşteri Kodu</th>
+                                        <th scope="col">Depo</th>
+                                        <th scope="col">Ofis</th>
+                                        <th scope="col">Raf Numarası</th>
+                                        <th scope="col">Barkod</th>
+                                        <th scope="col">Miktar</th>
+                                        <th scope="col">İşlemler</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let product of invoiceProducts; let i = index">
+                                        <td>{{ product.currAccCode }}</td>
+                                        <td>{{ product.warehouse }}</td>
+                                        <td>{{ product.office }}</td>
+                                        <td>{{ product.shelfNo }}</td>
+                                        <td>{{ product.barcode }}</td>
+                                        <td>{{ product.quantity }}</td>
+                                        <td>
+                                            <button class="btn btn-danger" (click)="deleteRow(i)">
+                                              Sil
+                                            </button>
+                                    </td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </section>
+</main>

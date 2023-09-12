@@ -13,6 +13,7 @@ export class SessionService {
   constructor(private router: Router,private alertifyService:AlertifyService,private authService:AuthService) {}
 
   // Oturum süresini dakika cinsinden belirleyerek oturum oluşturma fonksiyonu
+
   setSession(durationMinutes: number) {
     const expirationDate = new Date();
     expirationDate.setMinutes(expirationDate.getMinutes() + durationMinutes);
@@ -59,8 +60,9 @@ export class SessionService {
       }
     } else {
 
-      this.setSession(60); // Oturum verisi yoksa, yeni bir oturum oluştur (örneğin, 30 dakika)
-      this.router.navigate(['/dashboard']); // Oturum oluşturulduktan sonra kullanıcıyı dashboard sayfasına yönlendir
+      // this.setSession(60); // Oturum verisi yoksa, yeni bir oturum oluştur (örneğin, 30 dakika)
+      this.clearSession(); // Oturum süresi dolmuş, oturumu temizle
+      this.router.navigate(['/pages-login']); // Oturum oluşturulduktan sonra kullanıcıyı dashboard sayfasına yönlendir
       return true; // Oturum oluşturuldu, dolayısıyla oturum hala geçerli
     }
   }

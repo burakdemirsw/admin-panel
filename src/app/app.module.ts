@@ -66,6 +66,10 @@ import { WarehouseOperationConfirmDetailComponent } from './components/Warehouse
 import { HttpErrorInterceptor } from './services/ui/http-error-interceptor.service';
 import { CollectedPackagesComponent } from './components/Order/collected-packages/collected-packages.component';
 import { CollectedPackageDetailComponent } from './components/Order/collected-package-detail/collected-package-detail.component';
+import { WarehosueShelfCountComponent } from './components/Warehouse/warehosue-shelf-count/warehosue-shelf-count.component';
+import { SaleOrderManagamentComponent } from './components/Order/sale-order-managament/sale-order-managament.component';
+import { PurchaseOrderManagamentComponent } from './components/Order/purchase-order-managament/purchase-order-managament.component';
+import { CreatePurchaseOrderComponent } from './components/Order/create-purchase-order/create-purchase-order.component';
 
 @NgModule({
   declarations: [
@@ -122,7 +126,11 @@ import { CollectedPackageDetailComponent } from './components/Order/collected-pa
     WarehouseOperationListComponent,
     WarehouseOperationConfirmDetailComponent,
     CollectedPackagesComponent,
-    CollectedPackageDetailComponent
+    CollectedPackageDetailComponent,
+    WarehosueShelfCountComponent,
+    SaleOrderManagamentComponent,
+    PurchaseOrderManagamentComponent,
+    CreatePurchaseOrderComponent
   ],
 
 

@@ -50,6 +50,11 @@ import { WarehosueOperationDetailModel } from './models/model/warehouse/warehosu
 import { WarehouseOperationConfirmDetailComponent } from './components/Warehouse/warehouse-operation/warehouse-operation-confirm-detail/warehouse-operation-confirm-detail.component';
 import { CollectedPackagesComponent } from './components/Order/collected-packages/collected-packages.component';
 import { CollectedPackageDetailComponent } from './components/Order/collected-package-detail/collected-package-detail.component';
+import { WarehosueShelfCountComponent } from './components/Warehouse/warehosue-shelf-count/warehosue-shelf-count.component';
+import { SaleOrderManagamentComponent } from './components/Order/sale-order-managament/sale-order-managament.component';
+import { PurchaseOrderManagamentComponent } from './components/Order/purchase-order-managament/purchase-order-managament.component';
+import { CreatePurchaseInvoice } from './models/model/invoice/createPurchaseInvoice';
+import { CreatePurchaseOrderComponent } from './components/Order/create-purchase-order/create-purchase-order.component';
 
 const routes: Routes = [
   // { path: 'alerts', component: AlertsComponent },
@@ -97,13 +102,19 @@ const routes: Routes = [
   { path: 'order-operation/:orderNumber', component: OrderOperationComponent,canActivate:[AuthGuard] },
   { path: 'orderBilling-operation', component: OrderBillingOperationComponent,canActivate:[AuthGuard] },
   { path: 'orders-managament', component: OrderManagamentComponent ,canActivate:[AuthGuard]},
+  { path: 'sale-orders-managament', component: SaleOrderManagamentComponent ,canActivate:[AuthGuard]},
+  { path: 'purchase-orders-managament', component:PurchaseOrderManagamentComponent ,canActivate:[AuthGuard]},
+  { path: 'create-purchase-order', component:CreatePurchaseOrderComponent ,canActivate:[AuthGuard]},
+
   { path: 'collect-product-of-order/:number', component: CollectProductOfOrderComponent,canActivate:[AuthGuard] },
   { path: 'warehouse-operation', component: WarehouseOperationComponent,canActivate:[AuthGuard] },
   { path: 'warehouse-operation-confirm', component: WarehouseOperationListComponent ,canActivate:[AuthGuard]},
   { path: 'warehouse-operation-confirm-detail', component: WarehouseOperationConfirmDetailComponent ,canActivate:[AuthGuard]},
   { path: 'warehouse-operation-confirm-detail/:innerNumber', component: WarehouseOperationConfirmDetailComponent ,canActivate:[AuthGuard]},
   { path: 'collected-packages', component: CollectedPackagesComponent ,canActivate:[AuthGuard]},
-  { path: 'collected-package-detail/:id', component: CollectedPackageDetailComponent ,canActivate:[AuthGuard]}
+  { path: 'collected-package-detail/:id', component: CollectedPackageDetailComponent ,canActivate:[AuthGuard]},
+  { path: 'warehosue-shelf-count', component: WarehosueShelfCountComponent ,canActivate:[AuthGuard]},
+  { path: 'register', component: PagesRegisterComponent}
 
 
 

@@ -11,7 +11,7 @@ import { AuthService } from 'src/app/services/ui/auth.service';
 })
 export class PagesLoginComponent implements OnInit {
   username: string;
-  password: string;
+  password: string ;
   errorMessage: string;
 
   constructor(

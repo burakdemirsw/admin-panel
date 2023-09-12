@@ -22,5 +22,5 @@ export class HeaderComponent implements OnInit {
   logOut(){
     localStorage.removeItem("userSession");
     localStorage.removeItem("sessionExpiration");
-    this.sessionService.clearSession()  }
+    location.reload() }
 }

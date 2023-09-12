@@ -13,7 +13,7 @@
   <section class="section">
     <div class="row">
       <div style="width: 100%">
-        <div class="card" *ngIf="warehouseTransferForms  .length > 0">
+        <div class="card" *ngIf="warehouseTransferForms.length > 0">
           <div class="card-body">
             <h5 class="card-title">Eklenen Ürünler</h5>
             <div class="table-responsive">
@@ -35,7 +35,12 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let warehousePackageDetail of warehouseTransferForms  ; let i = index">
+                  <tr
+                    *ngFor="
+                      let warehousePackageDetail of warehouseTransferForms;
+                      let i = index
+                    "
+                  >
                     <td>{{ warehousePackageDetail.shelfNo }}</td>
                     <td>{{ warehousePackageDetail.barcode }}</td>
 
@@ -71,26 +76,50 @@
             </ul>
 
             <div class="tab-content" id="ex2-content">
-              <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1" role="tabpanel"
-                aria-labelledby="ex3-tab-1">
-                <form [formGroup]="warehouseForm" (ngSubmit)="onSubmit(warehouseForm.value)">
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 1"
+                id="ex3-tabs-1"
+                role="tabpanel"
+                aria-labelledby="ex3-tab-1"
+              >
+                <form
+                  [formGroup]="warehouseForm"
+                  (ngSubmit)="onSubmit(warehouseForm.value)"
+                >
                   <!-- Form alanları -->
-
-
-
 
                   <div class="row mb-3">
                     <div class="form-group col">
                       <label for="office">Gelen Ofis</label>
-                      <select id="office" class="form-control" formControlName="office" (change)="getSelectedOffice(1)">
-                        <option *ngFor="let office of officeModels" [value]="office.officeCode">{{ office.officeCode }}</option>
+                      <select
+                        id="office"
+                        class="form-control"
+                        formControlName="office"
+                        (change)="getSelectedOffice(1)"
+                      >
+                        <option
+                          *ngFor="let office of officeModels"
+                          [value]="office.officeCode"
+                        >
+                          {{ office.officeCode }}
+                        </option>
                       </select>
                     </div>
-                    
+
                     <div class="form-group col">
                       <label for="warehouse">Gelen Depo</label>
-                      <select id="warehouse" class="form-control" formControlName="warehouse">
-                        <option *ngFor="let warehouse of warehouseModels" [value]=" warehouse.warehouseCode " >{{ warehouse.warehouseDescription }}</option>
+                      <select
+                        id="warehouse"
+                        class="form-control"
+                        formControlName="warehouse"
+                      >
+                        <option
+                          *ngFor="let warehouse of warehouseModels"
+                          [value]="warehouse.warehouseCode"
+                        >
+                          {{ warehouse.warehouseDescription }}
+                        </option>
                       </select>
                     </div>
                   </div>
@@ -98,31 +127,48 @@
                   <div class="row mb-3">
                     <div class="form-group col">
                       <label for="officeTo">Giden Ofis</label>
-                      <select id="officeTo" class="form-control" formControlName="officeTo"
-                        (change)="getSelectedOffice(2)">
-                        <option *ngFor="let office of officeModels" [value]=" office.officeCode " >{{ office.officeCode }}</option>
+                      <select
+                        id="officeTo"
+                        class="form-control"
+                        formControlName="officeTo"
+                        (change)="getSelectedOffice(2)"
+                      >
+                        <option
+                          *ngFor="let office of officeModels"
+                          [value]="office.officeCode"
+                        >
+                          {{ office.officeCode }}
+                        </option>
                       </select>
                     </div>
 
                     <div class="form-group col">
                       <label for="warehouseTo">Giden Depo</label>
-                      <select id="warehouseTo" class="form-control" formControlName="warehouseTo">
-                        <option *ngFor="let warehouse of warehouseModels2"  [value]=" warehouse.warehouseCode">{{warehouse.warehouseDescription}}</option>
+                      <select
+                        id="warehouseTo"
+                        class="form-control"
+                        formControlName="warehouseTo"
+                      >
+                        <option
+                          *ngFor="let warehouse of warehouseModels2"
+                          [value]="warehouse.warehouseCode"
+                        >
+                          {{ warehouse.warehouseDescription }}
+                        </option>
                       </select>
                     </div>
                   </div>
 
-
-
-
-
-
-
                   <div class="row mb-3">
                     <div class="form-group">
                       <label for="shelfNo">Raf:</label>
-                      <input type="text" id="shelfNo" class="form-control" formControlName="shelfNo"
-                        (keydown.enter)="focusNextInput('barcode')" />
+                      <input
+                        type="text"
+                        id="shelfNo"
+                        class="form-control"
+                        formControlName="shelfNo"
+                        (keydown.enter)="focusNextInput('barcode')"
+                      />
                     </div>
                   </div>
 
@@ -131,8 +177,13 @@
                   <div class="row mb-3">
                     <div class="form-group">
                       <label for="barcode">Barkod:</label>
-                      <input type="text" id="barcode" class="form-control" formControlName="barcode"
-                        (keydown.enter)="getProductDetailandSkipFocus()" />
+                      <input
+                        type="text"
+                        id="barcode"
+                        class="form-control"
+                        formControlName="barcode"
+                        (keydown.enter)="getProductDetailandSkipFocus()"
+                      />
                       <!-- (ngModelChange)="getProductByBarcode($event)"  -->
                     </div>
                   </div>
@@ -142,8 +193,13 @@
                   <div class="row mb-3">
                     <div class="form-group">
                       <label for="inventory">Toplam Stok:</label>
-                      <input type="text" id="inventory" class="form-control" formControlName="inventory"
-                        (keydown.enter)="focusNextInput2()" />
+                      <input
+                        type="text"
+                        id="inventory"
+                        class="form-control"
+                        formControlName="inventory"
+                        (keydown.enter)="focusNextInput2()"
+                      />
                     </div>
                   </div>
                   <!-- Diğer inputlar -->
@@ -151,8 +207,13 @@
                   <div class="row mb-3">
                     <div class="form-group">
                       <label for="inventory">Renk Kodu:</label>
-                      <input type="text" id="colorCode" class="form-control" formControlName="colorCode"
-                        (keydown.enter)="focusNextInput('itemDim1Code')" />
+                      <input
+                        type="text"
+                        id="colorCode"
+                        class="form-control"
+                        formControlName="colorCode"
+                        (keydown.enter)="focusNextInput('itemDim1Code')"
+                      />
                     </div>
                   </div>
 
@@ -161,19 +222,28 @@
                   <div class="row mb-3">
                     <div class="form-group">
                       <label for="itemDim1Code">Beden: </label>
-                      <input type="text" id="itemDim1Code" class="form-control" formControlName="itemDim1Code"
-                        (keydown.enter)="focusNextInput('packageId')" />
+                      <input
+                        type="text"
+                        id="itemDim1Code"
+                        class="form-control"
+                        formControlName="itemDim1Code"
+                        (keydown.enter)="focusNextInput('packageId')"
+                      />
                     </div>
                   </div>
-
 
                   <!-- Diğer inputlar -->
 
                   <div class="row mb-3">
                     <div class="form-group">
                       <label for="party">Parti:</label>
-                      <input type="text" id="party" class="form-control" formControlName="party"
-                        (keydown.enter)="focusNextInput('itemCode')" />
+                      <input
+                        type="text"
+                        id="party"
+                        class="form-control"
+                        formControlName="party"
+                        (keydown.enter)="focusNextInput('itemCode')"
+                      />
                     </div>
                   </div>
 
@@ -182,50 +252,53 @@
                   <div class="row mb-3">
                     <div class="form-group">
                       <label for="itemCode">Ürün Kodu:</label>
-                      <input type="text" id="itemCode" class="form-control" formControlName="itemCode"
-                        (keydown.enter)="focusNextInput('packageId')" />
+                      <input
+                        type="text"
+                        id="itemCode"
+                        class="form-control"
+                        formControlName="itemCode"
+                        (keydown.enter)="focusNextInput('packageId')"
+                      />
                     </div>
                   </div>
 
-                  <!-- Diğer inputlar -->
-                  <!--               
-                <div class="row mb-3">
-                  <label for="packageId">Paket Numarası:</label>
-                  <div class="input-group">
-                    <input
-                      type="text"
-                      id="packageId"
-                      class="form-control"
-                      formControlName="packageId"
-                      (keydown.enter)="onSubmit(warehouseForm.value)"
-                    />
-                  </div>
-                </div> -->
-
-                  <!-- Diğer inputlar -->
-
-                  <button type="button" class="btn btn-primary" (click)="onSubmit(warehouseForm.value)">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="onSubmit(warehouseForm.value)"
+                  >
                     Ekle
                   </button>
                   <span style="margin-left: 10px"></span>
-                  <button type="button" class="btn btn-warning" style="color: white"
-                    (click)="transferToNebim(this.warehouseTransferForms)">
+                  <button
+                    type="button"
+                    class="btn btn-warning"
+                    style="color: white"
+                    (click)="transferToNebim(this.warehouseTransferForms)"
+                  >
                     NEBIME AKTAR
                   </button>
                 </form>
-
               </div>
-              <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2" role="tabpanel-2"
-                aria-labelledby="ex3-tab-2"></div>
-              <div class="tab-pane fade show" [class.active]="activeTab === 3" id="ex3-tabs-3" role="tabpanel-3"
-                aria-labelledby="ex3-tab-3">
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 2"
+                id="ex3-tabs-2"
+                role="tabpanel-2"
+                aria-labelledby="ex3-tab-2"
+              ></div>
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 3"
+                id="ex3-tabs-3"
+                role="tabpanel-3"
+                aria-labelledby="ex3-tab-3"
+              >
                 Prices
               </div>
             </div>
           </div>
         </div>
-
-
       </div>
     </div>
   </section>

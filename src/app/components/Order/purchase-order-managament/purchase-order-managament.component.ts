@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Observable } from 'rxjs';
 import { PrinterInvoiceRequestModel } from 'src/app/models/model/order/printerInvoiceRequestModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
@@ -9,13 +8,13 @@ import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
 
 @Component({
-  selector: 'app-order-managament',
-  templateUrl: './order-managament.component.html',
-  styleUrls: ['./order-managament.component.css']
+  selector: 'app-purchase-order-managament',
+  templateUrl: './purchase-order-managament.component.html',
+  styleUrls: ['./purchase-order-managament.component.css']
 })
-export class OrderManagamentComponent implements OnInit {
+export class PurchaseOrderManagamentComponent implements OnInit {
 
-  numberOfList : number[] = [1,10,20,50,100]
+  numberOfList : number[] = [1,10,20,50,100] 
   saleOrderModels : SaleOrderModel[]
 
   constructor(
@@ -66,7 +65,7 @@ export class OrderManagamentComponent implements OnInit {
     try {
       this.httpClientService
         .get<SaleOrderModel>({
-          controller: 'Order',
+          controller: 'Order/GetPurchaseOrders',
         })
         .subscribe((data) => {
           //console.log(data);
@@ -74,7 +73,7 @@ export class OrderManagamentComponent implements OnInit {
         });
     } catch (error: any) {
       console.log(error.message);
-    }
+    }  
   }
 
   printPicture(url:string){
@@ -95,7 +94,3 @@ export class OrderManagamentComponent implements OnInit {
     }
     }
   }
-
-
-
-

@@ -35,8 +35,8 @@ export class WarehouseOperationComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private spinnerService: NgxSpinnerService,
     private shelfService: ShelfService,
-    private router : Router
-  ) {}
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((params) => {
@@ -63,9 +63,7 @@ export class WarehouseOperationComponent implements OnInit {
         itemDim1Code: [this.itemDim1Code, Validators.required],
         party: [this.party, Validators.required],
         itemCode: [this.itemCode, Validators.required],
-
         office: ['', Validators.required],
-
         officeTo: ['', Validators.required],
         warehouse: ['', Validators.required],
         warehouseTo: ['', Validators.required],
@@ -84,11 +82,11 @@ export class WarehouseOperationComponent implements OnInit {
           controller: 'Warehouse/GetOfficeModel',
         })
         .subscribe((data) => {
-          //console.log(data);
+          ////console.log(data);
           this.officeModels = data;
         });
     } catch (error: any) {
-      console.log(error.message);
+      //console.log(error.message);
     }
   }
   getSelectedOffice(from: number) {
@@ -133,7 +131,7 @@ export class WarehouseOperationComponent implements OnInit {
           });
       }
     } catch (error: any) {
-      console.log(error.message);
+      //console.log(error.message);
     }
   }
 
@@ -172,6 +170,7 @@ export class WarehouseOperationComponent implements OnInit {
   }
 
   transferToNebim(formValue: WarehouseFormModel[]) {
+    debugger;
     formValue.forEach((f) => {
       try {
         this.httpClientService
@@ -182,18 +181,17 @@ export class WarehouseOperationComponent implements OnInit {
             f
           )
           .subscribe((data) => {
-            console.log(data);
-            // this.officeModels = data;
+            //console.log(data);
           });
       } catch (error: any) {
         console.log(error.message);
       }
     });
 
-this.router.navigate(["/warehouse-operation-confirm"]);
-}
+    this.router.navigate(['/warehouse-operation-confirm']);
+  }
+  
   barcodeModel: BarcodeModel = new BarcodeModel();
-
   shelfNo: string = '';
   colorCode: string = '';
   itemDim1Code: string = '';
@@ -205,13 +203,10 @@ this.router.navigate(["/warehouse-operation-confirm"]);
       'barcode'
     ) as HTMLSelectElement;
     this.getProductByBarcode(selectElement.value);
-    // bu kısımda fokusu ileri atıyoruz
-    //this.focusNextInput('inventory');
-    // this.onSubmit(this.warehouseForm.value);
   }
 
   barcode: string = '';
-   
+
   getProductByBarcode(value: string): any {
     try {
       this.httpClientService
@@ -288,7 +283,7 @@ this.router.navigate(["/warehouse-operation-confirm"]);
         itemDim1Code:
           formValue.itemDim1Code == '' ? '' : formValue.itemDim1Code,
       };
-      console.log(newWarehousePackageDetail);
+      //console.log(newWarehousePackageDetail);
 
       try {
         this.warehouseTransferForms.push(newWarehousePackageDetail);
@@ -320,7 +315,7 @@ this.router.navigate(["/warehouse-operation-confirm"]);
           controller: 'Shelves/' + id,
         })
         .subscribe((data) => {
-          //console.log(data);
+          ////console.log(data);
           this.warehoseModel = data;
           this.warehosueModel = data[0];
           this.formGenerator();
@@ -364,7 +359,7 @@ this.router.navigate(["/warehouse-operation-confirm"]);
           controller: 'Shelves/qr/' + id,
         })
         .subscribe((data) => {
-          //console.log(data);
+          ////console.log(data);
           this.warehoseModel = data;
           this.warehosueModel = data[0];
           this.formGenerator();

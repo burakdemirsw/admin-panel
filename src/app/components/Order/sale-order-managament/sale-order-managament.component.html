@@ -1,6 +1,6 @@
 <main id="main" class="main">
-    <!-- <div class="pagetitle">
-      <h1>Toplanan Ürünlerin Listesi</h1>
+    <div class="pagetitle">
+      <h1>Sipariş Listesi</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
@@ -9,11 +9,11 @@
         </ol>
       </nav>
     </div>
-   -->
+  
     <section class="section">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">Toplanan Paketler</h5>
+          <h5 class="card-title">Ürünler</h5>
           <!-- <a class="btn btn-success" data-bs-toggle="dropdown">+Opertions </a>
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
             <li><a class="dropdown-item">Add New Product</a></li>
@@ -21,38 +21,49 @@
             <li><a class="dropdown-item">Delete All Selected</a></li>
           </ul> -->
   
-          <!-- <div class="btn-group mb-3">
+          <div class="btn-group mb-3">
             <button type="button" class="btn btn-success" (click)="routeToCPP()"  >Ürün Topla</button>
   
             <button type="button" class="btn btn-primary">Ürün Paketle</button>
          
               <label for="numberOfList" style="margin-left: 20px;">Toplancak Sipariş Miktarı</label>
               <select id="numberOfList" class="form-control" formControlName="numberOfList" style="width: 50px;margin-left: 20px">
+               
                 <option *ngFor="let number of numberOfList" [value]="number">{{ number }}</option>
               </select>
           
-          </div> -->
+          </div>
           
           
           <div style="overflow-x: auto">
             <table class="table">
               <thead>
                 <tr>
-                  <th scope="col">Id</th>
-                  <th scope="col">Tarih</th>
-                
+                  <th scope="col">Sipariş Zamanı</th>
+                  <th scope="col">Sipariş Numarası</th>
+                  <th scope="col">Müşteri Kodu</th>
+                  <th scope="col">Müşteri Adı</th>
+                  <th scope="col">Satıcı Kodu</th>
+                  <th scope="col">Miktar</th>
+                  <th scope="col">Tutar</th>
+                  <th scope="col">İşlemler</th>
   
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let package of readyToShipmentPackageModels">
-                  <td>{{ package.id }}</td>
-                  <td>{{ package.date }}</td>
-                 
+                <tr *ngFor="let order of saleOrderModels">
+                  <td>{{ order.orderDate }}</td>
+                  <td>{{ order.orderNumber }}</td>
+                  <td>{{ order.currAccCode }}</td>
+                  <td>{{ order.currAccDescription }}</td>
+                  <td>{{ order.salespersonCode }}</td>
+                  <td>{{ order.qty1 }}</td>
+                  <td>{{ order.tutar }}</td>
                   <td>
                     <div class="btn-group">
   
-                      <div class="btn  btn-success" data-text="Varyasyonlar"  routerLink="/collected-package-detail/{{package.id}}"><i   class="fas fa-sliders-h"></i> </div>
+                      <div class="btn  btn-success" data-text="Varyasyonlar" routerLink="/order-operation/{{order.orderNumber}}"><i    class="fas fa-sliders-h"></i> </div>
+                      <div class="btn btn-primary" data-text="Fatura Yazdır"><i (click)="printPicture('https://marketplace.canva.com/EAFEOwL2BQo/2/0/1131w/canva-white-simple-invoice-S_aHY7Zi14A.jpg')" class="fa fa-print"></i></div>
   
                     </div>
                   </td>

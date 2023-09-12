@@ -11,6 +11,10 @@ import { OrderService } from 'src/app/services/admin/order.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CountProductRequestModel } from 'src/app/models/model/order/countProductRequestModel';
+import { ClientUrls } from 'src/app/models/const/ClientUrls';
+import { HttpClient } from '@angular/common/http';
+import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 
 @Component({
   selector: 'app-collect-product-of-order',
@@ -30,7 +34,9 @@ export class CollectProductOfOrderComponent implements OnInit {
     private orderService: OrderService,
     private activatedRoute : ActivatedRoute,
     private router : Router,
-    private spinnerService: NgxSpinnerService
+    private spinnerService: NgxSpinnerService,
+    private httpClient : HttpClient,
+
   ) {}
 
   ngOnInit() {
@@ -55,7 +61,12 @@ export class CollectProductOfOrderComponent implements OnInit {
       console.log(error.message);
     }
   }
-
+  focusNextInput(nextInputId: string) {
+    const nextInput = document.getElementById(nextInputId) as HTMLInputElement;
+    if (nextInput) {
+      nextInput.focus();
+    }
+  }
   orderBillingList: OrderBillingListModel[] = [];
   itemBillingModels: ItemBillingModel[] = [];
 
@@ -69,7 +80,8 @@ export class CollectProductOfOrderComponent implements OnInit {
   formGenerator() {
     this.checkForm = this.formBuilder.group({
       barcode: ['', Validators.required],
-      shelfNo: ['', Validators.required],
+      shelfNo: ['', Validators.required]
+
     });
   }
   setStatusOfPackages(list : ProductOfOrder[]){
@@ -89,11 +101,32 @@ export class CollectProductOfOrderComponent implements OnInit {
 
 
   }
-  onSubmit(productModel: ProductOfOrder) {
-    if (this.checkForm.valid) {
-      this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
+  async onSubmit(productModel: ProductOfOrder) {
+    if (this.checkForm.valid || productModel.shelfNo =="") {
+      //eğer raf kısmı boşsa sp den rafı al yerine koy sonra barcode a focus at 
+      //console.log(productModel);
 
-      console.log(productModel);
+      if(productModel.shelfNo=="" ||productModel.shelfNo==undefined || productModel.shelfNo==null  )
+      {
+        const url = ClientUrls.baseUrl+'/Order/CountProduct';
+        var requestModel : CountProductRequestModel = new CountProductRequestModel();
+        requestModel.barcode=productModel.barcode;
+        requestModel.shelfNo="";
+        var response = await this.httpClient.post<ProductCountModel | undefined>(url, requestModel).toPromise();
+        
+        if (response === undefined)
+         {
+          // Handle the undefined case, perhaps throw an error or set a default value.
+        } else {
+          var data: ProductCountModel = response;
+  
+          if(data.status=="RAF"){
+            this.checkForm.get("shelfNo")?.setValue(data.description); 
+            productModel.shelfNo  = response.description;
+          }
+        }
+
+      }
       var foundModel = this.productsToCollect.find(
         (o) =>
           o.barcode == productModel.barcode && o.shelfNo == productModel.shelfNo
@@ -109,24 +142,35 @@ export class CollectProductOfOrderComponent implements OnInit {
           foundProduct.quantity &&
           foundProduct.quantity > 1
         ) {
+          this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
+
+
           foundProduct.quantity -= 1;
           this.collectedProducts.push(foundModel);
+          this.checkForm.get("shelfNo")?.setValue(productModel.shelfNo);
+
         } else if (foundProduct?.quantity === 1) {
+          this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
+
+          this.checkForm.get("shelfNo")?.setValue("");
+
           const index = this.productsToCollect.indexOf(foundProduct);
           this.collectedProducts.push(foundModel);
           foundProduct.quantity -= 1;
-          if (index === 0) {
+       
             this.productsToCollect.splice(index, 1);
 
             if (this.productsToCollect.length === 0) {
               alert('Tüm Ürünler Toplandı!');
-            }
+           
             this.setStatusOfPackages( this.collectedProducts)
             this.router.navigate(['/orders-managament']);
-            
-          }
+             }
+          
         }
       }
     }
+    this.checkForm.get("barcode")?.setValue("");
+    this.focusNextInput("barcode");
   }
 }

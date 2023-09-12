@@ -18,7 +18,7 @@
                     <label for="yourUsername" class="form-label">Kullanıcı Adı</label>
                     <div class="input-group has-validation">
                       <span class="input-group-text" id="inputGroupPrepend">@</span>
-                      <input type="text" name="username" class="form-control" id="yourUsername" required
+                      <input type="text" name="username" class="form-control" id="username" required
                         [(ngModel)]="username" #usernameInput="ngModel">
                       <div class="invalid-feedback"
                         *ngIf="usernameInput.invalid && (usernameInput.dirty || usernameInput.touched)">
@@ -28,7 +28,7 @@
                   </div>
                   <div class="col-12">
                     <label for="yourPassword" class="form-label">Şifre</label>
-                    <input type="password" name="password" class="form-control" id="yourPassword" required
+                    <input type="password" name="password" class="form-control" id="password" required
                       [(ngModel)]="password" #passwordInput="ngModel">
                     <div class="invalid-feedback"
                       *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)">
