@@ -1,15 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { catchError } from 'rxjs/operators';
+import { catchError, throwError } from 'rxjs';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { OrderBillingRequestModel } from 'src/app/models/model/invoice/orderBillingRequestModel';
-import { CountProductRequestModel } from 'src/app/models/model/order/countProductRequestModel';
-import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
+import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
 import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
@@ -18,11 +17,11 @@ import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
 
 @Component({
-  selector: 'app-create-purchase-order',
-  templateUrl: './create-purchase-order.component.html',
-  styleUrls: ['./create-purchase-order.component.css'],
+  selector: 'app-create-sale-order',
+  templateUrl: './create-sale-order.component.html',
+  styleUrls: ['./create-sale-order.component.css']
 })
-export class CreatePurchaseOrderComponent implements OnInit {
+export class CreateSaleOrderComponent implements OnInit {
   newOrderNumber: string = this.generateGUID();
   customerList: CustomerModel[] = [];
   officeModels: OfficeModel[] = [];
@@ -31,7 +30,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
   productForm: FormGroup;
   
   warehouseModels: WarehouseOfficeModel[] = [];
-
+  currencyList: string[] = ["USD","TRY"];
   constructor(
     private httpClientService: HttpClientService,
     private formBuilder: FormBuilder,
@@ -49,6 +48,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
       this.getOfficeCodeList();
       this.getCustomerList();
       this.formGenerator();
+      this.getSalesPersonModels();
     } catch (error: any) {
       console.log(error.message);
     }
@@ -67,38 +67,46 @@ export class CreatePurchaseOrderComponent implements OnInit {
       console.log(error.message);
     }
   }
-
-  getWarehouseList(value: string): any {
+  async getWarehouseList(value: string): Promise<any> {
     try {
       const selectElement = document.getElementById(
         'office'
       ) as HTMLSelectElement;
-
+  
       value = selectElement.value == '' ? 'M' : selectElement.value;
-      this.httpClientService
+  
+      const data = await this.httpClientService
         .get<WarehouseOfficeModel>({
           controller: 'Warehouse/GetWarehouseModel/' + value,
         })
-        .subscribe((data) => {
-          this.warehouseModels = data;
-        });
+        .toPromise();
+  
+      this.warehouseModels = data;
     } catch (error: any) {
       this.alertifyService.error(error.message);
     }
   }
-
-  getSelectedOffice() {
-    this.getWarehouseList(this.productForm.get('office')?.value);
-    this.productForm
-      .get('warehouse')
-      ?.setValue(this.warehouseModels[0].warehouseCode);
+  
+  async getSelectedOffice() {
+    try {
+      var office = this.productForm.get('office')?.value;
+      await this.getWarehouseList(office);
+  
+      var warehouse: string = this.warehouseModels[0].warehouseCode;
+      this.productForm
+        .get('warehouse')
+        ?.setValue(warehouse);
+  
+    } catch (error: any) {
+      console.error('Veri alınamadı:', error);
+    }
   }
-
+  
   async getCustomerList(): Promise<any> {
     try {
       const data = await this.httpClientService
         .get<CustomerModel>({
-          controller: 'Order/CustomerList/1',
+          controller: 'Order/CustomerList/3',
         })
         .toPromise();
       console.log(data);
@@ -109,6 +117,28 @@ export class CreatePurchaseOrderComponent implements OnInit {
       console.log(error.message);
     }
   }
+  salesPersonModels : SalesPersonModel[] = []
+ async  getSalesPersonModels() :Promise<any>{
+    try {
+
+      try {
+        this.salesPersonModels = await this.httpClientService.get<SalesPersonModel>({
+          controller : "Order/GetSalesPersonModels"
+        }).toPromise();
+
+        //this.alertifyService.success("Başarıyla "+this.salesPersonModels.length+" Adet Çekildi")
+        } catch (error:any) {
+        this.alertifyService.error(error.message)
+        return null;
+      }
+
+
+
+    } catch (error:any) {
+      this.alertifyService.error(error.message)
+    }
+  }
+
 
   focusNextInput(nextInputId: string) {
     const nextInput = document.getElementById(nextInputId) as HTMLInputElement;
@@ -140,10 +170,13 @@ export class CreatePurchaseOrderComponent implements OnInit {
         office: ['', Validators.required],
         warehouse: ['', Validators.required],
         currAccCode: ['', Validators.required],
+        salesPersonCode: ['', Validators.required],
+
         shelfNo: ['', [Validators.required, Validators.maxLength(10)]],
         barcode: ['', [Validators.required, Validators.min(5)]],
         quantity: [''],
         isReturn: [false, [Validators.required]],
+        currency: [false, [Validators.required]],
 
       });
     } catch (error: any) {
@@ -169,7 +202,10 @@ export class CreatePurchaseOrderComponent implements OnInit {
         var model : OrderBillingRequestModel = new OrderBillingRequestModel();
         model.orderNo = this.newOrderNumber;
         model.invoiceType = this.productForm.get("isReturn").value;
-        model.invoiceModel = 1; //alış faturası
+        model.invoiceModel = 3  ; //satış faturası
+        model.salesPersonCode = this.productForm.get("salesPersonCode").value; 
+        model.currency = this.productForm.get("currency").value; 
+
         this.httpClientService
           .post<OrderBillingRequestModel>(
             {
@@ -197,6 +233,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
   url: string = ClientUrls.baseUrl + '/Order/CountProductPuschase';
 
   async onSubmit(model: CreatePurchaseInvoice) {
+   
     if (
       model.shelfNo == ''
     ) {
@@ -215,7 +252,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
         .toPromise();
 
       if (response === undefined) {
-
+        
       } else {
         var data: ProductCountModel = response;
 
@@ -281,7 +318,12 @@ export class CreatePurchaseOrderComponent implements OnInit {
             const responseData = JSON.parse(response.description);
             const description = responseData[0].Description;
             const rafNo = responseData[0].Rafno;
-            this.productForm.get('shelfNo')?.setValue(rafNo);
+            if(rafNo == undefined){
+              this.productForm.get('shelfNo')?.setValue( requestModel.shelfNo ) 
+            }else{
+
+              this.productForm.get('shelfNo')?.setValue(rafNo);
+            }
             this.productForm.get('barcode')?.setValue(description);
             model.barcode = description;
             model.shelfNo = rafNo;
@@ -290,6 +332,8 @@ export class CreatePurchaseOrderComponent implements OnInit {
           }
         }
 
+      }else{
+        this.alertifyService.error("Form Geçerli Değil");
       }
     }
     if (this.productForm.valid) {
@@ -309,4 +353,8 @@ export class CreatePurchaseOrderComponent implements OnInit {
   deleteRow(index: number) {
     this.invoiceProducts.splice(index, 1);
   }
+
+
+  
+  
 }

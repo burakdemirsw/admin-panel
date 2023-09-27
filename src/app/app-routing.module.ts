@@ -55,6 +55,7 @@ import { SaleOrderManagamentComponent } from './components/Order/sale-order-mana
 import { PurchaseOrderManagamentComponent } from './components/Order/purchase-order-managament/purchase-order-managament.component';
 import { CreatePurchaseInvoice } from './models/model/invoice/createPurchaseInvoice';
 import { CreatePurchaseOrderComponent } from './components/Order/create-purchase-order/create-purchase-order.component';
+import { CreateSaleOrderComponent } from './components/Order/create-sale-order/create-sale-order.component';
 
 const routes: Routes = [
   // { path: 'alerts', component: AlertsComponent },
@@ -105,6 +106,7 @@ const routes: Routes = [
   { path: 'sale-orders-managament', component: SaleOrderManagamentComponent ,canActivate:[AuthGuard]},
   { path: 'purchase-orders-managament', component:PurchaseOrderManagamentComponent ,canActivate:[AuthGuard]},
   { path: 'create-purchase-order', component:CreatePurchaseOrderComponent ,canActivate:[AuthGuard]},
+  { path: 'create-sale-order', component:CreateSaleOrderComponent ,canActivate:[AuthGuard]},
 
   { path: 'collect-product-of-order/:number', component: CollectProductOfOrderComponent,canActivate:[AuthGuard] },
   { path: 'warehouse-operation', component: WarehouseOperationComponent,canActivate:[AuthGuard] },

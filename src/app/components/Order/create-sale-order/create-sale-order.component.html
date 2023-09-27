@@ -6,7 +6,7 @@
 
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Alış Fatura Oluşturma Paneli</h5>
+                        <h5 class="card-title">Satış Fatura Oluşturma Paneli</h5>
                         <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
 
                         </ul>
@@ -61,6 +61,8 @@
                                         </div>
                                     </div>
 
+                      
+
 
                                     <div class="row mb-3">
                                         <div class="form-group">
@@ -106,6 +108,36 @@
                                                 class="text-danger">
                                                 Miktar en az 1 olmalıdır.
                                             </div> -->
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="form-group col">
+                                            <label for="currAccCode">Satış Elemanı</label>
+                                            <select id="salesPersonCode" class="form-control" formControlName="salesPersonCode">
+                                                <option *ngFor="let salesPerson of salesPersonModels"
+                                                    [value]="salesPerson.salespersonCode">{{salesPerson.firstLastName}}
+                                                </option>
+                                            </select>
+                                            <div *ngIf="productForm.get('salesPersonCode')?.hasError('required')"
+                                                class="text-danger">
+                                                Satış Elemanı seçmek zorunludur.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="form-group col">
+                                            <label for="currency">Para Birimi</label>
+                                            <select id="currency" class="form-control" formControlName="currency">
+                                                <option *ngFor="let currency of currencyList"
+                                                    [value]="currency">{{currency}}
+                                                </option>
+                                            </select>
+                                            <div *ngIf="productForm.get('currency')?.hasError('required')"
+                                                class="text-danger">
+                                                Para Birimi seçmek zorunludur.
+                                            </div>
                                         </div>
                                     </div>
 
@@ -156,7 +188,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
                                     <tr *ngFor="let product of invoiceProducts; let i = index">
                                         <td>{{ product.currAccCode }}</td>
                                         <td>{{ product.warehouse }}</td>

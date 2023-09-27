@@ -10,6 +10,8 @@ import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { ItemBillingModel } from 'src/app/models/model/product/itemBillingModel ';
 import { ShelfModel } from 'src/app/models/model/shelf/ShelfModel';
 import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
+import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
+import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
@@ -56,6 +58,8 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.itemBillingModels.splice(index, 1); // İlgili satırı listeden sil
   }
   orderNo: string = '';
+  warehouseModels: WarehouseOfficeModel[] = [];
+  warehouseModels2: WarehouseOfficeModel[] = [];
 
   currentQrCode: string = '';
   orderBillingModel: OrderBillingListModel;
@@ -63,9 +67,54 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.checkForm = this.formBuilder.group({
       barcode:  ['',Validators.required],
       shelfNo: [ '',Validators.required],
+      qty: [ '',Validators.required],
+      office: [ '',Validators.required],
+      batchCode: [ '',Validators.required]
+
     });
   }
+  getSelectedOffice(from: number) {
+    if (from == 1) {
+      this.getWarehouseList(this.checkForm.get('office')?.value, 1);
+    } else {
+      this.getWarehouseList(this.checkForm.get('office')?.value, 2);
+    }
+  }
+  getWarehouseList(value: string, from: number): any {
+    try {
+      if (from === 1) {
+        const selectElement = document.getElementById(
+          'office'
+        ) as HTMLSelectElement;
 
+        value = selectElement.value == '' ? 'M' : selectElement.value;
+        this.httpClientService
+          .get<WarehouseOfficeModel>({
+            controller: 'Warehouse/GetWarehouseModel/' + value,
+          })
+          .subscribe((data) => {
+            this.warehouseModels = data;
+          });
+      } else {
+        const selectElement = document.getElementById(
+          'officeTo'
+        ) as HTMLSelectElement;
+
+        value = selectElement.value == '' ? 'M' : selectElement.value;
+        this.httpClientService
+          .get<WarehouseOfficeModel>({
+            controller: 'Warehouse/GetWarehouseModel/' + value,
+          })
+          .subscribe((data) => {
+            this.warehouseModels2 = data;
+          });
+      }
+    } catch (error: any) {
+      //console.log(error.message);
+    }
+  }
+
+  
   list : CountProductRequestModel[]  = []
   
   async onSubmit(countProductRequestModel: CountProductRequestModel):Promise<any> {

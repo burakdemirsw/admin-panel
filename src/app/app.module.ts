@@ -70,6 +70,7 @@ import { WarehosueShelfCountComponent } from './components/Warehouse/warehosue-s
 import { SaleOrderManagamentComponent } from './components/Order/sale-order-managament/sale-order-managament.component';
 import { PurchaseOrderManagamentComponent } from './components/Order/purchase-order-managament/purchase-order-managament.component';
 import { CreatePurchaseOrderComponent } from './components/Order/create-purchase-order/create-purchase-order.component';
+import { CreateSaleOrderComponent } from './components/Order/create-sale-order/create-sale-order.component';
 
 @NgModule({
   declarations: [
@@ -130,7 +131,8 @@ import { CreatePurchaseOrderComponent } from './components/Order/create-purchase
     WarehosueShelfCountComponent,
     SaleOrderManagamentComponent,
     PurchaseOrderManagamentComponent,
-    CreatePurchaseOrderComponent
+    CreatePurchaseOrderComponent,
+    CreateSaleOrderComponent
   ],
 
 

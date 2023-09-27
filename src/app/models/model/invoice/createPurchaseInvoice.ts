@@ -5,6 +5,7 @@ export class CreatePurchaseInvoice{
     orderNumber !: string
     office !: string
     warehouse !: string
-
     currAccCode !: string
+    salesPersonCode !: string
+    currency !:string
 }

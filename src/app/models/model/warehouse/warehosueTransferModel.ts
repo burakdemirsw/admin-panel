@@ -11,6 +11,6 @@ export class WarehouseFormModel {
     warehouseTo: string;
     colorCode:string
     itemDim1Code:string
-    // 
+   
   }
   

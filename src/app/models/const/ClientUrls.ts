@@ -6,4 +6,4 @@ baseUrl = "http://localhost:7178/api", //bu pc
 
 }
 
- 
+      

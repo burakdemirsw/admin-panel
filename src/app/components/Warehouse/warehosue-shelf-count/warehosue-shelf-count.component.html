@@ -28,74 +28,124 @@
                             <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1"
                                 role="tabpanel" aria-labelledby="ex3-tab-1">
                                 <form [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)">
+
+                                    <div class="row mb-3">
+                                        <div class="form-group col">
+                                            <label for="office">Gelen Ofis</label>
+                                            <select id="office" class="form-control" formControlName="office" (change)="getSelectedOffice(1)">
+                                                <option>M</option>
+                                                <option>U</option>
+                                            </select>
+                                        </div>
+
+
+                                        <div class="form-group col">
+                                            <label for="warehouse">Gelen Depo</label>
+                                            <select id="warehouse" class="form-control" formControlName="warehouse">
+                                                <option *ngFor="let warehouse of warehouseModels"
+                                                    [value]="warehouse.warehouseCode">
+                                                    {{ warehouse.warehouseDescription }}
+                                                </option>
+                                            </select>
+                                        </div>
+                          
+
+
+
+
+
                                     <div class="row mb-3">
                                         <div class="form-group">
                                             <label for="shelfNo">Raf No:</label>
                                             <input type="text" id="shelfNo" class="form-control"
-                                                formControlName="shelfNo" (keydown.enter)="focusNextInput('barcode')" [disabled]="checkForm.disabled" />
+                                                formControlName="shelfNo" (keydown.enter)="focusNextInput('barcode')"
+                                                [disabled]="checkForm.disabled" />
                                         </div>
                                     </div>
+
                                     <div class="row mb-3">
                                         <div class="form-group">
                                             <label for="barcode">Barkod:</label>
 
                                             <input type="text" id="barcode" class="form-control"
-                                                formControlName="barcode" (keydown.enter)="onSubmit(checkForm.value)"    [disabled]="checkForm.disabled">
+                                                formControlName="barcode" (keydown.enter)="onSubmit(checkForm.value)"
+                                                [disabled]="checkForm.disabled">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="form-group">
+                                            <label for="batchCode">Parti:</label>
+
+                                            <input type="text" id="batchCode" class="form-control"
+                                                formControlName="batchCode" (keydown.enter)="onSubmit(checkForm.value)"
+                                                [disabled]="checkForm.disabled">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row mb-3">
+                                        <div class="form-group">
+                                            <label for="qty">Miktar:</label>
+
+                                            <input type="text" id="qty" class="form-control" formControlName="qty"
+                                                [disabled]="checkForm.disabled">
                                         </div>
                                     </div>
 
                                     <button type="button" class="btn btn-primary" (click)="check()">
                                         Ekle
                                     </button>
-                                </form>
                             </div>
-                            <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2"
-                                role="tabpanel-2" aria-labelledby="ex3-tab-2"></div>
-                            <div class="tab-pane fade show" [class.active]="activeTab === 3" id="ex3-tabs-3"
-                                role="tabpanel-3" aria-labelledby="ex3-tab-3">
-                                Prices
-                            </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2"
+                            role="tabpanel-2" aria-labelledby="ex3-tab-2"></div>
+                        <div class="tab-pane fade show" [class.active]="activeTab === 3" id="ex3-tabs-3"
+                            role="tabpanel-3" aria-labelledby="ex3-tab-3">
+                            Prices
                         </div>
                     </div>
                 </div>
-
-                <div class="card" *ngIf="list.length > 0">
-                    <div class="card-body">
-                        <h5 class="card-title">Toplanacak Siparişler</h5>
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Raf Numarası</th>
-         
-                                        <th scope="col">Barkod</th>
-               
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let product of list">
-                                        <td>{{ product.shelfNo }}</td>
-                                    
-                                        <td>{{ product.barcode }}</td>
-                       
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Yeni kart: Toplanan Ürünler -->
-                <div class="card text-center">
-                    <div class="card-body">
-                        <h5 class="card-title">Toplanan Ürünler</h5>
-                        <h1 class="display-1">{{ list.length }}</h1>
-                        <p class="card-text">Adet Ürün Toplandı</p>
-                    </div>
-                </div>
-
-
             </div>
+
+            <div class="card" *ngIf="list.length > 0">
+                <div class="card-body">
+                    <h5 class="card-title">Toplanacak Siparişler</h5>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Raf Numarası</th>
+
+                                    <th scope="col">Barkod</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let product of list">
+                                    <td>{{ product.shelfNo }}</td>
+
+                                    <td>{{ product.barcode }}</td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yeni kart: Toplanan Ürünler -->
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Toplanan Ürünler</h5>
+                    <h1 class="display-1">{{ list.length }}</h1>
+                    <p class="card-text">Adet Ürün Toplandı</p>
+                </div>
+            </div>
+
+
+        </div>
         </div>
     </section>
 </main>

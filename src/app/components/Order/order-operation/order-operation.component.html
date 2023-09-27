@@ -13,10 +13,9 @@
   <section class="section">
     <div class="row">
       <div style="width: 100%">
-
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Sipariş Toplama Paneli</h5>
+            <h5 class="card-title">{{ pageDescription }}</h5>
             <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
               <!-- <li class="nav-item" role="presentation">
                                   <a class="nav-link active" [class.active]="activeTab === 1" (click)="activeTab = 1">Raf
@@ -31,9 +30,16 @@
                   <div class="row mb-3">
                     <div class="form-group">
                       <label for="shelfNo">Raf No:</label>
-                      <input type="text" id="shelfNo" class="form-control" formControlName="shelfNo"
-                        (keydown.enter)="focusNextInput('barcode')" />
+                      <div class="input-group">
+                        <input type="text" id="shelfNo" class="form-control" formControlName="shelfNo"
+                          (keydown.enter)="focusNextInput('barcode')" />
+                        <div class="input-group-append">
+                          <button type="button" (click)="clearShelfNumbers()" class="btn btn-warning">Rafı Temizle</button>
+                        </div>
+                      </div>
                     </div>
+                    <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{ shelfNumbers }}</label>
+
                   </div>
                   <div class="row mb-3">
                     <div class="form-group">
@@ -44,25 +50,30 @@
                   </div>
 
                   <div class="row mb-3">
-              
                     <div class="col-md-">
                       <div class="form-group">
                         <label for="quantity">Miktar</label>
-                        <input type="text" id="quantity" class="form-control" formControlName="quantity" />
+                        <input type="number" id="quantity" class="form-control" formControlName="quantity" />
                       </div>
                     </div>
+
                     <div class="col-md-6">
-                      <button type="button" class="btn btn-primary" (click)="onSubmit(checkForm.value)" style="margin-top: 20px;">
+                      <button type="button" class="btn btn-primary" (click)="onSubmit(checkForm.value)"
+                        style="margin-top: 20px">
                         Ekle
                       </button>
 
-                      <button type="button" class="btn btn-success" (click)="collectAndPack(this.collectedProducts)" style="margin-left: 20px;margin-top: 20px;">
+                      <button type="button" class="btn btn-dark" (click)="addAllSelectedProductsToList()"
+                        style="margin-left: 20px; margin-top: 20px">
+                        Seçilenleri Ekle
+                      </button>
+
+                      <button type="button" class="btn btn-success" (click)="collectAndPack(this.collectedProducts)"
+                        style="margin-left: 20px; margin-top: 20px">
                         Toplananları Faturalaştır
                       </button>
                     </div>
-                
                   </div>
-                  
                 </form>
               </div>
               <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2" role="tabpanel-2"
@@ -82,6 +93,8 @@
               <table class="table">
                 <thead>
                   <tr>
+                    <th scope="col">Seç</th>
+
                     <th scope="col">Raf Numarası</th>
                     <th scope="col">Ürün Kodu</th>
                     <th scope="col">Miktar</th>
@@ -93,7 +106,13 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let product of productsToCollect">
+                  <tr *ngFor="let product of productsToCollect; let i = index"
+                    [ngClass]="{'green-row':  product.colorDescription=='1' }">
+                    <td>
+                      <input class="form-check-input" type="checkbox" id="pi{{product.packageNo}}"
+                        (change)="addProductToList(product.packageNo)" />
+                    </td>
+
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.itemCode }}</td>
                     <td>{{ product.quantity }}</td>
@@ -114,13 +133,11 @@
           <div class="card-body">
             <h5 class="card-title">Toplanan Ürünler</h5>
             <h1 class="display-1">{{ collectedProducts.length }}</h1>
-                    <!--eklenen ürün miktarı yazcak! -->
+            <!--eklenen ürün miktarı yazcak! -->
 
             <p class="card-text">Adet Ürün Toplandı</p>
           </div>
         </div>
-
-
       </div>
     </div>
   </section>
