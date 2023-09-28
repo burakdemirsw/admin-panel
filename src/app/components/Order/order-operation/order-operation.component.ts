@@ -23,6 +23,9 @@ import { WarehouseOperationDetailModel } from 'src/app/models/model/warehouse/wa
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
 import { Observable } from 'rxjs';
+import * as $ from 'jquery';
+declare var window:any
+
 
 @Component({
   selector: 'app-order-operation',
@@ -137,15 +140,33 @@ export class OrderOperationComponent implements OnInit {
 
     return response;
   }
+  modalImageUrl: string;
+  formModal :any;
+  openImageModal(imageUrl: string) {
+    this.modalImageUrl = imageUrl;
+    if (!this.formModal) {
+      this.formModal = new window.bootstrap.Modal(document.getElementById("myModal"));
+    }
+    this.formModal.show();
+  }
+
+
   async onSubmit(productModel: ProductOfOrder): Promise<any> {
-    //satış faturası alanı------------------------------------------------------------------------
+    //satış faturası alanı------------------------------------------------------------------------ WS
     if (this.currentOrderNo.split('-')[1] === 'WS') {
       if (
         productModel.shelfNo == '' ||
         productModel.shelfNo == undefined ||
         productModel.shelfNo == null
       ) {
-        this.setShelfNo(productModel.barcode);
+        if(productModel.barcode!= ''){
+          this.setShelfNo(productModel.barcode);
+        }else{
+          this.alertifyService.warning("Formu Doldurunuz.")
+          return;
+        }
+     
+       
       } else if (
         productModel.shelfNo != '' ||
         productModel.shelfNo != undefined ||
@@ -217,14 +238,20 @@ export class OrderOperationComponent implements OnInit {
         this.alertifyService.warning('Eşleşen Ürün Bulunamadı');
       }
     }
-    //transfer--------------------------------------------------------------------
+    //transfer-------------------------------------------------------------------- WT
     else if (this.currentOrderNo.split('-')[1] === 'WT') {
       if (
         productModel.shelfNo == '' ||
         productModel.shelfNo == undefined ||
         productModel.shelfNo == null
       ) {
-        this.setShelfNo(productModel.barcode);
+        if(productModel.barcode!= ''){
+          this.setShelfNo(productModel.barcode);
+        }else{
+          this.alertifyService.warning("Formu Doldurunuz.")
+          return;
+        }
+     
       }
       if (
         this.checkForm.get('shelfNo').value &&
@@ -301,18 +328,25 @@ export class OrderOperationComponent implements OnInit {
         }
       }
     }
-    //alış--------------------------------------------------------------------
+    //alış-------------------------------------------------------------------- BP
     else {
       if (
         productModel.shelfNo == '' ||
         productModel.shelfNo == undefined ||
         productModel.shelfNo == null
       ) {
-        this.setShelfNo(productModel.barcode);
+        if(productModel.barcode!= ''){
+          this.setShelfNo(productModel.barcode);
+        }else{
+          this.alertifyService.warning("Formu Doldurunuz.")
+          return;
+        }
+     
       } else if (
         this.checkForm.get('shelfNo').value &&
         this.checkForm.get('barcode').value
       ) {
+   
         var response = await this.countProductRequest(
           productModel.barcode,
           productModel.shelfNo,
@@ -405,6 +439,9 @@ export class OrderOperationComponent implements OnInit {
         } else {
           this.alertifyService.warning('Eşleşen Ürün Bulunamadı');
         }
+      }     else{
+
+        this.alertifyService.warning("Formu Doldurunuz")
       }
     }
   }
