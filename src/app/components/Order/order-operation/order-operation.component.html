@@ -11,6 +11,7 @@
   </div> -->
 
   <section class="section">
+
     <div class="row">
       <div style="width: 100%">
         <div class="card">
@@ -34,7 +35,8 @@
                         <input type="text" id="shelfNo" class="form-control" formControlName="shelfNo"
                           (keydown.enter)="focusNextInput('barcode')" />
                         <div class="input-group-append">
-                          <button type="button" (click)="clearShelfNumbers()" class="btn btn-warning">Rafı Temizle</button>
+                          <button type="button" (click)="clearShelfNumbers()" class="btn btn-warning">Rafı
+                            Temizle</button>
                         </div>
                       </div>
                     </div>
@@ -95,6 +97,8 @@
                   <tr>
                     <th scope="col">Seç</th>
 
+                    <th scope="col">Fotoğraf</th>
+
                     <th scope="col">Raf Numarası</th>
                     <th scope="col">Ürün Kodu</th>
                     <th scope="col">Miktar</th>
@@ -113,6 +117,13 @@
                         (change)="addProductToList(product.packageNo)" />
                     </td>
 
+                    <td>
+                      <img src="https://ogrenci.medexsepeti.com/cdn/shop/files/elaletleri2_600x.png?v=1694781123"
+                        alt="Resim" width="50" height="50"
+                        (click)="openImageModal('https://ogrenci.medexsepeti.com/cdn/shop/files/elaletleri2_600x.png?v=1694781123')">
+
+                    </td>
+
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.itemCode }}</td>
                     <td>{{ product.quantity }}</td>
@@ -121,9 +132,14 @@
                     <td>{{ product.barcode }}</td>
                     <td>{{ product.packageNo }}</td>
                     <td>{{ product.colorCode }}</td>
+
                   </tr>
                 </tbody>
+
               </table>
+
+
+
             </div>
           </div>
         </div>
@@ -140,5 +156,7 @@
         </div>
       </div>
     </div>
+    <app-image-modal [imageUrl]="modalImageUrl" [title]="'Ürün Detay'"></app-image-modal>
+
   </section>
 </main>

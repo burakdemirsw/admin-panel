@@ -48,7 +48,7 @@ export class WarehouseOperationListComponent implements OnInit {
         },this.innerNumberList)
         .subscribe((data) => {
           console.log(data);
-          location.href = "http://localhost:4200/warehouse-operation-confirm";
+          this.router.navigate(['/warehouse-operation-confirm']);
         });
     } catch (error: any) {
       console.log(error.message);

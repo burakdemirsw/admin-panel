@@ -71,6 +71,7 @@ import { SaleOrderManagamentComponent } from './components/Order/sale-order-mana
 import { PurchaseOrderManagamentComponent } from './components/Order/purchase-order-managament/purchase-order-managament.component';
 import { CreatePurchaseOrderComponent } from './components/Order/create-purchase-order/create-purchase-order.component';
 import { CreateSaleOrderComponent } from './components/Order/create-sale-order/create-sale-order.component';
+import { ImageModalComponent } from './image-modal/image-modal.component';
 
 @NgModule({
   declarations: [
@@ -132,7 +133,8 @@ import { CreateSaleOrderComponent } from './components/Order/create-sale-order/c
     SaleOrderManagamentComponent,
     PurchaseOrderManagamentComponent,
     CreatePurchaseOrderComponent,
-    CreateSaleOrderComponent
+    CreateSaleOrderComponent,
+    ImageModalComponent
   ],
 
 

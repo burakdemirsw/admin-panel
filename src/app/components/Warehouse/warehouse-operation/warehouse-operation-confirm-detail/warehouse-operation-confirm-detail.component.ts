@@ -13,32 +13,33 @@ import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/w
 @Component({
   selector: 'app-warehouse-operation-confirm-detail',
   templateUrl: './warehouse-operation-confirm-detail.component.html',
-  styleUrls: ['./warehouse-operation-confirm-detail.component.css']
+  styleUrls: ['./warehouse-operation-confirm-detail.component.css'],
 })
-export class WarehouseOperationConfirmDetailComponent implements OnInit,OnDestroy {
-  warehouseConfirmForm :FormGroup;
-  activeTab :number = 1; 
-  constructor(  
+export class WarehouseOperationConfirmDetailComponent
+  implements OnInit, OnDestroy
+{
+  warehouseConfirmForm: FormGroup;
+  activeTab: number = 1;
+  constructor(
     private httpClientService: HttpClientService,
     private formBuilder: FormBuilder,
     private alertifyService: AlertifyService,
     private activatedRoute: ActivatedRoute,
     private spinnerService: NgxSpinnerService,
     private shelfService: ShelfService
-  ) { } 
+  ) {}
   ngOnDestroy(): void {
     localStorage.removeItem('currentWarehosue');
   }
-  warehosueOperationDetail  : WarehosueOperationDetailModel[] = [];
-  totalProductNumber : number = this.warehosueOperationDetail.length ;
+  warehosueOperationDetail: WarehosueOperationDetailModel[] = [];
+  totalProductNumber: number = this.warehosueOperationDetail.length;
 
   ngOnInit(): void {
-
     this.activatedRoute.params.subscribe((params) => {
       this.spinnerService.show();
       this.formGenerator();
       this.getWarehosueOperationDetail(params['innerNumber']);
-      this.getWarehouse(params['innerNumber'])
+      this.getWarehouse(params['innerNumber']);
       // this.formGenerator();
       setTimeout(() => {
         this.spinnerService.hide();
@@ -46,47 +47,39 @@ export class WarehouseOperationConfirmDetailComponent implements OnInit,OnDestro
     });
   }
 
-  takeProduct(productCode:string){
-
-  }
-warehouseOperationListModel :WarehouseOperationListModel;
-  getWarehouse(innerNumber : string){
+  takeProduct(productCode: string) {}
+  warehouseOperationListModel: WarehouseOperationListModel;
+  getWarehouse(innerNumber: string) {
     try {
       this.httpClientService
         .get<WarehouseOperationListModel>({
-          controller: 'Warehouse/GetWarehouseOfperationDetail/'+innerNumber,
+          controller: 'Warehouse/GetWarehouseOfperationDetail/' + innerNumber,
         })
         .subscribe((data) => {
-           this.warehouseOperationListModel = data[0];
-         
+          this.warehouseOperationListModel = data[0];
+
           console.log(data);
 
           this.formGenerator();
-          
         });
     } catch (error: any) {
       console.log(error.message);
     }
   }
   formGenerator() {
-  
     try {
       this.warehouseConfirmForm = this.formBuilder.group({
-       
-        shelfNo: ["",Validators.required],
-        barcode: ["",Validators.required]
- 
-        
+        shelfNo: ['', Validators.required],
+        barcode: ['', Validators.required],
       });
-    } catch (error:any) {
-      alert(error.message)
+    } catch (error: any) {
+      alert(error.message);
     }
-
   }
-  barcodeModel : BarcodeModel ;
-  getProductDetailAndDropFromList(){
+  barcodeModel: BarcodeModel;
+  getProductDetailAndDropFromList() {
     // var value = (document.getElementById("barcode") as HTMLInputElement).value
-    var value = this.warehouseConfirmForm.get("barcode")?.value;
+    var value = this.warehouseConfirmForm.get('barcode')?.value;
     try {
       this.httpClientService
         .get<BarcodeModel>({
@@ -94,20 +87,17 @@ warehouseOperationListModel :WarehouseOperationListModel;
         })
         .subscribe((data) => {
           this.barcodeModel = data[0];
-          this.onSubmit(data[0])
+          this.onSubmit(data[0]);
           console.log(data);
 
           this.formGenerator();
-          
         });
     } catch (error: any) {
       console.log(error.message);
     }
   }
 
-  
-
-  onSubmit(barcodeModel:BarcodeModel){
+  onSubmit(barcodeModel: BarcodeModel) {
     const itemCodeValue = barcodeModel.itemCode; // itemCode değerini formdan al
 
     // İlgili ürün koduna ait ürünü warehosueOperationDetail dizisinde bul
@@ -119,9 +109,9 @@ warehouseOperationListModel :WarehouseOperationListModel;
       if (product.qty1 > 0) {
         // Stoktan bir azaltma yap
         product.qty1 -= 1;
-        this.totalProductNumber= product.qty1 
+        this.totalProductNumber = product.qty1;
         if (product.qty1 === 0) {
-        this.focusNextInput("shelfNo")
+          this.focusNextInput('shelfNo');
         }
       } else {
         alert('Stokta yeterli ürün bulunmamaktadır!');
@@ -131,19 +121,17 @@ warehouseOperationListModel :WarehouseOperationListModel;
     }
   }
 
-
-  fistQtyNumber : number;
-  getWarehosueOperationDetail(id:string):void{
+  fistQtyNumber: number;
+  getWarehosueOperationDetail(id: string): void {
     try {
       this.httpClientService
         .get<WarehosueOperationDetailModel>({
-          controller: 'Warehouse/GetWarehouseOperationDetail/'+id,
+          controller: 'Warehouse/GetWarehouseOperationDetail/' + id,
         })
         .subscribe((data) => {
           console.log(data);
           this.warehosueOperationDetail = data;
-          this.fistQtyNumber = data[0].qty1
-        
+          this.fistQtyNumber = data[0].qty1;
         });
     } catch (error: any) {
       console.log(error.message);
@@ -154,50 +142,42 @@ warehouseOperationListModel :WarehouseOperationListModel;
     const nextInput = document.getElementById(nextInputId) as HTMLInputElement;
     if (nextInput) {
       nextInput.focus();
-    } 
+    }
   }
 
-  postModel(){
+  postModel() {
     let innerNumber: string;
 
     this.activatedRoute.params.subscribe((params) => {
       innerNumber = params['innerNumber'];
-    
-      let model: WarehouseOperationProductModel = new WarehouseOperationProductModel();
-      model.barcode = this.warehouseConfirmForm.get("barcode")?.value;
-      model.lot = this.barcodeModel == undefined ? "null" : this.barcodeModel.party;
-      model.quantity = (this.fistQtyNumber - this.totalProductNumber).toString();
-      model.shelfNumber = this.warehouseConfirmForm.get("shelfNo")?.value;
-      model.warehouse = localStorage.getItem("currentWarehouse")?.toString() || "";
+
+      let model: WarehouseOperationProductModel =
+        new WarehouseOperationProductModel();
+      model.barcode = this.warehouseConfirmForm.get('barcode')?.value;
+      model.lot =
+        this.barcodeModel == undefined ? 'null' : this.barcodeModel.party;
+      model.quantity = (
+        this.fistQtyNumber - this.totalProductNumber
+      ).toString();
+      model.shelfNumber = this.warehouseConfirmForm.get('shelfNo')?.value;
+      model.warehouse =
+        localStorage.getItem('currentWarehouse')?.toString() || '';
       model.innerNumber = innerNumber;
       try {
         this.httpClientService
-          .post<WarehouseOperationProductModel>({
-            controller: 'Warehouse/SendNebımToTransferProduct',
-          },model)
+          .post<WarehouseOperationProductModel>(
+            {
+              controller: 'Warehouse/SendNebımToTransferProduct',
+            },
+            model
+          )
           .subscribe((data) => {
             console.log(data);
-  
-          
           });
       } catch (error: any) {
         console.log(error.message);
       }
       // Diğer işlemler...
     });
-
-
-
   }
-  
-  
-
 }
-
-// Create PROCEDURE [dbo].[Usp_PostZtMSRAFSTOK]
-// 	(	 @Barkod nvarchar(50) //bu değer formdan 
-// 	,@Parti  nvarchar(50)  //bu değer sp den 
-// 	, @Rafno  nvarchar(50)// bu değer formdan 
-// 	,@Adet   nvarchar(50)//bu değer fistQtyNumber'dan
-// 	,@Depo   nvarchar(50)//bu değer 
-// )

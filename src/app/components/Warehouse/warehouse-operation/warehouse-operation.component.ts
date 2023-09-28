@@ -12,6 +12,7 @@ import { ShelfService } from 'src/app/services/admin/shelf.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
+import { GeneralService } from 'src/app/services/admin/general.service';
 
 @Component({
   selector: 'app-warehouse-operation',
@@ -35,7 +36,8 @@ export class WarehouseOperationComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private spinnerService: NgxSpinnerService,
     private shelfService: ShelfService,
-    private router: Router
+    private router: Router,
+    private generalService : GeneralService
   ) {}
   selectedOffice: string; // Add this line
   warehouseModels: WarehouseOfficeModel[] = [];
@@ -176,26 +178,32 @@ export class WarehouseOperationComponent implements OnInit {
   }
 
   async transferToNebim(formValue: WarehouseFormModel[]) {
-    try {
-      const data = await this.httpClientService
-        .post<WarehouseFormModel[]>(
-          {
-            controller: 'Warehouse/TransferProducts',
-          },
-          formValue
-        )
-        .toPromise();
-  
-      // Başarılı yanıt geldiğinde console'a başarılı yazısı yazdır
-      this.alertifyService.success('Transfer Başarılı');
-  
-      // 2 saniye bekledikten sonra sayfayı değiştir
-      setTimeout(() => {
-        this.router.navigate(['/warehouse-operation-confirm']);
-      }, 2000);
-    } catch (error: any) {
-      console.log(error.message);
+
+    if(formValue.length>0){
+      try {
+        const data = await this.httpClientService
+          .post<WarehouseFormModel[]>(
+            {
+              controller: 'Warehouse/TransferProducts',
+            },
+            formValue
+          )
+          .toPromise();
+    
+        // Başarılı yanıt geldiğinde console'a başarılı yazısı yazdır
+        this.alertifyService.success('Transfer Başarılı');
+    
+        // 2 saniye bekledikten sonra sayfayı değiştir
+
+        this.generalService.waitAndNavigate("Transfer İşlemi Başarıyla Gerçekleşti.","warehouse-operation-confirm")
+       
+      } catch (error: any) {
+        console.log(error.message);
+      }
+    }else{
+      this.alertifyService.warning("Liste Boş Geliyor.")
     }
+    
   }
   changePage(){
     setTimeout(() => {
