@@ -1,29 +1,24 @@
 <main id="main" class="main">
-
     <section class="section">
         <div class="row">
             <div style="width: 100%">
-
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Alış Fatura Oluşturma Paneli</h5>
-                        <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
-
-                        </ul>
+                        <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist"></ul>
 
                         <div class="tab-content" id="ex2-content">
                             <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1"
                                 role="tabpanel" aria-labelledby="ex3-tab-1">
                                 <form [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
-
-                                    
                                     <div class="row mb-3">
                                         <div class="form-group col">
                                             <label for="office">Gelen Ofis</label>
                                             <select id="office" class="form-control" formControlName="office"
                                                 (change)="getSelectedOffice()">
                                                 <option *ngFor="let office of officeModels" [value]="office.officeCode">
-                                                    {{ office.officeCode }}</option>
+                                                    {{ office.officeCode }}
+                                                </option>
                                             </select>
                                             <div *ngIf="productForm.get('office')?.hasError('required')"
                                                 class="text-danger">
@@ -31,18 +26,19 @@
                                             </div>
                                         </div>
 
-
                                         <div class="form-group col">
                                             <label for="warehouse">Gelen Depo</label>
                                             <select id="warehouse" class="form-control" formControlName="warehouse">
                                                 <option *ngFor="let warehouse of warehouseModels"
-                                                    [value]=" warehouse.warehouseCode ">{{
-                                                    warehouse.warehouseDescription }}</option>
+                                                    [value]="warehouse.warehouseCode">
+                                                    {{ warehouse.warehouseDescription }}
+                                                </option>
                                             </select>
-                                            <div *ngIf="productForm.get('warehouse')?.hasError('warehouse')"
-                                            class="text-danger">
-                                            Depo seçmek zorunludur.
-                                        </div>
+                                            <div *ngIf="
+                          productForm.get('warehouse')?.hasError('warehouse')
+                        " class="text-danger">
+                                                Depo seçmek zorunludur.
+                                            </div>
                                         </div>
                                     </div>
 
@@ -51,16 +47,17 @@
                                             <label for="currAccCode">Müşteriler</label>
                                             <select id="currAccCode" class="form-control" formControlName="currAccCode">
                                                 <option *ngFor="let customer of customerList"
-                                                    [value]="customer.currAccCode">{{customer.currAccDescription}}
+                                                    [value]="customer.currAccCode">
+                                                    {{ customer.currAccDescription }}
                                                 </option>
                                             </select>
-                                            <div *ngIf="productForm.get('currAccCode')?.hasError('required')"
-                                                class="text-danger">
+                                            <div *ngIf="
+                          productForm.get('currAccCode')?.hasError('required')
+                        " class="text-danger">
                                                 Müşteri seçmek zorunludur.
                                             </div>
                                         </div>
                                     </div>
-
 
                                     <div class="row mb-3">
                                         <div class="form-group">
@@ -74,14 +71,12 @@
                                         </div>
                                     </div>
 
-
-
-
                                     <div class="row mb-3">
                                         <div class="form-group">
                                             <label for="barcode">Barkod:</label>
                                             <input type="text" id="barcode" class="form-control"
-                                                formControlName="barcode"   (keydown.enter)="onSubmit(productForm.value)"/>
+                                                formControlName="barcode"
+                                                (keydown.enter)="onSubmit(productForm.value)" />
                                             <div *ngIf="productForm.get('barcode')?.hasError('required')"
                                                 class="text-danger">
                                                 Barkod zorunludur.
@@ -95,37 +90,54 @@
 
                                     <div class="row mb-3">
                                         <div class="form-group">
+                                            <label for="batchCode">Parti</label>
+                                            <input type="text" id="batchCode" class="form-control"
+                                                formControlName="batchCode"
+                                                (keydown.enter)="onSubmit(productForm.value)" />
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="form-group">
                                             <label for="quantity">Miktar</label>
                                             <input type="number" id="quantity" class="form-control"
-                                                formControlName="quantity" (keydown.enter)="onSubmit(productForm.value)" />
-                                            <!-- <div *ngIf="productForm.get('quantity')?.hasError('required')"
-                                                class="text-danger">
-                                                Miktar zorunludur.
-                                            </div>
-                                            <div *ngIf="productForm.get('quantity')?.hasError('min')"
-                                                class="text-danger">
-                                                Miktar en az 1 olmalıdır.
-                                            </div> -->
+                                                formControlName="quantity"
+                                                (keydown.enter)="onSubmit(productForm.value)" />
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <div class="form-check">
-                                          <input type="checkbox" id="isReturn" class="form-check-input" formControlName="isReturn" />
-                                          <label for="isReturn" class="form-check-label">İade</label>
+                                            <input type="checkbox" id="isReturn" class="form-check-input"
+                                                formControlName="isReturn" />
+                                            <label for="isReturn" class="form-check-label">İade</label>
                                         </div>
-                                      </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-">
+
+                                            <button type="button" class="btn btn-primary"
+                                                (click)="onSubmit(productForm.value)" style="width: 100%;">
+                                                Ekle
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-">
+
+                                            <button type="button" class="btn btn-dark" style="color: white;width: 100%"
+                                                (click)="createPurchaseInvoice()">
+                                                NEBIME AKTAR
+                                            </button>
+                                        </div>
+                                    </div>
 
 
-                                    <button type="button" class="btn btn-primary" (click)="onSubmit(productForm.value)">
-                                        Ekle
-                                    </button>
+
                                     <span style="margin-left: 10px"></span>
-                                    <button type="button" class="btn btn-warning" style="color: white" (click)=" collectAndPack()">
-                                        NEBIME AKTAR
-                                    </button>
-                                </form>
 
+                                </form>
                             </div>
                             <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2"
                                 role="tabpanel-2" aria-labelledby="ex3-tab-2"></div>
@@ -137,8 +149,7 @@
                     </div>
                 </div>
 
-
-                <div class="card" *ngIf="invoiceProducts.length > 0 ">
+                <div class="card" *ngIf="invoiceProducts.length > 0">
                     <div class="card-body">
                         <h5 class="card-title">Toplanacak Siparişler</h5>
                         <div class="table-responsive">
@@ -152,11 +163,9 @@
                                         <th scope="col">Barkod</th>
                                         <th scope="col">Miktar</th>
                                         <th scope="col">İşlemler</th>
-
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
                                     <tr *ngFor="let product of invoiceProducts; let i = index">
                                         <td>{{ product.currAccCode }}</td>
                                         <td>{{ product.warehouse }}</td>
@@ -166,20 +175,15 @@
                                         <td>{{ product.quantity }}</td>
                                         <td>
                                             <button class="btn btn-danger" (click)="deleteRow(i)">
-                                              Sil
+                                                Sil
                                             </button>
-                                    </td>
-
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-
-
-
-
             </div>
         </div>
     </section>
