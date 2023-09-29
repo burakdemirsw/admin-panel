@@ -1,5 +1,5 @@
 <main id="main" class="main">
-    <!-- <div class="pagetitle">
+  <!-- <div class="pagetitle">
       <h1>Toplanan Ürünlerin Listesi</h1>
       <nav>
         <ol class="breadcrumb">
@@ -10,18 +10,18 @@
       </nav>
     </div>
    -->
-    <section class="section">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Toplanan Paketler</h5>
-          <!-- <a class="btn btn-success" data-bs-toggle="dropdown">+Opertions </a>
+  <section class="section">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Toplanan Paketler</h5>
+        <!-- <a class="btn btn-success" data-bs-toggle="dropdown">+Opertions </a>
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
             <li><a class="dropdown-item">Add New Product</a></li>
             <li><a class="dropdown-item">Export To The Excel</a></li>
             <li><a class="dropdown-item">Delete All Selected</a></li>
           </ul> -->
-  
-          <!-- <div class="btn-group mb-3">
+
+        <!-- <div class="btn-group mb-3">
             <button type="button" class="btn btn-success" (click)="routeToCPP()"  >Ürün Topla</button>
   
             <button type="button" class="btn btn-primary">Ürün Paketle</button>
@@ -32,36 +32,36 @@
               </select>
           
           </div> -->
-          
-          
-          <div style="overflow-x: auto">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Id</th>
-                  <th scope="col">Tarih</th>
-                
-  
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let package of readyToShipmentPackageModels">
-                  <td>{{ package.id }}</td>
-                  <td>{{ package.date }}</td>
-                 
-                  <td>
-                    <div class="btn-group">
-  
-                      <div class="btn  btn-primary" data-text="Varyasyonlar"  routerLink="/collected-package-detail/{{package.id}}"><i   class="fas fa-sliders-h"></i> </div>
-  
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+
+
+        <div style="overflow-x: auto">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Tarih</th>
+
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let package of readyToShipmentPackageModels">
+                <td>{{ package.id }}</td>
+                <td>{{ package.date }}</td>
+
+                <td>
+                  <div class="btn-group">
+
+                    <div class="btn  btn-primary" data-text="Varyasyonlar"
+                      routerLink="/collected-package-detail/{{package.id}}"><i class="fas fa-sliders-h"></i> </div>
+
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-    </section>
-  </main>
-  
+    </div>
+  </section>
+</main>

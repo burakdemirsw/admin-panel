@@ -33,6 +33,7 @@ export class WarehosueShelfCountComponent implements OnInit {
   process: boolean = false;
   checkForm: FormGroup;
   activeTab: number = 1;
+  currentOrderNo: string = '';
   constructor(
     private httpClientService: HttpClientService,
     private formBuilder: FormBuilder,
@@ -41,11 +42,13 @@ export class WarehosueShelfCountComponent implements OnInit {
     private productService: ProductService,
     private generalService: GeneralService,
     private warehouseService: WarehouseService
-
   ) {}
   shelfNumbers: string = 'RAFLAR:';
-  ngOnInit() {
+  async ngOnInit() {
     this.formGenerator();
+
+    this.currentOrderNo = await this.generalService.generateGUID();
+    this.alertifyService.success(this.currentOrderNo);
   }
 
   focusNextInput(nextInputId: string) {
@@ -70,9 +73,9 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.checkForm = this.formBuilder.group({
       barcode: ['', Validators.required],
       shelfNo: ['', Validators.required],
-      qty: ['', Validators.required],
+      qty: [''],
       office: ['', Validators.required],
-      batchCode: ['', Validators.required],
+      batchCode: [''],
       warehouseCode: ['', Validators.required],
     });
   }
@@ -118,6 +121,15 @@ export class WarehosueShelfCountComponent implements OnInit {
   }
 
   list: CountProductRequestModel2[] = [];
+  totalCount: number = 0;
+  calculateTotalQty() {
+    this.alertifyService.success('Ürün Başarıyla Sayıldı.');
+    let totalQty = 0;
+    this.list.forEach((item) => {
+      totalQty += item.qty;
+    });
+    this.totalCount = totalQty;
+  }
   async countProductRequest(
     barcode: string,
     shelfNo: string,
@@ -143,24 +155,33 @@ export class WarehosueShelfCountComponent implements OnInit {
 
     return response;
   }
-  async setShelfNo(barcode: string) {
+  async setShelfNo(barcode: string) :Promise<string>{
     this.shelfNumbers = 'RAFLAR:';
 
     if (barcode.length > 20) {
-      this.shelfNumbers += await this.productService.countProductByBarcode(
+      var result : string[]= await this.productService.countProductByBarcode(
         barcode
       );
+      this.shelfNumbers += result[0];
+      return result[1];
+    }else{
+      this.checkForm.get('barcode').setValue('');
+      this.focusNextInput('shelfNo');
+      return null;
     }
-    this.checkForm.get('barcode').setValue('');
-    this.focusNextInput('shelfNo');
+
   }
 
   async onSubmit(
     countProductRequestModel: CountProductRequestModel2
   ): Promise<any> {
+    if (countProductRequestModel.qty.toString() === '') {
+      countProductRequestModel.qty = 1;
+    }
     if (!this.checkForm.valid) {
       if (countProductRequestModel.barcode) {
-        this.setShelfNo(countProductRequestModel.barcode);
+        var number = await this.setShelfNo(countProductRequestModel.barcode);
+        this.checkForm.get("qty").setValue(Number(number));
       } else {
         this.alertifyService.warning('Barkod Alanı Boş.');
       }
@@ -169,20 +190,24 @@ export class WarehosueShelfCountComponent implements OnInit {
       const url = ClientUrls.baseUrl + '/Order/CountProduct3';
 
       try {
-        var response : ProductCountModel= await this.warehouseService.countProductRequest(
-          countProductRequestModel.barcode,
-          countProductRequestModel.shelfNo,
-          countProductRequestModel.qty,
-          countProductRequestModel.office,
-          countProductRequestModel.warehouseCode,
-          countProductRequestModel.batchCode,
-          'Order/CountProduct3'
-        );
+        var response: ProductCountModel =
+          await this.warehouseService.countProductRequest(
+            countProductRequestModel.barcode,
+            countProductRequestModel.shelfNo,
+            countProductRequestModel.qty,
+            countProductRequestModel.office,
+            countProductRequestModel.warehouseCode,
+            countProductRequestModel.batchCode,
+            'Order/CountProduct3',
+            this.currentOrderNo
+          );
 
         if (response != undefined) {
           var data: ProductCountModel = response;
+
           this.list.push(countProductRequestModel);
-          this.alertifyService.success('Ürün Başarıyla Sayıldı.');
+
+          this.calculateTotalQty();
           this.generalService.beep();
           this.clearQrAndBatchCode();
 
@@ -207,10 +232,14 @@ export class WarehosueShelfCountComponent implements OnInit {
   }
   clearShelfNumbers() {
     this.checkForm.get('shelfNo').setValue('');
+    this.focusNextInput('barcode');
+    this.checkForm.get('qty').setValue('');
+
   }
   clearQrAndBatchCode() {
     this.checkForm.get('barcode').setValue('');
     this.checkForm.get('batchCode').setValue('');
+    this.focusNextInput('barcode');
   }
   completeCount() {
     this.generalService.waitAndNavigate('Sayım Tamamlandı!', '/dashboard');

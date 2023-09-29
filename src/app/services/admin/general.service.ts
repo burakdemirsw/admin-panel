@@ -26,8 +26,8 @@ export class GeneralService {
     }, 1000);
   }
 
-  generateGUID(): Promise<string> {
-    function generateUUID() {
+  async generateGUID():Promise<string> {
+    
       let dt = new Date().getTime();
       const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
         /[xy]/g,
@@ -38,9 +38,9 @@ export class GeneralService {
         }
       );
       return uuid;
-    }
+   
 
-    return null;
+    
   }
 
 

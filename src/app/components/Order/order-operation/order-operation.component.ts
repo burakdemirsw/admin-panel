@@ -195,7 +195,7 @@ export class OrderOperationComponent implements OnInit {
         '',
         '',
         productModel.batchCode,
-        'Order/CountProduct3'
+        'Order/CountProduct3',this.orderNo
       );
       if (response != undefined) {
         var data: ProductCountModel = response;
@@ -293,7 +293,7 @@ export class OrderOperationComponent implements OnInit {
           '',
           '',
           productModel.batchCode,
-          'Order/CountProduct3'
+          'Order/CountProduct3',this.orderNo
         );
         if (response != undefined) {
           var data: ProductCountModel = response;
@@ -399,7 +399,7 @@ export class OrderOperationComponent implements OnInit {
           '',
           '',
           productModel.batchCode,
-          'Order/CountProduct3'
+          'Order/CountProduct3',this.orderNo
         );
 
         if (response != undefined) {
@@ -561,6 +561,8 @@ export class OrderOperationComponent implements OnInit {
   clearShelfNumbers() {
     this.checkForm.get('shelfNo').setValue('');
     this.focusNextInput('barcode');
+    this.checkForm.get('quantity').setValue('');
+
   }
   clearBarcodeAndQuantity(){
     this.checkForm.get('barcode').setValue('');

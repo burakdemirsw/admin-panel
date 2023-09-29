@@ -10,6 +10,8 @@ import { catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { OrderBillingRequestModel } from 'src/app/models/model/invoice/orderBillingRequestModel';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
+import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 
 @Injectable({
   providedIn: 'root',
@@ -152,7 +154,7 @@ export class OrderService {
       return of(false); // Return false in case of an exception
     }
   }
-
+//alış fatura oluşturma
   async createPurchaseInvoice(array : any[],orderNo :string,isReturn : boolean) :Promise<any>{  //alış faturası oluştur
     if (array.length === 0) {
       this.alertifyService.warning('Lütfen Ürün Ekleyiniz.');
@@ -170,16 +172,31 @@ export class OrderService {
             },
             model
           )
-          .subscribe((data) => {
-            if(data){
+          .toPromise();
+          if(data) {
+           
               this.router.navigate(['/orders-management']);
-            }
-          });
+            
+          };
       } catch (error: any) {
-        this.alertifyService.error('An error occurred:');
+        this.alertifyService.error('An error occurred:'+error.message);
       }
     }
-  }
+  }  
 
+  //alış fatura doğrulama
+  
+  async purchaseInvoiceProductCheck(model :CreatePurchaseInvoice):Promise<any>{
+
+    try {
+      const response = this.httpClientService.post<ProductCountModel | any>({controller : 'Order/CountProductPuschase'},model).toPromise();
+      return response;
+  
+    } catch (error: any) {
+      this.alertifyService.error('An error occurred:'+error.message);
+      return null;
+    }
+
+  }
 
 }

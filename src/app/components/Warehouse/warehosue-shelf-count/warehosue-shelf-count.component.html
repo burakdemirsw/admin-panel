@@ -95,7 +95,7 @@
                                             <div class="form-group">
                                                 <label for="qty">Miktar:</label>
 
-                                                <input type="text" id="qty" class="form-control" formControlName="qty"
+                                                <input type="number" id="qty" class="form-control" formControlName="qty"
                                                     [disabled]="checkForm.disabled" />
                                             </div>
                                         </div>
@@ -179,7 +179,7 @@
                 <div class="card text-center">
                     <div class="card-body">
                         <h5 class="card-title">Toplanan Ürünler</h5>
-                        <h1 class="display-1">{{ list.length }}</h1>
+                        <h1 class="display-1">{{ totalCount}}</h1>
                         <p class="card-text">Adet Ürün Toplandı</p>
                     </div>
                 </div>

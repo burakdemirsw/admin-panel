@@ -5,4 +5,5 @@ export class CountProductRequestModel2 {
     batchCode?: string;
     office?: string;
     warehouseCode?: string;
+    orderNo? :string;
   }

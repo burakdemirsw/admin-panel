@@ -11,6 +11,9 @@
                             <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1"
                                 role="tabpanel" aria-labelledby="ex3-tab-1">
                                 <form [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
+
+
+
                                     <div class="row mb-3">
                                         <div class="form-group col">
                                             <label for="office">Gelen Ofis</label>
@@ -57,6 +60,24 @@
                                                 Müşteri seçmek zorunludur.
                                             </div>
                                         </div>
+
+                                        <div class="form-group col">
+                                            <label for="isReturn" class="form-check-label">İade Faturası</label>
+                                            <div class="row mb-3">
+                                                <div class="col-md">
+
+                                                    <div class="form-check">
+                                                        <input type="checkbox" id="isReturn" class="form-check-input"
+                                                            style="height: 38px; width: 100%"
+                                                            formControlName="isReturn" />
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+
                                     </div>
 
                                     <div class="row mb-3">
@@ -64,10 +85,11 @@
                                             <label for="shelfNo">Raf:</label>
                                             <input type="text" id="shelfNo" class="form-control"
                                                 formControlName="shelfNo" (keydown.enter)="focusNextInput('barcode')" />
-                                            <div *ngIf="productForm.get('shelfNo')?.hasError('required')"
-                                                class="text-danger">
-                                                Raf numarası zorunludur.
+
+                                            <div *ngIf="shelfNumbers !== 'RAFLAR:'" class="text">
+                                                {{ shelfNumbers }}
                                             </div>
+
                                         </div>
                                     </div>
 
@@ -97,7 +119,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mb-3">
+                                    <div class="row mb-3 ">
                                         <div class="form-group">
                                             <label for="quantity">Miktar</label>
                                             <input type="number" id="quantity" class="form-control"
@@ -106,16 +128,13 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-group">
-                                        <div class="form-check">
-                                            <input type="checkbox" id="isReturn" class="form-check-input"
-                                                formControlName="isReturn" />
-                                            <label for="isReturn" class="form-check-label">İade</label>
-                                        </div>
-                                    </div>
+
+
+
+
 
                                     <div class="row mb-3">
-                                        <div class="col-md-">
+                                        <div class="col-md">
 
                                             <button type="button" class="btn btn-primary"
                                                 (click)="onSubmit(productForm.value)" style="width: 100%;">
@@ -123,6 +142,12 @@
                                             </button>
                                         </div>
                                     </div>
+
+
+
+
+
+
                                     <div class="row mb-3">
                                         <div class="col-md-">
 

@@ -7,6 +7,7 @@ import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
+import { GeneralService } from './general.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,8 @@ export class WarehouseService {
   constructor(
     private alertifyService: AlertifyService,
     private httpClientService: HttpClientService,
-    private router: Router
+    private router: Router,
+    private generalService : GeneralService
   ) { }
 
   //ürün sayım 1
@@ -28,10 +30,11 @@ export class WarehouseService {
     warehouseCode: string,
     batchCode: string,
 
-    url: string
+    url: string,orderNo : string
   ): Promise<ProductCountModel> {
     var requestModel: CountProductRequestModel2 =
       new CountProductRequestModel2();
+      requestModel.orderNo = orderNo;
     requestModel.barcode = barcode;
     requestModel.shelfNo = shelfNo;
     requestModel.qty = qty.toString() == '' ? 1 : qty;

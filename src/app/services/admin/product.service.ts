@@ -37,7 +37,7 @@ export class ProductService {
   }
 
     //barkod ile ürün sayma işlemi 
-    async countProductByBarcode(barcode: string): Promise<string> {
+    async countProductByBarcode(barcode: string): Promise<string[]> {
       try {
         const model: ProductCountModel[] = await this.httpClientService
           .get<ProductCountModel>({
@@ -49,11 +49,14 @@ export class ProductService {
         model.forEach(element => {
           shelfNumbers+=element.description+","
          })
+         var results :string[] = []
+         results.push(shelfNumbers)
+         results.push(model[0].status)
          
-        return shelfNumbers;
+        return results;
       } catch (error: any) {
         console.error(error.message);
-        throw error; // Rethrow the error if needed
+       return null;
       }
     }
 }

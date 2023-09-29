@@ -84,7 +84,11 @@ const routes: Routes = [
   // { path: 'tooltips', component: TooltipsComponent },
   // { path: 'pages-blank', component: PagesBlankComponent },
   // { path: 'pages-contact', component: PagesContactComponent },
-  // { path: 'pages-error404', component: PagesError404Component },
+  { path: '', redirectTo: '/dashboard' ,pathMatch :"full" } ,
+
+
+
+
   // { path: 'pages-faq', component: PagesFaqComponent }, 
   // { path: 'pages-register', component: PagesRegisterComponent },
   { path: 'user-profile', component: UsersProfileComponent,canActivate:[AuthGuard] },
@@ -116,9 +120,9 @@ const routes: Routes = [
   { path: 'collected-packages', component: CollectedPackagesComponent ,canActivate:[AuthGuard]},
   { path: 'collected-package-detail/:id', component: CollectedPackageDetailComponent ,canActivate:[AuthGuard]},
   { path: 'warehosue-shelf-count', component: WarehosueShelfCountComponent ,canActivate:[AuthGuard]},
-  { path: 'register', component: PagesRegisterComponent}
+  { path: 'register', component: PagesRegisterComponent},
 
-
+  { path: '**', component: PagesError404Component }
 
 
 
