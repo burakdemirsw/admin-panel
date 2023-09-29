@@ -72,7 +72,7 @@
                                         <div class="input-group">
                                             <input type="text" id="packageId" class="form-control"
                                                 formControlName="packageId" (ngModelChange)="onModelChanged($event)">
-                                                 <button class="btn btn-primary" type="button" (click)="generateAndSetGUID()">Paket Numarası Oluştur</button> 
+                                                 <button class="btn btn-dark" type="button" (click)="generateAndSetGUID()">Paket Numarası Oluştur</button> 
                                         </div>
                                     </div>
 
@@ -86,10 +86,27 @@
                                         </div>
                                     </div> -->
 
-                                    <button type="button" class="btn btn-primary" (click) = "addToList(shelvesForm.value)">Ekle</button>
-                                    <span style="margin-left: 10px;"></span>
-                                    <button type="button" class="btn btn-warning" style="color:white" (click) ="clearAllList()">NEBIME
-                                        AKTAR</button>
+                                    <div class="row mb-3">
+                                        <div class="col-md-">
+                    
+                                            <button type="button" style="width: 100%;" class="btn btn-primary" (click) = "addToList(shelvesForm.value)">Ekle</button>
+
+                    
+                                        </div>
+                                      </div>
+
+                                      <div class="row mb-3">
+                                        <div class="col-md-">
+                    
+                                            <button type="button" style="width: 100%;" class="btn btn-dark"  (click) ="clearAllList()">NEBIME
+                                                AKTAR</button>
+                    
+                                        </div>
+                                      </div>
+
+
+                                    
+                                    
                                 </form>
 
 

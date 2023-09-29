@@ -28,6 +28,7 @@
                                 role="tabpanel" aria-labelledby="ex3-tab-1">
                                 <form [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)">
                                     <div class="row mb-3">
+
                                         <div class="form-group col">
                                             <label for="office">Gelen Ofis</label>
                                             <select id="office" class="form-control" formControlName="office"
@@ -36,7 +37,7 @@
                                                 <option>U</option>
                                             </select>
                                         </div>
-
+                                 
                                         <div class="form-group col">
                                             <label for="warehouseCode">Gelen Depo</label>
                                             <select id="warehouseCode" class="form-control"
@@ -47,7 +48,7 @@
                                                 </option>
                                             </select>
                                         </div>
-
+                                    </div>   
                                         <div class="row mb-3">
                                             <div class="form-group">
                                                 <label for="shelfNo">Raf No:</label>
@@ -57,7 +58,7 @@
                                                         (keydown.enter)="focusNextInput('barcode')" />
                                                     <div class="input-group-append">
                                                         <button type="button" (click)="clearShelfNumbers()"
-                                                            class="btn btn-warning">
+                                                            class="btn btn-dark">
                                                             Rafı Temizle
                                                         </button>
                                                     </div>
@@ -100,16 +101,34 @@
                                         </div>
 
                                     
-                                    </div>
+                                    
 
-                                    <button type="button" class="btn btn-primary" (click)="check()">
-                                        Ekle
-                                    </button>
 
-                                    <button type="button" class="btn btn-warning"
-                                        style="margin-left: 10px; color: white" (click)="completeCount()">
-                                        Sayımı Tamamla
-                                    </button>
+                                    <div class="row mb-3">
+                                        <div class="col-md-">
+                    
+                                            <button type="button" class="btn btn-primary" (click)="check()" style="width: 100%;">
+                                                Ekle
+                                            </button>
+        
+                    
+                                        </div>
+                                      </div>
+
+
+                                      <div class="row mb-3">
+                                        <div class="col-md-">
+                    
+                                            <button type="button" class="btn btn-dark"
+                                            style="margin-left: 10px; color: white" (click)="completeCount()" style="width: 100%;">
+                                            Sayımı Tamamla
+                                        </button>
+                    
+                                        </div>
+                                      </div>
+
+
+                               
                                 </form>
                             </div>
                             <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2"

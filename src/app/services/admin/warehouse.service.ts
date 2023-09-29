@@ -4,6 +4,9 @@ import { HttpClientService } from '../http-client.service';
 import { AlertifyService } from '../ui/alertify.service';
 import { CountProductRequestModel2 } from 'src/app/models/model/order/countProductRequestModel2';
 import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
+import { CustomerModel } from 'src/app/models/model/customer/customerModel';
+import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
+import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 
 @Injectable({
   providedIn: 'root'
@@ -44,7 +47,58 @@ export class WarehouseService {
 
     return response;
   }
-  //ürün sayım 2
+  async getOfficeCodeList(): Promise<OfficeModel[]> {
+    try {
+      const data = await this.httpClientService
+        .get<OfficeModel>({
+          controller: 'Warehouse/GetOfficeModel',
+        })
+        .toPromise();
+  
+      return data;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+      
+    }
+  }
+  
+  async getWarehouseList(value: string): Promise<WarehouseOfficeModel[]> {
+    try {
+      const selectElement = document.getElementById(
+        'office'
+      ) as HTMLSelectElement;
+  
+      value = selectElement.value == '' ? 'M' : selectElement.value;
+  
+      const data = await this.httpClientService
+        .get<WarehouseOfficeModel>({
+          controller: 'Warehouse/GetWarehouseModel/' + value,
+        })
+        .toPromise();
+        return data;
 
-  //nebim transfer
+     
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+  
+  async getCustomerList(): Promise<CustomerModel[]> {
+    try {
+      const data = await this.httpClientService
+        .get<CustomerModel>({
+          controller: 'Order/CustomerList/1',
+        })
+        .toPromise();
+  
+      
+        return data;
+    
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
 }

@@ -29,11 +29,11 @@
         </div>
          -->
          <div class="btn-group mb-3">
-          <button class="btn btn-success" type="button" data-bs-toggle="collapse"
+          <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
             data-bs-target="#filterCollapse" (click)="confirmOperation()" aria-expanded="false" aria-controls="filterCollapse">
             Seçilenleri Onayla
           </button>
-          <button type="button" class="btn btn-primary ml-2"  routerLink="/shelf-operation">Seçilen Ürünleri Topla</button>
+          <button type="button" class="btn btn-dark ml-2"  routerLink="/shelf-operation">Seçilen Ürünleri Topla</button>
 
         </div>       
         <div style="overflow-x: auto">
@@ -67,7 +67,7 @@
                 <!-- <td>{{ operation.id }}</td> -->
                 <td>
                   <div class="btn-group">
-                    <div class="btn btn-success" data-text="İşlemler" (click)="setCurrentWarehouseToLocalStorage(operation.toWarehouseCode,operation.innerNumber)"  routerLink="/order-operation/{{operation.innerNumber}}">
+                    <div class="btn btn-primary" data-text="İşlemler" (click)="setCurrentWarehouseToLocalStorage(operation.toWarehouseCode,operation.innerNumber)"  routerLink="/order-operation/{{operation.innerNumber}}">
                       <i 
                         class="fas fa-sliders-h"></i>
                     </div>

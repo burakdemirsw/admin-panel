@@ -21,11 +21,11 @@
         <h5 class="card-title">Raflar</h5>
         <div class="dropdown">
           <div class="btn-group mb-3">
-            <button class="btn btn-success" type="button" data-bs-toggle="collapse"
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
               data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
               Filtrele
             </button>
-            <button type="button" class="btn btn-primary mr-2" routerLink="/shelf-operation">Raf Ekle</button>
+            <button type="button" class="btn btn-dark mr-2" routerLink="/shelf-operation">Raf Ekle</button>
 
           </div>
           
@@ -105,12 +105,12 @@
                 <td>{{ shelf.warehouse }}</td>
                 <td>
                   <div class="btn-group">
-                    <div class="btn btn-success" data-text="Raf Düzenle">
+                    <div class="btn btn-primary" data-text="Raf Düzenle">
                       <i routerLink="/shelf-operation/{{shelf.id}}" class="fas fa-sliders-h"></i>
                     </div>
                   </div>
                   <div class="btn-group">
-                    <div class="btn btn-success" data-text="Yazdır"
+                    <div class="btn btn-dark" data-text="Yazdır"
                       (click)="shelf.id ? printQRCode(shelf.id.toString()) : 0">
                       <i class="fas fa-print"></i>
                     </div>

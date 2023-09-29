@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { PrinterInvoiceRequestModel } from 'src/app/models/model/order/printerInvoiceRequestModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
+import { OrderService } from 'src/app/services/admin/order.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
 
@@ -22,13 +23,14 @@ export class OrderManagamentComponent implements OnInit {
     private httpClientService: HttpClientService,
     private alertifyService: AlertifyService,
     private spinnerService: NgxSpinnerService,
-    private router : Router
+    private router : Router,
+    private orderService : OrderService
 
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.spinnerService.show();
-    this.getOrders();
+    await this.getOrders();
     this.spinnerService.hide();
 
 
@@ -40,43 +42,44 @@ export class OrderManagamentComponent implements OnInit {
     let listNumber: string = (document.getElementById('numberOfList') as HTMLInputElement).value;
   
     if (listNumber == null || listNumber == '') {
-      alert('Lütfen Bir Müktar Seçiniz');
+      this.alertifyService.warning('Lütfen Bir Müktar Seçiniz');
     } else {
       try {
         // Wait for the products to be fetched before navigating
-        await this.httpClientService.get<ProductOfOrder>({
-          controller: 'Order/GetProductsOfOrders/' + listNumber.toString(),
-        }).subscribe((data) => {
+        this.spinnerService.show()
+
+        setTimeout(async () => { // async işlev içinde setTimeout kullanıldı
+          const listNumber = 123; // Örnek bir liste numarası
+          const data = await this.httpClientService.get<ProductOfOrder>({
+            controller: 'Order/GetProductsOfOrders/' + listNumber.toString(),
+          }).toPromise();
+      
           this.productsToCollect = data;
-  
-          // After the data is fetched, you can access the first item in the productsToCollect array
+      
+          // Veriler çekildikten sonra productsToCollect dizisine erişebilirsiniz
           if (this.productsToCollect.length > 0) {
             this.router.navigate(['/collect-product-of-order/' + this.productsToCollect[0].packageNo]);
           } else {
-            // Handle the case when no products are returned
-            console.log('No products found for the given packageNo');
+            // Hiç ürün bulunamadığında nasıl bir işlem yapılacağını ele alın
+            this.alertifyService.warning('İşlem Yapıclacak Veri Gelmedi.');
           }
-        });
+      
+          this.spinnerService.hide();
+        }, 1000); // 1000 milisaniye (1 saniye) bekle
+      
+
+
       } catch (error: any) {
         console.log('Error fetching products:', error.message);
       }
     }
   }
-  getOrders(): any {
-    try {
-      this.httpClientService
-        .get<SaleOrderModel>({
-          controller: 'Order',
-        })
-        .subscribe((data) => {
-          //console.log(data);
-          this.saleOrderModels = data;
-        });
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  }
+  async getOrders(): Promise<any> {
+    const response = 
+    this.saleOrderModels =  await this.orderService.getOrders()
+ 
 
+  }
   printPicture(url:string){
    var  model : PrinterInvoiceRequestModel = new PrinterInvoiceRequestModel();
    model.printerName = "EPSON-DEPO (L3150 Series)"

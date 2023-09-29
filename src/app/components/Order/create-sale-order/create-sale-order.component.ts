@@ -42,32 +42,35 @@ export class CreateSaleOrderComponent implements OnInit {
     private spinnerService: NgxSpinnerService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
     try {
-      this.getWarehouseList('M');
-      this.getOfficeCodeList();
-      this.getCustomerList();
-      this.formGenerator();
-      this.getSalesPersonModels();
+      this.spinnerService.show();
+      this.formGenerator()
+      await this.getWarehouseList('M');
+      await this.getOfficeCodeList();
+      await this.getCustomerList();
+;
+      this.spinnerService.hide();
     } catch (error: any) {
       console.log(error.message);
     }
   }
-
-  getOfficeCodeList(): any {
+  
+  async getOfficeCodeList(): Promise<void> {
     try {
-      this.httpClientService
+      const data = await this.httpClientService
         .get<OfficeModel>({
           controller: 'Warehouse/GetOfficeModel',
         })
-        .subscribe((data) => {
-          this.officeModels = data;
-        });
+        .toPromise();
+  
+      this.officeModels = data;
     } catch (error: any) {
-      console.log(error.message);
+      console.log("HATA ALINDI!");
     }
   }
-  async getWarehouseList(value: string): Promise<any> {
+  
+  async getWarehouseList(value: string): Promise<void> {
     try {
       const selectElement = document.getElementById(
         'office'
@@ -81,9 +84,27 @@ export class CreateSaleOrderComponent implements OnInit {
         })
         .toPromise();
   
-      this.warehouseModels = data;
+      setTimeout(() => {
+        this.warehouseModels = data;
+      }, 1000); // 1000 milisaniye (1 saniye) bekle
     } catch (error: any) {
-      this.alertifyService.error(error.message);
+      console.log(error.message);
+    }
+  }
+  
+  async getCustomerList(): Promise<void> {
+    try {
+      const data = await this.httpClientService
+        .get<CustomerModel>({
+          controller: 'Order/CustomerList/1',
+        })
+        .toPromise();
+  
+      if (data != undefined) {
+        this.customerList = data;
+      }
+    } catch (error: any) {
+      console.log(error.message);
     }
   }
   
@@ -102,21 +123,7 @@ export class CreateSaleOrderComponent implements OnInit {
     }
   }
   
-  async getCustomerList(): Promise<any> {
-    try {
-      const data = await this.httpClientService
-        .get<CustomerModel>({
-          controller: 'Order/CustomerList/3',
-        })
-        .toPromise();
-      console.log(data);
-      if (data != undefined) {
-        this.customerList = data;
-      }
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  }
+
   salesPersonModels : SalesPersonModel[] = []
  async  getSalesPersonModels() :Promise<any>{
     try {

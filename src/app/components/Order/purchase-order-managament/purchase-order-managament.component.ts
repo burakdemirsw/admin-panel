@@ -4,6 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { PrinterInvoiceRequestModel } from 'src/app/models/model/order/printerInvoiceRequestModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
+import { OrderService } from 'src/app/services/admin/order.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
 
@@ -21,13 +22,15 @@ export class PurchaseOrderManagamentComponent implements OnInit {
     private httpClientService: HttpClientService,
     private alertifyService: AlertifyService,
     private spinnerService: NgxSpinnerService,
-    private router : Router
+    private router : Router,
+    private orderService : OrderService
+
 
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.spinnerService.show();
-    this.getOrders();
+    await this.getPurchaseOrders();
     this.spinnerService.hide();
 
 
@@ -61,19 +64,10 @@ export class PurchaseOrderManagamentComponent implements OnInit {
       }
     }
   }
-  getOrders(): any {
-    try {
-      this.httpClientService
-        .get<SaleOrderModel>({
-          controller: 'Order/GetPurchaseOrders',
-        })
-        .subscribe((data) => {
-          //console.log(data);
-          this.saleOrderModels = data;
-        });
-    } catch (error: any) {
-      console.log(error.message);
-    }  
+  async getPurchaseOrders(): Promise<any> {
+    const response = 
+    this.saleOrderModels =  await this.orderService.getPurchaseOrders()
+
   }
 
   printPicture(url:string){

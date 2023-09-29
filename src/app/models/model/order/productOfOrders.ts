@@ -8,5 +8,7 @@ export class ProductOfOrder {
     shelfNo:string
     packageNo:string
     rowNumber:number
+    photoUrl:string
+    
   }
   

@@ -46,8 +46,28 @@
                   <div class="row mb-3">
                     <div class="form-group">
                       <label for="barcode">Barkod:</label>
+
                       <input type="text" id="barcode" class="form-control" formControlName="barcode"
                         (keydown.enter)="onSubmit(checkForm.value)" />
+                      <div class="input-group-append">
+
+                        <!-- <button type="button" class="btn btn-dark">Camera</button> -->
+
+
+                      </div>
+                    </div>
+                  </div>
+                  <!-- some.component.html -->
+                  <!-- <zxing-scanner  (scanSuccess)="scanCompleteHandler($event)"></zxing-scanner> -->
+
+
+                  <div class="row mb-3">
+
+                    <div class="col-md-">
+                      <div class="form-group">
+                        <label for="quantity">Parti</label>
+                        <input type="text" id="batchCode" class="form-control" formControlName="batchCode" />
+                      </div>
                     </div>
                   </div>
 
@@ -59,21 +79,26 @@
                       </div>
                     </div>
 
-                    <div class="col-md-6">
-                      <button type="button" class="btn btn-primary" (click)="onSubmit(checkForm.value)"
-                        style="margin-top: 20px">
-                        Ekle
-                      </button>
+                    <div class="row mb-3">
+                      <div class="col-md-">
+                        <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 1%;" (click)="onSubmit(checkForm.value)">Ekle</button>
 
-                      <button type="button" class="btn btn-dark" (click)="addAllSelectedProductsToList()"
-                        style="margin-left: 20px; margin-top: 20px">
-                        Seçilenleri Ekle
-                      </button>
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-">
+                        <button type="button" class="btn btn-dark" (click)="addAllSelectedProductsToList()"  style="width: 100%;" >Seçilenleri
+                          Ekle</button>
 
-                      <button type="button" class="btn btn-success" (click)="collectAndPack(this.collectedProducts)"
-                        style="margin-left: 20px; margin-top: 20px">
-                        Toplananları Faturalaştır
-                      </button>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="col-md-">
+                        <button type="button" class="btn btn-success"
+                          (click)="collectAndPack(this.collectedProducts)"  style="width: 100%;" >Toplananları Faturalaştır</button>
+
+                      </div>
                     </div>
                   </div>
                 </form>
@@ -118,9 +143,8 @@
                     </td>
 
                     <td>
-                      <img src="https://ogrenci.medexsepeti.com/cdn/shop/files/elaletleri2_600x.png?v=1694781123"
-                        alt="Resim" width="50" height="50"
-                        (click)="openImageModal('https://ogrenci.medexsepeti.com/cdn/shop/files/elaletleri2_600x.png?v=1694781123')">
+                      <img src="{{product.photoUrl}}" alt="Resim" width="50" height="50"
+                        (click)="openImageModal(product.photoUrl)">
 
                     </td>
 
@@ -158,5 +182,7 @@
     </div>
     <app-image-modal [imageUrl]="modalImageUrl" [title]="'Ürün Detay'"></app-image-modal>
 
+
   </section>
+
 </main>

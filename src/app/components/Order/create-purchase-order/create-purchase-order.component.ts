@@ -13,7 +13,9 @@ import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
+import { GeneralService } from 'src/app/services/admin/general.service';
 import { OrderService } from 'src/app/services/admin/order.service';
+import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
 
@@ -23,13 +25,13 @@ import { AlertifyService } from 'src/app/services/ui/alertify.service';
   styleUrls: ['./create-purchase-order.component.css'],
 })
 export class CreatePurchaseOrderComponent implements OnInit {
-  newOrderNumber: string = this.generateGUID();
+  newOrderNumber: string ;
   customerList: CustomerModel[] = [];
   officeModels: OfficeModel[] = [];
   invoiceProducts: CreatePurchaseInvoice[] = [];
   activeTab = 1;
   productForm: FormGroup;
-  
+
   warehouseModels: WarehouseOfficeModel[] = [];
 
   constructor(
@@ -40,74 +42,55 @@ export class CreatePurchaseOrderComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private httpClient: HttpClient,
-    private spinnerService: NgxSpinnerService
-  ) {}
+    private spinnerService: NgxSpinnerService,
+    private warehouseService: WarehouseService,
+    private generalService : GeneralService
+  ) {
+    
+  }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     try {
-      this.getWarehouseList('M');
-      this.getOfficeCodeList();
-      this.getCustomerList();
+      this.spinnerService.show();
+      this.newOrderNumber =await this.generateGUID();
       this.formGenerator();
+      await this.getWarehouseList('M');
+      await this.getOfficeCodeList();
+      await this.getCustomerList();
+    
+      this.spinnerService.hide();
     } catch (error: any) {
       console.log(error.message);
     }
   }
 
-  getOfficeCodeList(): any {
+  async getOfficeCodeList(): Promise<void> {
     try {
-      this.httpClientService
-        .get<OfficeModel>({
-          controller: 'Warehouse/GetOfficeModel',
-        })
-        .subscribe((data) => {
-          this.officeModels = data;
-        });
+      this.officeModels = await this.warehouseService.getOfficeCodeList();
+  
+      // Eğer veri geldiyse ve dizi boş değilse ilk ofisi seçin
+      if (this.officeModels && this.officeModels.length > 0) {
+        this.productForm.get('office')?.setValue(this.officeModels[0]);
+      }
     } catch (error: any) {
-      console.log(error.message);
+      this.alertifyService.warning(error.message);
     }
   }
 
-  getWarehouseList(value: string): any {
-    try {
-      const selectElement = document.getElementById(
-        'office'
-      ) as HTMLSelectElement;
-
-      value = selectElement.value == '' ? 'M' : selectElement.value;
-      this.httpClientService
-        .get<WarehouseOfficeModel>({
-          controller: 'Warehouse/GetWarehouseModel/' + value,
-        })
-        .subscribe((data) => {
-          this.warehouseModels = data;
-        });
-    } catch (error: any) {
-      this.alertifyService.error(error.message);
-    }
+  async getWarehouseList(value: string): Promise<void> {
+    this.warehouseModels = await this.warehouseService.getWarehouseList(value);
   }
 
-  getSelectedOffice() {
-    this.getWarehouseList(this.productForm.get('office')?.value);
+  async getCustomerList(): Promise<void> {
+    this.customerList = await this.warehouseService.getCustomerList();
+  }
+  async getSelectedOffice():Promise<any> {
+    var office  = (document.getElementById('office') as HTMLInputElement).value;
+
+    await this.getWarehouseList(office);
     this.productForm
       .get('warehouse')
       ?.setValue(this.warehouseModels[0].warehouseCode);
-  }
-
-  async getCustomerList(): Promise<any> {
-    try {
-      const data = await this.httpClientService
-        .get<CustomerModel>({
-          controller: 'Order/CustomerList/1',
-        })
-        .toPromise();
-      console.log(data);
-      if (data != undefined) {
-        this.customerList = data;
-      }
-    } catch (error: any) {
-      console.log(error.message);
-    }
   }
 
   focusNextInput(nextInputId: string) {
@@ -117,25 +100,13 @@ export class CreatePurchaseOrderComponent implements OnInit {
     }
   }
 
-  generateGUID(): string {
-    function generateUUID() {
-      let dt = new Date().getTime();
-      const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
-        /[xy]/g,
-        function (c) {
-          const r = (dt + Math.random() * 16) % 16 | 0;
-          dt = Math.floor(dt / 16);
-          return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
-        }
-      );
-      return uuid;
-    }
+  async generateGUID(): Promise<string> {
 
-    return generateUUID();
+    return await this.generalService.generateGUID()
   }
 
   formGenerator() {
-    try {
+    try { //batchCode
       this.productForm = this.formBuilder.group({
         office: ['', Validators.required],
         warehouse: ['', Validators.required],
@@ -144,7 +115,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
         barcode: ['', [Validators.required, Validators.min(5)]],
         quantity: [''],
         isReturn: [false, [Validators.required]],
-
+        batchCode: ['', [Validators.required]]
       });
     } catch (error: any) {
       this.alertifyService.error(error.message);
@@ -159,47 +130,16 @@ export class CreatePurchaseOrderComponent implements OnInit {
     });
   }
 
-  collectAndPack() {
+  async createPurchaseInvoice() {  //alış faturası oluştur
 
-    if (this.invoiceProducts.length === 0) {
-      this.alertifyService.warning('Lütfen Ürün EKleyiniz.');
-      return;
-    } else {
-      try {
-        var model : OrderBillingRequestModel = new OrderBillingRequestModel();
-        model.orderNo = this.newOrderNumber;
-        model.invoiceType = this.productForm.get("isReturn").value;
-        model.invoiceModel = 1; //alış faturası
-        this.httpClientService
-          .post<OrderBillingRequestModel>(
-            {
-              controller: 'Order/CollectAndPack/' + model,
-            },
-            model
-          )
-          .pipe(
-            catchError((error: any) => {
-              if (error.status === 400) {
-                this.alertifyService.error(error.error);
-              } 
-              throw error; // Rethrow the error to continue error handling
-            })
-          )
-          .subscribe((data) => {
-            this.router.navigate(['/orders-management']);
-          });
-      } catch (error: any) {
-        this.alertifyService.error('An error occurred:');
-      }
-    }
+   await  this.orderService.createPurchaseInvoice(this.invoiceProducts,this.newOrderNumber,this.productForm.get('isReturn').value)
+   
   }
 
   url: string = ClientUrls.baseUrl + '/Order/CountProductPuschase';
 
   async onSubmit(model: CreatePurchaseInvoice) {
-    if (
-      model.shelfNo == ''
-    ) {
+    if (model.shelfNo == '') {
       var requestModel: CreatePurchaseInvoice = new CreatePurchaseInvoice();
       requestModel.barcode = model.barcode;
 
@@ -215,7 +155,6 @@ export class CreatePurchaseOrderComponent implements OnInit {
         .toPromise();
 
       if (response === undefined) {
-
       } else {
         var data: ProductCountModel = response;
 
@@ -225,9 +164,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
           model.shelfNo = response.description;
           model.barcode = '';
           this.alertifyService.success('(1) Raf Doğrulaması Yapıldı!');
-
         } else {
-
           const responseData = JSON.parse(response.description);
           const description = responseData[0].Description;
           const rafNo = responseData[0].Rafno;
@@ -236,21 +173,19 @@ export class CreatePurchaseOrderComponent implements OnInit {
           model.barcode = description;
           model.shelfNo = rafNo;
 
-
           requestModel.shelfNo = rafNo;
           var response = await this.httpClient
             .post<ProductCountModel | undefined>(this.url, requestModel)
             .toPromise();
 
-          var newData : ProductCountModel = response
-          if(newData.status === 'Barcode'){
-            this.alertifyService.success("(1) Barkod Doğrulaması Başarılı!")
+          var newData: ProductCountModel = response;
+          if (newData.status === 'Barcode') {
+            this.alertifyService.success('(1) Barkod Doğrulaması Başarılı!');
           }
         }
       }
     } else {
-      if (this.productForm.valid) { 
-
+      if (this.productForm.valid) {
         var requestModel: CreatePurchaseInvoice = new CreatePurchaseInvoice();
         requestModel.barcode = model.barcode;
         requestModel.shelfNo = model.shelfNo;
@@ -276,7 +211,6 @@ export class CreatePurchaseOrderComponent implements OnInit {
             model.shelfNo = response.description;
             model.barcode = '';
             this.alertifyService.success('(2) Raf Doğrulaması Yapıldı!');
-
           } else {
             const responseData = JSON.parse(response.description);
             const description = responseData[0].Description;
@@ -285,24 +219,24 @@ export class CreatePurchaseOrderComponent implements OnInit {
             this.productForm.get('barcode')?.setValue(description);
             model.barcode = description;
             model.shelfNo = rafNo;
-            this.alertifyService.success("(2) Barkod Doğrulaması Başarılı!")
-
+            this.alertifyService.success('(2) Barkod Doğrulaması Başarılı!');
           }
         }
-
       }
     }
     if (this.productForm.valid) {
-      if(model.quantity.toString()==''){
-        model.quantity =1
+      if (model.quantity.toString() == '') {
+        model.quantity = 1;
       }
       this.invoiceProducts.push(model);
 
       this.clearFormFields();
 
-      this.focusNextInput("barcode");
+      this.focusNextInput('barcode');
 
       this.alertifyService.success('Ürün Başarılı Şekilde Eklendi.');
+    }else{
+      this.alertifyService.error("Form Geçerli Değil.")
     }
   }
 

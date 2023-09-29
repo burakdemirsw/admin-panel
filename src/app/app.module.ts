@@ -72,6 +72,8 @@ import { PurchaseOrderManagamentComponent } from './components/Order/purchase-or
 import { CreatePurchaseOrderComponent } from './components/Order/create-purchase-order/create-purchase-order.component';
 import { CreateSaleOrderComponent } from './components/Order/create-sale-order/create-sale-order.component';
 import { ImageModalComponent } from './image-modal/image-modal.component';
+import { NgxScannerQrcodeModule } from 'ngx-scanner-qrcode';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
 
 @NgModule({
   declarations: [
@@ -139,17 +141,21 @@ import { ImageModalComponent } from './image-modal/image-modal.component';
 
 
   imports: [
+
     FormsModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
     NgxSpinnerModule.forRoot({ type: 'line-scale-pulse-out' }),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ZXingScannerModule,
+
+    NgxScannerQrcodeModule
   ],
   
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [AlertifyService, NgModule, NgxPopper, NgxSpinnerModule,{      provide: HTTP_INTERCEPTORS,
+  providers: [    AlertifyService, NgModule, NgxPopper, NgxSpinnerModule,{      provide: HTTP_INTERCEPTORS,
     useClass: HttpErrorInterceptor,
     multi: true}],
   bootstrap: [AppComponent],
