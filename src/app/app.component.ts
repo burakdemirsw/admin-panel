@@ -1,5 +1,6 @@
-import { Component ,ElementRef} from '@angular/core';
-import { Router } from '@angular/router';
+import { DOCUMENT } from '@angular/common';
+import { Component ,ElementRef, Inject,HostListener } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -7,10 +8,25 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
   title = 'admindashboard';
-  constructor(private elementRef: ElementRef,  public  _router: Router) {
+  
+  constructor(@Inject(DOCUMENT) private document,private elementRef: ElementRef,  public  _router: Router) {
+    const isMobile = window.innerWidth <= 768; 
+    const bodyClassList = this.document.body.classList;
 
+    this._router.events.subscribe((event) => {
+      if (window.innerWidth <= 768) {
+        bodyClassList.remove('toggle-sidebar');
+      } else {
+        if (bodyClassList.contains('toggle-sidebar')) {
+         // bodyClassList.remove('toggle-sidebar');
+        } else {
+          bodyClassList.add('toggle-sidebar');
+        }
+      }
+    });
 
   }
+  
 
   ngOnInit() {
 

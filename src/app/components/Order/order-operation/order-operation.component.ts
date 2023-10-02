@@ -18,6 +18,8 @@ import { WarehouseOperationDetailModel } from 'src/app/models/model/warehouse/wa
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { BrowserMultiFormatReader } from '@zxing/library';
 import { GeneralService } from 'src/app/services/admin/general.service';
+import { CollectProduct } from 'src/app/models/model/product/collectProduct';
+import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
 
 
 declare var window: any;
@@ -29,7 +31,7 @@ declare var window: any;
 })
 export class OrderOperationComponent implements OnInit {
 
-
+  lastCollectedProducts : CollectedProduct[] = []
   productsToCollect: ProductOfOrder[];
   collectedProducts: ProductOfOrder[] = [];
   process: boolean = false;
@@ -58,17 +60,22 @@ export class OrderOperationComponent implements OnInit {
     this.codeReader = new BrowserMultiFormatReader();
 
   }
-  orderNo: string = '';
+  orderNo: string;
 
   orderBillingModel: OrderBillingListModel;
   url2: string = ClientUrls.baseUrl + '/Order/CountTransferProductPuschase';
   async ngOnInit() {
     this.spinnerService.show();
 
+    
+
     await this.activatedRoute.params.subscribe(async (params) => {
       var orderNumber: string = params['orderNumber'];
+      this.orderNo=orderNumber;
+      
       var orderNumberType = orderNumber.split('-')[1];
       this.currentOrderNo = params['orderNumber'];
+      this. lastCollectedProducts =await  this.productService.getCollectedOrderProducts(this.orderNo)
       if (orderNumberType === 'BP') {
         await this.getCollectedProducts(params['orderNumber'], 'BP');
       } else if (orderNumberType === 'WS') {
@@ -99,9 +106,10 @@ export class OrderOperationComponent implements OnInit {
     const productData = await this.orderService
       .getCollectedProducts(orderNo, orderNoType)
       .toPromise();
-    this.productsToCollect = productData.filter(
-      (product) => product.quantity > 0
-    );
+    // this.productsToCollect = productData.filter(
+    //   (product) => product.quantity > 0
+    // );
+    this.productsToCollect =productData
   }
   focusNextInput(nextInputId: string) {
     const nextInput = document.getElementById(nextInputId) as HTMLInputElement;
@@ -177,7 +185,8 @@ export class OrderOperationComponent implements OnInit {
         productModel.shelfNo == null
       ) {
         if (productModel.barcode != '') {
-          this.setShelfNo(productModel.barcode);
+          var number = await this.setShelfNo(productModel.barcode);
+          this.checkForm.get("quantity").setValue(Number(number));
         } else {
           this.alertifyService.warning('Formu Doldurunuz.');
           return;
@@ -226,7 +235,8 @@ export class OrderOperationComponent implements OnInit {
             foundProduct.quantity -=
               productModel.quantity.toString() == '' ? 1 : productModel.quantity;
 
-            this.collectedProducts.push(foundModel);
+            this.collectedProducts.push(productModel);
+            this. lastCollectedProducts =await  this.productService.getCollectedOrderProducts(this.orderNo)
             this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
             
             this.clearBarcodeAndQuantity();
@@ -241,7 +251,8 @@ export class OrderOperationComponent implements OnInit {
           this.checkForm.get('quantity')?.setValue('');
 
           const index = this.productsToCollect.indexOf(foundProduct);
-          this.collectedProducts.push(foundModel);
+          this.collectedProducts.push(productModel);
+          this. lastCollectedProducts =await  this.productService.getCollectedOrderProducts(this.orderNo)
           foundProduct.quantity -=   productModel.quantity.toString() == '' ? 1 : productModel.quantity;
          
           this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
@@ -254,7 +265,7 @@ export class OrderOperationComponent implements OnInit {
             this.focusNextInput('shelfNo');
           }
 
-          this.productsToCollect.splice(index, 1);
+        //  this.productsToCollect.splice(index, 1);
 
           if (this.productsToCollect.length === 0) {
             alert('Tüm Ürünler Toplandı!');
@@ -276,7 +287,8 @@ export class OrderOperationComponent implements OnInit {
         productModel.shelfNo == null
       ) {
         if (productModel.barcode != '') {
-          this.setShelfNo(productModel.barcode);
+          var number = await this.setShelfNo(productModel.barcode);
+          this.checkForm.get("quantity").setValue(Number(number));
         } else {
           this.alertifyService.warning('Formu Doldurunuz.');
           return;
@@ -322,6 +334,7 @@ export class OrderOperationComponent implements OnInit {
                 ? 1
                 : productModel.quantity;
             this.collectedProducts.push(foundModel);
+            this. lastCollectedProducts =await  this.productService.getCollectedOrderProducts(this.orderNo)
 
             this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
             this.clearBarcodeAndQuantity();
@@ -343,6 +356,7 @@ export class OrderOperationComponent implements OnInit {
 
             const index = this.productsToCollect.indexOf(foundProduct);
             this.collectedProducts.push(foundModel);
+            this. lastCollectedProducts =await  this.productService.getCollectedOrderProducts(this.orderNo)
             foundProduct.quantity -=
               productModel.quantity.toString() == ''
                 ? 1
@@ -356,11 +370,12 @@ export class OrderOperationComponent implements OnInit {
               this.focusNextInput('shelfNo');
             }
 
-            this.productsToCollect.splice(index, 1);
+           // this.productsToCollect.splice(index, 1);
 
             if (this.productsToCollect.length === 0) {
               var operationList: string[] = [];
               operationList.push(this.currentOrderNo);
+              this. lastCollectedProducts =await  this.productService.getCollectedOrderProducts(this.orderNo)
               this.confirmOperation(operationList);
               alert('Tüm Ürünler Toplandı!');
             }
@@ -383,7 +398,8 @@ export class OrderOperationComponent implements OnInit {
         productModel.shelfNo == null
       ) {
         if (productModel.barcode != '') {
-          this.setShelfNo(productModel.barcode);
+          var number = await this.setShelfNo(productModel.barcode);
+          this.checkForm.get("quantity").setValue(Number(number));
         } else {
           this.alertifyService.warning('Formu Doldurunuz.');
           return;
@@ -417,7 +433,7 @@ export class OrderOperationComponent implements OnInit {
             (o) => o?.barcode === productModel.barcode
           );
 
-        if (foundModel2) {
+        if (foundModel2) { //eğer model bulunduysa
           const foundProduct = this.productsToCollect.find(
             (o) => o.barcode == productModel.barcode
           );
@@ -432,15 +448,20 @@ export class OrderOperationComponent implements OnInit {
               productModel.quantity.toString() == ''
                 ? 1
                 : productModel.quantity;
-            if (foundModel2 !== undefined) {
+            if (foundModel2 != undefined) {
               var foundModel3: ProductOfOrder | undefined =
                 this.productsToCollect.find(
                   (o) => o?.barcode === productModel.barcode
                 );
 
               if (foundModel3 !== undefined) {
-                foundModel3.shelfNo = productModel.shelfNo;
-                this.collectedProducts.push(foundModel3);
+                  foundModel3.shelfNo = productModel.shelfNo;
+                  if(productModel.quantity == ''){
+                    productModel.quantity = 1
+                  }
+                this.collectedProducts.push(productModel);
+               var newList  :any  =await  this.productService.getCollectedOrderProducts(this.orderNo)
+                this. lastCollectedProducts  = newList
               }
             }
             this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
@@ -464,7 +485,11 @@ export class OrderOperationComponent implements OnInit {
 
               if (foundModel3 !== undefined) {
                 foundModel3.shelfNo = productModel.shelfNo;
-                this.collectedProducts.push(foundModel3);
+                if(productModel.quantity == ''){
+                  productModel.quantity = 1
+                }
+                this.collectedProducts.push(productModel);
+                this. lastCollectedProducts =await  this.productService.getCollectedOrderProducts(this.orderNo)
               }
             }
             foundProduct.quantity -=
@@ -479,7 +504,7 @@ export class OrderOperationComponent implements OnInit {
               this.focusNextInput('shelfNo');
             }
 
-            this.productsToCollect.splice(index, 1);
+           // this.productsToCollect.splice(index, 1);
 
             if (this.productsToCollect.length === 0) {
               alert('Tüm Ürünler Toplandı!');
@@ -533,7 +558,8 @@ export class OrderOperationComponent implements OnInit {
           (o) => o.packageNo == element
         );
         this.collectedProducts.push(this.productsToCollect[index]);
-        this.productsToCollect.splice(index, 1);
+        
+        //this.productsToCollect.splice(index, 1);
       });
       this.alertifyService.success(
         'Seçilen Ürünler Başarıyla Eklendi! Eklenen Ürün Sayısı ' +
@@ -547,16 +573,24 @@ export class OrderOperationComponent implements OnInit {
   shelfNo: string;
   shelfNoList: string[] = [];
   barcodeValue: string = ''; // Değişkeni tanımlayın
-  async setShelfNo(barcode: string) {
+
+
+  async setShelfNo(barcode: string) :Promise<string> {
     this.shelfNumbers = 'RAFLAR:';
 
     if (barcode.length > 20) {
-      this.shelfNumbers += await this.productService.countProductByBarcode(
+      var result : string[]= await this.productService.countProductByBarcode(
         barcode
       );
+
+      this.shelfNumbers += result[0];
+      return result[1];
+
+    }else{
+      this.checkForm.get('barcode').setValue('');
+      this.focusNextInput('shelfNo');
+      return null;
     }
-    this.checkForm.get('barcode').setValue('');
-    this.focusNextInput('shelfNo');
   }
   clearShelfNumbers() {
     this.checkForm.get('shelfNo').setValue('');
@@ -580,8 +614,22 @@ export class OrderOperationComponent implements OnInit {
     }
     
   }
-
-
+  async deleteOrderProduct(orderNo :string , itemCode : string):Promise<boolean>
+  {
+    const response :boolean = await this.productService.deleteOrderProduct(orderNo,itemCode)
+    if(response){
+      this. lastCollectedProducts =await  this.productService.getCollectedOrderProducts(this.orderNo)
+      if (orderNo.split('-')[1] === 'BP') {
+        await this.getCollectedProducts(orderNo, 'BP');
+      } else if (orderNo.split('-')[1] === 'WS') {
+        await this.getCollectedProducts(orderNo, 'WS');
+      } else if (orderNo.split('-')[1] === 'WT') {
+        await this.getCollectedProducts(orderNo, 'WT');
+      }
+    }
+    return response;
+  }
+  
 
 
 }

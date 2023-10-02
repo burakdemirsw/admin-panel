@@ -37,7 +37,8 @@ export class WarehouseOperationComponent implements OnInit {
     private spinnerService: NgxSpinnerService,
     private shelfService: ShelfService,
     private router: Router,
-    private generalService : GeneralService
+    private generalService : GeneralService,
+    
   ) {}
   selectedOffice: string; // Add this line
   warehouseModels: WarehouseOfficeModel[] = [];
@@ -51,6 +52,7 @@ export class WarehouseOperationComponent implements OnInit {
   officeModels: OfficeModel[] = [];
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((params) => {
+      
       this.spinnerService.show();
       this.getOfficeCodeList();
       this.getWarehouseList('M', 1);

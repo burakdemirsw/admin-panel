@@ -28,6 +28,23 @@
               <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1" role="tabpanel"
                 aria-labelledby="ex3-tab-1">
                 <form [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)">
+
+                  <div class="row mb-3">
+                    <div class="form-group">
+                      <label for="barcode">Barkod:</label>
+
+                      <input type="text" id="barcode" class="form-control" formControlName="barcode"
+                        (keydown.enter)="onSubmit(checkForm.value)" />
+                      <div class="input-group-append">
+
+                        <!-- <button type="button" class="btn btn-dark">Camera</button> -->
+
+
+                      </div>
+                    </div>
+                  </div>
+
+                  
                   <div class="row mb-3">
                     <div class="form-group">
                       <label for="shelfNo">Raf No:</label>
@@ -43,20 +60,7 @@
                     <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{ shelfNumbers }}</label>
 
                   </div>
-                  <div class="row mb-3">
-                    <div class="form-group">
-                      <label for="barcode">Barkod:</label>
-
-                      <input type="text" id="barcode" class="form-control" formControlName="barcode"
-                        (keydown.enter)="onSubmit(checkForm.value)" />
-                      <div class="input-group-append">
-
-                        <!-- <button type="button" class="btn btn-dark">Camera</button> -->
-
-
-                      </div>
-                    </div>
-                  </div>
+         
                   <!-- some.component.html -->
                   <!-- <zxing-scanner  (scanSuccess)="scanCompleteHandler($event)"></zxing-scanner> -->
 
@@ -113,9 +117,11 @@
           </div>
         </div>
 
+        
+
         <div class="card" *ngIf="productsToCollect.length > 0">
           <div class="card-body">
-            <h5 class="card-title">Toplanacak Siparişler</h5>
+            <h5 class="card-title">Toplanacak Ürünler</h5>
             <div class="table-responsive">
               <table class="table">
                 <thead>
@@ -132,6 +138,8 @@
                     <th scope="col">Barkod</th>
                     <th scope="col">Paket No</th>
                     <th scope="col">Renk Kodu</th>
+
+                    <th scope="col">Sil</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -156,8 +164,8 @@
                     <td>{{ product.barcode }}</td>
                     <td>{{ product.packageNo }}</td>
                     <td>{{ product.colorCode }}</td>
-
-                  </tr>
+                    <td><button class="btn btn-danger" type="submit" (click)="deleteOrderProduct(orderNo,product.itemCode)">Sil </button></td>              
+                      </tr>
                 </tbody>
 
               </table>
@@ -178,6 +186,52 @@
             <p class="card-text">Adet Ürün Toplandı</p>
           </div>
         </div>
+
+        <div class="card" *ngIf="lastCollectedProducts.length > 0">
+          <div class="card-body">
+            <h5 class="card-title">Toplanan Ürünler</h5>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Fotoğraf</th>
+                    <th scope="col">Raf Numarası</th>
+                    <th scope="col">Ürün Kodu</th>
+                    <th scope="col">Miktar</th>     
+                    <th scope="col">Barkod</th>                    
+                    <th scope="col">Sil</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let product of lastCollectedProducts; let i = index"
+                   >
+                    <td>
+                     {{i}}
+                    </td>
+
+                    <td>
+                      <img src="{{product.photoUrl}}" alt="Resim" width="50" height="50"
+                        (click)="openImageModal(product.photoUrl)">
+
+                    </td>
+                    <td>{{ product.shelfNo }}</td>
+                    <td>{{ product.itemCode }}</td>
+                    <td>{{ product.quantity }}</td>           
+                    <td>{{ product.barcode }}</td>
+                    <td><button class="btn btn-danger" type="submit" (click)="deleteOrderProduct(orderNo,product.itemCode)">Sil </button></td>
+                  </tr>
+                </tbody>
+
+              </table>
+
+
+
+            </div>
+          </div>
+        </div>
+
+
       </div>
     </div>
     <app-image-modal [imageUrl]="modalImageUrl" [title]="'Ürün Detay'"></app-image-modal>

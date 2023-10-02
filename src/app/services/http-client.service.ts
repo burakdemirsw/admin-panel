@@ -75,7 +75,7 @@ export class HttpClientService {
 
   delete<T>(
     requestParameter: Partial<RequestParameters>,
-    id: number
+    id: number |string
   ): Observable<T> {
     let url: string = '';
     if (requestParameter.fullEndPoint) url = requestParameter.fullEndPoint;
@@ -89,4 +89,7 @@ export class HttpClientService {
      responseType: requestParameter.responseType as 'json',
     });
   }
+
+
+
 }

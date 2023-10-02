@@ -8,6 +8,10 @@ import { CustomerModel } from 'src/app/models/model/customer/customerModel';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { GeneralService } from './general.service';
+import { CountListModel } from 'src/app/models/model/product/countListModel';
+import { CollectProduct } from 'src/app/models/model/product/collectProduct';
+import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
+import { CountedProduct } from 'src/app/models/model/product/countedProduct';
 
 @Injectable({
   providedIn: 'root'
@@ -103,5 +107,15 @@ export class WarehouseService {
       console.log(error.message);
       return null;
     }
+  }
+
+  async getCountList():Promise<CountListModel[]>{
+    const data =await  this.httpClientService.get<CountListModel>({controller:'Order/GetCountList'}).toPromise();
+      return data
+  }
+
+  async getProductOfCount(orderNo:string):Promise<CountedProduct[]>{
+    const data =await  this.httpClientService.get<CountedProduct>({controller:'Order/GetProductOfCount/'+orderNo}).toPromise();
+      return data
   }
 }

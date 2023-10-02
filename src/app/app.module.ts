@@ -74,6 +74,8 @@ import { CreateSaleOrderComponent } from './components/Order/create-sale-order/c
 import { ImageModalComponent } from './image-modal/image-modal.component';
 import { NgxScannerQrcodeModule } from 'ngx-scanner-qrcode';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { WarehouseShelfCountListComponent } from './components/Warehouse/warehouse-shelf-count-list/warehouse-shelf-count-list.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   declarations: [
@@ -136,12 +138,12 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner';
     PurchaseOrderManagamentComponent,
     CreatePurchaseOrderComponent,
     CreateSaleOrderComponent,
-    ImageModalComponent
+    ImageModalComponent,
+    WarehouseShelfCountListComponent
   ],
 
 
   imports: [
-
     FormsModule,
     BrowserModule,
     AppRoutingModule,
@@ -150,6 +152,7 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner';
     NgxSpinnerModule.forRoot({ type: 'line-scale-pulse-out' }),
     ReactiveFormsModule,
     ZXingScannerModule,
+    NgxPaginationModule,
 
     NgxScannerQrcodeModule
   ],

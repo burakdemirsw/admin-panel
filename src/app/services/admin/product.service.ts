@@ -5,6 +5,9 @@ import { AlertifyService } from '../ui/alertify.service';
 import { HttpClientService } from '../http-client.service';
 import { Router } from '@angular/router';
 import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
+import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
+import { HttpClient } from '@angular/common/http';
+import { ClientUrls } from 'src/app/models/const/ClientUrls';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +16,7 @@ export class ProductService {
 
   constructor(    private alertifyService: AlertifyService,
     private httpClientService: HttpClientService,
-    private router: Router) { }
+    private router: Router,private httpClient : HttpClient) { }
 
     //ürün oluşturma
   createProduct(model : ProductCreateModel) : boolean{
@@ -57,6 +60,38 @@ export class ProductService {
       } catch (error: any) {
         console.error(error.message);
        return null;
+      }
+    }
+
+    async getCollectedOrderProducts (orderNo  :string):Promise<CollectedProduct[]>{
+      const response =await this.httpClientService.get<CollectedProduct>({controller:"Order/GetCollectedOrderProducts/"+orderNo}).toPromise()
+        return response
+
+    }
+
+    async completeCount (orderNo  :string):Promise<any>{
+      const response =await this.httpClientService.get<any>({controller:'Order/CompleteCount/'+orderNo}).toPromise()
+        return response
+
+    }
+
+    async deleteOrderProduct(orderNo: string, itemCode: string): Promise<boolean> {
+      try {
+        const requestModel = {
+          orderNumber: orderNo,
+          itemCode: itemCode
+        };
+        
+        const response = await this.httpClientService.post<any>({controller:'Order/DeleteOrderProduct'},requestModel).toPromise();
+        
+        if (response > 0) {
+          return true;  
+        } else {
+          return false;
+        }
+      } catch (error) {
+        console.error('Hata (90):', error);
+        return false;
       }
     }
 }

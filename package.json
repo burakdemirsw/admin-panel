@@ -27,6 +27,7 @@
     "bootstrap": "^5.2.3",
     "iyzipay": "^2.0.48",
     "jquery": "^3.7.1",
+    "ngx-pagination": "^6.0.3",
     "ngx-scanner-qrcode": "^1.0.17",
     "ngx-spinner": "^15.0.1",
     "rxjs": "~7.5.0",

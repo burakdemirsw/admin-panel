@@ -12,6 +12,8 @@ import { OrderBillingRequestModel } from 'src/app/models/model/invoice/orderBill
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
+import { HttpClient } from '@angular/common/http';
+import { ClientUrls } from 'src/app/models/const/ClientUrls';
 
 @Injectable({
   providedIn: 'root',
@@ -20,20 +22,19 @@ export class OrderService {
   constructor(
     private alertifyService: AlertifyService,
     private httpClientService: HttpClientService,
-    private router: Router
+    private router: Router,
+    private httpClient: HttpClient
   ) {}
 
-
-
   //siparişleri çekme
-  async getOrders():Promise< SaleOrderModel[]>{
+  async getOrders(): Promise<SaleOrderModel[]> {
     try {
-      const response  = this.httpClientService
+      const response = this.httpClientService
         .get<SaleOrderModel>({
           controller: 'Order',
         })
-        .toPromise()
-        return response;
+        .toPromise();
+      return response;
     } catch (error: any) {
       console.log(error.message);
       return null;
@@ -43,17 +44,17 @@ export class OrderService {
   //alış siparişlerini çekme
   getPurchaseOrders(): Promise<any> {
     try {
-     const response =  this.httpClientService
+      const response = this.httpClientService
         .get<SaleOrderModel>({
           controller: 'Order/GetPurchaseOrders',
         })
-        .toPromise()
+        .toPromise();
 
-        return response;
+      return response;
     } catch (error: any) {
       console.log(error.message);
       return null;
-    }  
+    }
   }
   //sipariş ekleme
   addProductToOrder(model: BarcodeAddModel): boolean {
@@ -124,9 +125,12 @@ export class OrderService {
       );
   }
   //faturalaştırma ve yazdırma
-  collectAndPack(list: ProductOfOrder[], orderNo: string): Observable<boolean> {
+  async collectAndPack(
+    list: ProductOfOrder[],
+    orderNo: string
+  ): Promise<boolean> {
     try {
-      var model: OrderBillingRequestModel = new OrderBillingRequestModel();
+      const model: OrderBillingRequestModel = new OrderBillingRequestModel();
       model.orderNo = orderNo;
       model.invoiceType = false;
 
@@ -135,37 +139,56 @@ export class OrderService {
       } else if (orderNo.includes('BP')) {
         model.invoiceModel = 1; // alış sipariş faturası
       } else if (orderNo.includes('WT')) {
-        return of(true);//transfer
+        return false;
       } else {
-        return of(false);
+        return false;
       }
 
-      this.httpClientService
+      const response = await this.httpClientService
         .post<OrderBillingRequestModel>(
           {
             controller: 'Order/CollectAndPack/' + model,
           },
           model
         )
-        .subscribe();
-      return of(true);
+        .toPromise();
+        if (response) {
+          console.log(response);
+          if (Boolean(response) == true) {
+            this.alertifyService.success('İşlem Başarılı');
+            this.router.navigate(['/purchase-orders-managament']);
+            return true;
+
+          } else {
+            this.alertifyService.error('İşlem Başarısız');
+            location.reload();
+            return false;
+          }
+        }
     } catch (error: any) {
       console.log(error.message);
-      return of(false); // Return false in case of an exception
+      return false;
     }
+    return false;
   }
-//alış fatura oluşturma
-  async createPurchaseInvoice(array : any[],orderNo :string,isReturn : boolean) :Promise<any>{  //alış faturası oluştur
+
+  //alış fatura oluşturma
+  async createPurchaseInvoice(
+    array: any[],
+    orderNo: string,
+    isReturn: boolean
+  ): Promise<any> {
+    //alış faturası oluştur
     if (array.length === 0) {
       this.alertifyService.warning('Lütfen Ürün Ekleyiniz.');
       return null;
     } else {
       try {
         var model: OrderBillingRequestModel = new OrderBillingRequestModel();
-        model.orderNo =orderNo;
+        model.orderNo = orderNo;
         model.invoiceType = isReturn;
         model.invoiceModel = 1;
-        const data  = await this.httpClientService
+        const data = await this.httpClientService
           .post<OrderBillingRequestModel>(
             {
               controller: 'Order/CollectAndPack/' + model,
@@ -173,30 +196,43 @@ export class OrderService {
             model
           )
           .toPromise();
-          if(data) {
-           
-              this.router.navigate(['/orders-management']);
-            
-          };
+        if (data) {
+          this.router.navigate(['/orders-management']);
+        }
       } catch (error: any) {
-        this.alertifyService.error('An error occurred:'+error.message);
+        this.alertifyService.error('An error occurred:' + error.message);
       }
     }
-  }  
-
-  //alış fatura doğrulama
-  
-  async purchaseInvoiceProductCheck(model :CreatePurchaseInvoice):Promise<any>{
-
-    try {
-      const response = this.httpClientService.post<ProductCountModel | any>({controller : 'Order/CountProductPuschase'},model).toPromise();
-      return response;
-  
-    } catch (error: any) {
-      this.alertifyService.error('An error occurred:'+error.message);
-      return null;
-    }
-
   }
 
+  //alış fatura doğrulama
+
+  async purchaseInvoiceProductCheck(
+    model: CreatePurchaseInvoice
+  ): Promise<any> {
+    try {
+      const response = this.httpClient
+        .post<ProductCountModel | any>(
+          ClientUrls.baseUrl +
+            'Order/CountProductPuschase/' +
+            model.orderNumber,
+          model
+        )
+        .toPromise();
+      if (response) {
+        console.log(response);
+        if (Boolean(response) == true) {
+          this.alertifyService.success('İşlem Başarılı');
+          this.router.navigate(['/purchase-orders-managament']);
+        } else {
+          this.alertifyService.error('İşlem Başarısız');
+          location.reload();
+        }
+      }
+      return response;
+    } catch (error: any) {
+      this.alertifyService.error('An error occurred:' + error.message);
+      return null;
+    }
+  }
 }

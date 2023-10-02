@@ -56,6 +56,7 @@ import { PurchaseOrderManagamentComponent } from './components/Order/purchase-or
 import { CreatePurchaseInvoice } from './models/model/invoice/createPurchaseInvoice';
 import { CreatePurchaseOrderComponent } from './components/Order/create-purchase-order/create-purchase-order.component';
 import { CreateSaleOrderComponent } from './components/Order/create-sale-order/create-sale-order.component';
+import { WarehouseShelfCountListComponent } from './components/Warehouse/warehouse-shelf-count-list/warehouse-shelf-count-list.component';
 
 const routes: Routes = [
   // { path: 'alerts', component: AlertsComponent },
@@ -119,8 +120,9 @@ const routes: Routes = [
   { path: 'warehouse-operation-confirm-detail/:innerNumber', component: WarehouseOperationConfirmDetailComponent ,canActivate:[AuthGuard]},
   { path: 'collected-packages', component: CollectedPackagesComponent ,canActivate:[AuthGuard]},
   { path: 'collected-package-detail/:id', component: CollectedPackageDetailComponent ,canActivate:[AuthGuard]},
-  { path: 'warehosue-shelf-count', component: WarehosueShelfCountComponent ,canActivate:[AuthGuard]},
+  { path: 'warehouse-shelf-count/:orderNo', component: WarehosueShelfCountComponent ,canActivate:[AuthGuard]},
   { path: 'register', component: PagesRegisterComponent},
+  { path: 'warehouse-shelf-count-list', component: WarehouseShelfCountListComponent},
 
   { path: '**', component: PagesError404Component }
 
