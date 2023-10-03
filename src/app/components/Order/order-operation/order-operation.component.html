@@ -17,19 +17,37 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">{{ pageDescription }}</h5>
-            <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
+            <ul class="nav nav-tabs nav-justified mb-1" id="ex1" role="tablist">
               <!-- <li class="nav-item" role="presentation">
                                   <a class="nav-link active" [class.active]="activeTab === 1" (click)="activeTab = 1">Raf
                                       Düzenleme</a>
                               </li> -->
             </ul>
 
+            <div class="row mb-1">
+              <div class="form-group">
+                <label for="shelfNo">Raf No:</label>
+                <div class="input-group">
+                  <input type="text" id="shelfNo" class="form-control" formControlName="shelfNo"
+                    (keydown.enter)="focusNextInput('barcode')" />
+                  <div class="input-group-append">
+                    <button type="button" (click)="clearShelfNumbers()" class="btn btn-dark">Rafı
+                      Temizle</button>
+                  </div>
+                </div>
+              </div>
+              <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{ shelfNumbers }}</label>
+
+            </div>
+
+
+
             <div class="tab-content" id="ex2-content">
               <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1" role="tabpanel"
                 aria-labelledby="ex3-tab-1">
                 <form [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)">
 
-                  <div class="row mb-3">
+                  <div class="row mb-1">
                     <div class="form-group">
                       <label for="barcode">Barkod:</label>
 
@@ -45,66 +63,56 @@
                   </div>
 
                   
-                  <div class="row mb-3">
-                    <div class="form-group">
-                      <label for="shelfNo">Raf No:</label>
-                      <div class="input-group">
-                        <input type="text" id="shelfNo" class="form-control" formControlName="shelfNo"
-                          (keydown.enter)="focusNextInput('barcode')" />
-                        <div class="input-group-append">
-                          <button type="button" (click)="clearShelfNumbers()" class="btn btn-dark">Rafı
-                            Temizle</button>
-                        </div>
-                      </div>
-                    </div>
-                    <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{ shelfNumbers }}</label>
-
-                  </div>
+          
          
                   <!-- some.component.html -->
                   <!-- <zxing-scanner  (scanSuccess)="scanCompleteHandler($event)"></zxing-scanner> -->
+                  <div class="row mb-1">
 
 
-                  <div class="row mb-3">
-
-                    <div class="col-md-">
-                      <div class="form-group">
-                        <label for="quantity">Parti</label>
-                        <input type="text" id="batchCode" class="form-control" formControlName="batchCode" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row mb-3">
-                    <div class="col-md-">
-                      <div class="form-group">
-                        <label for="quantity">Miktar</label>
-                        <input type="number" id="quantity" class="form-control" formControlName="quantity" />
-                      </div>
+                                        
+                    <div class="form-group col">
+                        <div class="form-group">
+                          <label for="quantity">Miktar</label>
+                          <input type="number" id="quantity" class="form-control" formControlName="quantity" />
+                        </div>
                     </div>
 
-                    <div class="row mb-3">
-                      <div class="col-md-">
+
+                    <div class="form-group col">
+                        <div class="form-group">
+                          <label for="quantity">Parti</label>
+                          <input type="text" id="batchCode" class="form-control" formControlName="batchCode" />
+                        </div>
+                    </div>
+
+                </div>
+
+
+          
+                    
+                    <div class="row mb-1">
+                      <div class="col-md-12">
                         <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 1%;" (click)="onSubmit(checkForm.value)">Ekle</button>
 
                       </div>
                     </div>
-                    <div class="row mb-3">
-                      <div class="col-md-">
+                    <div class="row mb-1">
+                      <div class="col-md-12">
                         <button type="button" class="btn btn-dark" (click)="addAllSelectedProductsToList()"  style="width: 100%;" >Seçilenleri
                           Ekle</button>
 
                       </div>
                     </div>
 
-                    <div class="row mb-3">
-                      <div class="col-md-">
+                    <div class="row mb-1">
+                      <div class="col-md-12">
                         <button type="button" class="btn btn-success"
                           (click)="collectAndPack(this.collectedProducts)"  style="width: 100%;" >Toplananları Faturalaştır</button>
 
                       </div>
                     </div>
-                  </div>
+               
                 </form>
               </div>
               <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2" role="tabpanel-2"

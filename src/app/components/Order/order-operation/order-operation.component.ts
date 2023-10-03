@@ -139,12 +139,11 @@ export class OrderOperationComponent implements OnInit {
   }
 
   collectAndPack(list: ProductOfOrder[]) {
-    if (this.collectedProducts.length > 0) {
+   
       this.orderService.collectAndPack(list, this.currentOrderNo);
-    } else {
-      this.alertifyService.warning('Toplanan Ürün Bulunamadı.');
+    
       return null;
-    }
+    
   }
   async countProductRequest(
     barcode: string,
@@ -204,7 +203,8 @@ export class OrderOperationComponent implements OnInit {
         '',
         '',
         productModel.batchCode,
-        'Order/CountProduct3',this.orderNo
+        'Order/CountProduct3',this.orderNo,
+        productModel.currAccCode
       );
       if (response != undefined) {
         var data: ProductCountModel = response;
@@ -305,7 +305,8 @@ export class OrderOperationComponent implements OnInit {
           '',
           '',
           productModel.batchCode,
-          'Order/CountProduct3',this.orderNo
+          'Order/CountProduct3',this.orderNo,
+          productModel.currAccCode
         );
         if (response != undefined) {
           var data: ProductCountModel = response;
@@ -415,7 +416,8 @@ export class OrderOperationComponent implements OnInit {
           '',
           '',
           productModel.batchCode,
-          'Order/CountProduct3',this.orderNo
+          'Order/CountProduct3',this.orderNo,
+          productModel.currAccCode
         );
 
         if (response != undefined) {

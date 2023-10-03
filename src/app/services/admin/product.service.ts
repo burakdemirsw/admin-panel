@@ -8,6 +8,7 @@ import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
 import { HttpClient } from '@angular/common/http';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
+import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 
 @Injectable({
   providedIn: 'root'
@@ -63,18 +64,20 @@ export class ProductService {
       }
     }
 
+    //sayılan ürünleri getirme
     async getCollectedOrderProducts (orderNo  :string):Promise<CollectedProduct[]>{
       const response =await this.httpClientService.get<CollectedProduct>({controller:"Order/GetCollectedOrderProducts/"+orderNo}).toPromise()
         return response
 
     }
 
+    //sayımı tamamlama 
     async completeCount (orderNo  :string):Promise<any>{
       const response =await this.httpClientService.get<any>({controller:'Order/CompleteCount/'+orderNo}).toPromise()
         return response
 
     }
-
+    //sayım içindeki ürünü silme
     async deleteOrderProduct(orderNo: string, itemCode: string): Promise<boolean> {
       try {
         const requestModel = {
@@ -93,5 +96,13 @@ export class ProductService {
         console.error('Hata (90):', error);
         return false;
       }
+    }
+
+    //faturanın ürünlerini getirme
+    async getProductOfInvoice(orderNo : string):Promise<CreatePurchaseInvoice[]>{
+
+      const response =await  this.httpClientService.get<CreatePurchaseInvoice>({controller:'Order/GetProductOfInvoice'},orderNo).toPromise();
+
+      return response
     }
 }

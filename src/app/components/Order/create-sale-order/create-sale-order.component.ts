@@ -12,117 +12,107 @@ import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
 import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
+    import { GeneralService } from 'src/app/services/admin/general.service';
 import { OrderService } from 'src/app/services/admin/order.service';
+import { ProductService } from 'src/app/services/admin/product.service';
+import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
-
+declare var window: any;
 @Component({
   selector: 'app-create-sale-order',
   templateUrl: './create-sale-order.component.html',
   styleUrls: ['./create-sale-order.component.css']
 })
 export class CreateSaleOrderComponent implements OnInit {
-  newOrderNumber: string = this.generateGUID();
+  newOrderNumber: string = '';
   customerList: CustomerModel[] = [];
   officeModels: OfficeModel[] = [];
   invoiceProducts: CreatePurchaseInvoice[] = [];
+  invoiceProducts2: CreatePurchaseInvoice[] = [];
+
   activeTab = 1;
   productForm: FormGroup;
   
   warehouseModels: WarehouseOfficeModel[] = [];
-  currencyList: string[] = ["USD","TRY"];
+  currencyList: string[] = ["Standart","Vergisiz"]; //vergi tipi
   constructor(
     private httpClientService: HttpClientService,
     private formBuilder: FormBuilder,
     private alertifyService: AlertifyService,
     private orderService: OrderService,
-    private activatedRoute: ActivatedRoute,
     private router: Router,
     private httpClient: HttpClient,
-    private spinnerService: NgxSpinnerService
+    private productService :ProductService,
+    private spinnerService: NgxSpinnerService,
+    private warehouseService: WarehouseService,
+    private generalService: GeneralService,
+    private activatedRoute : ActivatedRoute
   ) {}
 
   async ngOnInit() {
     try {
       this.spinnerService.show();
       this.formGenerator()
-      await this.getWarehouseList('M');
+
+      this.activatedRoute.params.subscribe(async (params) => {
+        this.newOrderNumber = 'WSI-'+params['orderNo'];
+        await this.getProductOfInvoice(this.newOrderNumber );
+      });
+
+
       await this.getOfficeCodeList();
       await this.getCustomerList();
+      await this. getSalesPersonModels()
 ;
       this.spinnerService.hide();
     } catch (error: any) {
       console.log(error.message);
     }
   }
-  
-  async getOfficeCodeList(): Promise<void> {
+  async getProductOfInvoice(orderNo :string): Promise<void> {
     try {
-      const data = await this.httpClientService
-        .get<OfficeModel>({
-          controller: 'Warehouse/GetOfficeModel',
-        })
-        .toPromise();
-  
-      this.officeModels = data;
+      const response = await this.productService.getProductOfInvoice( this.newOrderNumber);
+      this. invoiceProducts2 = response;
+      this.calculateTotalQty()
     } catch (error: any) {
-      console.log("HATA ALINDI!");
+      this.alertifyService.warning(error.message);
     }
   }
+
+  async getOfficeCodeList(): Promise<void> {
+    try {
+      this.officeModels = await this.warehouseService.getOfficeCodeList();
+
+      // Eğer veri geldiyse ve dizi boş değilse ilk ofisi seçin
+      if (this.officeModels && this.officeModels.length > 0) {
+        this.productForm.get('officeCode')?.setValue(this.officeModels[0]);
+      }
+    } catch (error: any) {
+      this.alertifyService.warning(error.message);
+    }
+  }
+
   
   async getWarehouseList(value: string): Promise<void> {
-    try {
-      const selectElement = document.getElementById(
-        'office'
-      ) as HTMLSelectElement;
-  
-      value = selectElement.value == '' ? 'M' : selectElement.value;
-  
-      const data = await this.httpClientService
-        .get<WarehouseOfficeModel>({
-          controller: 'Warehouse/GetWarehouseModel/' + value,
-        })
-        .toPromise();
-  
-      setTimeout(() => {
-        this.warehouseModels = data;
-      }, 1000); // 1000 milisaniye (1 saniye) bekle
-    } catch (error: any) {
-      console.log(error.message);
-    }
+    this.warehouseModels = await this.warehouseService.getWarehouseList(value);
+    console.log(this.warehouseModels)
   }
   
   async getCustomerList(): Promise<void> {
-    try {
-      const data = await this.httpClientService
-        .get<CustomerModel>({
-          controller: 'Order/CustomerList/1',
-        })
-        .toPromise();
-  
-      if (data != undefined) {
-        this.customerList = data;
-      }
-    } catch (error: any) {
-      console.log(error.message);
-    }
+    this.customerList = await this.warehouseService.getCustomerList('1');
   }
   
-  async getSelectedOffice() {
-    try {
-      var office = this.productForm.get('office')?.value;
-      await this.getWarehouseList(office);
-  
-      var warehouse: string = this.warehouseModels[0].warehouseCode;
-      this.productForm
-        .get('warehouse')
-        ?.setValue(warehouse);
-  
-    } catch (error: any) {
-      console.error('Veri alınamadı:', error);
-    }
+  async getSelectedOffice(): Promise<any> {
+    var office = (document.getElementById('officeCode') as HTMLInputElement).value;
+
+    await this.getWarehouseList(office);
+    this.productForm
+      .get('warehouseCode')
+      ?.setValue(this.warehouseModels[0].warehouseCode);
   }
-  
+
+
 
   salesPersonModels : SalesPersonModel[] = []
  async  getSalesPersonModels() :Promise<any>{
@@ -138,12 +128,18 @@ export class CreateSaleOrderComponent implements OnInit {
         this.alertifyService.error(error.message)
         return null;
       }
-
-
+    
 
     } catch (error:any) {
       this.alertifyService.error(error.message)
     }
+  }
+  clearShelfNumbers() {
+    this.productForm.get('shelfNo').setValue('');
+    this.productForm.get('barcode').setValue('');
+    this.focusNextInput('shelfNo');
+    this.shelfNumbers='RAFLAR:'
+    this.productForm.get('quantity').setValue('');
   }
 
 
@@ -154,36 +150,20 @@ export class CreateSaleOrderComponent implements OnInit {
     }
   }
 
-  generateGUID(): string {
-    function generateUUID() {
-      let dt = new Date().getTime();
-      const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
-        /[xy]/g,
-        function (c) {
-          const r = (dt + Math.random() * 16) % 16 | 0;
-          dt = Math.floor(dt / 16);
-          return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
-        }
-      );
-      return uuid;
-    }
-
-    return generateUUID();
-  }
 
   formGenerator() {
     try {
       this.productForm = this.formBuilder.group({
-        office: ['', Validators.required],
-        warehouse: ['', Validators.required],
-        currAccCode: ['', Validators.required],
-        salesPersonCode: ['', Validators.required],
-
-        shelfNo: ['', [Validators.required, Validators.maxLength(10)]],
-        barcode: ['', [Validators.required, Validators.min(5)]],
-        quantity: [''],
+        officeCode: [null, Validators.required],
+        warehouseCode: [null, Validators.required],
+        currAccCode: [null],
+        salesPersonCode: [null, Validators.required],
+        shelfNo: [null, [Validators.required, Validators.maxLength(10)]],
+        barcode: [null, [Validators.required, Validators.min(5)]],
+        quantity: [null],
         isReturn: [false, [Validators.required]],
-        currency: [false, [Validators.required]],
+        currency: [null, [Validators.required]],
+        batchCode: [null]
 
       });
     } catch (error: any) {
@@ -195,167 +175,222 @@ export class CreateSaleOrderComponent implements OnInit {
     // Alanları temizleme
     this.productForm.patchValue({
       barcode: '',
-      quantity: '',
+      quantity: null,
     });
   }
 
-  collectAndPack() {
-
-    if (this.invoiceProducts.length === 0) {
-      this.alertifyService.warning('Lütfen Ürün EKleyiniz.');
-      return;
-    } else {
-      try {
-        var model : OrderBillingRequestModel = new OrderBillingRequestModel();
-        model.orderNo = this.newOrderNumber;
-        model.invoiceType = this.productForm.get("isReturn").value;
-        model.invoiceModel = 3  ; //satış faturası
-        model.salesPersonCode = this.productForm.get("salesPersonCode").value; 
-        model.currency = this.productForm.get("currency").value; 
-
-        this.httpClientService
-          .post<OrderBillingRequestModel>(
-            {
-              controller: 'Order/CollectAndPack/' + model,
-            },
-            model
-          )
-          .pipe(
-            catchError((error: any) => {
-              if (error.status === 400) {
-                this.alertifyService.error(error.error);
-              } 
-              throw error; // Rethrow the error to continue error handling
-            })
-          )
-          .subscribe((data) => {
-            this.router.navigate(['/orders-management']);
-          });
-      } catch (error: any) {
-        this.alertifyService.error('An error occurred:');
-      }
+  modalImageUrl: string;
+  formModal: any;
+  openImageModal(imageUrl: string) {
+    this.modalImageUrl = imageUrl;
+    if (!this.formModal) {
+      this.formModal = new window.bootstrap.Modal(
+        document.getElementById('myModal')
+      );
     }
+    this.formModal.show();
   }
+
+
+
+  async createSaleInvoice():Promise<any> {
+
+
+    const data = await this.orderService.createSaleInvoice(this.invoiceProducts2
+      ,this.newOrderNumber
+      , this.productForm.get("isReturn").value
+      , this.productForm.get("salesPersonCode").value
+      ,this.productForm.get("currency").value
+      )
+    
+  }
+
+  setCurrentCustomerCode(){
+    var currAccCode :string= (document.getElementById('currAccCode') as HTMLInputElement).value.toString();
+
+   (document.getElementById('currAccCode2') as HTMLInputElement).value =  currAccCode;
+  }
+
+
 
   url: string = ClientUrls.baseUrl + '/Order/CountProductPuschase';
+  shelfNumbers: string = 'RAFLAR:';  
+  async onSubmit(model: CreatePurchaseInvoice): Promise<any> {
+    if (model.barcode && !model.shelfNo)
+      {
+     
 
-  async onSubmit(model: CreatePurchaseInvoice) {
-   
-    if (
-      model.shelfNo == ''
-    ) {
-      var requestModel: CreatePurchaseInvoice = new CreatePurchaseInvoice();
-      requestModel.barcode = model.barcode;
+         var result: string[] = await this.productService.countProductByBarcode(
+           model.barcode
+         );
+         this.shelfNumbers += result[0];
+         this.productForm.get('quantity').setValue(result[1]);
 
-      requestModel.quantity =
-        model.quantity.toString() == '' ? 1 : model.quantity;
-      requestModel.orderNumber = this.newOrderNumber;
-      requestModel.office = model.office;
-      requestModel.warehouse = model.warehouse;
-      requestModel.currAccCode = model.currAccCode;
-
-      var response = await this.httpClient
-        .post<ProductCountModel | undefined>(this.url, requestModel)
-        .toPromise();
-
-      if (response === undefined) {
+         return;
+      
+   } else {
+     
+       if (this.productForm.valid) {
+        var value = this.productForm.get('currAccCode').value
+         if(value === null){
+          try {
+            var currAccCodeValue =(document.getElementById('currAccCode2') as HTMLInputElement).value.toString();
+            model.currAccCode=currAccCodeValue
+            this.productForm.get('currAccCode').setValue(currAccCodeValue)
+          } catch (error) {
+            this.alertifyService.error("Müşteri Kodu Hatası.")
+            return;
+          }
         
-      } else {
-        var data: ProductCountModel = response;
 
-        if (data.status == 'RAF') {
-          this.productForm.get('shelfNo')?.setValue(data.description);
-          this.productForm.get('barcode')?.setValue('');
-          model.shelfNo = response.description;
-          model.barcode = '';
-          this.alertifyService.success('(1) Raf Doğrulaması Yapıldı!');
-
-        } else {
-
-          const responseData = JSON.parse(response.description);
-          const description = responseData[0].Description;
-          const rafNo = responseData[0].Rafno;
-          this.productForm.get('shelfNo')?.setValue(rafNo);
-          this.productForm.get('barcode')?.setValue(description);
-          model.barcode = description;
-          model.shelfNo = rafNo;
-
-
-          requestModel.shelfNo = rafNo;
-          var response = await this.httpClient
-            .post<ProductCountModel | undefined>(this.url, requestModel)
-            .toPromise();
-
-          var newData : ProductCountModel = response
-          if(newData.status === 'Barcode'){
-            this.alertifyService.success("(1) Barkod Doğrulaması Başarılı!")
-          }
-        }
-      }
-    } else {
-      if (this.productForm.valid) { 
-
-        var requestModel: CreatePurchaseInvoice = new CreatePurchaseInvoice();
-        requestModel.barcode = model.barcode;
-        requestModel.shelfNo = model.shelfNo;
-        requestModel.quantity =
-          model.quantity.toString() == '' ? 1 : model.quantity;
-        requestModel.orderNumber = this.newOrderNumber;
-        requestModel.office = model.office;
-        requestModel.warehouse = model.warehouse;
-        requestModel.currAccCode = model.currAccCode;
-
-        var response = await this.httpClient
-          .post<ProductCountModel | undefined>(this.url, requestModel)
-          .toPromise();
-
-        if (response === undefined) {
-          // Handle the undefined case, perhaps throw an error or set a default value.
-        } else {
-          var data: ProductCountModel = response;
-
-          if (data.status == 'RAF') {
-            this.productForm.get('shelfNo')?.setValue(data.description);
-            this.productForm.get('barcode')?.setValue('');
-            model.shelfNo = response.description;
-            model.barcode = '';
-            this.alertifyService.success('(2) Raf Doğrulaması Yapıldı!');
-
-          } else {
-            const responseData = JSON.parse(response.description);
-            const description = responseData[0].Description;
-            const rafNo = responseData[0].Rafno;
-            if(rafNo == undefined){
-              this.productForm.get('shelfNo')?.setValue( requestModel.shelfNo ) 
-            }else{
-
-              this.productForm.get('shelfNo')?.setValue(rafNo);
+         }
+         var result: string[] = await this.productService.countProductByBarcode(
+           model.barcode
+         );
+           if(this.shelfNumbers==='RAFLAR:'){ //raflar kontorl için yeniden çekildi
+             this.shelfNumbers += result[0];
+           }
+           if( this.productForm.get('quantity').value === null){ //miktar alanı dolduruldu 
+             this.productForm.get('quantity').setValue(result[1]);
+           }
+         const shelves = result[0]
+         .split(',')
+         .filter((raflar) => raflar.trim() !== '');
+           
+         if (shelves.includes(model.shelfNo)) { //raf barkod kontolü yapıldı
+          var response: ProductCountModel = 
+          await this.warehouseService.countProductRequest( //sayım
+            model.barcode,
+            model.shelfNo,
+            model.quantity ===null
+            ? Number(result[1])
+            : model.quantity,
+            model.officeCode,
+            model.warehouseCode,
+            model.batchCode,
+            'Order/CountProduct3',
+            this.newOrderNumber,
+            model.currAccCode
+          );
+          if (response != undefined) {
+            var data: ProductCountModel = response;
+            if (data.status == 'RAF') {
+              model.shelfNo = response.description;
+            } else {
+              model.barcode = response.description;
             }
-            this.productForm.get('barcode')?.setValue(description);
-            model.barcode = description;
-            model.shelfNo = rafNo;
-            this.alertifyService.success("(2) Barkod Doğrulaması Başarılı!")
-
+            this.generalService.beep();
+            model.quantity = Number(Number(result[1]));
+           
           }
-        }
+         }else{
+           if (
+             confirm(
+               'Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?'
+             )
+           ){
+            var response: ProductCountModel =
+            await this.warehouseService.countProductRequest( //sayım
+              model.barcode,
+              model.shelfNo,
+              model.quantity ===null
+              ? Number(result[1])
+              : model.quantity,
+              model.officeCode,
+              model.warehouseCode,
+              model.batchCode,
+              'Order/CountProduct3',
+              this.newOrderNumber,
+              model.currAccCode
+            );
 
-      }else{
-        this.alertifyService.error("Form Geçerli Değil");
-      }
-    }
-    if (this.productForm.valid) {
-      if(model.quantity.toString()==''){
-        model.quantity =1
-      }
-      this.invoiceProducts.push(model);
+            if (response != undefined) {
+              var data: ProductCountModel = response;
+              if (data.status == 'RAF') {
+                model.shelfNo = response.description;
+              } else {
+                model.barcode = response.description;
+              }
+              this.generalService.beep();
+              model.quantity = Number(Number(result[1]));
+             
+            }
+           }else{
+             return;
+           }
+         }
+          
+       }
+   }
+   if (this.productForm.valid == true) {
 
-      this.clearFormFields();
+     model.quantity =model.quantity ==null
+     ? Number(result[1])
+     : model.quantity,
 
-      this.focusNextInput("barcode");
+     //this.invoiceProducts.push(model);
+     this.getProductOfInvoice(this.newOrderNumber);
 
-      this.alertifyService.success('Ürün Başarılı Şekilde Eklendi.');
-    }
-  }
+     this.clearFormFields();
+
+     this.focusNextInput('barcode');
+     this.generalService.beep();
+     this.alertifyService.success('Ürün Başarılı Şekilde Eklendi.');
+   } else {
+     this.alertifyService.error('Form Geçerli Değil.');
+   }
+ }
+//  checkBarcodeAndShelf(response:any,model :CreatePurchaseInvoice):string[]{
+//   if (response != undefined) {
+//     var data: ProductCountModel = response;
+
+//     if (data.status == 'RAF') {
+//       this.productForm.get('shelfNo')?.setValue(data.description);
+//       this.productForm.get('barcode')?.setValue('');
+
+
+//       var shelfAndBarcode : string[] = []
+//       shelfAndBarcode.push(response.description);
+//       shelfAndBarcode.push('');
+
+//       return shelfAndBarcode;
+     
+//     } else {
+//       const responseData = JSON.parse(response.description);
+//       const description = responseData[0].Description;
+//       const rafNo = responseData[0].Rafno;
+
+
+//       if(this.productForm.get('shelfNo').value === ''){ //eğer zaten girdiği bir değer varsa onu yerleştir yoksa gelen cevabı yerleştir
+//         this.productForm.get('shelfNo')?.setValue(rafNo)
+//       };
+//       this.productForm.get('barcode')?.setValue(description);
+
+
+//       var shelfAndBarcode : string[] = []
+//       shelfAndBarcode.push(description);
+//       shelfAndBarcode.push(this.productForm.get('shelfNo').value === '' ? rafNo : model.shelfNo);
+//       return shelfAndBarcode;
+//     }
+
+
+//   } else {
+//     this.alertifyService.warning('Doğrulama Yapılamadı!');
+//     return null;
+//   }
+
+// }
+totalCount : number;
+
+calculateTotalQty() {
+  //toplanan ürünler yazısı için
+  let totalQty = 0;
+  this.invoiceProducts2.forEach((item) => {
+    totalQty += item.quantity;
+  });
+  this.totalCount = totalQty;
+}
+
 
   deleteRow(index: number) {
     this.invoiceProducts.splice(index, 1);

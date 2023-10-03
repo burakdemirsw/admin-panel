@@ -6,4 +6,5 @@ export class CountProductRequestModel2 {
     office?: string;
     warehouseCode?: string;
     orderNo? :string;
+    currAccCode? : string
   }

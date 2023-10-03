@@ -153,7 +153,7 @@ export class OrderService {
         )
         .toPromise();
         if (response) {
-          console.log(response);
+       
           if (Boolean(response) == true) {
             this.alertifyService.success('İşlem Başarılı');
             this.router.navigate(['/purchase-orders-managament']);
@@ -204,7 +204,45 @@ export class OrderService {
       }
     }
   }
+async createSaleInvoice(  array: any[],
+  orderNo: string,
+  isReturn: boolean,
+  salesPersonCode: string,
+  currency :string):Promise<any>{
+  if (array.length === 0) {
+    this.alertifyService.warning('Lütfen Ürün EKleyiniz.');
+    return;
+  } else {
+    try {
+      var model : OrderBillingRequestModel = new OrderBillingRequestModel();
+      model.orderNo = orderNo;
+      model.invoiceType = isReturn;
+      model.invoiceModel = 3  ; //satış faturası
+      model.salesPersonCode = salesPersonCode; 
+      model.currency = currency; 
 
+      const data = this.httpClientService
+        .post<OrderBillingRequestModel>(
+          {
+            controller: 'Order/CollectAndPack/' + model,
+          },
+          model
+        )
+        .toPromise();
+       if(data){
+         this.router.navigate(['/orders-management']);
+         return data;
+        
+       }else{
+        this.alertifyService.error("İşlem Başarısız")
+        return null;
+       }
+    } catch (error: any) {
+      this.alertifyService.error('An error occurred:');
+      return null;
+    }
+  }
+}
   //alış fatura doğrulama
 
   async purchaseInvoiceProductCheck(
@@ -214,18 +252,17 @@ export class OrderService {
       const response = this.httpClient
         .post<ProductCountModel | any>(
           ClientUrls.baseUrl +
-            'Order/CountProductPuschase/' +
-            model.orderNumber,
+            '/Order/CountProductPurchase',
           model
         )
         .toPromise();
       if (response) {
         console.log(response);
         if (Boolean(response) == true) {
-          this.alertifyService.success('İşlem Başarılı');
-          this.router.navigate(['/purchase-orders-managament']);
+         // this.alertifyService.success('İşlem Başarılı');
+          // this.router.navigate(['/purchase-orders-managament']);
         } else {
-          this.alertifyService.error('İşlem Başarısız');
+          //this.alertifyService.error('İşlem Başarısız');
           location.reload();
         }
       }

@@ -57,6 +57,7 @@ import { CreatePurchaseInvoice } from './models/model/invoice/createPurchaseInvo
 import { CreatePurchaseOrderComponent } from './components/Order/create-purchase-order/create-purchase-order.component';
 import { CreateSaleOrderComponent } from './components/Order/create-sale-order/create-sale-order.component';
 import { WarehouseShelfCountListComponent } from './components/Warehouse/warehouse-shelf-count-list/warehouse-shelf-count-list.component';
+import { InvoiceListComponent } from './components/Order/invoice-list/invoice-list.component';
 
 const routes: Routes = [
   // { path: 'alerts', component: AlertsComponent },
@@ -110,8 +111,8 @@ const routes: Routes = [
   { path: 'orders-managament', component: OrderManagamentComponent ,canActivate:[AuthGuard]},
   { path: 'sale-orders-managament', component: SaleOrderManagamentComponent ,canActivate:[AuthGuard]},
   { path: 'purchase-orders-managament', component:PurchaseOrderManagamentComponent ,canActivate:[AuthGuard]},
-  { path: 'create-purchase-order', component:CreatePurchaseOrderComponent ,canActivate:[AuthGuard]},
-  { path: 'create-sale-order', component:CreateSaleOrderComponent ,canActivate:[AuthGuard]},
+  { path: 'create-purchase-order/:orderNo', component:CreatePurchaseOrderComponent ,canActivate:[AuthGuard]},
+  { path: 'create-sale-order/:orderNo', component:CreateSaleOrderComponent ,canActivate:[AuthGuard]},
 
   { path: 'collect-product-of-order/:number', component: CollectProductOfOrderComponent,canActivate:[AuthGuard] },
   { path: 'warehouse-operation', component: WarehouseOperationComponent,canActivate:[AuthGuard] },
@@ -123,6 +124,7 @@ const routes: Routes = [
   { path: 'warehouse-shelf-count/:orderNo', component: WarehosueShelfCountComponent ,canActivate:[AuthGuard]},
   { path: 'register', component: PagesRegisterComponent},
   { path: 'warehouse-shelf-count-list', component: WarehouseShelfCountListComponent},
+  { path: 'invoice-list', component: InvoiceListComponent},
 
   { path: '**', component: PagesError404Component }
 

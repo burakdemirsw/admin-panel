@@ -70,13 +70,13 @@ export class WarehosueShelfCountComponent implements OnInit {
   orderBillingModel: OrderBillingListModel;
   formGenerator() {
     this.checkForm = this.formBuilder.group({
-      barcode: ['', Validators.required],
-      shelfNo: ['', Validators.required],
-      qty: [''],
-      office: ['', Validators.required],
-      batchCode: [''],
-      warehouseCode: ['', Validators.required],
-      isShelfBased: [''],
+      barcode: [null, Validators.required],
+      shelfNo: [null, Validators.required],
+      qty: [null],
+      office: [null, Validators.required],
+      batchCode: [null],
+      warehouseCode: [null, Validators.required],
+      isShelfBased: [null],
     });
   }
   getSelectedOffice(from: number) {
@@ -152,7 +152,7 @@ export class WarehosueShelfCountComponent implements OnInit {
       new CountProductRequestModel2();
     requestModel.barcode = barcode;
     requestModel.shelfNo = shelfNo;
-    requestModel.qty = qty.toString() == '' ? 1 : qty;
+    requestModel.qty = qty.toString() == null ? 1 : qty;
     requestModel.office = office;
     requestModel.warehouseCode = warehouseCode;
     requestModel.batchCode = batchCode;
@@ -174,7 +174,7 @@ export class WarehosueShelfCountComponent implements OnInit {
       this.shelfNumbers += result[0];
       return result[1];
     } else {
-      this.checkForm.get('barcode').setValue('');
+      this.checkForm.get('barcode').setValue(null);
       this.focusNextInput('shelfNo');
       return null;
     }
@@ -199,16 +199,14 @@ export class WarehosueShelfCountComponent implements OnInit {
 
       try {
         //tam bu alanda barkodu yolla eğer gönderilen raf gelen cevabın içinden çıkarsa say
-        var checkIsCorrectProduct =
-          await this.productService.countProductByBarcode(
-            countProductRequestModel.barcode
-          );
-        const shelves = checkIsCorrectProduct[0]
-          .split(',')
-          .filter((raflar) => raflar.trim() !== '');
+  
         var newResponse = await this.productService.countProductByBarcode(
           countProductRequestModel.barcode
         );
+
+        const shelves = newResponse[0]
+        .split(',')
+        .filter((raflar) => raflar.trim() !== '');
 
         if (shelves.includes(countProductRequestModel.shelfNo)) {
           var response: ProductCountModel =
@@ -222,7 +220,7 @@ export class WarehosueShelfCountComponent implements OnInit {
               countProductRequestModel.warehouseCode,
               countProductRequestModel.batchCode,
               'Order/CountProduct3',
-              this.currentOrderNo
+              this.currentOrderNo,''
             );
           if (response != undefined) {
             var data: ProductCountModel = response;
@@ -271,7 +269,8 @@ export class WarehosueShelfCountComponent implements OnInit {
               this.clearQrAndBatchCode();
             }
           }
-        } else {
+        } else 
+        {
           if (
             confirm(
               'Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?'
@@ -286,14 +285,14 @@ export class WarehosueShelfCountComponent implements OnInit {
               await this.warehouseService.countProductRequest(
                 countProductRequestModel.barcode,
                 countProductRequestModel.shelfNo,
-                countProductRequestModel.qty.toString().trim() == ''
+                countProductRequestModel.qty ===null
                 ? Number(newResponse[1])
                 : countProductRequestModel.qty,
                 countProductRequestModel.office,
                 countProductRequestModel.warehouseCode,
                 countProductRequestModel.batchCode,
                 'Order/CountProduct3',
-                this.currentOrderNo
+                this.currentOrderNo,''
               );
 
             if (response != undefined) {
@@ -333,14 +332,15 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.checkForm.get('barcode')?.enable();
   }
   clearShelfNumbers() {
-    this.checkForm.get('shelfNo').setValue('');
-    this.checkForm.get('barcode').setValue('');
+    this.checkForm.get('shelfNo').setValue(null);
+    this.checkForm.get('barcode').setValue(null);
     this.focusNextInput('shelfNo');
-    this.checkForm.get('qty').setValue('');
+    this.shelfNumbers='RAFLAR:'
+    this.checkForm.get('qty').setValue(null);
   }
   clearQrAndBatchCode() {
-    this.checkForm.get('barcode').setValue('');
-    this.checkForm.get('batchCode').setValue('');
+    this.checkForm.get('barcode').setValue(null);
+    this.checkForm.get('batchCode').setValue(null);
     this.focusNextInput('barcode');
   }
   completeCount() {
@@ -353,8 +353,8 @@ export class WarehosueShelfCountComponent implements OnInit {
         (document.getElementById('isShelfBased') as HTMLInputElement).checked
     );
     if (response > 0) {
-      this.router.navigate(['/warehosue-shelf-count']);
-      location.reload();
+      this.router.navigate(['/warehouse-shelf-count-list']);
+      
       return true;
     } else {
       return false;

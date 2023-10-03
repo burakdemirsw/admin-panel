@@ -76,6 +76,7 @@ import { NgxScannerQrcodeModule } from 'ngx-scanner-qrcode';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { WarehouseShelfCountListComponent } from './components/Warehouse/warehouse-shelf-count-list/warehouse-shelf-count-list.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { InvoiceListComponent } from './components/Order/invoice-list/invoice-list.component';
 
 @NgModule({
   declarations: [
@@ -139,7 +140,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     CreatePurchaseOrderComponent,
     CreateSaleOrderComponent,
     ImageModalComponent,
-    WarehouseShelfCountListComponent
+    WarehouseShelfCountListComponent,
+    InvoiceListComponent
   ],
 
 

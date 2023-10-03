@@ -34,7 +34,9 @@ export class WarehouseService {
     warehouseCode: string,
     batchCode: string,
 
-    url: string,orderNo : string
+
+    url: string,orderNo : string,
+    currAccCode : string
   ): Promise<ProductCountModel> {
     var requestModel: CountProductRequestModel2 =
       new CountProductRequestModel2();
@@ -45,7 +47,7 @@ export class WarehouseService {
     requestModel.office = office;
     requestModel.warehouseCode = warehouseCode;
     requestModel.batchCode = batchCode;
-
+    requestModel.currAccCode = currAccCode;
     var response = await this.httpClientService
       .post<ProductCountModel | any>({
         controller: url 
@@ -73,7 +75,7 @@ export class WarehouseService {
   async getWarehouseList(value: string): Promise<WarehouseOfficeModel[]> {
     try {
       const selectElement = document.getElementById(
-        'office'
+        'officeCode'
       ) as HTMLSelectElement;
   
       value = selectElement.value == '' ? 'M' : selectElement.value;
@@ -92,11 +94,11 @@ export class WarehouseService {
     }
   }
   
-  async getCustomerList(): Promise<CustomerModel[]> {
+  async getCustomerList(customerType:string ): Promise<CustomerModel[]> {
     try {
       const data = await this.httpClientService
         .get<CustomerModel>({
-          controller: 'Order/CustomerList/1',
+          controller: 'Order/CustomerList/'+customerType,
         })
         .toPromise();
   
@@ -111,6 +113,11 @@ export class WarehouseService {
 
   async getCountList():Promise<CountListModel[]>{
     const data =await  this.httpClientService.get<CountListModel>({controller:'Order/GetCountList'}).toPromise();
+      return data
+  }
+
+  async getInvoiceList():Promise<CountListModel[]>{
+    const data =await  this.httpClientService.get<CountListModel>({controller:'Order/GetInvoiceList'}).toPromise();
       return data
   }
 

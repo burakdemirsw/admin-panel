@@ -1,5 +1,5 @@
 <main id="main" class="main">
-    <div class="pagetitle">
+    <!-- <div class="pagetitle">
       <h1>Sayım Paneli</h1>
       <nav>
         <ol class="breadcrumb">
@@ -8,7 +8,7 @@
           <li class="breadcrumb-item active">Sayım Paneli</li>
         </ol>
       </nav>
-    </div>
+    </div> -->
 
     <section class="section">
         <div class="row">
@@ -16,7 +16,19 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Sayım Paneli</h5>
-                        <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
+                        <div class="form-group row">
+                            <div class="col-6">
+                                <label for="isShelfBased" class="col-form-label">Raf Bazında Sayım</label>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input type="checkbox" id="isShelfBased" class="form-check-input"
+                                        style="margin-top: 10px" formControlName="isShelfBased" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul class="nav nav-tabs nav-justified mb-1" id="ex1" role="tablist">
                             <!-- <li class="nav-item" role="presentation">
                                     <a class="nav-link active" [class.active]="activeTab === 1" (click)="activeTab = 1">Raf
                                         Düzenleme</a>
@@ -27,7 +39,7 @@
                             <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1"
                                 role="tabpanel" aria-labelledby="ex3-tab-1">
                                 <form [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)">
-                                    <div class="row mb-3">
+                                    <div class="row mb-1">
 
                                         <div class="form-group col">
                                             <label for="office">Gelen Ofis</label>
@@ -49,7 +61,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="row mb-3">
+                                    <div class="row mb-1">
                                         <div class="form-group">
                                             <label for="shelfNo">Raf No:</label>
                                             <div class="input-group">
@@ -69,7 +81,7 @@
                                             }}</label>
                                     </div>
 
-                                    <div class="row mb-3">
+                                    <div class="row mb-1">
                                         <div class="form-group">
                                             <label for="barcode">Barkod:</label>
 
@@ -79,68 +91,60 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mb-3">
-                                        <div class="form-group">
-                                            <label for="batchCode">Parti:</label>
+                                    <div class="row mb-1">
 
-                                            <input type="text" id="batchCode" class="form-control"
-                                                formControlName="batchCode" (keydown.enter)="onSubmit(checkForm.value)"
-                                                [disabled]="checkForm.disabled" />
+
+
+                                        <div class="form-group col">
+                                            <div class="form-group">
+                                                <label for="qty">Miktar:</label>
+
+                                                <input type="number" id="qty" class="form-control" formControlName="qty"
+                                                    [disabled]="checkForm.disabled" />
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="row mb-3">
-                                        <div class="form-group">
-                                            <label for="qty">Miktar:</label>
 
-                                            <input type="number" id="qty" class="form-control" formControlName="qty"
-                                                [disabled]="checkForm.disabled" />
-                                        </div>
-                                    </div>
+                                        <div class="form-group col">
+                                            <div class="form-group">
+                                                <label for="batchCode">Parti:</label>
 
-                                    <div class="form-group col">
-                                        <label for="isShelfBased" class="form-check-label">Raf Bazında Sayım </label>
-                                        <div class="row mb-3">
-                                            <div class="col-md">
-
-                                                <div class="form-check">
-                                                    <input type="checkbox" id="isShelfBased" class="form-check-input"
-                                                        style="height: 38px; width: 10%"
-                                                        formControlName="isShelfBased" />
-
-                                                </div>
+                                                <input type="text" id="batchCode" class="form-control"
+                                                    formControlName="batchCode"
+                                                    (keydown.enter)="onSubmit(checkForm.value)"
+                                                    [disabled]="checkForm.disabled" />
                                             </div>
                                         </div>
 
                                     </div>
 
+                                    <div class="row mb-1">
 
-
-
-                                    <div class="row mb-3">
-                                        <div class="col-md-">
-
+                                        <div class="form-group col">
                                             <button type="button" class="btn btn-primary" (click)="check()"
                                                 style="width: 100%;">
                                                 Ekle
                                             </button>
 
-
                                         </div>
-                                    </div>
 
-
-                                    <div class="row mb-3">
-                                        <div class="col-md-">
-
+                                        <div class="form-group col">
                                             <button type="button" class="btn btn-dark"
                                                 style="margin-left: 10px; color: white"
                                                 (click)="completeCountFromService(currentOrderNo)" style="width: 100%;">
-                                                Sayımı Tamamla
+                                                Sayımı Bitir
                                             </button>
 
                                         </div>
                                     </div>
+
+
+
+
+
+
+
+
 
 
 
