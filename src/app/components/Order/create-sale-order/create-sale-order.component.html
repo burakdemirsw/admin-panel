@@ -242,11 +242,9 @@
                                         <td>{{ product.batchCode }}</td>
 
                                         <td>{{ product.quantity }}</td>
-                                        <td>
-                                            <button class="btn btn-danger" (click)="deleteRow(i)">
-                                              Sil
-                                            </button>
-                                    </td>
+                                        <td><button class="btn btn-danger" type="submit"
+                                            (click)="deleteOrderProduct(newOrderNumber,product.barcode,product.shelfNo)">Sil
+                                        </button></td>
 
                                     </tr>
                                 </tbody>

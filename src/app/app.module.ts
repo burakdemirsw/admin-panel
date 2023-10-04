@@ -77,6 +77,7 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { WarehouseShelfCountListComponent } from './components/Warehouse/warehouse-shelf-count-list/warehouse-shelf-count-list.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { InvoiceListComponent } from './components/Order/invoice-list/invoice-list.component';
+import { FastTransferComponent } from './components/Warehouse/fast-transfer/fast-transfer.component';
 
 @NgModule({
   declarations: [
@@ -141,7 +142,8 @@ import { InvoiceListComponent } from './components/Order/invoice-list/invoice-li
     CreateSaleOrderComponent,
     ImageModalComponent,
     WarehouseShelfCountListComponent,
-    InvoiceListComponent
+    InvoiceListComponent,
+    FastTransferComponent
   ],
 
 

@@ -72,7 +72,7 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.checkForm = this.formBuilder.group({
       barcode: [null, Validators.required],
       shelfNo: [null, Validators.required],
-      qty: [null],
+      quantity: [null],
       office: [null, Validators.required],
       batchCode: [null],
       warehouseCode: [null, Validators.required],
@@ -141,7 +141,7 @@ export class WarehosueShelfCountComponent implements OnInit {
   async countProductRequest(
     barcode: string,
     shelfNo: string,
-    qty: number,
+    quantity: number,
     office: string,
     warehouseCode: string,
     batchCode: string,
@@ -152,7 +152,7 @@ export class WarehosueShelfCountComponent implements OnInit {
       new CountProductRequestModel2();
     requestModel.barcode = barcode;
     requestModel.shelfNo = shelfNo;
-    requestModel.qty = qty.toString() == null ? 1 : qty;
+    requestModel.quantity = quantity.toString() == null ? 1 : quantity;
     requestModel.office = office;
     requestModel.warehouseCode = warehouseCode;
     requestModel.batchCode = batchCode;
@@ -186,7 +186,7 @@ export class WarehosueShelfCountComponent implements OnInit {
     if (!this.checkForm.valid) {
       if (countProductRequestModel.barcode) {
         var number = await this.setShelfNo(countProductRequestModel.barcode);
-        this.checkForm.get('qty')?.setValue(Number(number)); //qty alanı dolduruldu
+        this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
         this.alertifyService.success(
           'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
         );
@@ -213,9 +213,9 @@ export class WarehosueShelfCountComponent implements OnInit {
             await this.warehouseService.countProductRequest(
               countProductRequestModel.barcode,
               countProductRequestModel.shelfNo,
-              countProductRequestModel.qty.toString().trim() == ''
+              countProductRequestModel.quantity.toString().trim() == ''
                 ? Number(newResponse[1])
-                : countProductRequestModel.qty,
+                : countProductRequestModel.quantity,
               countProductRequestModel.office,
               countProductRequestModel.warehouseCode,
               countProductRequestModel.batchCode,
@@ -236,9 +236,9 @@ export class WarehosueShelfCountComponent implements OnInit {
               .split(',')
               .filter((raflar) => raflar.trim() !== '');
             if (raflar.length > 0) {
-              if (raflar.includes(countProductRequestModel.shelfNo)) {
+              if (countProductRequestModel.shelfNo.toLowerCase()) {
                 
-                countProductRequestModel.qty = Number(newResponse[1]);
+                countProductRequestModel.quantity = Number(newResponse[1]);
                 this.generalService.beep();
                 await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
                 this.calculateTotalQty();
@@ -251,7 +251,7 @@ export class WarehosueShelfCountComponent implements OnInit {
                     await this.productService.countProductByBarcode(
                       countProductRequestModel.barcode
                     );
-                  countProductRequestModel.qty = Number(newResponse[1]);
+                  countProductRequestModel.quantity = Number(newResponse[1]);
                   await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
                   this.calculateTotalQty();
                   this.clearQrAndBatchCode();
@@ -261,7 +261,7 @@ export class WarehosueShelfCountComponent implements OnInit {
                 }
               }
             } else {
-              countProductRequestModel.qty = Number(newResponse[1]);
+              countProductRequestModel.quantity = Number(newResponse[1]);
               this.generalService.beep();
 
               await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
@@ -279,15 +279,15 @@ export class WarehosueShelfCountComponent implements OnInit {
             var number = await this.setShelfNo(
               countProductRequestModel.barcode
             );
-            this.checkForm.get('qty')?.setValue(Number(number));
+            this.checkForm.get('quantity')?.setValue(Number(number));
 
             var response: ProductCountModel =
               await this.warehouseService.countProductRequest(
                 countProductRequestModel.barcode,
                 countProductRequestModel.shelfNo,
-                countProductRequestModel.qty ===null
+                countProductRequestModel.quantity ===null
                 ? Number(newResponse[1])
-                : countProductRequestModel.qty,
+                : countProductRequestModel.quantity,
                 countProductRequestModel.office,
                 countProductRequestModel.warehouseCode,
                 countProductRequestModel.batchCode,
@@ -303,7 +303,7 @@ export class WarehosueShelfCountComponent implements OnInit {
                 countProductRequestModel.barcode = response.description;
               }
               this.generalService.beep();
-              countProductRequestModel.qty = Number(newResponse[1]);
+              countProductRequestModel.quantity = Number(newResponse[1]);
               await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
               this.calculateTotalQty();
               this.clearQrAndBatchCode();
@@ -312,7 +312,7 @@ export class WarehosueShelfCountComponent implements OnInit {
             var number = await this.setShelfNo(
               countProductRequestModel.barcode
             );
-            this.checkForm.get('qty')?.setValue(Number(number));
+            this.checkForm.get('quantity')?.setValue(Number(number));
             this.alertifyService.success(
               'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
             );
@@ -336,7 +336,7 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.checkForm.get('barcode').setValue(null);
     this.focusNextInput('shelfNo');
     this.shelfNumbers='RAFLAR:'
-    this.checkForm.get('qty').setValue(null);
+    this.checkForm.get('quantity').setValue(null);
   }
   clearQrAndBatchCode() {
     this.checkForm.get('barcode').setValue(null);

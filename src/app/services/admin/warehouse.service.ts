@@ -12,6 +12,7 @@ import { CountListModel } from 'src/app/models/model/product/countListModel';
 import { CollectProduct } from 'src/app/models/model/product/collectProduct';
 import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
 import { CountedProduct } from 'src/app/models/model/product/countedProduct';
+import { FastTransferModel } from 'src/app/models/model/warehouse/fastTransferModel';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +44,7 @@ export class WarehouseService {
       requestModel.orderNo = orderNo;
     requestModel.barcode = barcode;
     requestModel.shelfNo = shelfNo;
-    requestModel.qty = qty.toString() == '' ? 1 : qty;
+    requestModel.quantity = qty.toString() == '' ? 1 : qty;
     requestModel.office = office;
     requestModel.warehouseCode = warehouseCode;
     requestModel.batchCode = batchCode;
@@ -56,6 +57,8 @@ export class WarehouseService {
 
     return response;
   }
+
+  //ofisleri çeker
   async getOfficeCodeList(): Promise<OfficeModel[]> {
     try {
       const data = await this.httpClientService
@@ -71,6 +74,7 @@ export class WarehouseService {
       
     }
   }
+  //depo listesini çeker
   
   async getWarehouseList(value: string): Promise<WarehouseOfficeModel[]> {
     try {
@@ -94,6 +98,7 @@ export class WarehouseService {
     }
   }
   
+  //müşteri listesini çeker
   async getCustomerList(customerType:string ): Promise<CustomerModel[]> {
     try {
       const data = await this.httpClientService
@@ -111,18 +116,27 @@ export class WarehouseService {
     }
   }
 
+  //sayım listesini çeker
   async getCountList():Promise<CountListModel[]>{
     const data =await  this.httpClientService.get<CountListModel>({controller:'Order/GetCountList'}).toPromise();
       return data
   }
 
+  //fatura listesini çeker
   async getInvoiceList():Promise<CountListModel[]>{
     const data =await  this.httpClientService.get<CountListModel>({controller:'Order/GetInvoiceList'}).toPromise();
       return data
   }
 
+  //sayım ürünklerini çeker
   async getProductOfCount(orderNo:string):Promise<CountedProduct[]>{
     const data =await  this.httpClientService.get<CountedProduct>({controller:'Order/GetProductOfCount/'+orderNo}).toPromise();
+      return data
+  }
+
+  //hızlı transfer ekleme
+  async postFastTransfer(model: FastTransferModel):Promise<any>{
+    const data =await  this.httpClientService.post<FastTransferModel>({controller:'Order/AddFastTransfer/'},model).toPromise();
       return data
   }
 }

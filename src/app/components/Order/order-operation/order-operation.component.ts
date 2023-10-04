@@ -24,6 +24,10 @@ import { CollectedProduct } from 'src/app/models/model/product/collectedProduct'
 
 declare var window: any;
 
+
+
+
+
 @Component({
   selector: 'app-order-operation',
   templateUrl: './order-operation.component.html',

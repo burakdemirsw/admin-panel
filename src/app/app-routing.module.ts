@@ -58,6 +58,7 @@ import { CreatePurchaseOrderComponent } from './components/Order/create-purchase
 import { CreateSaleOrderComponent } from './components/Order/create-sale-order/create-sale-order.component';
 import { WarehouseShelfCountListComponent } from './components/Warehouse/warehouse-shelf-count-list/warehouse-shelf-count-list.component';
 import { InvoiceListComponent } from './components/Order/invoice-list/invoice-list.component';
+import { FastTransferComponent } from './components/Warehouse/fast-transfer/fast-transfer.component';
 
 const routes: Routes = [
   // { path: 'alerts', component: AlertsComponent },
@@ -125,6 +126,7 @@ const routes: Routes = [
   { path: 'register', component: PagesRegisterComponent},
   { path: 'warehouse-shelf-count-list', component: WarehouseShelfCountListComponent},
   { path: 'invoice-list', component: InvoiceListComponent},
+  { path: 'fast-transfer', component: FastTransferComponent},
 
   { path: '**', component: PagesError404Component }
 

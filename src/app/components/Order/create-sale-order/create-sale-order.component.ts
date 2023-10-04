@@ -190,9 +190,27 @@ export class CreateSaleOrderComponent implements OnInit {
     }
     this.formModal.show();
   }
-
-
-
+  async deleteOrderProduct(
+    orderNo: string,
+    itemCode: string,
+    shelfNo: string
+  ): Promise<boolean> {
+    const response: boolean = await this.productService.deleteOrderProduct(
+      this.newOrderNumber,
+      itemCode
+    );
+    if (response) {
+      this.invoiceProducts2 = this.invoiceProducts2.filter(
+        (o) => !(o.barcode == itemCode && o.shelfNo == shelfNo)
+      );
+      this.calculateTotalQty();
+      await this.getProductOfInvoice(this.newOrderNumber);
+      this.alertifyService.success('Silme İşlemi Başarılı.');
+    } else {
+      this.alertifyService.error('Silme İşlemi Başarısız.');
+    }
+    return response;
+  }
   async createSaleInvoice():Promise<any> {
 
 
@@ -257,7 +275,7 @@ export class CreateSaleOrderComponent implements OnInit {
          .split(',')
          .filter((raflar) => raflar.trim() !== '');
            
-         if (shelves.includes(model.shelfNo)) { //raf barkod kontolü yapıldı
+         if (shelves.find(S=>S.toLowerCase() == model.shelfNo.toLowerCase())) { //raf barkod kontolü yapıldı
           var response: ProductCountModel = 
           await this.warehouseService.countProductRequest( //sayım
             model.barcode,

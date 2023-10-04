@@ -226,7 +226,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
           .split(',')
           .filter((raflar) => raflar.trim() !==null);
             
-          if (shelves.includes(model.shelfNo)) { //raf barkod kontolü yapıldı
+          if (shelves.find(S=>S.toLowerCase() == model.shelfNo.toLowerCase())) { //raf barkod kontolü yapıldı
             
             var requestModel: CreatePurchaseInvoice = new CreatePurchaseInvoice();
 
@@ -316,6 +316,30 @@ export class CreatePurchaseOrderComponent implements OnInit {
   deleteRow(index: number) {
     this.invoiceProducts.splice(index, 1);
   }
+
+  async deleteOrderProduct(
+    orderNo: string,
+    itemCode: string,
+    shelfNo: string
+  ): Promise<boolean> {
+    const response: boolean = await this.productService.deleteOrderProduct(
+      this.newOrderNumber,
+      itemCode
+    );
+    if (response) {
+      this.invoiceProducts2 = this.invoiceProducts2.filter(
+        (o) => !(o.barcode == itemCode && o.shelfNo == shelfNo)
+      );
+      this.calculateTotalQty();
+      await this.getProductOfInvoice(this.newOrderNumber);
+      this.alertifyService.success('Silme İşlemi Başarılı.');
+    } else {
+      this.alertifyService.error('Silme İşlemi Başarısız.');
+    }
+    return response;
+  }
+
+
 
   checkBarcodeAndShelf(response:any,model :CreatePurchaseInvoice):string[]{
     if (response != undefined) {
