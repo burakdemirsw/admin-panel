@@ -11,6 +11,79 @@
   </div>
 
   <section class="section">
+
+    
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Sipariş Filtreleme</h5>
+        <!-- Filtreleme Alanı (Başlangıç) -->
+        <div class="btn-group mb-3">
+          <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse"
+            aria-expanded="false" aria-controls="filterCollapse">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="collapse" id="filterCollapse">
+          <form  [formGroup]="filterForm" >
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="orderNo">Sipariş Numarası</label>
+                <input type="text" id="orderNo" class="form-control" formControlName="orderNo" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="currAccCode">	Müşteri Kodu</label>
+                <input type="text" id="currAccCode" class="form-control"  formControlName="currAccCode"  />
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="customerName">Müşteri Adı</label>
+                <input type="text" id="customerName" class="form-control" formControlName="customerName"    />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="sellerCode">Satıcı Kodu</label>
+                <input type="text" id="sellerCode" class="form-control" formControlName="sellerCode" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="endDate">İşlem Bitiş Tarihi:</label>
+                <input type="date" id="endDate" class="form-control"  formControlName="endDate"  />
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="startDate">İşlem Başlangıç Tarihi:</label>
+                <input type="date" id="startDate" class="form-control" formControlName="startDate"    />
+              </div>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-4">
+              <button class="btn btn-primary">Filtrele</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- Filtreleme Alanı (Bitiş) -->
+     
+      </div>
+   
+
+    </div>
+
+
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Ürünler</h5>
@@ -51,14 +124,14 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let order of saleOrderModels">
+              <tr *ngFor="let order of saleOrderModels | paginate: { itemsPerPage: 10, currentPage: currentPage } ">
                 <td>{{ order.orderDate }}</td>
                 <td>{{ order.orderNumber }}</td>
                 <td>{{ order.currAccCode }}</td>
                 <td>{{ order.currAccDescription }}</td>
                 <td>{{ order.salespersonCode }}</td>
                 <td>{{ order.qty1 }}</td>
-                <td>{{ order.tutar }}</td>
+                <td>{{ order.price }}</td>
                 <td>
                   <div class="btn-group">
 
@@ -70,6 +143,8 @@
               </tr>
             </tbody>
           </table>
+          <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+
         </div>
       </div>
     </div>

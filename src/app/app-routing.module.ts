@@ -117,7 +117,7 @@ const routes: Routes = [
 
   { path: 'collect-product-of-order/:number', component: CollectProductOfOrderComponent,canActivate:[AuthGuard] },
   { path: 'warehouse-operation', component: WarehouseOperationComponent,canActivate:[AuthGuard] },
-  { path: 'warehouse-operation-confirm', component: WarehouseOperationListComponent ,canActivate:[AuthGuard]},
+  { path: 'warehouse-operation-list', component: WarehouseOperationListComponent ,canActivate:[AuthGuard]},
   { path: 'warehouse-operation-confirm-detail', component: WarehouseOperationConfirmDetailComponent ,canActivate:[AuthGuard]},
   { path: 'warehouse-operation-confirm-detail/:innerNumber', component: WarehouseOperationConfirmDetailComponent ,canActivate:[AuthGuard]},
   { path: 'collected-packages', component: CollectedPackagesComponent ,canActivate:[AuthGuard]},

@@ -12,7 +12,7 @@ import { AlertifyService } from 'src/app/services/ui/alertify.service';
   styleUrls: ['./collected-packages.component.css']
 })
 export class CollectedPackagesComponent implements OnInit {
-
+  currentPage : number = 1;
   numberOfList : number[] = [1,10,20,50,100]
   readyToShipmentPackageModels : ReadyToShipmentPackageModel[]
   constructor(
@@ -24,6 +24,7 @@ export class CollectedPackagesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
     this.spinnerService.show();
     this.getOrders();
     this.spinnerService.hide();

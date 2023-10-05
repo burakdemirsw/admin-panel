@@ -11,6 +11,7 @@ import { AlertifyService } from 'src/app/services/ui/alertify.service';
   styleUrls: ['./warehouse-operation-list.component.css']
 })
 export class WarehouseOperationListComponent implements OnInit {
+  currentPage:number = 1;
   warehouseOperationListModels : WarehouseOperationListModel[]
   constructor(
     private httpClientService: HttpClientService,

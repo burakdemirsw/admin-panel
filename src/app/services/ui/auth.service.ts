@@ -16,7 +16,7 @@ export class AuthService {
     if (username === 'admin' && password === 'admin') {
       // Yönlendirme işlemi burada gerçekleştirilir
       this.alertifyService.success('Giriş başarılı!');
-       this.setSession(30);
+       this.setSession(120);
       //this.isLoggedInFlag = true;
       this.router.navigate(['/dashboard'])
       return true;  

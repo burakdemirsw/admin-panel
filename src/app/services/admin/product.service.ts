@@ -98,6 +98,26 @@ export class ProductService {
       }
     }
 
+    async deleteProductFromFastTransfer(orderNo: string, itemCode: string): Promise<boolean> {
+      try {
+        const requestModel = {
+          orderNumber: orderNo,
+          itemCode: itemCode
+        };
+        
+        const response = await this.httpClientService.post<any>({controller:'Order/DeleteProductFromFastTransfer'},requestModel).toPromise();
+        
+        if (response > 0) {
+          return true;  
+        } else {
+          return false;
+        }
+      } catch (error) {
+        console.error('Hata (90):', error);
+        return false;
+      }
+    }
+    
     //faturanın ürünlerini getirme
     async getProductOfInvoice(orderNo : string):Promise<CreatePurchaseInvoice[]>{
 

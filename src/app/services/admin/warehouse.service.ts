@@ -13,6 +13,7 @@ import { CollectProduct } from 'src/app/models/model/product/collectProduct';
 import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
 import { CountedProduct } from 'src/app/models/model/product/countedProduct';
 import { FastTransferModel } from 'src/app/models/model/warehouse/fastTransferModel';
+import { CountListFilterModel } from 'src/app/models/model/filter/countListFilterModel';
 
 @Injectable({
   providedIn: 'root'
@@ -128,15 +129,30 @@ export class WarehouseService {
       return data
   }
 
-  //sayım ürünklerini çeker
+  //sayım ürünklerini çeker 100 adet
   async getProductOfCount(orderNo:string):Promise<CountedProduct[]>{
     const data =await  this.httpClientService.get<CountedProduct>({controller:'Order/GetProductOfCount/'+orderNo}).toPromise();
       return data
   }
+
+    //sayım ürünklerini filtreli Çeker
+    async GetCountListByFilter(model :CountListFilterModel):Promise<any>{
+      
+      const data =await  this.httpClientService.post<CountListFilterModel>({controller:'Order/GetCountListByFilter/'},model).toPromise();
+        return data
+    }
+
 
   //hızlı transfer ekleme
   async postFastTransfer(model: FastTransferModel):Promise<any>{
     const data =await  this.httpClientService.post<FastTransferModel>({controller:'Order/AddFastTransfer/'},model).toPromise();
       return data
   }
+
+   //hızlı transferin ürünlerini çeker
+   async getGetAllFastTransferModelById(operationId: string):Promise<FastTransferModel[]>{
+    const data =await  this.httpClientService.get<FastTransferModel>({controller:'Order/GetFastTransferModel/'+operationId}).toPromise();
+      return data;
+  }
+
 }

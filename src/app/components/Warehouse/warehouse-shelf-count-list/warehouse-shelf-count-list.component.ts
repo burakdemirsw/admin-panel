@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { CountListFilterModel } from 'src/app/models/model/filter/countListFilterModel';
 import { CountListModel } from 'src/app/models/model/product/countListModel';
 import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
@@ -20,19 +22,23 @@ export class WarehouseShelfCountListComponent implements OnInit {
     private alertifyService: AlertifyService,
     private spinnerService: NgxSpinnerService,
     private router: Router,
+    private formBuilder: FormBuilder,
+
     private warehouseService : WarehouseService,
     private generalService : GeneralService
   ) { }
 
   async ngOnInit() {
     this.spinnerService.show();
+    this.  formGenerator() ;
     await this.getGetCountList();
-
+  
     
     this.spinnerService.hide();
 
   }
   currentPage:number = 1; // Başlangıçta ilk sayfayı göster
+  filterForm: FormGroup;
 
   innerNumberList : string[] = [];
   addInnerNumberToList(innerNumber : string){
@@ -63,4 +69,25 @@ export class WarehouseShelfCountListComponent implements OnInit {
     }
   }
 
+  formGenerator() {
+    this.filterForm = this.formBuilder.group({
+      orderNo: [null, Validators.required],
+      totalProduct: [null, Validators.required],
+      startDate: [null, Validators.required],
+      endDate: [null, Validators.required]
+
+    });
+  }
+
+  async onSubmit(model:CountListFilterModel){
+    this.spinnerService.show()
+    const response =  await this.warehouseService.GetCountListByFilter(model)
+    if(response){
+      this.countList = response;
+      this.spinnerService.hide()
+    }
+  }
+  async filterList(){
+   
+  }
 }

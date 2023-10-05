@@ -42,7 +42,7 @@ export class OrderOperationComponent implements OnInit {
   checkForm: FormGroup;
   activeTab: number = 1;
   warehouseModels: WarehouseOperationDetailModel[] = [];
-  pageDescription: string = '';
+  pageDescription: string = null;
   shelfNumbers: string = 'RAFLAR:';  
 
   currentOrderNo: string;
@@ -130,10 +130,10 @@ export class OrderOperationComponent implements OnInit {
 
   formGenerator() {
     this.checkForm = this.formBuilder.group({
-      barcode: ['', Validators.required],
-      shelfNo: ['', Validators.required],
-      quantity: ['', Validators.required],
-      batchCode: ['', Validators.required],
+      barcode: [null, Validators.required],
+      shelfNo: [null, Validators.required],
+      quantity: [null, Validators.required],
+      batchCode: [null, Validators.required],
     });
   }
   confirmOperation(operationNumberList: string[]) {
@@ -159,7 +159,7 @@ export class OrderOperationComponent implements OnInit {
     var requestModel: CountProductRequestModel = new CountProductRequestModel();
     requestModel.barcode = barcode;
     requestModel.shelfNo = shelfNo;
-    requestModel.qty = qty.toString() == '' ? 1 : qty;
+    requestModel.qty = qty.toString() == null ? 1 : qty;
     requestModel.orderNumber = orderNo;
     var response = await this.httpClient
       .post<ProductCountModel | undefined>(url, requestModel)
@@ -183,11 +183,11 @@ export class OrderOperationComponent implements OnInit {
     //satış faturası alanı------------------------------------------------------------------------ WS
     if (this.currentOrderNo.split('-')[1] === 'WS') {
       if (
-        productModel.shelfNo == '' ||
+        productModel.shelfNo == null ||
         productModel.shelfNo == undefined ||
         productModel.shelfNo == null
       ) {
-        if (productModel.barcode != '') {
+        if (productModel.barcode != null) {
           var number = await this.setShelfNo(productModel.barcode);
           this.checkForm.get("quantity").setValue(Number(number));
         } else {
@@ -195,7 +195,7 @@ export class OrderOperationComponent implements OnInit {
           return;
         }
       } else if (
-        productModel.shelfNo != '' ||
+        productModel.shelfNo != null ||
         productModel.shelfNo != undefined ||
         productModel.shelfNo != null
       ) {
@@ -204,8 +204,8 @@ export class OrderOperationComponent implements OnInit {
         productModel.barcode,
         productModel.shelfNo,
         productModel.quantity,
-        '',
-        '',
+        null,
+        null,
         productModel.batchCode,
         'Order/CountProduct3',this.orderNo,
         productModel.currAccCode
@@ -234,10 +234,10 @@ export class OrderOperationComponent implements OnInit {
           foundProduct.quantity > 1
         ) {
             this.checkForm.get('shelfNo')?.setValue(productModel.shelfNo);
-            this.checkForm.get('quantity')?.setValue('');
+            this.checkForm.get('quantity')?.setValue(null);
 
             foundProduct.quantity -=
-              productModel.quantity.toString() == '' ? 1 : productModel.quantity;
+              productModel.quantity.toString() == null ? 1 : productModel.quantity;
 
             this.collectedProducts.push(productModel);
             this. lastCollectedProducts =await  this.productService.getCollectedOrderProducts(this.orderNo)
@@ -245,25 +245,25 @@ export class OrderOperationComponent implements OnInit {
             
             this.clearBarcodeAndQuantity();
 
-            if (this.checkForm.get('shelfNo').value != '') {
+            if (this.checkForm.get('shelfNo').value != null) {
               this.focusNextInput('barcode');
             } else {
               this.focusNextInput('shelfNo');
             }
         } else if (foundProduct?.quantity === 1) {
-          this.checkForm.get('shelfNo')?.setValue('');
-          this.checkForm.get('quantity')?.setValue('');
+          this.checkForm.get('shelfNo')?.setValue(null);
+          this.checkForm.get('quantity')?.setValue(null);
 
           const index = this.productsToCollect.indexOf(foundProduct);
           this.collectedProducts.push(productModel);
           this. lastCollectedProducts =await  this.productService.getCollectedOrderProducts(this.orderNo)
-          foundProduct.quantity -=   productModel.quantity.toString() == '' ? 1 : productModel.quantity;
+          foundProduct.quantity -=   productModel.quantity.toString() == null ? 1 : productModel.quantity;
          
           this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
           this.clearBarcodeAndQuantity();
 
 
-          if (this.checkForm.get('shelfNo').value != '') {
+          if (this.checkForm.get('shelfNo').value != null) {
             this.focusNextInput('barcode');
           } else {
             this.focusNextInput('shelfNo');
@@ -286,11 +286,11 @@ export class OrderOperationComponent implements OnInit {
     //transfer-------------------------------------------------------------------- WT
     else if (this.currentOrderNo.split('-')[1] === 'WT') {
       if (
-        productModel.shelfNo == '' ||
+        productModel.shelfNo == null ||
         productModel.shelfNo == undefined ||
         productModel.shelfNo == null
       ) {
-        if (productModel.barcode != '') {
+        if (productModel.barcode != null) {
           var number = await this.setShelfNo(productModel.barcode);
           this.checkForm.get("quantity").setValue(Number(number));
         } else {
@@ -306,8 +306,8 @@ export class OrderOperationComponent implements OnInit {
           productModel.barcode,
           productModel.shelfNo,
           productModel.quantity,
-          '',
-          '',
+          null,
+          null,
           productModel.batchCode,
           'Order/CountProduct3',this.orderNo,
           productModel.currAccCode
@@ -333,9 +333,9 @@ export class OrderOperationComponent implements OnInit {
             foundProduct.quantity > 1
           ) {
             this.checkForm.get('shelfNo')?.setValue(productModel.shelfNo);
-            this.checkForm.get('quantity')?.setValue('');
+            this.checkForm.get('quantity')?.setValue(null);
             foundProduct.quantity -=
-              productModel.quantity.toString() == ''
+              productModel.quantity.toString() == null
                 ? 1
                 : productModel.quantity;
             this.collectedProducts.push(foundModel);
@@ -344,16 +344,16 @@ export class OrderOperationComponent implements OnInit {
             this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
             this.clearBarcodeAndQuantity();
 
-            if (this.checkForm.get('shelfNo').value != '') {
+            if (this.checkForm.get('shelfNo').value != null) {
               this.focusNextInput('barcode');
             } else {
               this.focusNextInput('shelfNo');
             }
           } else if (foundProduct?.quantity === 1) {
-            this.checkForm.get('shelfNo')?.setValue('');
-            this.checkForm.get('quantity')?.setValue('');
-            this.checkForm.get('barcode')?.setValue('');
-            if (this.checkForm.get('shelfNo').value != '') {
+            this.checkForm.get('shelfNo')?.setValue(null);
+            this.checkForm.get('quantity')?.setValue(null);
+            this.checkForm.get('barcode')?.setValue(null);
+            if (this.checkForm.get('shelfNo').value != null) {
               this.focusNextInput('barcode');
             } else {
               this.focusNextInput('shelfNo');
@@ -363,13 +363,13 @@ export class OrderOperationComponent implements OnInit {
             this.collectedProducts.push(foundModel);
             this. lastCollectedProducts =await  this.productService.getCollectedOrderProducts(this.orderNo)
             foundProduct.quantity -=
-              productModel.quantity.toString() == ''
+              productModel.quantity.toString() == null
                 ? 1
                 : productModel.quantity;
             this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
             this.clearBarcodeAndQuantity();
 
-            if (this.checkForm.get('shelfNo').value != '') {
+            if (this.checkForm.get('shelfNo').value != null) {
               this.focusNextInput('barcode');
             } else {
               this.focusNextInput('shelfNo');
@@ -398,11 +398,11 @@ export class OrderOperationComponent implements OnInit {
     //alış-------------------------------------------------------------------- BP
     else {
       if (
-        productModel.shelfNo == '' ||
+        productModel.shelfNo == null ||
         productModel.shelfNo == undefined ||
         productModel.shelfNo == null
       ) {
-        if (productModel.barcode != '') {
+        if (productModel.barcode != null) {
           var number = await this.setShelfNo(productModel.barcode);
           this.checkForm.get("quantity").setValue(Number(number));
         } else {
@@ -417,8 +417,8 @@ export class OrderOperationComponent implements OnInit {
           productModel.barcode,
           productModel.shelfNo,
           productModel.quantity,
-          '',
-          '',
+          null,
+          null,
           productModel.batchCode,
           'Order/CountProduct3',this.orderNo,
           productModel.currAccCode
@@ -449,9 +449,9 @@ export class OrderOperationComponent implements OnInit {
             foundProduct.quantity > 1
           ) {
             this.checkForm.get('shelfNo')?.setValue(productModel.shelfNo);
-            this.checkForm.get('quantity')?.setValue('');
+            this.checkForm.get('quantity')?.setValue(null);
             foundProduct.quantity -=
-              productModel.quantity.toString() == ''
+              productModel.quantity.toString() == null
                 ? 1
                 : productModel.quantity;
             if (foundModel2 != undefined) {
@@ -462,7 +462,7 @@ export class OrderOperationComponent implements OnInit {
 
               if (foundModel3 !== undefined) {
                   foundModel3.shelfNo = productModel.shelfNo;
-                  if(productModel.quantity == ''){
+                  if(productModel.quantity == null){
                     productModel.quantity = 1
                   }
                 this.collectedProducts.push(productModel);
@@ -473,14 +473,14 @@ export class OrderOperationComponent implements OnInit {
             this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
             this.clearBarcodeAndQuantity();
 
-            if (this.checkForm.get('shelfNo').value != '') {
+            if (this.checkForm.get('shelfNo').value != null) {
               this.focusNextInput('barcode');
             } else {
               this.focusNextInput('shelfNo');
             }
           } else if (foundProduct?.quantity === 1) {
-            this.checkForm.get('shelfNo')?.setValue('');
-            this.checkForm.get('quantity')?.setValue('');
+            this.checkForm.get('shelfNo')?.setValue(null);
+            this.checkForm.get('quantity')?.setValue(null);
 
             const index = this.productsToCollect.indexOf(foundProduct);
             if (foundModel2 !== undefined) {
@@ -491,7 +491,7 @@ export class OrderOperationComponent implements OnInit {
 
               if (foundModel3 !== undefined) {
                 foundModel3.shelfNo = productModel.shelfNo;
-                if(productModel.quantity == ''){
+                if(productModel.quantity == null){
                   productModel.quantity = 1
                 }
                 this.collectedProducts.push(productModel);
@@ -499,12 +499,12 @@ export class OrderOperationComponent implements OnInit {
               }
             }
             foundProduct.quantity -=
-              productModel.quantity.toString() == ''
+              productModel.quantity.toString() == null
                 ? 1
                 : productModel.quantity;
             this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
             this.clearBarcodeAndQuantity();
-            if (this.checkForm.get('shelfNo').value != '') {
+            if (this.checkForm.get('shelfNo').value != null) {
               this.focusNextInput('barcode');
             } else {
               this.focusNextInput('shelfNo');
@@ -578,7 +578,7 @@ export class OrderOperationComponent implements OnInit {
   }
   shelfNo: string;
   shelfNoList: string[] = [];
-  barcodeValue: string = ''; // Değişkeni tanımlayın
+  barcodeValue: string = null; // Değişkeni tanımlayın
 
 
   async setShelfNo(barcode: string) :Promise<string> {
@@ -593,20 +593,20 @@ export class OrderOperationComponent implements OnInit {
       return result[1];
 
     }else{
-      this.checkForm.get('barcode').setValue('');
+      this.checkForm.get('barcode').setValue(null);
       this.focusNextInput('shelfNo');
       return null;
     }
   }
   clearShelfNumbers() {
-    this.checkForm.get('shelfNo').setValue('');
+    this.checkForm.get('shelfNo').setValue(null);
     this.focusNextInput('barcode');
-    this.checkForm.get('quantity').setValue('');
+    this.checkForm.get('quantity').setValue(null);
 
   }
   clearBarcodeAndQuantity(){
-    this.checkForm.get('barcode').setValue('');
-    this.checkForm.get('quantity').setValue('');
+    this.checkForm.get('barcode').setValue(null);
+    this.checkForm.get('quantity').setValue(null);
   }
   async scanCompleteHandler(result :string) {
     if(result != undefined){

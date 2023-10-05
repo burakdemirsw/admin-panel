@@ -42,7 +42,7 @@
                                     <div class="row mb-1">
 
                                         <div class="form-group col">
-                                            <label for="office">Gelen Ofis</label>
+                                            <label for="office">Hangi Ofisden</label>
                                             <select id="office" class="form-control" formControlName="office"
                                                 (change)="getSelectedOffice(1)">
                                                 <option>M</option>
@@ -51,7 +51,7 @@
                                         </div>
 
                                         <div class="form-group col">
-                                            <label for="warehouseCode">Gelen Depo</label>
+                                            <label for="warehouseCode">Hangi Depoya</label>
                                             <select id="warehouseCode" class="form-control"
                                                 formControlName="warehouseCode">
                                                 <option *ngFor="let warehouse of warehouseModels"
@@ -83,7 +83,7 @@
 
                                     <div class="row mb-1">
                                         <div class="form-group">
-                                            <label for="barcode">Barkod:</label>
+                                            <label for="barcode">Barkod</label>
 
                                             <input type="text" id="barcode" class="form-control"
                                                 formControlName="barcode" (keydown.enter)="onSubmit(checkForm.value)"
@@ -97,17 +97,17 @@
 
                                         <div class="form-group col">
                                             <div class="form-group">
-                                                <label for="quantity">Miktar:</label>
+                                                <label for="quantity">Miktar</label>
 
-                                                <input type="number" id="quantity" class="form-control" formControlName="quantity"
-                                                    [disabled]="checkForm.disabled" />
+                                                <input type="number" id="quantity" class="form-control"
+                                                    formControlName="quantity" [disabled]="checkForm.disabled" />
                                             </div>
                                         </div>
 
 
                                         <div class="form-group col">
                                             <div class="form-group">
-                                                <label for="batchCode">Parti:</label>
+                                                <label for="batchCode">Parti</label>
 
                                                 <input type="text" id="batchCode" class="form-control"
                                                     formControlName="batchCode"
@@ -137,16 +137,6 @@
 
                                         </div>
                                     </div>
-
-
-
-
-
-
-
-
-
-
 
                                 </form>
                             </div>

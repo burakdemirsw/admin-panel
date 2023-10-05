@@ -44,7 +44,7 @@ export class SessionService {
   // ... (diğer metodlar aynı kalacak)
 
   // Oturumun hala geçerli olup olmadığını kontrol eden fonksiyon
-  isSessionValid(): boolean {
+  async isSessionValid(): Promise<boolean>{
     const expirationDate = localStorage.getItem(this.sessionExpirationKey);
 
     if (expirationDate) {
@@ -62,8 +62,26 @@ export class SessionService {
 
       // this.setSession(60); // Oturum verisi yoksa, yeni bir oturum oluştur (örneğin, 30 dakika)
       this.clearSession(); // Oturum süresi dolmuş, oturumu temizle
-      this.router.navigate(['/pages-login']); // Oturum oluşturulduktan sonra kullanıcıyı dashboard sayfasına yönlendir
+      this.delayAndNavigate();
+
       return true; // Oturum oluşturuldu, dolayısıyla oturum hala geçerli
     }
   }
+
+  async delayAndNavigate() {
+    // 2 saniye (2000 milisaniye) bekleyin
+    this.alertifyService.warning('Oturum Süreniz Doldu');
+
+  
+    // Konsola mesaj yazdırın
+  
+    // Sayfayı yönlendirin
+    this.router.navigate(['/pages-login']);
+  }
+
+  delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+
 }

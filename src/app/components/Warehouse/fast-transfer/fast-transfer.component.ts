@@ -22,18 +22,15 @@ import { CollectProduct } from 'src/app/models/model/product/collectProduct';
 import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
 import { FastTransferModel } from 'src/app/models/model/warehouse/fastTransferModel';
 
-
 declare var window: any;
-
 
 @Component({
   selector: 'app-fast-transfer',
   templateUrl: './fast-transfer.component.html',
-  styleUrls: ['./fast-transfer.component.css']
+  styleUrls: ['./fast-transfer.component.css'],
 })
 export class FastTransferComponent implements OnInit {
-
-  lastCollectedProducts : CollectedProduct[] = []
+  lastCollectedProducts: CollectedProduct[] = [];
   productsToCollect: FastTransferModel[];
   collectedProducts: FastTransferModel[] = [];
   process: boolean = false;
@@ -41,7 +38,7 @@ export class FastTransferComponent implements OnInit {
   activeTab: number = 1;
   warehouseModels: WarehouseOperationDetailModel[] = [];
   pageDescription: string = null;
-  shelfNumbers: string = 'RAFLAR:';  
+  shelfNumbers: string = 'RAFLAR:';
 
   currentOrderNo: string;
   private codeReader: BrowserMultiFormatReader;
@@ -56,11 +53,9 @@ export class FastTransferComponent implements OnInit {
     private spinnerService: NgxSpinnerService,
     private productService: ProductService,
     private warehouseService: WarehouseService,
-    private generalService : GeneralService
+    private generalService: GeneralService
   ) {
-
     this.codeReader = new BrowserMultiFormatReader();
-
   }
   orderNo: string;
 
@@ -68,11 +63,14 @@ export class FastTransferComponent implements OnInit {
   url2: string = ClientUrls.baseUrl + '/Order/CountTransferProductPuschase';
   async ngOnInit() {
     this.spinnerService.show();
-    this.currentOrderNo = (await this.generalService.generateGUID()).toString();
-    this.spinnerService.hide();
     this.formGenerator();
+    this.currentOrderNo = (await this.generalService.generateGUID()).toString();
+    this.collectedProducts =
+      await this.warehouseService.getGetAllFastTransferModelById(
+        this.currentOrderNo
+      );
+    this.spinnerService.hide();
   }
-
 
   // async getCollectedProducts(
   //   orderNo: string,
@@ -86,6 +84,17 @@ export class FastTransferComponent implements OnInit {
   //   // );
   //   this.productsToCollect =productData
   // }
+
+  totalCount: number = 0;
+  calculateTotalQty() {
+    //toplanan ürünler yazısı için
+    let totalQty = 0;
+    this.collectedProducts.forEach((item) => {
+      totalQty += item.quantity;
+    });
+    this.totalCount = totalQty;
+  }
+
   focusNextInput(nextInputId: string) {
     const nextInput = document.getElementById(nextInputId) as HTMLInputElement;
     if (nextInput) {
@@ -103,10 +112,9 @@ export class FastTransferComponent implements OnInit {
     this.checkForm = this.formBuilder.group({
       barcode: [null, Validators.required],
       shelfNo: [null, Validators.required],
-      quantity: [null, Validators.required],
-      batchCode: [null, Validators.required],
+      quantity: [null],
+      batchCode: [null],
       targetShelfNo: [null, Validators.required],
-
     });
   }
   confirmOperation(operationNumberList: string[]) {
@@ -116,11 +124,9 @@ export class FastTransferComponent implements OnInit {
   }
 
   collectAndPack(list: ProductOfOrder[]) {
-   
-      this.orderService.collectAndPack(list, this.currentOrderNo);
-    
-      return null;
-    
+    this.orderService.collectAndPack(list, this.currentOrderNo);
+
+    return null;
   }
   async countProductRequest(
     barcode: string,
@@ -154,28 +160,64 @@ export class FastTransferComponent implements OnInit {
 
   async onSubmit(transferModel: FastTransferModel): Promise<any> {
     transferModel.operationId = this.currentOrderNo;
-      if (
- 
-        transferModel.shelfNo == null
-      ) {
-        if (transferModel.barcode != null) {
-          var number = await this.setShelfNo(transferModel.barcode);
-          this.checkForm.get("quantity").setValue(Number(number));
-        } else {
-          this.alertifyService.warning('Formu Doldurunuz.');
-          return;
-        }
-      } else if (
-     
-        transferModel.shelfNo != null
-      ) {
+    if (transferModel.shelfNo == null || transferModel.shelfNo.trim() == '') {
+      if (transferModel.barcode != null || transferModel.barcode.trim() == '') {
+        var number = await this.setShelfNo(transferModel.barcode);
+        this.checkForm.get('quantity').setValue(Number(number));
+      } else {
+        this.alertifyService.warning('Formu Doldurunuz.');
+        return;
       }
-      var response = await this.warehouseService.postFastTransfer(
-        transferModel
-      );
-   
-      this.collectedProducts.push(transferModel);
- 
+    } else if (transferModel.shelfNo != null) {
+      this.alertifyService.warning(this.checkForm.valid.toString())
+      if (this.checkForm.valid === true) {
+        var newResponse = await this.productService.countProductByBarcode(
+          transferModel.barcode
+        );
+
+        const shelves = newResponse[0]
+          .split(',')
+          .filter((raflar) => raflar.trim() !== '');
+
+        if (shelves.includes(transferModel.shelfNo)) {
+          var response = await this.warehouseService.postFastTransfer(
+            transferModel
+          );
+
+          //this.collectedProducts.push(transferModel);
+          //bu alanda sp yazılcak
+          this.collectedProducts =
+            await this.warehouseService.getGetAllFastTransferModelById(
+              transferModel.operationId
+            );
+          this.generalService.beep();
+
+          //form temizleme işlemi yapılcak
+          this.clearForm();
+        } else {
+          if (
+            confirm(
+              'Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?'
+            )
+          ) {
+            var number = await this.setShelfNo(transferModel.barcode);
+            this.checkForm.get('quantity')?.setValue(Number(number));
+            //this.collectedProducts.push(transferModel);
+            //bu alanda sp yazılcak
+            this.collectedProducts =
+              await this.warehouseService.getGetAllFastTransferModelById(
+                transferModel.operationId
+              );
+            this.generalService.beep();
+
+            //form temizleme işlemi yapılcak
+            this.clearForm();
+          }
+        }
+      }
+    } else {
+      this.alertifyService.error('Form Geçerli Değil');
+    }
   }
   confirmedProductPackageNoList: string[] = [];
 
@@ -199,26 +241,22 @@ export class FastTransferComponent implements OnInit {
     }
   }
 
-  addAllSelectedProductsToList() {
-   
-  }
+
   shelfNo: string;
   shelfNoList: string[] = [];
   barcodeValue: string = null; // Değişkeni tanımlayın
 
-
-  async setShelfNo(barcode: string) :Promise<string> {
+  async setShelfNo(barcode: string): Promise<string> {
     this.shelfNumbers = 'RAFLAR:';
 
     if (barcode.length > 20) {
-      var result : string[]= await this.productService.countProductByBarcode(
+      var result: string[] = await this.productService.countProductByBarcode(
         barcode
       );
 
       this.shelfNumbers += result[0];
       return result[1];
-
-    }else{
+    } else {
       this.checkForm.get('barcode').setValue(null);
       this.focusNextInput('shelfNo');
       return null;
@@ -226,31 +264,27 @@ export class FastTransferComponent implements OnInit {
   }
   clearShelfNumbers() {
     this.checkForm.get('shelfNo').setValue(null);
+    this.checkForm.get('targetShelfNo').setValue(null);
     this.focusNextInput('barcode');
     this.checkForm.get('quantity').setValue(null);
-
   }
-  clearBarcodeAndQuantity(){
+  clearForm() {
     this.checkForm.get('barcode').setValue(null);
     this.checkForm.get('quantity').setValue(null);
+    this.checkForm.get('batchCode').setValue(null);
+    this.focusNextInput('barcode');
+    this.calculateTotalQty()
   }
-  async scanCompleteHandler(result :string) {
-    if(result != undefined){
-      try {
-        this.alertifyService.success(result)
-  
-  
-      } catch (error) {
-        this.alertifyService.error(error.message);
-      }
-    }
-    
-  }
-  async deleteOrderProduct(orderNo :string , itemCode : string):Promise<boolean>
-  {
-    return false
-  }
-  
+  async deleteCountProduct(
+    orderNo: string,
+    itemCode: string
+  ): Promise<boolean> {
 
-
+   const result = await this.productService.deleteProductFromFastTransfer(this.currentOrderNo,itemCode);
+   this.collectedProducts =
+            await this.warehouseService.getGetAllFastTransferModelById(
+              this.currentOrderNo
+            );
+    return false;
+  }
 }

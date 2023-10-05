@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Observable } from 'rxjs';
@@ -18,24 +19,40 @@ export class OrderManagamentComponent implements OnInit {
 
   numberOfList : number[] = [1,10,20,50,100]
   saleOrderModels : SaleOrderModel[]
-
+  currentPage : number = 1;
   constructor(
     private httpClientService: HttpClientService,
     private alertifyService: AlertifyService,
     private spinnerService: NgxSpinnerService,
     private router : Router,
-    private orderService : OrderService
+    private orderService : OrderService,
+    private formBuilder : FormBuilder
 
   ) { }
+  filterForm: FormGroup;
 
   async ngOnInit() {
     this.spinnerService.show();
+    this.formGenerator()
     await this.getOrders();
     this.spinnerService.hide();
 
 
   }
   productsToCollect: ProductOfOrder[];
+
+  formGenerator() {
+    this.filterForm = this.formBuilder.group({
+      orderNo: [null],
+      currAccCode: [null], // Add other form controls here
+      customerName: [null],
+      sellerCode: [null],
+      startDate: [null],
+      endDate: [null],
+    });
+  }
+
+
 
 //toplanan ürünler sayfasına akatarır fakat önce ilgili siparişin içeriğinden paketNo'değerini çeker.
   async routeToCPP() {

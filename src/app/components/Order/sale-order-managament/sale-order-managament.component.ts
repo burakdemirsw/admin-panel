@@ -16,7 +16,7 @@ export class SaleOrderManagamentComponent implements OnInit {
 
   numberOfList : number[] = [1,10,20,50,100]
   saleOrderModels : SaleOrderModel[]
-
+  currentPage:number = 1; 
   constructor(
     private httpClientService: HttpClientService,
     private alertifyService: AlertifyService,

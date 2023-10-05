@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CountListModel } from 'src/app/models/model/product/countListModel';
@@ -19,20 +20,36 @@ export class InvoiceListComponent implements OnInit {
     private spinnerService: NgxSpinnerService,
     private router: Router,
     private warehouseService : WarehouseService,
-    private generalService : GeneralService
+    private generalService : GeneralService,
+        private formBuilder : FormBuilder
+
   ) { }
 
   async ngOnInit() {
     this.spinnerService.show();
     await this.getInvoiceList();
 
-    
+    this.formGenerator();
     this.spinnerService.hide();
 
   }
   currentPage:number = 1; // Başlangıçta ilk sayfayı göster
 
   innerNumberList : string[] = [];
+  filterForm: FormGroup;
+
+  formGenerator() {
+    this.filterForm = this.formBuilder.group({
+      orderNo: [null],
+      currAccCode: [null], // Add other form controls here
+      invoiceType: [null],
+      startDate: [null],
+      endDate: [null],
+    });
+  }
+
+
+
   addInnerNumberToList(innerNumber : string){
     if (!this.innerNumberList.includes(innerNumber)) {
       this.innerNumberList.push(innerNumber);

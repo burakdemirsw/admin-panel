@@ -3,6 +3,7 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from
 import { AuthService } from '../services/ui/auth.service';
 import { AlertifyService } from '../services/ui/alertify.service';
 import { SessionService } from '../services/ui/session.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Injectable({
   providedIn: 'root'
@@ -13,13 +14,14 @@ export class AuthGuard implements CanActivate {
     private authService: AuthService,
     private router: Router,
     private alertifyService: AlertifyService,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private spinnerService : NgxSpinnerService
   ) {}
 
-  canActivate(
+  async canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): boolean {
+  ): Promise<boolean>{
     
       if (this.sessionService.isSessionValid()) { 
  
@@ -29,8 +31,27 @@ export class AuthGuard implements CanActivate {
       }
     
 
-    // Redirect to login page if not logged in or session expired
-    this.router.navigate(['/pages-login']);
-    return false;
+      await this.delayAndNavigate();
+    return false;  
   }
+
+  async delayAndNavigate() {
+    // 2 saniye (2000 milisaniye) bekleyin
+    this.spinnerService.show()
+    this.alertifyService.warning('Oturum Süreniz Doldu');
+ 
+    this.spinnerService.hide();
+  
+    // Konsola mesaj yazdırın
+  
+    // Sayfayı yönlendirin
+    this.router.navigate(['/pages-login']);
+  }
+
+  delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+
+  
 }

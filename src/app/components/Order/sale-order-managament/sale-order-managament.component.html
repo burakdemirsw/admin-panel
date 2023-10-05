@@ -51,14 +51,14 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let order of saleOrderModels">
+                <tr *ngFor="let order of saleOrderModels | paginate: { itemsPerPage: 10, currentPage: currentPage } ">
                   <td>{{ order.orderDate }}</td>
                   <td>{{ order.orderNumber }}</td>
                   <td>{{ order.currAccCode }}</td>
                   <td>{{ order.currAccDescription }}</td>
                   <td>{{ order.salespersonCode }}</td>
                   <td>{{ order.qty1 }}</td>
-                  <td>{{ order.tutar }}</td>
+                  <td>{{ order.price }}</td>
                   <td>
                     <div class="btn-group">
   
@@ -70,6 +70,8 @@
                 </tr>
               </tbody>
             </table>
+            <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>  
+
           </div>
         </div>
       </div>

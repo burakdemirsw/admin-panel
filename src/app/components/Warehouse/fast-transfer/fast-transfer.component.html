@@ -17,7 +17,7 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Hızlı Transfer Paneli</h5>
-              <ul class="nav nav-tabs nav-justified mb-1" id="ex1" role="tablist">
+              <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
                 <!-- <li class="nav-item" role="presentation">
                                     <a class="nav-link active" [class.active]="activeTab === 1" (click)="activeTab = 1">Raf
                                         Düzenleme</a>
@@ -33,14 +33,14 @@
                   <form [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)">
 
                     <!-- Alınacak Ürün -->
-                    <div class="row mb-1">
+                    <div class="row mb-3">
                       <div class="col-md-12">
                         <h5>Alınacak Ürün</h5>
                         <hr>
                       </div>
                     </div>
                   
-                    <div class="row mb-1">
+                    <div class="row mb-3">
                       <div class="form-group">
                         <label for="shelfNo">Raf No:</label>
                         <div class="input-group">
@@ -57,7 +57,7 @@
                     </div>
         
                   
-                    <div class="row mb-1">
+                    <div class="row mb-3">
                       <div class="form-group col">
                         <label for="barcode">Barkod:</label>
                         <input type="text" id="barcode" class="form-control" formControlName="barcode"
@@ -65,14 +65,14 @@
                       </div>
                     </div>
                   
-                    <div class="row mb-1">
+                    <div class="row mb-3">
                       <div class="form-group col">
                         <label for="quantity">Miktar:</label>
                         <input type="number" id="quantity" class="form-control" formControlName="quantity" />
                       </div>
                     </div>
                   
-                    <div class="row mb-1">
+                    <div class="row mb-3">
                       <div class="form-group col">
                         <label for="batchCode">Parti:</label>
                         <input type="text" id="batchCode" class="form-control" formControlName="batchCode" />
@@ -82,21 +82,21 @@
                   
                   
                     <!-- Gönderilecek Raf -->
-                    <div class="row mb-1">
+                    <div class="row mb-3">
                       <div class="col-md-12">
                         <h5>Gönderilecek Raf</h5>
                         <hr>
                       </div>
                     </div>
                   
-                    <div class="row mb-1">
+                    <div class="row mb-3">
                       <div class="form-group col">
-                        <label for="targetShelf">Raf:</label>
-                        <input type="text" id="targetShelf" class="form-control" formControlName="targetShelf" />
+                        <label for="targetShelfNo">Raf:</label>
+                        <input type="text" id="targetShelfNo" class="form-control" formControlName="targetShelfNo" />
                       </div>
                     </div>
 
-                    <div class="row mb-1">
+                    <div class="row mb-3">
                       <div class="col-md-12">
                         <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 1%;" (click)="onSubmit(checkForm.value)">Ekle</button>
                       </div>
@@ -104,13 +104,13 @@
 
 
                   
-                    <!-- <div class="row mb-1">
+                    <!-- <div class="row mb-3">
                       <div class="col-md-12">
                         <button type="button" class="btn btn-dark" (click)="addAllSelectedProductsToList()" style="width: 100%;">Seçilenleri Ekle</button>
                       </div>
                     </div>
                   
-                    <div class="row mb-1">
+                    <div class="row mb-3">
                       <div class="col-md-12">
                         <button type="button" class="btn btn-success" (click)="collectAndPack(this.collectedProducts)" style="width: 100%;">Toplananları Faturalaştır</button>
                       </div>
@@ -132,70 +132,18 @@
   
           
   
-          <div class="card" *ngIf="productsToCollect.length > 0">
-            <div class="card-body">
-              <h5 class="card-title">Toplanacak Ürünler</h5>
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th scope="col">Seç</th>
-  
-                      <th scope="col">Fotoğraf</th>
-  
-                      <th scope="col">Raf Numarası</th>
-                      <th scope="col">Barkod</th>
-                      <th scope="col">Miktar</th>
-                      <th scope="col">Parti</th>
-                      <th scope="col">Hedef Raf</th>
-                     
-                      <th scope="col">Sil</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let product of productsToCollect; let i = index"
-                      >
-                      <td>
-                        <input class="form-check-input" type="checkbox" id="pi{{product.barcode}}"
-                          (change)="addProductToList(product.barcode)" />
-                      </td>
-  
-                      <td>
-                        <img src="null" alt="Resim" width="50" height="50"
-                          (click)="openImageModal(null)">
-  
-                      </td>
-  
-                      <td>{{ product.shelfNo }}</td>
-                      <td>{{ product.barcode }}</td>
-                      <td>{{ product.quantity }}</td>
-                      <td>{{ product.batchCode }}</td>
-                      <td>{{ product.targetShelfNo }}</td>
-                    
-                      <td><button class="btn btn-danger" type="submit" (click)="deleteOrderProduct(orderNo,product.barcode)">Sil </button></td>              
-                        </tr>
-                  </tbody>
-  
-                </table>
-  
-  
-  
-              </div>
-            </div>
-          </div>
-  
           <!-- Yeni kart: Toplanan Ürünler -->
-          <div class="card text-center">
+          <div class="card text-center" *ngIf="totalCount > 0">
             <div class="card-body">
               <h5 class="card-title">Toplanan Ürünler</h5>
-              <h1 class="display-1">{{ collectedProducts.length }}</h1>
+              <h1 class="display-1">{{ totalCount}}</h1>
               <!--eklenen ürün miktarı yazcak! -->
   
               <p class="card-text">Adet Ürün Toplandı</p>
             </div>
           </div>
   
-          <div class="card" *ngIf="lastCollectedProducts.length > 0">
+          <div class="card" *ngIf="collectedProducts.length > 0">
             <div class="card-body">
               <h5 class="card-title">Toplanan Ürünler</h5>
               <div class="table-responsive">
@@ -205,29 +153,31 @@
                       <th scope="col">Id</th>
                       <th scope="col">Fotoğraf</th>
                       <th scope="col">Raf Numarası</th>
-                      <th scope="col">Ürün Kodu</th>
-                      <th scope="col">Miktar</th>     
                       <th scope="col">Barkod</th>                    
-                      <th scope="col">Sil</th>
+                      <th scope="col">Miktar</th>     
+                      <th scope="col">Parti</th>
+                      <th scope="col">Hedef Raf</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let product of lastCollectedProducts; let i = index"
+                    <tr *ngFor="let product of collectedProducts; let i = index"
                      >
                       <td>
-                       {{i}}
+                       {{i+1}}
                       </td>
   
                       <td>
-                        <img src="{{product.photoUrl}}" alt="Resim" width="50" height="50"
-                          (click)="openImageModal(product.photoUrl)">
+                        <img src="null" alt="Resim" width="50" height="50"
+                          (click)="openImageModal(null)">
   
                       </td>
                       <td>{{ product.shelfNo }}</td>
-                      <td>{{ product.itemCode }}</td>
-                      <td>{{ product.quantity }}</td>           
                       <td>{{ product.barcode }}</td>
-                      <td><button class="btn btn-danger" type="submit" (click)="deleteOrderProduct(orderNo,product.itemCode)">Sil </button></td>
+                      <td>{{ product.quantity }}</td>
+                      <td>{{ product.batchCode }}</td>        
+                      <td>{{ product.targetShelfNo }}</td>           
+   
+                      <td><button class="btn btn-danger" type="submit" (click)="deleteCountProduct(orderNo,product.barcode)">Sil </button></td>
                     </tr>
                   </tbody>
   

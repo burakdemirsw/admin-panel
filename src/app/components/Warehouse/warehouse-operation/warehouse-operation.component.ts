@@ -24,9 +24,9 @@ export class WarehouseOperationComponent implements OnInit {
   warehoseModel: WarehouseModel[];
   warehouseForm: FormGroup;
   isDisabled: boolean = true;
-  qrCode: string = '';
+  qrCode: string = null;
 
-  currentBarcode: string = '';
+  currentBarcode: string = null;
   warehousePackageDetails: WarehouseModel[] = [];
   constructor(
     private httpClientService: HttpClientService,
@@ -44,10 +44,10 @@ export class WarehouseOperationComponent implements OnInit {
   warehouseModels: WarehouseOfficeModel[] = [];
   warehouseModels2: WarehouseOfficeModel[] = [];
   barcodeModel: BarcodeModel = new BarcodeModel();
-  shelfNo: string = '';
-  colorCode: string = '';
-  itemDim1Code: string = '';
-  itemCode: string = '';
+  shelfNo: string = null;
+  colorCode: string = null;
+  itemDim1Code: string = null;
+  itemCode: string = null;
   party: string;
   officeModels: OfficeModel[] = [];
   ngOnInit(): void {
@@ -76,10 +76,10 @@ export class WarehouseOperationComponent implements OnInit {
         itemDim1Code: [this.itemDim1Code, Validators.required],
         party: [this.party, Validators.required],
         itemCode: [this.itemCode, Validators.required],
-        office: ['', Validators.required],
-        officeTo: ['', Validators.required],
-        warehouse: ['', Validators.required],
-        warehouseTo: ['', Validators.required],
+        office: [null, Validators.required],
+        officeTo: [null, Validators.required],
+        warehouse: [null, Validators.required],
+        warehouseTo: [null, Validators.required],
       });
     } catch (error: any) {
       alert(error.message);
@@ -118,7 +118,7 @@ export class WarehouseOperationComponent implements OnInit {
           'office'
         ) as HTMLSelectElement;
 
-        value = selectElement.value == '' ? 'M' : selectElement.value;
+        value = selectElement.value == null ? 'M' : selectElement.value;
         this.httpClientService
           .get<WarehouseOfficeModel>({
             controller: 'Warehouse/GetWarehouseModel/' + value,
@@ -131,7 +131,7 @@ export class WarehouseOperationComponent implements OnInit {
           'officeTo'
         ) as HTMLSelectElement;
 
-        value = selectElement.value == '' ? 'M' : selectElement.value;
+        value = selectElement.value == null ? 'M' : selectElement.value;
         this.httpClientService
           .get<WarehouseOfficeModel>({
             controller: 'Warehouse/GetWarehouseModel/' + value,
@@ -221,7 +221,7 @@ export class WarehouseOperationComponent implements OnInit {
     this.getProductByBarcode(selectElement.value);
   }
 
-  barcode: string = '';
+  barcode: string = null;
 
   async getProductByBarcode(value: string): Promise<boolean> {
     try {
@@ -269,7 +269,7 @@ export class WarehouseOperationComponent implements OnInit {
   warehouseTransferForms: WarehouseFormModel[] = [];
 
   async onSubmit(formValue: WarehouseFormModel): Promise<any> {
-    if (!formValue.shelfNo || formValue.shelfNo.trim() === '') {
+    if (!formValue.shelfNo || formValue.shelfNo.trim() === null) {
       this.alertifyService.error('Raf No alanı boş olamaz!');
       return;
     }
@@ -290,8 +290,8 @@ export class WarehouseOperationComponent implements OnInit {
           this.alertifyService.success('Stok Miktarı Güncellendi!');
           
           this.warehouseForm.patchValue({
-            shelfNo: '',
-            barcode: '',
+            shelfNo: null,
+            barcode: null,
           });
 
           this.focusNextInput('shelfNo');
@@ -316,7 +316,7 @@ export class WarehouseOperationComponent implements OnInit {
             ).value,
             colorCode:this.warehouseForm.get("colorCode").value,
             itemDim1Code:
-              formValue.itemDim1Code == '' ? '' : formValue.itemDim1Code,
+              formValue.itemDim1Code == null ? null : formValue.itemDim1Code,
           };
           //console.log(newWarehousePackageDetail);
 
@@ -344,10 +344,10 @@ export class WarehouseOperationComponent implements OnInit {
   }
   resetForm() {
     this.warehouseForm.patchValue({
-      shelfNo: '',
-      barcode: '',
-      party: '',
-      itemCode: '',
+      shelfNo: null,
+      barcode: null,
+      party: null,
+      itemCode: null,
     });
   }
   warehosueModel: WarehouseModel = new WarehouseModel();

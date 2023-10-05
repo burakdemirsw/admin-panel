@@ -11,9 +11,62 @@
   </div>
 
   <section class="section">
+
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Transfer Filtreleme</h5>
+        <!-- Filtreleme Alanı (Başlangıç) -->
+        <div class="btn-group mb-3">
+          <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse"
+            aria-expanded="false" aria-controls="filterCollapse">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="collapse" id="filterCollapse">
+          <form >
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="orderNo">İç Numara</label>
+                <input type="text" id="orderNo" class="form-control" formControlName="orderNo" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="endDate">İşlem Bitiş Tarihi:</label>
+                <input type="date" id="endDate" class="form-control"  formControlName="endDate"  />
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="startDate">İşlem Başlangıç Tarihi:</label>
+                <input type="date" id="startDate" class="form-control" formControlName="startDate"    />
+              </div>
+            </div>
+          </div>
+         
+          <div class="row mt-2">
+            <div class="col-md-4">
+              <button class="btn btn-primary">Filtrele</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- Filtreleme Alanı (Bitiş) -->
+     
+      </div>
+   
+
+    </div>
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Transfer İşlemleri</h5>
+
+        
+
         <!-- <a class="btn btn-success" data-bs-toggle="dropdown">+Opertions </a>
         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
           <li><a class="dropdown-item">Add New Product</a></li>
@@ -54,7 +107,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let operation of warehouseOperationListModels">
+              <tr *ngFor="let operation of warehouseOperationListModels  | paginate: { itemsPerPage: 10, currentPage: currentPage } ">
                 <td><input class="form-check-input" type="checkbox" value="" (click)="addInnerNumberToList(operation.innerNumber)"></td>
 
                 <td>{{ operation.operationDate }}</td> 
@@ -76,6 +129,8 @@
               </tr>
             </tbody>
           </table>
+          <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+
         </div>
       </div>
     </div>

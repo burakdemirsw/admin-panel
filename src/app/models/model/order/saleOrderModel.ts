@@ -5,5 +5,5 @@ export class SaleOrderModel {
   currAccDescription: string;
   salespersonCode: string;
   qty1: number;
-  tutar: number;
+  price: number;
 }
