@@ -100,7 +100,7 @@ export class CreateSaleOrderComponent implements OnInit {
   }
   
   async getCustomerList(): Promise<void> {
-    this.customerList = await this.warehouseService.getCustomerList('1');
+    this.customerList = await this.warehouseService.getCustomerList('3');
   }
   
   async getSelectedOffice(): Promise<any> {
@@ -137,7 +137,7 @@ export class CreateSaleOrderComponent implements OnInit {
   clearShelfNumbers() {
     this.productForm.get('shelfNo').setValue('');
     this.productForm.get('barcode').setValue('');
-    this.focusNextInput('shelfNo');
+    this.focusNextInput('barcode');
     this.shelfNumbers='RAFLAR:'
     this.productForm.get('quantity').setValue('');
   }
@@ -177,6 +177,8 @@ export class CreateSaleOrderComponent implements OnInit {
       barcode: '',
       quantity: null,
     });
+    this.focusNextInput('barcode');
+    this.shelfNumbers = 'RAFLAR:'
   }
 
   modalImageUrl: string;
@@ -243,7 +245,7 @@ export class CreateSaleOrderComponent implements OnInit {
          );
          this.shelfNumbers += result[0];
          this.productForm.get('quantity').setValue(result[1]);
-
+          this.focusNextInput('shelfNo');
          return;
       
    } else {
@@ -351,7 +353,7 @@ export class CreateSaleOrderComponent implements OnInit {
 
      this.clearFormFields();
 
-     this.focusNextInput('barcode');
+
      this.generalService.beep();
      this.alertifyService.success('Ürün Başarılı Şekilde Eklendi.');
    } else {

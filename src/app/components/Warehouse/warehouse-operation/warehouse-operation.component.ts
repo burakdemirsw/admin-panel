@@ -13,6 +13,7 @@ import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { GeneralService } from 'src/app/services/admin/general.service';
+import { ProductService } from 'src/app/services/admin/product.service';
 
 @Component({
   selector: 'app-warehouse-operation',
@@ -38,7 +39,8 @@ export class WarehouseOperationComponent implements OnInit {
     private shelfService: ShelfService,
     private router: Router,
     private generalService : GeneralService,
-    
+    private productService : ProductService,
+
   ) {}
   selectedOffice: string; // Add this line
   warehouseModels: WarehouseOfficeModel[] = [];
@@ -145,25 +147,10 @@ export class WarehouseOperationComponent implements OnInit {
     }
   }
 
-  generateGUID(): string {
-    function generateUUID() {
-      let dt = new Date().getTime();
-      const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
-        /[xy]/g,
-        function (c) {
-          const r = (dt + Math.random() * 16) % 16 | 0;
-          dt = Math.floor(dt / 16);
-          return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
-        }
-      );
-      return uuid;
-    }
-
-    return generateUUID();
-  }
+ 
   generateAndSetGUID() {
     try {
-      const generatedGUID = this.generateGUID();
+      const generatedGUID = this.generalService.generateGUID();
       this.qrCode = generatedGUID.toString();
       this.warehouseForm.patchValue({
         qrString: this.qrCode,
@@ -179,7 +166,7 @@ export class WarehouseOperationComponent implements OnInit {
     this.getShelfByQrDetail(value);
   }
 
-  async transferToNebim(formValue: WarehouseFormModel[]) {
+  async transferToNebim(formValue: WarehouseFormModel[]) { //depo servise yolla bu fonksiyonu 
 
     if(formValue.length>0){
       try {
@@ -223,7 +210,7 @@ export class WarehouseOperationComponent implements OnInit {
 
   barcode: string = null;
 
-  async getProductByBarcode(value: string): Promise<boolean> {
+  async getProductByBarcode(value: string): Promise<boolean> { //geriye WarehouseFormModel dönücek şekilde ayarla
     try {
       const data = await this.httpClientService
         .get<BarcodeModel>({
@@ -268,21 +255,58 @@ export class WarehouseOperationComponent implements OnInit {
 
   warehouseTransferForms: WarehouseFormModel[] = [];
 
+  async setShelfNo(barcode: string): Promise<string> {
+    this.shelfNumbers = 'RAFLAR:';
+
+    if (barcode.length > 10) {
+      var result: string[] = await this.productService.countProductByBarcode(
+        barcode
+      );
+      this.shelfNumbers += result[0];
+      return result[1];
+    } else {
+      this.warehouseForm.get('barcode').setValue(null);
+      this.focusNextInput('shelfNo');
+      return null;
+    }
+  }
+
   async onSubmit(formValue: WarehouseFormModel): Promise<any> {
-    if (!formValue.shelfNo || formValue.shelfNo.trim() === null) {
-      this.alertifyService.error('Raf No alanı boş olamaz!');
+    if (formValue.shelfNo ==null || formValue.shelfNo.trim() === '') {
+
+      if (formValue.barcode) {
+        var number = await this.setShelfNo(formValue.barcode);
+        this.warehouseForm.get('quantity')?.setValue(Number(number)); 
+        this.alertifyService.success(
+          'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
+        );
+      } else {
+        this.alertifyService.warning('Barkod Alanı Boş.');
+      }
+
+  
+      //bu alanda rafları altına yazdır ++
+      //bu alanda miktar alanını altına yazdır++
+
       return;
     }
 
-  
-    //bu kısımda doğrulama yapılcak eğer barkod ve raf oyuşuyorsa devam edilcek
-    var statusB: boolean = await this.getProductByBarcode(formValue.barcode);
+
+    // bu alanda geriye bool yerine bir model al ve şimdiki formValue ile eşitle (form değerlerinden almak yerine)-
+    var statusB: boolean = await this.getProductByBarcode(formValue.barcode); 
+
+    // bu alanda buradan eklemek yerine sql e WarehouseFormModel tablosu oluştur ve o tablodan verileri çek --
     const existingItem = this.warehouseTransferForms.find(
       (item) =>
         item.shelfNo === formValue.shelfNo && item.barcode === this.warehouseForm.get("barcode").value
     );
-    if (statusB) { //eğer barkod ve item Code alanları dolduysa 
+
+     // bu alanda eğer form valid ise ekleme işlemi yapılcak --
+
+    if (statusB) { //eğer barkod ve item Code alanları dolduysa --
       
+
+      // bu alanda eğer barkod raf doğrulaması yapılcak  bu alandan geçerse ekleme yapılcak --
         if (existingItem) {
 
           existingItem.inventory += Number(formValue.inventory);
@@ -296,8 +320,7 @@ export class WarehouseOperationComponent implements OnInit {
 
           this.focusNextInput('shelfNo');
 
-          const audio = new Audio('assets/music/scanner.mp3');
-          audio.play();
+          this.generalService.beep()
         } else {
           const newWarehousePackageDetail: WarehouseFormModel = {
             id: formValue.id,
@@ -318,15 +341,15 @@ export class WarehouseOperationComponent implements OnInit {
             itemDim1Code:
               formValue.itemDim1Code == null ? null : formValue.itemDim1Code,
           };
-          //console.log(newWarehousePackageDetail);
+         
 
           try {
             this.warehouseTransferForms.push(newWarehousePackageDetail);
             this.alertifyService.success('Ürün Başarıyla Eklendi!');
+            this.generalService.beep()
             this.resetForm();
-            this.focusNextInput('shelfNo');
-            const audio = new Audio('assets/music/scanner.mp3');
-            audio.play();
+       
+           
           } catch (error: any) {
             this.alertifyService.alert(
               error.toString() + ' Bir hata oluştu',
@@ -349,6 +372,7 @@ export class WarehouseOperationComponent implements OnInit {
       party: null,
       itemCode: null,
     });
+    this.focusNextInput('shelfNo');
   }
   warehosueModel: WarehouseModel = new WarehouseModel();
   getShelfDetail(id: string): any {
@@ -413,4 +437,13 @@ export class WarehouseOperationComponent implements OnInit {
       console.log(error.message);
     }
   }
+  shelfNumbers: string = 'RAFLAR:';
+  clearShelfNumbers() {
+    this.warehouseForm.get('shelfNo').setValue(null);
+    this.warehouseForm.get('barcode').setValue(null);
+    this.focusNextInput('shelfNo');
+    this.shelfNumbers='RAFLAR:'
+    this.warehouseForm.get('quantity').setValue(null);
+  }
+  
 }

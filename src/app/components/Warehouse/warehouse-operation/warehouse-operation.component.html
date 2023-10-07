@@ -120,14 +120,25 @@
                     </div>
                   </div>
 
-                  <div class="row mb-3">
+                  <div class="row mb-1">
                     <div class="form-group">
-                      <label for="shelfNo">Raf</label>
-                      <input type="text" id="shelfNo" class="form-control" formControlName="shelfNo"
-                        (keydown.enter)="focusNextInput('barcode')" />
+                        <label for="shelfNo">Raf No:</label>
+                        <div class="input-group">
+                            <input type="text" id="shelfNo" class="form-control"
+                                formControlName="shelfNo"
+                                (keydown.enter)="focusNextInput('barcode')" />
+                            <div class="input-group-append">
+                                <button type="button" (click)="clearShelfNumbers()"
+                                    class="btn btn-dark">
+                                    Rafı ve Barkodu Temizle
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-
+                    <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
+                        shelfNumbers
+                        }}</label>
+                </div>
                   <!-- Diğer inputlar -->
 
                   <div class="row mb-3">

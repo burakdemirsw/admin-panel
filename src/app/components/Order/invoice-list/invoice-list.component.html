@@ -24,7 +24,7 @@
         </div>
 
         <div class="collapse" id="filterCollapse">
-          <form [formGroup]="filterForm" >
+          <form [formGroup]="filterForm"  (ngSubmit)="onSubmit(filterForm.value)">
 
             <div class="row">
               <div class="col-md-4">
@@ -36,7 +36,7 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label for="invoiceType">Fatura Tipi</label>
-                  <select id="invoiceType" class="form-control" formControlName="invoiceType" >
+                  <select id="invoiceType" class="form-control" formControlName="invoiceType">
                     <option>Alış</option>
                     <option>Satış</option>
                   </select>
@@ -52,7 +52,7 @@
             </div>
 
             <div class="row">
-             
+
               <div class="col-md-4">
                 <div class="form-group">
                   <label for="endDate">İşlem Bitiş Tarihi:</label>
@@ -111,7 +111,8 @@
           <table class="table">
             <thead>
               <tr>
-                <th scope="col">Seç</th>
+                <!-- <th scope="col">Seç</th> -->
+                <th scope="col">İşlemler</th>
                 <th scope="col">İşlem Tarihi</th>
                 <th scope="col">Toplam Sayılan Ürün Sayısı</th>
                 <th scope="col">Sipariş Numarası</th>
@@ -120,20 +121,20 @@
             </thead>
             <tbody>
               <tr *ngFor="let count of countList | paginate: { itemsPerPage: 10, currentPage: currentPage }">
-                <td><input class="form-check-input" type="checkbox" value=""
-                    (click)="addInnerNumberToList(count.orderNo)"></td>
-
+                <!-- <td><input class="form-check-input" type="checkbox" value=""
+                    (click)="addInnerNumberToList(count.orderNo)"></td> -->
+                    <td>
+                      <div class="btn-group">
+                        <button class="btn btn-primary" data-text="İşlemler" (click)="routeToPage(count.orderNo)">
+                          <i class="fas fa-sliders-h"></i>
+                        </button>
+                      </div>
+                    </td>
                 <td>{{ count.lastUpdateDate | date:'dd.MM.yyyy HH:mm:ss'}}</td>
                 <td>{{ count.totalProduct }}</td>
                 <td>{{ count.orderNo}}</td>
 
-                <td>
-                  <div class="btn-group">
-                    <button class="btn btn-primary" data-text="İşlemler" (click)="routeToPage(count.orderNo)">
-                      <i class="fas fa-sliders-h"></i>
-                    </button>
-                  </div>
-                </td>
+               
               </tr>
             </tbody>
           </table>

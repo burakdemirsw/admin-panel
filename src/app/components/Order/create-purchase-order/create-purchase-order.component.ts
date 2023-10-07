@@ -150,6 +150,8 @@ export class CreatePurchaseOrderComponent implements OnInit {
       barcode:null,
       quantity: null,
     });
+    this.focusNextInput('barcode');
+    this.shelfNumbers = 'RAFLAR:'
   }
 
   async createPurchaseInvoice() {
@@ -178,7 +180,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
   clearShelfNumbers() {
     this.productForm.get('shelfNo').setValue(null);
     this.productForm.get('barcode').setValue(null);
-    this.focusNextInput('shelfNo');
+    this.focusNextInput('barcode');
     this.shelfNumbers='RAFLAR:'
     this.productForm.get('quantity').setValue(null);
   }
@@ -206,7 +208,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
           );
           this.shelfNumbers += result[0];
           this.productForm.get('quantity').setValue(result[1]);
-
+          this.focusNextInput('shelfNo')
           return;
        
     } else {
@@ -305,7 +307,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
 
       this.clearFormFields();
 
-      this.focusNextInput('barcode');
+
       this.generalService.beep();
       this.alertifyService.success('Ürün Başarılı Şekilde Eklendi.');
     } else {

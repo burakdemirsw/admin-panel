@@ -179,10 +179,6 @@ export class OrderService {
     isReturn: boolean
   ): Promise<any> {
     //alış faturası oluştur
-    if (array.length === 0) {
-      this.alertifyService.warning('Lütfen Ürün Ekleyiniz.');
-      return null;
-    } else {
       try {
         var model: OrderBillingRequestModel = new OrderBillingRequestModel();
         model.orderNo = orderNo;
@@ -202,7 +198,7 @@ export class OrderService {
       } catch (error: any) {
         this.alertifyService.error('An error occurred:' + error.message);
       }
-    }
+ 
   }
 async createSaleInvoice(  array: any[],
   orderNo: string,

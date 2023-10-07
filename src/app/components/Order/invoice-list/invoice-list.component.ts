@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { InvocieFilterModel } from 'src/app/models/model/filter/invoiceFilterModel';
 import { CountListModel } from 'src/app/models/model/product/countListModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
@@ -27,9 +28,9 @@ export class InvoiceListComponent implements OnInit {
 
   async ngOnInit() {
     this.spinnerService.show();
+    this.formGenerator();
     await this.getInvoiceList();
 
-    this.formGenerator();
     this.spinnerService.hide();
 
   }
@@ -48,7 +49,10 @@ export class InvoiceListComponent implements OnInit {
     });
   }
 
+  async onSubmit(model :InvocieFilterModel){
+    this.countList = await this.warehouseService.getInvoiceListByFilter(model);
 
+  }
 
   addInnerNumberToList(innerNumber : string){
     if (!this.innerNumberList.includes(innerNumber)) {
