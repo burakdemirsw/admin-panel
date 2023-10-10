@@ -122,6 +122,8 @@ export class WarehosueShelfCountComponent implements OnInit {
 
   list: CountProductRequestModel2[] = [];
   totalCount: number = 0;
+  currentPage:number = 1;
+  
   calculateTotalQty() {
     //toplanan ürünler yazısı için
     let totalQty = 0;

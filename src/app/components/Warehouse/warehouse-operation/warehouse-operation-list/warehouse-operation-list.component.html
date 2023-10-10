@@ -1,6 +1,6 @@
 <main id="main" class="main">
   <div class="pagetitle">
-    <h1>Transfer İşlem Listesi</h1>
+    <h1>Ürün Transfer Listesi</h1>
     <nav>
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
@@ -24,13 +24,13 @@
         </div>
 
         <div class="collapse" id="filterCollapse">
-          <form >
+          <form [formGroup]="filterForm" (ngSubmit)="onSubmit(filterForm.value)" >
 
           <div class="row">
             <div class="col-md-4">
               <div class="form-group">
-                <label for="orderNo">İç Numara</label>
-                <input type="text" id="orderNo" class="form-control" formControlName="orderNo" />
+                <label for="innerNumber">İç Numara</label>
+                <input type="text" id="innerNumber" class="form-control" formControlName="innerNumber" />
               </div>
             </div>
             <div class="col-md-4">

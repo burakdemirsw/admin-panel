@@ -66,25 +66,21 @@
 
 
                                         <div class="form-group col">
-                                            <label for="currAccCode">Müşteri Adı</label>
-                                            <select id="currAccCode" class="form-control" formControlName="currAccCode"
-                                                (change)="setCurrentCustomerCode()">
-                                                <option *ngFor="let customer of customerList"
-                                                    [value]="customer.currAccCode">{{customer.currAccDescription}}
-                                                </option>
-                                            </select>
+                                            <label for="currAccCode">Müşteri</label>
+                                            <ng-select  class="form-control" style="padding: 0 !important;min-height: 36px !important;  " id="currAccCode"
+                                                formControlName="currAccCode" [items]="customerList"
+                                                bindLabel="currAccDescription" bindValue="currAccCode"
+                                                [searchable]="true"></ng-select>
+                                        </div> 
 
-                                        </div>
+                                   
 
                                         <div class="form-group col">
-                                            <label for="currAccCode">Satış Elemanı</label>
-                                            <select id="salesPersonCode" class="form-control"
-                                                formControlName="salesPersonCode">
-                                                <option *ngFor="let salesPerson of salesPersonModels"
-                                                    [value]="salesPerson.salespersonCode">{{salesPerson.firstLastName}}
-                                                </option>
-                                            </select>
-
+                                            <label for="salesPersonCode">Satış Elemanı</label>
+                                            <ng-select class="form-control" style="padding: 0 !important  " id="salesPersonCode"
+                                                formControlName="salesPersonCode" [items]="salesPersonModels"
+                                                bindLabel="firstLastName" bindValue="salespersonCode"
+                                                [searchable]="true"></ng-select>
                                         </div>
 
 

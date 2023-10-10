@@ -86,7 +86,7 @@
                                             <label for="barcode">Barkod</label>
 
                                             <input type="text" id="barcode" class="form-control"
-                                                formControlName="barcode" (keydown.enter)="onSubmit(checkForm.value)"
+                                                formControlName="barcode" (keydown.enter)="focusNextInput("quantity")"
                                                 [disabled]="checkForm.disabled" />
                                         </div>
                                     </div>
@@ -170,7 +170,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let product of lastCollectedProducts; let i = index">
+                                    <tr
+                                        *ngFor="let product of lastCollectedProducts | paginate: { itemsPerPage: 10, currentPage: currentPage }  ; let i = index">
                                         <td>{{ i + 1 }}</td>
 
                                         <td>{{ product.shelfNo }}</td>
@@ -185,6 +186,8 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+
                         </div>
                     </div>
                 </div>

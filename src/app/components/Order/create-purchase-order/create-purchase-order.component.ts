@@ -30,7 +30,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
   activeTab = 1;
   productForm: FormGroup;
   warehouseModels: WarehouseOfficeModel[] = [];
-
+  currentPage:number = 1;
   constructor(
     private formBuilder: FormBuilder,
     private alertifyService: AlertifyService,
@@ -180,9 +180,11 @@ export class CreatePurchaseOrderComponent implements OnInit {
   clearShelfNumbers() {
     this.productForm.get('shelfNo').setValue(null);
     this.productForm.get('barcode').setValue(null);
+    this.productForm.get('quantity').setValue(null);
+    this.productForm.get('batchCode').setValue(null);
     this.focusNextInput('barcode');
     this.shelfNumbers='RAFLAR:'
-    this.productForm.get('quantity').setValue(null);
+
   }
 
   modalImageUrl: string;

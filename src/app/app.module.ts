@@ -78,6 +78,7 @@ import { WarehouseShelfCountListComponent } from './components/Warehouse/warehou
 import { NgxPaginationModule } from 'ngx-pagination';
 import { InvoiceListComponent } from './components/Order/invoice-list/invoice-list.component';
 import { FastTransferComponent } from './components/Warehouse/fast-transfer/fast-transfer.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
@@ -157,7 +158,7 @@ import { FastTransferComponent } from './components/Warehouse/fast-transfer/fast
     ReactiveFormsModule,
     ZXingScannerModule,
     NgxPaginationModule,
-
+    NgSelectModule,
     NgxScannerQrcodeModule
   ],
   

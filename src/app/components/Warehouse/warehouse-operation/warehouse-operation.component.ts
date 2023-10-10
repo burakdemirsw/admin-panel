@@ -50,7 +50,7 @@ export class WarehouseOperationComponent implements OnInit {
   colorCode: string = null;
   itemDim1Code: string = null;
   itemCode: string = null;
-  party: string;
+  batchCode: string;
   officeModels: OfficeModel[] = [];
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((params) => {
@@ -76,7 +76,7 @@ export class WarehouseOperationComponent implements OnInit {
         inventory: [1, Validators.required],
         colorCode: [this.colorCode, Validators.required],
         itemDim1Code: [this.itemDim1Code, Validators.required],
-        party: [this.party, Validators.required],
+        batchCode: [this.batchCode, Validators.required],
         itemCode: [this.itemCode, Validators.required],
         office: [null, Validators.required],
         officeTo: [null, Validators.required],
@@ -210,7 +210,7 @@ export class WarehouseOperationComponent implements OnInit {
 
   barcode: string = null;
 
-  async getProductByBarcode(value: string): Promise<boolean> { //geriye WarehouseFormModel dönücek şekilde ayarla
+  async getProductByBarcode(value: string): Promise<WarehouseFormModel> { //geriye WarehouseFormModel dönücek şekilde ayarla++
     try {
       const data = await this.httpClientService
         .get<BarcodeModel>({
@@ -218,39 +218,33 @@ export class WarehouseOperationComponent implements OnInit {
         })
         .toPromise();
 
-      this.barcodeModel = Object.assign(new BarcodeModel(), data[0]);
-      this.currentBarcode = value;
-      this.shelfNo = this.barcodeModel.shelfNo;
-      this.colorCode = this.barcodeModel.colorCode;
-      this.itemDim1Code = this.barcodeModel.itemDim1Code;
-      this.itemCode = this.barcodeModel.itemCode;
-      this.party = this.barcodeModel.party;
-      this.barcode = this.barcodeModel.barcode;
+        var barcodeModel  : BarcodeModel = new BarcodeModel();
 
-      // Warehouse formunu güncelle
-      this.warehouseForm.patchValue({
-        itemCode: this.itemCode,
-        party: this.party,
-        colorCode: this.colorCode,
-        barcode: this.barcode,
-      });
+        
+      var model : WarehouseFormModel = new WarehouseFormModel();
+      model.itemCode = barcodeModel.itemCode;
+      model.batchCode = barcodeModel.party;
+      model.colorCode  = barcodeModel.colorCode;
+      model.barcode = barcodeModel.barcode;
+      model.itemDim1Code = barcodeModel.itemDim1Code;
+      model.shelfNo  = barcodeModel.shelfNo;
+
       this.alertifyService.success('Form Doldurma İşlemi Başarılı!');
 
-      // Diğer işlemleri burada yapabilirsiniz
-      // Örneğin:
-      if (this.barcodeModel.itemCode) {
+   
+      if (model.itemCode) {
         //this.onSubmit(this.warehouseForm.value);
         this.alertifyService.success('Submit Fonksiyonuna Gönderildi');
 
-        return true;
+        return model;
       } else {
-        return false;
+        return null;
       }
     } catch (error: any) {
       console.log(error.message);
-      return false;
+      return null;
     }
-    return false;
+    return null;
   }
 
   warehouseTransferForms: WarehouseFormModel[] = [];
@@ -258,15 +252,14 @@ export class WarehouseOperationComponent implements OnInit {
   async setShelfNo(barcode: string): Promise<string> {
     this.shelfNumbers = 'RAFLAR:';
 
-    if (barcode.length > 10) {
+    if (barcode) {
       var result: string[] = await this.productService.countProductByBarcode(
         barcode
       );
       this.shelfNumbers += result[0];
       return result[1];
     } else {
-      this.warehouseForm.get('barcode').setValue(null);
-      this.focusNextInput('shelfNo');
+      this.alertifyService.warning('Barkod Alanı Boş.');
       return null;
     }
   }
@@ -292,8 +285,8 @@ export class WarehouseOperationComponent implements OnInit {
     }
 
 
-    // bu alanda geriye bool yerine bir model al ve şimdiki formValue ile eşitle (form değerlerinden almak yerine)-
-    var statusB: boolean = await this.getProductByBarcode(formValue.barcode); 
+    // bu alanda geriye bool yerine bir model al ve şimdiki formValue ile eşitle (form değerlerinden almak yerine)++
+    var model: WarehouseFormModel = await this.getProductByBarcode(formValue.barcode); 
 
     // bu alanda buradan eklemek yerine sql e WarehouseFormModel tablosu oluştur ve o tablodan verileri çek --
     const existingItem = this.warehouseTransferForms.find(
@@ -303,7 +296,7 @@ export class WarehouseOperationComponent implements OnInit {
 
      // bu alanda eğer form valid ise ekleme işlemi yapılcak --
 
-    if (statusB) { //eğer barkod ve item Code alanları dolduysa --
+    if (existingItem) { //eğer barkod ve item Code alanları dolduysa --
       
 
       // bu alanda eğer barkod raf doğrulaması yapılcak  bu alandan geçerse ekleme yapılcak --
@@ -327,7 +320,7 @@ export class WarehouseOperationComponent implements OnInit {
             shelfNo: formValue.shelfNo,
             barcode: this.warehouseForm.get("barcode").value,
             inventory: formValue.inventory == null ? 1 : formValue.inventory,
-            party: this.warehouseForm.get("party").value,
+            batchCode: this.warehouseForm.get("batchCode").value,
             itemCode: this.warehouseForm.get("itemCode").value,
             office: formValue.office,
             officeTo: formValue.officeTo,
@@ -358,18 +351,13 @@ export class WarehouseOperationComponent implements OnInit {
           }
         }
       
-    }else{
-      var statusB: boolean = await this.getProductByBarcode(formValue.barcode);
-      if (statusB) { //eğer barkod ve item Code alanları dolduysa 
-        this.onSubmit(this.warehouseForm.value);
-      }  
     }
   }
   resetForm() {
     this.warehouseForm.patchValue({
       shelfNo: null,
       barcode: null,
-      party: null,
+      batchCode: null,
       itemCode: null,
     });
     this.focusNextInput('shelfNo');

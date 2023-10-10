@@ -1,2 +1,7 @@
 @import "../node_modules/ngx-spinner/animations/ball-scale-multiple.css";
 @import "../node_modules/ngx-spinner/animations/line-scale-pulse-out.css";
+
+
+@import "../node_modules/@ng-select/ng-select/themes/default.theme.css";
+
+/* @import "../node_modules/@ng-select/ng-select/themes/material.theme.css"; */

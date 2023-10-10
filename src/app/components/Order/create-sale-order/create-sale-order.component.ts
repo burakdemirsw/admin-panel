@@ -135,11 +135,13 @@ export class CreateSaleOrderComponent implements OnInit {
     }
   }
   clearShelfNumbers() {
-    this.productForm.get('shelfNo').setValue('');
-    this.productForm.get('barcode').setValue('');
+    this.productForm.get('shelfNo').setValue(null);
+    this.productForm.get('barcode').setValue(null);
+    this.productForm.get('quantity').setValue(null);
+    this.productForm.get('batchCode').setValue(null);
+
     this.focusNextInput('barcode');
     this.shelfNumbers='RAFLAR:'
-    this.productForm.get('quantity').setValue('');
   }
 
 
@@ -174,7 +176,7 @@ export class CreateSaleOrderComponent implements OnInit {
   clearFormFields() {
     // Alanları temizleme
     this.productForm.patchValue({
-      barcode: '',
+      barcode: null,
       quantity: null,
     });
     this.focusNextInput('barcode');

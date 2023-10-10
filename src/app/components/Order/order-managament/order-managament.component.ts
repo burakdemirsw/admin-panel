@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Observable } from 'rxjs';
+import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
 import { PrinterInvoiceRequestModel } from 'src/app/models/model/order/printerInvoiceRequestModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
@@ -44,12 +45,15 @@ export class OrderManagamentComponent implements OnInit {
   formGenerator() {
     this.filterForm = this.formBuilder.group({
       orderNo: [null],
-      currAccCode: [null], // Add other form controls here
+      currAccCode: [null],
       customerName: [null],
       sellerCode: [null],
       startDate: [null],
       endDate: [null],
     });
+  }
+  async onSubmit(model:OrderFilterModel){
+    this.saleOrderModels = await this.orderService.getOrdersByFilter(model)
   }
 
 

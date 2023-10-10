@@ -45,7 +45,7 @@
                     <td>{{ warehousePackageDetail.colorCode }}</td>
                     <td>{{ warehousePackageDetail.itemDim1Code }}</td>
 
-                    <td>{{ warehousePackageDetail.party }}</td>
+                    <td>{{ warehousePackageDetail.batchCode }}</td>
                     <td>{{ warehousePackageDetail.inventory }}</td>
                     <td>{{ warehousePackageDetail.itemCode }}</td>
                     <td>{{ warehousePackageDetail.office }}</td>
@@ -183,8 +183,8 @@
 
                   <div class="row mb-3">
                     <div class="form-group">
-                      <label for="party">Parti</label>
-                      <input type="text" id="party" class="form-control" formControlName="party"
+                      <label for="batchCode">Parti</label>
+                      <input type="text" id="batchCode" class="form-control" formControlName="batchCode"
                         (keydown.enter)="focusNextInput('itemCode')" />
                     </div>
                   </div>

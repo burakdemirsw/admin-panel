@@ -3,7 +3,7 @@ export class WarehouseFormModel {
     shelfNo: string;
     barcode: string;
     inventory: number;
-    party: string;
+    batchCode: string;
     itemCode: string;
     office: string;
     officeTo: string;

@@ -14,6 +14,7 @@ import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurcha
 import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 import { HttpClient } from '@angular/common/http';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
+import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
 
 @Injectable({
   providedIn: 'root',
@@ -40,6 +41,36 @@ export class OrderService {
       return null;
     }
   }
+
+  async getPurchaseOrdersByFilter(model:OrderFilterModel): Promise<SaleOrderModel[]> {
+    try {
+      const response = this.httpClientService
+        .post<any>({
+          controller: 'Order/GetPurchaseOrdersByFilter',
+        },model)
+        .toPromise();
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+  async getOrdersByFilter(model: OrderFilterModel): Promise<SaleOrderModel[]> {
+    try {
+      const response = this.httpClientService
+        .post<any>({
+          controller: 'Order/GetOrdersByFilter',
+        },model)
+        .toPromise();
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+
 
   //alış siparişlerini çekme
   getPurchaseOrders(): Promise<any> {

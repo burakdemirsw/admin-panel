@@ -24,8 +24,8 @@
           </button>
         </div>
 
-        <div class="collapse" id="filterCollapse">
-          <form  [formGroup]="filterForm" >
+        <div class="collapse" id="filterCollapse">  
+          <form  [formGroup]="filterForm" (ngSubmit)="onSubmit(filterForm.value)" >
 
           <div class="row">
             <div class="col-md-4">

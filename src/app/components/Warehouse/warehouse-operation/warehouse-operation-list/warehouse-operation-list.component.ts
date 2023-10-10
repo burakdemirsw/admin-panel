@@ -28,6 +28,7 @@ export class WarehouseOperationListComponent implements OnInit {
 
   async ngOnInit() {
     this.spinnerService.show();
+    this.  formGenerator();
     await this.getWarehouseOperations();
 
     
