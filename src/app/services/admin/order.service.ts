@@ -15,6 +15,7 @@ import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 import { HttpClient } from '@angular/common/http';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
+import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/warehouseOperationProductModel';
 
 @Injectable({
   providedIn: 'root',
@@ -122,7 +123,7 @@ export class OrderService {
       if (orderNoType === 'BP') {
         endpoint = 'Order/GetPurchaseOrderSaleDetail/';
       } else if (orderNoType === 'WT') {
-        endpoint = 'Warehouse/GetWarehouseOperationDetail/' + orderNo;
+        endpoint = 'Warehouse/GetWarehouseOperationDetail/';
       } else if (orderNoType === 'WS') {
         endpoint = 'Order/GetOrderSaleDetail/';
       }
@@ -134,9 +135,9 @@ export class OrderService {
       console.log(error.message);
       throw error; // Rethrow the error if necessary
     }
-  }
+  }  
   //transferi onaylama
-  confirmOperation(operationNumberList: string[]): Observable<boolean> {
+  confirmTransfer(operationNumberList: string[]): Observable<boolean> {
     return this.httpClientService
       .post<string[]>(
         {
@@ -203,6 +204,43 @@ export class OrderService {
     return false;
   }
 
+  //sipariş numarasına göre transfer yapma 
+
+  async postModel(orderNo :string, ):Promise <any> {
+    let innerNumber: string;
+
+
+  
+
+      // let model: WarehouseOperationProductModel =
+      //   new WarehouseOperationProductModel();
+      // model.barcode = this.warehouseConfirmForm.get('barcode')?.value;
+      // model.batchCode =
+      //   this.barcodeModel == undefined ? 'null' : this.barcodeModel.party;
+      // model.quantity = (
+      //   this.fistQtyNumber - this.totalProductNumber
+      // ).toString();
+      // model.shelfNumber = this.warehouseConfirmForm.get('shelfNo')?.value;
+      // model.warehouse =
+      //   localStorage.getItem('currentWarehouse')?.toString() || '';
+      // model.innerNumber = innerNumber;
+      // try {
+      //   this.httpClientService
+      //     .post<WarehouseOperationProductModel>(
+      //       {
+      //         controller: 'Warehouse/SendNebımToTransferProduct',
+      //       },
+      //       model
+      //     )
+      //     .subscribe((data) => {
+      //       console.log(data);
+      //     });
+      // } catch (error: any) {
+      //   console.log(error.message);
+      // }
+      // Diğer işlemler...
+ 
+  }
   //alış fatura oluşturma
   async createPurchaseInvoice(
     array: any[],

@@ -3,4 +3,9 @@
     color: white; /* Opsiyonel olarak metin rengini beyaz yapabilirsiniz */
   }
 
-  
+  @media (max-width: 767px) {
+    .mobile {
+        max-height:50%;
+        overflow-y: auto;
+    }
+}

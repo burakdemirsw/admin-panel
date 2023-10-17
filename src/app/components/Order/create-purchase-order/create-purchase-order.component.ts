@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
@@ -39,11 +40,14 @@ export class CreatePurchaseOrderComponent implements OnInit {
     private spinnerService: NgxSpinnerService,
     private warehouseService: WarehouseService,
     private generalService: GeneralService,
-    private activatedRoute : ActivatedRoute
+    private activatedRoute : ActivatedRoute,
+     private title : Title
   ) {}
 
   async ngOnInit() {
     try {
+      this.title.setTitle("Alış Faturası Oluştur")
+
       this.spinnerService.show();
 
       this.activatedRoute.params.subscribe(async (params) => {

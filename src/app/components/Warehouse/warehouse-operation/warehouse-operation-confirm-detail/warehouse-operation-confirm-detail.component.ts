@@ -8,7 +8,6 @@ import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/ware
 import { ShelfService } from 'src/app/services/admin/shelf.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
-import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/warehouseOperationProductModel';
 
 @Component({
   selector: 'app-warehouse-operation-confirm-detail',
@@ -145,39 +144,5 @@ export class WarehouseOperationConfirmDetailComponent
     }
   }
 
-  postModel() {
-    let innerNumber: string;
-
-    this.activatedRoute.params.subscribe((params) => {
-      innerNumber = params['innerNumber'];
-
-      let model: WarehouseOperationProductModel =
-        new WarehouseOperationProductModel();
-      model.barcode = this.warehouseConfirmForm.get('barcode')?.value;
-      model.lot =
-        this.barcodeModel == undefined ? 'null' : this.barcodeModel.party;
-      model.quantity = (
-        this.fistQtyNumber - this.totalProductNumber
-      ).toString();
-      model.shelfNumber = this.warehouseConfirmForm.get('shelfNo')?.value;
-      model.warehouse =
-        localStorage.getItem('currentWarehouse')?.toString() || '';
-      model.innerNumber = innerNumber;
-      try {
-        this.httpClientService
-          .post<WarehouseOperationProductModel>(
-            {
-              controller: 'Warehouse/SendNebımToTransferProduct',
-            },
-            model
-          )
-          .subscribe((data) => {
-            console.log(data);
-          });
-      } catch (error: any) {
-        console.log(error.message);
-      }
-      // Diğer işlemler...
-    });
-  }
+  postModel() {}
 }

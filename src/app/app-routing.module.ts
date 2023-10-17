@@ -59,6 +59,7 @@ import { CreateSaleOrderComponent } from './components/Order/create-sale-order/c
 import { WarehouseShelfCountListComponent } from './components/Warehouse/warehouse-shelf-count-list/warehouse-shelf-count-list.component';
 import { InvoiceListComponent } from './components/Order/invoice-list/invoice-list.component';
 import { FastTransferComponent } from './components/Warehouse/fast-transfer/fast-transfer.component';
+import { CreateQrComponent } from './components/Order/create-qr/create-qr.component';
 
 const routes: Routes = [
   // { path: 'alerts', component: AlertsComponent },
@@ -116,7 +117,7 @@ const routes: Routes = [
   { path: 'create-sale-order/:orderNo', component:CreateSaleOrderComponent ,canActivate:[AuthGuard]},
 
   { path: 'collect-product-of-order/:number', component: CollectProductOfOrderComponent,canActivate:[AuthGuard] },
-  { path: 'warehouse-operation', component: WarehouseOperationComponent,canActivate:[AuthGuard] },
+  { path: 'warehouse-operation/:number', component: WarehouseOperationComponent,canActivate:[AuthGuard] },
   { path: 'warehouse-operation-list', component: WarehouseOperationListComponent ,canActivate:[AuthGuard]},
   { path: 'warehouse-operation-confirm-detail', component: WarehouseOperationConfirmDetailComponent ,canActivate:[AuthGuard]},
   { path: 'warehouse-operation-confirm-detail/:innerNumber', component: WarehouseOperationConfirmDetailComponent ,canActivate:[AuthGuard]},
@@ -126,8 +127,8 @@ const routes: Routes = [
   { path: 'register', component: PagesRegisterComponent},
   { path: 'warehouse-shelf-count-list', component: WarehouseShelfCountListComponent},
   { path: 'invoice-list', component: InvoiceListComponent},
-  { path: 'fast-transfer', component: FastTransferComponent},
-
+  { path: 'fast-transfer', component: FastTransferComponent}, 
+  { path: 'create-qr', component: CreateQrComponent},
   { path: '**', component: PagesError404Component }
 
 

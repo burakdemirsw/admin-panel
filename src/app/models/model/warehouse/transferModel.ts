@@ -1,14 +1,16 @@
-export class WarehouseFormModel {
-    id!: number;
+export class TransferModel {
+
+    itemCode !:string //yeni
+    photoUrl !:string //yeni
+
     shelfNo!: string;
     barcode!: string;
     quantity!: number;
     batchCode!: string;
-    office!: string;
-    officeTo!: string;
     warehouse!: string;
     warehouseTo!: string;
-    orderNo !: string
+    
 
-  }
-  
+
+
+}

@@ -9,6 +9,8 @@ import { CollectedProduct } from 'src/app/models/model/product/collectedProduct'
 import { HttpClient } from '@angular/common/http';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { ProductCountModel2 } from 'src/app/models/model/product/productCountModel2';
+import { WarehouseFormModel } from 'src/app/models/model/warehouse/warehosueTransferModel';
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +45,10 @@ export class ProductService {
     //barkod ile ürün sayma işlemi 
     async countProductByBarcode(barcode: string): Promise<string[]> {
       try {
+        if(barcode.includes('/')){
+          barcode = barcode.replace(/\//g, '-');
+          
+        }
         const model: ProductCountModel[] = await this.httpClientService
           .get<ProductCountModel>({
             controller: 'Order/CountProductByBarcode/' + barcode,
@@ -64,6 +70,33 @@ export class ProductService {
       }
     }
 
+       //barkod ile ürün sayma işlemi | ürün kodu
+       async countProductByBarcode2(barcode: string): Promise<string> {
+        try {
+          if(barcode.includes('/')){
+            barcode = barcode.replace(/\//g, '-');
+            
+          }
+          
+          const model: ProductCountModel2[] = await this.httpClientService
+            .get<ProductCountModel2>({
+              controller: 'Order/CountProductByBarcode2/' + barcode,
+            })
+            .toPromise();
+           
+            if(model.length>0){
+
+              return model[0].itemCode;
+            }else{
+              return null;
+            }
+        } catch (error: any) {
+          console.error(error.message);
+         return null;
+        }
+      }
+      
+
     //sayılan ürünleri getirme
     async getCollectedOrderProducts (orderNo  :string):Promise<CollectedProduct[]>{
       const response =await this.httpClientService.get<CollectedProduct>({controller:"Order/GetCollectedOrderProducts/"+orderNo}).toPromise()
@@ -80,6 +113,7 @@ export class ProductService {
     //sayım içindeki ürünü silme
     async deleteOrderProduct(orderNo: string, itemCode: string): Promise<boolean> {
       try {
+        
         const requestModel = {
           orderNumber: orderNo,
           itemCode: itemCode
@@ -97,6 +131,25 @@ export class ProductService {
         return false;
       }
     }
+
+      //transfer ürünleriini sayma
+      async countTransferProduct(model: WarehouseFormModel): Promise<ProductCountModel> {
+        try {
+          
+          const response= await this.httpClientService.post<any>({controller:'Order/CountTransferProduct'},model).toPromise();
+          
+          if (response) {
+            return response;  
+          } else {
+            return null;
+          }
+        } catch (error) {
+          console.error( error);
+          return null;
+        }
+      }
+
+
 
     async deleteProductFromFastTransfer(orderNo: string, itemCode: string): Promise<boolean> {
       try {

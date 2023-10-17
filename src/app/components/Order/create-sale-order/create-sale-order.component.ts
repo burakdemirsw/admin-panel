@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { catchError, throwError } from 'rxjs';
@@ -47,11 +48,13 @@ export class CreateSaleOrderComponent implements OnInit {
     private spinnerService: NgxSpinnerService,
     private warehouseService: WarehouseService,
     private generalService: GeneralService,
-    private activatedRoute : ActivatedRoute
+    private activatedRoute : ActivatedRoute , private title : Title
   ) {}
 
   async ngOnInit() {
     try {
+      this.title.setTitle("Satış Faturası Oluştur")
+
       this.spinnerService.show();
       this.formGenerator()
 

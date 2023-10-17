@@ -1,0 +1,6 @@
+@media (max-width: 767px) {
+    .mobile {
+        max-height:50%;
+        overflow-y: auto;
+    }
+}

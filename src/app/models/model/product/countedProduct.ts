@@ -3,5 +3,6 @@ export class CountedProduct {
     shelfNo!: string;
     batchCode!: string;
     quantity !:number
-
+    photoUrl !:string
+    itemCode !:string
   }

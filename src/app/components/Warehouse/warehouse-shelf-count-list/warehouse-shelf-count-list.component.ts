@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CountListFilterModel } from 'src/app/models/model/filter/countListFilterModel';
@@ -25,10 +26,13 @@ export class WarehouseShelfCountListComponent implements OnInit {
     private formBuilder: FormBuilder,
 
     private warehouseService : WarehouseService,
-    private generalService : GeneralService
+    private generalService : GeneralService,
+    private title : Title
   ) { }
 
   async ngOnInit() {
+    this.title.setTitle("Sayım")
+
     this.spinnerService.show();
     this.  formGenerator() ;
     await this.getGetCountList();

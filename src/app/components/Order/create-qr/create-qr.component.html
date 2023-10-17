@@ -1,0 +1,148 @@
+<main id="main" class="main">
+    <!-- <div class="pagetitle">
+      <h1>Sayım Paneli</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+          <li class="breadcrumb-item">Tables</li>
+          <li class="breadcrumb-item active">Sayım Paneli</li>
+        </ol>
+      </nav>
+    </div> -->
+
+    <section class="section">
+        <div class="row">
+            <div style="width: 100%">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Qr Oluştur</h5>
+
+
+
+                        <div class="tab-content" id="ex2-content">
+                            <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1"
+                                role="tabpanel" aria-labelledby="ex3-tab-1">
+                                <form [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)">
+
+                                    <div class="row mb-3">
+                                        <div class="form-group">
+                                            <label for="shelfNo">Raf No:</label>
+                                            <div class="input-group">
+                                                <input type="text" id="shelfNo" class="form-control"
+                                                    formControlName="shelfNo"
+                                                    (keydown.enter)="focusNextInput('barcode')" />
+                                                <div class="input-group-append">
+                                                    <button type="button" (click)="clearShelfNumbers()"
+                                                        class="btn btn-dark">
+                                                        Formu Temizle
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
+                                            shelfNumbers
+                                            }}</label>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="form-group">
+                                            <label for="barcode">Barkod</label>
+                                            <input type="text" id="barcode" class="form-control"
+                                                formControlName="barcode" [disabled]="checkForm.disabled"
+                                                (keydown.enter)="onSubmit(checkForm.value)" />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+
+
+
+                                        <div class="form-group col">
+                                            <div class="form-group">
+                                                <label for="quantity">Miktar</label>
+
+                                                <input type="number" id="quantity" class="form-control"
+                                                    formControlName="quantity" [disabled]="checkForm.disabled" />
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group col">
+                                            <div class="form-group">
+                                                <label for="batchCode">Parti</label>
+
+                                                <input type="text" id="batchCode" class="form-control"
+                                                    formControlName="batchCode"
+                                                    (keydown.enter)="onSubmit(checkForm.value)"
+                                                    [disabled]="checkForm.disabled" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row mb-3">
+
+
+
+                                        <div class="form-group col">
+                                            <button type="button" class="btn btn-dark"
+                                                style="margin-left: 10px; color: white"
+                                                (click)="onSubmit(this.checkForm.value)" style="width: 100%;">
+                                                Qr Oluştur
+                                            </button>
+
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                            <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2"
+                                role="tabpanel-2" aria-labelledby="ex3-tab-2"></div>
+                            <div class="tab-pane fade show" [class.active]="activeTab === 3" id="ex3-tabs-3"
+                                role="tabpanel-3" aria-labelledby="ex3-tab-3">
+                                Prices
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="card" *ngIf="qrCodeValue!=''">
+                   
+                        <div class="card-body">
+                            <h5 class="card-title">Qr</h5>  
+                            <div class="qr-container">
+                                <qrcode style="display:none ;" (qrCodeURL)="onChangeURL($event)" [qrdata]="qrCodeValue" [width]="256"
+                                [errorCorrectionLevel]="'M'"></qrcode>
+                                <div id="print-section">
+                               
+                                    <img [src]="qrCodeDownloadLink" alt="">
+
+                                </div>
+
+                            </div>
+                            <div class="row mb-3">
+
+                            </div>
+
+                            <div class="form-group col">
+                                <!-- <a [href]="qrCodeDownloadLink">  -->
+
+                                <button type="button" class="btn btn-dark" style="margin-left: 10px; color: white"
+                                printSectionId="print-section" ngxPrint style="width: 100%;">
+                                    <i class="fa fa-print"></i> Qr Yazdır
+                                </button>
+
+                                <!-- </a> -->
+                                <!-- >Download -->
+
+
+                            </div>
+                        </div>
+
+                 
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+</main>

@@ -79,6 +79,9 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { InvoiceListComponent } from './components/Order/invoice-list/invoice-list.component';
 import { FastTransferComponent } from './components/Warehouse/fast-transfer/fast-transfer.component';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { CreateQrComponent } from './components/Order/create-qr/create-qr.component';
+import { QRCodeModule } from 'angularx-qrcode';
+import {NgxPrintModule} from 'ngx-print';
 
 @NgModule({
   declarations: [
@@ -144,7 +147,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
     ImageModalComponent,
     WarehouseShelfCountListComponent,
     InvoiceListComponent,
-    FastTransferComponent
+    FastTransferComponent,
+    CreateQrComponent
   ],
 
 
@@ -159,7 +163,9 @@ import { NgSelectModule } from '@ng-select/ng-select';
     ZXingScannerModule,
     NgxPaginationModule,
     NgSelectModule,
-    NgxScannerQrcodeModule
+    NgxScannerQrcodeModule,
+    QRCodeModule,
+    NgxPrintModule
   ],
   
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -1,4 +1,7 @@
 export class FastTransferModel {
+    
+  // photoUrl !:string 
+  // itemCode !:string
     barcode!: string 
     shelfNo!: string 
     operationId!: string 
@@ -6,4 +9,5 @@ export class FastTransferModel {
     quantity!: number;
     batchCode!: string
     targetShelfNo!: string 
+    warehouseCode !:string
   }

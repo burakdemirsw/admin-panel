@@ -6,14 +6,16 @@ import { BarcodeModel } from 'src/app/models/model/product/barcodeModel';
 import { WarehouseModel } from 'src/app/models/model/warehouse/warehouseModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
-import { WarehouseFormModel } from 'src/app/models/model/warehouse/warehosueTransferModel';
-import { OrderService } from 'src/app/services/admin/order.service';
-import { ShelfService } from 'src/app/services/admin/shelf.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
-import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { ProductService } from 'src/app/services/admin/product.service';
+import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
+import { WarehouseService } from 'src/app/services/admin/warehouse.service';
+import { TransferModel } from 'src/app/models/model/warehouse/transferModel';
+import { Title } from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http';
+declare var window: any;
 
 @Component({
   selector: 'app-warehouse-operation',
@@ -21,6 +23,7 @@ import { ProductService } from 'src/app/services/admin/product.service';
   styleUrls: ['./warehouse-operation.component.css'],
 })
 export class WarehouseOperationComponent implements OnInit {
+  currentOrderNo: string = '';
   activeTab: number = 1;
   warehoseModel: WarehouseModel[];
   warehouseForm: FormGroup;
@@ -33,16 +36,15 @@ export class WarehouseOperationComponent implements OnInit {
     private httpClientService: HttpClientService,
     private formBuilder: FormBuilder,
     private alertifyService: AlertifyService,
-    private orderService: OrderService,
     private activatedRoute: ActivatedRoute,
     private spinnerService: NgxSpinnerService,
-    private shelfService: ShelfService,
     private router: Router,
-    private generalService : GeneralService,
-    private productService : ProductService,
-
-  ) {}
-  selectedOffice: string; // Add this line
+    private generalService: GeneralService,
+    private productService: ProductService,
+    private warehouseService: WarehouseService,
+    private title: Title,
+    private httpClient : HttpClient
+  ) {}// Add this line
   warehouseModels: WarehouseOfficeModel[] = [];
   warehouseModels2: WarehouseOfficeModel[] = [];
   barcodeModel: BarcodeModel = new BarcodeModel();
@@ -52,202 +54,182 @@ export class WarehouseOperationComponent implements OnInit {
   itemCode: string = null;
   batchCode: string;
   officeModels: OfficeModel[] = [];
-  ngOnInit(): void {
-    this.activatedRoute.params.subscribe((params) => {
-      
-      this.spinnerService.show();
-      this.getOfficeCodeList();
-      this.getWarehouseList('M', 1);
-      this.getWarehouseList('M', 2);
+  async ngOnInit() {
+    this.spinnerService.show();
+    this.activatedRoute.params.subscribe(async (params) => {
 
-      // this.getShelfDetail(params['id']);
-      this.formGenerator();
-      setTimeout(() => {
-        this.spinnerService.hide();
-      }, 1000);
+      this.currentOrderNo = 'TP-' + params["number"];
+      await this.getProductOfCount(this.currentOrderNo); //this.list.push(formValue);
+
+      this.spinnerService.hide();
     });
+    this.formGenerator();
+    
+
+  //  await this.getOfficeCodeList();
+  
+
   }
-  formGenerator() {
+
+  modalImageUrl: string;
+  formModal: any;
+  openImageModal(imageUrl: string) {
+    this.modalImageUrl = imageUrl;
+    if (!this.formModal) {
+      this.formModal = new window.bootstrap.Modal(
+        document.getElementById('myModal')
+      );
+    }
+    this.formModal.show();
+  }
+
+
+ formGenerator() {
     try {
       this.warehouseForm = this.formBuilder.group({
-        id: [0, Validators.required],
+        id: [null],
         shelfNo: [this.shelfNo, Validators.required],
         barcode: [this.currentBarcode, Validators.required],
-        inventory: [1, Validators.required],
-        colorCode: [this.colorCode, Validators.required],
-        itemDim1Code: [this.itemDim1Code, Validators.required],
-        batchCode: [this.batchCode, Validators.required],
-        itemCode: [this.itemCode, Validators.required],
+        quantity: [null, Validators.required],
+        batchCode: [this.batchCode],
         office: [null, Validators.required],
         officeTo: [null, Validators.required],
         warehouse: [null, Validators.required],
         warehouseTo: [null, Validators.required],
+        orderNo: [this.currentOrderNo],
       });
-    } catch (error: any) {
-      alert(error.message);
+
+
+    } catch (error) {
+      console.error(error);
+      // Handle the error as needed.
     }
   }
 
-
-
-  getOfficeCodeList(): any {
+  async getOfficeCodeList(): Promise<any> {
     try {
-      this.httpClientService
+      const response = await this.httpClientService
         .get<OfficeModel>({
           controller: 'Warehouse/GetOfficeModel',
         })
-        .subscribe((data) => {
-          ////console.log(data);
-          this.officeModels = data;
-        });
+        .toPromise();
+      this.officeModels = response;
     } catch (error: any) {
       //console.log(error.message);
     }
   }
-  getSelectedOffice(from: number) {
+  async getSelectedOffice(from: number): Promise<any> {
     if (from == 1) {
-      this.getWarehouseList(this.warehouseForm.get('office')?.value, 1);
+      await this.getWarehouseList(this.warehouseForm.get('office')?.value, 1);
+      
     } else {
-      this.getWarehouseList(this.warehouseForm.get('office')?.value, 2);
+      await this.getWarehouseList(this.warehouseForm.get('officeTo')?.value, 2);
     }
   }
 
-
-  getWarehouseList(value: string, from: number): any {
+  async getWarehouseList(value: string, from: number): Promise<any> {
     try {
       if (from === 1) {
         const selectElement = document.getElementById(
           'office'
         ) as HTMLSelectElement;
 
-        value = selectElement.value == null ? 'M' : selectElement.value;
-        this.httpClientService
-          .get<WarehouseOfficeModel>({
-            controller: 'Warehouse/GetWarehouseModel/' + value,
-          })
-          .subscribe((data) => {
-            this.warehouseModels = data;
-          });
+        value = selectElement.value == '' ? 'M' : selectElement.value;
+        const response = await this.httpClientService
+        .get<WarehouseOfficeModel>({
+          controller: 'Warehouse/GetWarehouseModel/' + value,
+        })
+        .toPromise();
+
+      if (response) {
+        this.warehouseModels.push(response[0]);
+
+        this.warehouseForm
+          .get('warehouse')
+          .setValue(response[0].warehouseCode);
+        const selectedValue2 = this.warehouseForm.get('warehouse').value;
+
+        console.clear()
+      console.log('Form Değeri (warehouseCode) \n' + selectedValue2); //null geliyor
+        return true;
+      } else {
+        this.alertifyService.error('Depo Çekilemedi');
+        return false;
+      }
       } else {
         const selectElement = document.getElementById(
           'officeTo'
         ) as HTMLSelectElement;
 
-        value = selectElement.value == null ? 'M' : selectElement.value;
-        this.httpClientService
-          .get<WarehouseOfficeModel>({
-            controller: 'Warehouse/GetWarehouseModel/' + value,
-          })
-          .subscribe((data) => {
-            this.warehouseModels2 = data;
-          });
+        value = selectElement.value == '' ? 'M' : selectElement.value;
+        const response = await this.httpClientService
+        .get<WarehouseOfficeModel>({
+          controller: 'Warehouse/GetWarehouseModel/' + value,
+        })
+        .toPromise();
+
+      if (response) {
+        this.warehouseModels2.push(response[0]);
+
+        this.warehouseForm
+          .get('warehouseTo')
+          .setValue(response[0].warehouseCode);
+        const selectedValue2 = this.warehouseForm.get('warehouseTo').value;
+        console.clear()
+        console.log('Form Değeri (warehouseTo) \n' + selectedValue2); //null geliyor
+        return true;
+      } else {
+        this.alertifyService.error('Depo Çekilemedi');
+        return false;
+      }
       }
     } catch (error: any) {
       //console.log(error.message);
     }
   }
 
- 
-  generateAndSetGUID() {
-    try {
-      const generatedGUID = this.generalService.generateGUID();
-      this.qrCode = generatedGUID.toString();
-      this.warehouseForm.patchValue({
-        qrString: this.qrCode,
-      });
-      this.alertifyService.success('Qr Kod Oluşturuldu!');
-    } catch (error) {
-      console.error(error);
-      this.alertifyService.error('Qr Kod Oluşturulurken bir hata oluştu!');
-    }
-  }
-  //s4185
   onModelChanged(value: string) {
     this.getShelfByQrDetail(value);
   }
 
-  async transferToNebim(formValue: WarehouseFormModel[]) { //depo servise yolla bu fonksiyonu 
-
-    if(formValue.length>0){
-      try {
-        const data = await this.httpClientService
-          .post<WarehouseFormModel[]>(
-            {
-              controller: 'Warehouse/TransferProducts',
-            },
-            formValue
-          )
-          .toPromise();
-    
-        // Başarılı yanıt geldiğinde console'a başarılı yazısı yazdır
-        this.alertifyService.success('Transfer Başarılı');
-    
-        // 2 saniye bekledikten sonra sayfayı değiştir
-
-        this.generalService.waitAndNavigate("Transfer İşlemi Başarıyla Gerçekleşti.","warehouse-operation-confirm")
-       
-      } catch (error: any) {
-        console.log(error.message);
+  async transferToNebim(currentOrderNo: string) {
+    if (currentOrderNo != null && currentOrderNo !== '') {
+      const userConfirmed = window.confirm(this.currentOrderNo+' numaralı sipariş için İşlemi başlatmak istediğinize emin misiniz?');
+  
+      if (userConfirmed) {
+        try {
+          const data = await this.httpClientService
+            .get<any>({ controller: 'Warehouse/TransferProducts/' + currentOrderNo })
+            .toPromise();
+  
+          if (data) {
+            // Başarılı yanıt geldiğinde console'a başarılı yazısı yazdır
+        
+            this.generalService.waitAndNavigate(
+              'Transfer İşlemi Başarıyla Gerçekleşti.',
+              'dashboard'
+            );
+          }
+        } catch (error: any) {
+          console.log(error.message);
+        }
+      } else {
+        this.alertifyService.warning('İşlem iptal edildi.');
       }
-    }else{
-      this.alertifyService.warning("Liste Boş Geliyor.")
+    } else {
+      this.alertifyService.warning('Sipariş No Boş Geliyor.');
     }
-    
   }
-  changePage(){
+  
+  changePage() {
     setTimeout(() => {
       this.router.navigate(['/warehouse-operation-confirm']);
     }, 2000);
   }
 
-  getProductDetailandSkipFocus() {
-    // bu kısımda ilgili veriyi çekip yerine yazıyoruz
-    const selectElement = document.getElementById(
-      'barcode'
-    ) as HTMLSelectElement;
-    this.getProductByBarcode(selectElement.value);
-  }
-
   barcode: string = null;
 
-  async getProductByBarcode(value: string): Promise<WarehouseFormModel> { //geriye WarehouseFormModel dönücek şekilde ayarla++
-    try {
-      const data = await this.httpClientService
-        .get<BarcodeModel>({
-          controller: 'Warehouse/GetBarcodeDetail/' + value,
-        })
-        .toPromise();
-
-        var barcodeModel  : BarcodeModel = new BarcodeModel();
-
-        
-      var model : WarehouseFormModel = new WarehouseFormModel();
-      model.itemCode = barcodeModel.itemCode;
-      model.batchCode = barcodeModel.party;
-      model.colorCode  = barcodeModel.colorCode;
-      model.barcode = barcodeModel.barcode;
-      model.itemDim1Code = barcodeModel.itemDim1Code;
-      model.shelfNo  = barcodeModel.shelfNo;
-
-      this.alertifyService.success('Form Doldurma İşlemi Başarılı!');
-
-   
-      if (model.itemCode) {
-        //this.onSubmit(this.warehouseForm.value);
-        this.alertifyService.success('Submit Fonksiyonuna Gönderildi');
-
-        return model;
-      } else {
-        return null;
-      }
-    } catch (error: any) {
-      console.log(error.message);
-      return null;
-    }
-    return null;
-  }
-
-  warehouseTransferForms: WarehouseFormModel[] = [];
+  warehouseTransferForms: TransferModel[] = [];
 
   async setShelfNo(barcode: string): Promise<string> {
     this.shelfNumbers = 'RAFLAR:';
@@ -264,12 +246,11 @@ export class WarehouseOperationComponent implements OnInit {
     }
   }
 
-  async onSubmit(formValue: WarehouseFormModel): Promise<any> {
-    if (formValue.shelfNo ==null || formValue.shelfNo.trim() === '') {
-
+  async onSubmit(formValue: any ): Promise<any> {
+    if (!this.warehouseForm.valid) {
       if (formValue.barcode) {
         var number = await this.setShelfNo(formValue.barcode);
-        this.warehouseForm.get('quantity')?.setValue(Number(number)); 
+        this.warehouseForm.get('quantity')?.setValue(Number(number));
         this.alertifyService.success(
           'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
         );
@@ -277,81 +258,130 @@ export class WarehouseOperationComponent implements OnInit {
         this.alertifyService.warning('Barkod Alanı Boş.');
       }
 
-  
-      //bu alanda rafları altına yazdır ++
-      //bu alanda miktar alanını altına yazdır++
-
       return;
-    }
+    } else if(this.warehouseForm.valid) {
 
 
-    // bu alanda geriye bool yerine bir model al ve şimdiki formValue ile eşitle (form değerlerinden almak yerine)++
-    var model: WarehouseFormModel = await this.getProductByBarcode(formValue.barcode); 
+      var newResponse = await this.productService.countProductByBarcode(
+        formValue.barcode
+      );
 
-    // bu alanda buradan eklemek yerine sql e WarehouseFormModel tablosu oluştur ve o tablodan verileri çek --
-    const existingItem = this.warehouseTransferForms.find(
-      (item) =>
-        item.shelfNo === formValue.shelfNo && item.barcode === this.warehouseForm.get("barcode").value
-    );
+      const shelves = newResponse[0]
+        .split(',')
+        .filter((raflar) => raflar.trim() !== '');
 
-     // bu alanda eğer form valid ise ekleme işlemi yapılcak --
+      if (shelves.includes(formValue.shelfNo)) {
+        var response = await this.productService.countTransferProduct(
+          formValue
+        );
 
-    if (existingItem) { //eğer barkod ve item Code alanları dolduysa --
-      
+          if (response != undefined) {
+          var data: ProductCountModel = response;
+          if (data.status == 'RAF') {
+            formValue.shelfNo = response.description;
+          } else {
+            formValue.barcode = response.description;
+          }
 
-      // bu alanda eğer barkod raf doğrulaması yapılcak  bu alandan geçerse ekleme yapılcak --
-        if (existingItem) {
+          const parcalanmisVeri = this.shelfNumbers.split(':');
+          const raflarKismi = parcalanmisVeri[1];
+          const raflar = raflarKismi
+            .split(',')
+            .filter((raflar) => raflar.trim() !== '');
+          if (raflar.length > 0) {
+            if (formValue.shelfNo.toLowerCase()) {
+              formValue.quantity = Number(newResponse[1]);
+              this.generalService.beep();
+              await this.getProductOfCount(this.currentOrderNo); //this.list.push(formValue);
+              this.calculateTotalQty();
+              this.clearQrAndBatchCode();
+            } else {
+              if (confirm('Raf Bulunamadı! Eklensin mi(1)?')) {
+                this.generalService.beep();
 
-          existingItem.inventory += Number(formValue.inventory);
+                var newResponse =
+                  await this.productService.countProductByBarcode(
+                    formValue.barcode
+                  );
+                formValue.quantity = Number(newResponse[1]);
+                await this.getProductOfCount(this.currentOrderNo); //this.list.push(formValue);
+                this.calculateTotalQty();
+                this.clearQrAndBatchCode();
+              } else {
+                this.calculateTotalQty();
+                this.alertifyService.warning('Ekleme Yapılmadı!');
+              }
+            }
+          } else {
+            formValue.quantity = Number(newResponse[1]);
+            this.generalService.beep();
 
-          this.alertifyService.success('Stok Miktarı Güncellendi!');
-          
-          this.warehouseForm.patchValue({
-            shelfNo: null,
-            barcode: null,
-          });
-
-          this.focusNextInput('shelfNo');
-
-          this.generalService.beep()
-        } else {
-          const newWarehousePackageDetail: WarehouseFormModel = {
-            id: formValue.id,
-            shelfNo: formValue.shelfNo,
-            barcode: this.warehouseForm.get("barcode").value,
-            inventory: formValue.inventory == null ? 1 : formValue.inventory,
-            batchCode: this.warehouseForm.get("batchCode").value,
-            itemCode: this.warehouseForm.get("itemCode").value,
-            office: formValue.office,
-            officeTo: formValue.officeTo,
-            warehouse: (
-              document.getElementById('warehouse') as HTMLInputElement
-            ).value,
-            warehouseTo: (
-              document.getElementById('warehouseTo') as HTMLInputElement
-            ).value,
-            colorCode:this.warehouseForm.get("colorCode").value,
-            itemDim1Code:
-              formValue.itemDim1Code == null ? null : formValue.itemDim1Code,
-          };
-         
-
-          try {
-            this.warehouseTransferForms.push(newWarehousePackageDetail);
-            this.alertifyService.success('Ürün Başarıyla Eklendi!');
-            this.generalService.beep()
-            this.resetForm();
-       
-           
-          } catch (error: any) {
-            this.alertifyService.alert(
-              error.toString() + ' Bir hata oluştu',
-              'Hata Alındı'
-            );
+            await this.getProductOfCount(this.currentOrderNo); //this.list.push(formValue);
+            this.calculateTotalQty();
+            this.clearQrAndBatchCode();
           }
         }
-      
+      } else {
+        if (
+          confirm(
+            'Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?'
+          )
+        ) {
+          var number = await this.setShelfNo(formValue.barcode);
+          this.warehouseForm.get('quantity')?.setValue(Number(number));
+
+          var response = await this.productService.countTransferProduct(
+            formValue
+          );
+
+          if (response != undefined) {
+            var data: ProductCountModel = response;
+            if (data.status == 'RAF') {
+              formValue.shelfNo = response.description;
+            } else {
+              formValue.barcode = response.description;
+            }
+            this.generalService.beep();
+            formValue.quantity = Number(newResponse[1]);
+            await this.getProductOfCount(this.currentOrderNo); //this.list.push(formValue);
+            this.calculateTotalQty();
+            this.clearQrAndBatchCode();
+          }
+        } else {
+          var number = await this.setShelfNo(formValue.barcode);
+          this.warehouseForm.get('quantity')?.setValue(Number(number));
+          this.alertifyService.success(
+            'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
+          );
+        }
+      }
+    }else{
+      this.alertifyService.error("Form Geçersiz")
     }
+  }
+
+  async getProductOfCount(orderNo: string): Promise<any> {
+    this.warehouseTransferForms =
+      await this.warehouseService.getProductOfTrasfer(orderNo);
+    this.calculateTotalQty();
+  }
+
+  totalCount: number;
+  calculateTotalQty() {
+    //toplanan ürünler yazısı için
+    let totalQty = 0;
+    this.warehouseTransferForms.forEach((item) => {
+      totalQty += item.quantity;
+    });
+    this.totalCount = totalQty;
+  }
+
+  clearQrAndBatchCode() {
+    this.warehouseForm.get('barcode').setValue(null);
+    this.warehouseForm.get('batchCode').setValue(null);
+    //this.warehouseForm.get('quantity').setValue(null);
+
+    this.focusNextInput('barcode');
   }
   resetForm() {
     this.warehouseForm.patchValue({
@@ -430,8 +460,29 @@ export class WarehouseOperationComponent implements OnInit {
     this.warehouseForm.get('shelfNo').setValue(null);
     this.warehouseForm.get('barcode').setValue(null);
     this.focusNextInput('shelfNo');
-    this.shelfNumbers='RAFLAR:'
+    this.shelfNumbers = 'RAFLAR:';
     this.warehouseForm.get('quantity').setValue(null);
   }
-  
+
+  async deleteOrderProduct(
+    orderNo: string,
+    itemCode: string,
+    shelfNo: string
+  ): Promise<boolean> {
+    const response: boolean = await this.productService.deleteOrderProduct(
+      this.currentOrderNo,
+      itemCode
+    );
+    if (response) {
+      this.warehouseTransferForms = this.warehouseTransferForms.filter(
+        (o) => !(o.barcode == itemCode && o.shelfNo == shelfNo)
+      );
+      this.calculateTotalQty();
+      await this.getProductOfCount(this.currentOrderNo);
+      this.alertifyService.success('Silme İşlemi Başarılı.');
+    } else {
+      this.alertifyService.error('Silme İşlemi Başarısız.');
+    }
+    return response;
+  }
 }

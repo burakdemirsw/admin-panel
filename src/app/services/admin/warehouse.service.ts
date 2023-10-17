@@ -17,6 +17,8 @@ import { CountListFilterModel } from 'src/app/models/model/filter/countListFilte
 import { InvocieFilterModel } from 'src/app/models/model/filter/invoiceFilterModel';
 import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
 import { WarehouseOperationListFilterModel } from 'src/app/models/model/filter/warehouseOperationListFilterModel';
+import { TransferModel } from 'src/app/models/model/warehouse/transferModel';
+import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/warehouseOperationProductModel';
 
 @Injectable({
   providedIn: 'root',
@@ -42,6 +44,12 @@ export class WarehouseService {
     orderNo: string,
     currAccCode: string
   ): Promise<ProductCountModel> {
+
+    if(barcode.includes('/')){
+      barcode = barcode.replace(/\//g, '-');
+      
+    }
+    
     var requestModel: CountProductRequestModel2 =
       new CountProductRequestModel2();
     requestModel.orderNo = orderNo;
@@ -151,6 +159,16 @@ export class WarehouseService {
     return data;
   }
 
+   //depolar arası transfer ürünlerini çeker
+   async getProductOfTrasfer(orderNo: string): Promise<TransferModel[]> {
+    const data = await this.httpClientService
+      .get<TransferModel>({ controller: 'Order/GetProductOfTrasfer/' + orderNo })
+      .toPromise();
+    return data;
+  }
+
+
+
   //sayım ürünklerini filtreli Çeker
   async GetCountListByFilter(model: CountListFilterModel): Promise<any> {
     const data = await this.httpClientService
@@ -163,9 +181,9 @@ export class WarehouseService {
   }
 
   //hızlı transfer ekleme
-  async postFastTransfer(model: FastTransferModel): Promise<any> {
+  async fastTransfer(model: FastTransferModel): Promise<any> {
     const data = await this.httpClientService
-      .post<FastTransferModel>({ controller: 'Order/AddFastTransfer/' }, model)
+      .post<FastTransferModel>({ controller: 'Order/FastTransfer' }, model)
       .toPromise();
     return data;
   }
@@ -211,5 +229,27 @@ export class WarehouseService {
       console.log(error.message);
     }
   }
+
+  //transfer işlemi 
+  async  transfer(model :WarehouseOperationProductModel):Promise<any> {
+    try {
+      const result = await this.httpClientService
+        .post<WarehouseOperationProductModel>(
+          {
+            controller: 'Warehouse/Transfer',
+          },
+          model
+        )
+        .toPromise();
+
+        return result;
+    } catch (error: any) {
+      return null;
+      console.log(error.message);
+    }
+  }
+
+
+
 
 }

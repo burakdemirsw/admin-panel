@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { GeneralService } from 'src/app/services/admin/general.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -7,9 +9,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SidebarComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router  :Router,private generalService: GeneralService) { }
 
   ngOnInit(): void {
   }
-
+  async routeNewPage(){
+    const result = await this.generalService.generateGUID()
+    this.router.navigate(["/warehouse-operation/"+result ])
+  }
 }
