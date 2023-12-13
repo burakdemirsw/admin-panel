@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Title } from '@angular/platform-browser';
+import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { CountedProduct } from 'src/app/models/model/product/countedProduct';
 import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
@@ -41,7 +42,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
     private warehouseService: WarehouseService,
     private generalService: GeneralService,
     private activatedRoute : ActivatedRoute,
-     private title : Title
+     private title : Title,    private sanitizer: DomSanitizer
   ) {}
 
   async ngOnInit() {
@@ -55,15 +56,54 @@ export class CreatePurchaseOrderComponent implements OnInit {
         await this.getProductOfInvoice(    this.newOrderNumber );
       });
       this.formGenerator();
-      await this.getWarehouseList('M');
       await this.getOfficeCodeList();
+      await this.getWarehouseList((document.getElementById("officeCode") as HTMLOptionElement).value);
       await this.getCustomerList();
-
+      this.setInput();
       this.spinnerService.hide();
-    } catch (error: any) {
+    } catch (error: any) {  
       this.alertifyService.error(error.message);
     }
   }
+
+  qrCodeValue: string ;
+  qrCodeDownloadLink: any = this.sanitizer.bypassSecurityTrustResourceUrl('');
+  setInput(){
+    if(this. invoiceProducts2.length>0 ){
+      if(this.invoiceProducts2[0].officeCode=="M"){
+        (document.getElementById("officeCode") as HTMLOptionElement).value='M';
+        this.productForm.get("officeCode").setValue('M')
+      }else{
+        (document.getElementById("officeCode") as HTMLOptionElement).value='U'
+        this.productForm.get("officeCode").setValue('U')
+      }
+      
+      this.productForm.get("warehouseCode").setValue(this.invoiceProducts2[0].warehouseCode)
+      this.productForm.get("currAccCode").setValue(this.invoiceProducts2[0].currAccCode)
+      // this.alertifyService.success(this.productForm.get("officeCode").value+"\n"+   this.productForm.get("warehouseCode").value+"\n"+ this.productForm.get("currAccCode")
+      // )
+  
+    }
+  }
+  createJson(barcode: string,shelfNo:string) {
+  
+    var model: CreatePurchaseInvoice = this.invoiceProducts2.find(
+      (p) => (p.barcode = barcode) && p.shelfNo == shelfNo 
+    );
+    const formDataJSON = JSON.stringify(model); // Form verilerini JSON'a dönüştür
+
+    this.qrCodeValue = formDataJSON;
+    // this.alertifyService.success(this.qrCodeValue)
+    
+  }
+
+  onChangeURL(url: SafeUrl) {
+    this.qrCodeDownloadLink = url;
+    this.openImageModal(this.qrCodeDownloadLink);
+    this.qrCodeValue = ''
+  }
+
+
   totalCount : number;
 
   async calculateTotalQty() {
@@ -80,7 +120,21 @@ export class CreatePurchaseOrderComponent implements OnInit {
     try {
       const response = await this.productService.getProductOfInvoice( this.newOrderNumber);
       this. invoiceProducts2 = response;
-      
+      if(this. invoiceProducts2.length>0 ){
+        if(this.invoiceProducts2[0].officeCode=="M"){
+          (document.getElementById("officeCode") as HTMLOptionElement).value='M'
+          this.productForm.get("officeCode").setValue('M')
+        }else{
+          (document.getElementById("officeCode") as HTMLOptionElement).value='U'
+          this.productForm.get("officeCode").setValue('U')
+        }
+        
+        this.productForm.get("warehouseCode").setValue(this.invoiceProducts2[0].warehouseCode)
+        this.productForm.get("currAccCode").setValue(this.invoiceProducts2[0].currAccCode)
+        // this.alertifyService.success(this.productForm.get("officeCode").value+"\n"+   this.productForm.get("warehouseCode").value+"\n"+ this.productForm.get("currAccCode")
+        // )
+
+      }
       await this.calculateTotalQty();
     } catch (error: any) {
       this.alertifyService.warning(error.message);
@@ -159,16 +213,29 @@ export class CreatePurchaseOrderComponent implements OnInit {
   }
 
   async createPurchaseInvoice() {
-    //alış faturası oluştur
-
-    await this.orderService.createPurchaseInvoice(
-      this.invoiceProducts,
-      this.newOrderNumber,
-      this.productForm.get('isReturn').value
+     var confirmation = window.confirm(
+        'İşlem Nebime Aktarılacaktır.Devam Etmek istiyor musunuz?'
     );
+
+    if(confirmation){
+      this.spinnerService.show();
+      try {
+        await this.orderService.createPurchaseInvoice(
+          this.invoiceProducts,
+          this.newOrderNumber,
+          this.productForm.get('isReturn').value,
+          1  // BP2
+        );
+      } catch (error) {
+        
+      }
+      this.spinnerService.hide();
+     
+    }
+    
   }
 
-  url: string = ClientUrls.baseUrl + '/Order/CountProductPuschase';
+  // url: string = ClientUrls.baseUrl + '/Order/CountProductPuschase';
   shelfNumbers: string = 'RAFLAR:';  
   async setShelfNo(barcode: string) {
     this.shelfNumbers = 'RAFLAR:';
@@ -186,7 +253,11 @@ export class CreatePurchaseOrderComponent implements OnInit {
     this.productForm.get('barcode').setValue(null);
     this.productForm.get('quantity').setValue(null);
     this.productForm.get('batchCode').setValue(null);
-    this.focusNextInput('barcode');
+    if(this.productForm.get("isReturn").value === true){
+      this.focusNextInput('shelfNo');
+    }else{
+      this.focusNextInput('barcode');
+    }
     this.shelfNumbers='RAFLAR:'
 
   }
@@ -330,24 +401,47 @@ export class CreatePurchaseOrderComponent implements OnInit {
     itemCode: string,
     shelfNo: string
   ): Promise<boolean> {
-    const response: boolean = await this.productService.deleteOrderProduct(
-      this.newOrderNumber,
-      itemCode
-    );
-    if (response) {
-      this.invoiceProducts2 = this.invoiceProducts2.filter(
-        (o) => !(o.barcode == itemCode && o.shelfNo == shelfNo)
+
+    const confirmDelete = window.confirm("Bu transferi silmek istediğinizden emin misiniz?");
+    if (confirmDelete) {
+      const response: boolean = await this.productService.deleteOrderProduct(
+        this.newOrderNumber,
+        itemCode
       );
-      this.calculateTotalQty();
-      await this.getProductOfInvoice(this.newOrderNumber);
-      this.alertifyService.success('Silme İşlemi Başarılı.');
-    } else {
-      this.alertifyService.error('Silme İşlemi Başarısız.');
+      if (response) {
+        this.invoiceProducts2 = this.invoiceProducts2.filter(
+          (o) => !(o.barcode == itemCode && o.shelfNo == shelfNo)
+        );
+        this.calculateTotalQty();
+        await this.getProductOfInvoice(this.newOrderNumber);
+        this.alertifyService.success('Silme İşlemi Başarılı.');
+      } else {
+        this.alertifyService.error('Silme İşlemi Başarısız.');
+      }
+      return response;
+      
+    }else{
+      return false;
     }
-    return response;
+    
   }
 
+  async deleteInvoiceProducts(orderNumber: string){
 
+    const confirmDelete = window.confirm("Bu transferi silmek istediğinizden emin misiniz?");
+    if (confirmDelete) {
+      // Kullanıcı onayladıysa silme işlemini gerçekleştir
+      const response  = await this.orderService.deleteInvoiceProducts(orderNumber);
+      if (response === true) {
+        location.reload();
+        this.alertifyService.success("İşlem Başarılı")
+      }else{
+        this.alertifyService.error("İşlem Başarısız")
+
+      }
+    }
+ 
+  }
 
   checkBarcodeAndShelf(response:any,model :CreatePurchaseInvoice):string[]{
     if (response != undefined) {

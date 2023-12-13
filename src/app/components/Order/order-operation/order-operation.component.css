@@ -9,3 +9,13 @@
         overflow-y: auto;
     }
 }
+
+.success-row {
+  background-color: rgba(0, 211, 0, 0.712); /* Set the background color for successful rows */
+  color: black; /* Set the text color */
+}
+
+.default-row {
+  background-color: rgba(206, 0, 0, 0.712); /* Set the background color for successful rows */
+  color: black; /* Set the text color */
+}

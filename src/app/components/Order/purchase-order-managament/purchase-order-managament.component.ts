@@ -82,27 +82,28 @@ export class PurchaseOrderManagamentComponent implements OnInit {
       }
     }
   }
+
+  async deleteInvoiceProducts(orderNumber: string){
+
+    const confirmDelete = window.confirm("Bu transferi silmek istediğinizden emin misiniz?");
+    if (confirmDelete) {
+      // Kullanıcı onayladıysa silme işlemini gerçekleştir
+      const response  = await this.orderService.deleteInvoiceProducts(orderNumber);
+      if (response === true) {
+        location.reload();
+        this.alertifyService.success("İşlem Başarılı")
+      }else{
+        this.alertifyService.error("İşlem Başarısız")
+
+      }
+     }
+    }
+    
   async getPurchaseOrders(): Promise<any> {
     const response = 
     this.saleOrderModels =  await this.orderService.getPurchaseOrders()
 
   }
 
-  printPicture(url:string){
-   var  model : PrinterInvoiceRequestModel = new PrinterInvoiceRequestModel();
-   model.printerName = "EPSON-DEPO (L3150 Series)"
-   model.url= url;
-    try {
-      this.httpClientService
-        .post<PrinterInvoiceRequestModel>({
-          controller: 'Order/TryPrintPicture',  
-        },model)
-        .subscribe((data) => {
-          console.log(data);
-          // this.saleOrderModels = data;
-        });
-    } catch (error: any) {
-      console.log(error.message);
-    }
-    }
+ 
   }

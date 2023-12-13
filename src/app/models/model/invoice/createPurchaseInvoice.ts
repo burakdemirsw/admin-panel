@@ -10,4 +10,6 @@ export class CreatePurchaseInvoice{
     currency !:string //satıştan gelliyor
     photoUrl !:string
     batchCode !: string
+    itemCode!:string
+    qty !:number
 }

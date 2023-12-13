@@ -18,7 +18,9 @@ import { AlertifyService } from 'src/app/services/ui/alertify.service';
 })
 
 export class WarehouseShelfCountListComponent implements OnInit {
-  constructor(
+  currentPage:number = 1; // Başlangıçta ilk sayfayı göster
+  filterForm: FormGroup;
+  constructor(  
     private httpClientService: HttpClientService,
     private alertifyService: AlertifyService,
     private spinnerService: NgxSpinnerService,
@@ -41,8 +43,7 @@ export class WarehouseShelfCountListComponent implements OnInit {
     this.spinnerService.hide();
 
   }
-  currentPage:number = 1; // Başlangıçta ilk sayfayı göster
-  filterForm: FormGroup;
+
 
   innerNumberList : string[] = [];
   addInnerNumberToList(innerNumber : string){
@@ -82,6 +83,24 @@ export class WarehouseShelfCountListComponent implements OnInit {
 
     });
   }
+
+  async deleteCountFromId(orderNumber: string) {
+    // Silme işleminden önce kullanıcıya emin olup olmadığını sormak için bir onay penceresi göster
+    const confirmDelete = window.confirm("Bu transferi silmek istediğinizden emin misiniz?");
+    
+    if (confirmDelete) {
+      // Kullanıcı onayladıysa silme işlemini gerçekleştir
+      const response = await this.warehouseService.deleteCountFromId(orderNumber);
+      if (response === true) {  
+        location.reload();
+        this.alertifyService.success("İşlem Başarılı")
+      }else{
+        this.alertifyService.error("İşlem Başarısız")
+
+      }
+    }
+  }
+
 
   async onSubmit(model:CountListFilterModel){
     this.spinnerService.show()

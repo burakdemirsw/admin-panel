@@ -9,6 +9,7 @@ export class TransferModel {
     batchCode!: string;
     warehouse!: string;
     warehouseTo!: string;
+    availableQty !:number;
     
 
 

@@ -82,6 +82,15 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { CreateQrComponent } from './components/Order/create-qr/create-qr.component';
 import { QRCodeModule } from 'angularx-qrcode';
 import {NgxPrintModule} from 'ngx-print';
+import { CommonModule, DatePipe } from '@angular/common';
+import { WarehouseTransferListComponent } from './components/Warehouse/warehouse-transfer-list/warehouse-transfer-list.component';
+import { DialogModule } from 'primeng/dialog';
+import {ImageModule} from 'primeng/image';
+import {ToastModule} from 'primeng/toast';
+import { LogManagamentComponent } from './components/Log/log-managament/log-managament.component';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { ShelfTransferRequestComponent } from './components/Warehouse/shelf-transfer-request/shelf-transfer-request.component';
+
 
 @NgModule({
   declarations: [
@@ -148,28 +157,37 @@ import {NgxPrintModule} from 'ngx-print';
     WarehouseShelfCountListComponent,
     InvoiceListComponent,
     FastTransferComponent,
-    CreateQrComponent
+    CreateQrComponent,
+    WarehouseTransferListComponent,  
+    LogManagamentComponent,
+    ShelfTransferRequestComponent
   ],
 
 
   imports: [
     FormsModule,
+    ReactiveFormsModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
     NgxSpinnerModule.forRoot({ type: 'line-scale-pulse-out' }),
-    ReactiveFormsModule,
     ZXingScannerModule,
-    NgxPaginationModule,
+    NgxPaginationModule, 
     NgSelectModule,
     NgxScannerQrcodeModule,
     QRCodeModule,
-    NgxPrintModule
+    NgxPrintModule,
+    CommonModule,
+    DialogModule,
+    ImageModule,
+    ToastModule,
+    InputTextareaModule
+  
   ],
   
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [    AlertifyService, NgModule, NgxPopper, NgxSpinnerModule,{      provide: HTTP_INTERCEPTORS,
+  providers: [    DatePipe,AlertifyService, NgModule, NgxPopper, NgxSpinnerModule,{      provide: HTTP_INTERCEPTORS,
     useClass: HttpErrorInterceptor,
     multi: true}],
   bootstrap: [AppComponent],

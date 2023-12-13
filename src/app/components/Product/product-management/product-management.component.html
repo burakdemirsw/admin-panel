@@ -1,96 +1,83 @@
 <main id="main" class="main">
-  <div class="pagetitle">
-    <h1>Products Tables</h1>
-    <nav>
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-        <li class="breadcrumb-item">Tables</li>
-        <li class="breadcrumb-item active">General</li>
-      </ol>
-    </nav>
-  </div>
+
 
   <section class="section">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Products</h5>
-        <a class="btn btn-success" data-bs-toggle="dropdown">+Opertions </a>
-        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+        <h5 class="card-title">Ürün Doğrula</h5>
+        <form [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
+          <div class="form-row">
+            <div class="form-group col-md-12 mb-3">
+              <label for="barcode">Barkod</label>
+              <div class="input-group">
+              
+                <input type="text" id="barcode" class="form-control" formControlName="barcode">
+                <div class="input-group-append">
+                  <button type="button" (click)="clearBarcode()" class="btn btn-dark">Formu Temizle</button>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <button class="btn btn-primary btn-block">Filtrele</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+     
 
-          <li><a class="dropdown-item">Add New Product</a></li>
-          <li><a class="dropdown-item">Export To The Excel</a></li>
-          <li><a class="dropdown-item"  (click)="DeleteAllSelectedProducts()">Delete All Selected</a></li>
-        </ul>
-        <div style="overflow-x: auto;">
-          <table class="table">
+    <div class="card" *ngIf="products.length > 0">
+      <div class="card-body">
+        <h5 class="card-title">Ürünler</h5>
+
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped">
             <thead>
               <tr>
-                <th scope="col">Select</th>
-                <th scope="col">Image</th>
                 <th scope="col">Id</th>
-                <th scope="col">Name</th>
+                <th scope="col">Resim</th>
+                <th scope="col">Ürün Kodu</th>
+                <th scope="col">Raf No</th>
+                <th scope="col">Depo</th>
 
-                <th scope="col">Category</th>
-                <th scope="col">Price</th>
-                <th scope="col">Brand</th>
-
-                <th scope="col">Stock Code</th>
-                <th scope="col">Total Stok Amount</th>
-                <th scope="col">Last Updated Day</th>
-                <th scope="col">Created Day</th>
-                <th scope="col">New Product</th>
-                <th scope="col">Operations</th>
+                <th scope="col">Miktar</th>
+                <th scope="col">Barkod</th>
+                <th scope="col">Parti</th>
+                <th scope="col">Satış Fiyatı</th>
+                <th scope="col">Ürün Adı</th>
+                <th scope="col">İşlemler</th>
 
               </tr>
             </thead>
             <tbody>
-
-
-              <tr *ngFor="let product of products">
-                <td><input class="form-check-input" type="checkbox" value="" id="cb{{product.id}}" (click)="product.id && SelectedProductListManager(product.id)"></td>
+              <tr *ngFor="let product of products; let i = index">
+                <td>{{i + 1}}</td>
                 <td class="image-icon-td">
-                  <div class="image-icon-container" *ngIf="(product.url)?.length !== 0" (mouseover)="showImage = true"
-                    (mouseout)="showImage = false">
-                    <i class="fa fa-image"></i>
-                    <img *ngIf="showImage" [src]="product.url" class="product-image">
-                  </div>
-                  <ng-template #noImage>-</ng-template>
+                  <p-image src="{{product.photoUrl}}" alt="Image" width="30" [preview]="true"></p-image>
                 </td>
-                <th scope="row">{{product.id}}</th>
-                <td>{{product.productName}}</td>
+                <td>{{product.itemCode}}</td>
+                <td>{{product.shelfNo}}</td>
+                <td>{{product.warehouseCode}}</td>
 
-                <td>{{product.categoryDescription}}</td>
-                <td>{{product.sellingPrice}}</td>
-                <td>{{product.brand}}</td>
-                <td>{{product.stockCode}}</td>
-                <td>{{product.stockAmount}}</td>
-
-                <td>2023-04-01</td>
-                <td>2023-04-01</td>
-                <td>{{(product.new) ? "New" : "Old" | uppercase }}</td>
-                <td>
-                  <div class="btn-group">
-                    <div class="btn btn-dark" data-text="Ürün Özellikleri"><i class="fas fa-cog"></i> </div>
-                    <div class="btn" [ngClass]="{'btn-success': product.blocked, 'btn-danger': !product.blocked}"
-                      data-text="Görünürlük">
-                      <i class="fas fa-eye"></i>
-                    </div>
-                    <div class="btn  btn-dark" data-text="Varyasyonlar"><i class="fas fa-sliders-h"></i> </div>
-                    <div class="btn  btn-success" data-text="Para"><i class="fas fa-dollar-sign"></i> </div>
-                    <div class="btn  btn-dark" data-text="Resim Ekle"><i class="fas fa-image"></i></div>
-                    <div class="btn  btn-success" data-text="Kopyala"><i class="fas fa-copy"></i> </div>
-                  </div>
+                <td>{{product.quantity}}</td>
+                <td>{{product.barcode}}</td>
+                <td>{{product.batchCode}}</td>
+                <td>{{product.price}}</td>
+                <td>{{product.description}}</td>
+                <td> <!-- Yeni -->
+                  <button class="btn btn-primary" type="submit"
+                      (click)="createJson(product.barcode, product.shelfNo)"><i
+                          class="fas fa-print"></i>
+                  </button>
                 </td>
-                <style>
-
-
-                </style>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
+    <qrcode style="display: none" (qrCodeURL)="onChangeURL($event)" [qrdata]="qrCodeValue" [width]="256"
+    [errorCorrectionLevel]="'M'"></qrcode>
+    <app-image-modal [imageUrl]="modalImageUrl" [title]="'Ürün Detay'"></app-image-modal> 
   </section>
-
 </main>

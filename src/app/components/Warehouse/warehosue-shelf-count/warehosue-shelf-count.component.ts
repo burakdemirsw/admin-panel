@@ -1,18 +1,22 @@
+import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
+import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { CountProductRequestModel2 } from 'src/app/models/model/order/countProductRequestModel2';
 import { OrderBillingListModel } from 'src/app/models/model/order/orderBillingListModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { CountedProduct } from 'src/app/models/model/product/countedProduct';
 import { ItemBillingModel } from 'src/app/models/model/product/itemBillingModel ';
 import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
+import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
+import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
@@ -25,8 +29,9 @@ declare var window: any;
   styleUrls: ['./warehosue-shelf-count.component.css'],
 })
 export class WarehosueShelfCountComponent implements OnInit {
-  [x: string]: any;
 
+  @Input() infoProducts: CreatePurchaseInvoice[] = []; 
+  [x: string]: any;
   productsToCollect: ProductOfOrder[];
   collectedProducts: ProductOfOrder[] = [];
   process: boolean = false;
@@ -35,10 +40,38 @@ export class WarehosueShelfCountComponent implements OnInit {
   currentOrderNo: string = '';
   modalImageUrl: string;
   formModal: any;
-
   qrCodeValue: string ;
   qrCodeDownloadLink: any = this.sanitizer.bypassSecurityTrustResourceUrl('');
 
+  constructor(
+    private formBuilder: FormBuilder,
+    private alertifyService: AlertifyService,
+    private spinnerService: NgxSpinnerService,
+    private httpClientService: HttpClientService,
+    private httpClient: HttpClient,
+    private productService: ProductService,
+    private generalService: GeneralService,
+    private warehouseService: WarehouseService,
+    private orderService: OrderService,
+
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private title: Title,
+    private sanitizer: DomSanitizer,private datePipe: DatePipe
+  ) {
+    this.title.setTitle('Sayım');
+  }
+  shelfNumbers: string = 'RAFLAR:';
+  async ngOnInit() {
+    this.formGenerator();
+    this.activatedRoute.params.subscribe(async (params) => {
+      this.currentOrderNo = params['orderNo'];
+      await this.getProductOfCount(this.currentOrderNo);
+      await this.getAvailableShelves();
+    });
+  }
+shelves  :AvailableShelf[] = []
+shelves2  :AvailableShelf[] = []
   createJson(barcode: string,shelfNo:string,batchCode:string) {
   
     var model: CountedProduct = this.lastCollectedProducts.find(
@@ -50,6 +83,34 @@ export class WarehosueShelfCountComponent implements OnInit {
     // this.alertifyService.success(this.qrCodeValue)
     
   }
+  async getAvailableShelves (){
+    this.shelves = await  this.warehouseService.getAvailableShelves();
+    this.shelves2.push(this.shelves[0])
+    }
+
+    goDown2(desc: string) {
+      // packageNo'ya eşleşen ProductOfOrder'ı bulun
+      const matchinShelf = this.shelves.find(
+        (shelve) => shelve.description === desc
+      );
+  
+      if (matchinShelf) {
+        // Ürünü diziden çıkarın
+        const index = this.shelves.indexOf(matchinShelf);
+        if (index !== -1) {
+          this.shelves2 = [];
+          if(this.shelves.length-1>=index+1)
+          {
+            this.shelves2.push(this.shelves[index+1])
+  
+          }else{
+            this.shelves2.push(this.shelves[0])
+          }
+         
+        
+        }
+      }
+    }
 
   onChangeURL(url: SafeUrl) {
     this.qrCodeDownloadLink = url;
@@ -67,30 +128,7 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.formModal.show();
   }
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private alertifyService: AlertifyService,
-    private spinnerService: NgxSpinnerService,
-    private httpClientService: HttpClientService,
-    private httpClient: HttpClient,
-    private productService: ProductService,
-    private generalService: GeneralService,
-    private warehouseService: WarehouseService,
-    private activatedRoute: ActivatedRoute,
-    private router: Router,
-    private title: Title,
-    private sanitizer: DomSanitizer
-  ) {
-    this.title.setTitle('Sayım');
-  }
-  shelfNumbers: string = 'RAFLAR:';
-  async ngOnInit() {
-    this.formGenerator();
-    this.activatedRoute.params.subscribe(async (params) => {
-      this.currentOrderNo = params['orderNo'];
-      await this.getProductOfCount(this.currentOrderNo);
-    });
-  }
+
 
   focusNextInput(nextInputId: string) {
     const nextInput = document.getElementById(nextInputId) as HTMLInputElement;
@@ -121,14 +159,14 @@ export class WarehosueShelfCountComponent implements OnInit {
       isShelfBased: [null],
     });
   }
-  getSelectedOffice(from: number) {
+  async getSelectedOffice(from: number) {
     if (from == 1) {
-      this.getWarehouseList(this.checkForm.get('office')?.value, 1);
+      await this.getWarehouseList(this.checkForm.get('office')?.value, 1);
     } else {
-      this.getWarehouseList(this.checkForm.get('office')?.value, 2);
+      await this.getWarehouseList(this.checkForm.get('office')?.value, 2);
     }
   }
-  getWarehouseList(value: string, from: number): any {
+  async getWarehouseList(value: string, from: number): Promise<any> {
     try {
       if (from === 1) {
         const selectElement = document.getElementById(
@@ -136,7 +174,7 @@ export class WarehosueShelfCountComponent implements OnInit {
         ) as HTMLSelectElement;
 
         value = selectElement.value == '' ? 'M' : selectElement.value;
-        this.httpClientService
+        await this.httpClientService
           .get<WarehouseOfficeModel>({
             controller: 'Warehouse/GetWarehouseModel/' + value,
           })
@@ -149,7 +187,7 @@ export class WarehosueShelfCountComponent implements OnInit {
         ) as HTMLSelectElement;
 
         value = selectElement.value == '' ? 'M' : selectElement.value;
-        this.httpClientService
+        await this.httpClientService
           .get<WarehouseOfficeModel>({
             controller: 'Warehouse/GetWarehouseModel/' + value,
           })
@@ -179,9 +217,14 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.lastCollectedProducts = await this.warehouseService.getProductOfCount(
       orderNo
     );
+    
     this.calculateTotalQty();
   }
+getCurrentDatetime():string{
 
+ const datetime =  this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss')
+ return datetime;
+}
   async countProductRequest(
     barcode: string,
     shelfNo: string,
@@ -231,10 +274,11 @@ export class WarehosueShelfCountComponent implements OnInit {
 
     return result[1];
   }
-
+state : boolean  = true;
   async onSubmit(
     countProductRequestModel: CountProductRequestModel2
   ): Promise<any> {
+
     if (!this.checkForm.valid) {
       if (countProductRequestModel.barcode) {
         var number = await this.setShelfNo(countProductRequestModel.barcode);
@@ -250,17 +294,6 @@ export class WarehosueShelfCountComponent implements OnInit {
       const url = ClientUrls.baseUrl + '/Order/CountProduct3';
 
       try {
-        //bu alanda miktar alanı boş mu  ve ilk okutmamı diye bak
-
-        if (countProductRequestModel.quantity === null && this.isFirstBarcode) {
-          var number = await this.getQuantity(countProductRequestModel.barcode);
-          countProductRequestModel.quantity = await Number(number);
-          this.checkForm
-            .get('quantity')
-            .setValue(countProductRequestModel.quantity);
-          return;
-        } else {
-          //tam bu alanda barkodu yolla eğer gönderilen raf gelen cevabın içinden çıkarsa say
 
           var newResponse = await this.productService.countProductByBarcode(
             countProductRequestModel.barcode
@@ -268,121 +301,133 @@ export class WarehosueShelfCountComponent implements OnInit {
 
           const shelves = newResponse[0]
             .split(',')
-            .filter((raflar) => raflar.trim() !== '');
-
-          if (shelves.includes(countProductRequestModel.shelfNo)) {
-            var response: ProductCountModel =
-              await this.warehouseService.countProductRequest(
-                countProductRequestModel.barcode,
-                countProductRequestModel.shelfNo,
-                countProductRequestModel.quantity == null
-                  ? Number(newResponse[1])
-                  : countProductRequestModel.quantity,
-                countProductRequestModel.office,
-                countProductRequestModel.warehouseCode,
-                countProductRequestModel.batchCode,
-                'Order/CountProduct3',
-                this.currentOrderNo,
-                ''
-              );
-            if (response != undefined) {
-              var data: ProductCountModel = response;
-              if (data.status == 'RAF') {
-                countProductRequestModel.shelfNo = response.description;
-              } else {
-                countProductRequestModel.barcode = response.description;
-              }
-
-              const parcalanmisVeri = this.shelfNumbers.split(':');
-              const raflarKismi = parcalanmisVeri[1];
-              const raflar = raflarKismi
-                .split(',')
-                .filter((raflar) => raflar.trim() !== '');
-              if (raflar.length > 0) {
-                if (countProductRequestModel.shelfNo.toLowerCase()) {
-                  countProductRequestModel.quantity = Number(newResponse[1]);
-                  this.generalService.beep();
-                  await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
-                  this.calculateTotalQty();
-                  this.clearQrAndBatchCode();
-                } else {
-                  if (confirm('Raf Bulunamadı! Eklensin mi(1)?')) {
+            .filter((raflar) => raflar.trim() !== '').map((raflar) => raflar.toLowerCase());;
+            if(this.state){
+              this.state = false;
+              if (shelves.includes(countProductRequestModel.shelfNo.toLowerCase())) {
+                var response: ProductCountModel =
+                  await this.warehouseService.countProductRequest(
+                    countProductRequestModel.barcode,
+                    countProductRequestModel.shelfNo,
+                    countProductRequestModel.quantity == null
+                      ? Number(newResponse[1])
+                      : countProductRequestModel.quantity,
+                    countProductRequestModel.office,
+                    countProductRequestModel.warehouseCode,
+                    countProductRequestModel.batchCode,
+                    'Order/CountProduct3',
+                    this.currentOrderNo,
+                    ''
+                  );
+                if (response != undefined) {
+                  var data: ProductCountModel = response;
+                  if (data.status == 'RAF') {
+                    countProductRequestModel.shelfNo = response.description;
+                  } else {
+                    countProductRequestModel.barcode = response.description;
+                  }
+    
+                  const parcalanmisVeri = this.shelfNumbers.split(':');
+                  const raflarKismi = parcalanmisVeri[1];
+                  const raflar = raflarKismi
+                    .split(',')
+                    .filter((raflar) => raflar.trim() !== '').map((raflar) => raflar.toLowerCase());
+                    
+                    if (raflar.length>0) {
+                    if (raflar.includes(countProductRequestModel.shelfNo.toLowerCase())) {
+                      countProductRequestModel.quantity = Number(newResponse[1]);
+                      this.generalService.beep();
+                      await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
+                      this.calculateTotalQty();
+                      this.clearQrAndBatchCode();
+                      this.state = true;
+                    } else {
+                      if (confirm('Raf Bulunamadı! Eklensin mi(1)?')) {
+                        this.generalService.beep();
+    
+                        var newResponse =
+                          await this.productService.countProductByBarcode(
+                            countProductRequestModel.barcode
+                          );
+                        countProductRequestModel.quantity = Number(newResponse[1]);
+                        await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
+                        this.calculateTotalQty();
+                        this.clearQrAndBatchCode();
+                        this.state = true;
+                      } else {
+                        
+                        this.calculateTotalQty();
+                        this.state = true;
+                        this.alertifyService.warning('Ekleme Yapılmadı!');
+                      }
+                    }
+                  } else {
+                    countProductRequestModel.quantity = Number(newResponse[1]);
                     this.generalService.beep();
-
-                    var newResponse =
-                      await this.productService.countProductByBarcode(
-                        countProductRequestModel.barcode
-                      );
+    
+                    await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
+                    this.calculateTotalQty();
+                    this.clearQrAndBatchCode();
+                    this.state = true;
+                  }
+                }
+              } else {
+                if (
+                  confirm(
+                    'Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?'
+                  )
+                ) {
+                  var number = await this.setShelfNo(
+                    countProductRequestModel.barcode
+                  );
+                  this.checkForm.get('quantity')?.setValue(Number(number));
+    
+                  var response: ProductCountModel =
+                    await this.warehouseService.countProductRequest(
+                      countProductRequestModel.barcode,
+                      countProductRequestModel.shelfNo,
+                      countProductRequestModel.quantity === null
+                        ? Number(newResponse[1])
+                        : countProductRequestModel.quantity,
+                      countProductRequestModel.office,
+                      countProductRequestModel.warehouseCode,
+                      countProductRequestModel.batchCode,
+                      'Order/CountProduct3',
+                      this.currentOrderNo,
+                      ''
+                    );
+    
+                  if (response != undefined) {
+                    var data: ProductCountModel = response;
+                    if (data.status == 'RAF') {
+                      countProductRequestModel.shelfNo = response.description;
+                    } else {
+                      countProductRequestModel.barcode = response.description;
+                    }
+                    this.generalService.beep();
                     countProductRequestModel.quantity = Number(newResponse[1]);
                     await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
                     this.calculateTotalQty();
                     this.clearQrAndBatchCode();
-                  } else {
-                    this.calculateTotalQty();
-                    this.alertifyService.warning('Ekleme Yapılmadı!');
+                    this.state = true;
                   }
-                }
-              } else {
-                countProductRequestModel.quantity = Number(newResponse[1]);
-                this.generalService.beep();
-
-                await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
-                this.calculateTotalQty();
-                this.clearQrAndBatchCode();
-              }
-            }
-          } else {
-            if (
-              confirm(
-                'Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?'
-              )
-            ) {
-              var number = await this.setShelfNo(
-                countProductRequestModel.barcode
-              );
-              this.checkForm.get('quantity')?.setValue(Number(number));
-
-              var response: ProductCountModel =
-                await this.warehouseService.countProductRequest(
-                  countProductRequestModel.barcode,
-                  countProductRequestModel.shelfNo,
-                  countProductRequestModel.quantity === null
-                    ? Number(newResponse[1])
-                    : countProductRequestModel.quantity,
-                  countProductRequestModel.office,
-                  countProductRequestModel.warehouseCode,
-                  countProductRequestModel.batchCode,
-                  'Order/CountProduct3',
-                  this.currentOrderNo,
-                  ''
-                );
-
-              if (response != undefined) {
-                var data: ProductCountModel = response;
-                if (data.status == 'RAF') {
-                  countProductRequestModel.shelfNo = response.description;
                 } else {
-                  countProductRequestModel.barcode = response.description;
+                  var number = await this.setShelfNo(
+                    countProductRequestModel.barcode
+                  );
+                  this.checkForm.get('quantity')?.setValue(Number(number));
+                  this.alertifyService.success(
+                    'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
+                  );
+                  this.state = true;
                 }
-                this.generalService.beep();
-                countProductRequestModel.quantity = Number(newResponse[1]);
-                await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
-                this.calculateTotalQty();
-                this.clearQrAndBatchCode();
               }
-            } else {
-              var number = await this.setShelfNo(
-                countProductRequestModel.barcode
-              );
-              this.checkForm.get('quantity')?.setValue(Number(number));
-              this.alertifyService.success(
-                'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
-              );
             }
-          }
-        }
+         
+        
       } catch (error: any) {
         this.alertifyService.error(error.message);
+        this.state = true
       }
     }
   }
@@ -398,33 +443,45 @@ export class WarehosueShelfCountComponent implements OnInit {
         this.checkForm.get('barcode').value
       );
       if (this.barcodeList.includes(data)) {
-        //this.alertifyService.error('B.A.S Kapandı!');
+        console.log('B.A.S Kapandı!');
         this.isFirstBarcode = false;
         return;
       } else {
         this.isFirstBarcode = true;
         this.barcodeList.push(data);
         this.checkForm.get('quantity').setValue(null);
-        //this.alertifyService.success('B.A.S Devrede!');
+        console.log('B.A.S Devrede!');
       }
     }
   }
   timer: any;
 
   async startBarcodeTimer(barcode: string): Promise<any> {
-    // 1 saniye bekleme süresi
-    const waitTime = 500;
-
-    if (this.timer) {
-      // Daha önce bir zamanlayıcı varsa iptal et
-      clearTimeout(this.timer);
+    if( barcode !=undefined){
+      if(barcode.length>=45){
+        try {
+          const waitTime = 1000;
+    
+          if (this.timer) {
+            // Daha önce bir zamanlayıcı varsa iptal et
+            clearTimeout(this.timer);
+          }
+      
+          this.timer = setTimeout(() => {
+            // 1 saniye bekledikten sonra işlemi gerçekleştir
+            this.checkBarcodeList(barcode);
+            this.timer = null; // Zamanlayıcıyı sıfırla
+          }, waitTime);
+        } catch (error) {
+          console.log(error.message)
+        }
+      }
+     
+    }else{
+      return;
     }
-
-    this.timer = setTimeout(() => {
-      // 1 saniye bekledikten sonra işlemi gerçekleştir
-      this.checkBarcodeList(barcode);
-      this.timer = null; // Zamanlayıcıyı sıfırla
-    }, waitTime);
+    
+   
   }
 
   async check() {
@@ -440,33 +497,48 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.focusNextInput('shelfNo');
     this.shelfNumbers = 'RAFLAR:';
     this.checkForm.get('quantity').setValue(null);
+    this.checkForm.get('batchCode').setValue(null)
   }
   clearQrAndBatchCode() {
     this.checkForm.get('barcode').setValue(null);
     this.checkForm.get('batchCode').setValue(null);
     this.checkForm.get('quantity').setValue(null);
+    this.focusNextInput('countPageBarcode');
+  }
 
-    this.focusNextInput('barcode');
-  }
-  completeCount() {
-    this.generalService.waitAndNavigate('Sayım Tamamlandı!', '/dashboard');
-  }
   async completeCountFromService(orderNo: string): Promise<boolean> {
-    this.spinnerService.show();
-    const response = await this.productService.completeCount(
-      this.currentOrderNo +
-        '|' +
-        (document.getElementById('isShelfBased') as HTMLInputElement).checked
-    );
-    if (response === true) {
+    try {
+      // İşlem öncesi kullanıcıya onay iletilisi göster
+      const userConfirmed = window.confirm("İşlemi tamamlamadan önce sayımı eşitlemek istiyor musunuz?");
+      
+      if (!userConfirmed) {
+        // Kullanıcı işlemi onaylamadıysa işlemi iptal et
+        return false;
+      }
+  
+      this.spinnerService.show();
+      const response = await this.productService.completeCount(
+        this.currentOrderNo +
+          '|' +
+          (document.getElementById('isShelfBased') as HTMLInputElement).checked
+      );
+  
+      if (response === true) {
+        this.spinnerService.hide();
+        this.router.navigate(['/warehouse-shelf-count-list']);
+        return true;
+      } else {
+        this.spinnerService.hide();
+        this.alertifyService.error("İşlem Başarısız");
+        return false;
+      }
+    } catch (error:any) {
       this.spinnerService.hide();
-      this.router.navigate(['/warehouse-shelf-count-list']);
-
-      return true;
-    } else {
+      this.alertifyService.error("İşlem Başarısız");
       return false;
     }
   }
+  
 
   async deleteOrderProduct(
     orderNo: string,

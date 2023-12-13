@@ -5,91 +5,112 @@ import { ProductModel } from 'src/app/models/model/product/productModel';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
 import { NgxSpinnerService } from 'ngx-spinner';
-
+import { ProductList_VM } from 'src/app/models/model/product/productList_VM';
+import { BarcodeSearch_RM, ProductService } from 'src/app/services/admin/product.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { GeneralService } from 'src/app/services/admin/general.service';
+declare var window: any;
 @Component({
   selector: 'app-product-management',
   templateUrl: './product-management.component.html',
   styleUrls: ['./product-management.component.css'],
 })
 export class ProductManagementComponent implements OnInit {
-  products: ProductModel[];
+  products: ProductList_VM[] = [];
   showImage = false; // add this property
   view = true;
   constructor(
     private httpClientService: HttpClientService,
     private alertifyService: AlertifyService,
-    private spinnerService: NgxSpinnerService
+    private spinnerService: NgxSpinnerService,
+    private productService: ProductService,
+    private formBuilder: FormBuilder, private sanitizer: DomSanitizer,
+    private generalService: GeneralService
   ) {}
+  productForm: FormGroup;
   ngOnInit(): void {
-
     this.spinnerService.show();
-    this.products = this.getProducts();
+
+    this.formGenerator();
 
     this.spinnerService.hide();
   }
-  selectedProductList: number[] = [];
+  qrCodeValue: string ;
 
-  DeleteAllSelectedProducts() {
-    this.spinnerService.show();
-    this.selectedProductList.forEach((element) => {
-      this.httpClientService
-        .delete<any>(
-          {
-            controller: 'Product',
-          },
-          element
-        )
-        .subscribe((data) => {
-          console.log(data);
-        });
-    });
-    setTimeout(() => {
-      this.spinnerService.hide();
-      window.location.reload();
-    }, 2000);
+  invoiceProducts2: CreatePurchaseInvoice[] = [];
+  createJson(barcode: string,shelfNo:string) {
+  
+    var model: ProductList_VM = this.products.find(
+      (p) => (p.barcode = barcode) && p.shelfNo == shelfNo 
+    );
+    const formDataJSON = JSON.stringify(model.barcode+"--"+model.batchCode+"--"+model.itemCode); // Form verilerini JSON'a dönüştür
+
+    this.qrCodeValue = formDataJSON;
+    // this.alertifyService.success(this.qrCodeValue)
+    
   }
-  SelectedProductListManager(id: number) {
-    if (this.selectedProductList.includes(id)) {
-      this.SelectedProductListRemover(id);
-      this.alertifyService.success('Ürün silindi');
-      console.log(this.selectedProductList);
-    } else {
-      this.SelectedProductListAdder(id);
-      this.alertifyService.success('Ürün eklendi');
-      console.log(this.selectedProductList);
+  modalImageUrl: string;
+  formModal: any;
+  openImageModal(imageUrl: string) {
+    this.modalImageUrl = imageUrl;
+    if (!this.formModal) {
+      this.formModal = new window.bootstrap.Modal(
+        document.getElementById('myModal')
+      );
     }
+    this.formModal.show();
   }
 
-  SelectedProductListAdder(id: number) {
-    this.selectedProductList.push(id);
+
+  qrCodeDownloadLink: any = this.sanitizer.bypassSecurityTrustResourceUrl('');
+  onChangeURL(url: SafeUrl) {
+    this.qrCodeDownloadLink = url;
+    this.openImageModal(this.qrCodeDownloadLink);
+    this.qrCodeValue = ''
   }
 
-  SelectedProductListRemover(id: number) {
-    const index = this.selectedProductList.findIndex((x) => x === id);
-    if (index !== -1) {
-      this.selectedProductList.splice(index, 1);
-    }
-  }
-
-  stateChanger(value: boolean) {
-    if (value === false) {
-      value = true;
-    } else {
-      value = false;
-    }
-  }
-  getProducts(): any {
+  formGenerator() {
     try {
-      this.httpClientService
-        .get<ProductModel>({
-          controller: 'Product',
-        })
-        .subscribe((data) => {
-          console.log(data);
-          this.products = data;
-        });
+      this.productForm = this.formBuilder.group({
+        barcode: [null, Validators.required],
+      });
+    } catch (error: any) {
+      this.alertifyService.error(error.message);
+    }
+  }
+
+  selectedProductList: number[] = [];
+  visible: boolean = false;
+  openShelvesModal(id: any) {
+    this.visible = true;  
+  }
+
+  async getProducts(barcode: string) {
+    try {
+      var model : BarcodeSearch_RM = new BarcodeSearch_RM();
+      model.barcode = barcode;
+      const response = await this.productService.searchProduct(model);
+      this.products = response;
+      return response;
     } catch (error: any) {
       console.log(error.message);
+      return null;
     }
+  }
+  clearBarcode(){
+    this.productForm.get('barcode').setValue(null);
+    this.focusNextInput('barcode');
+  }
+  focusNextInput(nextInputId: string) {
+    const nextInput = document.getElementById(nextInputId) as HTMLInputElement;
+    if (nextInput) {
+      nextInput.focus();
+    }
+  }
+  async onSubmit(value: any) {
+     await this.getProducts(value.barcode);
+    this.alertifyService.success(value.barcode);
   }
 }

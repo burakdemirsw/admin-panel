@@ -101,6 +101,24 @@ export class OrderManagamentComponent implements OnInit {
  
 
   }
+
+  async deleteInvoiceProducts(orderNumber: string){
+
+    const confirmDelete = window.confirm("Bu transferi silmek istediğinizden emin misiniz?");
+    if (confirmDelete) {
+      // Kullanıcı onayladıysa silme işlemini gerçekleştir
+      const response  = await this.orderService.deleteInvoiceProducts(orderNumber);
+      if (response === true) {
+        location.reload();
+        this.alertifyService.success("İşlem Başarılı")
+      }else{
+        this.alertifyService.error("İşlem Başarısız")
+
+      }
+    }
+ 
+
+}
   printPicture(url:string){
    var  model : PrinterInvoiceRequestModel = new PrinterInvoiceRequestModel();
    model.printerName = "EPSON-DEPO (L3150 Series)"

@@ -197,6 +197,7 @@
                     <th scope="col">Miktar</th>
                     <th scope="col">Parti</th>
                     <th scope="col">Hedef Raf</th>
+                    <th scope="col">Sil</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -214,9 +215,10 @@
                     <td>{{ product.quantity }}</td>
                     <td>{{ product.batchCode }}</td>
                     <td>{{ product.targetShelfNo }}</td>
-                    <!-- 
-                  <td><button class="btn btn-danger" type="submit"
-                      (click)="deleteCountProduct(orderNo,product.barcode)">Sil </button></td> -->
+                    <td><button class="btn btn-danger" (click)="deleteFastTransfer(product)"><i
+                      class="fa fa-trash"></i></button> </td>
+               
+      
                   </tr>
                 </tbody>
 

@@ -25,45 +25,45 @@
         <div class="collapse" id="filterCollapse">
           <form [formGroup]="filterForm" (ngSubmit)="onSubmit(filterForm.value)">
 
-          <div class="row">
-            <div class="col-md-4">
-              <div class="form-group">
-                <label for="orderNo">Sipariş Numarası:</label>
-                <input type="text" id="orderNo" class="form-control" formControlName="orderNo" />
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="orderNo">Sipariş Numarası:</label>
+                  <input type="text" id="orderNo" class="form-control" formControlName="orderNo" />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="totalProduct">Toplam Sayılan Ürün Sayısı:</label>
+                  <input type="number" id="totalProduct" class="form-control" formControlName="totalProduct" />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="startDate">İşlem Başlangıç Tarihi:</label>
+                  <input type="date" id="startDate" class="form-control" formControlName="startDate" />
+                </div>
               </div>
             </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label for="totalProduct">Toplam Sayılan Ürün Sayısı:</label>
-                <input type="number" id="totalProduct" class="form-control"  formControlName="totalProduct"  />
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="endDate">İşlem Bitiş Tarihi:</label>
+                  <input type="date" id="endDate" class="form-control" formControlName="endDate" />
+                </div>
               </div>
             </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label for="startDate">İşlem Başlangıç Tarihi:</label>
-                <input type="date" id="startDate" class="form-control" formControlName="startDate"    />
+            <div class="row mt-2">
+              <div class="col-md-4">
+                <button class="btn btn-primary">Filtrele</button>
               </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-md-4">
-              <div class="form-group">
-                <label for="endDate">İşlem Bitiş Tarihi:</label>
-                <input type="date" id="endDate" class="form-control"  formControlName="endDate"  />
-              </div>
-            </div>
-          </div>
-          <div class="row mt-2">
-            <div class="col-md-4">
-              <button class="btn btn-primary">Filtrele</button>
-            </div>
-          </div>
-        </form>
+          </form>
+        </div>
+        <!-- Filtreleme Alanı (Bitiş) -->
+
       </div>
-      <!-- Filtreleme Alanı (Bitiş) -->
-     
-      </div>
-   
+
 
     </div>
 
@@ -119,6 +119,9 @@
                       routerLink="/warehouse-shelf-count/{{count.orderNo}}">
                       <i class="fas fa-sliders-h"></i>
                     </div>
+                    <button class="btn btn-danger" data-text="Sil"  (click)="deleteCountFromId(count.orderNo)">
+                      <i class="fas fa-trash"></i>
+                  </button>
                   </div>
                 </td>
               </tr>

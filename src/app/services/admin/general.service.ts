@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AlertifyService } from '../ui/alertify.service';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +43,20 @@ export class GeneralService {
 
     
   }
-
+  whichRowIsInvalid(form: FormGroup) {
+    let invalidFields = '';
+  
+    Object.keys(form.controls).forEach((controlName) => {
+      const control = form.get(controlName);
+      if (control && control.invalid) {
+        invalidFields += `${controlName}\n`;
+      }
+    });
+  
+    if (invalidFields) {
+      this.alertifyService.error(`Form Alanı Geçersiz:\n${invalidFields}`);
+    }
+  }
+  
 
 }

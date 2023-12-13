@@ -7,4 +7,8 @@ export class CountProductRequestModel2 {
     warehouseCode?: string;
     orderNo? :string;
     currAccCode? : string
+    isReturn?:boolean
+    salesPersonCode?:string
+    taxTypeCode ? :string
+
   }

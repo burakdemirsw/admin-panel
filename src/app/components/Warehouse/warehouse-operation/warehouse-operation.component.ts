@@ -15,6 +15,10 @@ import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { TransferModel } from 'src/app/models/model/warehouse/transferModel';
 import { Title } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
+import { ClientUrls } from 'src/app/models/const/ClientUrls';
+import { WarehouseItem } from 'src/app/models/model/warehouse/warehouseItem';
+import { InventoryItem } from 'src/app/models/model/product/inventoryItemModel';
+import { OrderService } from 'src/app/services/admin/order.service';
 declare var window: any;
 
 @Component({
@@ -31,6 +35,7 @@ export class WarehouseOperationComponent implements OnInit {
   qrCode: string = null;
 
   currentBarcode: string = null;
+  stockStatus : boolean = false;
   warehousePackageDetails: WarehouseModel[] = [];
   constructor(
     private httpClientService: HttpClientService,
@@ -43,7 +48,8 @@ export class WarehouseOperationComponent implements OnInit {
     private productService: ProductService,
     private warehouseService: WarehouseService,
     private title: Title,
-    private httpClient : HttpClient
+    private httpClient : HttpClient,
+    private orderService : OrderService
   ) {}// Add this line
   warehouseModels: WarehouseOfficeModel[] = [];
   warehouseModels2: WarehouseOfficeModel[] = [];
@@ -58,8 +64,14 @@ export class WarehouseOperationComponent implements OnInit {
     this.spinnerService.show();
     this.activatedRoute.params.subscribe(async (params) => {
 
+      
       this.currentOrderNo = 'TP-' + params["number"];
-      await this.getProductOfCount(this.currentOrderNo); //this.list.push(formValue);
+      if( this.currentOrderNo.length >12){
+        await this.getProductOfCount(this.currentOrderNo); //this.list.push(formValue);
+      }else{
+        await this.getInventoryItems();
+      }
+    
 
       this.spinnerService.hide();
     });
@@ -69,6 +81,11 @@ export class WarehouseOperationComponent implements OnInit {
   //  await this.getOfficeCodeList();
   
 
+  }
+  inventoryItemColums : string[] = ['Fotoğraf','Ürün Kodu','Ürün','Raf','Barcode','Miktar','Transfer Miktarı']
+  inventoryItems : InventoryItem[] = []
+  async getInventoryItems(){
+    this.inventoryItems = await this.orderService.getInventoryItems();
   }
 
   modalImageUrl: string;
@@ -192,19 +209,37 @@ export class WarehouseOperationComponent implements OnInit {
     this.getShelfByQrDetail(value);
   }
 
+  controlItemStock():boolean{
+    var barcodeList:string[] = [];
+    
+    
+    this.warehouseTransferForms.forEach(t => {
+     
+    });
+    return true;
+  }
+wrongItemList : WarehouseItem[] = []
   async transferToNebim(currentOrderNo: string) {
+
+    
+    this.spinnerService.show();
     if (currentOrderNo != null && currentOrderNo !== '') {
       const userConfirmed = window.confirm(this.currentOrderNo+' numaralı sipariş için İşlemi başlatmak istediğinize emin misiniz?');
   
       if (userConfirmed) {
         try {
-          const data = await this.httpClientService
-            .get<any>({ controller: 'Warehouse/TransferProducts/' + currentOrderNo })
-            .toPromise();
-  
-          if (data) {
+          const data = await this.httpClient.get<WarehouseItem|any>(ClientUrls.baseUrl+'/Warehouse/TransferProducts/' + currentOrderNo).toPromise();
+            const model: WarehouseItem = data as WarehouseItem;
+
+
+          if (model) {
             // Başarılı yanıt geldiğinde console'a başarılı yazısı yazdır
-        
+            if (!this.wrongItemList.some(item => item.itemCode === model.itemCode )) {
+              this.wrongItemList.push(model);
+              this.alertifyService.error("Eklenmesi Gereken Stok Adedi : " + (model.quantity-model.availableInventoryQty1) + "\n\nÜrün Kodu : " + model.itemCode + "\n\nÜrün Adı : " + model.description + "\n\n\nEnvanter Eksiye Düşemez Hatası Alındı");
+            }
+            
+          }else if(data===true){
             this.generalService.waitAndNavigate(
               'Transfer İşlemi Başarıyla Gerçekleşti.',
               'dashboard'
@@ -216,9 +251,11 @@ export class WarehouseOperationComponent implements OnInit {
       } else {
         this.alertifyService.warning('İşlem iptal edildi.');
       }
+    
     } else {
       this.alertifyService.warning('Sipariş No Boş Geliyor.');
     }
+    this.spinnerService.hide();
   }
   
   changePage() {
@@ -268,9 +305,11 @@ export class WarehouseOperationComponent implements OnInit {
 
       const shelves = newResponse[0]
         .split(',')
-        .filter((raflar) => raflar.trim() !== '');
-
-      if (shelves.includes(formValue.shelfNo)) {
+        .filter((raflar) => raflar.trim() !== '') .map((raflar) => raflar.toLowerCase());;
+        shelves.forEach(s => {
+          s = s.toLowerCase();
+        });
+      if (shelves.includes(formValue.shelfNo.toLowerCase())) {
         var response = await this.productService.countTransferProduct(
           formValue
         );
@@ -287,14 +326,18 @@ export class WarehouseOperationComponent implements OnInit {
           const raflarKismi = parcalanmisVeri[1];
           const raflar = raflarKismi
             .split(',')
-            .filter((raflar) => raflar.trim() !== '');
+            .filter((raflar) => raflar.trim() !== '').map((raflar) => raflar.toLowerCase());
+         
           if (raflar.length > 0) {
-            if (formValue.shelfNo.toLowerCase()) {
+            if (raflar.includes(formValue.shelfNo.toLowerCase())) {   
               formValue.quantity = Number(newResponse[1]);
               this.generalService.beep();
-              await this.getProductOfCount(this.currentOrderNo); //this.list.push(formValue);
-              this.calculateTotalQty();
-              this.clearQrAndBatchCode();
+  
+                await this.getProductOfCount(this.currentOrderNo); //this.list.push(formValue);
+                this.calculateTotalQty();
+                this.clearQrAndBatchCode();
+              
+             
             } else {
               if (confirm('Raf Bulunamadı! Eklensin mi(1)?')) {
                 this.generalService.beep();
@@ -484,5 +527,9 @@ export class WarehouseOperationComponent implements OnInit {
       this.alertifyService.error('Silme İşlemi Başarısız.');
     }
     return response;
+  }
+
+  updateItemStock(){
+    location.reload();
   }
 }

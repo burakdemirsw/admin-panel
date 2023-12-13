@@ -5,4 +5,5 @@ export class CountedProduct {
     quantity !:number
     photoUrl !:string
     itemCode !:string
+  
   }

@@ -60,6 +60,9 @@ import { WarehouseShelfCountListComponent } from './components/Warehouse/warehou
 import { InvoiceListComponent } from './components/Order/invoice-list/invoice-list.component';
 import { FastTransferComponent } from './components/Warehouse/fast-transfer/fast-transfer.component';
 import { CreateQrComponent } from './components/Order/create-qr/create-qr.component';
+import { WarehouseTransferListComponent } from './components/Warehouse/warehouse-transfer-list/warehouse-transfer-list.component';
+import { LogManagamentComponent } from './components/Log/log-managament/log-managament.component';
+import { ShelfTransferRequestComponent } from './components/Warehouse/shelf-transfer-request/shelf-transfer-request.component';
 
 const routes: Routes = [
   // { path: 'alerts', component: AlertsComponent },
@@ -89,18 +92,14 @@ const routes: Routes = [
   // { path: 'pages-blank', component: PagesBlankComponent },
   // { path: 'pages-contact', component: PagesContactComponent },
   { path: '', redirectTo: '/dashboard' ,pathMatch :"full" } ,
-
-
-
-
   // { path: 'pages-faq', component: PagesFaqComponent }, 
   // { path: 'pages-register', component: PagesRegisterComponent },
   { path: 'user-profile', component: UsersProfileComponent,canActivate:[AuthGuard] },
   { path: '', component: DashboardComponent,canActivate:[AuthGuard] },
   { path: 'dashboard', component: DashboardComponent,canActivate:[AuthGuard] },
   { path: 'pages-login', component: PagesLoginComponent },
-  { path: 'product', component: ProductManagementComponent ,canActivate:[AuthGuard]},
-  { path: 'operation', component: ProductOperationComponent ,canActivate:[AuthGuard]},
+  { path: 'product-managament', component: ProductManagementComponent ,canActivate:[AuthGuard]},
+  { path: 'product-operation', component: ProductOperationComponent ,canActivate:[AuthGuard]},
   { path: 'home', component: HomepageComponent ,canActivate:[AuthGuard]}, 
   { path: 'category-operation', component: CategoryOperationComponent,canActivate:[AuthGuard] },
   { path: 'categories-managament', component: CategoryManagamentComponent,canActivate:[AuthGuard] },
@@ -115,7 +114,6 @@ const routes: Routes = [
   { path: 'purchase-orders-managament', component:PurchaseOrderManagamentComponent ,canActivate:[AuthGuard]},
   { path: 'create-purchase-order/:orderNo', component:CreatePurchaseOrderComponent ,canActivate:[AuthGuard]},
   { path: 'create-sale-order/:orderNo', component:CreateSaleOrderComponent ,canActivate:[AuthGuard]},
-
   { path: 'collect-product-of-order/:number', component: CollectProductOfOrderComponent,canActivate:[AuthGuard] },
   { path: 'warehouse-operation/:number', component: WarehouseOperationComponent,canActivate:[AuthGuard] },
   { path: 'warehouse-operation-list', component: WarehouseOperationListComponent ,canActivate:[AuthGuard]},
@@ -125,10 +123,14 @@ const routes: Routes = [
   { path: 'collected-package-detail/:id', component: CollectedPackageDetailComponent ,canActivate:[AuthGuard]},
   { path: 'warehouse-shelf-count/:orderNo', component: WarehosueShelfCountComponent ,canActivate:[AuthGuard]},
   { path: 'register', component: PagesRegisterComponent},
-  { path: 'warehouse-shelf-count-list', component: WarehouseShelfCountListComponent},
-  { path: 'invoice-list', component: InvoiceListComponent},
-  { path: 'fast-transfer', component: FastTransferComponent}, 
-  { path: 'create-qr', component: CreateQrComponent},
+  { path: 'warehouse-shelf-count-list', component: WarehouseShelfCountListComponent,canActivate:[AuthGuard]},
+  { path: 'invoice-list', component: InvoiceListComponent,canActivate:[AuthGuard]},
+  { path: 'fast-transfer', component: FastTransferComponent,canActivate:[AuthGuard]}, 
+  { path: 'create-qr', component: CreateQrComponent,canActivate:[AuthGuard]},
+  { path: 'warehouse-transfer-list', component: WarehouseTransferListComponent,canActivate:[AuthGuard]},
+  { path: 'log-managament', component: LogManagamentComponent,canActivate:[AuthGuard]},
+  { path: 'shelf-transfer-request', component: ShelfTransferRequestComponent,canActivate:[AuthGuard]},
+
   { path: '**', component: PagesError404Component }
 
 

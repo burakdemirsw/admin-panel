@@ -4,7 +4,7 @@
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-          <li class="breadcrumb-item">Tables</li>
+          <li class="breadcrumb-item">Tables</li>  
           <li class="breadcrumb-item active">Sayım Paneli</li>
         </ol>
       </nav>
@@ -15,7 +15,7 @@
             <div style="width: 100%">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Qr Oluştur</h5>
+                        <h5 class="card-title">Etiket Oluştur</h5>
 
 
 
@@ -24,76 +24,110 @@
                                 role="tabpanel" aria-labelledby="ex3-tab-1">
                                 <form [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)">
 
+
+                                  <div class="row mb-3">
+                                    <div class="form-group">
+                                      <label for="barcode">Barkod:</label>
+                                      <input type="text" id="barcode" class="form-control"
+                                        formControlName="barcode" />
+                                    </div>
+                                  </div>
+
+
+
+                                  <div class="row mb-3">
+                                    <div class="form-group">
+                                      <label for="itemCode">Ürün Kodu:</label>
+                                      <input type="text" id="itemCode" class="form-control"
+                                        formControlName="itemCode" />
+                                    </div>
+                                  </div>
+
+
+
                                     <div class="row mb-3">
                                         <div class="form-group">
-                                            <label for="shelfNo">Raf No:</label>
-                                            <div class="input-group">
-                                                <input type="text" id="shelfNo" class="form-control"
-                                                    formControlName="shelfNo"
-                                                    (keydown.enter)="focusNextInput('barcode')" />
-                                                <div class="input-group-append">
-                                                    <button type="button" (click)="clearShelfNumbers()"
-                                                        class="btn btn-dark">
-                                                        Formu Temizle
-                                                    </button>
-                                                </div>
-                                            </div>
+                                          <label for="lotArea">Parti Alanı:</label>
+                                          <input type="text" id="lotArea" class="form-control"
+                                            formControlName="lotArea" />
                                         </div>
-                                        <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
-                                            shelfNumbers
-                                            }}</label>
-                                    </div>
+                                      </div>
+
 
                                     <div class="row mb-3">
-                                        <div class="form-group">
-                                            <label for="barcode">Barkod</label>
-                                            <input type="text" id="barcode" class="form-control"
-                                                formControlName="barcode" [disabled]="checkForm.disabled"
-                                                (keydown.enter)="onSubmit(checkForm.value)" />
-                                        </div>
+                                      <div class="form-group">
+                                        <label for="boxArea">Kutu Alanı:</label>
+                                        <input type="text" id="boxArea" class="form-control"
+                                          formControlName="boxArea" />
+                                      </div>
                                     </div>
+                                  
                                     <div class="row mb-3">
-
-
-
-                                        <div class="form-group col">
-                                            <div class="form-group">
-                                                <label for="quantity">Miktar</label>
-
-                                                <input type="number" id="quantity" class="form-control"
-                                                    formControlName="quantity" [disabled]="checkForm.disabled" />
-                                            </div>
-                                        </div>
-
-
-                                        <div class="form-group col">
-                                            <div class="form-group">
-                                                <label for="batchCode">Parti</label>
-
-                                                <input type="text" id="batchCode" class="form-control"
-                                                    formControlName="batchCode"
-                                                    (keydown.enter)="onSubmit(checkForm.value)"
-                                                    [disabled]="checkForm.disabled" />
-                                            </div>
-                                        </div>
-
+                                      <div class="form-group">
+                                        <label for="itemArea">Ürün Alanı:</label>
+                                        <input type="text" id="itemArea" class="form-control"
+                                          formControlName="itemArea" />
+                                      </div>
                                     </div>
-
+                                  
+                                    <!-- <div class="row mb-3">
+                                      <div class="form-group">
+                                        <label for="productBarcodeJSON">Ürün Barkod JSON:</label>
+                                        <input type="text" id="productBarcodeJSON" class="form-control"
+                                          formControlName="productBarcodeJSON" />
+                                      </div>
+                                    </div>
+                                   -->
                                     <div class="row mb-3">
-
-
-
-                                        <div class="form-group col">
-                                            <button type="button" class="btn btn-dark"
-                                                style="margin-left: 10px; color: white"
-                                                (click)="onSubmit(this.checkForm.value)" style="width: 100%;">
-                                                Qr Oluştur
-                                            </button>
-
-                                        </div>
+                                      <div class="form-group">
+                                        <label for="qtyArea">Miktar Alanı:</label>
+                                        <input type="number" id="qtyArea" class="form-control"
+                                          formControlName="qtyArea" />
+                                      </div>
                                     </div>
-
-                                </form>
+                                  
+                                    <!-- <div class="row mb-3">
+                                      <div class="form-group">
+                                        <label for="topBarcodeJSON">Üst Barkod JSON:</label>
+                                        <input type="text" id="topBarcodeJSON" class="form-control"
+                                          formControlName="topBarcodeJSON" />
+                                      </div>
+                                    </div>
+                                   -->
+                                    <div class="row mb-3">
+                                      <div class="form-group">
+                                        <label for="refArea">Referans Alanı:</label>
+                                        <input type="text" id="refArea" class="form-control"
+                                          formControlName="refArea" />
+                                      </div>
+                                    </div>
+                                  
+                                    <div class="row mb-3">
+                                      <div class="form-group">
+                                        <label for="dateArea">Tarih Alanı:</label>
+                                        <input type="date" id="dateArea" class="form-control"
+                                          formControlName="dateArea" />
+                                      </div>
+                                    </div>
+                                  
+                                    <div class="row mb-3">
+                                      <div class="form-group">
+                                        <label for="addressArea">Adres Alanı:</label>
+                                        <input type="text" id="addressArea" class="form-control"
+                                          formControlName="addressArea" />
+                                      </div>
+                                    </div>
+                                  
+                                    <div class="row mb-3">
+                                      <div class="form-group col">
+                                        <button type="submit" class="btn btn-dark" style="width: 100%;">
+                                          Gönder
+                                        </button>
+                                      </div>
+                                    </div>
+                                  
+                                  </form>
+                                  
                             </div>
                             <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2"
                                 role="tabpanel-2" aria-labelledby="ex3-tab-2"></div>
@@ -104,41 +138,41 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="card" *ngIf="qrCodeValue!=''">
-                   
-                        <div class="card-body">
-                            <h5 class="card-title">Qr</h5>  
-                            <div class="qr-container">
-                                <qrcode style="display:none ;" (qrCodeURL)="onChangeURL($event)" [qrdata]="qrCodeValue" [width]="256"
-                                [errorCorrectionLevel]="'M'"></qrcode>
-                                <div id="print-section">
-                               
-                                    <img [src]="qrCodeDownloadLink" alt="">
 
-                                </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Etiket</h5>
+                        <div class="qr-container">
+                            <qrcode style="display:none ;" (qrCodeURL)="onChangeURL($event)" [qrdata]="qrCodeValue"
+                                [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
+                            <div id="print-section">
 
-                            </div>
-                            <div class="row mb-3">
+                                <img [src]="qrCodeDownloadLink" alt="">
+                               <p style="font-size: 10 px;">{{qrCodeValue2}}</p>
+                               <p style="font-size: 10 px;">{{qrCodeValue3}}</p>
+                            </div>  
 
-                            </div>
+                        </div>
+                        <div class="row mb-3">
 
-                            <div class="form-group col">
-                                <!-- <a [href]="qrCodeDownloadLink">  -->
-
-                                <button type="button" class="btn btn-dark" style="margin-left: 10px; color: white"
-                                printSectionId="print-section" ngxPrint style="width: 100%;">
-                                    <i class="fa fa-print"></i> Qr Yazdır
-                                </button>
-
-                                <!-- </a> -->
-                                <!-- >Download -->
-
-
-                            </div>
                         </div>
 
-                 
+                        <div class="form-group col">
+
+
+                            <button type="button" class="btn btn-dark" style="margin-left: 10px; color: white"
+                              (click)="saveQr(this.checkForm.value)"  style="width: 100%;">
+                                <i class="fa fa-print"></i> Etiket Yazdır
+                            </button>
+
+                            <!-- >Download -->
+
+
+                        </div>
+                    </div>
+
+
                 </div>
 
             </div>

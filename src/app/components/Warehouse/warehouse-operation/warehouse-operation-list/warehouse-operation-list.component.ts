@@ -76,6 +76,10 @@ export class WarehouseOperationListComponent implements OnInit {
     }
 
   }
+
+
+
+
  async  getWarehouseOperations(): Promise<any> {
     try {
       this. warehouseOperationListModels = await this.warehosueService.getWarehouseOperations();

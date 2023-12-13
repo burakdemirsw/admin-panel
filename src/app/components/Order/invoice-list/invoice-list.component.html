@@ -116,7 +116,9 @@
                 <th scope="col">İşlem Tarihi</th>
                 <th scope="col">Toplam Sayılan Ürün Sayısı</th>
                 <th scope="col">Sipariş Numarası</th>
-
+                <th scope="col">Fatura Tipi</th>
+                <th scope="col">Müşteri</th>
+                
               </tr>
             </thead>
             <tbody>
@@ -128,12 +130,19 @@
                         <button class="btn btn-primary" data-text="İşlemler" (click)="routeToPage(count.orderNo)">
                           <i class="fas fa-sliders-h"></i>
                         </button>
+                        
+                        <button class="btn btn-danger" data-text="Sil"
+                        (click)="deleteInvoiceProducts(count.orderNo)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+
                       </div>
                     </td>
                 <td>{{ count.lastUpdateDate | date:'dd.MM.yyyy HH:mm:ss'}}</td>
                 <td>{{ count.totalProduct }}</td>
                 <td>{{ count.orderNo}}</td>
-
+                <td>{{ count.orderNo.includes("WS") ? "Satış " : "Alış "}}{{count.isReturn==true ? "İade" : ""}}</td>
+                <td>{{count.salesPersonCode}}</td>
                
               </tr>
             </tbody>

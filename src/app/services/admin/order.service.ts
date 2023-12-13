@@ -16,6 +16,11 @@ import { HttpClient } from '@angular/common/http';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
 import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/warehouseOperationProductModel';
+import { InventoryItem } from 'src/app/models/model/product/inventoryItemModel';
+import { TransferRequestListModel } from 'src/app/models/model/warehouse/transferRequestListModel';
+import { InventoryResponseModel } from 'src/app/models/model/order/inventoryResponseModel';
+import { CountConfirmData } from 'src/app/models/model/product/countConfirmModel';
+import { int } from '@zxing/library/esm/customTypings';
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +33,7 @@ export class OrderService {
     private httpClient: HttpClient
   ) {}
 
-  //siparişleri çekme
+  //satış siparişleri çekme //exec GET_MSRAFOrderList
   async getOrders(): Promise<SaleOrderModel[]> {
     try {
       const response = this.httpClientService
@@ -42,6 +47,8 @@ export class OrderService {
       return null;
     }
   }
+
+ 
 
   async getPurchaseOrdersByFilter(model:OrderFilterModel): Promise<SaleOrderModel[]> {
     try {
@@ -73,7 +80,7 @@ export class OrderService {
 
 
 
-  //alış siparişlerini çekme
+  //alış siparişlerini çekme GET_MSRAFSalesOrderDetailBP
   getPurchaseOrders(): Promise<any> {
     try {
       const response = this.httpClientService
@@ -121,11 +128,11 @@ export class OrderService {
       let endpoint: string = '';
 
       if (orderNoType === 'BP') {
-        endpoint = 'Order/GetPurchaseOrderSaleDetail/';
+        endpoint = 'Order/GetPurchaseOrderSaleDetail/'; //GET_MSRAFSalesOrderDetailBP
       } else if (orderNoType === 'WT') {
-        endpoint = 'Warehouse/GetWarehouseOperationDetail/';
+        endpoint = 'Warehouse/GetWarehouseOperationDetail/'; //Usp_GETTransferOnayla
       } else if (orderNoType === 'WS') {
-        endpoint = 'Order/GetOrderSaleDetail/';
+        endpoint = 'Order/GetOrderSaleDetail/'; //GET_MSRAFSalesOrderDetail
       }
 
       return this.httpClientService.get<ProductOfOrder>({
@@ -137,24 +144,21 @@ export class OrderService {
     }
   }  
   //transferi onaylama
-  confirmTransfer(operationNumberList: string[]): Observable<boolean> {
-    return this.httpClientService
-      .post<string[]>(
+  async confirmTransfer(operationNumberList: string[]): Promise<boolean> {
+    const response = await  this.httpClientService
+      .post<any>(
         {
           controller: 'Warehouse/ConfirmOperation',
         },
         operationNumberList
       )
-      .pipe(
-        map((data) => {
-          return true;
-        }),
-        catchError((error) => {
-          console.error(error.message);
+      .toPromise();
+      if(response===true){
+        return true;
 
-          return of(false);
-        })
-      );
+      }else{
+        return false
+      }
   }
   //faturalaştırma ve yazdırma
   async collectAndPack(
@@ -169,7 +173,7 @@ export class OrderService {
       if (orderNo.includes('WS')) {
         model.invoiceModel = 4; // satış sipariş faturası
       } else if (orderNo.includes('BP')) {
-        model.invoiceModel = 1; // alış sipariş faturası
+        model.invoiceModel = 2; // alış sipariş faturası -- BP
       } else if (orderNo.includes('WT')) {
         return false;
       } else {
@@ -183,12 +187,20 @@ export class OrderService {
           },
           model
         )
-        .toPromise();
+        .toPromise();  
         if (response) {
        
           if (Boolean(response) == true) {
             this.alertifyService.success('İşlem Başarılı');
-            this.router.navigate(['/purchase-orders-managament']);
+
+            if (orderNo.includes('WS')) {
+              this.router.navigate(['/orders-managament']);
+            } else if (orderNo.includes('BP')) {
+              this.router.navigate(['/purchase-orders-managament']);
+            } else if (orderNo.includes('WT')) {
+              this.router.navigate(['/warehouse-operation-list']);
+            } 
+           
             return true;
 
           } else {
@@ -245,14 +257,16 @@ export class OrderService {
   async createPurchaseInvoice(
     array: any[],
     orderNo: string,
-    isReturn: boolean
+    isReturn: boolean,
+    invoiceType : int
   ): Promise<any> {
     //alış faturası oluştur
+    
       try {
         var model: OrderBillingRequestModel = new OrderBillingRequestModel();
         model.orderNo = orderNo;
         model.invoiceType = isReturn;
-        model.invoiceModel = 1;
+        model.invoiceModel = invoiceType;
         const data = await this.httpClientService
           .post<OrderBillingRequestModel>(
             {
@@ -263,9 +277,12 @@ export class OrderService {
           .toPromise();
         if (data) {
           this.router.navigate(['/orders-management']);
+          this.alertifyService.success('Faturalaştırma İşlemi Başarılı')
+          return data;
         }
       } catch (error: any) {
         this.alertifyService.error('An error occurred:' + error.message);
+        return false;
       }
  
   }
@@ -274,10 +291,12 @@ async createSaleInvoice(  array: any[],
   isReturn: boolean,
   salesPersonCode: string,
   currency :string):Promise<any>{
-  if (array.length === 0) {
+  if (array.length === 0 ) {
     this.alertifyService.warning('Lütfen Ürün EKleyiniz.');
-    return;
-  } else {
+    return;  
+  }
+  
+  else {
     try {
       var model : OrderBillingRequestModel = new OrderBillingRequestModel();
       model.orderNo = orderNo;
@@ -286,7 +305,7 @@ async createSaleInvoice(  array: any[],
       model.salesPersonCode = salesPersonCode; 
       model.currency = currency; 
 
-      const data = this.httpClientService
+      const data = await this.httpClientService
         .post<OrderBillingRequestModel>(
           {
             controller: 'Order/CollectAndPack/' + model,
@@ -295,7 +314,8 @@ async createSaleInvoice(  array: any[],
         )
         .toPromise();
        if(data){
-         this.router.navigate(['/orders-management']);
+         this.router.navigate(['orders-managament']);
+         
          return data;
         
        }else{
@@ -303,12 +323,12 @@ async createSaleInvoice(  array: any[],
         return null;
        }
     } catch (error: any) {
-      this.alertifyService.error('An error occurred:');
+      
       return null;
     }
   }
 }
-  //alış fatura doğrulama
+// alış fatura doğrulama 
 
   async purchaseInvoiceProductCheck(
     model: CreatePurchaseInvoice
@@ -324,10 +344,9 @@ async createSaleInvoice(  array: any[],
       if (response) {
         console.log(response);
         if (Boolean(response) == true) {
-         // this.alertifyService.success('İşlem Başarılı');
-          // this.router.navigate(['/purchase-orders-managament']);
+         
         } else {
-          //this.alertifyService.error('İşlem Başarısız');
+          
           location.reload();
         }
       }
@@ -337,4 +356,65 @@ async createSaleInvoice(  array: any[],
       return null;
     }
   }
+
+  async  deleteInvoiceProducts(orderNumber:string):Promise<any> {
+    try {
+      const result = await this.httpClientService
+        .get<any>(
+          {
+            controller: 'Order/DeleteInvoiceProducts/'+orderNumber,
+          }
+          
+        )
+        .toPromise();
+
+        return result;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+    //onaylanacak ürünleri çekme
+    getInventoryItems(): Promise<InventoryItem[]> {
+      try {
+        const response = this.httpClientService
+          .get<InventoryItem>({
+            controller: 'Order/InventoryItems',
+          })
+          .toPromise();
+  
+        return response;
+      } catch (error: any) {
+        console.log(error.message);
+        return null;
+      }
+    }
+    async getInventoryFromOrderNumber(orderNo :string): Promise<CountConfirmData[]> {
+      try {
+        const response = this.httpClientService
+          .get<CountConfirmData>({
+            controller: 'Order/GetInventoryFromOrderNumber/'+orderNo,
+          })
+          .toPromise();
+        return response;
+      } catch (error: any) {
+        console.log(error.message);
+        return null;
+      }
+    }
+
+    async setInventoryByOrderNumber(orderNo :string): Promise<CountConfirmData[]> {
+      try {
+        const response = this.httpClientService
+          .get<CountConfirmData>({
+            controller: 'Order/SetInventoryByOrderNumber/'+orderNo,
+          })
+          .toPromise();
+        return response;
+      } catch (error: any) {
+        console.log(error.message);
+        return null;
+      }
+    }
 }

@@ -111,15 +111,21 @@
         <div style="overflow-x: auto">
           <table class="table">
             <thead>
-              <tr>
+              <tr >
                 <th scope="col">Sipariş Zamanı</th>
                 <th scope="col">Sipariş Numarası</th>
                 <th scope="col">Müşteri Kodu</th>
                 <th scope="col">Müşteri Adı</th>
                 <th scope="col">Satıcı Kodu</th>
+                <th scope="col">Açıklama</th>
+
                 <th scope="col">Miktar</th>
                 <th scope="col">Tutar</th>
+                <th scope="col">Toplanan Miktar</th>
+                <th scope="col">Kalan Miktar</th>
+                <th scope="col">Durum</th>
                 <th scope="col">İşlemler</th>
+
 
               </tr>
             </thead>
@@ -130,16 +136,30 @@
                 <td>{{ order.currAccCode }}</td>
                 <td>{{ order.currAccDescription }}</td>
                 <td>{{ order.salespersonCode }}</td>
+                <td>{{ order.description }}</td>
+
                 <td>{{ order.qty1 }}</td>
+                <td>{{ order.price }}</td>
+                <td>{{ order.collectedQty }}</td>
+                <td>{{ order.remainingQty }}</td>
+                <td>
+                  <button class="btn"
+                          [ngClass]="{'btn-success': order.status === 1, 'btn-danger': order.status === 2}">
+                    {{ order.status === 2 ? 'Toplanamaz' : 'Toplanabilir' }}
+                  </button>
+                </td>
                 <td>{{ order.price }}</td>
                 <td>
                   <div class="btn-group">
 
                     <div class="btn  btn-primary" data-text="Varyasyonlar" routerLink="/order-operation/{{order.orderNumber}}"><i    class="fas fa-sliders-h"></i> </div>
                     <div class="btn btn-dark" data-text="Fatura Yazdır"><i (click)="printPicture('https://marketplace.canva.com/EAFEOwL2BQo/2/0/1131w/canva-white-simple-invoice-S_aHY7Zi14A.jpg')" class="fa fa-print"></i></div>
-
+                    <div class="btn btn-danger" data-text="Sil" (click)="deleteInvoiceProducts(order.orderNumber)">
+                      <i class="fas fa-trash"></i>
+                    </div>
                   </div>
                 </td>
+
               </tr>
             </tbody>
           </table>

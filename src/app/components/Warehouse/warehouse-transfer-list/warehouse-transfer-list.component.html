@@ -1,0 +1,150 @@
+<p>warehouse-transfer-list works!</p>
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Ürün Transfer Listesi</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+                <li class="breadcrumb-item">Tables</li>
+                <li class="breadcrumb-item active">General</li>
+            </ol>
+        </nav>
+    </div>
+
+    <section class="section">
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Transfer Filtreleme</h5>
+                <!-- Filtreleme Alanı (Başlangıç) -->
+                <div class="btn-group mb-3">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+                        <i class="fa fa-bars" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <div class="collapse" id="filterCollapse">
+                    <form [formGroup]="filterForm" (ngSubmit)="onSubmit(filterForm.value)">
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="orderNumber">Sipariş Numarası</label>
+                                    <input type="text" id="orderNumber" class="form-control"
+                                        formControlName="orderNumber" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="warehouseCode">Depo Kodu</label>
+                                    <input type="text" id="warehouseCode" class="form-control"
+                                        formControlName="warehouseCode" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="toWarehouseCode">Hedef Depo Kodu</label>
+                                    <input type="text" id="toWarehouseCode" class="form-control"
+                                        formControlName="toWarehouseCode" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="operationStartDate">İşlem Başlangıç Tarihi</label>
+                                    <input type="date" id="operationStartDate" class="form-control"
+                                        formControlName="operationStartDate" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="operationEndDate">İşlem Bitiş Tarihi</label>
+                                    <input type="date" id="operationEndDate" class="form-control"
+                                        formControlName="operationEndDate" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-md-4">
+                                <button class="btn btn-primary">Filtrele</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtreleme Alanı (Bitiş) -->
+
+
+
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Transfer İşlemleri</h5>
+
+                <div class="btn-group mb-3">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#filterCollapse" (click)="routeNewPage(null)" aria-expanded="false"
+                        aria-controls="filterCollapse">
+                        Yeni Transfer Yap
+                    </button>
+
+
+                </div>
+                <div style="overflow-x: auto">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <!-- <th scope="col">Seç</th> -->
+                                <th scope="col">İşlem Tarihi</th>
+                                <th scope="col">İç Numara</th>
+                                <th scope="col">Depo Kodu</th>
+                                <th scope="col">Hedef Depo Kodu</th>
+                                <th scope="col">Miktar</th>
+                                <th scope="col">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                *ngFor="let operation of warehouseTransferListModels | paginate: { itemsPerPage: 10, currentPage: currentPage }">
+                                <!-- <td><input class="form-check-input" type="checkbox" value=""
+                                        (click)="addInnerNumberToList(operation.orderNumber)"></td> -->
+
+                                <td>{{ operation.operationDate | date:'yyyy-MM-dd' }}</td>
+
+                                <td>{{ operation.orderNumber }}</td>
+
+                                <td>{{ operation.warehouseCode }}</td>
+                                <td>{{ operation.quantity }}</td>
+                                <td>{{ operation.toWarehouseCode }}</td>
+
+
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-primary" data-text="Transfere Git"
+                                            (click)="routeNewPage(operation.orderNumber)"
+                                            routerLink="/order-operation/{{ operation.orderNumber }}">
+                                            <i class="fas fa-sliders-h"></i>
+                                        </button>
+
+                                        <button class="btn btn-danger" data-text="Sil"  (click)="deleteTransfer(operation.orderNumber)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+                </div>
+            </div>
+        </div>
+
+    </section>
+</main>

@@ -5,6 +5,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { InvocieFilterModel } from 'src/app/models/model/filter/invoiceFilterModel';
 import { CountListModel } from 'src/app/models/model/product/countListModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
+import { OrderService } from 'src/app/services/admin/order.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
@@ -22,7 +23,8 @@ export class InvoiceListComponent implements OnInit {
     private router: Router,
     private warehouseService : WarehouseService,
     private generalService : GeneralService,
-        private formBuilder : FormBuilder
+        private formBuilder : FormBuilder,
+        private orderService : OrderService
 
   ) { }
 
@@ -99,4 +101,21 @@ export class InvoiceListComponent implements OnInit {
     }
   }
 
+  async deleteInvoiceProducts(orderNumber: string){
+
+    const confirmDelete = window.confirm("Bu transferi silmek istediğinizden emin misiniz?");
+    if (confirmDelete) {
+      // Kullanıcı onayladıysa silme işlemini gerçekleştir
+      const response  = await this.orderService.deleteInvoiceProducts(orderNumber);
+      if (response === true) {
+        location.reload();
+        this.alertifyService.success("İşlem Başarılı")
+      }else{
+        this.alertifyService.error("İşlem Başarısız")
+
+      }
+    }
+ 
+
+}
 }

@@ -53,13 +53,12 @@
 
     <li class="nav-item">
       <a class="nav-link collapsed" data-bs-target="#Orders-nav" data-bs-toggle="collapse"> <i
-          class="fa fa-folder"></i><span>Sipariş İşlemleri</span><i class="bi bi-chevron-down ms-auto"></i>
+          class="fas fa-dolly"></i><span>Sipariş İşlemleri</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
       <ul id="Orders-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
         <li> <a routerLink="orders-managament"> <i class="bi bi-circle"></i><span>Alınan Siparişler  </span> </a></li>
         <li> <a routerLink="purchase-orders-managament"> <i class="bi bi-circle"></i><span>Verilen Siparişler </span> </a></li>
         <li> <a routerLink="invoice-list"> <i class="bi bi-circle"></i><span>Faturalar (Alış / Satış)</span> </a></li>
-        <li> <a routerLink="create-qr"> <i class="bi bi-circle"></i><span>Qr Oluştur</span> </a></li>
 
         <!-- <li> <a routerLink="create-purchase-order"> <i class="bi bi-circle"></i><span>Alış Fatura Oluştur </span> </a></li>
         <li> <a routerLink="create-sale-order"> <i class="bi bi-circle"></i><span>Satış Fatura Oluştur </span> </a></li> -->
@@ -97,12 +96,14 @@
     
     <li class="nav-item">
       <a class="nav-link collapsed" data-bs-target="#Warehouse-nav" data-bs-toggle="collapse"> <i
-          class="fa fa-folder"></i><span>Depo İşlemleri</span><i class="bi bi-chevron-down ms-auto"></i>
+          class="fa fa-archive"></i><span>Depo İşlemleri</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
       <ul id="Warehouse-nav" class="nav-content collapse " data-bs-parent="#Warehouse-nav">
         <!-- <li> <a routerLink="warehouse-operation"> <i class="bi bi-circle"></i><span>Depo Lisesi</span> </a></li> -->
-        <li (click)="routeNewPage()"> <a > <i class="bi bi-circle"></i><span>Depolar Arası Transfer</span> </a></li>
+        <li> <a routerLink="warehouse-transfer-list"> <i class="bi bi-circle"></i><span>Depolar Arası Transfer</span> </a></li>
         <li> <a routerLink="fast-transfer"> <i class="bi bi-circle"></i><span>Raflar Arası Transfer</span> </a></li>
+        <li> <a routerLink="warehouse-operation/asd1"> <i class="bi bi-circle"></i><span>Depolar Arası İstek</span> </a></li>
+        <li> <a routerLink="shelf-transfer-request"> <i class="bi bi-circle"></i><span>Raf Aktarma İsteği</span> </a></li>
 
         <li> <a routerLink="warehouse-operation-list"> <i class="bi bi-circle"></i><span>Havuzda Kalan Transfer</span> </a></li>
         <li> <a routerLink="warehouse-shelf-count-list"> <i class="bi bi-circle"></i><span>Sayım</span> </a></li>
@@ -110,6 +111,43 @@
       </ul>
      
     </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#Product-nav" data-bs-toggle="collapse"> <i
+          class="fa fa-box"></i><span>Ürün İşlemleri</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="Product-nav" class="nav-content collapse " data-bs-parent="#Product-nav">
+
+        <li> <a routerLink="product-managament"> <i class="bi bi-circle"></i><span>Ürün Doğrulama</span> </a></li>
+
+      </ul>
+     
+    </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#Barcode-nav" data-bs-toggle="collapse"> <i
+          class="fa fa-qrcode"></i><span>Etiket İşlemleri</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="Barcode-nav" class="nav-content collapse " data-bs-parent="#Barcode-nav">
+        <li> <a routerLink="create-qr"> <i class="bi bi-circle"></i><span>Etiket Oluştur</span> </a></li>
+
+  
+      </ul>
+     
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#Log-nav" data-bs-toggle="collapse"> <i
+          class="fa fa-box"></i><span>Log İşlemleri</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="Log-nav" class="nav-content collapse " data-bs-parent="#Product-nav">
+
+        <li> <a routerLink="log-managament"> <i class="bi bi-circle"></i><span>Loglar</span> </a></li>
+
+      </ul>
+     
+    </li>
+
+
+
 
 
    
