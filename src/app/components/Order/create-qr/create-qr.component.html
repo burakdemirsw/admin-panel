@@ -1,14 +1,14 @@
 <main id="main" class="main">
     <!-- <div class="pagetitle">
-      <h1>Sayım Paneli</h1>
-      <nav>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-          <li class="breadcrumb-item">Tables</li>  
-          <li class="breadcrumb-item active">Sayım Paneli</li>
-        </ol>
-      </nav>
-    </div> -->
+    <h1>Sayım Paneli</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+        <li class="breadcrumb-item">Tables</li>  
+        <li class="breadcrumb-item active">Sayım Paneli</li>
+      </ol>
+    </nav>
+  </div> -->
 
     <section class="section">
         <div class="row">
@@ -25,109 +25,134 @@
                                 <form [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)">
 
 
-                                  <div class="row mb-3">
-                                    <div class="form-group">
-                                      <label for="barcode">Barkod:</label>
-                                      <input type="text" id="barcode" class="form-control"
-                                        formControlName="barcode" />
+                                    <div class="row mb-3">
+                                        <div class="form-group">
+                                            <label for="barcode">Barkod</label>
+                                            <input type="text" id="barcode" class="form-control"
+                                                formControlName="barcode" [disabled]="checkForm.disabled"
+                                                (keydown.enter)="onSubmit(checkForm.value)" />
+                                        </div>
                                     </div>
-                                  </div>
+                                    <div class="form-group col">
+                                        <div class="form-group">
+                                            <label for="itemCode">Ürün Kodu</label>
 
-
-
-                                  <div class="row mb-3">
-                                    <div class="form-group">
-                                      <label for="itemCode">Ürün Kodu:</label>
-                                      <input type="text" id="itemCode" class="form-control"
-                                        formControlName="itemCode" />
+                                            <input type="text" id="itemCode" class="form-control"
+                                                formControlName="itemCode" (keydown.enter)="onSubmit(checkForm.value)"
+                                                [disabled]="checkForm.disabled" />
+                                        </div>
                                     </div>
-                                  </div>
-
-
 
                                     <div class="row mb-3">
                                         <div class="form-group">
-                                          <label for="lotArea">Parti Alanı:</label>
-                                          <input type="text" id="lotArea" class="form-control"
-                                            formControlName="lotArea" />
+                                            <label for="shelfNo">Raf No:</label>
+                                            <div class="input-group">
+                                                <input type="text" id="shelfNo" class="form-control"
+                                                    formControlName="shelfNo" />
+                                                <div class="input-group-append">
+                                                    <button type="button" (click)="clearShelfNumbers()"
+                                                        class="btn btn-dark">
+                                                        Formu Temizle
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
-                                      </div>
+                                        <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
+                                            shelfNumbers
+                                            }}</label>
+                                    </div>
+
+                                    <div class="row mb-3">
 
 
+
+                                        <div class="form-group col">
+                                            <div class="form-group">
+                                                <label for="quantity">Miktar</label>
+
+                                                <input type="number" id="quantity" class="form-control"
+                                                    formControlName="quantity" [disabled]="checkForm.disabled" />
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group col">
+                                            <div class="form-group">
+                                                <label for="batchCode">Parti</label>
+
+                                                <input type="text" id="batchCode" class="form-control"
+                                                    formControlName="batchCode"
+                                                    (keydown.enter)="onSubmit(checkForm.value)"
+                                                    [disabled]="checkForm.disabled" />
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
                                     <div class="row mb-3">
-                                      <div class="form-group">
-                                        <label for="boxArea">Kutu Alanı:</label>
-                                        <input type="text" id="boxArea" class="form-control"
-                                          formControlName="boxArea" />
-                                      </div>
+                                        <div class="form-group col">
+                                            <div class="form-group">
+                                                <label for="boxArea">Kutu</label>
+
+                                                <input type="text" id="boxArea" class="form-control"
+                                                    formControlName="boxArea"
+                                                    (keydown.enter)="onSubmit(checkForm.value)"
+                                                    [disabled]="checkForm.disabled" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col">
+                                            <div class="form-group">
+                                                <label for="itemDesc">Ürün Adı</label>
+
+                                                <input type="text" id="itemDesc" class="form-control"
+                                                    formControlName="itemDesc"
+                                                    (keydown.enter)="onSubmit(checkForm.value)"
+                                                    [disabled]="checkForm.disabled" />
+                                            </div>
+                                        </div>
                                     </div>
-                                  
+
                                     <div class="row mb-3">
-                                      <div class="form-group">
-                                        <label for="itemArea">Ürün Alanı:</label>
-                                        <input type="text" id="itemArea" class="form-control"
-                                          formControlName="itemArea" />
-                                      </div>
+
+                                        <div class="row mb-3">
+                                            <div class="form-group col">
+                                                <div class="form-group">
+                                                    <label for="address">Adress</label>
+
+                                                    <input type="text" id="address" class="form-control"
+                                                        formControlName="address"
+                                                        (keydown.enter)="onSubmit(checkForm.value)"
+                                                        [disabled]="checkForm.disabled" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group col">
+                                                <div class="form-group">
+                                                    <label for="brand">Marka</label>
+
+                                                    <input type="text" id="brand" class="form-control"
+                                                        formControlName="brand"
+                                                        (keydown.enter)="onSubmit(checkForm.value)"
+                                                        [disabled]="checkForm.disabled" />
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="form-group col">
+                                            <button type="button" class="btn btn-dark"
+                                                style="margin-left: 10px; color: white"
+                                                (click)="onSubmit(checkForm.value)" style="width: 100%;">
+                                                Etiket Oluştur
+                                            </button>
+
+                                        </div>
                                     </div>
-                                  
-                                    <!-- <div class="row mb-3">
-                                      <div class="form-group">
-                                        <label for="productBarcodeJSON">Ürün Barkod JSON:</label>
-                                        <input type="text" id="productBarcodeJSON" class="form-control"
-                                          formControlName="productBarcodeJSON" />
-                                      </div>
-                                    </div>
-                                   -->
-                                    <div class="row mb-3">
-                                      <div class="form-group">
-                                        <label for="qtyArea">Miktar Alanı:</label>
-                                        <input type="number" id="qtyArea" class="form-control"
-                                          formControlName="qtyArea" />
-                                      </div>
-                                    </div>
-                                  
-                                    <!-- <div class="row mb-3">
-                                      <div class="form-group">
-                                        <label for="topBarcodeJSON">Üst Barkod JSON:</label>
-                                        <input type="text" id="topBarcodeJSON" class="form-control"
-                                          formControlName="topBarcodeJSON" />
-                                      </div>
-                                    </div>
-                                   -->
-                                    <div class="row mb-3">
-                                      <div class="form-group">
-                                        <label for="refArea">Referans Alanı:</label>
-                                        <input type="text" id="refArea" class="form-control"
-                                          formControlName="refArea" />
-                                      </div>
-                                    </div>
-                                  
-                                    <div class="row mb-3">
-                                      <div class="form-group">
-                                        <label for="dateArea">Tarih Alanı:</label>
-                                        <input type="date" id="dateArea" class="form-control"
-                                          formControlName="dateArea" />
-                                      </div>
-                                    </div>
-                                  
-                                    <div class="row mb-3">
-                                      <div class="form-group">
-                                        <label for="addressArea">Adres Alanı:</label>
-                                        <input type="text" id="addressArea" class="form-control"
-                                          formControlName="addressArea" />
-                                      </div>
-                                    </div>
-                                  
-                                    <div class="row mb-3">
-                                      <div class="form-group col">
-                                        <button type="submit" class="btn btn-dark" style="width: 100%;">
-                                          Gönder
-                                        </button>
-                                      </div>
-                                    </div>
-                                  
-                                  </form>
-                                  
+
+                                </form>
                             </div>
                             <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2"
                                 role="tabpanel-2" aria-labelledby="ex3-tab-2"></div>
@@ -139,30 +164,97 @@
                     </div>
                 </div>
 
-                <div class="card" *ngIf="qrCodeValue!=''">
+                <div class="card" *ngIf="qrCodeValue!=''" style="max-width:450px">
 
-                    <div class="card-body">
+                    <div class="card-body" >
                         <h5 class="card-title">Etiket</h5>
                         <div class="qr-container">
-                            <qrcode style="display:none ;" (qrCodeURL)="onChangeURL($event)" [qrdata]="qrCodeValue"
-                                [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
-                            <div id="print-section">
+                            <div class="container border">
+                                <div #captureElement>
 
-                                <img [src]="qrCodeDownloadLink" alt="">
-                               <p style="font-size: 10 px;">{{qrCodeValue2}}</p>
-                               <p style="font-size: 10 px;">{{qrCodeValue3}}</p>
-                            </div>  
+                                    <div class="row" > 
+
+                                        <div class="col-4" style=""> 
+                                            <div class="row">
+                                                <qrcode (qrCodeURL)="onChangeURL($event)" [qrdata]="qrCodeValue"
+                                                [width]="125" [errorCorrectionLevel]="'M'"></qrcode>
+                                            </div>
+                                            <div class="row" style="font-size:12px ;margin-left: 2px;" >
+                                                <p>www.davye.com</p>
+                                            </div>
+                                        </div>
+                                 
+                              
+
+                                        <div class="col-4" style="font-size:10px;color:black;font-weight: bold; ;">
+                                            <div style=" max-width:300px;padding: 5px;" >
+                                                
+                                                <p >
+                                                    <span class="boldChar">REF</span> {{ this.products[0].itemCode }}
+                                                </p>
+                                                   
+                                                <p >
+                                                    <span class="boldChar">LOT</span> {{ this.products[0].batchCode }}
+                                                </p>
+
+                                                <p >
+                                                    <span class="boldChar">DATE</span> {{ this.date }}
+                                                </p>
+
+                                                <p >
+                                                    {{ "Boğaziçi Diş Deposu \n 0212 523 3518" }}
+                                                </p>
+                                                
+                                                <p >
+                                                    {{"0554 551 95 34" }}
+                                                </p>
+                                                
+                                              
+
+
+                                              
+
+
+                                            </div>
+
+                                        </div>
+                                        <div class="col-4" style="font-size:10px;color:black;font-weight: bold;">
+                                            <div style=" max-width:100px;padding: 5px;" >
+                                                <p  >
+                                                    {{ this.products[0].description
+                                                      }}
+                                                  </p>
+                                                <p >
+                                                     {{ this.brand == null ? "Melih Günal Dental Medikal
+                                                    SAN.TİC.LTD.ŞTİ" :
+                                                    this.brand }}
+                                                </p>
+                                               
+
+
+                                            </div>
+
+
+                                        </div>
+                                     
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div style="clear: both;"></div>
+
+
 
                         </div>
-                        <div class="row mb-3">
 
-                        </div>
-
+                        
                         <div class="form-group col">
 
 
                             <button type="button" class="btn btn-dark" style="margin-left: 10px; color: white"
-                              (click)="saveQr(this.checkForm.value)"  style="width: 100%;">
+                                (click)="saveQr(this.checkForm.value)" style="width: 100%;">
                                 <i class="fa fa-print"></i> Etiket Yazdır
                             </button>
 

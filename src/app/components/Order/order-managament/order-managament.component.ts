@@ -99,7 +99,7 @@ export class OrderManagamentComponent implements OnInit {
     const response = 
     this.saleOrderModels =  await this.orderService.getOrders()
  
-
+  
   }
 
   async deleteInvoiceProducts(orderNumber: string){

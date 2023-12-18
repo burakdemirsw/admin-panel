@@ -72,7 +72,7 @@ import { PurchaseOrderManagamentComponent } from './components/Order/purchase-or
 import { CreatePurchaseOrderComponent } from './components/Order/create-purchase-order/create-purchase-order.component';
 import { CreateSaleOrderComponent } from './components/Order/create-sale-order/create-sale-order.component';
 import { ImageModalComponent } from './image-modal/image-modal.component';
-import { NgxScannerQrcodeModule } from 'ngx-scanner-qrcode';
+import { NgxScannerQrcodeModule, LOAD_WASM } from 'ngx-scanner-qrcode';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { WarehouseShelfCountListComponent } from './components/Warehouse/warehouse-shelf-count-list/warehouse-shelf-count-list.component';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -90,7 +90,8 @@ import {ToastModule} from 'primeng/toast';
 import { LogManagamentComponent } from './components/Log/log-managament/log-managament.component';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ShelfTransferRequestComponent } from './components/Warehouse/shelf-transfer-request/shelf-transfer-request.component';
-
+import {DropdownModule} from 'primeng/dropdown';
+import { ReadQrComponent } from './components/Product/read-qr/read-qr.component';
 
 @NgModule({
   declarations: [
@@ -160,7 +161,8 @@ import { ShelfTransferRequestComponent } from './components/Warehouse/shelf-tran
     CreateQrComponent,
     WarehouseTransferListComponent,  
     LogManagamentComponent,
-    ShelfTransferRequestComponent
+    ShelfTransferRequestComponent,
+    ReadQrComponent
   ],
 
 
@@ -182,12 +184,14 @@ import { ShelfTransferRequestComponent } from './components/Warehouse/shelf-tran
     DialogModule,
     ImageModule,
     ToastModule,
-    InputTextareaModule
+    InputTextareaModule,
+    DropdownModule,
+    
   
   ],
   
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [    DatePipe,AlertifyService, NgModule, NgxPopper, NgxSpinnerModule,{      provide: HTTP_INTERCEPTORS,
+  providers: [    DatePipe,AlertifyService, NgModule, NgxPopper, DatePipe,NgxSpinnerModule,{      provide: HTTP_INTERCEPTORS,
     useClass: HttpErrorInterceptor,
     multi: true}],
   bootstrap: [AppComponent],

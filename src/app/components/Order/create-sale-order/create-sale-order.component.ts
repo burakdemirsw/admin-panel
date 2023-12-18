@@ -48,7 +48,7 @@ export class CreateSaleOrderComponent implements OnInit {
     private title: Title,
     private sanitizer: DomSanitizer
   ) {}
-
+  selectedCustomer : any ;
   async ngOnInit() {
     try {
       this.title.setTitle('Satış Faturası Oluştur');
@@ -184,10 +184,42 @@ isReturnInvoice : boolean ;
     this.warehouseModels = await this.warehouseService.getWarehouseList(value);
     console.log(this.warehouseModels);
   }
-
+  customerList2 : any[] = []
   async getCustomerList(): Promise<void> {
     this.customerList = await this.warehouseService.getCustomerList('3');
+    this.customerList.forEach((c) => {
+      var color: any = { name: c.currAccDescription, code: c.currAccCode };
+      this.customerList2.push(color);
+    });  
   }
+
+  salesPersonModels: SalesPersonModel[] = [];
+  salesPersonModelList : any[] = [];
+  selectedPerson  :any ;
+  async getSalesPersonModels(): Promise<any> {
+    try {
+      try {
+        this.salesPersonModels = await this.httpClientService
+          .get<SalesPersonModel>({
+            controller: 'Order/GetSalesPersonModels',
+          })
+          .toPromise();
+
+          this.salesPersonModels.forEach((c) => {
+            var color: any = { name: c.firstLastName, code: c.salespersonCode };
+            this.salesPersonModelList.push(color);
+          });  
+
+        //this.alertifyService.success("Başarıyla "+this.salesPersonModels.length+" Adet Çekildi")
+      } catch (error: any) {
+        this.alertifyService.error(error.message);
+        return null;
+      }
+    } catch (error: any) {
+      this.alertifyService.error(error.message);
+    }
+  }
+
 
   async getSelectedOffice(): Promise<any> {
     var office = (document.getElementById('officeCode') as HTMLInputElement)
@@ -199,25 +231,7 @@ isReturnInvoice : boolean ;
       ?.setValue(this.warehouseModels[0].warehouseCode);
   }
 
-  salesPersonModels: SalesPersonModel[] = [];
-  async getSalesPersonModels(): Promise<any> {
-    try {
-      try {
-        this.salesPersonModels = await this.httpClientService
-          .get<SalesPersonModel>({
-            controller: 'Order/GetSalesPersonModels',
-          })
-          .toPromise();
-
-        //this.alertifyService.success("Başarıyla "+this.salesPersonModels.length+" Adet Çekildi")
-      } catch (error: any) {
-        this.alertifyService.error(error.message);
-        return null;
-      }
-    } catch (error: any) {
-      this.alertifyService.error(error.message);
-    }
-  }
+  
   clearShelfNumbers() {
     this.productForm.get('shelfNo').setValue(null);
     this.productForm.get('barcode').setValue(null);
@@ -401,6 +415,12 @@ isReturnInvoice : boolean ;
       return;
     } else {
       if (this.productForm.valid) {
+         if(model.currAccCode){
+          model.currAccCode = this.productForm.get('currAccCode').value.code;
+         }
+         if(model.salesPersonCode){
+          model.salesPersonCode = this.productForm.get('salesPersonCode').value.code;
+         }
         console.log(this.productForm.value)
         var value = this.productForm.get('currAccCode').value;
         if (value === null) {

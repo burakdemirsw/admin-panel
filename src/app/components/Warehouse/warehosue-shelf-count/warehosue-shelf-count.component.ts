@@ -251,20 +251,21 @@ getCurrentDatetime():string{
     return response;
   }
 
-  async setShelfNo(barcode: string): Promise<string> {
+  async setFormValues(barcode: string): Promise<string> {
     this.shelfNumbers = 'RAFLAR:';
 
-    if (barcode.length > 10) {
+    try {
       var result: string[] = await this.productService.countProductByBarcode(
         barcode
       );
       this.shelfNumbers += result[0];
       return result[1];
-    } else {
-      this.checkForm.get('barcode').setValue(null);
-      this.focusNextInput('shelfNo');
-      return null;
+    } catch (error) {
+      this.alertifyService.error( error.message)
+      return null
     }
+     
+    
   }
 
   async getQuantity(barcode: string): Promise<string> {
@@ -281,7 +282,7 @@ state : boolean  = true;
 
     if (!this.checkForm.valid) {
       if (countProductRequestModel.barcode) {
-        var number = await this.setShelfNo(countProductRequestModel.barcode);
+        var number = await this.setFormValues(countProductRequestModel.barcode);
         this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
         this.alertifyService.success(
           'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
@@ -377,7 +378,7 @@ state : boolean  = true;
                     'Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?'
                   )
                 ) {
-                  var number = await this.setShelfNo(
+                  var number = await this.setFormValues(
                     countProductRequestModel.barcode
                   );
                   this.checkForm.get('quantity')?.setValue(Number(number));
@@ -412,7 +413,7 @@ state : boolean  = true;
                     this.state = true;
                   }
                 } else {
-                  var number = await this.setShelfNo(
+                  var number = await this.setFormValues(
                     countProductRequestModel.barcode
                   );
                   this.checkForm.get('quantity')?.setValue(Number(number));

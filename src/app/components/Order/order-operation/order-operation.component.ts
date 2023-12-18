@@ -183,7 +183,7 @@ totalCount:number = 0
       .toPromise();
       
     this.productsToCollect = productData; //toplanacak ürünler çekildi 
-    if(this.productsToCollect){
+    if(this.productsToCollect.length>0){
 
       if(this.lastCollectedProduct ==null){ //üste atılcak ürün seçildi
         this.productsToCollect2=[];

@@ -4,6 +4,7 @@ export  class CollectedProduct{
     barcode!: string;
     quantity!: number;
     itemCode!: string;
+    batchCode!:string
   
 
 }

@@ -19,7 +19,7 @@
                                        {{ office.officeCode }}
                                     </option>
                                  </select>
-                                 
+
                               </div>
                               <div class="form-group col">
                                  <label for="warehouseCode">Depo</label>
@@ -38,34 +38,38 @@
                               </div>
                            </div>
                            <div class="row mb-1">
-                            
-                                 <label for="currAccCode2">Müşteri Kodu</label>
-                                 <input type="text" id="currAccCode2" class="form-control"
-                                    formControlName="currAccCode2" (keydown.enter)="focusNextInput('currAccCode')" />
-                                  
+
+                              <label for="currAccCode2">Müşteri Kodu</label>
+                              <input type="text" id="currAccCode2" class="form-control" formControlName="currAccCode2"
+                                 (keydown.enter)="focusNextInput('currAccCode')" />
+
                            </div>
                            <div class="row mb-1">
-                                 <label for="currAccCode">Müşteri</label>
-                                 <ng-select class="form-control"
-                                    style="padding: 0 !important;min-height: 36px !important;  " id="currAccCode"
-                                    formControlName="currAccCode" [items]="customerList" bindLabel="currAccDescription"
-                                    bindValue="currAccCode" [searchable]="true"></ng-select>
-                                 </div>
-                                 <div class="row mb-1">
-                                 <label for="salesPersonCode">Satış Elemanı</label>
-                                 <ng-select class="form-control" style="padding: 0 !important  " id="salesPersonCode"
-                                    formControlName="salesPersonCode" [items]="salesPersonModels"
-                                    bindLabel="firstLastName" bindValue="salespersonCode"
-                                    [searchable]="true"></ng-select>
-                              </div>
-                      
+                              <label for="currAccCode">Müşteri</label>
+                              <!-- <ng-select class="form-control"
+                                 style="padding: 0 !important;min-height: 36px !important;  " id="currAccCode"
+                                 formControlName="currAccCode" [items]="customerList" bindLabel="currAccDescription"
+                                 bindValue="currAccCode" [searchable]="true">
+                              </ng-select> -->
+                              <p-dropdown formControlName="currAccCode" [options]="customerList2" [(ngModel)]="selectedCustomer" optionLabel="name" [filter]="true" ></p-dropdown>
+
+                           </div>
+                           <div class="row mb-1">
+                              <label for="salesPersonCode">Satış Elemanı</label>
+                              <!-- <ng-select class="form-control" style="padding: 0 !important  " id="salesPersonCode"
+                                 formControlName="salesPersonCode" [items]="salesPersonModels" bindLabel="firstLastName"
+                                 bindValue="salespersonCode" [searchable]="true"></ng-select> -->
+                                 <p-dropdown   formControlName="salesPersonCode" [options]="salesPersonModelList" [(ngModel)]="selectedPerson" optionLabel="name" [filter]="true" ></p-dropdown>
+
+                           </div>
+
 
                            <div class="row mb-1">
                               <div class="form-group">
                                  <label for="shelfNo">Raf:</label>
                                  <div class="input-group">
                                     <input type="text" id="shelfNo" class="form-control" formControlName="shelfNo"
-                                    (keydown.enter)="focusNextInput('barcode')" />
+                                       (keydown.enter)="focusNextInput('barcode')" />
                                     <div class="input-group-append">
                                        <button type="button" (click)="clearShelfNumbers()" class="btn btn-dark"> Rafı ve
                                           Barkodu Temizle </button>
@@ -97,12 +101,12 @@
                                     (keydown.enter)="focusNextInput('quantity')" />
                               </div>
                            </div>
-                          
+
                            <div class="form-group">
                               <div class="form-check">
-                                 <input type="checkbox" id="isReturn" (click)="checkIsReturnInvoice()" class="form-check-input" 
-                                    formControlName="isReturn"/>
-                                 <label for="isReturn"  class="form-check-label">İade</label>
+                                 <input type="checkbox" id="isReturn" (click)="checkIsReturnInvoice()"
+                                    class="form-check-input" formControlName="isReturn" />
+                                 <label for="isReturn" class="form-check-label">İade</label>
                               </div>
                            </div>
                            <div class="row mb-1">
@@ -110,18 +114,20 @@
                                  <button type="button" class="btn btn-primary" (click)="onSubmit(productForm.value)"
                                     style="width: 100%;"> Ekle </button>
                               </div>
-                              <div class="form-group col" *ngIf="infoProducts.length>0 && isReturnInvoice==false" id="countPage">
+                              <div class="form-group col" *ngIf="infoProducts.length>0 && isReturnInvoice==false"
+                                 id="countPage">
                                  <div class="btn-group" role="group" aria-label="Basic example" style="width: 100%;">
-                                    <button  type="button" class="btn btn-warning" (click)="showCountPage()"
-                                    style="width: 100%;"> {{addedProductCount}} </button>
-                                    <button type="button" class="btn btn-warning" (click)="showModal2()"><i class="fa fa-angle-down" aria-hidden="true"></i>
+                                    <button type="button" class="btn btn-warning" (click)="showCountPage()"
+                                       style="width: 100%;"> {{addedProductCount}} </button>
+                                    <button type="button" class="btn btn-warning" (click)="showModal2()"><i
+                                          class="fa fa-angle-down" aria-hidden="true"></i>
                                     </button>
-                                  </div>
+                                 </div>
 
 
-                                
+
                               </div>
-                              
+
                               <div class="form-group col">
                                  <button type="button" class="btn btn-dark" style="color: white;width: 100%;"
                                     (click)=" createSaleInvoice()"> Faturalaştır </button>
@@ -161,7 +167,7 @@
                         </thead>
                         <tbody>
                            <tr *ngFor="let product of invoiceProducts2; let i = index">
-                              
+
                               <td>
                                  <img src="{{product.photoUrl}}" alt="Resim" width="50" height="50"
                                     (click)="openImageModal(product.photoUrl)">
@@ -173,22 +179,23 @@
                               <td>{{ product.batchCode }}</td>
                               <td>{{ product.barcode }}</td>
                               <td>{{ product.currAccCode }}</td>
-                              <td>{{ product.warehouseCode }}</td  >
+                              <td>{{ product.warehouseCode }}</td>
                               <td>{{ product.officeCode }}</td>
                               <!-- <td>{{ product.qty }}</td> -->
 
                               <td>
                                  <button class="btn btn-danger" type="submit"
-                                    (click)="deleteOrderProduct(newOrderNumber,product.barcode,product.shelfNo)"><i class="fa fa-trash"> </i>
+                                    (click)="deleteOrderProduct(newOrderNumber,product.barcode,product.shelfNo)"><i
+                                       class="fa fa-trash"> </i>
                                  </button>
                                  <!-- Yeni -->
                                  <button class="btn btn-primary" style="margin-left: 1rem;" type="submit"
                                     (click)="createJson(product.barcode,product.shelfNo)">
-                                    <i class="fas fa-print"> </i> </button>  
-                                    <button *ngIf="product.quantity>product.qty" class="btn btn-danger" style="margin-left: 1rem;" type="submit"
-                                     >
-                                       <i class="fa fa-refresh" aria-hidden="true"></i>
-                                    </button>
+                                    <i class="fas fa-print"> </i> </button>
+                                 <button *ngIf="product.quantity>product.qty" class="btn btn-danger"
+                                    style="margin-left: 1rem;" type="submit">
+                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                 </button>
 
 
                               </td>
@@ -226,68 +233,68 @@
       <app-image-modal [imageUrl]="modalImageUrl" [title]="'Ürün Detay'"></app-image-modal>
 
 
-<p-dialog header="Sayım Paneli" [(visible)]="visible" [style]="{width: '90vw'}">
-    <p>
-        <app-warehosue-shelf-count [infoProducts]="this.infoProducts"></app-warehosue-shelf-count>
-    </p>
-</p-dialog>
-<p-dialog header="Sayım Paneli Ürün Ekranı" [(visible)]="visible2" [style]="{width: '50vw'}">
+      <p-dialog header="Sayım Paneli" [(visible)]="visible" [style]="{width: '90vw'}">
+         <p>
+            <app-warehosue-shelf-count [infoProducts]="this.infoProducts"></app-warehosue-shelf-count>
+         </p>
+      </p-dialog>
+      <p-dialog header="Sayım Paneli Ürün Ekranı" [(visible)]="visible2" [style]="{width: '50vw'}">
 
-      <div class="card" *ngIf="infoProducts.length > 0 ">
-         <div class="card-body">
-            <!-- <h1 class="card-title">Toplanacak Siparişler</h1> -->
-            <div class="table-responsive">
-               <table class="table">
-                  <thead>
-                     <tr>
-                        <th scope="col">Fotoğraf</th>
-                        <th scope="col">Raf</th>
-                        <th scope="col">Ürün Kodu</th>
+         <div class="card" *ngIf="infoProducts.length > 0 ">
+            <div class="card-body">
+               <!-- <h1 class="card-title">Toplanacak Siparişler</h1> -->
+               <div class="table-responsive">
+                  <table class="table">
+                     <thead>
+                        <tr>
+                           <th scope="col">Fotoğraf</th>
+                           <th scope="col">Raf</th>
+                           <th scope="col">Ürün Kodu</th>
 
-                        <th scope="col">Miktar</th>
-                        <th scope="col">Parti</th>
-                        <th scope="col">Barkod</th>
-                        <th scope="col">Müşteri Kodu</th>
-                        <th scope="col">Depo</th>
-                        <th scope="col">Ofis</th>
-                        <th scope="col">Stok Adedi</th>
+                           <th scope="col">Miktar</th>
+                           <th scope="col">Parti</th>
+                           <th scope="col">Barkod</th>
+                           <th scope="col">Müşteri Kodu</th>
+                           <th scope="col">Depo</th>
+                           <th scope="col">Ofis</th>
+                           <th scope="col">Stok Adedi</th>
 
-                        <th scope="col">İşlemler</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     <tr *ngFor="let product of infoProducts; let i = index">
-                        <td>
-                           <img src="{{product.photoUrl}}" alt="Resim" width="50" height="50"
-                              (click)="openImageModal(product.photoUrl)">
-                        </td>
-                        <td>{{ product.shelfNo }}</td>
-                        <td>{{ product.itemCode }}</td>
+                           <th scope="col">İşlemler</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr *ngFor="let product of infoProducts; let i = index">
+                           <td>
+                              <img src="{{product.photoUrl}}" alt="Resim" width="50" height="50"
+                                 (click)="openImageModal(product.photoUrl)">
+                           </td>
+                           <td>{{ product.shelfNo }}</td>
+                           <td>{{ product.itemCode }}</td>
 
-                        <td>{{ product.quantity }}</td>
-                        <td>{{ product.batchCode }}</td>
-                        <td>{{ product.barcode }}</td>
-                        <td>{{ product.currAccCode }}</td>
-                        <td>{{ product.warehouseCode }}</td>
-                        <td>{{ product.officeCode }}</td>
-                        <td>{{ product.qty }}</td>
+                           <td>{{ product.quantity }}</td>
+                           <td>{{ product.batchCode }}</td>
+                           <td>{{ product.barcode }}</td>
+                           <td>{{ product.currAccCode }}</td>
+                           <td>{{ product.warehouseCode }}</td>
+                           <td>{{ product.officeCode }}</td>
+                           <td>{{ product.qty }}</td>
 
-                        <td>
-                           <button class="btn btn-danger" type="submit"
-                              (click)="deleteFromList(product)"><i class="fa fa-trash"> </i>
-                           </button>
-                       
-                          
+                           <td>
+                              <button class="btn btn-danger" type="submit" (click)="deleteFromList(product)"><i
+                                    class="fa fa-trash"> </i>
+                              </button>
 
-                        </td>
-                     </tr>
-                  </tbody>
-               </table>
+
+
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
             </div>
          </div>
-      </div>
-  
-</p-dialog>
+
+      </p-dialog>
 
 
    </section>

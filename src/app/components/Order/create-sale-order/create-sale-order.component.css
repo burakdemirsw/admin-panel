@@ -4,3 +4,8 @@
 .card{
     margin-bottom: 10px;
 }
+
+::ng-deep .p-dropdown
+{
+    width: 100% !important;
+}

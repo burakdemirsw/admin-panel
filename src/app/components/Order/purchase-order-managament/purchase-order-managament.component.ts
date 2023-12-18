@@ -46,7 +46,7 @@ export class PurchaseOrderManagamentComponent implements OnInit {
       orderNo: [null],
       currAccCode: [null], // Add other form controls here
       customerName: [null],
-      sellerCode: [null],
+      sellerCode: [''],
       startDate: [null],
       endDate: [null],
     });

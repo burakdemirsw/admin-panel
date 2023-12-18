@@ -32,7 +32,6 @@
                     <th scope="col">Fotoğraf</th>
                     <th scope="col">Barkod</th>
                     <th scope="col">Değiştir</th>
-                   
 
                     
                   </tr>
@@ -56,6 +55,7 @@
                     <td>{{ product.colorDescription }}</td>
                     <td>{{ product.itemDim1Code }}</td>
                     <td>{{ product.currentQty }}</td>
+
                     <td>
                       <img src="{{ product.photoUrl }}" alt="Resim" width="50" height="50"
                         (click)="openImageModal(product.photoUrl)" />
@@ -215,6 +215,8 @@
                     <th scope="col">UD RAF</th>
                     <th scope="col">UD STOK</th>
                     <th scope="col">MD STOK</th>
+                    <th scope="col">Açıklama</th>
+
                     <th scope="col">Fotoğraf</th>
                     <th scope="col">Barkod</th>
 
@@ -245,6 +247,8 @@
                     <td>{{ product.itemCode }}</td>
                     <td>{{ product.quantity }}</td>
                     <td>{{ product.countedQty }}</td>
+                    <td>{{ product.description }}</td>
+
                     <td>{{ product.colorDescription }}</td>
                     <td>{{ product.itemDim1Code }}</td>
                     <td>{{ product.currentQty }}</td>
@@ -291,6 +295,7 @@
                     <th scope="col">Ürün Kodu</th>
                     <th scope="col">Rafa Giren Miktar</th>
                     <th scope="col">Barkod</th>
+                    <th scope="col">Parti Kodu</th>
                     <th scope="col">Sil</th>
                   </tr>
                 </thead>
@@ -308,6 +313,7 @@
                     <td>{{ product.itemCode }}</td>
                     <td>{{ product.quantity }}</td>
                     <td>{{ product.barcode }}</td>
+                    <td>{{ product.batchCode }}</td>
                     <td>
                       <div class="btn-group">
                         <button class="btn btn-danger" type="submit" (click)="

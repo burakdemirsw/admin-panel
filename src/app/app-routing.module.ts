@@ -63,6 +63,7 @@ import { CreateQrComponent } from './components/Order/create-qr/create-qr.compon
 import { WarehouseTransferListComponent } from './components/Warehouse/warehouse-transfer-list/warehouse-transfer-list.component';
 import { LogManagamentComponent } from './components/Log/log-managament/log-managament.component';
 import { ShelfTransferRequestComponent } from './components/Warehouse/shelf-transfer-request/shelf-transfer-request.component';
+import { ReadQrComponent } from './components/Product/read-qr/read-qr.component';
 
 const routes: Routes = [
   // { path: 'alerts', component: AlertsComponent },
@@ -130,6 +131,7 @@ const routes: Routes = [
   { path: 'warehouse-transfer-list', component: WarehouseTransferListComponent,canActivate:[AuthGuard]},
   { path: 'log-managament', component: LogManagamentComponent,canActivate:[AuthGuard]},
   { path: 'shelf-transfer-request', component: ShelfTransferRequestComponent,canActivate:[AuthGuard]},
+  { path: 'read-qr', component: ReadQrComponent,canActivate:[AuthGuard]},
 
   { path: '**', component: PagesError404Component }
 

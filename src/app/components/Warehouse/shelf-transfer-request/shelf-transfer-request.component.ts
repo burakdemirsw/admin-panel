@@ -237,7 +237,7 @@ export class ShelfTransferRequestComponent implements OnInit {
         );
         if (qrmodelResponse.batchCode) {
           transferModel.batchCode = qrmodelResponse.batchCode;
-          transferModel.barcode = qrmodelResponse.barcode;
+          // transferModel.barcode = qrmodelResponse.barcode; //qr basılmadı
         }
         var newResponse = await this.productService.countProductByBarcode(
           transferModel.barcode
