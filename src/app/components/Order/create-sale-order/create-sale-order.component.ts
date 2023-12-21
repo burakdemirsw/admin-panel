@@ -375,11 +375,12 @@ isReturnInvoice : boolean ;
           if(response2)
           {
             this.alertifyService.success("Otomatik Sayım yapıldı")
+         
             const data = await this.orderService.createSaleInvoice(
               this.invoiceProducts2,
               this.newOrderNumber,
               this.productForm.get('isReturn').value,
-              this.productForm.get('salesPersonCode').value,
+              this.productForm.get('salesPersonCode').value.code,
               this.productForm.get('currency').value
             );
 
@@ -393,6 +394,9 @@ isReturnInvoice : boolean ;
   
   }
 
+  log(){
+    console.log(this.productForm.value)
+  }
   setCurrentCustomerCode() {
     var currAccCode: string = (
       document.getElementById('currAccCode') as HTMLInputElement

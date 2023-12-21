@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReadQrComponent } from './read-qr.component';
+import { SearchQrComponent } from './search-qr.component';
 
-describe('ReadQrComponent', () => {
-  let component: ReadQrComponent;
-  let fixture: ComponentFixture<ReadQrComponent>;
+describe('SearchQrComponent', () => {
+  let component: SearchQrComponent;
+  let fixture: ComponentFixture<SearchQrComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ReadQrComponent ]
+      declarations: [ SearchQrComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ReadQrComponent);
+    fixture = TestBed.createComponent(SearchQrComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

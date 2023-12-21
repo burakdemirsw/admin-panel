@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import html2canvas from 'html2canvas';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import {
   BarcodeModelResponse,
   BarcodeModel_A,
@@ -11,11 +12,13 @@ import {
 import { PrinterInvoiceRequestModel } from 'src/app/models/model/order/printerInvoiceRequestModel';
 import { ProductList_VM } from 'src/app/models/model/product/productList_VM';
 import { QrCode } from 'src/app/models/model/product/qrCode';
+import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import {
   BarcodeSearch_RM,
   ProductService,
 } from 'src/app/services/admin/product.service';
+import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
 
@@ -37,57 +40,101 @@ export class CreateQrComponent implements OnInit {
     private generalService: GeneralService,
     private productService: ProductService,
     private httpClientService: HttpClientService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private warehouseService : WarehouseService
   ) {}
   @ViewChild('qrCode') qrCode: ElementRef;
   @ViewChild('captureElement') captureElement: ElementRef;
 
   ngOnInit(): void {
     this.formGenerator();
+    this.focusNextInput('barcode');
   }
-  async capture() {
+  async capture() {  
     const element = this.captureElement.nativeElement;
+  
+      html2canvas(element).then(async (canvas) => {
+        // Canvas'i bir görüntüye dönüştürün ve indirme bağlantısını oluşturun.
+        const imgData = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = imgData;
+        // link.download = 'captured-image.png';
+        // link.click();
+        var code = imgData.split('base64,')[1];
+        if(code){
+          const confirmDelete = window.confirm("Qr Kod Sisteme Kaydedilecektir. Emin misiniz?");
+          if (confirmDelete) {
+            var m = this.checkForm.value;
+            var qr: QrCode = new QrCode();
+            qr.id =0;
+            qr.uniqueId = this.newId;
+            qr.createdDate =new Date();
+            qr.barcodeBase64 = code;
+            qr.barcode = m.barcode
+            qr.description =  this.products[0].description;
+            qr.warehouseCode = this.products[0].warehouseCode;
+            qr.photoUrl = ClientUrls.baseUrl2+ qr.uniqueId 
+            qr.shelfNo = this.products[0].shelfNo;
+            qr.itemCode = this.products[0].itemCode;
+            qr.batchCode = this.products[0].batchCode;
+            qr.price = this.products[0].price;
+            qr.quantity = m.quantity;
+            qr.brandDescription = this.products[0].brandDescription
+            // this.capture();
+            // Show confirmation alert
+         
+           
+              var response = await this.productService.addQr(qr);
+              if (response) {
+                this.alertifyService.success("Kayıt Edildi");
+        
+                this.generalService.beep();
+              } else {
+                this.alertifyService.error("Kayıt Edilmedi");
+              }
+            
+    
+    
+              const confirmDelete2 = window.confirm("Yazıcıdan Yazdırılacaktır. Emin misiniz?");
+              if (confirmDelete2) {
+                var requestModel = {imageCode: code,printCount : this.checkForm.get('printCount').value};
+                var response = await this.httpClientService.post<any>({controller:'Order/Qr'},requestModel).toPromise();
+                // Base64 veriyi konsola bas
+                if(response){
+                  this.alertifyService.success("Yazdırıldı")
+                }
+                console.log(imgData.split('base64,')[1]);
+    
+              }
 
-    html2canvas(element).then(async (canvas) => {
-      // Canvas'i bir görüntüye dönüştürün ve indirme bağlantısını oluşturun.
-      const imgData = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.href = imgData;
-      link.download = 'captured-image.png';
-      link.click();
-      var code = imgData.split('base64,')[1];
-      var requestModel = {imageCode: code};
-      var response = await this.httpClientService.post<any>({controller:'Order/Qr'},requestModel).toPromise();
-      // Base64 veriyi konsola bas
-      console.log(imgData.split('base64,')[1]);
-    });
+          }
+        }
+       
+      
+      });
+
+    
+   
 }
 
-  // printQRCode() {
-  //   if (this.qrCodeDownloadLink) {
-  //     window.open(this.qrCodeDownloadLink.changingThisBreaksApplicationSecurity, '_blank');
-  //   }
-  // }
+
   qrCodeDownloadLink: any = this.sanitizer.bypassSecurityTrustResourceUrl('');
   onChangeURL(url: SafeUrl) {
     this.qrCodeDownloadLink = url;
   }
 
   currentQr: string;
-  // qrItemCode: string = '';
-  // qrShelfNo: string = '';
-  // qrQuantity: number = 0;
-  // qrBatchCode: string = '';
+
   products: ProductList_VM[] = [];
   brand : string =null;
   address : string = null;
   date : string  =null;
   getCurrentDateTime() {
     const currentDate = new Date();
-    const formattedDate = this.datePipe.transform(currentDate, 'yyyy-MM-dd HH.mm');
+    const formattedDate = this.datePipe.transform(currentDate, 'yyyy-dd-MM HH.mm');
     this.date = formattedDate
   }
-   
+   newId :string;
 
   async onSubmit(m: any) {
     if (m.barcode) {
@@ -95,10 +142,11 @@ export class CreateQrComponent implements OnInit {
       model.barcode = m.barcode;
       this.products = await this.productService.searchProduct(model);
       if (this.products) {
-        this.brand = m.brand;
+  
         this.address = m.address;
         this.getCurrentDateTime();
         var response = this.setFormValues(this.products[0]);
+        this.brand = this.products[0].brandDescription;
         if (true) {
           var p = this.products[0];
           var guid = await this.generalService.generateGUID();
@@ -107,19 +155,35 @@ export class CreateQrComponent implements OnInit {
 
           const formData = this.checkForm.value; 
           const formDataJSON = JSON.stringify(formData); 
-          this.qrCodeValue = formDataJSON;
+          var response2 = await this.warehouseService.countProductRequest(
+            formData.barcode,
+            "",
+          0,
+            "",
+            "",
+            "",
+            'Order/CountProductControl',
+            "",
+            ""  
+          );
+          if (response != undefined) {
+            var data2: ProductCountModel = response2;
+  
+            formData.barcode = response2.description;
+          }
+          if(this.checkForm.valid){
+            this.newId = await this.generalService.generateGUID()
+            var json = ClientUrls.baseUrl2+this.newId;
+            // var json  =  formData.itemCode +"-"+"010"+formData.barcode+"-"+"17-"+
+            // formData.batchCode+"-Adet:"+ this.checkForm.get('quantity').value
+            this.qrCodeValue =json;
+            console.log(this.checkForm.value)
 
-          // this.qrItemCode =
-          //   'Barkod: ' + p.barcode + ' - ' + 'RafNo: \n' + p.shelfNo;
-          // this.qrShelfNo =
-          //   'Barkod: ' + p.barcode + ' - ' + 'RafNo: \n' + p.shelfNo;
-          // this.qrShelfNo =
-          //   'Barkod: ' + p.barcode + ' - ' + 'RafNo: \n' + p.shelfNo;
+          }else{
+            this.generalService.whichRowIsInvalid(this.checkForm)
+            console.log(this.checkForm.value)
+          }
 
-          // this.qrBatchCode =
-          //   'Miktar: ' + p.quantity + '-' + 'Parti: ' + p.batchCode;
-        }else{
-          this.generalService.whichRowIsInvalid(this.checkForm);
         }
       }
       // this.getBarcodePage(model);
@@ -131,9 +195,10 @@ export class CreateQrComponent implements OnInit {
     try {
       this.checkForm.patchValue({
         itemCode: model.itemCode,
-        shelfNo: model.shelfNo,
+        // shelfNo: model.shelfNo,
         batchCode: model.batchCode,
         itemDesc: model.description,
+        brand: model.brandDescription 
       });
       return true;
     } catch (error) {
@@ -145,12 +210,12 @@ export class CreateQrComponent implements OnInit {
     this.checkForm = this.formBuilder.group({
       barcode: [null, Validators.required], 
       itemCode: [null, Validators.required], 
-      shelfNo: [null, Validators.required], 
-      batchCode: [null, Validators.required], 
+      shelfNo: [null], 
+      batchCode: [null], 
 
-      boxArea: [null, Validators.required],
-      qtyArea: [null, Validators.required], 
-      address: [null, Validators.required],
+      boxArea: [null],
+      quantity: [null, Validators.required], 
+      printCount: [1, Validators.required],
       brand: [null, Validators.required],
 
       itemDesc: [null, Validators.required],
@@ -159,22 +224,7 @@ export class CreateQrComponent implements OnInit {
   }
 
   async saveQr(m: any) {
-    var qr: QrCode = m;
-    qr.id = this.currentQr;
-    qr.createDate = null;
-    this.capture();
-    // Show confirmation alert
-    // this.printPicture("selamm");
-    // if (!window.confirm("Qr Sisteme Eklencektir , Devam Edilsin Mi?")) {
-    //   var response = await this.productService.addQr(qr);
-    //   if (response) {
-    //     this.alertifyService.success("Kayıt Edildi");
-    //     this.printPicture("selamm");
-    //     this.generalService.beep();
-    //   } else {
-    //     this.alertifyService.error("Kayıt Edilmedi");
-    //   }
-    // }
+   this.capture();
   }
   // printPicture(url:string){
   //   var  model : PrinterInvoiceRequestModel = new PrinterInvoiceRequestModel();
@@ -194,30 +244,12 @@ export class CreateQrComponent implements OnInit {
   //    }
   //    }
 
-  async getBarcodePage(model: BarcodeModel_A) {
-    var htmlPageCode: BarcodeModelResponse =
-      await this.productService.getBarcodePage(model);
-
-    var newTab = window.open('', '_blank');
-    if (newTab) {
-      newTab.document.open();
-      newTab.document.write(htmlPageCode.page);
-      newTab.document.close();
-
-      // Sayfanın tamamen yüklenmesini bekleyin (isteğe bağlı)
-      newTab.addEventListener('load', function () {
-        // Yazdırma işlemi
-        newTab.print();
-      });
-    }
-  }
-
   clearShelfNumbers() {
-    this.checkForm.get('shelfNo').setValue(null);
-    this.checkForm.get('barcode').setValue(null);
-    this.focusNextInput('shelfNo');
-    this.shelfNumbers = 'RAFLAR:';
-    this.checkForm.get('quantity').setValue(null);
+    var shelfNo = this.checkForm.get('shelfNo').value;
+    this.focusNextInput('barcode');
+    this.checkForm.reset();
+    this.checkForm.get('shelfNo').setValue(shelfNo);
+  
   }
   focusNextInput(nextInputId: string) {
     const nextInput = document.getElementById(nextInputId) as HTMLInputElement;

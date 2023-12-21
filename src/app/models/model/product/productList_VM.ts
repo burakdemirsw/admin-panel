@@ -9,4 +9,5 @@ export class ProductList_VM
       price: number
       quantity: number
       warehouseCode !: string
+      brandDescription !:string
 }

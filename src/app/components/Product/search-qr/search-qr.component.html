@@ -1,0 +1,84 @@
+<main id="main" class="main">
+
+
+    <section class="section">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Qr Doğrula</h5>
+          <form [formGroup]="qrForm" (ngSubmit)="onSubmit(qrForm.value)">
+            <div class="form-row">
+              <div class="form-group col-md-12 mb-3">
+                <label for="barcode">Barkod</label>
+                <div class="input-group">
+                
+                  <input type="text" id="barcode" class="form-control" formControlName="barcode">
+                  <div class="input-group-append">
+                    <button type="button" (click)="clearBarcode()" class="btn btn-dark">Formu Temizle</button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-6">
+                <button class="btn btn-primary btn-block">Filtrele</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+       
+  
+      <div class="card" *ngIf="qrCodes.length > 0">
+        <div class="card-body">
+          <h5 class="card-title">Ürünler</h5>
+  
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">Id</th>
+                  <th scope="col">Resim</th>
+                  <th scope="col">Ürün Kodu</th>
+                  <th scope="col">Raf No</th>
+                  <th scope="col">Depo</th>
+  
+                  <th scope="col">Miktar</th>
+                  <th scope="col">Barkod</th>
+                  <th scope="col">Parti</th>
+                  <th scope="col">Satış Fiyatı</th>
+                  <th scope="col">Ürün Adı</th>
+                  <th scope="col">Yazıdır</th>
+  
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let qr of qrCodes; let i = index">
+                  <td>{{qr.id}}</td>
+                  <td class="image-icon-td">
+                    <p-image src="data:image/jpeg;base64,{{qr.barcodeBase64}}" alt="Image" width="50" [preview]="true"></p-image>
+                  </td>
+                  <td>{{qr.itemCode}}</td>
+                  <td>{{qr.shelfNo}}</td>
+                  <td>{{qr.warehouseCode}}</td>
+  
+                  <td>{{qr.quantity}}</td>
+                  <td>{{qr.barcode}}</td>
+                  <td>{{qr.batchCode}}</td>
+                  <td>{{qr.price}}</td>
+                  <td>{{qr.description}}</td>
+                  <td> 
+                    <button class="btn btn-primary" type="submit"
+                        (click)="print(qr.barcodeBase64)"><i
+                            class="fas fa-print"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- <qrcode style="display: none" (qrCodeURL)="onChangeURL($event)" [qrdata]="qrCodeValue" [width]="256"
+      [errorCorrectionLevel]="'M'"></qrcode> -->
+      <!-- <app-image-modal [imageUrl]="modalImageUrl" [title]="'Ürün Detay'"></app-image-modal>  -->
+    </section>
+  </main>
+  

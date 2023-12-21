@@ -72,7 +72,6 @@ import { PurchaseOrderManagamentComponent } from './components/Order/purchase-or
 import { CreatePurchaseOrderComponent } from './components/Order/create-purchase-order/create-purchase-order.component';
 import { CreateSaleOrderComponent } from './components/Order/create-sale-order/create-sale-order.component';
 import { ImageModalComponent } from './image-modal/image-modal.component';
-import { NgxScannerQrcodeModule, LOAD_WASM } from 'ngx-scanner-qrcode';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { WarehouseShelfCountListComponent } from './components/Warehouse/warehouse-shelf-count-list/warehouse-shelf-count-list.component';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -91,7 +90,7 @@ import { LogManagamentComponent } from './components/Log/log-managament/log-mana
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ShelfTransferRequestComponent } from './components/Warehouse/shelf-transfer-request/shelf-transfer-request.component';
 import {DropdownModule} from 'primeng/dropdown';
-import { ReadQrComponent } from './components/Product/read-qr/read-qr.component';
+import { SearchQrComponent } from './components/Product/search-qr/search-qr.component';
 
 @NgModule({
   declarations: [
@@ -162,7 +161,8 @@ import { ReadQrComponent } from './components/Product/read-qr/read-qr.component'
     WarehouseTransferListComponent,  
     LogManagamentComponent,
     ShelfTransferRequestComponent,
-    ReadQrComponent
+    SearchQrComponent,
+    
   ],
 
 
@@ -177,7 +177,6 @@ import { ReadQrComponent } from './components/Product/read-qr/read-qr.component'
     ZXingScannerModule,
     NgxPaginationModule, 
     NgSelectModule,
-    NgxScannerQrcodeModule,
     QRCodeModule,
     NgxPrintModule,
     CommonModule,

@@ -10,3 +10,9 @@
   .border{
  border: 5px solid #000; padding: 5px;
 }
+
+.phone-number {
+    margin: 0; /* Paragrafın iç ve dış kenar boşluklarını sıfırlar */
+    padding: 0; /* Paragrafın iç dolgu boşluğunu sıfırlar */
+    line-height: 1; /* Satır yüksekliğini sıfır yapar veya numaralar arasındaki mesafeyi istediğiniz gibi ayarlar */
+}

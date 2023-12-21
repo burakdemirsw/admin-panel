@@ -53,18 +53,21 @@ export class WarehouseService {
 
     var requestModel: CountProductRequestModel2 =
       new CountProductRequestModel2();
+      requestModel.barcode = barcode;
+      requestModel.shelfNo = shelfNo;
+      requestModel.batchCode = batchCode;
+      requestModel.office = office;
+      requestModel.warehouseCode = warehouseCode;
+      requestModel.quantity = qty.toString() == '' ? 1 : qty;
+      requestModel.currAccCode = currAccCode;
+      requestModel.isReturn = false;
+      requestModel.salesPersonCode = "";
+      requestModel.taxTypeCode = "";
     requestModel.orderNo = orderNo;
-    requestModel.barcode = barcode;
-    requestModel.shelfNo = shelfNo;
-    requestModel.quantity = qty.toString() == '' ? 1 : qty;
-    requestModel.office = office;
-    requestModel.warehouseCode = warehouseCode;
-    requestModel.batchCode = batchCode;
-    requestModel.currAccCode = currAccCode;
     var response = await this.httpClientService
       .post<ProductCountModel | any>(
         {
-          controller: url,
+          controller: url, 
         },
         requestModel
       )

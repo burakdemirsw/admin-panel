@@ -220,6 +220,16 @@ export class ProductService {
     return response;
   }
 
+  async getQr(id: string): Promise<any> {
+    const response = await this.httpClientService
+      .get<QrCode>(
+        { controller: 'Products/get-qr' },id       
+      )
+      .toPromise();
+
+    return response;
+  }
+
   async addQr(model: QrCode): Promise<any> {
     const response = await this.httpClientService
       .post<QrCode>(
