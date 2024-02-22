@@ -111,7 +111,7 @@ export class SearchQrComponent implements OnInit {
   }
   async getProducts(barcode: string) {
     try {
-      if(this.currentId !=null){
+      if(this.currentId || barcode){
         const response = await this.productService.getQr(barcode);
         this.qrCodes = response;
         return response;

@@ -4,7 +4,10 @@ import { ProductCreateModel } from 'src/app/models/model/product/productCreateMo
 import { AlertifyService } from '../ui/alertify.service';
 import { HttpClientService } from '../http-client.service';
 import { Router } from '@angular/router';
-import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
+import {
+  ProductCountModel,
+  ProductCountModel3,
+} from 'src/app/models/model/shelfNameModel';
 import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
 import { HttpClient } from '@angular/common/http';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
@@ -14,7 +17,17 @@ import { WarehouseFormModel } from 'src/app/models/model/warehouse/warehosueTran
 import { ProductList_VM } from 'src/app/models/model/product/productList_VM';
 import { QrCode } from 'src/app/models/model/product/qrCode';
 import { QrControlCommandModel } from 'src/app/models/model/product/qrControlModel';
-import { BarcodeModelResponse, BarcodeModel_A } from 'src/app/models/model/barcode/barcodeModel_A';
+import {
+  BarcodeModelResponse,
+  BarcodeModel_A,
+} from 'src/app/models/model/barcode/barcodeModel_A';
+import {
+  QrOperationModel,
+  QrOperationModel2,
+} from 'src/app/models/model/product/qrOperationModel';
+import { GeneralService } from './general.service';
+import { FormGroup } from '@angular/forms';
+import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
 
 @Injectable({
   providedIn: 'root',
@@ -23,15 +36,15 @@ export class ProductService {
   constructor(
     private alertifyService: AlertifyService,
     private httpClientService: HttpClientService,
-    private router: Router,
+    private generalService: GeneralService,
     private httpClient: HttpClient
-  ) {}
+  ) { }
 
   //ürün oluşturma
   createProduct(model: ProductCreateModel): boolean {
     this.httpClientService
       .post<ProductCreateModel>(
-        {  
+        {
           controller: 'Product',
         },
         model
@@ -58,6 +71,7 @@ export class ProductService {
       if (barcode.includes('/')) {
         barcode = barcode.replace(/\//g, '-');
       }
+
       const model: ProductCountModel[] = await this.httpClientService
         .get<ProductCountModel>({
           controller: 'Order/GetShelvesOfProduct/' + barcode,
@@ -71,6 +85,7 @@ export class ProductService {
       var results: string[] = [];
       results.push(shelfNumbers);
       results.push(model[0].status);
+      results.push(model[0].batchCode);
 
       return results;
     } catch (error: any) {
@@ -103,6 +118,44 @@ export class ProductService {
     }
   }
 
+  async countProductByBarcode3(barcode: string): Promise<string[]> {
+    try {
+      var qrModel: QrControlCommandModel = new QrControlCommandModel();
+      qrModel.qr = barcode;
+      const model: any = await this.httpClientService
+        .post<QrControlCommandModel>(
+          {
+            controller: 'Order/GetShelvesOfProduct2',
+          },
+          qrModel
+        )
+        .toPromise();
+
+      if (model) {
+        var countModel: ProductCountModel3 = model;
+        if (countModel) {
+          var shelfNumbers: string = '';
+          model.forEach((element) => {
+            shelfNumbers += element.description + ',';
+          });
+          var results: string[] = [];
+          results.push(shelfNumbers);
+          results.push(model[0].status);
+          results.push(model[0].batchCode);
+          results.push(model[0].barcode);
+          return results;
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } catch (error: any) {
+      console.error(error.message);
+      return null;
+    }
+  }
+
   //sayılan ürünleri getirme
   async getCollectedOrderProducts(
     orderNo: string
@@ -122,15 +175,18 @@ export class ProductService {
       .toPromise();
     return response;
   }
-  //sayım içindeki ürünü silme  
+  //sayım içindeki ürünü silme
   async deleteOrderProduct(
     orderNo: string,
-    itemCode: string
+    itemCode: string,
+    lineId: string
   ): Promise<boolean> {
     try {
       const requestModel = {
         orderNumber: orderNo,
         itemCode: itemCode,
+        lineId: lineId
+
       };
 
       const response = await this.httpClientService
@@ -208,13 +264,10 @@ export class ProductService {
     return response;
   }
 
-   //faturanın ürünlerini getirme
-   async searchProduct(model: BarcodeSearch_RM): Promise<any> {
+  //faturanın ürünlerini getirme
+  async searchProduct(model: BarcodeSearch_RM): Promise<any> {
     const response = await this.httpClientService
-      .post<BarcodeSearch_RM>(
-        { controller: 'Products/SearchProduct' },
-        model
-      )
+      .post<BarcodeSearch_RM>({ controller: 'Products/SearchProduct' }, model)
       .toPromise();
 
     return response;
@@ -222,9 +275,7 @@ export class ProductService {
 
   async getQr(id: string): Promise<any> {
     const response = await this.httpClientService
-      .get<QrCode>(
-        { controller: 'Products/get-qr' },id       
-      )
+      .get<QrCode>({ controller: 'Products/get-qr' }, id)
       .toPromise();
 
     return response;
@@ -232,40 +283,121 @@ export class ProductService {
 
   async addQr(model: QrCode): Promise<any> {
     const response = await this.httpClientService
-      .post<QrCode>(
-        { controller: 'Products/AddQr' },
-        model
-      )
+      .post<QrCode>({ controller: 'Products/AddQr' }, model)
       .toPromise();
 
     return response;
   }
 
-
-   async qrControl(qr: string): Promise<any> {
-    var model  : QrControlCommandModel = new QrControlCommandModel()
-    model.qr = qr
+  async qrControl(qr: string): Promise<any> {
+    var model: QrControlCommandModel = new QrControlCommandModel();
+    model.qr = qr;
     const response = await this.httpClientService
-      .post<QrControlCommandModel|any>(
+      .post<QrControlCommandModel | any>(
         { controller: 'Products/QrControl' },
         model
       )
       .toPromise();
-  
+
     return response;
   }
- 
+  //QrOperationModel
   async getBarcodePage(model: BarcodeModel_A): Promise<any> {
-    const response:BarcodeModelResponse = await this.httpClient
-      .post<QrControlCommandModel|any>(
-        ClientUrls.baseUrl+'/Products/GenerateBarcode_A' ,
+    const response: BarcodeModelResponse = await this.httpClient
+      .post<QrControlCommandModel | any>(
+        ClientUrls.baseUrl + '/Products/GenerateBarcode_A',
         model
       )
-      .toPromise();  
+      .toPromise();
     return response;
   }
+
+  async qrOperation(model: QrOperationModel): Promise<any> {
+    const response: BarcodeModelResponse = await this.httpClient
+      .post<QrOperationModel | any>(
+        ClientUrls.baseUrl + '/Products/qr-operation',
+        model
+      )
+      .toPromise();
+    return response;
+  }
+  async qrOperation2(model: QrOperationModel2): Promise<any> {
+    //transfer onaylama ekranı için qr operasyonu eklendi eklendi
+    const response: BarcodeModelResponse = await this.httpClient
+      .post<QrOperationModel | any>(
+        ClientUrls.baseUrl + '/Products/qr-operation2',
+        model
+      )
+      .toPromise();
+    return response;
+  }
+
+  async qrOperationMethod(
+    qrBarcodeUrl: string,
+    form: FormGroup,
+    formValue: any,
+    numberParameter: any,
+    isReturn: boolean,
+    processCode: string
+  ): Promise<QrOperationResponseModel> {
+    var response: QrOperationResponseModel =
+      new QrOperationResponseModel();
+    if (qrBarcodeUrl != null) {
+      var qrModel: QrControlCommandModel = new QrControlCommandModel();
+      qrModel.qr = qrBarcodeUrl;
+      const model: any = await this.httpClientService
+        .post<QrControlCommandModel>(
+          {
+            controller: 'Order/GetShelvesOfProduct2',
+          },
+          qrModel
+        )
+        .toPromise();
+      if (model) {
+        var countModel: ProductCountModel3 = model;
+        if (countModel) {
+          if (model[0].barcode == form.get('barcode').value) {
+
+            var qrOperationModel: QrOperationModel = new QrOperationModel();
+            qrOperationModel.barcode = form.get('barcode').value;
+            qrOperationModel.batchCode = formValue.batchCode;
+            qrOperationModel.isReturn = isReturn;
+            qrOperationModel.processCode = processCode;
+            qrOperationModel.qrBarcode = qrBarcodeUrl;
+            (qrOperationModel.qty =
+              formValue.quantity === null
+                ? numberParameter
+                : formValue.quantity),
+              (qrOperationModel.shelfNo = formValue.shelfNo);
+            const qrOperationResponse = await this.qrOperation(
+              qrOperationModel
+            );
+            if (qrOperationResponse) {
+              this.generalService.beep2();
+              this.alertifyService.success('Qr Operasyonu Başarılı');
+              // this.qrOperationModels.push(qrOperationModel);
+
+              response.state = true;
+              response.qrOperationModel = qrOperationModel;
+              return response; // İşlem başarılı olduğunda bir değer döndür
+            } else {
+              return null;
+            }
+          } else {
+            this.alertifyService.error(
+              'qr içindeki barkod ile gelen barkod eşleşmedi'
+            );
+            //this.clearQrAndBatchCode();
+            return null;
+          }
+        } else {
+          return null;
+        }
+      }
+    }
+    return null;
+  }
 }
-export class BarcodeSearch_RM
-{
-     barcode !: string
+export class BarcodeSearch_RM {
+  barcode!: string;
 }

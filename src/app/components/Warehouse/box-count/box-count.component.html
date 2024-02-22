@@ -1,0 +1,240 @@
+<main id="main" class="main">
+  <!-- <div class="pagetitle">
+    <h1>Kutu Sayım Paneli</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+        <li class="breadcrumb-item">Tables</li>
+        <li class="breadcrumb-item active">General</li>
+      </ol>
+    </nav>
+  </div> -->
+  <section class="section">
+    <div class="row">
+      <div style="width: 100%">
+        <div class="card" *ngIf="blocked">
+          <div class="card-body">
+            <h5 class="card-title">SATIR SAYISI 100'E ULAŞTI</h5>
+          </div>
+        </div>
+        <div class="card" *ngIf="!blocked">
+          <div class="card-body">
+            <h5 class="card-title">Kutu Sayım Paneli</h5>
+            <div class="form-group row"></div>
+            <ul class="nav nav-tabs nav-justified mb-1" id="ex1" role="tablist">
+              <!-- <li class="nav-item" role="presentation"><a class="nav-link active" [class.active]="activeTab === 1" (click)="activeTab = 1">Raf
+                                    Düzenleme</a></li> -->
+            </ul>
+            <div class="tab-content" id="ex2-content">
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 1"
+                id="ex3-tabs-1"
+                role="tabpanel"
+                aria-labelledby="ex3-tab-1"
+              >
+                <form
+                  [formGroup]="checkForm"
+                  (ngSubmit)="onSubmit(checkForm.value)"
+                >
+                  <div class="row mb-1">
+                    <div class="form-group col">
+                      <label for="office">Hangi Ofis</label>
+                      <select
+                        id="office"
+                        class="form-control"
+                        formControlName="office"
+                      >
+                        <option value="M">M</option>
+                        <option value="U">U</option>
+                      </select>
+                    </div>
+                    <div class="form-group col">
+                      <label for="warehouseCode">Hangi Depo</label>
+                      <select
+                        id="warehouseCode"
+                        class="form-control"
+                        formControlName="warehouseCode"
+                      >
+                        <!-- <option *ngFor="let warehouse of warehouseModels" [value]="warehouse.warehouseCode">
+                    {{ warehouse.warehouseDescription }}
+                  </option> -->
+                        <option value="MD">GERÇEK DEPO</option>
+                        <option value="UD">HALKALI DEPO</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row mb-1">
+                    <div class="form-group">
+                      <label for="shelfNo">Raf No:</label>
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          id="shelfNo"
+                          class="form-control"
+                          formControlName="shelfNo"
+                          (keydown.enter)="focusNextInput('countPageBarcode')"
+                        />
+                        <div class="input-group-append">
+                          <button
+                            type="button"
+                            (click)="clearShelfNumbers()"
+                            class="btn btn-dark"
+                          >
+                            Formu Temizle
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
+                      shelfNumbers
+                    }}</label>
+                  </div>
+                  <div class="row mb-1">
+                    <div class="form-group">
+                      <label for="barcode">Barkod: </label>
+                      <label *ngIf="qrBarcodeUrl !== ''" for="qrBarcode">{{
+                        qrBarcodeUrl
+                      }}</label>
+                      <input
+                        type="text"
+                        id="countPageBarcode"
+                        class="form-control"
+                        formControlName="barcode"
+                        [disabled]="checkForm.disabled"
+                        [(ngModel)]="currentbarcode"
+                        (keydown.enter)="onSubmit(checkForm.value)"
+                      />
+                    </div>
+                  </div>
+                  <div class="row mb-1">
+                    <div class="form-group col">
+                      <div class="form-group">
+                        <label for="quantity">Miktar</label>
+                        <input
+                          type="number"
+                          id="quantity"
+                          class="form-control"
+                          formControlName="quantity"
+                          [disabled]="checkForm.disabled"
+                        />
+                      </div>
+                    </div>
+                    <div class="form-group col">
+                      <div class="form-group">
+                        <label for="batchCode">Parti</label>
+                        <input
+                          type="text"
+                          id="batchCode"
+                          class="form-control"
+                          formControlName="batchCode"
+                          (keydown.enter)="onSubmit(checkForm.value)"
+                          [disabled]="checkForm.disabled"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row mb-1">
+                    <div class="form-group">
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        (click)="check()"
+                        style="width: 100%"
+                      >
+                        Ekle
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 2"
+                id="ex3-tabs-2"
+                role="tabpanel-2"
+                aria-labelledby="ex3-tab-2"
+              ></div>
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 3"
+                id="ex3-tabs-3"
+                role="tabpanel-3"
+                aria-labelledby="ex3-tab-3"
+              >
+                Prices
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" *ngIf="lastCollectedProducts.length > 0">
+          <div class="card-body">
+            <h5 class="card-title">Sayılan Ürünler</h5>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col" *ngFor="let header of _tableHeaders">
+                      {{ header }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="
+                      let product of lastCollectedProducts
+                        | paginate
+                          : { itemsPerPage: 10, currentPage: currentPage };
+                      let i = index
+                    "
+                  >
+                    <!-- <td>{{ i + 1 }}</td> -->
+                    <td>
+                      <img
+                        src="{{ product.photoUrl }}"
+                        alt="Resim"
+                        width="50"
+                        height="50"
+                        (click)="openImageModal(product.photoUrl)"
+                      />
+                    </td>
+                    <td>{{ product.shelfNo }}</td>
+                    <td>{{ product.itemCode }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>{{ product.batchCode }}</td>
+                    <td>{{ product.barcode }}</td>
+                    <td>
+                      <div class="btn-group">
+                        <button
+                          class="btn btn-danger"
+                          type="submit"
+                          (click)="deleteOrderProduct(orderNo, product)"
+                        >
+                          <i class="fa fa-trash"></i>
+                        </button>
+
+                        <!-- Yeni -->
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <pagination-controls
+                (pageChange)="currentPage = $event"
+              ></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Yeni -->
+
+    <app-image-modal
+      [imageUrl]="modalImageUrl"
+      [title]="'Ürün Detay'"
+    ></app-image-modal>
+  </section>
+</main>

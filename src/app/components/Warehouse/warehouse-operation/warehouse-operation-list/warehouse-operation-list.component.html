@@ -1,6 +1,6 @@
 <main id="main" class="main">
   <div class="pagetitle">
-    <h1>Ürün Transfer Listesi</h1>
+    <h1>Havuzda Kalan Transfer Paneli</h1>
     <nav>
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
@@ -11,39 +11,61 @@
   </div>
 
   <section class="section">
-
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Transfer Filtreleme</h5>
         <!-- Filtreleme Alanı (Başlangıç) -->
         <div class="btn-group mb-3">
-          <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse"
-            aria-expanded="false" aria-controls="filterCollapse">
+          <button
+            class="btn btn-primary"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#filterCollapse"
+            aria-expanded="false"
+            aria-controls="filterCollapse"
+          >
             <i class="fa fa-bars" aria-hidden="true"></i>
           </button>
         </div>
 
         <div class="collapse" id="filterCollapse">
-          <form [formGroup]="filterForm" (ngSubmit)="onSubmit(filterForm.value)">
-
+          <form
+            [formGroup]="filterForm"
+            (ngSubmit)="onSubmit(filterForm.value)"
+          >
             <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
                   <label for="innerNumber">İç Numara</label>
-                  <input type="text" id="innerNumber" class="form-control" formControlName="innerNumber" />
+                  <input
+                    type="text"
+                    id="innerNumber"
+                    class="form-control"
+                    formControlName="innerNumber"
+                  />
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
                   <label for="endDate">İşlem Bitiş Tarihi:</label>
-                  <input type="date" id="endDate" class="form-control" formControlName="endDate" />
+                  <input
+                    type="date"
+                    id="endDate"
+                    class="form-control"
+                    formControlName="endDate"
+                  />
                 </div>
               </div>
 
               <div class="col-md-4">
                 <div class="form-group">
                   <label for="startDate">İşlem Başlangıç Tarihi:</label>
-                  <input type="date" id="startDate" class="form-control" formControlName="startDate" />
+                  <input
+                    type="date"
+                    id="startDate"
+                    class="form-control"
+                    formControlName="startDate"
+                  />
                 </div>
               </div>
             </div>
@@ -56,16 +78,36 @@
           </form>
         </div>
         <!-- Filtreleme Alanı (Bitiş) -->
-
       </div>
-
-
     </div>
     <div class="card">
       <div class="card-body">
+        <div class="btn-group mt-3" role="group" aria-label="Basic example">
+          <button
+            type="button"
+            [ngClass]="
+              selectedButton === 0 ? 'btn btn-success' : 'btn btn-dark'
+            "
+            (click)="getWarehouseOperations('0')"
+          >
+            Onaylanmayalanlar
+          </button>
+          <button
+            type="button"
+            [ngClass]="
+              selectedButton === 1 ? 'btn btn-success' : 'btn btn-dark'
+            "
+            (click)="getWarehouseOperations('1')"
+          >
+            Onaylananlar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
         <h5 class="card-title">Transfer İşlemleri</h5>
-
-
 
         <!-- <a class="btn btn-success" data-bs-toggle="dropdown">+Opertions </a>
         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
@@ -73,7 +115,7 @@
           <li><a class="dropdown-item">Export To The Excel</a></li>
           <li><a class="dropdown-item">Delete All Selected</a></li>
         </ul> -->
-        <!-- 
+        <!--
         <div class="btn-group mb-3">
           <button type="button" class="btn btn-success mr-2" >Ürün Topla</button>
 
@@ -82,12 +124,24 @@
         </div>
          -->
         <div class="btn-group mb-3">
-          <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse"
-            (click)="confirmOperation()" aria-expanded="false" aria-controls="filterCollapse">
+          <button
+            class="btn btn-primary"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#filterCollapse"
+            (click)="confirmOperation()"
+            aria-expanded="false"
+            aria-controls="filterCollapse"
+          >
             Seçilenleri Onayla
           </button>
-          <button type="button" class="btn btn-dark ml-2" routerLink="/shelf-operation">Seçilen Ürünleri Topla</button>
-
+          <button
+            type="button"
+            class="btn btn-dark ml-2"
+            routerLink="/shelf-operation"
+          >
+            Seçilen Ürünleri Topla
+          </button>
         </div>
         <div style="overflow-x: auto">
           <table class="table">
@@ -108,37 +162,56 @@
             </thead>
             <tbody>
               <tr
-                *ngFor="let operation of warehouseOperationListModels  | paginate: { itemsPerPage: 10, currentPage: currentPage } ">
-                <td><input class="form-check-input" type="checkbox" value=""
-                    (click)="addInnerNumberToList(operation.innerNumber)"></td>
+                *ngFor="
+                  let operation of warehouseOperationListModels
+                    | paginate : { itemsPerPage: 10, currentPage: currentPage }
+                "
+              >
+                <td>
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value=""
+                    (click)="addInnerNumberToList(operation.innerNumber)"
+                  />
+                </td>
 
-                <td>{{ operation.operationDate }}</td>
+                <td>
+                  {{ operation.operationDate | date : "dd.MM.yyyy HH:mm" }}
+                </td>
                 <td>{{ operation.innerNumber }}</td>
                 <td>{{ operation.officeCode }}</td>
                 <td>{{ operation.warehouseCode }}</td>
                 <td>{{ operation.toOfficeCode }}</td>
                 <td>{{ operation.toWarehouseCode }}</td>
-                <td>{{ operation.isCompleted ==0 ? "Hayır" : "Evet"}} </td>
+                <td>{{ operation.isCompleted == 0 ? "Hayır" : "Evet" }}</td>
                 <!-- <td>{{ operation.id }}</td> -->
                 <td>
                   <div class="btn-group">
-                
-                      <button class="btn btn-primary" data-text="İşlemler"
-                        (click)="setCurrentWarehouseToLocalStorage(operation.toWarehouseCode,operation.innerNumber)"
-                        routerLink="/order-operation/{{operation.innerNumber}}">
-                        <i class="fas fa-sliders-h"></i>
-                      </button>
-                      <button class="btn btn-danger" data-text="Sil">
+                    <button
+                      class="btn btn-primary"
+                      data-text="İşlemler"
+                      (click)="
+                        setCurrentWarehouseToLocalStorage(
+                          operation.toWarehouseCode,
+                          operation.innerNumber
+                        )
+                      "
+                      routerLink="/order-operation/{{ operation.innerNumber }}"
+                    >
+                      <i class="fas fa-sliders-h"></i>
+                    </button>
+                    <!-- <button class="btn btn-danger" data-text="Sil">
                         <i class="fas fa-trash"></i>
-                      </button>
-                    
+                      </button> -->
                   </div>
                 </td>
               </tr>
             </tbody>
           </table>
-          <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
-
+          <pagination-controls
+            (pageChange)="currentPage = $event"
+          ></pagination-controls>
         </div>
       </div>
     </div>

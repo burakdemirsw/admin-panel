@@ -1,325 +1,412 @@
 <main id="main" class="main">
-    <!-- <div class="pagetitle">
-        <h1>Sipariş Ürünlerini Toplama</h1>
-        <nav>
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-            <li class="breadcrumb-item">Tables</li>
-            <li class="breadcrumb-item active">General</li>
-          </ol>
-        </nav>
-      </div> -->
-  
-    <section class="section">
-  
-      <div class="row">
-        <div style="width: 100%">
-              
-          <div class="card" *ngIf="transferProducts.length > 0">
-            <div class="card-body">
-              <h5 class="card-title">Toplanan Ürünler</h5>
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th scope="col">Id</th>
-                      <!-- <th scope="col">Fotoğraf</th> -->
-  
-                      <th scope="col">Stok Kodu</th>
-                      <th scope="col">Raf </th>
-                      <th scope="col">Miktar</th>
-                   
-                      <th scope="col">Hedef Raf</th>
-                      <th scope="col">Transfer Miktarı</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let product of transferProducts.slice(0, 1); let i = index">
-                      <td>
-                        {{i+1}}
-                      </td>
-                      <td>{{ product.itemCode }}</td>
-                      <td>{{ product.shelfNo }}</td>
-                      <td>{{ product.quantity }}</td>
-                      <td>{{ product.targetShelf }}</td>
-                      <td>{{ product.transferQuantity }}</td>
-                    
-        
-                    </tr>
-                  </tbody>
-  
-                </table>
-  
-  
-  
-              </div>
+  <div class="pagetitle">
+    <h1>Raf Aktarma İstek Paneli</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+        <li class="breadcrumb-item">Tables</li>
+        <li class="breadcrumb-item active">General</li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="row">
+      <div style="width: 100%">
+        <div class="card" *ngIf="_transferProducts.length > 0">
+          <div class="card-body">
+            <h5 class="card-title">Toplanan Ürünler</h5>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th
+                      *ngFor="let item of _transferProductsColums"
+                      scope="col"
+                    >
+                      {{ item }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="
+                      let product of _transferProducts.slice(0, 1);
+                      let i = index
+                    "
+                  >
+                    <td>
+                      {{ i + 1 }}
+                    </td>
+                    <td>{{ product.itemCode }}</td>
+                    <td>{{ product.shelfNo }}</td>
+                    <td>{{ product.transferQuantity }}</td>
+                    <td>{{ product.targetShelf }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>{{ product.barcode }}</td>
+                    <td>{{ product.drawerCount }}</td>
+                    <td>
+                      <button
+                        class="btn btn-primary"
+                        type="submit"
+                        (click)="
+                          goDown2(
+                            product.barcode,
+                            product.shelfNo,
+                            product.itemCode,
+                            product.transferQuantity
+                          )
+                        "
+                      >
+                        <i class="fa fa-angle-down"> </i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Raf Aktarma İstek Paneli</h5>
-              <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
-                <!-- <li class="nav-item" role="presentation">
-                                      <a class="nav-link active" [class.active]="activeTab === 1" (click)="activeTab = 1">Raf
-                                          Düzenleme</a>
-                                  </li> -->
-              </ul>
-  
-  
-  
-  
-              <div class="tab-content" id="ex2-content">
-                <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1" role="tabpanel"
-                  aria-labelledby="ex3-tab-1">
-                  <form [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)">
-  
-                    <!-- Alınacak Ürün -->
-                    <div class="row mb-3">
-                      <div class="col-md-12">
-                        <h5>Alınacak Ürün</h5>
-                        <hr>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="btn-group mt-3" role="group" aria-label="Basic example">
+              <button
+                type="button"
+                [ngClass]="
+                  selectedButton === 0 ? 'btn btn-success' : 'btn btn-dark'
+                "
+                (click)="onDataChange('0')"
+              >
+                Varsayılan
+              </button>
+              <button
+                type="button"
+                [ngClass]="
+                  selectedButton === 1 ? 'btn btn-success' : 'btn btn-dark'
+                "
+                (click)="onDataChange('1')"
+              >
+                Rafları Fulle
+              </button>
+              <button
+                type="button"
+                [ngClass]="
+                  selectedButton === 2 ? 'btn btn-success' : 'btn btn-dark'
+                "
+                (click)="onDataChange('2')"
+              >
+                Çanta
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <!-- <h5 class="card-title">Raf Aktarma İstek Paneli</h5> -->
+
+            <div class="tab-content" id="ex2-content">
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 1"
+                id="ex3-tabs-1"
+                role="tabpanel"
+                aria-labelledby="ex3-tab-1"
+              >
+                <form
+                  [formGroup]="checkForm"
+                  (ngSubmit)="onSubmit(checkForm.value)"
+                >
+                  <div class="row mb-3">
+                    <div class="col-md-12">
+                      <h5 class="card-title">Alınacak Ürün</h5>
+                      <hr />
+                    </div>
+                  </div>
+
+                  <div class="row mb-1">
+                    <div class="form-group col">
+                      <label for="office">Hangi Ofis</label>
+                      <select
+                        id="office"
+                        class="form-control"
+                        formControlName="office"
+                        (change)="getSelectedOffice(1)"
+                      >
+                        <option>M</option>
+                        <option>U</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group col">
+                      <label for="warehouseCode">Hangi Depo</label>
+                      <select
+                        id="warehouseCode"
+                        class="form-control"
+                        formControlName="warehouseCode"
+                      >
+                        <option
+                          *ngFor="let warehouse of warehouseModels"
+                          [value]="warehouse.warehouseCode"
+                        >
+                          {{ warehouse.warehouseDescription }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="form-group">
+                      <label for="shelfNo">Raf No:</label>
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          id="shelfNo"
+                          class="form-control"
+                          formControlName="shelfNo"
+                          (keydown.enter)="focusNextInput('barcode')"
+                        />
+                        <div class="input-group-append">
+                          <button
+                            type="button"
+                            (click)="clearShelfNumbers()"
+                            class="btn btn-dark"
+                          >
+                            Formu Temizle
+                          </button>
+                        </div>
                       </div>
                     </div>
-  
-                    <div class="row mb-1">
-  
-                      <div class="form-group col">
-                        <label for="office">Hangi Ofis</label>
-                        <select id="office" class="form-control" formControlName="office" (change)="getSelectedOffice(1)">
-                          <option>M</option>
-                          <option>U</option>
-                        </select>
-                      </div>
-  
-                      <div class="form-group col">
-                        <label for="warehouseCode">Hangi Depo</label>
-                        <select id="warehouseCode" class="form-control" formControlName="warehouseCode" >
-                          <option *ngFor="let warehouse of warehouseModels" [value]="warehouse.warehouseCode" >
-                            {{ warehouse.warehouseDescription }}
-                          </option>
-                        </select>
-                      </div>
-  
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="form-group col">
+                      <label for="barcode">Barkod:</label>
+                      <label *ngIf="qrBarcodeUrl !== null" for="qrBarcode">{{
+                        qrBarcodeUrl
+                      }}</label>
+                      <input
+                        type="text"
+                        id="barcode"
+                        class="form-control"
+                        formControlName="barcode"
+                        (keydown.enter)="onSubmit(checkForm.value)"
+                      />
                     </div>
-  
-                    <div class="row mb-3">
-                      
+                  </div>
+
+                  <div class="row mb-1">
+                    <div class="form-group col">
                       <div class="form-group">
-                        <label for="shelfNo">Raf No:</label>
-                        <div class="input-group">
-                          <input type="text" id="shelfNo" class="form-control" formControlName="shelfNo"
-                            (keydown.enter)="focusNextInput('barcode')" />
-                          <div class="input-group-append">
-                            <button type="button" (click)="clearShelfNumbers()" class="btn btn-dark">Formu
-                              Temizle</button>
-                          </div>
-                        </div>
-                      </div>
-                      <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{ shelfNumbers }}</label>
-  
-                    </div>
-  
-  
-                    <div class="row mb-3">
-                      <div class="form-group col">
-                        <label for="barcode">Barkod:</label>
-                        <input type="text" id="barcode" class="form-control" formControlName="barcode"
-                          (keydown.enter)="onSubmit(checkForm.value)" />
+                        <label for="quantity">Miktar:</label>
+                        <input
+                          type="number"
+                          id="quantity"
+                          class="form-control"
+                          formControlName="quantity"
+                        />
                       </div>
                     </div>
-  
-  
-  
-                    <div class="row mb-1">
-  
-  
-  
-                      <div class="form-group col">
-                        <div class="form-group">
-                          <label for="quantity">Miktar:</label>
-                          <input type="number" id="quantity" class="form-control" formControlName="quantity" />
-                        </div>
-                      </div>
-  
-  
-                      <div class="form-group col">
-                        <div class="form-group">
-                          <label for="batchCode">Parti:</label>
-                          <input type="text" id="batchCode" class="form-control" formControlName="batchCode" />
-                        </div>
+
+                    <div class="form-group col">
+                      <div class="form-group">
+                        <label for="batchCode">Parti:</label>
+                        <input
+                          type="text"
+                          id="batchCode"
+                          class="form-control"
+                          formControlName="batchCode"
+                        />
                       </div>
                     </div>
-  
-  
-  
-  
-                    <!-- Gönderilecek Raf -->
-                    <div class="row mb-3">
-                      <div class="col-md-12">
-                        <h5>Gönderilecek Raf</h5>
-                        <hr>
-                      </div>
+                  </div>
+
+                  <!-- Gönderilecek Raf -->
+                  <div class="row mb-3">
+                    <div class="col-md-12">
+                      <h5>Gönderilecek Raf</h5>
+                      <hr />
                     </div>
-  
-                    <div class="row mb-3">
-                      <div class="form-group col">
-                        <label for="targetShelfNo">Raf:</label>
-                        <div class="input-group">
-                          <input type="text" id="targetShelfNo" class="form-control" formControlName="targetShelfNo"
-                            (keydown.enter)="onSubmit(checkForm.value)" />
-                          <div class="input-group-append">
-                            <button type="button" (click)="clearTargetShelfNumber()" class="btn btn-dark">Hedef Rafı
-                              Temizle</button>
-                          </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="form-group col">
+                      <label for="targetShelfNo">Raf:</label>
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          id="targetShelfNo"
+                          class="form-control"
+                          formControlName="targetShelfNo"
+                          (keydown.enter)="onSubmit(checkForm.value)"
+                        />
+                        <div class="input-group-append">
+                          <button
+                            type="button"
+                            (click)="clearTargetShelfNumber()"
+                            class="btn btn-dark"
+                          >
+                            Tüm Formu Temizle
+                          </button>
                         </div>
                       </div>
                     </div>
-                    <div class="row mb-1">
-  
-  
-  
-  
-                      <div class="form-group col">
-                        <div class="form-group">
-                          <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 1%;"
-                            (click)="onSubmit(checkForm.value)">Ekle</button>
-                        </div>
-                      </div>
-  
-  
-                      <div class="form-group col">
-                        <div class="form-group">
-                          <button type="button" class="btn btn-dark" style="width: 100%; margin-top: 1%;"
-                            (click)="finishTransfer(checkForm.value)">Transferi Tamamla</button>
-                        </div>
+                    <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
+                      shelfNumbers
+                    }}</label>
+                  </div>
+                  <div class="row mb-1">
+                    <div class="form-group col">
+                      <div class="form-group">
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          style="width: 100%; margin-top: 1%"
+                          (click)="onSubmit(checkForm.value)"
+                        >
+                          Ekle
+                        </button>
                       </div>
                     </div>
-  
-  
-                  </form>
-  
-  
-                </div>
-                <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2" role="tabpanel-2"
-                  aria-labelledby="ex3-tab-2"></div>
-                <div class="tab-pane fade show" [class.active]="activeTab === 3" id="ex3-tabs-3" role="tabpanel-3"
-                  aria-labelledby="ex3-tab-3">
-                  Prices
-                </div>
+
+                    <div class="form-group col">
+                      <div class="form-group">
+                        <button
+                          type="button"
+                          class="btn btn-dark"
+                          style="width: 100%; margin-top: 1%"
+                          (click)="finishTransfer(checkForm.value)"
+                        >
+                          Transferi Tamamla
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 2"
+                id="ex3-tabs-2"
+                role="tabpanel-2"
+                aria-labelledby="ex3-tab-2"
+              ></div>
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 3"
+                id="ex3-tabs-3"
+                role="tabpanel-3"
+                aria-labelledby="ex3-tab-3"
+              >
+                Prices
               </div>
             </div>
           </div>
-  
-  
-  
-          <!-- Yeni kart: Toplacak Ürünler -->
-          <div class="card text-center" *ngIf="totalCount > 0">
-            <div class="card-body">
-              <h5 class="card-title">Toplanacak  Ürünler</h5>
-              <h1 class="display-1">{{ totalCount}}</h1>
-              <!--eklenen ürün miktarı yazcak! -->
-  
-              <p class="card-text">Adet Ürün Toplandı</p>
+        </div>
+
+        <!-- Yeni kart: Toplacak Ürünler -->
+        <div class="card text-center" *ngIf="totalCount > 0">
+          <div class="card-body">
+            <h5 class="card-title">Toplanacak Ürünler</h5>
+            <h1 class="display-1">{{ totalCount }}</h1>
+            <!--eklenen ürün miktarı yazcak! -->
+
+            <p class="card-text">Adet Ürün Toplandı</p>
+          </div>
+        </div>
+
+        <div class="card" *ngIf="transferProducts.length > 0">
+          <div class="card-body">
+            <h5 class="card-title">Toplanacak Ürünler</h5>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th *ngFor="let item of transferProductsColums" scope="col">
+                      {{ item }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="
+                      let product of transferProducts
+                        | paginate
+                          : { itemsPerPage: 10, currentPage: currentPage };
+                      let i = index
+                    "
+                  >
+                    <td>
+                      {{ i + 1 }}
+                    </td>
+                    <td>{{ product.itemCode }}</td>
+                    <td>{{ product.shelfNo }}</td>
+                    <td>{{ product.transferQuantity }}</td>
+                    <td>{{ product.targetShelf }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>{{ product.barcode }}</td>
+                    <td>{{ product.drawerCount }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <pagination-controls
+                (pageChange)="currentPage = $event"
+              ></pagination-controls>
             </div>
           </div>
-  
-          <div class="card" *ngIf="transferProducts.length > 0">
-            <div class="card-body">
-              <h5 class="card-title">Toplanan Ürünler</h5>
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th scope="col">Id</th>
-                      <!-- <th scope="col">Fotoğraf</th> -->
-  
-                      <th scope="col">Stok Kodu</th>
-                      <th scope="col">Raf </th>
-                      <th scope="col">Miktar</th>
-                   
-                      <th scope="col">Hedef Raf</th>
-                      <th scope="col">Transfer Miktarı</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let product of transferProducts; let i = index">
-                      <td>
-                        {{i+1}}
-                      </td>
-                      <td>{{ product.itemCode }}</td>
-                      <td>{{ product.shelfNo }}</td>
-                      <td>{{ product.quantity }}</td>
-                      <td>{{ product.targetShelf }}</td>
-                      <td>{{ product.transferQuantity }}</td>
-                    
-        
-                    </tr>
-                  </tbody>
-  
-                </table>
-  
-  
-  
-              </div>
-            </div>
-          </div>
-  
-  
+        </div>
 
+        <div class="card" *ngIf="collectedProducts.length > 0">
+          <div class="card-body">
+            <h5 class="card-title">Toplanan Ürünler</h5>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Id</th>
+                    <!-- <th scope="col">Fotoğraf</th> -->
 
-          <div class="card" *ngIf="collectedProducts.length > 0">
-            <div class="card-body">
-              <h5 class="card-title">Toplanan Ürünler</h5>
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th scope="col">Id</th>
-                      <!-- <th scope="col">Fotoğraf</th> -->
-  
-                      <th scope="col">Raf Numarası</th>
-                      <th scope="col">Barkod</th>
-                      <th scope="col">Miktar</th>
-                      <th scope="col">Parti</th>
-                      <th scope="col">Hedef Raf</th>
-                      <th scope="col">Sil</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let product of collectedProducts; let i = index">
-                      <td>
-                        {{i+1}}
-                      </td>
-  
-                      <!-- <td>
+                    <th scope="col">Raf Numarası</th>
+                    <th scope="col">Barkod</th>
+                    <th scope="col">Miktar</th>
+                    <th scope="col">Parti</th>
+                    <th scope="col">Hedef Raf</th>
+                    <th scope="col">Sil</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let product of collectedProducts; let i = index">
+                    <td>
+                      {{ i + 1 }}
+                    </td>
+
+                    <!-- <td>
                         <img src="null" alt="Resim" width="50" height="50" (click)="openImageModal(null)">
-  
+
                       </td> -->
-                      <td>{{ product.shelfNo }}</td>
-                      <td>{{ product.barcode }}</td>
-                      <td>{{ product.quantity }}</td>
-                      <td>{{ product.batchCode }}</td>
-                      <td>{{ product.targetShelfNo }}</td>
-                      <td><button class="btn btn-danger" (click)="deleteFastTransfer(product)"><i
-                        class="fa fa-trash"></i></button> </td>
-                 
-        
-                    </tr>
-                  </tbody>
-  
-                </table>
-  
-  
-  
-              </div>
+                    <td>{{ product.shelfNo }}</td>
+                    <td>{{ product.barcode }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>{{ product.batchCode }}</td>
+                    <td>{{ product.targetShelfNo }}</td>
+                    <td>
+                      <button
+                        class="btn btn-danger"
+                        (click)="deleteFastTransfer(product)"
+                      >
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <pagination-controls
+                (pageChange)="currentPage = $event"
+              ></pagination-controls>
             </div>
           </div>
-  
-  
         </div>
       </div>
-  
-  
-    </section>
-  
-  </main>
+    </div>
+  </section>
+</main>

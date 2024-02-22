@@ -5,6 +5,6 @@ export class QrCode extends ProductList_VM {
    uniqueId : string;
    createdDate : Date;
    barcodeBase64 : string;
-
+   boxNo : string;
   
   }

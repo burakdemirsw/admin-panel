@@ -10,7 +10,10 @@ import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { ProductService } from 'src/app/services/admin/product.service';
-import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
+import {
+  ProductCountModel,
+  ProductCountModel3,
+} from 'src/app/models/model/shelfNameModel';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { TransferModel } from 'src/app/models/model/warehouse/transferModel';
 import { Title } from '@angular/platform-browser';
@@ -19,6 +22,9 @@ import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { WarehouseItem } from 'src/app/models/model/warehouse/warehouseItem';
 import { InventoryItem } from 'src/app/models/model/product/inventoryItemModel';
 import { OrderService } from 'src/app/services/admin/order.service';
+import { QrControlCommandModel } from 'src/app/models/model/product/qrControlModel';
+import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
+import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
 declare var window: any;
 
 @Component({
@@ -35,7 +41,7 @@ export class WarehouseOperationComponent implements OnInit {
   qrCode: string = null;
 
   currentBarcode: string = null;
-  stockStatus : boolean = false;
+  stockStatus: boolean = false;
   warehousePackageDetails: WarehouseModel[] = [];
   constructor(
     private httpClientService: HttpClientService,
@@ -48,9 +54,9 @@ export class WarehouseOperationComponent implements OnInit {
     private productService: ProductService,
     private warehouseService: WarehouseService,
     private title: Title,
-    private httpClient : HttpClient,
-    private orderService : OrderService
-  ) {}// Add this line
+    private httpClient: HttpClient,
+    private orderService: OrderService
+  ) { } // Add this line
   warehouseModels: WarehouseOfficeModel[] = [];
   warehouseModels2: WarehouseOfficeModel[] = [];
   barcodeModel: BarcodeModel = new BarcodeModel();
@@ -60,32 +66,159 @@ export class WarehouseOperationComponent implements OnInit {
   itemCode: string = null;
   batchCode: string;
   officeModels: OfficeModel[] = [];
+
+  visible: boolean = false;
+  _barcode: string = null;
+  quantity: number = null;
+  change(barcode: string, quantity: number) {
+    this.visible = !this.visible;
+    this._barcode = barcode;
+    this.quantity = quantity
+  }
+
   async ngOnInit() {
+    this.formGenerator();
+    this.warehouseForm.valueChanges.subscribe(() => {
+      var office = this.warehouseForm.get('office').value
+      var officeTo = this.warehouseForm.get('officeTo').value
+      if ((office === officeTo) && (office !== null)) {
+        // this.alertifyService.error("Ofisler Farklı Olmalıdır")
+        this.warehouseForm.get('office').setValue(null)
+        this.warehouseForm.get('officeTo').setValue(null)
+      }
+    });
+
     this.spinnerService.show();
     this.activatedRoute.params.subscribe(async (params) => {
-
-      
-      this.currentOrderNo = 'TP-' + params["number"];
-      if( this.currentOrderNo.length >12){
+      this.currentOrderNo = 'TP-' + params['number'];
+      if (!this.currentOrderNo.includes('REQ-')) {
         await this.getProductOfCount(this.currentOrderNo); //this.list.push(formValue);
-      }else{
-        await this.getInventoryItems();
+      } else if (this.currentOrderNo.includes('REQ-')) {
+        await this.getProductOfCount(this.currentOrderNo);
+        // this.alertifyService.success(this.currentOrderNo);
+        await this.getInventoryItems(this.currentDataType);
       }
-    
 
       this.spinnerService.hide();
     });
-    this.formGenerator();
-    
 
-  //  await this.getOfficeCodeList();
-  
 
+    //  await this.getOfficeCodeList();
   }
-  inventoryItemColums : string[] = ['Fotoğraf','Ürün Kodu','Ürün','Raf','Barcode','Miktar','Transfer Miktarı']
-  inventoryItems : InventoryItem[] = []
-  async getInventoryItems(){
-    this.inventoryItems = await this.orderService.getInventoryItems();
+
+  inventoryItemColums: string[] = [
+    'Fotoğraf',
+    'Raf',
+    'Ürün Kodu',
+    'Transfer Miktarı',
+    'Miktar',
+    'Ürün',
+    'Barkod',
+  ];
+  _inventoryItemColums: string[] = [
+    'Fotoğraf',
+    'Raf',
+    'Ürün Kodu',
+    'Transfer Miktarı',
+    'Miktar',
+    // 'Ürün',
+    'Barkod',
+    'İşlem',
+  ];
+  inventoryItems: InventoryItem[] = [];
+  _inventoryItems: InventoryItem[] = [];
+  lastCollectedProduct: InventoryItem = null;
+
+  goDown2(
+    barcode: string,
+    shelfNo: string,
+    itemCode: string,
+    transferQty: number
+  ) {
+    // packageNo'ya eşleşen ProductOfOrder'ı bulun
+    const matchingProduct = this.inventoryItems.find(
+      (product) =>
+        product.barcode === barcode &&
+        product.shelfNo == shelfNo &&
+        product.itemCode == itemCode &&
+        product.transferQty == transferQty
+    );
+
+    // Eğer eşleşen bir ürün bulunduysa
+    if (matchingProduct) {
+      // Ürünü diziden çıkarın
+      const index = this.inventoryItems.indexOf(matchingProduct);
+      if (index !== -1) {
+        if (this.inventoryItems.length - 1 >= index + 1) {
+          this._inventoryItems = [];
+          this._inventoryItems.push(this.inventoryItems[index + 1]);
+          this.lastCollectedProduct = this.inventoryItems[index + 1];
+        } else {
+          this._inventoryItems = [];
+          this._inventoryItems.push(this.inventoryItems[0]);
+        }
+        // this.productsToCollect.splice(index, 1);
+
+        // // Ürünü dizinin sonuna ekleyin
+        // this.productsToCollect.push(matchingProduct);
+      }
+    }
+  }
+
+  currentDataType = "0";
+  async onDataChange(type: string) {
+    if (type === '0') {
+      this.alertifyService.success("Varsayılan Ürünler Getirildi")
+    } else if (type === '1') {
+      this.alertifyService.success("Raflar Fullendi")
+
+    }
+    this.currentDataType = type;
+    this.inventoryItems = [];
+    await this.getInventoryItems(this.currentDataType);
+  }
+
+  async getInventoryItems(type: string) {
+    this.inventoryItems = await this.orderService.getInventoryItems(type);
+
+    if (this.inventoryItems.length > 0) {
+      if (this.lastCollectedProduct == null) {
+        //üste atılcak ürün seçildi
+        this._inventoryItems = [];
+        this._inventoryItems.push(this.inventoryItems[0]);
+        this.lastCollectedProduct = this.inventoryItems[0];
+      } else {
+        //eğer son sayılan ürün varsa
+        var foundedProduct = this.inventoryItems.find(
+          (p) =>
+            p.barcode == this.lastCollectedProduct.barcode &&
+            p.itemCode == this.lastCollectedProduct.itemCode &&
+            p.shelfNo == this.lastCollectedProduct.shelfNo
+        );
+
+        if (foundedProduct) {
+          //eğer ürün bulunduysa
+
+          if (foundedProduct.quantity > 0) {
+            //miktar değeri 0 dan büyükse
+            this._inventoryItems = [];
+            this._inventoryItems.push(foundedProduct);
+            this.lastCollectedProduct = foundedProduct;
+          } else {
+            //miktar değeri 0 dan küçükse
+            this._inventoryItems = [];
+            this._inventoryItems.push(this.inventoryItems[0]);
+            this.lastCollectedProduct = this.inventoryItems[0];
+          }
+        } else {
+          //üürn bulunmdadıysa
+
+          this._inventoryItems = [];
+          this._inventoryItems.push(this.inventoryItems[0]);
+          this.lastCollectedProduct = this.inventoryItems[0];
+        }
+      }
+    }
   }
 
   modalImageUrl: string;
@@ -100,8 +233,7 @@ export class WarehouseOperationComponent implements OnInit {
     this.formModal.show();
   }
 
-
- formGenerator() {
+  formGenerator() {
     try {
       this.warehouseForm = this.formBuilder.group({
         id: [null],
@@ -115,8 +247,6 @@ export class WarehouseOperationComponent implements OnInit {
         warehouseTo: [null, Validators.required],
         orderNo: [this.currentOrderNo],
       });
-
-
     } catch (error) {
       console.error(error);
       // Handle the error as needed.
@@ -132,13 +262,12 @@ export class WarehouseOperationComponent implements OnInit {
         .toPromise();
       this.officeModels = response;
     } catch (error: any) {
-      //console.log(error.message);
+      //// console.log(error.message);
     }
   }
   async getSelectedOffice(from: number): Promise<any> {
     if (from == 1) {
       await this.getWarehouseList(this.warehouseForm.get('office')?.value, 1);
-      
     } else {
       await this.getWarehouseList(this.warehouseForm.get('officeTo')?.value, 2);
     }
@@ -153,26 +282,26 @@ export class WarehouseOperationComponent implements OnInit {
 
         value = selectElement.value == '' ? 'M' : selectElement.value;
         const response = await this.httpClientService
-        .get<WarehouseOfficeModel>({
-          controller: 'Warehouse/GetWarehouseModel/' + value,
-        })
-        .toPromise();
+          .get<WarehouseOfficeModel>({
+            controller: 'Warehouse/GetWarehouseModel/' + value,
+          })
+          .toPromise();
 
-      if (response) {
-        this.warehouseModels.push(response[0]);
+        if (response) {
+          this.warehouseModels.push(response[0]);
 
-        this.warehouseForm
-          .get('warehouse')
-          .setValue(response[0].warehouseCode);
-        const selectedValue2 = this.warehouseForm.get('warehouse').value;
+          this.warehouseForm
+            .get('warehouse')
+            .setValue(response[0].warehouseCode);
+          const selectedValue2 = this.warehouseForm.get('warehouse').value;
 
-        console.clear()
-      console.log('Form Değeri (warehouseCode) \n' + selectedValue2); //null geliyor
-        return true;
-      } else {
-        this.alertifyService.error('Depo Çekilemedi');
-        return false;
-      }
+          console.clear();
+          // console.log('Form Değeri (warehouseCode) \n' + selectedValue2); //null geliyor
+          return true;
+        } else {
+          this.alertifyService.error('Depo Çekilemedi');
+          return false;
+        }
       } else {
         const selectElement = document.getElementById(
           'officeTo'
@@ -180,28 +309,28 @@ export class WarehouseOperationComponent implements OnInit {
 
         value = selectElement.value == '' ? 'M' : selectElement.value;
         const response = await this.httpClientService
-        .get<WarehouseOfficeModel>({
-          controller: 'Warehouse/GetWarehouseModel/' + value,
-        })
-        .toPromise();
+          .get<WarehouseOfficeModel>({
+            controller: 'Warehouse/GetWarehouseModel/' + value,
+          })
+          .toPromise();
 
-      if (response) {
-        this.warehouseModels2.push(response[0]);
+        if (response) {
+          this.warehouseModels2.push(response[0]);
 
-        this.warehouseForm
-          .get('warehouseTo')
-          .setValue(response[0].warehouseCode);
-        const selectedValue2 = this.warehouseForm.get('warehouseTo').value;
-        console.clear()
-        console.log('Form Değeri (warehouseTo) \n' + selectedValue2); //null geliyor
-        return true;
-      } else {
-        this.alertifyService.error('Depo Çekilemedi');
-        return false;
-      }
+          this.warehouseForm
+            .get('warehouseTo')
+            .setValue(response[0].warehouseCode);
+          const selectedValue2 = this.warehouseForm.get('warehouseTo').value;
+          console.clear();
+          // console.log('Form Değeri (warehouseTo) \n' + selectedValue2); //null geliyor
+          return true;
+        } else {
+          this.alertifyService.error('Depo Çekilemedi');
+          return false;
+        }
       }
     } catch (error: any) {
-      //console.log(error.message);
+      //// console.log(error.message);
     }
   }
 
@@ -209,55 +338,52 @@ export class WarehouseOperationComponent implements OnInit {
     this.getShelfByQrDetail(value);
   }
 
-  controlItemStock():boolean{
-    var barcodeList:string[] = [];
-    
-    
-    this.warehouseTransferForms.forEach(t => {
-     
-    });
+  controlItemStock(): boolean {
+    var barcodeList: string[] = [];
+
+    this.warehouseTransferForms.forEach((t) => { });
     return true;
   }
-wrongItemList : WarehouseItem[] = []
+  wrongItemList: WarehouseItem[] = [];
   async transferToNebim(currentOrderNo: string) {
 
-    
-    this.spinnerService.show();
     if (currentOrderNo != null && currentOrderNo !== '') {
-      const userConfirmed = window.confirm(this.currentOrderNo+' numaralı sipariş için İşlemi başlatmak istediğinize emin misiniz?');
-  
+      const userConfirmed = window.confirm(
+        this.currentOrderNo +
+        ' numaralı sipariş için İşlemi başlatmak istediğinize emin misiniz?'
+      );
+
       if (userConfirmed) {
         try {
-          const data = await this.httpClient.get<WarehouseItem|any>(ClientUrls.baseUrl+'/Warehouse/TransferProducts/' + currentOrderNo).toPromise();
-            const model: WarehouseItem = data as WarehouseItem;
+          this.spinnerService.show();
+          const data = await this.httpClient
+            .get<WarehouseItem | any>(
+              ClientUrls.baseUrl +
+              '/Warehouse/TransferProducts/' +
+              currentOrderNo
+            )
+            .toPromise();
 
-
-          if (model) {
-            // Başarılı yanıt geldiğinde console'a başarılı yazısı yazdır
-            if (!this.wrongItemList.some(item => item.itemCode === model.itemCode )) {
-              this.wrongItemList.push(model);
-              this.alertifyService.error("Eklenmesi Gereken Stok Adedi : " + (model.quantity-model.availableInventoryQty1) + "\n\nÜrün Kodu : " + model.itemCode + "\n\nÜrün Adı : " + model.description + "\n\n\nEnvanter Eksiye Düşemez Hatası Alındı");
-            }
-            
-          }else if(data===true){
+          if (data === true) {
             this.generalService.waitAndNavigate(
               'Transfer İşlemi Başarıyla Gerçekleşti.',
-              'dashboard'
+              'warehouse-operation-list'
             );
+          } else {
+            this.alertifyService.error('İşlem Başarısız');
           }
         } catch (error: any) {
-          console.log(error.message);
+          // console.log(error.message);
         }
       } else {
         this.alertifyService.warning('İşlem iptal edildi.');
       }
-    
     } else {
       this.alertifyService.warning('Sipariş No Boş Geliyor.');
     }
     this.spinnerService.hide();
   }
-  
+
   changePage() {
     setTimeout(() => {
       this.router.navigate(['/warehouse-operation-confirm']);
@@ -283,11 +409,63 @@ wrongItemList : WarehouseItem[] = []
     }
   }
 
-  async onSubmit(formValue: any ): Promise<any> {
+  async setFormValues(barcode: string, check: boolean): Promise<string> {
+    this.shelfNumbers = 'RAFLAR:';
+    try {
+      if (barcode.includes('http') || this.generalService.isGuid(barcode)) {
+        var result: string[] = await this.productService.countProductByBarcode3(
+          barcode
+        );
+        this.shelfNumbers += result[0];
+        if (check) {
+          var currentShelfNo = this.warehouseForm.get('shelfNo').value;
+          // if(currentShelfNo==null ){
+          //   this.warehouseForm.get('shelfNo').setValue(result[0].split(',')[0]);
+          // }
+
+          this.warehouseForm.get('batchCode').setValue(result[2]);
+          this.warehouseForm.get('barcode').setValue(result[3]);
+        }
+
+        return result[1];
+      } else {
+        var result: string[] = await this.productService.countProductByBarcode(
+          barcode
+        );
+        this.shelfNumbers += result[0];
+        return result[1];
+      }
+    } catch (error) {
+      this.alertifyService.error(error.message);
+      return null;
+    }
+  }
+  qrBarcodeUrl: string = null;
+  qrOperationModels: QrOperationModel[] = [];
+  async onSubmit(formValue: any): Promise<any> {
+
+    if (formValue.barcode.includes("=")) {
+      formValue.barcode = formValue.barcode.replace(/=/g, "-");
+
+    }
+
+
+    if (
+      formValue.barcode.includes('http') ||
+      this.generalService.isGuid(formValue.barcode)
+    ) {
+      var number = await this.setFormValues(formValue.barcode, true);
+      this.qrBarcodeUrl = formValue.barcode;
+      this.warehouseForm.get('quantity')?.setValue(Number(number));
+
+      // this.onSubmit(this.warehouseForm.value);
+      return;
+    }
+
     if (!this.warehouseForm.valid) {
       if (formValue.barcode) {
-        var number = await this.setShelfNo(formValue.barcode);
-        this.warehouseForm.get('quantity')?.setValue(Number(number));
+        var number = await this.setFormValues(formValue.barcode, true);
+        this.warehouseForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
         this.alertifyService.success(
           'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
         );
@@ -296,25 +474,44 @@ wrongItemList : WarehouseItem[] = []
       }
 
       return;
-    } else if(this.warehouseForm.valid) {
-
-
+    } else if (this.warehouseForm.valid) {
       var newResponse = await this.productService.countProductByBarcode(
         formValue.barcode
       );
 
       const shelves = newResponse[0]
         .split(',')
-        .filter((raflar) => raflar.trim() !== '') .map((raflar) => raflar.toLowerCase());;
-        shelves.forEach(s => {
-          s = s.toLowerCase();
-        });
+        .filter((raflar) => raflar.trim() !== '')
+        .map((raflar) => raflar.toLowerCase());
+      shelves.forEach((s) => {
+        s = s.toLowerCase();
+      });
       if (shelves.includes(formValue.shelfNo.toLowerCase())) {
         var response = await this.productService.countTransferProduct(
           formValue
         );
 
-          if (response != undefined) {
+
+        if (response != undefined) {
+
+          //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+          var qrResponse: QrOperationResponseModel =
+            await this.productService.qrOperationMethod(
+              this.qrBarcodeUrl,
+              this.warehouseForm,
+              formValue,
+              Number(newResponse[1]),
+              false,
+              'WT'
+            );
+          if (qrResponse != null && qrResponse.state === true) {
+            this.qrOperationModels.push(qrResponse.qrOperationModel);
+          } else if (qrResponse === null) {
+            this.qrBarcodeUrl = null
+          }
+
+          //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
           var data: ProductCountModel = response;
           if (data.status == 'RAF') {
             formValue.shelfNo = response.description;
@@ -326,28 +523,27 @@ wrongItemList : WarehouseItem[] = []
           const raflarKismi = parcalanmisVeri[1];
           const raflar = raflarKismi
             .split(',')
-            .filter((raflar) => raflar.trim() !== '').map((raflar) => raflar.toLowerCase());
-         
+            .filter((raflar) => raflar.trim() !== '')
+            .map((raflar) => raflar.toLowerCase());
+
           if (raflar.length > 0) {
-            if (raflar.includes(formValue.shelfNo.toLowerCase())) {   
+            if (raflar.includes(formValue.shelfNo.toLowerCase())) {
               formValue.quantity = Number(newResponse[1]);
+
+              await this.getProductOfCount(this.currentOrderNo); //this.list.push(formValue);
               this.generalService.beep();
-  
-                await this.getProductOfCount(this.currentOrderNo); //this.list.push(formValue);
-                this.calculateTotalQty();
-                this.clearQrAndBatchCode();
-              
-             
+              this.calculateTotalQty();
+              this.clearQrAndBatchCode();
             } else {
               if (confirm('Raf Bulunamadı! Eklensin mi(1)?')) {
-                this.generalService.beep();
-
                 var newResponse =
                   await this.productService.countProductByBarcode(
                     formValue.barcode
                   );
                 formValue.quantity = Number(newResponse[1]);
+
                 await this.getProductOfCount(this.currentOrderNo); //this.list.push(formValue);
+                this.generalService.beep();
                 this.calculateTotalQty();
                 this.clearQrAndBatchCode();
               } else {
@@ -359,7 +555,7 @@ wrongItemList : WarehouseItem[] = []
             formValue.quantity = Number(newResponse[1]);
             this.generalService.beep();
 
-            await this.getProductOfCount(this.currentOrderNo); //this.list.push(formValue);
+            await this.getProductOfCount(this.currentOrderNo);
             this.calculateTotalQty();
             this.clearQrAndBatchCode();
           }
@@ -377,16 +573,35 @@ wrongItemList : WarehouseItem[] = []
             formValue
           );
 
+
           if (response != undefined) {
+            //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+            var qrResponse: QrOperationResponseModel =
+              await this.productService.qrOperationMethod(
+                this.qrBarcodeUrl,
+                this.warehouseForm,
+                formValue,
+                Number(newResponse[1]),
+                false,
+                'WT'
+              );
+            if (qrResponse != null && qrResponse.state === true) {
+              this.qrOperationModels.push(qrResponse.qrOperationModel);
+            } else if (qrResponse === null) {
+              this.qrBarcodeUrl = null
+            }
+            //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
             var data: ProductCountModel = response;
             if (data.status == 'RAF') {
               formValue.shelfNo = response.description;
             } else {
               formValue.barcode = response.description;
             }
-            this.generalService.beep();
             formValue.quantity = Number(newResponse[1]);
+
             await this.getProductOfCount(this.currentOrderNo); //this.list.push(formValue);
+            this.generalService.beep();
             this.calculateTotalQty();
             this.clearQrAndBatchCode();
           }
@@ -398,8 +613,8 @@ wrongItemList : WarehouseItem[] = []
           );
         }
       }
-    }else{
-      this.alertifyService.error("Form Geçersiz")
+    } else {
+      this.alertifyService.error('Form Geçersiz');
     }
   }
 
@@ -422,7 +637,10 @@ wrongItemList : WarehouseItem[] = []
   clearQrAndBatchCode() {
     this.warehouseForm.get('barcode').setValue(null);
     this.warehouseForm.get('batchCode').setValue(null);
-    //this.warehouseForm.get('quantity').setValue(null);
+    this.warehouseForm.get('quantity').setValue(null);
+    this.warehouseForm.get('shelfNo').setValue(null);
+    this.shelfNumbers = 'RAFLAR:';
+    this.qrBarcodeUrl = null;
 
     this.focusNextInput('barcode');
   }
@@ -445,13 +663,13 @@ wrongItemList : WarehouseItem[] = []
           controller: 'Shelves/' + id,
         })
         .subscribe((data) => {
-          ////console.log(data);
+          ////// console.log(data);
           this.warehoseModel = data;
           this.warehosueModel = data[0];
           this.formGenerator();
         });
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
     }
   }
 
@@ -489,13 +707,13 @@ wrongItemList : WarehouseItem[] = []
           controller: 'Shelves/qr/' + id,
         })
         .subscribe((data) => {
-          ////console.log(data);
+          ////// console.log(data);
           this.warehoseModel = data;
           this.warehosueModel = data[0];
           this.formGenerator();
         });
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
     }
   }
   shelfNumbers: string = 'RAFLAR:';
@@ -504,32 +722,85 @@ wrongItemList : WarehouseItem[] = []
     this.warehouseForm.get('barcode').setValue(null);
     this.focusNextInput('shelfNo');
     this.shelfNumbers = 'RAFLAR:';
+    this.qrBarcodeUrl = null;
     this.warehouseForm.get('quantity').setValue(null);
   }
 
-  async deleteOrderProduct(
-    orderNo: string,
-    itemCode: string,
-    shelfNo: string
-  ): Promise<boolean> {
-    const response: boolean = await this.productService.deleteOrderProduct(
-      this.currentOrderNo,
-      itemCode
+  async deleteOrderProduct(orderNo: string, product: any): Promise<boolean> {
+    const confirmDelete = window.confirm(
+      'Bu hareketi silmek istediğinizden emin misiniz?'
     );
-    if (response) {
-      this.warehouseTransferForms = this.warehouseTransferForms.filter(
-        (o) => !(o.barcode == itemCode && o.shelfNo == shelfNo)
+
+    if (confirmDelete) {
+      const response: boolean = await this.productService.deleteOrderProduct(
+        this.currentOrderNo,
+        product.itemCode,
+        product.lineId
       );
-      this.calculateTotalQty();
-      await this.getProductOfCount(this.currentOrderNo);
-      this.alertifyService.success('Silme İşlemi Başarılı.');
+      if (response) {
+        this.warehouseTransferForms = this.warehouseTransferForms.filter(
+          (o) => !(o.barcode == product.itemCode && o.shelfNo == product.shelfNo)
+        );
+        this.calculateTotalQty();
+        await this.getProductOfCount(this.currentOrderNo);
+        this.alertifyService.success('Silme İşlemi Başarılı.');
+      } else {
+        this.alertifyService.error('Silme İşlemi Başarısız.');
+      }
+
+      var model: QrOperationModel = new QrOperationModel();
+      var qrOperationModel: QrOperationModel = new QrOperationModel();
+
+      qrOperationModel = this.qrOperationModels.find(
+        (p) =>
+          p.barcode == product.barcode &&
+          p.batchCode == product.batchCode &&
+          p.shelfNo == product.shelfNo
+      );
+      var matchingData = this.qrOperationModels.filter(
+        (p) =>
+          p.barcode == product.barcode &&
+          p.batchCode == product.batchCode &&
+          p.shelfNo == product.shelfNo
+      );
+      const totalQuantity = 0;
+
+      if (qrOperationModel) {
+        if (matchingData) {
+          const totalQuantity = matchingData.reduce(
+            (acc, curr) => acc + curr.qty,
+            0
+          );
+          qrOperationModel.qty = totalQuantity;
+        }
+        // qrOperationModel nesnesini model'e kopyala
+        model = Object.assign({}, qrOperationModel);
+
+        if (qrOperationModel.isReturn) {
+          model.isReturn = false;
+        } else {
+          model.isReturn = true;
+        }
+        const qrOperationResponse = await this.productService.qrOperation(model);
+        if (qrOperationResponse) {
+          // // console.log(this.qrOperationModels);
+          this.generalService.beep3();
+          this.alertifyService.success('Qr Operasyonu Geri Alındı');
+        } else {
+          this.alertifyService.error('Qr Operasyonu Geri Alınamadı');
+        }
+      } else {
+        this.alertifyService.error('Qr Operasyonu Geri Alınamadı');
+      }
+
+      return response;
     } else {
-      this.alertifyService.error('Silme İşlemi Başarısız.');
+      return false;
     }
-    return response;
+
   }
 
-  updateItemStock(){
+  updateItemStock() {
     location.reload();
   }
 }

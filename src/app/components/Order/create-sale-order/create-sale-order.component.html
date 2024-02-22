@@ -1,304 +1,457 @@
 <main id="main" class="main">
-   <section class="section">
-      <div class="row">
-         <div style="width: 100%">
-            <div class="card">
-               <div class="card-body">
-                  <h5 class="card-title">Satış Fatura Oluşturma Paneli</h5>
-                  <ul class="nav nav-tabs nav-justified mb-1" id="ex1" role="tablist"></ul>
-                  <div class="tab-content" id="ex2-content">
-                     <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1" role="tabpanel"
-                        aria-labelledby="ex3-tab-1">
-                        <form [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
-                           <div class="row mb-1">
-                              <div class="form-group col">
-                                 <label for="officeCode">Ofis</label>
-                                 <select id="officeCode" class="form-control" formControlName="officeCode"
-                                    (change)="getSelectedOffice()">
-                                    <option *ngFor="let office of officeModels" [value]="office.officeCode">
-                                       {{ office.officeCode }}
-                                    </option>
-                                 </select>
-
-                              </div>
-                              <div class="form-group col">
-                                 <label for="warehouseCode">Depo</label>
-                                 <select id="warehouseCode" class="form-control" formControlName="warehouseCode">
-                                    <option *ngFor="let warehouse of warehouseModels"
-                                       [value]=" warehouse.warehouseCode ">{{ warehouse.warehouseDescription }}</option>
-                                 </select>
-                              </div>
-                              <div class="form-group col">
-                                 <label for="currency">Vergi Tipi</label>
-                                 <select id="currency" class="form-control" formControlName="currency">
-                                    <option *ngFor="let currency of currencyList"
-                                       [value]="currency==='Standart' ? 0 :  4">{{currency}}
-                                    </option>
-                                 </select>
-                              </div>
-                           </div>
-                           <div class="row mb-1">
-
-                              <label for="currAccCode2">Müşteri Kodu</label>
-                              <input type="text" id="currAccCode2" class="form-control" formControlName="currAccCode2"
-                                 (keydown.enter)="focusNextInput('currAccCode')" />
-
-                           </div>
-                           <div class="row mb-1">
-                              <label for="currAccCode">Müşteri</label>
-                              <!-- <ng-select class="form-control"
+  <section class="section">
+    <div class="row">
+      <div style="width: 100%">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Satış Fatura Oluşturma Paneli</h5>
+            <ul
+              class="nav nav-tabs nav-justified mb-1"
+              id="ex1"
+              role="tablist"
+            ></ul>
+            <div class="tab-content" id="ex2-content">
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 1"
+                id="ex3-tabs-1"
+                role="tabpanel"
+                aria-labelledby="ex3-tab-1"
+              >
+                <form
+                  [formGroup]="productForm"
+                  (ngSubmit)="onSubmit(productForm.value)"
+                >
+                  <div class="row mb-1">
+                    <div class="form-group col">
+                      <label for="officeCode">Ofis</label>
+                      <select
+                        id="officeCode"
+                        class="form-control"
+                        formControlName="officeCode"
+                        (change)="getSelectedOffice()"
+                      >
+                        <option
+                          *ngFor="let office of officeModels"
+                          [value]="office.officeCode"
+                        >
+                          {{ office.officeCode }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="form-group col">
+                      <label for="warehouseCode">Depo</label>
+                      <select
+                        id="warehouseCode"
+                        class="form-control"
+                        formControlName="warehouseCode"
+                      >
+                        <option
+                          *ngFor="let warehouse of warehouseModels"
+                          [value]="warehouse.warehouseCode"
+                        >
+                          {{ warehouse.warehouseDescription }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="form-group col">
+                      <label for="currency">Vergi Tipi</label>
+                      <select
+                        id="currency"
+                        class="form-control"
+                        formControlName="currency"
+                      >
+                        <option
+                          *ngFor="let currency of currencyList"
+                          [value]="currency === 'Standart' ? 0 : 4"
+                        >
+                          {{ currency }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row mb-1">
+                    <label for="currAccCode2">Müşteri Kodu</label>
+                    <input
+                      type="text"
+                      id="currAccCode2"
+                      class="form-control"
+                      formControlName="currAccCode2"
+                      (keydown.enter)="focusNextInput('currAccCode')"
+                    />
+                  </div>
+                  <div class="row mb-1">
+                    <label for="currAccCode">Müşteri</label>
+                    <!-- <ng-select class="form-control"
                                  style="padding: 0 !important;min-height: 36px !important;  " id="currAccCode"
                                  formControlName="currAccCode" [items]="customerList" bindLabel="currAccDescription"
                                  bindValue="currAccCode" [searchable]="true">
                               </ng-select> -->
-                              <p-dropdown formControlName="currAccCode" [options]="customerList2" [(ngModel)]="selectedCustomer" optionLabel="name" [filter]="true" ></p-dropdown>
-
-                           </div>
-                           <div class="row mb-1">
-                              <label for="salesPersonCode">Satış Elemanı</label>
-                              <!-- <ng-select class="form-control" style="padding: 0 !important  " id="salesPersonCode"
+                    <p-dropdown
+                      formControlName="currAccCode"
+                      [options]="customerList2"
+                      [(ngModel)]="selectedCustomer"
+                      optionLabel="name"
+                      [filter]="true"
+                    ></p-dropdown>
+                  </div>
+                  <div class="row mb-1">
+                    <label for="salesPersonCode">Satış Elemanı</label>
+                    <!-- <ng-select class="form-control" style="padding: 0 !important  " id="salesPersonCode"
                                  formControlName="salesPersonCode" [items]="salesPersonModels" bindLabel="firstLastName"
                                  bindValue="salespersonCode" [searchable]="true"></ng-select> -->
-                                 <p-dropdown   formControlName="salesPersonCode" [options]="salesPersonModelList" [(ngModel)]="selectedPerson" optionLabel="name" [filter]="true" ></p-dropdown>
-
-                           </div>
-
-
-                           <div class="row mb-1">
-                              <div class="form-group">
-                                 <label for="shelfNo">Raf:</label>
-                                 <div class="input-group">
-                                    <input type="text" id="shelfNo" class="form-control" formControlName="shelfNo"
-                                       (keydown.enter)="focusNextInput('barcode')" />
-                                    <div class="input-group-append">
-                                       <button type="button" (click)="clearShelfNumbers()" class="btn btn-dark"> Rafı ve
-                                          Barkodu Temizle </button>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                           <div *ngIf="shelfNumbers !== 'RAFLAR:'" class="text">
-                              {{ shelfNumbers }}
-                           </div>
-                           <div class="row mb-1">
-                              <div class="form-group">
-
-                                 <label for="barcode">Barkod:</label>
-                                 <input type="text" id="barcode" class="form-control" formControlName="barcode"
-                                    (keydown.enter)="onSubmit(productForm.value)" />
-
-                              </div>
-                           </div>
-                           <div class="row mb-1">
-                              <div class="form-group col">
-                                 <label for="quantity">Miktar</label>
-                                 <input type="number" id="quantity" class="form-control" formControlName="quantity"
-                                    (keydown.enter)="onSubmit(productForm.value)" />
-                              </div>
-                              <div class="form-group col">
-                                 <label for="batchCode">Parti:</label>
-                                 <input type="text" id="batchCode" class="form-control" formControlName="batchCode"
-                                    (keydown.enter)="focusNextInput('quantity')" />
-                              </div>
-                           </div>
-
-                           <div class="form-group">
-                              <div class="form-check">
-                                 <input type="checkbox" id="isReturn" (click)="checkIsReturnInvoice()"
-                                    class="form-check-input" formControlName="isReturn" />
-                                 <label for="isReturn" class="form-check-label">İade</label>
-                              </div>
-                           </div>
-                           <div class="row mb-1">
-                              <div class="form-group col">
-                                 <button type="button" class="btn btn-primary" (click)="onSubmit(productForm.value)"
-                                    style="width: 100%;"> Ekle </button>
-                              </div>
-                              <div class="form-group col" *ngIf="infoProducts.length>0 && isReturnInvoice==false"
-                                 id="countPage">
-                                 <div class="btn-group" role="group" aria-label="Basic example" style="width: 100%;">
-                                    <button type="button" class="btn btn-warning" (click)="showCountPage()"
-                                       style="width: 100%;"> {{addedProductCount}} </button>
-                                    <button type="button" class="btn btn-warning" (click)="showModal2()"><i
-                                          class="fa fa-angle-down" aria-hidden="true"></i>
-                                    </button>
-                                 </div>
-
-
-
-                              </div>
-
-                              <div class="form-group col">
-                                 <button type="button" class="btn btn-dark" style="color: white;width: 100%;"
-                                    (click)=" createSaleInvoice()"> Faturalaştır </button>
-                              </div>
-                           </div>
-                        </form>
-                     </div>
-                     <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2" role="tabpanel-2"
-                        aria-labelledby="ex3-tab-2"></div>
-                     <div class="tab-pane fade show" [class.active]="activeTab === 3" id="ex3-tabs-3" role="tabpanel-3"
-                        aria-labelledby="ex3-tab-3"> Prices </div>
+                    <p-dropdown
+                      formControlName="salesPersonCode"
+                      [options]="salesPersonModelList"
+                      [(ngModel)]="selectedPerson"
+                      optionLabel="name"
+                      [filter]="true"
+                    ></p-dropdown>
                   </div>
-               </div>
-            </div>
-            <div class="card" *ngIf="invoiceProducts2.length > 0 ">
-               <div class="card-body">
-                  <!-- <h1 class="card-title">Toplanacak Siparişler</h1> -->
-                  <div class="table-responsive">
-                     <table class="table">
-                        <thead>
-                           <tr>
 
-                              <th scope="col">Fotoğraf</th>
-                              <th scope="col">Raf</th>
-                              <th scope="col">Ürün Kodu</th>
-
-                              <th scope="col">Miktar</th>
-                              <th scope="col">Parti</th>
-                              <th scope="col">Barkod</th>
-                              <th scope="col">Müşteri Kodu</th>
-                              <th scope="col">Depo</th>
-                              <th scope="col">Ofis</th>
-                              <!-- <th scope="col">Stok Adedi</th> -->
-
-                              <th scope="col">İşlemler</th>
-                           </tr>
-                        </thead>
-                        <tbody>
-                           <tr *ngFor="let product of invoiceProducts2; let i = index">
-
-                              <td>
-                                 <img src="{{product.photoUrl}}" alt="Resim" width="50" height="50"
-                                    (click)="openImageModal(product.photoUrl)">
-                              </td>
-                              <td>{{ product.shelfNo }}</td>
-                              <td>{{ product.itemCode }}</td>
-
-                              <td>{{ product.quantity }}</td>
-                              <td>{{ product.batchCode }}</td>
-                              <td>{{ product.barcode }}</td>
-                              <td>{{ product.currAccCode }}</td>
-                              <td>{{ product.warehouseCode }}</td>
-                              <td>{{ product.officeCode }}</td>
-                              <!-- <td>{{ product.qty }}</td> -->
-
-                              <td>
-                                 <button class="btn btn-danger" type="submit"
-                                    (click)="deleteOrderProduct(newOrderNumber,product.barcode,product.shelfNo)"><i
-                                       class="fa fa-trash"> </i>
-                                 </button>
-                                 <!-- Yeni -->
-                                 <button class="btn btn-primary" style="margin-left: 1rem;" type="submit"
-                                    (click)="createJson(product.barcode,product.shelfNo)">
-                                    <i class="fas fa-print"> </i> </button>
-                                 <button *ngIf="product.quantity>product.qty" class="btn btn-danger"
-                                    style="margin-left: 1rem;" type="submit">
-                                    <i class="fa fa-refresh" aria-hidden="true"></i>
-                                 </button>
-
-
-                              </td>
-                           </tr>
-                        </tbody>
-                     </table>
+                  <div class="row mb-1">
+                    <div class="form-group">
+                      <label for="shelfNo">Raf:</label>
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          id="shelfNo"
+                          class="form-control"
+                          formControlName="shelfNo"
+                          (keydown.enter)="focusNextInput('barcode')"
+                        />
+                        <div class="input-group-append">
+                          <button
+                            type="button"
+                            (click)="clearShelfNumbers()"
+                            class="btn btn-dark"
+                          >
+                            Rafı ve Barkodu Temizle
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-               </div>
+                  <div *ngIf="shelfNumbers !== 'RAFLAR:'" class="text">
+                    {{ shelfNumbers }}
+                  </div>
+                  <div class="row mb-1">
+                    <div class="form-group">
+                      <label for="barcode">Barkod:</label>
+                      <label *ngIf="qrBarcodeUrl !== null" for="qrBarcode">{{
+                        qrBarcodeUrl
+                      }}</label>
+                      <input
+                        type="text"
+                        id="barcode"
+                        class="form-control"
+                        formControlName="barcode"
+                        (keydown.enter)="onSubmit(productForm.value)"
+                      />
+                    </div>
+                  </div>
+                  <div class="row mb-1">
+                    <div class="form-group col">
+                      <label for="quantity">Miktar</label>
+                      <input
+                        type="number"
+                        id="quantity"
+                        class="form-control"
+                        formControlName="quantity"
+                        (keydown.enter)="onSubmit(productForm.value)"
+                      />
+                    </div>
+                    <div class="form-group col">
+                      <label for="batchCode">Parti:</label>
+                      <input
+                        type="text"
+                        id="batchCode"
+                        class="form-control"
+                        formControlName="batchCode"
+                        (keydown.enter)="focusNextInput('quantity')"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="form-group col mb-3">
+                    <div class="form-group">
+                      <label for="isReturn">İade Faturası</label>
+
+                      <p-inputSwitch
+                        id="isReturn"
+                        class="form-control"
+                        style="height: 38px; width: 100%"
+                        formControlName="isReturn"
+                      ></p-inputSwitch>
+                    </div>
+                  </div>
+                  <div class="row mb-1">
+                    <div class="form-group col">
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        (click)="onSubmit(productForm.value)"
+                        style="width: 100%"
+                      >
+                        Ekle
+                      </button>
+                    </div>
+                    <div
+                      class="form-group col"
+                      *ngIf="
+                        infoProducts.length > 0 && isReturnInvoice == false
+                      "
+                      id="countPage"
+                    >
+                      <div
+                        class="btn-group"
+                        role="group"
+                        aria-label="Basic example"
+                        style="width: 100%"
+                      >
+                        <button
+                          type="button"
+                          class="btn btn-warning"
+                          (click)="showCountPage()"
+                          style="width: 100%"
+                        >
+                          {{ addedProductCount }}
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-warning"
+                          (click)="showModal2()"
+                        >
+                          <i class="fa fa-angle-down" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="form-group col">
+                      <button
+                        type="button"
+                        class="btn btn-dark"
+                        style="color: white; width: 100%"
+                        (click)="createSaleInvoice()"
+                      >
+                        Faturalaştır
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 2"
+                id="ex3-tabs-2"
+                role="tabpanel-2"
+                aria-labelledby="ex3-tab-2"
+              ></div>
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 3"
+                id="ex3-tabs-3"
+                role="tabpanel-3"
+                aria-labelledby="ex3-tab-3"
+              >
+                Prices
+              </div>
             </div>
-            <!-- Yeni kart: Toplanan Ürünler -->
-            <div class="card text-center">
-               <div class="card-body">
-                  <h5 class="card-title">Toplanan Ürünler</h5>
-                  <h1 class="display-1">{{ totalCount}}</h1>
-                  <p class="card-text">Adet Ürün Toplandı</p>
-               </div>
+          </div>
+        </div>
+        <div class="card" *ngIf="invoiceProducts2.length > 0">
+          <div class="card-body">
+            <!-- <h1 class="card-title">Toplanacak Siparişler</h1> -->
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Fotoğraf</th>
+                    <th scope="col">Raf</th>
+                    <th scope="col">Ürün Kodu</th>
+
+                    <th scope="col">Miktar</th>
+                    <th scope="col">Parti</th>
+                    <th scope="col">Barkod</th>
+                    <th scope="col">Müşteri Kodu</th>
+                    <th scope="col">Depo</th>
+                    <th scope="col">Ofis</th>
+                    <!-- <th scope="col">Stok Adedi</th> -->
+
+                    <th scope="col">İşlemler</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let product of invoiceProducts2; let i = index">
+                    <td>
+                      <img
+                        src="{{ product.photoUrl }}"
+                        alt="Resim"
+                        width="50"
+                        height="50"
+                        (click)="openImageModal(product.photoUrl)"
+                      />
+                    </td>
+                    <td>{{ product.shelfNo }}</td>
+                    <td>{{ product.itemCode }}</td>
+
+                    <td>{{ product.quantity }}</td>
+                    <td>{{ product.batchCode }}</td>
+                    <td>{{ product.barcode }}</td>
+                    <td>{{ product.currAccCode }}</td>
+                    <td>{{ product.warehouseCode }}</td>
+                    <td>{{ product.officeCode }}</td>
+                    <!-- <td>{{ product.qty }}</td> -->
+
+                    <td>
+                      <button
+                        class="btn btn-danger"
+                        type="submit"
+                        (click)="deleteOrderProduct(newOrderNumber, product)"
+                      >
+                        <i class="fa fa-trash"> </i>
+                      </button>
+                      <!-- Yeni -->
+                      <button
+                        class="btn btn-primary"
+                        style="margin-left: 1rem"
+                        type="submit"
+                        (click)="createJson(product.barcode, product.shelfNo)"
+                      >
+                        <i class="fas fa-print"> </i>
+                      </button>
+                      <button
+                        *ngIf="product.quantity > product.qty"
+                        class="btn btn-danger"
+                        style="margin-left: 1rem"
+                        type="submit"
+                      >
+                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <div class="card">
-               <div class="card-body">
-                  <h5 class="card-title">Fatura Yollanmadan Önce Kontrol Edilmesi Gerekenler</h5>
-                  <ul>
-                     <li>Satış Sorumlusu Alanını Seçmeniz Gerekmektedir</li>
-                     <li>Eğer Sipariş İade Faturası İse İade Alanını Seçmeniz Gerekmektedir</li>
-                     <li>Eğer Seçim Yapılmazsa İade Faturası Olarak Kesilmeyecektir</li>
-                     <li>Vergi Tipi Alanını Seçmeniz Gerekmektedir</li>
-                     <li> <button type="button" class="btn btn-warning" (click)="log()"><i
-                        class="fa fa-angle-down" aria-hidden="true"></i>
-                  </button></li>
-                  </ul>
-               </div>
-            </div>
-         </div>
+          </div>
+        </div>
+        <!-- Yeni kart: Toplanan Ürünler -->
+        <div class="card text-center">
+          <div class="card-body">
+            <h5 class="card-title">Toplanan Ürünler</h5>
+            <h1 class="display-1">{{ totalCount }}</h1>
+            <p class="card-text">Adet Ürün Toplandı</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">
+              Fatura Yollanmadan Önce Kontrol Edilmesi Gerekenler
+            </h5>
+            <ul>
+              <li>Satış Sorumlusu Alanını Seçmeniz Gerekmektedir</li>
+              <li>
+                Eğer Sipariş İade Faturası İse İade Alanını Seçmeniz
+                Gerekmektedir
+              </li>
+              <li>
+                Eğer Seçim Yapılmazsa İade Faturası Olarak Kesilmeyecektir
+              </li>
+              <li>Vergi Tipi Alanını Seçmeniz Gerekmektedir</li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <!-- Yeni -->
-      <qrcode style="display:none ;" (qrCodeURL)="onChangeURL($event)" [qrdata]="qrCodeValue" [width]="256"
-         [errorCorrectionLevel]="'M'"></qrcode>
+    </div>
+    <!-- Yeni -->
+    <qrcode
+      style="display: none"
+      (qrCodeURL)="onChangeURL($event)"
+      [qrdata]="qrCodeValue"
+      [width]="256"
+      [errorCorrectionLevel]="'M'"
+    ></qrcode>
 
-      <app-image-modal [imageUrl]="modalImageUrl" [title]="'Ürün Detay'"></app-image-modal>
+    <app-image-modal
+      [imageUrl]="modalImageUrl"
+      [title]="'Ürün Detay'"
+    ></app-image-modal>
 
+    <p-dialog
+      header="Sayım Paneli"
+      [(visible)]="visible"
+      [style]="{ width: '90vw' }"
+    >
+      <p>
+        <app-warehosue-shelf-count
+          [infoProducts]="this.infoProducts"
+        ></app-warehosue-shelf-count>
+      </p>
+    </p-dialog>
+    <p-dialog
+      header="Sayım Paneli Ürün Ekranı"
+      [(visible)]="visible2"
+      [style]="{ width: '50vw' }"
+    >
+      <div class="card" *ngIf="infoProducts.length > 0">
+        <div class="card-body">
+          <!-- <h1 class="card-title">Toplanacak Siparişler</h1> -->
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Fotoğraf</th>
+                  <th scope="col">Raf</th>
+                  <th scope="col">Ürün Kodu</th>
 
-      <p-dialog header="Sayım Paneli" [(visible)]="visible" [style]="{width: '90vw'}">
-         <p>
-            <app-warehosue-shelf-count [infoProducts]="this.infoProducts"></app-warehosue-shelf-count>
-         </p>
-      </p-dialog>
-      <p-dialog header="Sayım Paneli Ürün Ekranı" [(visible)]="visible2" [style]="{width: '50vw'}">
+                  <th scope="col">Miktar</th>
+                  <th scope="col">Parti</th>
+                  <th scope="col">Barkod</th>
+                  <th scope="col">Müşteri Kodu</th>
+                  <th scope="col">Depo</th>
+                  <th scope="col">Ofis</th>
+                  <th scope="col">Stok Adedi</th>
 
-         <div class="card" *ngIf="infoProducts.length > 0 ">
-            <div class="card-body">
-               <!-- <h1 class="card-title">Toplanacak Siparişler</h1> -->
-               <div class="table-responsive">
-                  <table class="table">
-                     <thead>
-                        <tr>
-                           <th scope="col">Fotoğraf</th>
-                           <th scope="col">Raf</th>
-                           <th scope="col">Ürün Kodu</th>
+                  <th scope="col">İşlemler</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let product of infoProducts; let i = index">
+                  <td>
+                    <img
+                      src="{{ product.photoUrl }}"
+                      alt="Resim"
+                      width="50"
+                      height="50"
+                      (click)="openImageModal(product.photoUrl)"
+                    />
+                  </td>
+                  <td>{{ product.shelfNo }}</td>
+                  <td>{{ product.itemCode }}</td>
 
-                           <th scope="col">Miktar</th>
-                           <th scope="col">Parti</th>
-                           <th scope="col">Barkod</th>
-                           <th scope="col">Müşteri Kodu</th>
-                           <th scope="col">Depo</th>
-                           <th scope="col">Ofis</th>
-                           <th scope="col">Stok Adedi</th>
+                  <td>{{ product.quantity }}</td>
+                  <td>{{ product.batchCode }}</td>
+                  <td>{{ product.barcode }}</td>
+                  <td>{{ product.currAccCode }}</td>
+                  <td>{{ product.warehouseCode }}</td>
+                  <td>{{ product.officeCode }}</td>
+                  <td>{{ product.qty }}</td>
 
-                           <th scope="col">İşlemler</th>
-                        </tr>
-                     </thead>
-                     <tbody>
-                        <tr *ngFor="let product of infoProducts; let i = index">
-                           <td>
-                              <img src="{{product.photoUrl}}" alt="Resim" width="50" height="50"
-                                 (click)="openImageModal(product.photoUrl)">
-                           </td>
-                           <td>{{ product.shelfNo }}</td>
-                           <td>{{ product.itemCode }}</td>
-
-                           <td>{{ product.quantity }}</td>
-                           <td>{{ product.batchCode }}</td>
-                           <td>{{ product.barcode }}</td>
-                           <td>{{ product.currAccCode }}</td>
-                           <td>{{ product.warehouseCode }}</td>
-                           <td>{{ product.officeCode }}</td>
-                           <td>{{ product.qty }}</td>
-
-                           <td>
-                              <button class="btn btn-danger" type="submit" (click)="deleteFromList(product)"><i
-                                    class="fa fa-trash"> </i>
-                              </button>
-
-
-
-                           </td>
-                        </tr>
-                     </tbody>
-                  </table>
-               </div>
-            </div>
-         </div>
-
-      </p-dialog>
-
-
-   </section>
+                  <td>
+                    <button
+                      class="btn btn-danger"
+                      type="submit"
+                      (click)="deleteFromList(product)"
+                    >
+                      <i class="fa fa-trash"> </i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </p-dialog>
+  </section>
 </main>

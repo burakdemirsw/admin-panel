@@ -2,8 +2,11 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClientService } from '../http-client.service';
 import { AlertifyService } from '../ui/alertify.service';
-import { CountProductRequestModel2 } from 'src/app/models/model/order/countProductRequestModel2';
-import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
+import { CountProductRequestModel2, CountProductRequestModel3 } from 'src/app/models/model/order/countProductRequestModel2';
+import {
+  ProductCountModel,
+  ProductCountModel3,
+} from 'src/app/models/model/shelfNameModel';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
@@ -22,6 +25,9 @@ import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/w
 import { WarehouseTransferListFilterModel } from 'src/app/models/model/filter/warehouseTransferListFilterModel';
 import { TransferRequestListModel } from 'src/app/models/model/warehouse/transferRequestListModel';
 import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
+import { QrControlCommandModel } from 'src/app/models/model/product/qrControlModel';
+import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
+import { FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +38,7 @@ export class WarehouseService {
     private httpClientService: HttpClientService,
     private router: Router,
     private generalService: GeneralService
-  ) {}
+  ) { }
 
   //ürün sayım 1
   async countProductRequest(
@@ -53,21 +59,21 @@ export class WarehouseService {
 
     var requestModel: CountProductRequestModel2 =
       new CountProductRequestModel2();
-      requestModel.barcode = barcode;
-      requestModel.shelfNo = shelfNo;
-      requestModel.batchCode = batchCode;
-      requestModel.office = office;
-      requestModel.warehouseCode = warehouseCode;
-      requestModel.quantity = qty.toString() == '' ? 1 : qty;
-      requestModel.currAccCode = currAccCode;
-      requestModel.isReturn = false;
-      requestModel.salesPersonCode = "";
-      requestModel.taxTypeCode = "";
+    requestModel.barcode = barcode;
+    requestModel.shelfNo = shelfNo;
+    requestModel.batchCode = batchCode;
+    requestModel.office = office;
+    requestModel.warehouseCode = warehouseCode;
+    requestModel.quantity = qty.toString() == '' ? 1 : qty;
+    requestModel.currAccCode = currAccCode;
+    requestModel.isReturn = false;
+    requestModel.salesPersonCode = '';
+    requestModel.taxTypeCode = '';
     requestModel.orderNo = orderNo;
     var response = await this.httpClientService
       .post<ProductCountModel | any>(
         {
-          controller: url, 
+          controller: url,
         },
         requestModel
       )
@@ -75,7 +81,48 @@ export class WarehouseService {
 
     return response;
   }
+  async countProductRequest2(
+    barcode: string,
+    shelfNo: string,
+    qty: number,
+    office: string,
+    warehouseCode: string,
+    batchCode: string,
 
+    url: string,
+    orderNo: string,
+    currAccCode: string,
+    lineId: string
+  ): Promise<ProductCountModel> {
+    if (barcode.includes('/')) {
+      barcode = barcode.replace(/\//g, '-');
+    }
+
+    var requestModel: CountProductRequestModel3 =
+      new CountProductRequestModel3();
+    requestModel.barcode = barcode;
+    requestModel.shelfNo = shelfNo;
+    requestModel.batchCode = batchCode;
+    requestModel.office = office;
+    requestModel.warehouseCode = warehouseCode;
+    requestModel.quantity = qty.toString() == '' ? 1 : qty;
+    requestModel.currAccCode = currAccCode;
+    requestModel.isReturn = false;
+    requestModel.salesPersonCode = '';
+    requestModel.taxTypeCode = '';
+    requestModel.orderNo = orderNo;
+    requestModel.lineId = lineId;
+    var response = await this.httpClientService
+      .post<ProductCountModel | any>(
+        {
+          controller: url,
+        },
+        requestModel
+      )
+      .toPromise();
+
+    return response;
+  }
   //ofisleri çeker
   async getOfficeCodeList(): Promise<OfficeModel[]> {
     try {
@@ -205,12 +252,31 @@ export class WarehouseService {
   }
 
   //transfer işlemlerini çeker
-  async getWarehouseOperations(): Promise<any> {
+  async getWarehouseOperations(status: string): Promise<any> {
     try {
       const data = this.httpClientService
         .get<WarehouseOperationListModel>({
           controller: 'Warehouse/GetWarehosueOperationList',
-        })
+        }, status)
+        .toPromise();
+
+      return data;
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  }
+
+  async getWarehosueOperationListByInnerNumber(
+    innerNumber: string
+  ): Promise<any> {
+    try {
+      const data = this.httpClientService
+        .get<WarehouseOperationListModel>(
+          {
+            controller: 'Warehouse/getWarehosueOperationListByInnerNumber',
+          },
+          innerNumber
+        )
         .toPromise();
 
       return data;
@@ -282,7 +348,7 @@ export class WarehouseService {
     try {
       const result = await this.httpClientService
         .get<any>({
-          controller: 'Warehouse/DeleteWarehouseTransferById' + id,
+          controller: 'Warehouse/DeleteWarehouseTransferById/' + id,
         })
         .toPromise();
 
@@ -307,12 +373,12 @@ export class WarehouseService {
       return null;
     }
   }
-  async getTransferRequestListModel(): Promise<TransferRequestListModel[]> {
+  async getTransferRequestListModel(type: string): Promise<TransferRequestListModel[]> {
     try {
       const response = this.httpClientService
         .get<TransferRequestListModel>({
-          controller: 'Warehouse/TransferRequestList',
-        })
+          controller: 'Warehouse/TransferRequestList'
+        }, type)
         .toPromise();
       return response;
     } catch (error: any) {

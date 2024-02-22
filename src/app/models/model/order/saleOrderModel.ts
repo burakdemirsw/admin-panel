@@ -6,8 +6,9 @@ export class SaleOrderModel {
   salespersonCode: string;
   qty1: number;
   price: number;
-  collectedQty : number
-  remainingQty : number
-  status : number
-  description:string
+  collectedQty: number
+  remainingQty: number
+  status: number
+  description: string
+  invoiceStatus: number
 }

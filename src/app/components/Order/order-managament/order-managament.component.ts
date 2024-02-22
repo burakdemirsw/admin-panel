@@ -18,24 +18,29 @@ import { AlertifyService } from 'src/app/services/ui/alertify.service';
 })
 export class OrderManagamentComponent implements OnInit {
 
-  numberOfList : number[] = [1,10,20,50,100]
-  saleOrderModels : SaleOrderModel[]
-  currentPage : number = 1;
+  numberOfList: number[] = [1, 10, 20, 50, 100]
+  saleOrderModels: SaleOrderModel[]
+  currentPage: number = 1;
   constructor(
     private httpClientService: HttpClientService,
     private alertifyService: AlertifyService,
     private spinnerService: NgxSpinnerService,
-    private router : Router,
-    private orderService : OrderService,
-    private formBuilder : FormBuilder
+    private router: Router,
+    private orderService: OrderService,
+    private formBuilder: FormBuilder
 
   ) { }
   filterForm: FormGroup;
-
+  pageDescription: boolean = false;
+  pageDescriptionLine: string = "Alınan Siparişler"
   async ngOnInit() {
     this.spinnerService.show();
+    if (location.href.includes("missing-list")) {
+      this.pageDescription = true
+      this.pageDescriptionLine = "Eksik Siparişler"
+    }
     this.formGenerator()
-    await this.getOrders();
+    await this.getOrders(1);
     this.spinnerService.hide();
 
 
@@ -52,16 +57,17 @@ export class OrderManagamentComponent implements OnInit {
       endDate: [null],
     });
   }
-  async onSubmit(model:OrderFilterModel){
+  async onSubmit(model: OrderFilterModel) {
     this.saleOrderModels = await this.orderService.getOrdersByFilter(model)
+
   }
 
 
 
-//toplanan ürünler sayfasına akatarır fakat önce ilgili siparişin içeriğinden paketNo'değerini çeker.
+  //toplanan ürünler sayfasına akatarır fakat önce ilgili siparişin içeriğinden paketNo'değerini çeker.
   async routeToCPP() {
     let listNumber: string = (document.getElementById('numberOfList') as HTMLInputElement).value;
-  
+
     if (listNumber == null || listNumber == '') {
       this.alertifyService.warning('Lütfen Bir Müktar Seçiniz');
     } else {
@@ -74,9 +80,9 @@ export class OrderManagamentComponent implements OnInit {
           const data = await this.httpClientService.get<ProductOfOrder>({
             controller: 'Order/GetProductsOfOrders/' + listNumber.toString(),
           }).toPromise();
-      
+
           this.productsToCollect = data;
-      
+
           // Veriler çekildikten sonra productsToCollect dizisine erişebilirsiniz
           if (this.productsToCollect.length > 0) {
             this.router.navigate(['/collect-product-of-order/' + this.productsToCollect[0].packageNo]);
@@ -84,10 +90,10 @@ export class OrderManagamentComponent implements OnInit {
             // Hiç ürün bulunamadığında nasıl bir işlem yapılacağını ele alın
             this.alertifyService.warning('İşlem Yapıclacak Veri Gelmedi.');
           }
-      
+
           this.spinnerService.hide();
         }, 1000); // 1000 milisaniye (1 saniye) bekle
-      
+
 
 
       } catch (error: any) {
@@ -95,39 +101,50 @@ export class OrderManagamentComponent implements OnInit {
       }
     }
   }
-  async getOrders(): Promise<any> {
-    const response = 
-    this.saleOrderModels =  await this.orderService.getOrders()
- 
-  
+  async getMissingOrders() {
+    const response =
+      this.saleOrderModels = await this.orderService.getMissingOrders()
+  }
+  async getOrders(type: number): Promise<any> {
+
+    if (location.href.includes("missing-list")) {
+      const response =
+        this.saleOrderModels = await this.orderService.getMissingOrders()
+    } else {
+      const response =
+        this.saleOrderModels = await this.orderService.getOrders(type)
+    }
+
+
+
   }
 
-  async deleteInvoiceProducts(orderNumber: string){
+  async deleteInvoiceProducts(orderNumber: string) {
 
     const confirmDelete = window.confirm("Bu transferi silmek istediğinizden emin misiniz?");
     if (confirmDelete) {
       // Kullanıcı onayladıysa silme işlemini gerçekleştir
-      const response  = await this.orderService.deleteInvoiceProducts(orderNumber);
+      const response = await this.orderService.deleteInvoiceProducts(orderNumber);
       if (response === true) {
         location.reload();
         this.alertifyService.success("İşlem Başarılı")
-      }else{
+      } else {
         this.alertifyService.error("İşlem Başarısız")
 
       }
     }
- 
 
-}
-  printPicture(url:string){
-   var  model : PrinterInvoiceRequestModel = new PrinterInvoiceRequestModel();
-   model.printerName = "EPSON-DEPO (L3150 Series)"
-   model.url= url;
+
+  }
+  printPicture(url: string) {
+    var model: PrinterInvoiceRequestModel = new PrinterInvoiceRequestModel();
+    model.printerName = "EPSON-DEPO (L3150 Series)"
+    model.url = url;
     try {
       this.httpClientService
         .post<PrinterInvoiceRequestModel>({
-          controller: 'Order/TryPrintPicture',  
-        },model)
+          controller: 'Order/TryPrintPicture',
+        }, model)
         .subscribe((data) => {
           console.log(data);
           // this.saleOrderModels = data;
@@ -135,8 +152,13 @@ export class OrderManagamentComponent implements OnInit {
     } catch (error: any) {
       console.log(error.message);
     }
-    }
   }
+
+  async routeNewPage3(orderNumber: string) {
+    this.router.navigate(["/order-operation/" + "MIS-" + orderNumber])
+  }
+
+}
 
 
 

@@ -9,12 +9,17 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 })
 export class SidebarComponent implements OnInit {
 
-  constructor(private router  :Router,private generalService: GeneralService) { }
+  constructor(private router: Router, private generalService: GeneralService) { }
 
   ngOnInit(): void {
   }
-  async routeNewPage(){
+  async routeNewPage() {
     const result = await this.generalService.generateGUID()
-    this.router.navigate(["/warehouse-operation/"+result ])
+    this.router.navigate(["/warehouse-operation/" + result])
   }
+  async routeNewPage2() {
+    const result = await this.generalService.generateGUID()
+    this.router.navigate(["/warehouse-operation/" + "REQ-" + result])
+  }
+
 }

@@ -3,8 +3,7 @@
   <section class="section">
     <div class="row">
       <div style="width: 100%">
-        
-        <div class="card" *ngIf="shelves2.length > 0">
+        <!-- <div class="card" *ngIf="shelves2.length > 0">
           <div class="card-body">
             <h5 class="card-title">Raflar</h5>
             <div class="table-responsive">
@@ -19,62 +18,72 @@
                   <tr
                     *ngFor="let shelve of shelves2; let i = index">
                     <td>{{ i + 1 }}</td>
-                  
+
                     <td>{{ shelve.description }}</td>
-                     <td> 
-  
+                     <td>
+
                       <div class="btn-group" role="group" aria-label="Basic example">
-                       
+
                         <button class="btn btn-primary" type="submit" (click)="goDown2(shelve.description)">
                           <i class="fa fa-angle-down"> </i>
                         </button>
                       </div>
-                    </td> 
+                    </td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
+        </div> -->
+        <!-- RAFLAR KALDIRILDI -->
+
+        <div class="card" *ngIf="blocked">
+          <div class="card-body">
+            <h5 class="card-title">SATIR SAYISI 100'E ULAŞTI</h5>
+          </div>
         </div>
-
-
-
-        <div class="card">
+        <div class="card" *ngIf="!blocked">
           <div class="card-body">
             <h5 class="card-title">Sayım Paneli</h5>
-            <div class="form-group row">
-              <div class="col-6">
-                <label for="isShelfBased" class="col-form-label">Raf Bazında Sayım</label>
-              </div>
-              <div class="col-6">
-                <div class="form-check">
-                  <input type="checkbox" id="isShelfBased" class="form-check-input" style="margin-top: 10px"
-                    formControlName="isShelfBased" />
-                </div>
-              </div>
-            </div>
+
             <ul class="nav nav-tabs nav-justified mb-1" id="ex1" role="tablist">
               <!-- <li class="nav-item" role="presentation"><a class="nav-link active" [class.active]="activeTab === 1" (click)="activeTab = 1">Raf
-                                          Düzenleme</a></li> -->
+                                    Düzenleme</a></li> -->
             </ul>
             <div class="tab-content" id="ex2-content">
-              <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1" role="tabpanel"
-                aria-labelledby="ex3-tab-1">
-                <form [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)">
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 1"
+                id="ex3-tabs-1"
+                role="tabpanel"
+                aria-labelledby="ex3-tab-1"
+              >
+                <form
+                  [formGroup]="checkForm"
+                  (ngSubmit)="onSubmit(checkForm.value)"
+                >
                   <div class="row mb-1">
                     <div class="form-group col">
                       <label for="office">Hangi Ofis</label>
-                      <select id="office" class="form-control" formControlName="office" >
+                      <select
+                        id="office"
+                        class="form-control"
+                        formControlName="office"
+                      >
                         <option value="M">M</option>
                         <option value="U">U</option>
                       </select>
                     </div>
                     <div class="form-group col">
                       <label for="warehouseCode">Hangi Depo</label>
-                      <select id="warehouseCode" class="form-control" formControlName="warehouseCode">
+                      <select
+                        id="warehouseCode"
+                        class="form-control"
+                        formControlName="warehouseCode"
+                      >
                         <!-- <option *ngFor="let warehouse of warehouseModels" [value]="warehouse.warehouseCode">
-                          {{ warehouse.warehouseDescription }}
-                        </option> -->
+                    {{ warehouse.warehouseDescription }}
+                  </option> -->
                         <option value="MD">GERÇEK DEPO</option>
                         <option value="UD">HALKALI DEPO</option>
                       </select>
@@ -83,109 +92,191 @@
                   <div class="row mb-1">
                     <div class="form-group">
                       <label for="shelfNo">Raf No:</label>
-                      <div class="input-group">  
-                        <input type="text" id="shelfNo" class="form-control" formControlName="shelfNo"
-                        (keydown.enter)="focusNextInput('countPageBarcode')"  />
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          id="shelfNo"
+                          class="form-control"
+                          formControlName="shelfNo"
+                          (keydown.enter)="focusNextInput('countPageBarcode')"
+                        />
                         <div class="input-group-append">
-                          <button type="button" (click)="clearShelfNumbers()" class="btn btn-dark"> Formu Temizle
+                          <button
+                            type="button"
+                            (click)="clearShelfNumbers()"
+                            class="btn btn-dark"
+                          >
+                            Formu Temizle
                           </button>
-                        </div>  
+                        </div>
                       </div>
                     </div>
-                    <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{ shelfNumbers
-                      }}</label>
+                    <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
+                      shelfNumbers
+                    }}</label>
                   </div>
                   <div class="row mb-1">
                     <div class="form-group">
-                      <label for="barcode">Barkod</label>
-                      <input type="text" id="countPageBarcode" class="form-control" formControlName="barcode"
-                        [disabled]="checkForm.disabled" [(ngModel)]="currentbarcode"
-                        (keydown.enter)="onSubmit(checkForm.value)" />
+                      <label for="barcode">Barkod: </label>
+                      <label *ngIf="qrBarcodeUrl !== ''" for="qrBarcode">{{
+                        qrBarcodeUrl
+                      }}</label>
+                      <input
+                        type="text"
+                        id="countPageBarcode"
+                        class="form-control"
+                        formControlName="barcode"
+                        [disabled]="checkForm.disabled"
+                        [(ngModel)]="currentbarcode"
+                        (keydown.enter)="onSubmit(checkForm.value)"
+                      />
                     </div>
                   </div>
                   <div class="row mb-1">
                     <div class="form-group col">
                       <div class="form-group">
                         <label for="quantity">Miktar</label>
-                        <input type="number" id="quantity" class="form-control" formControlName="quantity"
-                          [disabled]="checkForm.disabled" />
+                        <input
+                          type="number"
+                          id="quantity"
+                          class="form-control"
+                          formControlName="quantity"
+                          [disabled]="checkForm.disabled"
+                        />
                       </div>
                     </div>
                     <div class="form-group col">
                       <div class="form-group">
                         <label for="batchCode">Parti</label>
-                        <input type="text" id="batchCode" class="form-control" formControlName="batchCode"
-                          (keydown.enter)="onSubmit(checkForm.value)" [disabled]="checkForm.disabled" />
+                        <input
+                          type="text"
+                          id="batchCode"
+                          class="form-control"
+                          formControlName="batchCode"
+                          (keydown.enter)="onSubmit(checkForm.value)"
+                          [disabled]="checkForm.disabled"
+                        />
                       </div>
                     </div>
                   </div>
+                  <div class="form-group row">
+                    <div class="col-6">
+                      <label for="isShelfBased" class="col-form-label"
+                        >Raf Bazında Sayım</label
+                      >
+                    </div>
+                    <div class="col-6">
+                      <div class="form-check">
+                        <p-inputSwitch
+                          id="isShelfBased"
+                          style="margin-top: 10px"
+                          formControlName="isShelfBased"
+                        ></p-inputSwitch>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-6">
+                      <label for="isShelfBased2" class="col-form-label"
+                        >Raf Bazında Ürün Sayım</label
+                      >
+                    </div>
+                    <div class="col-6">
+                      <div class="form-check">
+                        <p-inputSwitch
+                          id="isShelfBased2"
+                          style="margin-top: 10px"
+                          formControlName="isShelfBased2"
+                        ></p-inputSwitch>
+                      </div>
+                    </div>
+                  </div>
+
                   <div class="row mb-1">
                     <div class="form-group col">
-                      <button type="button" class="btn btn-primary" (click)="check()" style="width: 100%;"> Ekle
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        (click)="check()"
+                        style="width: 100%"
+                      >
+                        Ekle
                       </button>
                     </div>
                     <div class="form-group col">
-                      <button type="button" class="btn btn-dark" style="margin-left: 10px; color: white"
-                        (click)="completeCountFromService(currentOrderNo)" style="width: 100%;"> Sayımı Bitir </button>
+                      <button
+                        type="button"
+                        class="btn btn-dark"
+                        style="margin-left: 10px; color: white"
+                        (click)="completeCountFromService(currentOrderNo)"
+                        style="width: 100%"
+                      >
+                        Sayımı Bitir
+                      </button>
                     </div>
                   </div>
                 </form>
               </div>
-              <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2" role="tabpanel-2"
-                aria-labelledby="ex3-tab-2"></div>
-              <div class="tab-pane fade show" [class.active]="activeTab === 3" id="ex3-tabs-3" role="tabpanel-3"
-                aria-labelledby="ex3-tab-3"> Prices </div>
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 2"
+                id="ex3-tabs-2"
+                role="tabpanel-2"
+                aria-labelledby="ex3-tab-2"
+              ></div>
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 3"
+                id="ex3-tabs-3"
+                role="tabpanel-3"
+                aria-labelledby="ex3-tab-3"
+              >
+                Prices
+              </div>
             </div>
           </div>
         </div>
 
-
-        
-        <div class="card" *ngIf="infoProducts.length > 0 ">
+        <div class="card" *ngIf="infoProducts.length > 0">
           <div class="card-body">
             <h5 class="card-title">Bilgilendirme Alanı</h5>
-             <!-- <h1 class="card-title">Toplanacak Siparişler</h1> -->
-             <div class="table-responsive">
-                <table class="table">
-                   <thead>
-                      <tr>
-                         <th scope="col">Fotoğraf</th>
-                         <th scope="col">Raf</th>
-                         <th scope="col">Ürün Kodu</th>
+            <!-- <h1 class="card-title">Toplanacak Siparişler</h1> -->
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col" *ngFor="let header of tableHeaders">
+                      {{ header }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let product of infoProducts; let i = index">
+                    <td>
+                      <img
+                        src="{{ product.photoUrl }}"
+                        alt="Resim"
+                        width="50"
+                        height="50"
+                        (click)="openImageModal(product.photoUrl)"
+                      />
+                    </td>
+                    <td>{{ product.shelfNo }}</td>
+                    <td>{{ product.itemCode }}</td>
 
-                         <th scope="col">Miktar</th>
-                         <th scope="col">Parti</th>
-                         <th scope="col">Barkod</th>
-                         <th scope="col">Müşteri Kodu</th>
-                         <th scope="col">Depo</th>
-                         <th scope="col">Ofis</th>
-                 
-                      
-                      </tr>
-                   </thead>
-                   <tbody>
-                      <tr *ngFor="let product of infoProducts; let i = index">
-                         <td>
-                            <img src="{{product.photoUrl}}" alt="Resim" width="50" height="50"
-                               (click)="openImageModal(product.photoUrl)">
-                         </td>
-                         <td>{{ product.shelfNo }}</td>
-                         <td>{{ product.itemCode }}</td>
-
-                         <td>{{ product.quantity }}</td>
-                         <td>{{ product.batchCode }}</td>
-                         <td>{{ product.barcode }}</td>
-                         <td>{{ product.currAccCode }}</td>
-                         <td>{{ product.warehouseCode }}</td>
-                         <td>{{ product.officeCode }}</td>
-                       
-                      </tr>
-                   </tbody>
-                </table>
-             </div>
+                    <td>{{ product.quantity }}</td>
+                    <td>{{ product.batchCode }}</td>
+                    <td>{{ product.barcode }}</td>
+                    <td>{{ product.currAccCode }}</td>
+                    <td>{{ product.warehouseCode }}</td>
+                    <td>{{ product.officeCode }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-       </div>
-
+        </div>
 
         <div class="card" *ngIf="lastCollectedProducts.length > 0">
           <div class="card-body">
@@ -194,23 +285,29 @@
               <table class="table">
                 <thead>
                   <tr>
-                    <!-- <th scope="col">Id</th> -->
-                    <th scope="col">Resim</th>
-                    <th scope="col">Raf</th>
-                    <th scope="col">Ürün Kodu</th>
-                    <th scope="col">Miktar</th>
-                    <th scope="col">Parti</th>
-                    <th scope="col">Barkod</th>
-                    <th scope="col">İşlem</th>
+                    <th scope="col" *ngFor="let header of _tableHeaders">
+                      {{ header }}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr
-                    *ngFor="let product of lastCollectedProducts | paginate: { itemsPerPage: 10, currentPage: currentPage }  ; let i = index">
+                    *ngFor="
+                      let product of lastCollectedProducts
+                        | paginate
+                          : { itemsPerPage: 10, currentPage: currentPage };
+                      let i = index
+                    "
+                  >
                     <!-- <td>{{ i + 1 }}</td> -->
                     <td>
-                      <img src="{{product.photoUrl}}" alt="Resim" width="50" height="50"
-                        (click)="openImageModal(product.photoUrl)">
+                      <img
+                        src="{{ product.photoUrl }}"
+                        alt="Resim"
+                        width="50"
+                        height="50"
+                        (click)="openImageModal(product.photoUrl)"
+                      />
                     </td>
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.itemCode }}</td>
@@ -219,82 +316,95 @@
                     <td>{{ product.barcode }}</td>
                     <td>
                       <div class="btn-group">
-
-                        <button class="btn btn-danger" type="submit"
-                          (click)="deleteOrderProduct(orderNo,product.barcode,product.shelfNo)"> <i
-                            class="fa fa-trash"></i> </button>
+                        <button
+                          class="btn btn-danger"
+                          type="submit"
+                          (click)="deleteOrderProduct(orderNo, product)"
+                        >
+                          <i class="fa fa-trash"></i>
+                        </button>
 
                         <!-- Yeni -->
-                        <button class="btn btn-primary" style="margin-left: 1rem;" type="submit"
-                          (click)="createJson(product.barcode,product.shelfNo,product.batchCode)"><i class="fa fa-print"
-                            aria-hidden="true"></i>
+                        <!-- <button
+                          class="btn btn-primary"
+                          style="margin-left: 1rem"
+                          type="submit"
+                          (click)="
+                            createJson(
+                              product.barcode,
+                              product.shelfNo,
+                              product.batchCode
+                            )
+                          "
+                        >
+                          <i class="fa fa-print" aria-hidden="true"></i>
+                        </button> -->
+                        <button
+                          class="btn btn-primary"
+                          type="submit"
+                          (click)="change(product.barcode, product.quantity)"
+                        >
+                          <i class="fa fa-print"></i>
                         </button>
                       </div>
-
                     </td>
                   </tr>
                 </tbody>
               </table>
-              <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+              <pagination-controls
+                (pageChange)="currentPage = $event"
+              ></pagination-controls>
             </div>
           </div>
         </div>
-
-        
-      
 
         <!-- Yeni kart: Toplanan Ürünler -->
         <div class="card text-center">
           <div class="card-body">
             <h5 class="card-title">Toplanan Ürünler</h5>
-            <h1 class="display-1">{{ totalCount}}</h1>
-            <p class="card-text">Adet Ürün Toplandı</p>  
+            <h1 class="display-1">{{ totalCount }}</h1>
+            <p class="card-text">Adet Ürün Toplandı</p>
           </div>
         </div>
       </div>
-      <div class="card" *ngIf="shelves.length > 0">
+      <!-- <div class="card" *ngIf="shelves.length > 0">
         <div class="card-body">
           <h5 class="card-title">Raflar</h5>
           <div class="table-responsive">
             <table class="table">
               <thead>
                 <tr>
-                  <!-- <th scope="col">Id</th> -->
                   <th scope="col">Raf</th>
-                  <!-- <th scope="col">İşlem</th> -->
+                </tr>
               </thead>
-              <tbody>
-                <tr
-                  *ngFor="let shelve of shelves; let i = index">
-                  <!-- <td>{{ i + 1 }}</td> -->
-                
-                  <td>{{ shelve.description }}</td>
-                  <!-- <td> 
 
-                    <div class="btn-group" role="group" aria-label="Basic example">
-                     
-                      <button class="btn btn-primary" type="submit" (click)="goDown2(product.packageNo)">
-                        <i class="fa fa-angle-down"> </i>
-                      </button>
-                    </div>
-                  </td> -->
+              <tbody>
+                <tr *ngFor="let shelve of shelves; let i = index">
+                  <td>{{ shelve.description }}</td>
                 </tr>
               </tbody>
             </table>
-            <!-- <pagination-controls (pageChange)="currentPage = $event"></pagination-controls> -->
           </div>
         </div>
-      </div>
-
+      </div> -->
     </div>
 
     <!-- Yeni -->
-    <qrcode style="display:none ;" (qrCodeURL)="onChangeURL($event)" [qrdata]="qrCodeValue" [width]="256"
-      [errorCorrectionLevel]="'M'"></qrcode>
+    <qrcode
+      style="display: none"
+      (qrCodeURL)="onChangeURL($event)"
+      [qrdata]="qrCodeValue"
+      [width]="256"
+      [errorCorrectionLevel]="'M'"
+    ></qrcode>
 
+    <app-image-modal
+      [imageUrl]="modalImageUrl"
+      [title]="'Ürün Detay'"
+    ></app-image-modal>
 
-
-
-    <app-image-modal [imageUrl]="modalImageUrl" [title]="'Ürün Detay'"></app-image-modal>
+    <p-dialog header="Header" [(visible)]="visible" [style]="{ width: '75vw' }">
+      <app-create-qr [barcode]="barcode" [quantity]="quantity"></app-create-qr>
+    </p-dialog>
   </section>
 </main>

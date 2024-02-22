@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -43,7 +43,7 @@ import { PagesLoginComponent } from './pages/pages-login/pages-login.component';
 import { PagesError404Component } from './pages/pages-error404/pages-error404.component';
 import { PagesBlankComponent } from './pages/pages-blank/pages-blank.component';
 import { ProductManagementComponent } from './components/Product/product-management/product-management.component';
-import { HttpClientModule,HTTP_INTERCEPTORS  } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 
 import { ProductOperationComponent } from './components/Product/product-operation/product-operation.component';
@@ -80,19 +80,32 @@ import { FastTransferComponent } from './components/Warehouse/fast-transfer/fast
 import { NgSelectModule } from '@ng-select/ng-select';
 import { CreateQrComponent } from './components/Order/create-qr/create-qr.component';
 import { QRCodeModule } from 'angularx-qrcode';
-import {NgxPrintModule} from 'ngx-print';
+import { NgxPrintModule } from 'ngx-print';
 import { CommonModule, DatePipe } from '@angular/common';
 import { WarehouseTransferListComponent } from './components/Warehouse/warehouse-transfer-list/warehouse-transfer-list.component';
 import { DialogModule } from 'primeng/dialog';
-import {ImageModule} from 'primeng/image';
-import {ToastModule} from 'primeng/toast';
+import { ImageModule } from 'primeng/image';
+import { ToastModule } from 'primeng/toast';
 import { LogManagamentComponent } from './components/Log/log-managament/log-managament.component';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ShelfTransferRequestComponent } from './components/Warehouse/shelf-transfer-request/shelf-transfer-request.component';
-import {DropdownModule} from 'primeng/dropdown';
+import { DropdownModule } from 'primeng/dropdown';
 import { SearchQrComponent } from './components/Product/search-qr/search-qr.component';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { BlockUIModule } from 'primeng/blockui';
+import { PanelModule } from 'primeng/panel';
+import { BoxCountComponent } from './components/Warehouse/box-count/box-count.component';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { CreateOrderComponent } from './components/Order/create-order/create-order.component';
+import { TabViewModule } from 'primeng/tabview';
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { FileUploadModule } from 'primeng/fileupload';
+import { ReferrerPolicyDirective } from './referrer-policy.directive';
+import { TestComponent } from './components/Order/invoice-list/test/test.component';
 
 @NgModule({
+
   declarations: [
     AppComponent,
     HeaderComponent,
@@ -134,7 +147,7 @@ import { SearchQrComponent } from './components/Product/search-qr/search-qr.comp
     ProductOperationComponent,
     PaymentComponent,
     HomepageComponent,
-    OrderOperationComponent, 
+    OrderOperationComponent,
     CategoryOperationComponent,
     OrderManagamentComponent,
     CategoryManagamentComponent,
@@ -158,11 +171,14 @@ import { SearchQrComponent } from './components/Product/search-qr/search-qr.comp
     InvoiceListComponent,
     FastTransferComponent,
     CreateQrComponent,
-    WarehouseTransferListComponent,  
+    WarehouseTransferListComponent,
     LogManagamentComponent,
     ShelfTransferRequestComponent,
     SearchQrComponent,
-    
+    BoxCountComponent,
+    CreateOrderComponent,
+    ReferrerPolicyDirective,
+    TestComponent
   ],
 
 
@@ -175,7 +191,7 @@ import { SearchQrComponent } from './components/Product/search-qr/search-qr.comp
     BrowserAnimationsModule,
     NgxSpinnerModule.forRoot({ type: 'line-scale-pulse-out' }),
     ZXingScannerModule,
-    NgxPaginationModule, 
+    NgxPaginationModule,
     NgSelectModule,
     QRCodeModule,
     NgxPrintModule,
@@ -185,14 +201,23 @@ import { SearchQrComponent } from './components/Product/search-qr/search-qr.comp
     ToastModule,
     InputTextareaModule,
     DropdownModule,
-    
-  
+    InputSwitchModule,
+    BlockUIModule,
+    RadioButtonModule,
+    PanelModule,
+    TabViewModule,
+    CardModule,
+    ButtonModule,
+    FileUploadModule,
+
   ],
-  
+
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [    DatePipe,AlertifyService, NgModule, NgxPopper, DatePipe,NgxSpinnerModule,{      provide: HTTP_INTERCEPTORS,
+  providers: [DatePipe, AlertifyService, NgModule, NgxPopper, DatePipe, NgxSpinnerModule, {
+    provide: HTTP_INTERCEPTORS,
     useClass: HttpErrorInterceptor,
-    multi: true}],
+    multi: true
+  }],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

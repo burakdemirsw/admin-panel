@@ -1,0 +1,152 @@
+<main id="main" class="main">
+  <!-- <div class="pagetitle">
+      <h1>Toplanan Ürünlerin Listesi</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+          <li class="breadcrumb-item">Tables</li>
+          <li class="breadcrumb-item active">General</li>
+        </ol>
+      </nav>
+    </div>
+   -->
+  <section class="section">
+    <p-card header="Müşteri Bul ">
+      <p-tabView>
+        <p-tabPanel header="Var Olan Müşteri">
+          <p-button
+            label="Var Olan Müşteri Bul"
+            (onClick)="openDialog('findExistingMemberDialog')"
+          ></p-button>
+
+          <p-dialog
+            header="Var Olan Müşteri Bul"
+            [(visible)]="findExistingMemberDialog"
+            [style]="{ width: '50vw' }"
+          >
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="exampleInputEmail1">Müşteri Kodu</label>
+                <input type="text" class="form-control" id="" placeholder="" />
+              </div>
+              <div class="col-md-4">
+                <label for="exampleInputEmail1">Telefon Numarası</label>
+                <input type="text" class="form-control" id="" placeholder="" />
+              </div>
+              <div class="col-md-4 mt-3">
+                <p-button label="Ürün Bul"></p-button>
+              </div>
+            </div>
+          </p-dialog>
+        </p-tabPanel>
+        <p-tabPanel header="Müşteri Oluştur">
+          <form action="">
+            <div class="row">
+              <div class="col-md-6">
+                <label for="exampleInputEmail1">Ad</label>
+                <input type="text" class="form-control" id="" placeholder="" />
+              </div>
+              <div class="col-md-6">
+                <label for="exampleInputEmail1">Soyad</label>
+                <input type="text" class="form-control" id="" placeholder="" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <label for="exampleInputEmail1">Mail</label>
+                <input type="text" class="form-control" id="" placeholder="" />
+              </div>
+              <div class="col-md-6">
+                <label for="exampleInputEmail1">Telefon Numarası</label>
+                <input type="text" class="form-control" id="" placeholder="" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <label for="exampleInputEmail1">Vergi Numarası</label>
+                <input type="text" class="form-control" id="" placeholder="" />
+              </div>
+              <div class="col-md-6">
+                <label for="exampleInputEmail1">Firma Adı</label>
+                <input type="text" class="form-control" id="" placeholder="" />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="exampleInputEmail1">Kaşe</label>
+                <p-fileUpload
+                  mode="basic"
+                  name="demo[]"
+                  url="https://www.primefaces.org/cdn/api/upload.php"
+                  accept="image/*"
+                  [auto]="true"
+                  chooseLabel="Kaşe Ekle"
+                ></p-fileUpload>
+              </div>
+              <div class="col-md-6">
+                <label for="exampleInputEmail1">Kartvizit</label>
+                <p-fileUpload
+                  mode="basic"
+                  name="demo[]"
+                  url="https://www.primefaces.org/cdn/api/upload.php"
+                  accept="image/*"
+                  [auto]="true"
+                  chooseLabel="Kartvizit Ekle"
+                ></p-fileUpload>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <p-button label="Müşteri Ekle"></p-button>
+              </div>
+            </div>
+          </form>
+        </p-tabPanel>
+      </p-tabView>
+    </p-card>
+    <div class="mb-3"></div>
+    <p-card header="Ürün Bul">
+      <p-tabView>
+        <p-tabPanel header="Ürün Bul">
+          <p-button
+            label="Ürün Bul"
+            (onClick)="openDialog('findProductDialog')"
+          ></p-button>
+
+          <p-dialog
+            header="Ürün Bul"
+            [(visible)]="findProductDialog"
+            [style]="{ width: '50vw' }"
+          >
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="exampleInputEmail1">Stok Kodu</label>
+                <input type="text" class="form-control" id="" placeholder="" />
+              </div>
+              <div class="col-md-4">
+                <label for="exampleInputEmail1">Barkod</label>
+                <input type="text" class="form-control" id="" placeholder="" />
+              </div>
+              <div class="col-md-4 mt-3">
+                <p-button label="Ürün Bul"></p-button>
+              </div>
+            </div>
+          </p-dialog>
+        </p-tabPanel>
+      </p-tabView>
+    </p-card>
+    <div class="mb-3"></div>
+    <p-card header="Adres Ekle"> </p-card>
+    <div class="mb-3"></div>
+    <p-card header="Sipariş Önizleme"> </p-card>
+    <div class="mb-3"></div>
+    <p-card header="Ödeme Alanı">
+      <p-tabView>
+        <p-tabPanel header="Iyzco"> </p-tabPanel>
+        <p-tabPanel header="PayTR"> </p-tabPanel>
+      </p-tabView>
+    </p-card>
+  </section>
+</main>

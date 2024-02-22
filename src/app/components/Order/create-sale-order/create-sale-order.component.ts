@@ -1,18 +1,17 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { catchError, throwError } from 'rxjs';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
+import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
-import { OrderBillingRequestModel } from 'src/app/models/model/invoice/orderBillingRequestModel';
-import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
-import { CountConfirmData } from 'src/app/models/model/product/countConfirmModel';
-import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
+import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
+import {
+  ProductCountModel
+} from 'src/app/models/model/shelfNameModel';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
@@ -39,7 +38,6 @@ export class CreateSaleOrderComponent implements OnInit {
     private formBuilder: FormBuilder,
     private alertifyService: AlertifyService,
     private orderService: OrderService,
-
     private productService: ProductService,
     private spinnerService: NgxSpinnerService,
     private warehouseService: WarehouseService,
@@ -47,8 +45,8 @@ export class CreateSaleOrderComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private title: Title,
     private sanitizer: DomSanitizer
-  ) {}
-  selectedCustomer : any ;
+  ) { }
+  selectedCustomer: any;
   async ngOnInit() {
     try {
       this.title.setTitle('Satış Faturası Oluştur');
@@ -59,14 +57,14 @@ export class CreateSaleOrderComponent implements OnInit {
 
       this.activatedRoute.params.subscribe(async (params) => {
         this.newOrderNumber = 'WSI-' + params['orderNo'];
-        await this.getOfficeCodeList(); //ofis kod  
+        await this.getOfficeCodeList(); //ofis kod
         await this.getProductOfInvoice(this.newOrderNumber);
         await this.getWarehouseList(
           (document.getElementById('officeCode') as HTMLOptionElement).value
         ); //depo kodu
-        await this.getCustomerList();//müşteriler kodu
-        await this.getSalesPersonModels();//personeller kodu
-      this.setInput();
+        await this.getCustomerList(); //müşteriler kodu
+        await this.getSalesPersonModels(); //personeller kodu
+        this.setInput();
       });
 
       this.spinnerService.hide();
@@ -75,21 +73,21 @@ export class CreateSaleOrderComponent implements OnInit {
     }
   }
 
-
   deleteFromList(model: CreatePurchaseInvoice) {
     const index = this.infoProducts.indexOf(model); // Modelin dizideki indeksini bulun
     if (index !== -1) {
       this.infoProducts.splice(index, 1); // Modeli diziden silin
     }
   }
-isReturnInvoice : boolean ;
-  checkIsReturnInvoice(){
-    this.isReturnInvoice= !this.productForm.get('isReturn').value
-    if(this.isReturnInvoice){
-      this.alertifyService.warning("İade Faturasına Geçildiği İçin Sayım Paneli")
+  isReturnInvoice: boolean;
+  checkIsReturnInvoice() {
+    this.isReturnInvoice = !this.productForm.get('isReturn').value;
+    if (this.isReturnInvoice) {
+      this.alertifyService.warning(
+        'İade Faturasına Geçildiği İçin Sayım Paneli'
+      );
     }
   }
-
 
   addedProductCount: string = 'Sayım Paneli';
   newOrderNumber: string = '';
@@ -102,9 +100,6 @@ isReturnInvoice : boolean ;
   warehouseModels: WarehouseOfficeModel[] = [];
   currencyList: string[] = ['Standart', 'Vergisiz']; //vergi tipi
   visible: boolean = false;
-  
- 
-
   qrCodeValue: string;
   qrCodeDownloadLink: any = this.sanitizer.bypassSecurityTrustResourceUrl('');
   setInput() {
@@ -153,13 +148,12 @@ isReturnInvoice : boolean ;
       this.invoiceProducts2 = response;
 
       this.infoProducts = [];
-      this.invoiceProducts2 .forEach(e => {
-        if(e.quantity>e.qty){
-          this.infoProducts.push(e)
+      this.invoiceProducts2.forEach((e) => {
+        if (e.quantity > e.qty) {
+          this.infoProducts.push(e);
         }
       });
       this.addedProductCount = 'Sayım Paneli(' + this.infoProducts.length + ')';
-
 
       this.calculateTotalQty();
     } catch (error: any) {
@@ -184,18 +178,18 @@ isReturnInvoice : boolean ;
     this.warehouseModels = await this.warehouseService.getWarehouseList(value);
     console.log(this.warehouseModels);
   }
-  customerList2 : any[] = []
+  customerList2: any[] = [];
   async getCustomerList(): Promise<void> {
     this.customerList = await this.warehouseService.getCustomerList('3');
     this.customerList.forEach((c) => {
       var color: any = { name: c.currAccDescription, code: c.currAccCode };
       this.customerList2.push(color);
-    });  
+    });
   }
 
   salesPersonModels: SalesPersonModel[] = [];
-  salesPersonModelList : any[] = [];
-  selectedPerson  :any ;
+  salesPersonModelList: any[] = [];
+  selectedPerson: any;
   async getSalesPersonModels(): Promise<any> {
     try {
       try {
@@ -205,10 +199,10 @@ isReturnInvoice : boolean ;
           })
           .toPromise();
 
-          this.salesPersonModels.forEach((c) => {
-            var color: any = { name: c.firstLastName, code: c.salespersonCode };
-            this.salesPersonModelList.push(color);
-          });  
+        this.salesPersonModels.forEach((c) => {
+          var color: any = { name: c.firstLastName, code: c.salespersonCode };
+          this.salesPersonModelList.push(color);
+        });
 
         //this.alertifyService.success("Başarıyla "+this.salesPersonModels.length+" Adet Çekildi")
       } catch (error: any) {
@@ -220,7 +214,6 @@ isReturnInvoice : boolean ;
     }
   }
 
-
   async getSelectedOffice(): Promise<any> {
     var office = (document.getElementById('officeCode') as HTMLInputElement)
       .value;
@@ -231,19 +224,19 @@ isReturnInvoice : boolean ;
       ?.setValue(this.warehouseModels[0].warehouseCode);
   }
 
-  
   clearShelfNumbers() {
     this.productForm.get('shelfNo').setValue(null);
     this.productForm.get('barcode').setValue(null);
     this.productForm.get('quantity').setValue(null);
     this.productForm.get('batchCode').setValue(null);
 
-    if(this.productForm.get("isReturn").value === false){
+    if (this.productForm.get('isReturn').value === false) {
       this.focusNextInput('shelfNo');
-    }else{
+    } else {
       this.focusNextInput('barcode');
     }
     this.shelfNumbers = 'RAFLAR:';
+    this.qrBarcodeUrl = null;
   }
 
   focusNextInput(nextInputId: string) {
@@ -283,7 +276,7 @@ isReturnInvoice : boolean ;
     });
     this.focusNextInput('barcode');
     this.shelfNumbers = 'RAFLAR:';
-    
+    this.qrBarcodeUrl = null;
   }
 
   modalImageUrl: string;
@@ -297,23 +290,20 @@ isReturnInvoice : boolean ;
     }
     this.formModal.show();
   }
-  async deleteOrderProduct(
-    orderNo: string,
-    itemCode: string,
-    shelfNo: string
-  ): Promise<boolean> {
+  async deleteOrderProduct(orderNo: string, product: any): Promise<boolean> {
     const confirmDelete = window.confirm(
-      'Bu transferi silmek istediğinizden emin misiniz?'
+      'Bu hareketi silmek istediğinizden emin misiniz?'
     );
 
     if (confirmDelete) {
       const response: boolean = await this.productService.deleteOrderProduct(
         this.newOrderNumber,
-        itemCode
+        product.itemCode, product.lineId
       );
       if (response) {
         this.invoiceProducts2 = this.invoiceProducts2.filter(
-          (o) => !(o.barcode == itemCode && o.shelfNo == shelfNo)
+          (o) =>
+            !(o.barcode == product.itemCode && o.shelfNo == product.shelfNo)
         );
         this.calculateTotalQty();
         await this.getProductOfInvoice(this.newOrderNumber);
@@ -321,6 +311,56 @@ isReturnInvoice : boolean ;
       } else {
         this.alertifyService.error('Silme İşlemi Başarısız.');
       }
+
+      var model: QrOperationModel = new QrOperationModel();
+      var qrOperationModel: QrOperationModel = new QrOperationModel();
+      console.log(this.qrOperationModels);
+      qrOperationModel = this.qrOperationModels.find(
+        (p) =>
+          p.barcode == product.barcode &&
+          p.batchCode == product.batchCode &&
+          p.shelfNo == product.shelfNo
+      );
+
+      var matchingData = this.qrOperationModels.filter(
+        (p) =>
+          p.barcode == product.barcode &&
+          p.batchCode == product.batchCode &&
+          p.shelfNo == product.shelfNo
+      );
+      const totalQuantity = 0;
+
+      if (qrOperationModel) {
+        if (matchingData) {
+          const totalQuantity = matchingData.reduce(
+            (acc, curr) => acc + curr.qty,
+            0
+          );
+          qrOperationModel.qty = totalQuantity;
+        }
+
+        // qrOperationModel nesnesini model'e kopyala
+        model = Object.assign({}, qrOperationModel);
+
+        if (qrOperationModel.isReturn) {
+          model.isReturn = false;
+        } else {
+          model.isReturn = true;
+        }
+        const qrOperationResponse = await this.productService.qrOperation(
+          model
+        );
+        if (qrOperationResponse) {
+          console.log(this.qrOperationModels);
+          this.generalService.beep3();
+          this.alertifyService.success('Qr Operasyonu Geri Alındı');
+        } else {
+          this.alertifyService.error('Qr Operaasyonu Geri Alınamadı');
+        }
+      } else {
+        this.alertifyService.error('Qr Operaasyonu Geri Alınamadı');
+      }
+
       return response;
     } else {
       return false;
@@ -343,16 +383,14 @@ isReturnInvoice : boolean ;
     }
   }
 
-  
   async createSaleInvoice(): Promise<any> {
-   
-   
     var confirmation = window.confirm(
       'İşlem Nebime Aktarılacaktır.Devam Etmek istiyor musunuz?'
-  );
+    );
 
-  if(confirmation){
-    try {
+    if (confirmation) {
+      this.spinnerService.show();
+      try {
         if (
           this.productForm.get('salesPersonCode').value === '' ||
           this.productForm.get('salesPersonCode').value == null
@@ -367,36 +405,21 @@ isReturnInvoice : boolean ;
           this.alertifyService.error('Vergi Tipi Alanı Boş');
           return;
         }
-        this.spinnerService.show();
-        const response : CountConfirmData[] = await this.orderService.getInventoryFromOrderNumber(this.newOrderNumber);
-        if(response.length>0){
-          this.alertifyService.success("Otomatik Sayım Yapılabilir")
-          const response2 = await  this.orderService.setInventoryByOrderNumber(this.newOrderNumber);
-          if(response2)
-          {
-            this.alertifyService.success("Otomatik Sayım yapıldı")
-         
-            const data = await this.orderService.createSaleInvoice(
-              this.invoiceProducts2,
-              this.newOrderNumber,
-              this.productForm.get('isReturn').value,
-              this.productForm.get('salesPersonCode').value.code,
-              this.productForm.get('currency').value
-            );
 
-          }
-        }
-      
-      } catch (error: any) {}
-      this.spinnerService.hide();
-   
-  }
-  
+        //OTOMATIK SAYIM YAPMA KODU ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        const data = await this.orderService.createSaleInvoice(
+          this.invoiceProducts2,
+          this.newOrderNumber,
+          this.productForm.get('isReturn').value,
+          this.productForm.get('salesPersonCode').value.code,
+          this.productForm.get('currency').value
+        );
+      } catch (error: any) { }
+
+    }
+    this.spinnerService.hide();
   }
 
-  log(){
-    console.log(this.productForm.value)
-  }
   setCurrentCustomerCode() {
     var currAccCode: string = (
       document.getElementById('currAccCode') as HTMLInputElement
@@ -406,26 +429,74 @@ isReturnInvoice : boolean ;
       currAccCode;
   }
 
+  async setFormValues(barcode: string, check: boolean): Promise<string> {
+    this.shelfNumbers = 'RAFLAR:';
+    try {
+      if (barcode.includes('http') || this.generalService.isGuid(barcode)) {
+        var result: string[] = await this.productService.countProductByBarcode3(
+          barcode
+        );
+        this.shelfNumbers += result[0];
+        if (check) {
+          var currentShelfNo = this.productForm.get('shelfNo').value;
+          // if(currentShelfNo==null ){
+          //   this.productForm.get('shelfNo').setValue(result[0].split(',')[0]);
+          // }
+
+          this.productForm.get('batchCode').setValue(result[2]);
+          this.productForm.get('barcode').setValue(result[3]);
+        }
+
+        return result[1];
+      } else {
+        var result: string[] = await this.productService.countProductByBarcode(
+          barcode
+        );
+        this.shelfNumbers += result[0];
+        return result[1];
+      }
+    } catch (error) {
+      this.alertifyService.error(error.message);
+      return null;
+    }
+  }
+
   url: string = ClientUrls.baseUrl + '/Order/CountProductPuschase';
   shelfNumbers: string = 'RAFLAR:';
+  qrBarcodeUrl: string = null;
+  qrOperationModels: QrOperationModel[] = [];
   async onSubmit(model: CreatePurchaseInvoice): Promise<any> {
+
+    if (model.barcode.includes("=")) {
+      model.barcode = model.barcode.replace(/=/g, "-");
+
+    }
+    if (
+      model.barcode.includes('http') ||
+      this.generalService.isGuid(model.barcode)
+    ) {
+      var number = await this.setFormValues(model.barcode, true);
+      this.productForm.get('quantity')?.setValue(Number(number));
+      this.qrBarcodeUrl = model.barcode;
+      // this.onSubmit(this.productForm.value);
+      return;
+    }
+
     if (model.barcode && !model.shelfNo) {
-      var result: string[] = await this.productService.countProductByBarcode(
-        model.barcode
-      );
-      this.shelfNumbers += result[0];
-      this.productForm.get('quantity').setValue(result[1]);
+      var number = await this.setFormValues(model.barcode, true);
+      this.productForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
       this.focusNextInput('shelfNo');
       return;
     } else {
       if (this.productForm.valid) {
-         if(model.currAccCode){
+        if (model.currAccCode) {
           model.currAccCode = this.productForm.get('currAccCode').value.code;
-         }
-         if(model.salesPersonCode){
-          model.salesPersonCode = this.productForm.get('salesPersonCode').value.code;
-         }
-        console.log(this.productForm.value)
+        }
+        if (model.salesPersonCode) {
+          model.salesPersonCode =
+            this.productForm.get('salesPersonCode').value.code;
+        }
+        console.log(this.productForm.value);
         var value = this.productForm.get('currAccCode').value;
         if (value === null) {
           try {
@@ -439,9 +510,11 @@ isReturnInvoice : boolean ;
             return;
           }
         }
-        var result: string[] = await this.productService.countProductByBarcode(
+
+        var result = await this.productService.countProductByBarcode(
           model.barcode
         );
+
         if (this.shelfNumbers === 'RAFLAR:') {
           //raflar kontorl için yeniden çekildi
           this.shelfNumbers += result[0];
@@ -458,6 +531,9 @@ isReturnInvoice : boolean ;
           shelves.find((s) => s.toLowerCase() == model.shelfNo.toLowerCase())
         ) {
           //raf barkod kontolü yapıldı
+
+
+
           var response: ProductCountModel =
             await this.warehouseService.countProductRequest(
               //sayım
@@ -478,6 +554,27 @@ isReturnInvoice : boolean ;
             } else {
               model.barcode = response.description;
             }
+
+            //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+
+            var qrResponse: QrOperationResponseModel =
+              await this.productService.qrOperationMethod(
+                this.qrBarcodeUrl,
+                this.productForm,
+                model,
+                Number(result[1]),
+                this.productForm.get('isReturn').value,
+                'WSI'
+              );
+            if (qrResponse != null && qrResponse.state === true) {
+              this.qrOperationModels.push(qrResponse.qrOperationModel);
+            } else {
+              this.qrBarcodeUrl = null
+            }
+
+            //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
+
             this.generalService.beep();
             model.quantity = Number(Number(result[1]));
           }
@@ -487,6 +584,8 @@ isReturnInvoice : boolean ;
               'Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?'
             )
           ) {
+
+
             var response: ProductCountModel =
               await this.warehouseService.countProductRequest(
                 //sayım
@@ -508,6 +607,25 @@ isReturnInvoice : boolean ;
               } else {
                 model.barcode = response.description;
               }
+
+              //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+              var qrResponse: QrOperationResponseModel =
+                await this.productService.qrOperationMethod(
+                  this.qrBarcodeUrl,
+                  this.productForm,
+                  model,
+                  Number(result[1]),
+                  this.productForm.get('isReturn').value,
+                  'WSI'
+                );
+              if (qrResponse != null && qrResponse.state === true) {
+                this.qrOperationModels.push(qrResponse.qrOperationModel);
+              } else {
+                this.qrBarcodeUrl = null
+              }
+              //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
+
               this.generalService.beep();
               model.quantity = Number(Number(result[1]));
             }
@@ -528,49 +646,14 @@ isReturnInvoice : boolean ;
       this.generalService.beep();
       this.alertifyService.success('Ürün Başarılı Şekilde Eklendi.');
     } else {
-      this.whichRowIsInvalid()
+      this.whichRowIsInvalid();
       const formValuesJSON = JSON.stringify(this.productForm.value, null, 2);
-      console.log(`Form Geçerli Değil:\n${formValuesJSON}`);      // console.log()
+      console.log(`Form Geçerli Değil:\n${formValuesJSON}`); // console.log()
     }
   }
-  //  checkBarcodeAndShelf(response:any,model :CreatePurchaseInvoice):string[]{
-  //   if (response != undefined) {
-  //     var data: ProductCountModel = response;
 
-  //     if (data.status == 'RAF') {
-  //       this.productForm.get('shelfNo')?.setValue(data.description);
-  //       this.productForm.get('barcode')?.setValue('');
-
-  //       var shelfAndBarcode : string[] = []
-  //       shelfAndBarcode.push(response.description);
-  //       shelfAndBarcode.push('');
-
-  //       return shelfAndBarcode;
-
-  //     } else {
-  //       const responseData = JSON.parse(response.description);
-  //       const description = responseData[0].Description;
-  //       const rafNo = responseData[0].Rafno;
-
-  //       if(this.productForm.get('shelfNo').value === ''){ //eğer zaten girdiği bir değer varsa onu yerleştir yoksa gelen cevabı yerleştir
-  //         this.productForm.get('shelfNo')?.setValue(rafNo)
-  //       };
-  //       this.productForm.get('barcode')?.setValue(description);
-
-  //       var shelfAndBarcode : string[] = []
-  //       shelfAndBarcode.push(description);
-  //       shelfAndBarcode.push(this.productForm.get('shelfNo').value === '' ? rafNo : model.shelfNo);
-  //       return shelfAndBarcode;
-  //     }
-
-  //   } else {
-  //     this.alertifyService.warning('Doğrulama Yapılamadı!');
-  //     return null;
-  //   }
-
-  // }
   totalCount: number;
-  
+
   calculateTotalQty() {
     //toplanan ürünler yazısı için
     let totalQty = 0;
