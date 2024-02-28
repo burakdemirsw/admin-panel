@@ -15,35 +15,35 @@ export class AuthGuard implements CanActivate {
     private router: Router,
     private alertifyService: AlertifyService,
     private sessionService: SessionService,
-    private spinnerService : NgxSpinnerService
-  ) {}
+    private spinnerService: NgxSpinnerService
+  ) { }
 
   async canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Promise<boolean>{
-    
-      if (this.sessionService.isSessionValid()) { 
- 
-        return true;
-      } else {
-        this.sessionService.clearSession(); // Clear expired session
-      }
-    
+  ): Promise<boolean> {
 
-      await this.delayAndNavigate();
-    return false;  
+    if (this.sessionService.isSessionValid()) {
+
+      return true;
+    } else {
+      this.sessionService.clearSession(); // Clear expired session
+    }
+
+
+    await this.delayAndNavigate();
+    return false;
   }
 
   async delayAndNavigate() {
     // 2 saniye (2000 milisaniye) bekleyin
-    this.spinnerService.show()
+    //this.spinnerService.show()
     this.alertifyService.warning('Oturum Süreniz Doldu');
- 
-    this.spinnerService.hide();
-  
+
+    //this.spinnerService.hide();
+
     // Konsola mesaj yazdırın
-  
+
     // Sayfayı yönlendirin
     this.router.navigate(['/pages-login']);
   }
@@ -53,5 +53,5 @@ export class AuthGuard implements CanActivate {
   }
 
 
-  
+
 }

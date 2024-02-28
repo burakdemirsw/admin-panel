@@ -89,7 +89,9 @@ export class ShelfTransferRequestComponent implements OnInit {
     'Hedef Raf',
     'Miktar',
     'Barkod',
-    'Çekmece Adedi'
+    'Çekmece Adedi',
+    'İşlemler'
+
   ];
   _transferProductsColums: string[] = [
     'Id',
@@ -105,14 +107,35 @@ export class ShelfTransferRequestComponent implements OnInit {
   ];
   async ngOnInit() {
     this.title.setTitle('Raflar Arası Transfer');
-    this.spinnerService.show();
+    //this.spinnerService.show();
     this.formGenerator();
     this.currentOrderNo = (await this.generalService.generateGUID()).toString();
     await this.getTransferRequestListModel("0");
     this.collectedProducts = [];
-    this.spinnerService.hide();
+    //this.spinnerService.hide();
   }
 
+  //-------------------
+  async getShelves(barcode: string) {
+    var newResponse = await this.productService.countProductByBarcode(
+      barcode
+    );
+    const shelves = newResponse[0]
+      .split(',')
+      .filter((raflar) => raflar.trim() !== '')
+
+
+    this.productShelves = shelves;
+    this.productShelvesDialog = true;
+  }
+  setShelveToForm(shelve) {
+    this.checkForm.get('shelfNo').setValue(shelve);
+    this.alertifyService.success("Raf Yerleştirildi");
+    this.productShelvesDialog = false;
+  }
+  productShelvesDialog: boolean = false;
+  productShelves: string[] = [];
+  //-------------------
   goDown2(barcode: string, shelfNo: string, itemCode: string, transferQuantity: number) {
     // packageNo'ya eşleşen ProductOfOrder'ı bulun
     const matchingProduct = this.transferProducts.find(

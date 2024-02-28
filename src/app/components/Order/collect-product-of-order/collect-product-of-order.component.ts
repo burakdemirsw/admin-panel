@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { BarcodeAddModel } from 'src/app/models/model/product/barcodeAddModel';
 import { ItemBillingModel } from 'src/app/models/model/product/itemBillingModel ';
 import { OrderBillingListModel } from 'src/app/models/model/order/orderBillingListModel';
@@ -23,7 +22,7 @@ import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 })
 export class CollectProductOfOrderComponent implements OnInit {
   productsToCollect: ProductOfOrder[];
-  collectedProducts: ProductOfOrder[]=[];
+  collectedProducts: ProductOfOrder[] = [];
   process: boolean = false;
   checkForm: FormGroup;
   activeTab: number = 1;
@@ -32,26 +31,26 @@ export class CollectProductOfOrderComponent implements OnInit {
     private formBuilder: FormBuilder,
     private alertifyService: AlertifyService,
     private orderService: OrderService,
-    private activatedRoute : ActivatedRoute,
-    private router : Router,
-    private spinnerService: NgxSpinnerService,
-    private httpClient : HttpClient,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
 
-  ) {}
+    private httpClient: HttpClient,
+
+  ) { }
 
   ngOnInit() {
-    this.activatedRoute.params.subscribe(params=>{
+    this.activatedRoute.params.subscribe(params => {
       this.getCollectedProducts(params["number"]);
     })
     this.formGenerator();
     // this.getOrdersProduct("1-WS-2-11626")
   }
 
-  getCollectedProducts(numberOfList : string): any {
+  getCollectedProducts(numberOfList: string): any {
     try {
       this.httpClientService
         .get<ProductOfOrder>({
-          controller: 'Order/GetOrderSaleDetailById/'+numberOfList.toString(),
+          controller: 'Order/GetOrderSaleDetailById/' + numberOfList.toString(),
         })
         .subscribe((data) => {
           //console.log(data);
@@ -84,14 +83,14 @@ export class CollectProductOfOrderComponent implements OnInit {
 
     });
   }
-  setStatusOfPackages(list : ProductOfOrder[]){
+  setStatusOfPackages(list: ProductOfOrder[]) {
     //nebime yolla
 
     try {
       this.httpClientService
         .post<ProductOfOrder[]>({
           controller: 'Order/SetStatusOfPackages',
-        },list)
+        }, list)
         .subscribe((data) => {
           console.log("Etkilenen Satır Sayısı:" + data)
         });
@@ -102,27 +101,25 @@ export class CollectProductOfOrderComponent implements OnInit {
 
   }
   async onSubmit(productModel: ProductOfOrder) {
-    if (this.checkForm.valid || productModel.shelfNo =="") {
-      //eğer raf kısmı boşsa sp den rafı al yerine koy sonra barcode a focus at 
+    if (this.checkForm.valid || productModel.shelfNo == "") {
+      //eğer raf kısmı boşsa sp den rafı al yerine koy sonra barcode a focus at
       //console.log(productModel);
 
-      if(productModel.shelfNo=="" ||productModel.shelfNo==undefined || productModel.shelfNo==null  )
-      {
-        const url = ClientUrls.baseUrl+'/Order/CountProduct';
-        var requestModel : CountProductRequestModel = new CountProductRequestModel();
-        requestModel.barcode=productModel.barcode;
-        requestModel.shelfNo="";
+      if (productModel.shelfNo == "" || productModel.shelfNo == undefined || productModel.shelfNo == null) {
+        const url = ClientUrls.baseUrl + '/Order/CountProduct';
+        var requestModel: CountProductRequestModel = new CountProductRequestModel();
+        requestModel.barcode = productModel.barcode;
+        requestModel.shelfNo = "";
         var response = await this.httpClient.post<ProductCountModel | undefined>(url, requestModel).toPromise();
-        
-        if (response === undefined)
-         {
+
+        if (response === undefined) {
           // Handle the undefined case, perhaps throw an error or set a default value.
         } else {
           var data: ProductCountModel = response;
-  
-          if(data.status=="RAF"){
-            this.checkForm.get("shelfNo")?.setValue(data.description); 
-            productModel.shelfNo  = response.description;
+
+          if (data.status == "RAF") {
+            this.checkForm.get("shelfNo")?.setValue(data.description);
+            productModel.shelfNo = response.description;
           }
         }
 
@@ -157,16 +154,16 @@ export class CollectProductOfOrderComponent implements OnInit {
           const index = this.productsToCollect.indexOf(foundProduct);
           this.collectedProducts.push(foundModel);
           foundProduct.quantity -= 1;
-       
-            this.productsToCollect.splice(index, 1);
 
-            if (this.productsToCollect.length === 0) {
-              alert('Tüm Ürünler Toplandı!');
-           
-            this.setStatusOfPackages( this.collectedProducts)
+          this.productsToCollect.splice(index, 1);
+
+          if (this.productsToCollect.length === 0) {
+            alert('Tüm Ürünler Toplandı!');
+
+            this.setStatusOfPackages(this.collectedProducts)
             this.router.navigate(['/orders-managament']);
-             }
-          
+          }
+
         }
       }
     }

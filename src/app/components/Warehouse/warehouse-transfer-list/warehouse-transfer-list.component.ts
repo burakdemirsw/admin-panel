@@ -17,25 +17,25 @@ import { AlertifyService } from 'src/app/services/ui/alertify.service';
   styleUrls: ['./warehouse-transfer-list.component.css']
 })
 export class WarehouseTransferListComponent implements OnInit {
-  currentPage:number = 1;
-  warehouseTransferListModels : WarehosueTransferListModel[]
-  filterForm :FormGroup
+  currentPage: number = 1;
+  warehouseTransferListModels: WarehosueTransferListModel[]
+  filterForm: FormGroup
   constructor(
     private httpClientService: HttpClientService,
     private alertifyService: AlertifyService,
     private spinnerService: NgxSpinnerService,
     private router: Router,
-    private warehosueService : WarehouseService,
-    private formBuilder : FormBuilder,private generalService:GeneralService
+    private warehosueService: WarehouseService,
+    private formBuilder: FormBuilder, private generalService: GeneralService
   ) { }
 
   async ngOnInit() {
-    this.spinnerService.show();
-    this.  formGenerator();
+    //this.spinnerService.show();
+    this.formGenerator();
     await this.getWarehouseOperations();
 
-    
-    this.spinnerService.hide();
+
+    //this.spinnerService.hide();
 
   }
 
@@ -49,44 +49,44 @@ export class WarehouseTransferListComponent implements OnInit {
     });
   }
 
-  async routeNewPage(orderNumber:string|null){
-    if(orderNumber!=null){
-      this.router.navigate(["/warehouse-operation/"+orderNumber.split('TP-')[1] ])
+  async routeNewPage(orderNumber: string | null) {
+    if (orderNumber != null) {
+      this.router.navigate(["/warehouse-operation/" + orderNumber.split('TP-')[1]])
 
-    }else{
+    } else {
       const result = await this.generalService.generateGUID()
-      this.router.navigate(["/warehouse-operation/"+result ])
+      this.router.navigate(["/warehouse-operation/" + result])
     }
   }
-  
-  async onSubmit(model:WarehouseTransferListFilterModel){
-    this.spinnerService.show()
+
+  async onSubmit(model: WarehouseTransferListFilterModel) {
+    //this.spinnerService.show()
     this.warehouseTransferListModels = await this.warehosueService.getWarehosueTransferListByFilter(model);
-    this.spinnerService.hide();
+    //this.spinnerService.hide();
 
   }
   async deleteTransfer(orderNumber: string) {
     // Silme işleminden önce kullanıcıya emin olup olmadığını sormak için bir onay penceresi göster
     const confirmDelete = window.confirm("Bu transferi silmek istediğinizden emin misiniz?");
-    
+
     if (confirmDelete) {
       // Kullanıcı onayladıysa silme işlemini gerçekleştir
       const response = await this.warehosueService.deleteTransferFromId(orderNumber);
       if (response === true) {
         location.reload();
         this.alertifyService.success("İşlem Başarılı")
-      }else{
+      } else {
         this.alertifyService.error("İşlem Başarısız")
 
       }
     }
   }
-  setCurrentWarehouseToLocalStorage(warehouse: string,innerNumber : string) {
+  setCurrentWarehouseToLocalStorage(warehouse: string, innerNumber: string) {
     localStorage.setItem('currentWarehouse', warehouse);
     //this.router.navigate(["/warehouse-operation-confirm-detail/"+innerNumber]);
   }
-  innerNumberList : string[] = [];
-  addInnerNumberToList(innerNumber : string){
+  innerNumberList: string[] = [];
+  addInnerNumberToList(innerNumber: string) {
     if (!this.innerNumberList.includes(innerNumber)) {
       this.innerNumberList.push(innerNumber);
     } else {
@@ -94,12 +94,12 @@ export class WarehouseTransferListComponent implements OnInit {
       this.innerNumberList.splice(index, 1);
     }
   }
-  confirmOperation(){
+  confirmOperation() {
     try {
       this.httpClientService
         .post<string[]>({
           controller: 'Warehouse/ConfirmOperation',
-        },this.innerNumberList)
+        }, this.innerNumberList)
         .subscribe((data) => {
           console.log(data);
           this.router.navigate(['/warehouse-operation-confirm']);
@@ -109,11 +109,11 @@ export class WarehouseTransferListComponent implements OnInit {
     }
 
   }
- async  getWarehouseOperations(): Promise<any> {
+  async getWarehouseOperations(): Promise<any> {
     try {
-      var  filterModel : WarehouseTransferListFilterModel = new WarehouseTransferListFilterModel()
-      this. warehouseTransferListModels = await this.warehosueService.getWarehosueTransferListByFilter(filterModel);
-        
+      var filterModel: WarehouseTransferListFilterModel = new WarehouseTransferListFilterModel()
+      this.warehouseTransferListModels = await this.warehosueService.getWarehosueTransferListByFilter(filterModel);
+
     } catch (error: any) {
       console.log(error.message);
     }

@@ -54,7 +54,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
     try {
       this.title.setTitle('Alış Faturası Oluştur');
 
-      this.spinnerService.show();
+      //this.spinnerService.show();
 
       this.activatedRoute.params.subscribe(async (params) => {
         this.newOrderNumber = 'BPI-' + params['orderNo'];
@@ -67,7 +67,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
       );
       await this.getCustomerList();
       this.setInput();
-      this.spinnerService.hide();
+      //this.spinnerService.hide();
     } catch (error: any) {
       this.alertifyService.error(error.message);
     }
@@ -232,7 +232,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
     );
 
     if (confirmation) {
-      this.spinnerService.show();
+      //this.spinnerService.show();
       try {
         await this.orderService.createPurchaseInvoice(
           this.invoiceProducts,
@@ -243,7 +243,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
       } catch (error) { }
 
     }
-    this.spinnerService.hide();
+    //this.spinnerService.hide();
   }
 
   // url: string = ClientUrls.baseUrl + '/Order/CountProductPuschase';
@@ -496,7 +496,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
     if (confirmDelete) {
       const response: boolean = await this.productService.deleteOrderProduct(
         this.newOrderNumber,
-        product.itemCode, product.lineId
+        product.itemCode, product.id
       );
       if (response) {
         this.invoiceProducts2 = this.invoiceProducts2.filter(
@@ -618,4 +618,16 @@ export class CreatePurchaseOrderComponent implements OnInit {
       return null;
     }
   }
+
+
+  //--------------
+  visible: boolean = false;
+  barcode: string = null;
+  quantity: number = null;
+  change(barcode: string, quantity: number) {
+    this.visible = !this.visible;
+    this.barcode = barcode;
+    this.quantity = quantity
+  }
+  //--------------
 }

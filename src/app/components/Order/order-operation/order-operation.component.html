@@ -93,6 +93,9 @@
                           <i class="fa fa-angle-down"> </i>
                         </button>
                         <button
+                          data-toggle="tooltip"
+                          data-placement="right"
+                          title="Eksik Ürün"
                           *ngIf="
                             this.currentOrderNo.includes('WS') ||
                             this.currentOrderNo.includes('MIS')
@@ -101,8 +104,25 @@
                           type="submit"
                           (click)="addMissingProduct(product)"
                         >
-                          Eksik Ürün
+                          <i class="fa-solid fa-minus"></i>
                         </button>
+                        <button
+                          data-toggle="tooltip"
+                          data-placement="right"
+                          title="Raflar"
+                          class="btn btn-warning"
+                          type="submit"
+                          (click)="getShelves(product.barcode)"
+                        >
+                          <i class="fa-solid fa-bars"></i>
+                        </button>
+                        <!-- <button
+                          class="btn btn-primary"
+                          type="submit"
+                          (click)="change(product.barcode, product.quantity)"
+                        >
+                          <i class="fas fa-print"></i>
+                        </button> -->
                       </div>
                     </td>
                   </tr>
@@ -111,8 +131,19 @@
             </div>
           </div>
         </div>
+        <div div class="card text-center" *ngIf="productsToCollect.length <= 0">
+          <div class="card-body">
+            <h5 class="card-title">TÜM ÜRÜNLER TOPLANMIŞTIR</h5>
+            <h1 class="display-1">
+              <i class="fa fa-check" aria-hidden="true"></i>
+            </h1>
+            <p class="card-text" *ngIf="isInvoice">
+              Bu Sipariş Faturalaştırılmıştır
+            </p>
+          </div>
+        </div>
 
-        <div class="card mobile">
+        <div class="card mobile" *ngIf="productsToCollect.length > 0">
           <div class="card-body">
             <h5 class="card-title">{{ pageDescription }}</h5>
             <ul class="nav nav-tabs nav-justified mb-1" id="ex1" role="tablist">
@@ -205,86 +236,6 @@
                       </div>
                     </div>
                   </div>
-
-                  <div class="row mb-1">
-                    <div class="col-md-12">
-                      <button
-                        type="button"
-                        class="btn btn-primary"
-                        style="width: 100%; margin-top: 1%"
-                        (click)="onSubmit(checkForm.value)"
-                      >
-                        Ekle
-                      </button>
-                    </div>
-                  </div>
-                  <!-- <div class="row mb-1">
-                    <div class="col-md-12">
-                      <button
-                        type="button"
-                        class="btn btn-dark"
-                        (click)="addAllSelectedProductsToList()"
-                        style="width: 100%"
-                      >
-                        Seçilenleri Ekle
-                      </button>
-                    </div>
-                  </div> -->
-
-                  <div class="row mb-1">
-                    <div class="col-md-12">
-                      <button
-                        type="button"
-                        class="btn btn-dark"
-                        (click)="collectAndPack(this.collectedProducts)"
-                        style="width: 100%"
-                      >
-                        {{ operation }}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div
-                    class="row mb-1"
-                    *ngIf="this.currentOrderNo.includes('BP')"
-                  >
-                    <div class="col-md-12">
-                      <button
-                        type="button"
-                        class="btn btn-warning"
-                        (click)="showDialog2()"
-                        style="width: 100%"
-                      >
-                        Fatura Bul
-                        <i class="fa fa-search" aria-hidden="true"></i>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div class="form-group col" *ngIf="infoProducts.length > 0">
-                    <div
-                      class="btn-group"
-                      role="group"
-                      aria-label="Basic example"
-                      style="width: 100%"
-                    >
-                      <button
-                        type="button"
-                        class="btn btn-warning"
-                        (click)="showCountPage()"
-                        style="width: 100%"
-                      >
-                        {{ addedProductCount }}
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-warning"
-                        (click)="showModal2()"
-                      >
-                        <i class="fa fa-angle-down" aria-hidden="true"></i>
-                      </button>
-                    </div>
-                  </div>
                 </form>
               </div>
               <div
@@ -306,17 +257,77 @@
             </div>
           </div>
         </div>
-        <p-dialog
-          header="Sayım Paneli"
-          [(visible)]="visible"
-          [style]="{ width: '90vw' }"
-        >
-          <p>
-            <app-warehosue-shelf-count
-              [infoProducts]="this.infoProducts"
-            ></app-warehosue-shelf-count>
-          </p>
-        </p-dialog>
+        <div class="card" *ngIf="productsToCollect.length > 0">
+          <div class="card-body">
+            <div class="row mb-1">
+              <div class="col-md-12">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  style="width: 100%; margin-top: 1%"
+                  (click)="onSubmit(checkForm.value)"
+                >
+                  Ekle
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body" *ngIf="isInvoice === false">
+            <div class="row mt-3">
+              <div class="col-md-12">
+                <button
+                  type="button"
+                  class="btn btn-dark"
+                  (click)="collectAndPack(this.collectedProducts)"
+                  style="width: 100%"
+                >
+                  {{ operation }}
+                </button>
+              </div>
+            </div>
+
+            <div class="row mb-1" *ngIf="this.currentOrderNo.includes('BP')">
+              <div class="col-md-12">
+                <button
+                  type="button"
+                  class="btn btn-warning"
+                  (click)="showDialog2()"
+                  style="width: 100%"
+                >
+                  Fatura Bul
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group col" *ngIf="infoProducts.length > 0">
+              <div
+                class="btn-group"
+                role="group"
+                aria-label="Basic example"
+                style="width: 100%"
+              >
+                <button
+                  type="button"
+                  class="btn btn-warning"
+                  (click)="showCountPage()"
+                  style="width: 100%"
+                >
+                  {{ addedProductCount }}
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-warning"
+                  (click)="showModal2()"
+                >
+                  <i class="fa fa-angle-down" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="card" *ngIf="productsToCollect.length > 0">
           <div class="card-body">
             <h5 class="card-title">Toplanacak Ürünler</h5>
@@ -368,12 +379,11 @@
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.itemCode }}</td>
                     <td>{{ product.quantity }}</td>
-                    <td>{{ product.countedQty }}</td>
                     <td>{{ product.description }}</td>
-
                     <td>{{ product.colorDescription }}</td>
                     <td>{{ product.itemDim1Code }}</td>
                     <td>{{ product.currentQty }}</td>
+                    <td>{{ +product.itemDim1Code + +product.currentQty }}</td>
                     <td>
                       <img
                         src="{{ product.photoUrl }}"
@@ -408,6 +418,9 @@
                         </button>
 
                         <button
+                          data-toggle="tooltip"
+                          data-placement="right"
+                          title="Eksik Ürün"
                           *ngIf="
                             this.currentOrderNo.includes('WS') ||
                             this.currentOrderNo.includes('MIS')
@@ -416,7 +429,24 @@
                           type="submit"
                           (click)="addMissingProduct(product)"
                         >
-                          Eksik Ürün
+                          <i class="fa-solid fa-minus"></i>
+                        </button>
+                        <button
+                          data-toggle="tooltip"
+                          data-placement="right"
+                          title="Raflar"
+                          class="btn btn-warning"
+                          type="submit"
+                          (click)="getShelves(product.barcode)"
+                        >
+                          <i class="fa-solid fa-bars"></i>
+                        </button>
+                        <button
+                          class="btn btn-dark"
+                          type="submit"
+                          (click)="change(product.barcode, product.quantity)"
+                        >
+                          <i class="fas fa-print"></i>
                         </button>
                       </div>
                     </td>
@@ -446,7 +476,9 @@
                     <th scope="col">Rafa Giren Miktar</th>
                     <th scope="col">Barkod</th>
                     <th scope="col">Parti Kodu</th>
-                    <th scope="col">Sil</th>
+                    <th scope="col">Durum</th>
+
+                    <th scope="col">İşlemler</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -472,6 +504,21 @@
                     <td>{{ product.barcode }}</td>
                     <td>{{ product.batchCode }}</td>
                     <td>
+                      <span
+                        [ngClass]="
+                          product.availableQty >= product.quantity
+                            ? 'btn btn-success'
+                            : 'btn btn-danger'
+                        "
+                      >
+                        {{
+                          product.availableQty >= product.quantity
+                            ? "Başarılı"
+                            : "Başarısız"
+                        }}
+                      </span>
+                    </td>
+                    <td>
                       <div class="btn-group">
                         <button
                           class="btn btn-danger"
@@ -493,6 +540,20 @@
                         >
                           <i class="fas fa-print"> </i>
                         </button>
+                        <button
+                          class="btn btn-dark"
+                          type="submit"
+                          (click)="getShelves(product.barcode)"
+                        >
+                          <i class="fa-solid fa-bars"></i>
+                        </button>
+                        <button
+                          class="btn btn-primary"
+                          type="submit"
+                          (click)="change(product.barcode, product.quantity)"
+                        >
+                          <i class="fas fa-print"></i>
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -503,7 +564,7 @@
         </div>
 
         <!-- Yeni kart: Toplanan Ürünler -->
-        <div class="card text-center">
+        <div div class="card text-center">
           <div class="card-body">
             <h5 class="card-title">Toplanan Ürünler</h5>
             <h1 class="display-1">{{ totalCount }}</h1>
@@ -589,6 +650,38 @@
           </div>
         </div>
       </div>
+    </p-dialog>
+
+    <p-dialog header="Raflar" [(visible)]="productShelvesDialog">
+      <div class="btn-group mr-2" role="group" aria-label="First group">
+        <button
+          *ngFor="let shelve of productShelves; let i = index"
+          (click)="setShelveToForm(shelve)"
+          type="button"
+          [ngClass]="i % 2 === 0 ? 'btn btn-dark' : 'btn btn-secondary'"
+          style="height: 10rem"
+        >
+          {{ shelve }}
+        </button>
+      </div>
+    </p-dialog>
+    <p-dialog
+      header="Sayım Paneli"
+      [(visible)]="visible"
+      [style]="{ width: '90vw' }"
+    >
+      <p>
+        <app-warehosue-shelf-count
+          [infoProducts]="this.infoProducts"
+        ></app-warehosue-shelf-count>
+      </p>
+    </p-dialog>
+    <p-dialog
+      header="Header"
+      [(visible)]="barcodeDialog"
+      [style]="{ width: '100vw' }"
+    >
+      <app-create-qr [barcode]="barcode" [quantity]="quantity"></app-create-qr>
     </p-dialog>
   </section>
 </main>

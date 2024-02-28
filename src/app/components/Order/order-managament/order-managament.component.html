@@ -240,7 +240,11 @@
                       *ngIf="!pageDescription"
                       class="btn btn-primary"
                       data-text="Varyasyonlar"
-                      routerLink="/order-operation/{{ order.orderNumber }}"
+                      [routerLink]="
+                        order.invoiceStatus === 1
+                          ? '/order-operation/' + order.orderNumber + '/true'
+                          : '/order-operation/' + order.orderNumber
+                      "
                     >
                       <i class="fas fa-sliders-h"></i>
                     </div>

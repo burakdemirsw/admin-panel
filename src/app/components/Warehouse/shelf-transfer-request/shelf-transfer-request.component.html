@@ -346,6 +346,15 @@
                     <td>{{ product.quantity }}</td>
                     <td>{{ product.barcode }}</td>
                     <td>{{ product.drawerCount }}</td>
+                    <td>
+                      <button
+                        class="btn btn-dark"
+                        type="submit"
+                        (click)="getShelves(product.barcode)"
+                      >
+                        <i class="fa-solid fa-bars"></i>
+                      </button>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -408,5 +417,18 @@
         </div>
       </div>
     </div>
+    <p-dialog header="Raflar" [(visible)]="productShelvesDialog">
+      <div class="btn-group mr-2" role="group" aria-label="First group">
+        <button
+          *ngFor="let shelve of productShelves; let i = index"
+          (click)="setShelveToForm(shelve)"
+          type="button"
+          [ngClass]="i % 2 === 0 ? 'btn btn-dark' : 'btn btn-secondary'"
+          style="height: 10rem"
+        >
+          {{ shelve }}
+        </button>
+      </div>
+    </p-dialog>
   </section>
 </main>

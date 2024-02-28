@@ -96,11 +96,11 @@ export class FastTransferComponent implements OnInit {
 
   async ngOnInit() {
     this.title.setTitle('Raflar Arası Transfer');
-    this.spinnerService.show();
+    //this.spinnerService.show();
     this.formGenerator();
     this.currentOrderNo = (await this.generalService.generateGUID()).toString();
     this.collectedProducts = [];
-    this.spinnerService.hide();
+    //this.spinnerService.hide();
   }
   calculateTotalQty() {
     //toplanan ürünler yazısı için

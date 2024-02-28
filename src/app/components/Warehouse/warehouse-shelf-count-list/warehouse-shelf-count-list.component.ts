@@ -18,35 +18,35 @@ import { AlertifyService } from 'src/app/services/ui/alertify.service';
 })
 
 export class WarehouseShelfCountListComponent implements OnInit {
-  currentPage:number = 1; // Başlangıçta ilk sayfayı göster
+  currentPage: number = 1; // Başlangıçta ilk sayfayı göster
   filterForm: FormGroup;
-  constructor(  
+  constructor(
     private httpClientService: HttpClientService,
     private alertifyService: AlertifyService,
     private spinnerService: NgxSpinnerService,
     private router: Router,
     private formBuilder: FormBuilder,
 
-    private warehouseService : WarehouseService,
-    private generalService : GeneralService,
-    private title : Title
+    private warehouseService: WarehouseService,
+    private generalService: GeneralService,
+    private title: Title
   ) { }
 
   async ngOnInit() {
     this.title.setTitle("Sayım")
 
-    this.spinnerService.show();
-    this.  formGenerator() ;
+    //this.spinnerService.show();
+    this.formGenerator();
     await this.getGetCountList();
-  
-    
-    this.spinnerService.hide();
+
+
+    //this.spinnerService.hide();
 
   }
 
 
-  innerNumberList : string[] = [];
-  addInnerNumberToList(innerNumber : string){
+  innerNumberList: string[] = [];
+  addInnerNumberToList(innerNumber: string) {
     if (!this.innerNumberList.includes(innerNumber)) {
       this.innerNumberList.push(innerNumber);
     } else {
@@ -54,17 +54,17 @@ export class WarehouseShelfCountListComponent implements OnInit {
       this.innerNumberList.splice(index, 1);
     }
   }
-  async newCount(){
+  async newCount() {
     try {
-      const orderNo : string  = await this.generalService.generateGUID();
-      this.router.navigate(['/warehouse-shelf-count/'+orderNo]);
+      const orderNo: string = await this.generalService.generateGUID();
+      this.router.navigate(['/warehouse-shelf-count/' + orderNo]);
     } catch (error: any) {
       console.log(error.message);
     }
 
   }
 
-  countList : CountListModel[]
+  countList: CountListModel[]
 
   async getGetCountList(): Promise<any> {
     try {
@@ -87,14 +87,14 @@ export class WarehouseShelfCountListComponent implements OnInit {
   async deleteCountFromId(orderNumber: string) {
     // Silme işleminden önce kullanıcıya emin olup olmadığını sormak için bir onay penceresi göster
     const confirmDelete = window.confirm("Bu transferi silmek istediğinizden emin misiniz?");
-    
+
     if (confirmDelete) {
       // Kullanıcı onayladıysa silme işlemini gerçekleştir
       const response = await this.warehouseService.deleteCountFromId(orderNumber);
-      if (response === true) {  
+      if (response === true) {
         location.reload();
         this.alertifyService.success("İşlem Başarılı")
-      }else{
+      } else {
         this.alertifyService.error("İşlem Başarısız")
 
       }
@@ -102,15 +102,15 @@ export class WarehouseShelfCountListComponent implements OnInit {
   }
 
 
-  async onSubmit(model:CountListFilterModel){
-    this.spinnerService.show()
-    const response =  await this.warehouseService.GetCountListByFilter(model)
-    if(response){
+  async onSubmit(model: CountListFilterModel) {
+    //this.spinnerService.show()
+    const response = await this.warehouseService.GetCountListByFilter(model)
+    if (response) {
       this.countList = response;
-      this.spinnerService.hide()
+      //this.spinnerService.hide()
     }
   }
-  async filterList(){
-   
+  async filterList() {
+
   }
 }

@@ -187,7 +187,11 @@
                 <td>{{ operation.isCompleted == 0 ? "Hayır" : "Evet" }}</td>
                 <!-- <td>{{ operation.id }}</td> -->
                 <td>
-                  <div class="btn-group">
+                  <div
+                    class="btn-group"
+                    role="group"
+                    aria-label="Basic example"
+                  >
                     <button
                       class="btn btn-primary"
                       data-text="İşlemler"
@@ -200,6 +204,13 @@
                       routerLink="/order-operation/{{ operation.innerNumber }}"
                     >
                       <i class="fas fa-sliders-h"></i>
+                    </button>
+                    <button
+                      class="btn btn-dark mr -2"
+                      data-text="İşlemler"
+                      (click)="bringItemsToCollect(operation.innerNumber)"
+                    >
+                      <i class="fas fa-eye"></i>
                     </button>
                     <!-- <button class="btn btn-danger" data-text="Sil">
                         <i class="fas fa-trash"></i>
@@ -215,5 +226,83 @@
         </div>
       </div>
     </div>
+    <p-dialog
+      header="Toplanacak Ürünler"
+      [(visible)]="itemsToCollectDialog"
+      [style]="{ width: '75vw' }"
+    >
+      <div class="card" *ngIf="itemsToCollect.length > 0">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <!-- <th scope="col">Seç</th> -->
+                  <th scope="col">Raf</th>
+                  <th scope="col">Kof</th>
+                  <th scope="col">Sipariş</th>
+                  <!-- <th scope="col">SAYILAN</th>
+                  <th scope="col">UD RAF</th>
+                  <th scope="col">UD STOK</th>
+                  <th scope="col">MD STOK</th>
+                  <th scope="col">TOPLAM STOK</th> -->
+
+                  <th scope="col">Fotoğraf</th>
+                  <th scope="col">Barkod</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="
+                    let product of itemsToCollect
+                      | paginate
+                        : { itemsPerPage: 50, currentPage: currentPage };
+                    let i = index
+                  "
+                  [ngClass]="{ 'green-row': product.colorDescription == '1' }"
+                  [ngClass]="{ 'success-row': product.quantity === 0 }"
+                >
+                  <!-- <td>
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="pi{{ product.packageNo }}"
+                        (change)="addProductToList(product.packageNo)"
+                      />
+                    </td> -->
+
+                  <td>{{ product.shelfNo }}</td>
+                  <td>{{ product.itemCode }}</td>
+                  <td>{{ product.quantity }}</td>
+                  <!-- <td>{{ product.countedQty }}</td>
+                  <td>{{ product.description }}</td>
+
+                  <td>{{ product.colorDescription }}</td>
+                  <td>{{ product.itemDim1Code }}</td>
+                  <td>{{ product.currentQty }}</td> -->
+                  <td>
+                    <p-image
+                      src="{{ product.photoUrl }}"
+                      alt="Image"
+                      width="50"
+                      [preview]="true"
+                    ></p-image>
+                  </td>
+                  <td>{{ product.barcode }}</td>
+                  <!-- <td>{{ product.packageNo }}</td> -->
+                  <!-- <td>{{ product.colorCode }}</td> -->
+
+                  <!-- <td>{{ product.lineId }}</td> -->
+                </tr>
+              </tbody>
+            </table>
+            <pagination-controls
+              #id1
+              (pageChange)="currentPage = $event"
+            ></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </p-dialog>
   </section>
 </main>

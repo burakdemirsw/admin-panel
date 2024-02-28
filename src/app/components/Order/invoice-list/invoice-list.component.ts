@@ -46,11 +46,11 @@ export class InvoiceListComponent implements OnInit, OnChanges {
   }
   async ngOnInit() {
     this.barcode = "aklsdasasdkas"
-    this.spinnerService.show();
+    //this.spinnerService.show();
     this.formGenerator();
     await this.getInvoiceList();
 
-    this.spinnerService.hide();
+    //this.spinnerService.hide();
 
   }
   currentPage: number = 1; // Başlangıçta ilk sayfayı göster

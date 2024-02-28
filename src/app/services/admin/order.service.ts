@@ -22,6 +22,8 @@ import { InventoryResponseModel } from 'src/app/models/model/order/inventoryResp
 import { CountConfirmData } from 'src/app/models/model/product/countConfirmModel';
 import { int } from '@zxing/library/esm/customTypings';
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
+import { GetCustomerAddress_CM, GetCustomerList_CM } from 'src/app/models/model/order/getCustomerList_CM';
+import { CreateCustomer_CM } from '../../components/Order/create-order/models/createCustomer_CM';
 
 @Injectable({
   providedIn: 'root',
@@ -474,5 +476,39 @@ export class OrderService {
       return null;
     }
   }
+
+  async getCustomerList_2(request: GetCustomerList_CM): Promise<any> {
+    try {
+      var response = await this.httpClientService.post<GetCustomerList_CM>({ controller: "order/get-customer-list-2" }, request).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+  async getCustomerAddress(request: GetCustomerAddress_CM): Promise<any> {
+    try {
+      var response = await this.httpClientService.post<GetCustomerAddress_CM>({ controller: "order/get-customer-address" }, request).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+  async createCustomer(request: CreateCustomer_CM): Promise<any> {
+    try {
+      var response = await this.httpClientService.post<CreateCustomer_CM>({ controller: "order/create-customer" }, request).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
   //ExecuteSqlRawAsync
 }

@@ -103,7 +103,8 @@ import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ReferrerPolicyDirective } from './referrer-policy.directive';
 import { TestComponent } from './components/Order/invoice-list/test/test.component';
-
+import { TableModule } from 'primeng/table';
+import { InputTextModule } from 'primeng/inputtext';
 @NgModule({
 
   declarations: [
@@ -208,7 +209,7 @@ import { TestComponent } from './components/Order/invoice-list/test/test.compone
     TabViewModule,
     CardModule,
     ButtonModule,
-    FileUploadModule,
+    FileUploadModule, TableModule, InputTextModule
 
   ],
 

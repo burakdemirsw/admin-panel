@@ -88,18 +88,21 @@ export class WarehouseOperationComponent implements OnInit {
       }
     });
 
-    this.spinnerService.show();
+    //this.spinnerService.show();
     this.activatedRoute.params.subscribe(async (params) => {
       this.currentOrderNo = 'TP-' + params['number'];
+
       if (!this.currentOrderNo.includes('REQ-')) {
         await this.getProductOfCount(this.currentOrderNo); //this.list.push(formValue);
       } else if (this.currentOrderNo.includes('REQ-')) {
         await this.getProductOfCount(this.currentOrderNo);
-        // this.alertifyService.success(this.currentOrderNo);
+
         await this.getInventoryItems(this.currentDataType);
       }
 
-      this.spinnerService.hide();
+      this.warehouseForm.get('orderNo').setValue(this.currentOrderNo);
+      //this.alertifyService.success(this.warehouseForm.get('orderNo').value)
+      //this.spinnerService.hide();
     });
 
 
@@ -111,7 +114,7 @@ export class WarehouseOperationComponent implements OnInit {
     'Raf',
     'Ürün Kodu',
     'Transfer Miktarı',
-    'Miktar',
+    'Toplam Stok',
     'Ürün',
     'Barkod',
   ];
@@ -120,8 +123,7 @@ export class WarehouseOperationComponent implements OnInit {
     'Raf',
     'Ürün Kodu',
     'Transfer Miktarı',
-    'Miktar',
-    // 'Ürün',
+    'Toplam Stok',
     'Barkod',
     'İşlem',
   ];
@@ -245,7 +247,7 @@ export class WarehouseOperationComponent implements OnInit {
         officeTo: [null, Validators.required],
         warehouse: [null, Validators.required],
         warehouseTo: [null, Validators.required],
-        orderNo: [this.currentOrderNo],
+        orderNo: [null, Validators.required],
       });
     } catch (error) {
       console.error(error);
@@ -355,7 +357,7 @@ export class WarehouseOperationComponent implements OnInit {
 
       if (userConfirmed) {
         try {
-          this.spinnerService.show();
+          //this.spinnerService.show();
           const data = await this.httpClient
             .get<WarehouseItem | any>(
               ClientUrls.baseUrl +
@@ -381,7 +383,7 @@ export class WarehouseOperationComponent implements OnInit {
     } else {
       this.alertifyService.warning('Sipariş No Boş Geliyor.');
     }
-    this.spinnerService.hide();
+    //this.spinnerService.hide();
   }
 
   changePage() {
@@ -486,6 +488,7 @@ export class WarehouseOperationComponent implements OnInit {
       shelves.forEach((s) => {
         s = s.toLowerCase();
       });
+
       if (shelves.includes(formValue.shelfNo.toLowerCase())) {
         var response = await this.productService.countTransferProduct(
           formValue
@@ -680,9 +683,9 @@ export class WarehouseOperationComponent implements OnInit {
   clearAllList() {
     this.warehousePackageDetails.splice(0); // Tüm elemanları sil
     this.warehouseForm.reset();
-    this.spinnerService.show();
+    //this.spinnerService.show();
     setTimeout(() => {
-      this.spinnerService.hide();
+      //this.spinnerService.hide();
       this.alertifyService.success('NEBIME BAŞARIYLA AKTARILDI!');
     }, 2000);
   }
@@ -735,7 +738,7 @@ export class WarehouseOperationComponent implements OnInit {
       const response: boolean = await this.productService.deleteOrderProduct(
         this.currentOrderNo,
         product.itemCode,
-        product.lineId
+        product.id
       );
       if (response) {
         this.warehouseTransferForms = this.warehouseTransferForms.filter(

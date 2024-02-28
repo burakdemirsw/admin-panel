@@ -15,8 +15,7 @@ import { AlertifyService } from 'src/app/services/ui/alertify.service';
   styleUrls: ['./warehouse-operation-confirm-detail.component.css'],
 })
 export class WarehouseOperationConfirmDetailComponent
-  implements OnInit, OnDestroy
-{
+  implements OnInit, OnDestroy {
   warehouseConfirmForm: FormGroup;
   activeTab: number = 1;
   constructor(
@@ -26,7 +25,7 @@ export class WarehouseOperationConfirmDetailComponent
     private activatedRoute: ActivatedRoute,
     private spinnerService: NgxSpinnerService,
     private shelfService: ShelfService
-  ) {}
+  ) { }
   ngOnDestroy(): void {
     localStorage.removeItem('currentWarehosue');
   }
@@ -35,18 +34,18 @@ export class WarehouseOperationConfirmDetailComponent
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((params) => {
-      this.spinnerService.show();
+      //this.spinnerService.show();
       this.formGenerator();
       this.getWarehosueOperationDetail(params['innerNumber']);
       this.getWarehouse(params['innerNumber']);
       // this.formGenerator();
       setTimeout(() => {
-        this.spinnerService.hide();
+        //this.spinnerService.hide();
       }, 1000);
     });
   }
 
-  takeProduct(productCode: string) {}
+  takeProduct(productCode: string) { }
   warehouseOperationListModel: WarehouseOperationListModel;
   getWarehouse(innerNumber: string) {
     try {
@@ -144,5 +143,5 @@ export class WarehouseOperationConfirmDetailComponent
     }
   }
 
-  postModel() {}
+  postModel() { }
 }

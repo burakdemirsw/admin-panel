@@ -51,7 +51,7 @@ export class CreateSaleOrderComponent implements OnInit {
     try {
       this.title.setTitle('Satış Faturası Oluştur');
 
-      this.spinnerService.show();
+      //this.spinnerService.show();
       this.isReturnInvoice = false;
       this.formGenerator();
 
@@ -67,7 +67,7 @@ export class CreateSaleOrderComponent implements OnInit {
         this.setInput();
       });
 
-      this.spinnerService.hide();
+      //this.spinnerService.hide();
     } catch (error: any) {
       console.log(error.message);
     }
@@ -298,7 +298,7 @@ export class CreateSaleOrderComponent implements OnInit {
     if (confirmDelete) {
       const response: boolean = await this.productService.deleteOrderProduct(
         this.newOrderNumber,
-        product.itemCode, product.lineId
+        product.itemCode, product.id
       );
       if (response) {
         this.invoiceProducts2 = this.invoiceProducts2.filter(
@@ -389,7 +389,7 @@ export class CreateSaleOrderComponent implements OnInit {
     );
 
     if (confirmation) {
-      this.spinnerService.show();
+      //this.spinnerService.show();
       try {
         if (
           this.productForm.get('salesPersonCode').value === '' ||
@@ -417,7 +417,7 @@ export class CreateSaleOrderComponent implements OnInit {
       } catch (error: any) { }
 
     }
-    this.spinnerService.hide();
+    //this.spinnerService.hide();
   }
 
   setCurrentCustomerCode() {

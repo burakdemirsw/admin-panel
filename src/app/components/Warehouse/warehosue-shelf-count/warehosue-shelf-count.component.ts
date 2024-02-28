@@ -13,18 +13,16 @@ import { OrderBillingListModel } from 'src/app/models/model/order/orderBillingLi
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { CountedProduct } from 'src/app/models/model/product/countedProduct';
 import { ItemBillingModel } from 'src/app/models/model/product/itemBillingModel ';
-import { QrControlCommandModel } from 'src/app/models/model/product/qrControlModel';
 import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
 import {
   ProductCountModel,
-  ProductCountModel3,
+
 } from 'src/app/models/model/shelfNameModel';
 import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
-import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
 declare var window: any;
 
@@ -99,7 +97,7 @@ export class WarehosueShelfCountComponent implements OnInit {
         await this.getProductOfCount(this.currentOrderNo);
         await this.getAvailableShelves();
       } else {
-        this.alertifyService.error('Sipariş No Çekilemedi/Hatalı Ürün Yok');
+        // this.alertifyService.error('Sipariş No Çekilemedi/Hatalı Ürün Yok');
       }
     });
   }
@@ -573,7 +571,7 @@ export class WarehosueShelfCountComponent implements OnInit {
         return false;
 
       }
-      this.spinnerService.show();
+      //this.spinnerService.show();
       const response = await this.productService.completeCount(
         this.currentOrderNo +
         '/' +
@@ -581,16 +579,16 @@ export class WarehosueShelfCountComponent implements OnInit {
       );
 
       if (response === true) {
-        this.spinnerService.hide();
+        //this.spinnerService.hide();
         this.router.navigate(['/warehouse-shelf-count-list']);
         return true;
       } else {
-        this.spinnerService.hide();
+        //this.spinnerService.hide();
         this.alertifyService.error('İşlem Başarısız');
         return false;
       }
     } catch (error: any) {
-      this.spinnerService.hide();
+      //this.spinnerService.hide();
       this.alertifyService.error('İşlem Başarısız');
       return false;
     }
@@ -604,7 +602,7 @@ export class WarehosueShelfCountComponent implements OnInit {
     if (confirmDelete) {
       const response: boolean = await this.productService.deleteOrderProduct(
         this.currentOrderNo,
-        product.itemCode, product.lineId
+        product.itemCode, product.id
 
       );
       if (response) {

@@ -28,28 +28,28 @@ export class ProductManagementComponent implements OnInit {
     private productService: ProductService,
     private formBuilder: FormBuilder, private sanitizer: DomSanitizer,
     private generalService: GeneralService
-  ) {}
+  ) { }
   productForm: FormGroup;
   ngOnInit(): void {
-    this.spinnerService.show();
+    //this.spinnerService.show();
 
     this.formGenerator();
 
-    this.spinnerService.hide();
+    //this.spinnerService.hide();
   }
-  qrCodeValue: string ;
+  qrCodeValue: string;
 
   invoiceProducts2: CreatePurchaseInvoice[] = [];
-  createJson(barcode: string,shelfNo:string) {
-  
+  createJson(barcode: string, shelfNo: string) {
+
     var model: ProductList_VM = this.products.find(
-      (p) => (p.barcode = barcode) && p.shelfNo == shelfNo 
+      (p) => (p.barcode = barcode) && p.shelfNo == shelfNo
     );
-    const formDataJSON = JSON.stringify(model.barcode+"--"+model.batchCode+"--"+model.itemCode); // Form verilerini JSON'a dönüştür
+    const formDataJSON = JSON.stringify(model.barcode + "--" + model.batchCode + "--" + model.itemCode); // Form verilerini JSON'a dönüştür
 
     this.qrCodeValue = formDataJSON;
     // this.alertifyService.success(this.qrCodeValue)
-    
+
   }
   modalImageUrl: string;
   formModal: any;
@@ -84,12 +84,17 @@ export class ProductManagementComponent implements OnInit {
   selectedProductList: number[] = [];
   visible: boolean = false;
   openShelvesModal(id: any) {
-    this.visible = true;  
+    this.visible = true;
   }
 
   async getProducts(barcode: string) {
     try {
-      var model : BarcodeSearch_RM = new BarcodeSearch_RM();
+
+      if (barcode.includes("=")) {
+        barcode = barcode.replace(/=/g, "-");
+
+      }
+      var model: BarcodeSearch_RM = new BarcodeSearch_RM();
       model.barcode = barcode;
       const response = await this.productService.searchProduct(model);
       this.products = response;
@@ -99,7 +104,7 @@ export class ProductManagementComponent implements OnInit {
       return null;
     }
   }
-  clearBarcode(){
+  clearBarcode() {
     this.productForm.get('barcode').setValue(null);
     this.focusNextInput('barcode');
   }
@@ -110,7 +115,7 @@ export class ProductManagementComponent implements OnInit {
     }
   }
   async onSubmit(value: any) {
-     await this.getProducts(value.barcode);
+    await this.getProducts(value.barcode);
     this.alertifyService.success(value.barcode);
   }
 }

@@ -14,30 +14,30 @@ import { AlertifyService } from 'src/app/services/ui/alertify.service';
 })
 export class SaleOrderManagamentComponent implements OnInit {
 
-  numberOfList : number[] = [1,10,20,50,100]
-  saleOrderModels : SaleOrderModel[]
-  currentPage:number = 1; 
+  numberOfList: number[] = [1, 10, 20, 50, 100]
+  saleOrderModels: SaleOrderModel[]
+  currentPage: number = 1;
   constructor(
     private httpClientService: HttpClientService,
     private alertifyService: AlertifyService,
     private spinnerService: NgxSpinnerService,
-    private router : Router
+    private router: Router
 
   ) { }
 
   ngOnInit(): void {
-    this.spinnerService.show();
+    //this.spinnerService.show();
     this.getOrders();
-    this.spinnerService.hide();
+    //this.spinnerService.hide();
 
 
   }
   productsToCollect: ProductOfOrder[];
 
-//toplanan ürünler sayfasına akatarır fakat önce ilgili siparişin içeriğinden paketNo'değerini çeker.
+  //toplanan ürünler sayfasına akatarır fakat önce ilgili siparişin içeriğinden paketNo'değerini çeker.
   async routeToCPP() {
     let listNumber: string = (document.getElementById('numberOfList') as HTMLInputElement).value;
-  
+
     if (listNumber == null || listNumber == '') {
       alert('Lütfen Bir Müktar Seçiniz');
     } else {
@@ -47,7 +47,7 @@ export class SaleOrderManagamentComponent implements OnInit {
           controller: 'Order/GetProductsOfOrders/' + listNumber.toString(),
         }).subscribe((data) => {
           this.productsToCollect = data;
-  
+
           // After the data is fetched, you can access the first item in the productsToCollect array
           if (this.productsToCollect.length > 0) {
             this.router.navigate(['/collect-product-of-order/' + this.productsToCollect[0].packageNo]);
@@ -73,18 +73,18 @@ export class SaleOrderManagamentComponent implements OnInit {
         });
     } catch (error: any) {
       console.log(error.message);
-    }  
+    }
   }
 
-  printPicture(url:string){
-   var  model : PrinterInvoiceRequestModel = new PrinterInvoiceRequestModel();
-   model.printerName = "EPSON-DEPO (L3150 Series)"
-   model.url= url;
+  printPicture(url: string) {
+    var model: PrinterInvoiceRequestModel = new PrinterInvoiceRequestModel();
+    model.printerName = "EPSON-DEPO (L3150 Series)"
+    model.url = url;
     try {
       this.httpClientService
         .post<PrinterInvoiceRequestModel>({
-          controller: 'Order/TryPrintPicture',  
-        },model)
+          controller: 'Order/TryPrintPicture',
+        }, model)
         .subscribe((data) => {
           console.log(data);
           // this.saleOrderModels = data;
@@ -92,5 +92,5 @@ export class SaleOrderManagamentComponent implements OnInit {
     } catch (error: any) {
       console.log(error.message);
     }
-    }
   }
+}

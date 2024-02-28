@@ -78,26 +78,28 @@ export class OrderOperationComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private httpClient: HttpClient,
-    private spinnerService: NgxSpinnerService,
     private productService: ProductService,
     private warehouseService: WarehouseService,
     private generalService: GeneralService,
     private title: Title,
     private sanitizer: DomSanitizer,
-    private httpClientService: HttpClientService
   ) {
     this.codeReader = new BrowserMultiFormatReader();
   }
   isBPTransferForm: boolean = false;
+  isInvoice: boolean = false;
   async ngOnInit() {
 
-    this.spinnerService.show();
+    //this.spinnerService.show();
 
     await this.activatedRoute.params.subscribe(async (params) => {
       this.formGenerator();
 
       var orderNumber: string = params['orderNumber'];
-
+      if (params['isInvoice']) {
+        this.isInvoice = Boolean(params['isInvoice']);
+        this.alertifyService.success(this.isInvoice.toString())
+      }
       // if (orderNumber.includes('MIS')) {
       //   orderNumber = orderNumber.split('MIS-')[0]
       // }
@@ -132,7 +134,7 @@ export class OrderOperationComponent implements OnInit {
       }
 
 
-      this.spinnerService.hide();
+      //this.spinnerService.hide();
       this.setPageDescription(orderNumberType);
     });
   }
@@ -152,11 +154,19 @@ export class OrderOperationComponent implements OnInit {
   }
 
   async deleteMissingProduct(orderNumber: string, barcode: string) {
-    var response = await this.orderService.deleteMissingProduct(this.currentOrderNo, barcode);
-    if (response) {
-      await this.getAllProducts(this.currentOrderNo, 'MIS')
-      this.alertifyService.success("Ürün,Eksik Ürünlerden Silindi")
+    const confirmDelete = window.confirm(
+      'Eksik Ürüne Aktarım Yapmak İstiyor Musunuz?'
+    );
+
+    if (confirmDelete) {
+      var response = await this.orderService.deleteMissingProduct(this.currentOrderNo, barcode);
+      if (response) {
+        await this.getAllProducts(this.currentOrderNo, 'MIS')
+        this.alertifyService.success("Ürün,Eksik Ürünlerden Silindi")
+      }
     }
+
+
   }
 
 
@@ -273,7 +283,7 @@ export class OrderOperationComponent implements OnInit {
       .toPromise();
     if (productData.length === 0) {
       this._productsToCollect = []
-      this.alertifyService.success("SAYIM TAMAMLANDI");
+      // this.alertifyService.success("SAYIM TAMAMLANDI");
 
     }
     this.productsToCollect = productData; //toplanacak ürünler çekildi
@@ -315,7 +325,9 @@ export class OrderOperationComponent implements OnInit {
         }
       }
     }
-
+    if (this._productsToCollect.length > 0) {
+      this.checkForm.get('shelfNo').setValue(this._productsToCollect[0].shelfNo);
+    }
     if (orderNoType == 'WS') {
       //sayım yapılabilcek ürünler listesine atıldı
       this.productsToCollect.forEach((e) => {
@@ -383,33 +395,36 @@ export class OrderOperationComponent implements OnInit {
       this.alertifyService.error("Vergi Tipi Seçiniz");
       return;
     }
-    this.spinnerService.show();
+    //this.spinnerService.show();
     const response: CountConfirmData[] =
       await this.orderService.getInventoryFromOrderNumber(
         this.currentOrderNo
       );
-    // if (response.length > 0) {
-    //   this.alertifyService.success('Otomatik Sayım Yapılabilir');
-    //   const response2 = await this.orderService.setInventoryByOrderNumber(
-    //     this.currentOrderNo
-    //   );
-    //   if (response2) {
-    //     this.alertifyService.success('Otomatik Sayım yapıldı');
+    if (response.length > 0) {
+      this.alertifyService.success('Otomatik Sayım Yapılabilir');
+      const response2 = await this.orderService.setInventoryByOrderNumber(
+        this.currentOrderNo
+      );
+      if (response2) {
+        this.alertifyService.success('Otomatik Sayım yapıldı');
 
-    //     await this.orderService.collectAndPack(products, this.currentOrderNo, this.selectedInvoiceType.key);
-    //   }
+        await this.orderService.collectAndPack(products, this.currentOrderNo, this.selectedInvoiceType.key);
+      }
 
-    // }
-    await this.orderService.collectAndPack(products, this.currentOrderNo, this.selectedInvoiceType.key);
-    this.spinnerService.hide();
+    }
+    // await this.orderService.collectAndPack(products, this.currentOrderNo, this.selectedInvoiceType.key);
+    //this.spinnerService.hide();
   }
   async collectAndPack(products: ProductOfOrder[]) {
     console.log(this.currentOrderNo);
     var orderType: string = "";
     if (this.currentOrderNo.includes("MIS")) {
       orderType = "MIS"
-    } else {
+    } else if (location.href.includes("W-")) {
+      orderType = "WT"
+    }
 
+    else {
       orderType = this.currentOrderNo.split('-')[1];
     }
     if (orderType === 'BP' || orderType === 'WS' || orderType === 'MIS') {
@@ -418,10 +433,10 @@ export class OrderOperationComponent implements OnInit {
       );
 
       if (confirmation) {
-        this.spinnerService.show();
+        //this.spinnerService.show();
         if (orderType === 'WS' || orderType === 'MIS') {
           this.showDialog();
-          this.spinnerService.hide();
+          //this.spinnerService.hide();
           return;
 
         } else {
@@ -453,7 +468,7 @@ export class OrderOperationComponent implements OnInit {
         }
       }
     }
-    this.spinnerService.hide();
+    //this.spinnerService.hide();
   }
   async countProductRequest(
     barcode: string,
@@ -573,6 +588,7 @@ export class OrderOperationComponent implements OnInit {
       if (productModel.shelfNo == null || productModel.shelfNo == '') {
         if (productModel.barcode != null) {
           var number = await this.setFormValues(productModel.barcode, true);
+          productModel.barcode = this.checkForm.get('barcode').value;
           this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
         } else {
           this.alertifyService.warning('Formu Doldurunuz.');
@@ -580,8 +596,9 @@ export class OrderOperationComponent implements OnInit {
         }
       }
       else if (productModel.shelfNo && productModel.barcode && productModel.quantity == null) {
-        this.alertifyService.success("Durum Algılandı | Düzenleme Sağlandı...")
+        // this.alertifyService.success("Durum Algılandı | Düzenleme Sağlandı...")
         var number = await this.setFormValues(productModel.barcode, true);
+        productModel.barcode = this.checkForm.get('barcode').value;
         this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
       }
 
@@ -1070,6 +1087,26 @@ export class OrderOperationComponent implements OnInit {
   shelfNoList: string[] = [];
   barcodeValue: string = null; // Değişkeni tanımlayın
 
+
+  async getShelves(barcode: string) {
+    var newResponse = await this.productService.countProductByBarcode(
+      barcode
+    );
+    const shelves = newResponse[0]
+      .split(',')
+      .filter((raflar) => raflar.trim() !== '')
+
+
+    this.productShelves = shelves;
+    this.productShelvesDialog = true;
+  }
+  setShelveToForm(shelve) {
+    this.checkForm.get('shelfNo').setValue(shelve);
+    this.alertifyService.success("Raf Yerleştirildi");
+    this.productShelvesDialog = false;
+  }
+  productShelvesDialog: boolean = false;
+  productShelves: string[] = [];
   async setShelfNo(barcode: string): Promise<string> {
     this.shelfNumbers = 'RAFLAR:';
 
@@ -1089,7 +1126,12 @@ export class OrderOperationComponent implements OnInit {
     );
 
     // this.shelfNumbers += result[0];
-    return result[1];
+    if (result === null) {
+      return "0";
+    } else {
+      return result[1];
+    }
+
   }
 
   clearShelfNumbers() {
@@ -1120,6 +1162,7 @@ export class OrderOperationComponent implements OnInit {
     this.focusNextInput('barcode');
     this.shelfNumbers = 'RAFLAR:';
     this.qrBarcodeUrl = null;
+    this.checkForm.get('batchCode').setValue(null);
     this.checkForm.get('quantity').setValue(null);
     this.generalService.beep();
   }
@@ -1146,7 +1189,7 @@ export class OrderOperationComponent implements OnInit {
       const response: boolean = await this.productService.deleteOrderProduct(
         orderNo,
         product.itemCode,
-        product.lineId
+        product.id
       );
       if (response) {
         this.alertifyService.success('Silme İşlemi Başarılı');
@@ -1273,4 +1316,14 @@ export class OrderOperationComponent implements OnInit {
       }
     }
   }
+  //--------------
+  barcodeDialog: boolean = false;
+  barcode: string = null;
+  quantity: number = null;
+  change(barcode: string, quantity: number) {
+    this.barcodeDialog = !this.barcodeDialog;
+    this.barcode = barcode;
+    this.quantity = quantity
+  }
+  //--------------
 }

@@ -156,6 +156,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'order-operation/:orderNumber/:isInvoice',
+    component: OrderOperationComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'orderBilling-operation',
     component: OrderBillingOperationComponent,
     canActivate: [AuthGuard],

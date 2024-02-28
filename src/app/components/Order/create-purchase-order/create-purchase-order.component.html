@@ -256,7 +256,7 @@
                       <button
                         class="btn btn-primary"
                         type="submit"
-                        (click)="createJson(product.barcode, product.shelfNo)"
+                        (click)="change(product.barcode, product.quantity)"
                       >
                         <i class="fas fa-print"></i>
                       </button>
@@ -310,5 +310,13 @@
       [imageUrl]="modalImageUrl"
       [title]="'Ürün Detay'"
     ></app-image-modal>
+
+    <p-dialog
+      header="Header"
+      [(visible)]="visible"
+      [style]="{ width: '100vw' }"
+    >
+      <app-create-qr [barcode]="barcode" [quantity]="quantity"></app-create-qr>
+    </p-dialog>
   </section>
 </main>

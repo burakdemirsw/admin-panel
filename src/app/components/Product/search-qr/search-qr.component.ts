@@ -26,38 +26,38 @@ export class SearchQrComponent implements OnInit {
     private spinnerService: NgxSpinnerService,
     private productService: ProductService,
     private formBuilder: FormBuilder, private sanitizer: DomSanitizer,
-    private activatedRoute : ActivatedRoute,
-    private httpClientService : HttpClientService
-  ) {}
-  currentId : string =null
+    private activatedRoute: ActivatedRoute,
+    private httpClientService: HttpClientService
+  ) { }
+  currentId: string = null
   qrForm: FormGroup;
   async ngOnInit() {
-    this.activatedRoute.params.subscribe(async (params)=>{
+    this.activatedRoute.params.subscribe(async (params) => {
       this.currentId = params['id']
-      if(this.currentId!=null){
-       await  this.getProducts(this.currentId);
+      if (this.currentId != null) {
+        await this.getProducts(this.currentId);
       }
       // this.alertifyService.success(this.currentId)
     })
-    this.spinnerService.show();
+    //this.spinnerService.show();
 
     this.formGenerator();
 
-    this.spinnerService.hide();
+    //this.spinnerService.hide();
   }
-  qrCodeValue: string ;
+  qrCodeValue: string;
 
   invoiceProducts2: CreatePurchaseInvoice[] = [];
-  createJson(barcode: string,shelfNo:string) {
-  
+  createJson(barcode: string, shelfNo: string) {
+
     var model: QrCode = this.qrCodes.find(
-      (p) => (p.barcode = barcode) && p.shelfNo == shelfNo 
+      (p) => (p.barcode = barcode) && p.shelfNo == shelfNo
     );
-    const formDataJSON = JSON.stringify(model.barcode+"--"+model.batchCode+"--"+model.itemCode); // Form verilerini JSON'a dönüştür
+    const formDataJSON = JSON.stringify(model.barcode + "--" + model.batchCode + "--" + model.itemCode); // Form verilerini JSON'a dönüştür
 
     this.qrCodeValue = formDataJSON;
     // this.alertifyService.success(this.qrCodeValue)
-    
+
   }
   modalImageUrl: string;
   formModal: any;
@@ -92,17 +92,16 @@ export class SearchQrComponent implements OnInit {
   selectedProductList: number[] = [];
   visible: boolean = false;
   openShelvesModal(id: any) {
-    this.visible = true;  
+    this.visible = true;
   }
 
-  async print(base64Code:string)
-  {
+  async print(base64Code: string) {
     const confirmDelete2 = window.confirm("Yazıcıdan Yazdırılacaktır. Emin misiniz?");
     if (confirmDelete2) {
-      var requestModel = {imageCode: base64Code,printCount : 1};
-      var response = await this.httpClientService.post<any>({controller:'Order/Qr'},requestModel).toPromise();
+      var requestModel = { imageCode: base64Code, printCount: 1 };
+      var response = await this.httpClientService.post<any>({ controller: 'Order/Qr' }, requestModel).toPromise();
       // Base64 veriyi konsola bas
-      if(response){
+      if (response) {
         this.alertifyService.success("Yazdırıldı")
       }
       // console.log(imgData.split('base64,')[1]);
@@ -111,20 +110,20 @@ export class SearchQrComponent implements OnInit {
   }
   async getProducts(barcode: string) {
     try {
-      if(this.currentId || barcode){
+      if (this.currentId || barcode) {
         const response = await this.productService.getQr(barcode);
         this.qrCodes = response;
         return response;
-      }else{
+      } else {
         throw new Exception("id alanı boş")
       }
-     
+
     } catch (error: any) {
       console.log(error.message);
       return null;
     }
   }
-  clearBarcode(){
+  clearBarcode() {
     this.qrForm.get('barcode').setValue(null);
     this.focusNextInput('barcode');
   }
@@ -135,7 +134,7 @@ export class SearchQrComponent implements OnInit {
     }
   }
   async onSubmit(value: any) {
-     await this.getProducts(value.barcode);
+    await this.getProducts(value.barcode);
     this.alertifyService.success(value.barcode);
   }
 }

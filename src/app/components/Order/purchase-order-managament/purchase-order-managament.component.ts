@@ -17,26 +17,26 @@ import { AlertifyService } from 'src/app/services/ui/alertify.service';
 })
 export class PurchaseOrderManagamentComponent implements OnInit {
 
-  numberOfList : number[] = [1,10,20,50,100] 
-  saleOrderModels : SaleOrderModel[]
-  currentPage : number = 1;
+  numberOfList: number[] = [1, 10, 20, 50, 100]
+  saleOrderModels: SaleOrderModel[]
+  currentPage: number = 1;
   constructor(
     private httpClientService: HttpClientService,
     private alertifyService: AlertifyService,
     private spinnerService: NgxSpinnerService,
-    private router : Router,
-    private orderService : OrderService,
-    private formBuilder : FormBuilder
+    private router: Router,
+    private orderService: OrderService,
+    private formBuilder: FormBuilder
 
 
 
   ) { }
   filterForm: FormGroup;
   async ngOnInit() {
-    this.spinnerService.show();
+    //this.spinnerService.show();
     this.formGenerator();
     await this.getPurchaseOrders();
-    this.spinnerService.hide();
+    //this.spinnerService.hide();
 
 
   }
@@ -52,13 +52,13 @@ export class PurchaseOrderManagamentComponent implements OnInit {
     });
   }
 
-  async onSubmit(model:OrderFilterModel){
+  async onSubmit(model: OrderFilterModel) {
     this.saleOrderModels = await this.orderService.getPurchaseOrdersByFilter(model);
   }
-//toplanan ürünler sayfasına akatarır fakat önce ilgili siparişin içeriğinden paketNo'değerini çeker.
+  //toplanan ürünler sayfasına akatarır fakat önce ilgili siparişin içeriğinden paketNo'değerini çeker.
   async routeToCPP() {
     let listNumber: string = (document.getElementById('numberOfList') as HTMLInputElement).value;
-  
+
     if (listNumber == null || listNumber == '') {
       alert('Lütfen Bir Müktar Seçiniz');
     } else {
@@ -68,7 +68,7 @@ export class PurchaseOrderManagamentComponent implements OnInit {
           controller: 'Order/GetProductsOfOrders/' + listNumber.toString(),
         }).subscribe((data) => {
           this.productsToCollect = data;
-  
+
           // After the data is fetched, you can access the first item in the productsToCollect array
           if (this.productsToCollect.length > 0) {
             this.router.navigate(['/collect-product-of-order/' + this.productsToCollect[0].packageNo]);
@@ -83,27 +83,27 @@ export class PurchaseOrderManagamentComponent implements OnInit {
     }
   }
 
-  async deleteInvoiceProducts(orderNumber: string){
+  async deleteInvoiceProducts(orderNumber: string) {
 
     const confirmDelete = window.confirm("Bu transferi silmek istediğinizden emin misiniz?");
     if (confirmDelete) {
       // Kullanıcı onayladıysa silme işlemini gerçekleştir
-      const response  = await this.orderService.deleteInvoiceProducts(orderNumber);
+      const response = await this.orderService.deleteInvoiceProducts(orderNumber);
       if (response === true) {
         location.reload();
         this.alertifyService.success("İşlem Başarılı")
-      }else{
+      } else {
         this.alertifyService.error("İşlem Başarısız")
 
       }
-     }
     }
-    
+  }
+
   async getPurchaseOrders(): Promise<any> {
-    const response = 
-    this.saleOrderModels =  await this.orderService.getPurchaseOrders()
+    const response =
+      this.saleOrderModels = await this.orderService.getPurchaseOrders()
 
   }
 
- 
-  }
+
+}

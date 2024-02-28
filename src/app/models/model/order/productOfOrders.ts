@@ -1,4 +1,5 @@
 export class ProductOfOrder {
+  id: string;
   barcode: string;
   quantity: number;
   itemCode: string;

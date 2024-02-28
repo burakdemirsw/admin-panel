@@ -12,32 +12,32 @@ import { AlertifyService } from 'src/app/services/ui/alertify.service';
   styleUrls: ['./collected-packages.component.css']
 })
 export class CollectedPackagesComponent implements OnInit {
-  currentPage : number = 1;
-  numberOfList : number[] = [1,10,20,50,100]
-  readyToShipmentPackageModels : ReadyToShipmentPackageModel[]
+  currentPage: number = 1;
+  numberOfList: number[] = [1, 10, 20, 50, 100]
+  readyToShipmentPackageModels: ReadyToShipmentPackageModel[]
   constructor(
     private httpClientService: HttpClientService,
     private alertifyService: AlertifyService,
     private spinnerService: NgxSpinnerService,
-    private router : Router
+    private router: Router
 
   ) { }
 
   ngOnInit(): void {
 
-    this.spinnerService.show();
+    //this.spinnerService.show();
     this.getOrders();
-    this.spinnerService.hide();
+    //this.spinnerService.hide();
 
   }
 
-  routeToCPP(){
+  routeToCPP() {
     var number = (document.getElementById("numberOfList") as HTMLInputElement).value
-    if(number==null || number == ''){
+    if (number == null || number == '') {
       alert("Lütfen Bir Müktar Seçiniz")
     }
-    
-    this.router.navigate(['/collect-product-of-order'+number.toString()]);
+
+    this.router.navigate(['/collect-product-of-order' + number.toString()]);
   }
   getOrders(): any {
     try {

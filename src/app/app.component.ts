@@ -16,7 +16,7 @@ export class AppComponent {
 
     this._router.events.subscribe((event) => {
       if (bodyClassList.contains('toggle-sidebar')) {
-        console.log('algılandı(1)');
+        //console.log('algılandı(1)');
         bodyClassList.remove('toggle-sidebar');
       }
     });
@@ -27,7 +27,8 @@ export class AppComponent {
     var s = document.createElement("script");
     s.type = "text/javascript";
     s.src = "../assets/js/main.js";
-    console.clear()
+    console.clear();
+
   }
 
   @HostListener('document:click', ['$event'])
@@ -37,13 +38,13 @@ export class AppComponent {
     const bodyClassList = this.document.body.classList;
     const isMobile = window.innerWidth <= 768;
     if ((sidebar && !sidebar.contains(event.target as Node)) && (header && !header.contains(event.target as Node))) {
-      console.log('algılandı(3)');
+      //   console.log('algılandı(3)');
       if (bodyClassList.contains('toggle-sidebar')) {
         bodyClassList.remove('toggle-sidebar');
       }
       if (!isMobile) {
         if (!bodyClassList.contains('toggle-sidebar')) {
-          console.log('Pc de Farklı Yere Tıklandığı için Sidebar Kapandı');
+          // console.log('Pc de Farklı Yere Tıklandığı için Sidebar Kapandı');
           bodyClassList.add('toggle-sidebar');
         }
       }

@@ -18,14 +18,14 @@ export class ProductOperationComponent implements OnInit {
     private formBuilder: FormBuilder,
     private alertifyService: AlertifyService,
     private productService: ProductService
-    ,private spinnerService : NgxSpinnerService
-  ) {}
+    , private spinnerService: NgxSpinnerService
+  ) { }
 
   ngOnInit() {
-    this.spinnerService.show();
+    //this.spinnerService.show();
     this.formGenerator();
     setTimeout(() => {
-      this.spinnerService.hide();
+      //this.spinnerService.hide();
     }, 1000);
   }
 
@@ -50,7 +50,7 @@ export class ProductOperationComponent implements OnInit {
   }
 
   onSubmit(productData: ProductCreateModel) {
-    this.spinnerService.show();
+    //this.spinnerService.show();
     if (this.productForm.valid) {
       this.productService.createProduct(productData);
       this.alertifyService.success('Ürün isteği yolladı');
@@ -61,7 +61,7 @@ export class ProductOperationComponent implements OnInit {
       console.log(productData);
     }
     setTimeout(() => {
-      this.spinnerService.hide();
+      //this.spinnerService.hide();
       window.location.reload();
     }, 2000);
   }

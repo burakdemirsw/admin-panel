@@ -34,14 +34,14 @@ export class OrderManagamentComponent implements OnInit {
   pageDescription: boolean = false;
   pageDescriptionLine: string = "Alınan Siparişler"
   async ngOnInit() {
-    this.spinnerService.show();
+    //this.spinnerService.show();
     if (location.href.includes("missing-list")) {
       this.pageDescription = true
       this.pageDescriptionLine = "Eksik Siparişler"
     }
     this.formGenerator()
     await this.getOrders(1);
-    this.spinnerService.hide();
+    //this.spinnerService.hide();
 
 
   }
@@ -73,7 +73,7 @@ export class OrderManagamentComponent implements OnInit {
     } else {
       try {
         // Wait for the products to be fetched before navigating
-        this.spinnerService.show()
+        //this.spinnerService.show()
 
         setTimeout(async () => { // async işlev içinde setTimeout kullanıldı
           const listNumber = 123; // Örnek bir liste numarası
@@ -91,7 +91,7 @@ export class OrderManagamentComponent implements OnInit {
             this.alertifyService.warning('İşlem Yapıclacak Veri Gelmedi.');
           }
 
-          this.spinnerService.hide();
+          //this.spinnerService.hide();
         }, 1000); // 1000 milisaniye (1 saniye) bekle
 
 

@@ -3,7 +3,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { WarehouseOperationListFilterModel } from 'src/app/models/model/filter/warehouseOperationListFilterModel';
+import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
+import { OrderService } from 'src/app/services/admin/order.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
@@ -23,19 +25,57 @@ export class WarehouseOperationListComponent implements OnInit {
     private spinnerService: NgxSpinnerService,
     private router: Router,
     private warehosueService: WarehouseService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private orderService: OrderService
   ) { }
 
   async ngOnInit() {
     this.spinnerService.show();
     this.formGenerator();
     await this.getWarehouseOperations('0');
-
-
     this.spinnerService.hide();
 
   }
+  //--------------------------------------------------------------------------------------------- ITEMS TO BRING
+  itemsToCollectDialog: boolean = false;
+  itemsToCollect: ProductOfOrder[] = [];
+  async bringItemsToCollect(orderNumber: string) {
+    this.itemsToCollect = [];
+    this.itemsToCollectDialog = true;
+    if (orderNumber.startsWith("W-")) {
+      var orderNumberType = "WT";
+    } else {
+      var orderNumberType = orderNumber.split('-')[1];
+    }
 
+
+    if (orderNumberType === 'WT' || orderNumber.startsWith("W-")) {
+      if (orderNumber.startsWith("W-")) {
+
+        await this.getAllProducts(orderNumber.split('W-')[1], 'WT'); //toplanan ve toplanacak ürünleri çeker
+      } else {
+        await this.getAllProducts(orderNumber, 'WT'); //toplanan ve toplanacak ürünleri çeker
+      }
+    }
+  }
+
+
+  async getAllProducts(orderNo: string, orderNoType: string): Promise<any> {
+    if (orderNo.startsWith("W-")) {
+      orderNo = orderNo.split("W-")[1]
+    }
+
+    const productData = await this.orderService //toplanacak ürünler çekildi
+      .getCollectedProducts(orderNo, orderNoType).toPromise();
+    if (productData.length > 0) {
+      this.itemsToCollect = productData;
+    } else {
+      this.itemsToCollectDialog = false;
+    }
+
+
+  }
+  //---------------------------------------------------------------------------------------------
   formGenerator() {
     this.filterForm = this.formBuilder.group({
       innerNumber: [null],

@@ -360,14 +360,14 @@ export class CreateQrComponent implements OnInit, OnChanges {
   }
 
   async saveQr(m: any) {
-    this.spinnerService.show();
+    //this.spinnerService.show();
     var result = this.checkForm.get('doubleVerification').value;
     if (result) {
       this.captureVerification();
     } else {
       this.captureDirect();
     }
-    this.spinnerService.hide();
+    //this.spinnerService.hide();
   }
 
   clearShelfNumbers() {

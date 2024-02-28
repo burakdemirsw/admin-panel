@@ -6,6 +6,7 @@ export class CollectedProduct {
   itemCode!: string;
   batchCode!: string
   lineId !: string
-
+  availableQty !: number
+  id: string;
 
 }

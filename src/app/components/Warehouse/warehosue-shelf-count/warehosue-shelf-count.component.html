@@ -403,7 +403,11 @@
       [title]="'Ürün Detay'"
     ></app-image-modal>
 
-    <p-dialog header="Header" [(visible)]="visible" [style]="{ width: '75vw' }">
+    <p-dialog
+      header="Header"
+      [(visible)]="visible"
+      [style]="{ width: '100vw' }"
+    >
       <app-create-qr [barcode]="barcode" [quantity]="quantity"></app-create-qr>
     </p-dialog>
   </section>

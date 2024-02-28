@@ -1,48 +1,62 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Raf Takip</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="assets/img/1024LOGO.png" rel="icon" ype="image/x-icon" />
+    <link href="assets/img/1024LOGO.jpg" rel="apple-touch-icon" />
+    <link href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
 
-<head>
-  <meta charset="utf-8">
-  <title>Raf Takip</title> 
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="assets/img/1024LOGO.png" rel="icon" ype="image/x-icon">
-  <link href="assets/img/1024LOGO.jpg" rel="apple-touch-icon">
-  <link href="https://fonts.gstatic.com" rel="preconnect">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <!-- Google Fonts -->
 
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+      rel="stylesheet"
+    />
+    <!-- <link href="assets/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link href="assets/css/bootstrap-icons.css" rel="stylesheet" />
+    <link href="assets/css/boxicons.min.css" rel="stylesheet" />
+    <link href="assets/css/quill.snow.css" rel="stylesheet" />
+    <link href="assets/css/quill.bubble.css" rel="stylesheet" />
+    <link href="assets/css/remixicon.css" rel="stylesheet" />
+    <link href="assets/css/simple-datatables.css" rel="stylesheet" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <link href="assets/css/style.css" rel="stylesheet" />
+  </head>
 
+  <body>
+    <app-root></app-root>
 
-  <!-- Google Fonts -->
+    <!-- <script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="8ed5abeb-ba03-4774-8c79-40a3a2a79c3d";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script> -->
+    <script src="assets/js/apexcharts.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+      });
+    </script>
 
-  <link
-    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
-    rel="stylesheet">
-  <!-- <link href="assets/css/bootstrap.min.css" rel="stylesheet"> -->
-  <link href="assets/css/bootstrap-icons.css" rel="stylesheet">
-  <link href="assets/css/boxicons.min.css" rel="stylesheet">  
-  <link href="assets/css/quill.snow.css" rel="stylesheet">
-  <link href="assets/css/quill.bubble.css" rel="stylesheet">
-  <link href="assets/css/remixicon.css" rel="stylesheet">
-  <link href="assets/css/simple-datatables.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-  <link href="assets/css/style.css" rel="stylesheet">
-
-</head>
-
-<body>
-
-  <app-root></app-root>
-  <!-- <script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="8ed5abeb-ba03-4774-8c79-40a3a2a79c3d";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script> -->
-  <script src="assets/js/apexcharts.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-  <script src="assets/js/chart.min.js"></script>
-  <script src="assets/js/echarts.min.js"></script>
-  <script src="assets/js/quill.min.js"></script>
-  <script src="assets/js/simple-datatables.js"></script>
-  <script src="assets/js/tinymce.min.js"></script>
-  <script src="assets/js/alertify.min.js"></script>
-  <script src="assets/js/home.js"></script>
-
-</body>
+    <script src="assets/js/chart.min.js"></script>
+    <script src="assets/js/echarts.min.js"></script>
+    <script src="assets/js/quill.min.js"></script>
+    <script src="assets/js/simple-datatables.js"></script>
+    <script src="assets/js/tinymce.min.js"></script>
+    <script src="assets/js/alertify.min.js"></script>
+    <script src="assets/js/home.js"></script>
+  </body>
 </html>
