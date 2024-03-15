@@ -15,7 +15,7 @@ import {
 } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 @Component({
   selector: 'app-create-qr',
@@ -43,14 +43,14 @@ export class CreateQrComponent implements OnInit, OnChanges {
   qrCodeValue: string = '';
   constructor(
     private formBuilder: FormBuilder,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private sanitizer: DomSanitizer,
     private generalService: GeneralService,
     private productService: ProductService,
     private httpClientService: HttpClientService,
     private datePipe: DatePipe,
     private warehouseService: WarehouseService,
-    private spinnerService: NgxSpinnerService
+
   ) { }
 
 
@@ -137,13 +137,13 @@ export class CreateQrComponent implements OnInit, OnChanges {
 
         var response = await this.productService.addQr(qr);
         if (response) {
-          this.alertifyService.success('Kayıt Edildi');
+          this.toasterService.success('Kayıt Edildi');
           if (isMultipleCountPage === false) {
             location.reload();
           }
           this.generalService.beep();
         } else {
-          this.alertifyService.error('Kayıt Edilmedi');
+          this.toasterService.error('Kayıt Edilmedi');
         }
 
         const confirmDelete2 = window.confirm(
@@ -164,7 +164,7 @@ export class CreateQrComponent implements OnInit, OnChanges {
             if (!isMultipleCountPage) {
               location.reload();
             }
-            this.alertifyService.success('Yazdırıldı');
+            this.toasterService.success('Yazdırıldı');
           }
 
         }
@@ -210,12 +210,12 @@ export class CreateQrComponent implements OnInit, OnChanges {
 
           var response = await this.productService.addQr(qr);
           if (response) {
-            this.alertifyService.success('Kayıt Edildi');
+            this.toasterService.success('Kayıt Edildi');
             // this.newId = await this.generalService.generateGUID(); // her barkod sisteme kayıt edildikten sonra yeni bir id değeri atandı;
 
             this.generalService.beep();
           } else {
-            this.alertifyService.error('Kayıt Edilmedi');
+            this.toasterService.error('Kayıt Edilmedi');
           }
 
           const confirmDelete2 = window.confirm(
@@ -236,7 +236,7 @@ export class CreateQrComponent implements OnInit, OnChanges {
               if (!isMultipleCountPage) {
                 location.reload();
               }
-              this.alertifyService.success('Yazdırıldı');
+              this.toasterService.success('Yazdırıldı');
             }
 
           }

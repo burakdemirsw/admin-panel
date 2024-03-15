@@ -8,7 +8,7 @@ import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 @Component({
   selector: 'app-purchase-order-managament',
@@ -22,8 +22,7 @@ export class PurchaseOrderManagamentComponent implements OnInit {
   currentPage: number = 1;
   constructor(
     private httpClientService: HttpClientService,
-    private alertifyService: AlertifyService,
-    private spinnerService: NgxSpinnerService,
+    private toasterService: ToasterService,
     private router: Router,
     private orderService: OrderService,
     private formBuilder: FormBuilder
@@ -91,9 +90,9 @@ export class PurchaseOrderManagamentComponent implements OnInit {
       const response = await this.orderService.deleteInvoiceProducts(orderNumber);
       if (response === true) {
         location.reload();
-        this.alertifyService.success("İşlem Başarılı")
+        this.toasterService.success("İşlem Başarılı")
       } else {
-        this.alertifyService.error("İşlem Başarısız")
+        this.toasterService.error("İşlem Başarısız")
 
       }
     }

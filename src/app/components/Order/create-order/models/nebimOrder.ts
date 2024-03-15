@@ -1,3 +1,5 @@
+import { ProductList_VM } from "src/app/models/model/product/productList_VM";
+
 export class CheckOrderModel {
   orderHeaderID: string; // TypeScript'te `Guid` yerine genelde `string` kullanılır
   internalDescription: string;
@@ -14,28 +16,70 @@ export class NebimOrder {
   modelType: number;
   customerCode: string;
   internalDescription: string;
-  orderDate: Date;
+  orderDate: string;
   officeCode: string;
-  storeCode: string;
   warehouseCode: string;
   deliveryCompanyCode: string;
   shipmentMethodCode: number;
+  taxTypeCode: number;
   posTerminalID: number;
   isCompleted: boolean;
   isSalesViaInternet: boolean;
   documentNumber: string;
   description: string;
+
   ordersViaInternetInfo: OrdersViaInternetInfo;
   lines: Line[];
-  discounts: Discount[];
-  payments: Payment[];
+  // discounts: Discount[];
+  // payments: Payment[];
 
-  constructor() {
-    this.modelType = 3;
+  constructor(currAccCode: string, orderNo: string, formValue: any, selectedProducts: any, salesPersonCode: string, taxTypeCode: number) {
+    this.modelType = 5;
+    this.posTerminalID = 1;
+    this.shipmentMethodCode = 2;
+    this.isCompleted = true;
+    this.isSalesViaInternet = true;
+    this.taxTypeCode = taxTypeCode;
+    this.deliveryCompanyCode = "";
     this.lines = [];
-    this.discounts = [];
-    this.payments = [];
+    // this.discounts = [];
+    // this.payments = [];
     this.ordersViaInternetInfo = new OrdersViaInternetInfo();
+    this.ordersViaInternetInfo.paymentDate = new Date().toUTCString();
+    this.ordersViaInternetInfo.sendDate = new Date().toUTCString();
+    this.ordersViaInternetInfo.salesURL = "www.davye.com";
+    this.ordersViaInternetInfo.paymentAgent = "";
+    this.ordersViaInternetInfo.paymentTypeCode = 2;
+    this.ordersViaInternetInfo.paymentTypeDescription = "Kredi Kartı"
+    // if (payment.paymentType === "1") {
+    //   this.ordersViaInternetInfo.paymentTypeDescription = "PAYTR"
+    //   this.ordersViaInternetInfo.paymentTypeCode = 2
+    // } else if (payment.paymentType === "2") {
+    //   this.ordersViaInternetInfo.paymentTypeDescription = "NAKİT"
+    //   this.ordersViaInternetInfo.paymentTypeCode = 1
+    // } else if (payment.paymentType === "4") {
+    //   this.ordersViaInternetInfo.paymentTypeDescription = "HAVALE"
+    //   this.ordersViaInternetInfo.paymentTypeCode = 4
+    // }
+
+    this.customerCode = currAccCode;
+    this.internalDescription = orderNo;
+    this.orderDate = new Date().toUTCString();
+    this.officeCode = "M";
+    this.warehouseCode = "MD";
+
+    this.documentNumber = orderNo;
+    this.description = orderNo;
+    selectedProducts.forEach(p => {
+      var line: Line = new Line();
+      line.usedBarcode = p.barcode;
+      line.salesPersonCode = salesPersonCode;
+      line.priceVI = p.price;
+      line.qty1 = p.quantity;
+      line.itemCode = p.itemCode;
+      this.lines.push(line);
+    });
+    // this.payments.push(payment)
   }
 }
 
@@ -47,14 +91,11 @@ export class Discount {
 }
 
 export class Line {
-  colorCode: string;
   itemCode: string;
-  itemDim1Code: string;
   qty1: number;
-  lDisRate1: number;
   priceVI: number;
   salesPersonCode: string;
-  barcode: string;
+  usedBarcode: string;
 }
 
 export class Payment {
@@ -64,6 +105,9 @@ export class Payment {
   installmentCount: number;
   currencyCode: string;
   amount: number;
+  constructor() {
+    this.installmentCount = 1;
+  }
 }
 
 export class OrdersViaInternetInfo {
@@ -73,4 +117,42 @@ export class OrdersViaInternetInfo {
   paymentAgent: string;
   paymentDate: string;
   sendDate: string;
+}
+
+export class ClientOrder_DTO {
+  clientOrder: ClientOrder;
+  clientOrderBasketItems: ClientOrderBasketItem[];
+}
+export class ClientOrder {
+  id: string;
+  customerCode?: string;
+  shippingPostalAddressId: string;
+  orderNo?: string;
+  createdDate: Date;
+  paymentType: string
+  paymentDescription: string;
+  constructor() {
+    this.createdDate = new Date();
+  }
+}
+export class ClientOrderBasketItem {
+  orderId: string;
+  lineId!: string
+  description!: string
+  photoUrl !: string
+  shelfNo !: string
+  barcode !: string
+  itemCode !: string
+  batchCode !: string
+  price: number
+  quantity: number
+  warehouseCode !: string
+  brandDescription !: string
+  uD_Stock!: string;
+  mD_Stock !: string;
+  createdDate: Date;
+  updatedDate: Date;
+  constructor() {
+    this.createdDate = new Date();
+  }
 }

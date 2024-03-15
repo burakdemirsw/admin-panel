@@ -7,5 +7,3 @@ export enum ClientUrls {
   baseUrl2 = "http://212.156.46.206:4201/search-qr/", //bu pc
 }
 
-
-

@@ -23,7 +23,7 @@ import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOf
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 declare var window: any;
 
 @Component({
@@ -67,7 +67,7 @@ export class WarehosueShelfCountComponent implements OnInit {
   ];
   constructor(
     private formBuilder: FormBuilder,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private spinnerService: NgxSpinnerService,
     private httpClient: HttpClient,
     private productService: ProductService,
@@ -97,7 +97,7 @@ export class WarehosueShelfCountComponent implements OnInit {
         await this.getProductOfCount(this.currentOrderNo);
         await this.getAvailableShelves();
       } else {
-        // this.alertifyService.error('Sipariş No Çekilemedi/Hatalı Ürün Yok');
+        // this.toasterService.error('Sipariş No Çekilemedi/Hatalı Ürün Yok');
       }
     });
   }
@@ -113,7 +113,7 @@ export class WarehosueShelfCountComponent implements OnInit {
     const formDataJSON = JSON.stringify(model); // Form verilerini JSON'a dönüştür
 
     this.qrCodeValue = formDataJSON;
-    // this.alertifyService.success(this.qrCodeValue)
+    // this.toasterService.success(this.qrCodeValue)
   }
   async getAvailableShelves() {
     this.shelves = await this.warehouseService.getAvailableShelves();
@@ -205,7 +205,7 @@ export class WarehosueShelfCountComponent implements OnInit {
       orderNo
     );
     if (this.lastCollectedProducts.length >= 100) {
-      this.alertifyService.error("SATIR SAYISI 100'E ULAŞTI");
+      this.toasterService.error("SATIR SAYISI 100'E ULAŞTI");
       this.blocked = true;
     }
     this.calculateTotalQty();
@@ -265,7 +265,7 @@ export class WarehosueShelfCountComponent implements OnInit {
         return result[1];
       }
     } catch (error) {
-      this.alertifyService.error(error.message);
+      this.toasterService.error(error.message);
       return null;
     }
   }
@@ -314,11 +314,11 @@ export class WarehosueShelfCountComponent implements OnInit {
           true
         );
         this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
-        this.alertifyService.success(
+        this.toasterService.success(
           'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
         );
       } else {
-        this.alertifyService.warning('Barkod Alanı Boş.');
+        this.toasterService.warn('Barkod Alanı Boş.');
       }
       return;
     } else {
@@ -423,7 +423,7 @@ export class WarehosueShelfCountComponent implements OnInit {
                     this.calculateTotalQty();
                     this.clearQrAndBatchCode();
                     this.state = true;
-                    this.alertifyService.warning('Ekleme Yapılmadı!');
+                    this.toasterService.warn('Ekleme Yapılmadı!');
                   }
                 }
               } else {
@@ -504,7 +504,7 @@ export class WarehosueShelfCountComponent implements OnInit {
                 true
               );
               this.checkForm.get('quantity')?.setValue(Number(number));
-              this.alertifyService.success(
+              this.toasterService.success(
                 'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
               );
               this.state = true;
@@ -512,7 +512,7 @@ export class WarehosueShelfCountComponent implements OnInit {
           }
         }
       } catch (error: any) {
-        this.alertifyService.error(error.message);
+        this.toasterService.error(error.message);
         this.state = true;
       }
     }
@@ -558,7 +558,7 @@ export class WarehosueShelfCountComponent implements OnInit {
       var isShelfBased = this.checkForm.get("isShelfBased");
       var isShelfBased2 = this.checkForm.get("isShelfBased2");
       if (isShelfBased.value === false && isShelfBased2.value === false) {
-        this.alertifyService.error("Lütfen bir sayım tipi seçiniz")
+        this.toasterService.error("Lütfen bir sayım tipi seçiniz")
 
         return false;
 
@@ -567,7 +567,7 @@ export class WarehosueShelfCountComponent implements OnInit {
         isShelfBased.setValue(false);
         isShelfBased2.setValue(false);
 
-        this.alertifyService.error("Sadece bir sayım tipi seçilmelidir")
+        this.toasterService.error("Sadece bir sayım tipi seçilmelidir")
         return false;
 
       }
@@ -584,12 +584,12 @@ export class WarehosueShelfCountComponent implements OnInit {
         return true;
       } else {
         //this.spinnerService.hide();
-        this.alertifyService.error('İşlem Başarısız');
+        this.toasterService.error('İşlem Başarısız');
         return false;
       }
     } catch (error: any) {
       //this.spinnerService.hide();
-      this.alertifyService.error('İşlem Başarısız');
+      this.toasterService.error('İşlem Başarısız');
       return false;
     }
   }
@@ -611,9 +611,9 @@ export class WarehosueShelfCountComponent implements OnInit {
         );
         this.calculateTotalQty();
         await this.getProductOfCount(this.currentOrderNo);
-        this.alertifyService.success('Silme İşlemi Başarılı.');
+        this.toasterService.success('Silme İşlemi Başarılı.');
       } else {
-        this.alertifyService.error('Silme İşlemi Başarısız.');
+        this.toasterService.error('Silme İşlemi Başarısız.');
       }
       return response;
 

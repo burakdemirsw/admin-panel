@@ -1,15 +1,4 @@
 <main id="main" class="main">
-  <!-- <div class="pagetitle">
-      <h1>Toplanan Ürünlerin Listesi</h1>
-      <nav>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-          <li class="breadcrumb-item">Tables</li>
-          <li class="breadcrumb-item active">General</li>
-        </ol>
-      </nav>
-    </div>
-   -->
   <section class="section">
     <!-- <input type="file" (change)="onFileSelected($event)" />
     <button (click)="extractText()">Extract Text</button>
@@ -18,101 +7,83 @@
       <h3>Extracted Text:</h3>
       <pre>{{ extractedText }}</pre>
     </div> -->
-
-    <p-card header="Satış Elemanı Seç" id="salesPersonForm" #satisElemani>
-      <form [formGroup]="createCustomerForm">
-        <p-dropdown
-          formControlName="salesPersonCode"
-          [options]="salesPersonModelList"
-          [(ngModel)]="selectedPerson"
-          optionLabel="name"
-          [filter]="true"
-        ></p-dropdown>
-      </form>
-    </p-card>
-    <div class="mb-3"></div>
-    <p-card header="Ofis Depo Seç" id="ofisDepo" #ofisDepo>
-      <form [formGroup]="createCustomerForm">
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label for="office"> Ofis</label>
-            <br />
-            <select
-              class="form-select"
-              id="office"
-              formControlName="office"
-              class="form-control"
-            >
-              <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-              <option *ngFor="let office of offices" value="{{ office.code }}">
-                {{ office.name }}
-              </option>
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label for="warehouse">Depo</label>
-            <br />
-
-            <select
-              class="form-select"
-              aria-label="Default select example"
-              id="warehouse"
-              formControlName="warehouse"
-              class="form-control"
-            >
-              <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-              <option
-                *ngFor="let warehouse of warehouses"
-                value="{{ warehouse.code }}"
-              >
-                {{ warehouse.name }}
-              </option>
-            </select>
-          </div>
+    <p-tabView
+      id="closableTabView"
+      [scrollable]="true"
+      [(activeIndex)]="activeIndex"
+    >
+      <!-- <p-tabPanel
+        header="Satış Elemanı Seç"
+        [rightIcon]="
+          this.createCustomerForm.get('salesPersonCode').value
+            ? 'pi pi-check'
+            : 'pi pi-times'
+        "
+        [selected]="true"
+      >
+        <form [formGroup]="createCustomerForm">
+          <p-dropdown
+            formControlName="salesPersonCode"
+            [options]="salesPersonModelList"
+            [(ngModel)]="selectedPerson"
+            optionLabel="name"
+            [filter]="true"
+          ></p-dropdown>
+        </form>
+        <div class="row mt-3">
+          <p-button (onClick)="selectSalesPerson()">Ekle</p-button>
         </div>
-      </form>
-      <div class="row">
-        <p-button (onClick)="selectOfficeAndWarehosue(createCustomerForm.value)"
-          >Ekle</p-button
-        >
-      </div>
-    </p-card>
-    <div class="mb-3"></div>
-    <p-card header="Müşteri Bul" id="findCustomer" #findCustomer>
-      <p-tabView>
-        <p-tabPanel header="Var Olan Müşteri">
-          <p-button
-            label="Var Olan Müşteri Bul"
-            (onClick)="openDialog('getCustomerDialog')"
-          ></p-button>
-        </p-tabPanel>
-        <p-tabPanel header="Müşteri Oluştur">
-          <form [formGroup]="createCustomerForm">
-            <div class="row">
-              <div class="col-md-6">
-                <label for="exampleInputEmail1">Ad</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="name"
-                  placeholder="Ad"
-                  formControlName="name"
-                />
-              </div>
-              <div class="col-md-6">
-                <label for="exampleInputEmail1">Soyad</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="surname"
-                  placeholder="Soy Ad"
-                  formControlName="surname"
-                />
-              </div>
+      </p-tabPanel> -->
+      <!-- <p-tabPanel
+        header="Ofis Depo Seç"
+        [rightIcon]="
+          this.createCustomerForm.get('office').value
+            ? 'pi pi-check'
+            : 'pi pi-times'
+        "
+      >
+        <form [formGroup]="createCustomerForm">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="office"> Ofis</label>
+              <br />
+              <p-dropdown
+                formControlName="office"
+                [options]="offices"
+                optionLabel="name"
+                [filter]="true"
+              ></p-dropdown>
             </div>
-            <div class="row">
-              <div class="col-md-6">
-                <label for="exampleInputEmail1">Mail</label>
+            <div class="col-md-6">
+              <label for="warehouse">Depo</label>
+              <br />
+              <p-dropdown
+                formControlName="warehouse"
+                [options]="warehouses"
+                optionLabel="name"
+                [filter]="true"
+              ></p-dropdown>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <p-button
+            (onClick)="selectOfficeAndWarehosue(createCustomerForm.value)"
+            >Ekle</p-button
+          >
+        </div>
+      </p-tabPanel> -->
+      <p-tabPanel
+        header="Müşteri Bul"
+        [rightIcon]="this.currAccCode ? 'pi pi-check' : 'pi pi-times'"
+      >
+        <p-tabView [activeIndex]="_activeIndex">
+          <p-tabPanel header="Var Olan Müşteri">
+            <form [formGroup]="getCustomerForm" class="customer-form">
+              <div class="input-group mb-3">
+                <span class="input-group-text"
+                  ><i class="bi bi-envelope-fill"></i
+                ></span>
                 <input
                   type="text"
                   class="form-control"
@@ -121,637 +92,487 @@
                   formControlName="mail"
                 />
               </div>
-              <div class="col-md-6">
-                <label for="exampleInputEmail1">Telefon Numarası</label>
+              <div class="input-group mb-3">
+                <span class="input-group-text"
+                  ><i class="bi bi-telephone-fill"></i
+                ></span>
                 <input
                   type="text"
                   class="form-control"
-                  id="phoneNumber"
-                  placeholder="Telefon"
-                  formControlName="phoneNumber"
+                  id="phone"
+                  placeholder="Telefon Numarası"
+                  formControlName="phone"
                 />
               </div>
-            </div>
+              <div class="input-group mb-3">
+                <span class="input-group-text"
+                  ><i class="bi bi-card-checklist"></i
+                ></span>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="currAccCode"
+                  placeholder="Müşteri Kodu"
+                  formControlName="currAccCode"
+                />
+              </div>
+              <button
+                class="btn btn-primary"
+                (click)="getCustomers(this.getCustomerForm.value)"
+              >
+                Müşteri Bul
+              </button>
+            </form>
 
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="address_taxNo">Vergi Numarası</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="address_taxNo"
-                  placeholder="Vergi Numarası"
-                  formControlName="address_taxNo"
-                />
-              </div>
-              <div class="col-md-6">
-                <label for="exampleInputEmail1">Firma Adı</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="firmDescription"
-                  placeholder="Firma Adı"
-                  formControlName="firmDescription"
-                />
-              </div>
-            </div>
+            <p-dialog
+              header="Bulunan Adresler"
+              [(visible)]="selectAddressDialog"
+              [style]="{ width: '80vw' }"
+            >
+              <p-table [scrollable]="true" [value]="addresses">
+                <ng-template pTemplate="caption">
+                  Bulunan Adresler
+                </ng-template>
 
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <div class="input-group mb-3">
-                  <div class="custom-file">
-                    <input
-                      type="file"
-                      class="custom-file-input"
-                      id="inputGroupFile01"
-                      aria-describedby="inputGroupFileAddon01"
-                      (change)="onUpload($event, 'stampPhotoUrl')"
-                    />
-                    <label class="custom-file-label" for="inputGroupFile01"
-                      >Dosya Seç</label
-                    >
-                  </div>
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Ülke</th>
+                    <th>Bölge</th>
+                    <th>İl</th>
+                    <th>İlçe</th>
+                    <th>Adres</th>
+                    <th>İşlemler</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-address>
+                  <tr>
+                    <td>{{ address.countryDescription }}</td>
+                    <td>{{ address.stateDescription }}</td>
+                    <td>{{ address.cityDescription }}</td>
+                    <td>{{ address.districtDescription }}</td>
+                    <td>{{ address.address }}</td>
+                    <td>
+                      <p-button
+                        icon="fa fa-plus"
+                        (onClick)="selectCurrentAddress(address)"
+                      ></p-button>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </p-dialog>
+            <div class="mb-3"></div>
+            <p-table
+              [scrollable]="true"
+              [value]="customers"
+              *ngIf="customers.length > 0"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Müşteri Kodu</th>
+                  <th>Müşteri</th>
+                  <th>Mail</th>
+                  <th>Telefon</th>
+                  <th>İşlemler</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-customer>
+                <tr>
+                  <td>{{ customer.currAccCode }}</td>
+                  <td>{{ customer.currAccDescription }}</td>
+                  <td>{{ customer.mail }}</td>
+                  <td>{{ customer.phone }}</td>
+                  <td>
+                    <p-button
+                      icon="fa fa-plus"
+                      (onClick)="selectCurrentCustomer(customer)"
+                    ></p-button>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+
+            <div class="mt-3"></div>
+          </p-tabPanel>
+          <p-tabPanel header="Müşteri Oluştur">
+            <form [formGroup]="createCustomerForm">
+              <!-- <div class="row">
+                <div class="col-md-6">
+                  <label for="exampleInputEmail1">Ad</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    placeholder="Ad"
+                    formControlName="name"
+                  />
                 </div>
-                <label for="exampleInputEmail1">Kaşe</label>
-
-                <input
-                  type="text"
-                  class="form-control"
-                  id="stampPhotoUrl"
-                  placeholder="Kaşe Fotoğraf Yolu"
-                  formControlName="stampPhotoUrl"
-                />
-              </div>
-              <div class="col-md-6">
-                <div class="input-group mb-3">
-                  <div class="custom-file">
-                    <input
-                      type="file"
-                      class="custom-file-input"
-                      id="inputGroupFile01"
-                      aria-describedby="inputGroupFileAddon01"
-                      (change)="onUpload($event, 'bussinesCardPhotoUrl')"
-                    />
-                    <label class="custom-file-label" for="inputGroupFile01"
-                      >Dosya Seç</label
-                    >
-                  </div>
+                <div class="col-md-6">
+                  <label for="exampleInputEmail1">Soyad</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="surname"
+                    placeholder="Soy Ad"
+                    formControlName="surname"
+                  />
                 </div>
-                <label for="exampleInputEmail1">Kartvizit</label>
+              </div> -->
+              <div class="row">
+                <div class="col-md-12">
+                  <label for="exampleInputEmail1">Firma Adı (ZORUNLUDUR)</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="currAccDescription"
+                    placeholder="Firma Adı"
+                    formControlName="currAccDescription"
+                  />
+                </div>
+                <!-- <div class="col-md-6">
+                  <label for="taxNumber">Vergi Numarası</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="taxNumber"
+                    placeholder="Vergi Numarası"
+                    formControlName="taxNumber"
+                  />
+                </div> -->
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="exampleInputEmail1">Mail (ZORUNLUDUR)</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="mail"
+                    placeholder="Mail"
+                    formControlName="mail"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label for="exampleInputEmail1"
+                    >Telefon Numarası (ZORUNLUDUR)</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="phoneNumber"
+                    placeholder="Telefon"
+                    formControlName="phoneNumber"
+                  />
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <div class="input-group mb-3">
+                    <div class="custom-file">
+                      <input
+                        type="file"
+                        class="custom-file-input"
+                        id="inputGroupFile01"
+                        aria-describedby="inputGroupFileAddon01"
+                        (change)="onUpload($event, 'stampPhotoUrl')"
+                      />
+                      <label class="custom-file-label" for="inputGroupFile01"
+                        >Dosya Seç</label
+                      >
+                    </div>
+                  </div>
+                  <label for="exampleInputEmail1">Kaşe (ZORUNLUDUR)</label>
+
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="stampPhotoUrl"
+                    placeholder="Kaşe Fotoğraf Yolu"
+                    formControlName="stampPhotoUrl"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <div class="input-group mb-3">
+                    <div class="custom-file">
+                      <input
+                        type="file"
+                        class="custom-file-input"
+                        id="inputGroupFile01"
+                        aria-describedby="inputGroupFileAddon01"
+                        (change)="onUpload($event, 'bussinesCardPhotoUrl')"
+                      />
+                      <label class="custom-file-label" for="inputGroupFile01"
+                        >Dosya Seç</label
+                      >
+                    </div>
+                  </div>
+                  <label for="exampleInputEmail1">Kartvizit (ZORUNLUDUR)</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="bussinesCardPhotoUrl"
+                    placeholder="Kartvizit Fotoğraf Yolu"
+                    formControlName="bussinesCardPhotoUrl"
+                  />
+                </div>
+              </div>
+            </form>
+            <form
+              [formGroup]="createCustomerForm"
+              (ngSubmit)="submitAddressForm(createCustomerForm.value)"
+            >
+              <div class="form-group">
+                <label for="address_country" class="label">Ülke</label>
+                <select
+                  class="form-select"
+                  id="address_country"
+                  formControlName="address_country"
+                  class="form-control"
+                >
+                  <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                  <option
+                    *ngFor="let country of _countries"
+                    value="{{ country.code }}"
+                  >
+                    {{ country.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="address_region" class="label">Bölge</label>
+                <select
+                  class="form-select"
+                  id="address_region"
+                  formControlName="address_region"
+                  class="form-control"
+                >
+                  <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                  <option
+                    *ngFor="let region of _regions"
+                    value="{{ region.code }}"
+                  >
+                    {{ region.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="address_province" class="label">il</label>
+                <select
+                  class="form-select"
+                  id="address_province"
+                  formControlName="address_province"
+                >
+                  <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                  <option
+                    *ngFor="let province of _provinces"
+                    value="{{ province.code }}"
+                  >
+                    {{ province.name }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="address_district" class="label"
+                  >Vergi Dairesi</label
+                >
+                <select
+                  class="form-select"
+                  id="address_taxOffice"
+                  formControlName="address_taxOffice"
+                >
+                  <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                  <option
+                    *ngFor="let taxOffice of _taxOffices"
+                    value="{{ taxOffice.code }}"
+                  >
+                    {{ taxOffice.name }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="address_district" class="label">ilçe</label>
+                <select
+                  class="form-select"
+                  id="address_district"
+                  formControlName="address_district"
+                >
+                  <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                  <option
+                    *ngFor="let district of _districts"
+                    value="{{ district.code }}"
+                  >
+                    {{ district.name }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="address_description" class="label"
+                  >Adres Tarifi</label
+                >
                 <input
                   type="text"
                   class="form-control"
-                  id="bussinesCardPhotoUrl"
-                  placeholder="Kartvizit Fotoğraf Yolu"
-                  formControlName="bussinesCardPhotoUrl"
+                  id="address_description"
+                  name="address_description"
+                  fullWidth
+                  formControlName="address_description"
                 />
               </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6">
+
+              <div class="form-group mb-3">
+                <label for="address_postalCode" class="label">Posta Kodu</label>
+                <input
+                  type="text"
+                  id="address_postalCode"
+                  name="address_postalCode"
+                  fullWidth
+                  formControlName="address_postalCode"
+                  class="form-control"
+                />
+              </div>
+
+              <div class="form-group">
                 <p-button
+                  icon="fa fa-plus"
+                  type="submit"
                   label="Müşteri Ekle"
-                  (onClick)="submitAddressForm(this.createCustomerForm.value)"
                 ></p-button>
               </div>
-            </div>
-          </form>
-        </p-tabPanel>
-        <p-tabPanel header="Müşteri Adresi Oluştur">
-          <form
-            [formGroup]="createCustomerForm"
-            (ngSubmit)="submitAddressForm(createCustomerForm.value)"
-          >
-            <div class="form-group">
-              <label for="address_country" class="label">Ülke*</label>
-              <select
-                class="form-select"
-                id="address_country"
-                formControlName="address_country"
-                class="form-control"
-              >
-                <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                <option
-                  *ngFor="let country of _countries"
-                  value="{{ country.code }}"
+            </form>
+          </p-tabPanel>
+
+          <p-tabPanel header="Müşteri Adresi Ekle">
+            <form
+              [formGroup]="_createCustomerForm"
+              (ngSubmit)="_submitAddressForm(_createCustomerForm.value)"
+            >
+              <div class="form-group mb-3">
+                <p-dropdown
+                  [filter]="true"
+                  filterBy="name"
+                  id="address_country"
+                  formControlName="address_country"
+                  [options]="_countries"
+                  optionLabel="name"
+                  placeholder="Ülke Seçiniz"
+                ></p-dropdown>
+              </div>
+              <div class="form-group mb-3">
+                <p-dropdown
+                  [filter]="true"
+                  filterBy="name"
+                  id="address_region"
+                  formControlName="address_region"
+                  [options]="_regions"
+                  optionLabel="name"
+                  placeholder="Bölge Seçiniz"
+                ></p-dropdown>
+              </div>
+              <div class="form-group mb-3">
+                <p-dropdown
+                  [filter]="true"
+                  filterBy="name"
+                  id="address_province"
+                  formControlName="address_province"
+                  [options]="_provinces"
+                  optionLabel="name"
+                  placeholder="İl Seçiniz"
+                ></p-dropdown>
+              </div>
+
+              <div class="form-group mb-3">
+                <p-dropdown
+                  [filter]="true"
+                  filterBy="name"
+                  id="address_taxOffice"
+                  formControlName="address_taxOffice"
+                  [options]="_taxOffices"
+                  optionLabel="name"
+                  placeholder="Vergi Dairesi Seçiniz"
+                ></p-dropdown>
+              </div>
+
+              <div class="form-group mb-3">
+                <p-dropdown
+                  [filter]="true"
+                  filterBy="name"
+                  id="address_district"
+                  formControlName="address_district"
+                  [options]="_districts"
+                  optionLabel="name"
+                  placeholder="İl Seçiniz"
+                ></p-dropdown>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="address_description" class="label"
+                  >Adres Tarifi</label
                 >
-                  {{ country.name }}
-                </option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="address_region" class="label">Bölge*</label>
-              <select
-                class="form-select"
-                id="address_region"
-                formControlName="address_region"
-                class="form-control"
-              >
-                <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                <option
-                  *ngFor="let region of _regions"
-                  value="{{ region.code }}"
+                <input
+                  type="text"
+                  class="form-control"
+                  id="address_description"
+                  name="address_description"
+                  fullWidth
+                  formControlName="address_description"
+                />
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="address_postalCode" class="label"
+                  >Posta Kodu*</label
                 >
-                  {{ region.name }}
-                </option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="address_province" class="label">il*</label>
-              <select
-                class="form-select"
-                id="address_province"
-                formControlName="address_province"
-              >
-                <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                <option
-                  *ngFor="let province of _provinces"
-                  value="{{ province.code }}"
-                >
-                  {{ province.name }}
-                </option>
-              </select>
-            </div>
+                <input
+                  type="text"
+                  id="address_postalCode"
+                  name="address_postalCode"
+                  fullWidth
+                  formControlName="address_postalCode"
+                  class="form-control"
+                />
+              </div>
 
-            <div class="form-group">
-              <label for="address_district" class="label">Vergi Dairesi*</label>
-              <select
-                class="form-select"
-                id="address_taxOffice"
-                formControlName="address_taxOffice"
-              >
-                <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                <option
-                  *ngFor="let taxOffice of _taxOffices"
-                  value="{{ taxOffice.code }}"
-                >
-                  {{ taxOffice.name }}
-                </option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="address_district" class="label">ilçe*</label>
-              <select
-                class="form-select"
-                id="address_district"
-                formControlName="address_district"
-              >
-                <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                <option
-                  *ngFor="let district of _districts"
-                  value="{{ district.code }}"
-                >
-                  {{ district.name }}
-                </option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="address_description" class="label"
-                >Adres Tarifi</label
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="address_description"
-                name="address_description"
-                fullWidth
-                formControlName="address_description"
-              />
-            </div>
-
-            <div class="form-group mb-3">
-              <label for="address_postalCode" class="label">Posta Kodu*</label>
-              <input
-                type="text"
-                id="address_postalCode"
-                name="address_postalCode"
-                fullWidth
-                formControlName="address_postalCode"
-                class="form-control"
-              />
-            </div>
-
-            <div class="form-group">
-              <p-button
-                icon="fa fa-plus"
-                type="submit"
-                label="Kaydet"
-              ></p-button>
-            </div>
-          </form>
-        </p-tabPanel>
-      </p-tabView>
-    </p-card>
-    <div class="mb-3"></div>
-    <p-card
-      header="Adres Ekle"
-      id="findAddress"
-      #findAddress
-      *ngIf="this.selectedCustomers.length > 0"
-    >
-      <p-table [value]="addresses">
-        <ng-template pTemplate="header">
-          <tr>
-            <th>Ülke</th>
-            <th>Bölge</th>
-            <th>İl</th>
-            <th>İlçe</th>
-            <th>Adres</th>
-            <th>İşlemler</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-address>
-          <tr>
-            <td>{{ address.countryDescription }}</td>
-            <td>{{ address.stateDescription }}</td>
-            <td>{{ address.cityDescription }}</td>
-            <td>{{ address.districtDescription }}</td>
-            <td>{{ address.address }}</td>
-            <td>
-              <p-button
-                icon="fa fa-plus"
-                (onClick)="selectCurrentAddress(address)"
-              ></p-button>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </p-card>
-
-    <div class="mb-3"></div>
-    <p-card header="Ürün Bul" id="findProducts" #findProducts #findAddress>
-      <!-- *ngIf="
-        this.selectedCustomers.length > 0 && this.selectedAddresses.length > 0
-      " -->
-      <p-tabView>
-        <p-tabPanel header="Ürün Bul">
-          <p-button
-            label="Ürün Bul"
-            (onClick)="openDialog('findProductDialog')"
-          ></p-button>
-        </p-tabPanel>
-      </p-tabView>
-    </p-card>
-
-    <div class="mb-3"></div>
-    <p-card header="Ödeme Alanı">
-      <!-- *ngIf="
-        this.selectedCustomers.length > 0 &&
-        this.selectedAddresses.length > 0 &&
-        this.selectedProducts.length > 0
-      " -->
-      <p-tabView>
-        <!-- <p-tabPanel header="Iyzco">
-          <button
-            pButton
-            pRipple
-            style="width: 100%"
-            label="Iyzco İle Öde"
-            class="p-button-success"
-          ></button>
-        </p-tabPanel> -->
-        <p-tabPanel header="PayTR">
-          <button
-            pButton
-            pRipple
-            style="width: 100%"
-            label="PayTr İle Öde"
-            class="p-button-primary"
-            (click)="createPayment(1)"
-          ></button>
-        </p-tabPanel>
-        <p-tabPanel header="Havale">
-          <button
-            pButton
-            pRipple
-            style="width: 100%"
-            label="Havale İle Öde"
-            class="p-button-primary"
-            (click)="createPayment(2)"
-          ></button>
-        </p-tabPanel>
-        <p-tabPanel header="Nakit">
-          <button
-            pButton
-            pRipple
-            style="width: 100%"
-            label="Nakit İle Öde"
-            class="p-button-primary"
-            (click)="createPayment(3)"
-          ></button>
-        </p-tabPanel>
-      </p-tabView>
-    </p-card>
-    <div class="mb-3"></div>
-    <p-card
-      *ngIf="
-        this.selectedCustomers.length > 0 &&
-        this.selectedAddresses.length > 0 &&
-        this.selectedProducts.length > 0
-      "
-    >
-      <div class="row">
-        <div class="col-md-6">
-          <button
-            (click)="createOrder()"
-            pButton
-            pRipple
-            style="width: 100%"
-            label="Siparişi Onayla"
-            class="p-button-success"
-          ></button>
-        </div>
-        <div class="col-md-6">
-          <button
-            pButton
-            pRipple
-            style="width: 100%"
-            label="Sipariş İptal"
-            class="p-button-danger"
-          ></button>
-        </div>
-      </div>
-    </p-card>
-    <!-- *ngIf="
-        this.selectedCustomers.length > 0 &&
-        this.selectedAddresses.length > 0 &&
-        this.selectedProducts.length > 0
-      " -->
-
-    <p-card header="Sipariş Önizleme" #preview>
-      <p-table [value]="selectedOfficeAndWarehosue">
-        <ng-template pTemplate="caption"> Ofis-Depo </ng-template>
-
-        <ng-template pTemplate="header">
-          <tr>
-            <th>Ofis</th>
-            <th>Depo</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-value>
-          <tr>
-            <td>{{ value.office }}</td>
-            <td>{{ value.warehouse }}</td>
-          </tr>
-        </ng-template>
-      </p-table>
-      <div class="mb-3"></div>
-      <p-table
-        [value]="selectedCustomers"
-        *ngIf="this.selectedCustomers.length > 0"
-      >
-        <ng-template pTemplate="caption"> Seçilen Müşteri </ng-template>
-
-        <ng-template pTemplate="header">
-          <tr>
-            <th>Müşteri Kodu</th>
-            <th>Müşteri</th>
-            <th>Mail</th>
-            <th>Telefon</th>
-            <th>İşlemler</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-customer>
-          <tr>
-            <td>{{ customer.currAccCode }}</td>
-            <td>{{ customer.currAccDescription }}</td>
-            <td>{{ customer.mail }}</td>
-            <td>{{ customer.phone }}</td>
-            <td>
-              <button class="btn btn-danger" (click)="deleteCurrentCustomer()">
-                <i class="fa fa-trash"></i>
-              </button>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-      <div class="mb-3"></div>
-      <p-table
-        [value]="selectedAddresses"
-        *ngIf="this.selectedAddresses.length > 0"
-      >
-        <ng-template pTemplate="caption"> Seçilen Adres </ng-template>
-        <ng-template pTemplate="header">
-          <tr>
-            <th>Ülke</th>
-            <th>Bölge</th>
-            <th>İl</th>
-            <th>İlçe</th>
-            <th>Adres</th>
-            <th>İşlemler</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-address>
-          <tr>
-            <td>{{ address.countryDescription }}</td>
-            <td>{{ address.stateDescription }}</td>
-            <td>{{ address.cityDescription }}</td>
-            <td>{{ address.districtDescription }}</td>
-            <td>{{ address.address }}</td>
-            <td>
-              <button (onClick)="deleteCurrentAddress()" class="btn btn-danger">
-                <i class="fa fa-trash"></i>
-              </button>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-      <div class="mb-3"></div>
-
-      <p-table
-        [value]="selectedProducts"
-        *ngIf="this.selectedProducts.length > 0"
-        class="p-datatable-sm"
-        editMode="row"
-      >
-        <ng-template pTemplate="caption"> Seçilen Ürünler </ng-template>
-
-        <ng-template pTemplate="header">
-          <tr>
-            <th scope="col">Resim</th>
-            <th scope="col">Kod</th>
-            <th scope="col">RafNo</th>
-            <th scope="col">Depo</th>
-
-            <th scope="col">Miktar</th>
-            <th scope="col">Barkod</th>
-            <th scope="col">Parti</th>
-            <th scope="col">Birim Fiyat</th>
-            <th scope="col">Toplam Fiyat</th>
-            <th scope="col">Ürün</th>
-            <th scope="col">İşlem</th>
-          </tr>
-        </ng-template>
-        <ng-template
-          pTemplate="body"
-          let-product
-          let-editing="editing"
-          let-ri="rowIndex"
-        >
-          <tr [pEditableRow]="selectedProducts">
-            <td class="image-icon-td">
-              <p-image
-                src="{{ product.photoUrl }}"
-                alt="Image"
-                width="30"
-                [preview]="true"
-              ></p-image>
-            </td>
-
-            <!-- burası -->
-            <td>{{ product.itemCode }}</td>
-            <td>{{ product.shelfNo }}</td>
-            <td>{{ product.warehouseCode }}</td>
-
-            <td>
-              <p-cellEditor>
-                <ng-template pTemplate="input">
-                  <input pInputText type="number" [(ngModel)]="product.price" />
-                </ng-template>
-                <ng-template pTemplate="output">
-                  {{ product.quantity }}
-                </ng-template></p-cellEditor
-              >
-            </td>
-            <td>{{ product.barcode }}</td>
-            <td>{{ product.batchCode }}</td>
-            <td>
-              <p-cellEditor>
-                <ng-template pTemplate="input">
-                  <input pInputText type="number" [(ngModel)]="product.price" />
-                </ng-template>
-                <ng-template pTemplate="output">
-                  {{ product.price | currency : "USD" }}
-                </ng-template>
-              </p-cellEditor>
-            </td>
-            <td>{{ product.price * product.quantity }}</td>
-            <td>{{ product.description }}</td>
-            <td>
-              <button class="btn btn-danger" (onClick)="deleteProduct(product)">
-                <i class="fa fa-trash"></i>
-              </button>
-              <div class="flex align-items-center justify-content-center gap-2">
+              <div class="form-group mb-3">
                 <button
-                  *ngIf="!editing"
                   pButton
                   pRipple
-                  type="button"
-                  pInitEditableRow
-                  icon="pi pi-pencil"
-                  (click)="onRowEditInit(product)"
-                  class="p-button-rounded p-button-text"
-                ></button>
-                <button
-                  *ngIf="editing"
-                  pButton
-                  pRipple
-                  type="button"
-                  pSaveEditableRow
-                  icon="pi pi-check"
-                  (click)="onRowEditSave(product)"
-                  class="p-button-rounded p-button-text p-button-success mr-2"
-                ></button>
-                <button
-                  *ngIf="editing"
-                  pButton
-                  pRipple
-                  type="button"
-                  pCancelEditableRow
-                  icon="pi pi-times"
-                  (click)="onRowEditCancel(product, ri)"
-                  class="p-button-rounded p-button-text p-button-danger"
+                  class="p-button-success"
+                  style="width: 100%"
+                  label="Etiket Çıkart"
+                  type="submit"
+                  label="Kaydet"
                 ></button>
               </div>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </p-card>
-
-    <p-dialog
-      header="Var Olan Müşteri Bul"
-      [(visible)]="getCustomerDialog"
-      [style]="{ width: '80vw' }"
-    >
-      <form [formGroup]="getCustomerForm">
-        <div class="row mb-3">
-          <div class="col-md-3">
-            <label for="mail">Mail</label>
-            <input
-              type="text"
-              class="form-control"
-              id="mail"
-              placeholder="Mail"
-              formControlName="mail"
-            />
-          </div>
-          <div class="col-md-3">
-            <label for="phone">Telefon Numarası</label>
-            <input
-              type="text"
-              class="form-control"
-              id=""
-              placeholder=""
-              formControlName="phone"
-            />
-          </div>
-
-          <div class="col-md-3">
-            <label for="currAccCode">Müşteri Kodu</label>
-            <input
-              type="text"
-              class="form-control"
-              id="currAccCode"
-              placeholder="Müşteri Kodu"
-              formControlName="currAccCode"
-            />
-          </div>
-          <div class="col-md-3 mt-3">
-            <p-button
-              label="Müşteri Bul"
-              (onClick)="getCustomers(this.getCustomerForm.value)"
-            ></p-button>
-          </div>
-        </div>
-      </form>
-      <p-table [value]="customers">
-        <ng-template pTemplate="header">
-          <tr>
-            <th>Müşteri Kodu</th>
-            <th>Müşteri</th>
-            <th>Mail</th>
-            <th>Telefon</th>
-            <th>İşlemler</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-customer>
-          <tr>
-            <td>{{ customer.currAccCode }}</td>
-            <td>{{ customer.currAccDescription }}</td>
-            <td>{{ customer.mail }}</td>
-            <td>{{ customer.phone }}</td>
-            <td>
-              <p-button
-                icon="fa fa-plus"
-                (onClick)="selectCurrentCustomer(customer)"
-              ></p-button>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </p-dialog>
-
-    <p-dialog
-      header="Ürün Bul"
-      [(visible)]="findProductDialog"
-      [style]="{ width: '80vw' }"
-    >
-      <form [formGroup]="getProductsForm">
-        <div class="row mb-3">
-          <!-- <div class="col-md-4">
+            </form>
+          </p-tabPanel>
+        </p-tabView>
+      </p-tabPanel>
+      <!-- <p-tabPanel
+        [disabled]="this.currAccCode === undefined ? true : false"
+        header="Adres Ekle"
+        [rightIcon]="
+          this.selectedAddresses.length > 0 ? 'pi pi-check' : 'pi pi-times'
+        "
+      >
+      </p-tabPanel> -->
+      <p-tabPanel
+        header="Ürün Bul"
+        [rightIcon]="
+          this.selectedProducts.length > 0
+            ? 'pi
+        pi-check'
+            : 'pi pi-times'
+        "
+      >
+        <form
+          [formGroup]="getProductsForm"
+          (ngSubmit)="getProducts(this.getProductsForm.value)"
+        >
+          <div class="row mb-3">
+            <!-- <div class="col-md-4">
                   <label for="stockCode">Stok Kodu</label>
                   <input
                     type="text"
@@ -761,76 +582,398 @@
                     formControlName="stockCode"
                   />
                 </div> -->
-          <div class="col-md-4">
-            <label for="barcode">Barkod</label>
+            <div class="col-md-4">
+              <label for="barcode">Barkod</label>
+              <input
+                type="text"
+                class="form-control"
+                id="barcode"
+                placeholder="Barkod"
+                formControlName="barcode"
+              />
+            </div>
+            <div class="col-md-4 mt-3">
+              <p-button label="Ürün Bul" type="submit"></p-button>
+            </div>
+          </div>
+        </form>
+        <p-table [scrollable]="true" [value]="products">
+          <ng-template pTemplate="header">
+            <tr>
+              <th scope="col">Resim</th>
+              <th scope="col">Ürün Kodu</th>
+
+              <th scope="col">UD Stok</th>
+              <th scope="col">MD Stok</th>
+              <th scope="col">Miktar</th>
+              <th scope="col">Barkod</th>
+
+              <th scope="col">Satış Fiyatı</th>
+              <th scope="col">Ürün Adı</th>
+
+              <th scope="col">İşlemler</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-product>
+            <tr [pEditableRow]="product">
+              <td class="image-icon-td">
+                <p-image
+                  src="{{ product.photoUrl }}"
+                  alt="Image"
+                  width="70"
+                  [preview]="true"
+                ></p-image>
+              </td>
+
+              <td>{{ product.itemCode }}</td>
+
+              <td>{{ product.uD_Stock }}</td>
+              <td>{{ product.mD_Stock }}</td>
+              <td>
+                {{ product.quantity }}
+              </td>
+              <td>{{ product.barcode }}</td>
+
+              <td>
+                {{ product.price | currency : "USD" }}
+              </td>
+              <td>{{ product.description }}</td>
+              <td>
+                <p-button
+                  icon="fa fa-plus"
+                  (onClick)="addCurrentProducts(product)"
+                ></p-button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-tabPanel>
+
+      <p-tabPanel header="Sipariş Önizleme">
+        <div class="card">
+          <div class="card-body text-center">
+            <h1 class="mt-3"><i class="fa-regular fa-circle-check"></i></h1>
+
+            <h5 class="mb-3">Sipariş Numaranız</h5>
+            <h2 class="mb-3">{{ orderNo }}</h2>
+          </div>
+        </div>
+
+        <div class="mb-3"></div>
+        <div class="row" style="display: flex">
+          <div class="col-md-4 mb-4" *ngFor="let customer of selectedCustomers">
+            <div class="card" #card1 style="height: 100%">
+              <div class="card-body">
+                <h5 class="card-title">Müşteri</h5>
+                <p class="card-text">
+                  Müşteri Kodu:
+                  {{
+                    customer.currAccCode
+                      ? customer.currAccCode
+                      : this.currAccCode
+                  }}
+                </p>
+                <p class="card-text">
+                  Müşteri: {{ customer.currAccDescription }}
+                </p>
+                <p class="card-text">Mail: {{ customer.mail }}</p>
+                <p class="card-text">Telefon: {{ customer.phone }}</p>
+                <button
+                  class="btn btn-danger"
+                  (click)="deleteCurrentCustomer()"
+                >
+                  Müşteriyi Sil
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-4" *ngFor="let address of selectedAddresses">
+            <div class="card" style="height: 100%" #card2>
+              <div class="card-body">
+                <p class="card-title">Adres</p>
+                <p class="card-text">Ülke: {{ address.countryDescription }}</p>
+                <p class="card-text">Bölge: {{ address.stateDescription }}</p>
+                <p class="card-text">İl: {{ address.cityDescription }}</p>
+                <p class="card-text">İlçe: {{ address.districtDescription }}</p>
+                <p class="card-text">Adres: {{ address.address }}</p>
+                <button class="btn btn-danger" (click)="deleteCurrentAddress()">
+                  Adresi Sil
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="col-md-4 mb-4"
+            *ngFor="let value of selectedOfficeAndWarehosue"
+          >
+            <div class="card" style="height: 100%">
+              <div class="card-body">
+                <h5 class="card-title">Sipariş Bilgileri</h5>
+                <p class="card-subtitle mb-2 text-muted">
+                  Ofis: {{ value.office }}
+                </p>
+                <p class="card-text">Depo: {{ value.warehouse }}</p>
+                <p class="card-text">
+                  Ödeme:
+                  {{
+                    payment.creditCardTypeCode === undefined
+                      ? ""
+                      : payment.creditCardTypeCode
+                  }}
+                </p>
+                <p class="card-text">
+                  Satış Elemanı:
+                  {{
+                    this.salesPersonCode === undefined
+                      ? ""
+                      : this.salesPersonCode
+                  }}
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="col-md-3 mb-4">
+            <div class="card" style="height: 100%">
+              <div class="card-body">
+
+              </div>
+            </div>
+          </div> -->
+        </div>
+
+        <div class="mb-3"></div>
+
+        <p-table
+          [scrollable]="true"
+          [value]="selectedProducts"
+          *ngIf="this.selectedProducts.length > 0"
+          editMode="row"
+          [styleClass]="selectedSize.class"
+          dataKey="lineId"
+        >
+          <ng-template pTemplate="caption"> Seçilen Ürünler </ng-template>
+
+          <ng-template pTemplate="body" let-editing="editing">
+            <tr>
+              <th scope="col">Resim</th>
+              <th scope="col">Kod</th>
+              <th scope="col">RafNo</th>
+              <th scope="col">Depo</th>
+
+              <th scope="col">Miktar</th>
+              <th scope="col">Barkod</th>
+              <th scope="col">Parti</th>
+              <th scope="col">Birim Fiyat</th>
+              <th scope="col">Toplam Fiyat</th>
+              <th scope="col">Ürün</th>
+              <th scope="col">İşlem</th>
+            </tr>
+          </ng-template>
+          <ng-template
+            pTemplate="body"
+            let-product
+            let-editing="editing"
+            let-ri="rowIndex"
+          >
+            <tr [pEditableRow]="product">
+              <td class="image-icon-td">
+                <p-image
+                  src="{{ product.photoUrl }}"
+                  alt="Image"
+                  width="70"
+                  [preview]="true"
+                ></p-image>
+              </td>
+
+              <!-- burası -->
+              <td>{{ product.itemCode }}</td>
+              <td>{{ product.shelfNo }}</td>
+              <td>{{ product.warehouseCode }}</td>
+
+              <td>
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText
+                      type="number"
+                      [(ngModel)]="product.quantity"
+                    />
+                  </ng-template>
+                  <ng-template pTemplate="output" style="font-weight: bold">
+                    <span style="font-weight: bold">
+                      {{ product.quantity }}</span
+                    >
+                  </ng-template></p-cellEditor
+                >
+              </td>
+              <td>{{ product.barcode }}</td>
+              <td>{{ product.batchCode }}</td>
+              <td>
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText
+                      type="number"
+                      [(ngModel)]="product.price"
+                    />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    <span style="font-weight: bold"> {{ product.price }}</span>
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>{{ product.price * product.quantity }}</td>
+              <td>{{ product.description }}</td>
+              <td>
+                <button
+                  class="btn btn-danger"
+                  (onClick)="deleteProduct(product)"
+                >
+                  <i class="fa fa-trash"></i>
+                </button>
+                <div
+                  class="flex align-items-center justify-content-center gap-2"
+                >
+                  <button
+                    *ngIf="!editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    pInitEditableRow
+                    icon="pi pi-pencil"
+                    (click)="onRowEditInit(product)"
+                    class="p-button-rounded p-button-text"
+                  ></button>
+                  <button
+                    *ngIf="editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    pSaveEditableRow
+                    icon="pi pi-check"
+                    (click)="onRowEditSave(product)"
+                    class="p-button-rounded p-button-text p-button-success mr-2"
+                  ></button>
+                  <button
+                    *ngIf="editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    pCancelEditableRow
+                    icon="pi pi-times"
+                    (click)="onRowEditCancel(product, ri)"
+                    class="p-button-rounded p-button-text p-button-danger"
+                  ></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <div class="mb-3"></div>
+
+        <div class="row" #iskonto *ngIf="this.selectedProducts.length > 0">
+          <div class="col-md-6">
+            <label for="exampleInputEmail1">İskonto Oranı</label>
+
             <input
               type="text"
               class="form-control"
-              id="barcode"
-              placeholder="Barkod"
-              formControlName="barcode"
+              id="name"
+              placeholder="İndirim Oranı"
+              [(ngModel)]="discountRate"
             />
           </div>
-          <div class="col-md-4 mt-3">
+          <div class="col-md-3 mt-3">
             <p-button
-              label="Ürün Bul"
-              (onClick)="getProducts(this.getProductsForm.value)"
+              label="Toplu İskonto Uygula"
+              (onClick)="discount(discountRate)"
+            ></p-button>
+          </div>
+          <div class="col-md-3 mt-3">
+            <div>
+              <h1>TOPLAM : {{ getTotalPrice() | currency : "₺" }}</h1>
+            </div>
+          </div>
+          <p *ngIf="_discountRate">
+            Uygulanan İndirim Oranı
+            <span style="color: red">{{ _discountRate }}</span>
+          </p>
+        </div>
+        <div class="row mb-3" #iskonto *ngIf="this.selectedProducts.length > 0">
+          <div class="col-md-6">
+            <label for="exampleInputEmail1">Nakit İskonto Oranı</label>
+
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              placeholder="Nakit İndirim Tutarı"
+              [(ngModel)]="cashDiscountRate"
+            />
+            <p *ngIf="cashDiscountRate">
+              Uygulanan Nakit İndirim Tutarı
+              <span style="color: red">{{ cashDiscountRate }}</span>
+            </p>
+          </div>
+          <div class="col-md-3 mt-3">
+            <p-button
+              label="Nakit İskonto Uygula"
+              (onClick)="cashDiscount(cashDiscountRate)"
             ></p-button>
           </div>
         </div>
-      </form>
-      <p-table [value]="products" responsiveLayout="stack">
-        <ng-template pTemplate="header">
-          <tr>
-            <th scope="col">Resim</th>
-            <th scope="col">Ürün Kodu</th>
-            <th scope="col">Raf No</th>
-            <th scope="col">Depo</th>
-            <th scope="col">UD Stok</th>
-            <th scope="col">MD Stok</th>
-            <th scope="col">Miktar</th>
-            <th scope="col">Barkod</th>
-            <th scope="col">Parti</th>
-            <th scope="col">Satış Fiyatı</th>
-            <th scope="col">Ürün Adı</th>
+        <div class="row">
+          <div class="col-md-6">
+            <p-selectButton
+              onclick="console.log(taxTypeCode)"
+              [options]="stateOptions"
+              [(ngModel)]="taxTypeCode"
+              optionLabel="label"
+              optionValue="value"
+            ></p-selectButton>
+          </div>
+        </div>
+        <div class="mb-3"></div>
+        <div class="container-fluid payment-options">
+          <div class="row">
+            <div
+              class="col-md-4 col-lg-2 mb-3"
+              *ngFor="let paymentMethod of paymentMethods"
+            >
+              <button
+                type="button"
+                class="btn btn-primary btn-block p-button p-ripple"
+                (click)="createPayment(paymentMethod.id)"
+              >
+                <i class="{{ paymentMethod.icon }}"></i>
+                {{ paymentMethod.name }}
+              </button>
+            </div>
+          </div>
+        </div>
 
-            <th scope="col">İşlemler</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-product>
-          <tr [pEditableRow]="product">
-            <td class="image-icon-td">
-              <p-image
-                src="{{ product.photoUrl }}"
-                alt="Image"
-                width="30"
-                [preview]="true"
-              ></p-image>
-            </td>
-
-            <td>{{ product.itemCode }}</td>
-            <td>{{ product.shelfNo }}</td>
-            <td>{{ product.warehouseCode }}</td>
-            <td>{{ product.uD_Stock }}</td>
-            <td>{{ product.mD_Stock }}</td>
-            <td>
-              {{ product.quantity }}
-            </td>
-            <td>{{ product.barcode }}</td>
-            <td>{{ product.batchCode }}</td>
-            <td>
-              {{ product.price | currency : "USD" }}
-            </td>
-            <td>{{ product.description }}</td>
-            <td>
-              <p-button
-                icon="fa fa-plus"
-                (onClick)="addCurrentProducts(product)"
-              ></p-button>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </p-dialog>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <button
+              (click)="createOrder()"
+              pButton
+              pRipple
+              style="width: 100%"
+              label="Siparişi Onayla"
+              class="p-button-success"
+            ></button>
+          </div>
+          <div class="col-md-6">
+            <button
+              pButton
+              pRipple
+              style="width: 100%"
+              label="Sipariş İptal"
+              class="p-button-danger"
+            ></button>
+          </div>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
   </section>
 </main>

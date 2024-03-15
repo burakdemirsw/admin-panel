@@ -22,4 +22,11 @@ export class SidebarComponent implements OnInit {
     this.router.navigate(["/warehouse-operation/" + "REQ-" + result])
   }
 
+  async routeNewPage3() {
+    const result = await this.generalService.generateGUID()
+    this.router.navigate(["/create-order/" + result])
+  }
+
+
+
 }

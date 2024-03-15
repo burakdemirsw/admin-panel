@@ -9,7 +9,7 @@ import { WarehosueTransferListModel } from 'src/app/models/model/warehouse/wareh
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 @Component({
   selector: 'app-warehouse-transfer-list',
@@ -22,7 +22,7 @@ export class WarehouseTransferListComponent implements OnInit {
   filterForm: FormGroup
   constructor(
     private httpClientService: HttpClientService,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private spinnerService: NgxSpinnerService,
     private router: Router,
     private warehosueService: WarehouseService,
@@ -74,9 +74,9 @@ export class WarehouseTransferListComponent implements OnInit {
       const response = await this.warehosueService.deleteTransferFromId(orderNumber);
       if (response === true) {
         location.reload();
-        this.alertifyService.success("İşlem Başarılı")
+        this.toasterService.success("İşlem Başarılı")
       } else {
-        this.alertifyService.error("İşlem Başarısız")
+        this.toasterService.error("İşlem Başarısız")
 
       }
     }

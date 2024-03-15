@@ -13,7 +13,6 @@ import {
 } from 'src/app/models/model/shelfNameModel';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
 import { OrderService } from '../../../services/admin/order.service';
 
 import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
@@ -32,6 +31,7 @@ import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/w
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 declare var window: any;
 
@@ -69,10 +69,10 @@ export class OrderOperationComponent implements OnInit {
     { name: 'Vergisiz', key: 4 },
 
   ];
-
+  _pageDescription: boolean = false;
   selectedInvoiceType: any;
   constructor(
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private formBuilder: FormBuilder,
     private orderService: OrderService,
     private activatedRoute: ActivatedRoute,
@@ -98,7 +98,7 @@ export class OrderOperationComponent implements OnInit {
       var orderNumber: string = params['orderNumber'];
       if (params['isInvoice']) {
         this.isInvoice = Boolean(params['isInvoice']);
-        this.alertifyService.success(this.isInvoice.toString())
+        this.toasterService.success(this.isInvoice.toString())
       }
       // if (orderNumber.includes('MIS')) {
       //   orderNumber = orderNumber.split('MIS-')[0]
@@ -132,7 +132,10 @@ export class OrderOperationComponent implements OnInit {
         orderNumberType = "MIS"
         await this.getAllProducts(params['orderNumber'], 'MIS'); //toplanan ve toplanacak ürünleri çeker
       }
+      if (location.href.includes("MIS")) {
+        this._pageDescription = true
 
+      }
 
       //this.spinnerService.hide();
       this.setPageDescription(orderNumberType);
@@ -149,7 +152,7 @@ export class OrderOperationComponent implements OnInit {
     var response = await this.orderService.addMissingProduct(_product);
     if (response) {
       await this.getAllProducts(this.currentOrderNo, 'WS')
-      this.alertifyService.success("Ürün,Eksik Ürünlere Eklendi")
+      this.toasterService.success("Ürün,Eksik Ürünlere Eklendi")
     }
   }
 
@@ -162,7 +165,7 @@ export class OrderOperationComponent implements OnInit {
       var response = await this.orderService.deleteMissingProduct(this.currentOrderNo, barcode);
       if (response) {
         await this.getAllProducts(this.currentOrderNo, 'MIS')
-        this.alertifyService.success("Ürün,Eksik Ürünlerden Silindi")
+        this.toasterService.success("Ürün,Eksik Ürünlerden Silindi")
       }
     }
 
@@ -222,7 +225,7 @@ export class OrderOperationComponent implements OnInit {
 
   selectInvoice(invoice: InvoiceOfCustomer_VM) {
     this.selectedInvoice = invoice
-    this.alertifyService.success("Fatura Seçildi");
+    this.toasterService.success("Fatura Seçildi");
     this._visible2 = false;
   }
   //-----------------------------------------------------
@@ -239,7 +242,7 @@ export class OrderOperationComponent implements OnInit {
     const formDataJSON = JSON.stringify(model); // Form verilerini JSON'a dönüştür
 
     this.qrCodeValue = formDataJSON;
-    // this.alertifyService.success(this.qrCodeValue)
+    // this.toasterService.success(this.qrCodeValue)
   }
 
   onChangeURL(url: SafeUrl) {
@@ -283,7 +286,7 @@ export class OrderOperationComponent implements OnInit {
       .toPromise();
     if (productData.length === 0) {
       this._productsToCollect = []
-      // this.alertifyService.success("SAYIM TAMAMLANDI");
+      // this.toasterService.success("SAYIM TAMAMLANDI");
 
     }
     this.productsToCollect = productData; //toplanacak ürünler çekildi
@@ -350,7 +353,7 @@ export class OrderOperationComponent implements OnInit {
       if (response) {
         var warehouseOperationListModel: WarehouseOperationListModel = response;
         this.toWarehouseCode = warehouseOperationListModel.toWarehouseCode;
-        // this.alertifyService.success(this.toWarehouseCode);
+        // this.toasterService.success(this.toWarehouseCode);
       }
     }
 
@@ -385,14 +388,14 @@ export class OrderOperationComponent implements OnInit {
     );
 
     if (response) {
-      this.alertifyService.success('Transfer işlemi Başarılı');
+      this.toasterService.success('Transfer işlemi Başarılı');
       this.router.navigate(['/warehouse-operation-list']);
     }
   }
 
   async collectAndPack_WS(products: ProductOfOrder[]) {
     if (!this.selectedInvoiceType) {
-      this.alertifyService.error("Vergi Tipi Seçiniz");
+      this.toasterService.error("Vergi Tipi Seçiniz");
       return;
     }
     //this.spinnerService.show();
@@ -401,14 +404,23 @@ export class OrderOperationComponent implements OnInit {
         this.currentOrderNo
       );
     if (response.length > 0) {
-      this.alertifyService.success('Otomatik Sayım Yapılabilir');
+      this.toasterService.success('Otomatik Sayım Yapılabilir');
       const response2 = await this.orderService.setInventoryByOrderNumber(
         this.currentOrderNo
       );
       if (response2) {
-        this.alertifyService.success('Otomatik Sayım yapıldı');
+        this.toasterService.success('Otomatik Sayım yapıldı');
 
-        await this.orderService.collectAndPack(products, this.currentOrderNo, this.selectedInvoiceType.key);
+        var _response = await this.orderService.collectAndPack(products, this.currentOrderNo, this.selectedInvoiceType.key);
+        if (_response) {
+          console.log(this.productsToCollect)
+          if (this.productsToCollect.length > 0) {
+            this.productsToCollect.forEach(product => {
+              this.addMissingProduct(product);
+            });
+          }
+          this.router.navigate(['/orders-managament']);
+        }
       }
 
     }
@@ -549,7 +561,7 @@ export class OrderOperationComponent implements OnInit {
         return result[1];
       }
     } catch (error) {
-      this.alertifyService.error(error.message);
+      this.toasterService.error(error.message);
       return null;
     }
   }
@@ -591,12 +603,12 @@ export class OrderOperationComponent implements OnInit {
           productModel.barcode = this.checkForm.get('barcode').value;
           this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
         } else {
-          this.alertifyService.warning('Formu Doldurunuz.');
+          this.toasterService.warn('Formu Doldurunuz.');
           return;
         }
       }
       else if (productModel.shelfNo && productModel.barcode && productModel.quantity == null) {
-        // this.alertifyService.success("Durum Algılandı | Düzenleme Sağlandı...")
+        // this.toasterService.success("Durum Algılandı | Düzenleme Sağlandı...")
         var number = await this.setFormValues(productModel.barcode, true);
         productModel.barcode = this.checkForm.get('barcode').value;
         this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
@@ -667,7 +679,7 @@ export class OrderOperationComponent implements OnInit {
               var lineId = this.productsToCollect.find(p => p.barcode == productModel.barcode
               ).lineId
               if (!lineId) {
-                this.alertifyService.error("lineId bulunamadı")
+                this.toasterService.error("lineId bulunamadı")
               }
 
               var response = await this.warehouseService.countProductRequest2(
@@ -706,7 +718,7 @@ export class OrderOperationComponent implements OnInit {
 
                 //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
               } else {
-                this.alertifyService.error("Sayım Sırasında Hata Alındı")
+                this.toasterService.error("Sayım Sırasında Hata Alındı")
                 return;
               }
 
@@ -715,11 +727,11 @@ export class OrderOperationComponent implements OnInit {
               await this.getAllProducts(this.orderNo, 'WS');
 
               //↑↑↑↑↑↑↑↑↑ TOPLANAN ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
-              this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
+              this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
               this.clearBarcodeAndQuantity();
               this.generalService.beep();
             } else {
-              this.alertifyService.warning('Stok Hatası.');
+              this.toasterService.warn('Stok Hatası.');
             }
           } else {
             const confirmDelete = window.confirm(
@@ -738,7 +750,7 @@ export class OrderOperationComponent implements OnInit {
                 var lineId = this.productsToCollect.find(p => p.barcode == productModel.barcode
                 ).lineId
                 if (!lineId) {
-                  this.alertifyService.error("lineId bulunamadı")
+                  this.toasterService.error("lineId bulunamadı")
                 }
 
                 var response = await this.warehouseService.countProductRequest2(
@@ -760,19 +772,19 @@ export class OrderOperationComponent implements OnInit {
                 await this.getAllProducts(this.orderNo, 'WS');
 
                 //↑↑↑↑↑↑↑↑↑ TOPLANAN ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
-                this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
+                this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
                 this.clearBarcodeAndQuantity();
                 this.generalService.beep();
               } else {
-                this.alertifyService.warning('Stok Hatası.');
+                this.toasterService.warn('Stok Hatası.');
               }
 
             } else {
-              this.alertifyService.error("Eklenmedi")
+              this.toasterService.error("Eklenmedi")
             }
           }
         } else {
-          this.alertifyService.warning('Eşleşen Ürün Bulunamadı');
+          this.toasterService.warn('Eşleşen Ürün Bulunamadı');
         }
       }
 
@@ -786,7 +798,7 @@ export class OrderOperationComponent implements OnInit {
 
           //↑↑↑↑↑↑↑↑↑ EĞER QR OKUTULDUYSA ÇEVİRMEN LAZIM  ↑↑↑↑↑↑↑↑↑
         } else {
-          this.alertifyService.warning('Formu Doldurunuz.');
+          this.toasterService.warn('Formu Doldurunuz.');
           return;
         }
       } else if (productModel.shelfNo && productModel.barcode) {
@@ -848,7 +860,7 @@ export class OrderOperationComponent implements OnInit {
               var lineId = this.productsToCollect.find(p => p.barcode == productModel.barcode
               ).lineId
               if (!lineId) {
-                this.alertifyService.error("lineId bulunamadı")
+                this.toasterService.error("lineId bulunamadı")
               }
               var response2 = await this.warehouseService.countProductRequest2(
                 productModel.barcode,
@@ -885,26 +897,26 @@ export class OrderOperationComponent implements OnInit {
 
                 //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
               } else {
-                this.alertifyService.error("Sayım Sırasında Hata Alındı")
+                this.toasterService.error("Sayım Sırasında Hata Alındı")
                 return;
               }
 
               await this.getAllProducts(this.orderNo, 'WT');
               //↑↑↑↑↑↑↑↑↑ TOPLANAN ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
 
-              this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
+              this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
               this.clearBarcodeAndQuantity();
             }
           } else {
-            this.alertifyService.warning('Stok Hatası.');
+            this.toasterService.warn('Stok Hatası.');
           }
         } else {
-          this.alertifyService.warning('Eşleşen Ürün Bulunamadı');
+          this.toasterService.warn('Eşleşen Ürün Bulunamadı');
         }
       }
 
       // else if (productModel.shelfNo && productModel.barcode && productModel.quantity == null) {
-      //   this.alertifyService.success("Durum Algılandı | Düzenleme Sağlandı...")
+      //   this.toasterService.success("Durum Algılandı | Düzenleme Sağlandı...")
       //   var number = await this.setFormValues(productModel.barcode, true);
       //   this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
       // }
@@ -918,7 +930,7 @@ export class OrderOperationComponent implements OnInit {
 
           //↑↑↑↑↑↑↑↑↑ EĞER QR OKUTULDUYSA ÇEVİRMEN LAZIM  ↑↑↑↑↑↑↑↑↑
         } else {
-          this.alertifyService.warning('Formu Doldurunuz.');
+          this.toasterService.warn('Formu Doldurunuz.');
           return;
         }
       } else if (productModel.shelfNo && productModel.barcode) {
@@ -970,7 +982,7 @@ export class OrderOperationComponent implements OnInit {
             var lineId = this.productsToCollect.find(p => p.barcode == productModel.barcode && p.shelfNo == productModel.shelfNo
             ).lineId
             if (!lineId) {
-              this.alertifyService.error("lineId bulunamadı")
+              this.toasterService.error("lineId bulunamadı")
             }
             var response = await this.warehouseService.countProductRequest2(
               productModel.barcode,
@@ -1004,7 +1016,7 @@ export class OrderOperationComponent implements OnInit {
               }
 
             } else {
-              this.alertifyService.error("Sayım Sırasında Hata Alındı")
+              this.toasterService.error("Sayım Sırasında Hata Alındı")
               return;
             }
 
@@ -1013,14 +1025,14 @@ export class OrderOperationComponent implements OnInit {
 
             //↑↑↑↑↑↑↑↑↑ TOPLANAN ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
 
-            this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
+            this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
             this.clearBarcodeAndQuantity();
           }
         } else {
-          this.alertifyService.warning('Eşleşen Ürün Bulunamadı');
+          this.toasterService.warn('Eşleşen Ürün Bulunamadı');
         }
       } else {
-        this.alertifyService.warning('Formu Doldurunuz');
+        this.toasterService.warn('Formu Doldurunuz');
       }
     }
   }
@@ -1033,7 +1045,7 @@ export class OrderOperationComponent implements OnInit {
 
     if (isChecked) {
       this.confirmedProductPackageNoList.push(packageNo);
-      // this.alertifyService.success('true');
+      // this.toasterService.success('true');
     } else {
       // Checkbox işaretini kaldırdığınızda, bu ürünün indexini listeden kaldırın.
       const indexToRemove = this.confirmedProductPackageNoList.findIndex(
@@ -1041,14 +1053,14 @@ export class OrderOperationComponent implements OnInit {
       );
       if (indexToRemove !== -1) {
         this.confirmedProductPackageNoList.splice(indexToRemove, 1);
-        // this.alertifyService.error('false');
+        // this.toasterService.error('false');
       }
     }
   }
   urr: string = "https://lh3.googleusercontent.com/d/1H2pjyH0zqSbZMgw5pn1zU0DlbrgDlL5K";
   async addAllSelectedProductsToList(): Promise<any> {
     if (this.confirmedProductPackageNoList.length === 0) {
-      this.alertifyService.warning('Seçilen Ürün Bulunamadı.');
+      this.toasterService.warn('Seçilen Ürün Bulunamadı.');
       return;
     } else {
       for (const element of this.confirmedProductPackageNoList) {
@@ -1077,7 +1089,7 @@ export class OrderOperationComponent implements OnInit {
         this.currentOrderNo.split('-')[1]
       );
 
-      this.alertifyService.success('Seçilen Ürünler Başarıyla Eklendi');
+      this.toasterService.success('Seçilen Ürünler Başarıyla Eklendi');
 
       this.confirmedProductPackageNoList = [];
       return;
@@ -1087,7 +1099,8 @@ export class OrderOperationComponent implements OnInit {
   shelfNoList: string[] = [];
   barcodeValue: string = null; // Değişkeni tanımlayın
 
-
+  productShelvesDialog: boolean = false;
+  productShelves: string[] = [];
   async getShelves(barcode: string) {
     var newResponse = await this.productService.countProductByBarcode(
       barcode
@@ -1102,11 +1115,10 @@ export class OrderOperationComponent implements OnInit {
   }
   setShelveToForm(shelve) {
     this.checkForm.get('shelfNo').setValue(shelve);
-    this.alertifyService.success("Raf Yerleştirildi");
+    this.toasterService.success("Raf Yerleştirildi");
     this.productShelvesDialog = false;
   }
-  productShelvesDialog: boolean = false;
-  productShelves: string[] = [];
+
   async setShelfNo(barcode: string): Promise<string> {
     this.shelfNumbers = 'RAFLAR:';
 
@@ -1169,18 +1181,18 @@ export class OrderOperationComponent implements OnInit {
   async scanCompleteHandler(result: string) {
     if (result != undefined) {
       try {
-        this.alertifyService.success(result);
+        this.toasterService.success(result);
       } catch (error) {
-        this.alertifyService.error(error.message);
+        this.toasterService.error(error.message);
       }
     }
   }
   async deleteOrderProduct(orderNo: string, product: any): Promise<boolean> {
 
-    // if (this.currentOrderNo.includes("MIS")) {
-    //   await this.deleteMissingProduct("MIS-" + orderNo, product.barcode);
-    //   return true;
-    // }
+    if (this.currentOrderNo.includes("MIS")) {
+      await this.deleteMissingProduct("MIS-" + orderNo, product.barcode);
+      return true;
+    }
     const confirmDelete = window.confirm(
       'Bu hareketi silmek istediğinizden emin misiniz?'
     );
@@ -1192,7 +1204,7 @@ export class OrderOperationComponent implements OnInit {
         product.id
       );
       if (response) {
-        this.alertifyService.success('Silme İşlemi Başarılı');
+        this.toasterService.success('Silme İşlemi Başarılı');
         this.generalService.beep3();
         this.lastCollectedProducts =
           await this.productService.getCollectedOrderProducts(this.orderNo);
@@ -1254,12 +1266,12 @@ export class OrderOperationComponent implements OnInit {
         if (qrOperationResponse) {
           // console.log(this.qrOperationModels);
           this.generalService.beep3();
-          this.alertifyService.success('Qr Operasyonu Geri Alındı');
+          this.toasterService.success('Qr Operasyonu Geri Alındı');
         } else {
-          this.alertifyService.error('Qr Operaasyonu Geri Alınamadı');
+          this.toasterService.error('Qr Operaasyonu Geri Alınamadı');
         }
       } else {
-        this.alertifyService.error('Qr Operaasyonu Geri Alınamadı');
+        this.toasterService.error('Qr Operaasyonu Geri Alınamadı');
       }
 
       return response;

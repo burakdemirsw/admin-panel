@@ -8,12 +8,12 @@ import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CountProductRequestModel } from 'src/app/models/model/order/countProductRequestModel';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { HttpClient } from '@angular/common/http';
 import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 @Component({
   selector: 'app-collect-product-of-order',
@@ -29,7 +29,7 @@ export class CollectProductOfOrderComponent implements OnInit {
   constructor(
     private httpClientService: HttpClientService,
     private formBuilder: FormBuilder,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private orderService: OrderService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -139,7 +139,7 @@ export class CollectProductOfOrderComponent implements OnInit {
           foundProduct.quantity &&
           foundProduct.quantity > 1
         ) {
-          this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
+          this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
 
 
           foundProduct.quantity -= 1;
@@ -147,7 +147,7 @@ export class CollectProductOfOrderComponent implements OnInit {
           this.checkForm.get("shelfNo")?.setValue(productModel.shelfNo);
 
         } else if (foundProduct?.quantity === 1) {
-          this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
+          this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
 
           this.checkForm.get("shelfNo")?.setValue("");
 

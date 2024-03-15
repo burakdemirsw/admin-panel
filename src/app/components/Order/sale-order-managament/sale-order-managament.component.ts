@@ -5,7 +5,7 @@ import { PrinterInvoiceRequestModel } from 'src/app/models/model/order/printerIn
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 @Component({
   selector: 'app-sale-order-managament',
@@ -19,7 +19,7 @@ export class SaleOrderManagamentComponent implements OnInit {
   currentPage: number = 1;
   constructor(
     private httpClientService: HttpClientService,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private spinnerService: NgxSpinnerService,
     private router: Router
 

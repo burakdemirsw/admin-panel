@@ -4,7 +4,6 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ReadyToShipmentPackageModel } from 'src/app/models/model/order/readyToShipmentPackageModel';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
 
 @Component({
   selector: 'app-collected-packages',
@@ -17,7 +16,6 @@ export class CollectedPackagesComponent implements OnInit {
   readyToShipmentPackageModels: ReadyToShipmentPackageModel[]
   constructor(
     private httpClientService: HttpClientService,
-    private alertifyService: AlertifyService,
     private spinnerService: NgxSpinnerService,
     private router: Router
 

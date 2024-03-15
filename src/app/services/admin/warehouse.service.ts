@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClientService } from '../http-client.service';
-import { AlertifyService } from '../ui/alertify.service';
 import { CountProductRequestModel2, CountProductRequestModel3 } from 'src/app/models/model/order/countProductRequestModel2';
 import {
   ProductCountModel,
@@ -28,13 +27,14 @@ import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
 import { QrControlCommandModel } from 'src/app/models/model/product/qrControlModel';
 import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
 import { FormGroup } from '@angular/forms';
+import { ToasterService } from '../ui/toaster.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WarehouseService {
   constructor(
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private httpClientService: HttpClientService,
     private router: Router,
     private generalService: GeneralService

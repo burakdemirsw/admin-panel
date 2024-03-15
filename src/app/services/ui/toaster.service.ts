@@ -1,9 +1,23 @@
 import { Injectable } from '@angular/core';
+import { MessageService } from 'primeng/api';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
+
 })
 export class ToasterService {
 
-  constructor() { }
+  constructor(private messageService: MessageService) { }
+  success(message: string) {
+    this.messageService.add({ key: 'bc', severity: 'success', summary: 'İşlem Başarılı', detail: message });
+  }
+  error(message: string) {
+    this.messageService.add({ key: 'bc', severity: 'error', summary: 'İşlem Başarısız', detail: message });
+  }
+  warn(message: string) {
+    this.messageService.add({ key: 'bc', severity: 'error', summary: 'Kontrol Ediniz', detail: message });
+  }
+  info(message: string) {
+    this.messageService.add({ key: 'bc', severity: 'error', summary: 'Bilgilendirme', detail: message });
+  }
 }

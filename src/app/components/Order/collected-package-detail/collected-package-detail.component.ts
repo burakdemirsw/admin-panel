@@ -13,7 +13,7 @@ import { RemainingProductsModel } from 'src/app/models/model/order/remainingProd
 import { ItemBillingModel } from 'src/app/models/model/product/itemBillingModel ';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 declare var window: any;
 @Component({
   selector: 'app-collected-package-detail',
@@ -31,11 +31,11 @@ export class CollectedPackageDetailComponent implements OnInit {
   constructor(
     private httpClientService: HttpClientService,
     private formBuilder: FormBuilder,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private httpClient: HttpClient
-  ) {}
+  ) { }
   formModal: any;
 
   ngOnInit() {
@@ -116,7 +116,7 @@ export class CollectedPackageDetailComponent implements OnInit {
     });
   }
   async sendRequest(getRemainigsProductsRequest: GetRemainigsProductsRequest): Promise<any> {
-    const url =  ClientUrls.baseUrl+'/Order/GetRemainingsProducts';
+    const url = ClientUrls.baseUrl + '/Order/GetRemainingsProducts';
     getRemainigsProductsRequest
     try {
       const data: any = await this.httpClient.post(url, getRemainigsProductsRequest).toPromise();
@@ -177,7 +177,7 @@ export class CollectedPackageDetailComponent implements OnInit {
   }
   async onSubmit(productModel: ProductOfOrder) {
     if (this.checkForm.valid) {
-      // this.alertifyService.success('Ürün Toplama İşlemi Tamamlandı!');
+      // this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
 
       // console.log(productModel);
       var foundModel = this.productsToCollect.find(
@@ -202,7 +202,7 @@ export class CollectedPackageDetailComponent implements OnInit {
           model.quantity = foundModel.quantity;
           var data: any = await this.sendRequest(model);
           if (data instanceof InvoiceNumberModel) {
-            this.alertifyService.success('Sipariş Faturalaştı!');
+            this.toasterService.success('Sipariş Faturalaştı!');
             this.productsToCollect.splice(index, 1);
             this.collectedProducts.push(foundModel);
             foundProduct.quantity -= 1;
@@ -224,7 +224,7 @@ export class CollectedPackageDetailComponent implements OnInit {
           model.quantity = foundModel.quantity;
           var data: any = await this.sendRequest(model);
           if (data instanceof InvoiceNumberModel) {
-            this.alertifyService.success('Sipariş Faturalaştı!');
+            this.toasterService.success('Sipariş Faturalaştı!');
             this.productsToCollect.splice(index, 1);
             this.collectedProducts.push(foundModel);
             foundProduct.quantity -= 1;

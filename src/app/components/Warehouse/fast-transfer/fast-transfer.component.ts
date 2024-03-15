@@ -3,7 +3,6 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderService } from '../../../services/admin/order.service';
 import { OrderBillingListModel } from 'src/app/models/model/order/orderBillingListModel';
@@ -29,6 +28,7 @@ import { Title } from '@angular/platform-browser';
 import { QrControlCommandModel } from 'src/app/models/model/product/qrControlModel';
 import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 declare var window: any;
 
@@ -53,7 +53,7 @@ export class FastTransferComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private orderService: OrderService,
     private router: Router,
     private httpClient: HttpClient,
@@ -86,7 +86,7 @@ export class FastTransferComponent implements OnInit {
     const selectedValue2 = this.checkForm.get('warehouseCode').value;
 
     // Değeri console'a yazdırın
-    this.alertifyService.success(
+    this.toasterService.success(
       'Seçilen Değer:\n' +
       selectedValue +
       '\n\n Form Değeri \n:' +
@@ -199,10 +199,10 @@ export class FastTransferComponent implements OnInit {
             .setValue(response[0].warehouseCode);
           const selectedValue2 = this.checkForm.get('warehouseCode').value;
 
-          // this.alertifyService.success('Form Değeri \n' + selectedValue2); //null geliyor
+          // this.toasterService.success('Form Değeri \n' + selectedValue2); //null geliyor
           return true;
         } else {
-          this.alertifyService.error('Depo Çekilemedi');
+          this.toasterService.error('Depo Çekilemedi');
           return false;
         }
       }
@@ -238,7 +238,7 @@ export class FastTransferComponent implements OnInit {
         return result[1];
       }
     } catch (error) {
-      this.alertifyService.error(error.message);
+      this.toasterService.error(error.message);
       return null;
     }
   }
@@ -268,7 +268,7 @@ export class FastTransferComponent implements OnInit {
     if (transferModel.barcode && !transferModel.shelfNo) {
       var number = await this.setFormValues(transferModel.barcode, true);
       this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
-      this.alertifyService.success(
+      this.toasterService.success(
         'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
       );
     } else if (transferModel.shelfNo != null) {
@@ -290,7 +290,7 @@ export class FastTransferComponent implements OnInit {
         // barkod doğrulaması yapıldı CountProductControl
 
         if (response2.status != 'Barcode') {
-          this.alertifyService.error('Bu Qr Barkoduna Ait Barkod Bulunamadı');
+          this.toasterService.error('Bu Qr Barkoduna Ait Barkod Bulunamadı');
           return;
         }
         //burada parti ve barkod için istek at
@@ -347,7 +347,7 @@ export class FastTransferComponent implements OnInit {
             this.collectedProducts.reverse();
             this.generalService.beep();
           } else {
-            this.alertifyService.error('Ekleme Yapılmadı');
+            this.toasterService.error('Ekleme Yapılmadı');
           }
 
           this.clearForm();
@@ -371,14 +371,14 @@ export class FastTransferComponent implements OnInit {
               this.collectedProducts.reverse();
               this.generalService.beep();
             } else {
-              this.alertifyService.error('Ekleme Yapılmadı');
+              this.toasterService.error('Ekleme Yapılmadı');
             }
 
             this.clearForm();
           }
         }
       } else {
-        this.alertifyService.error('Form Geçerli Değil');
+        this.toasterService.error('Form Geçerli Değil');
       }
     }
   }
@@ -421,12 +421,12 @@ export class FastTransferComponent implements OnInit {
         if (qrOperationResponse) {
           // console.log(this.qrOperationModels);
           this.generalService.beep3();
-          this.alertifyService.success('Qr Operasyonu Geri Alındı');
+          this.toasterService.success('Qr Operasyonu Geri Alındı');
         } else {
-          this.alertifyService.error('Qr Operasyonu Geri Alınamadı');
+          this.toasterService.error('Qr Operasyonu Geri Alınamadı');
         }
       } else {
-        this.alertifyService.error('Qr Operasyonu Geri Alınamadı');
+        this.toasterService.error('Qr Operasyonu Geri Alınamadı');
       }
     }
   }
@@ -445,7 +445,7 @@ export class FastTransferComponent implements OnInit {
     if (index !== -1) {
       this.collectedProducts.splice(index, 1);
       this.calculateTotalQty();
-      this.alertifyService.success('Ürün Silindi');
+      this.toasterService.success('Ürün Silindi');
     }
   }
 

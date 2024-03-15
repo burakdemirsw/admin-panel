@@ -1,0 +1,49 @@
+<main id="main" class="main">
+  <section class="section">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Müşteriler</h5>
+
+        <div style="overflow-x: auto">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Müşteri</th>
+                <th scope="col">Müşteri Kodu</th>
+                <th scope="col">Kaşe</th>
+                <th scope="col">Kartvizit</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let customer of customers">
+                <td>{{ customer.description }}</td>
+                <td>{{ customer.currAccCode }}</td>
+                <td>
+                  <p-image
+                    src="{{ customer.stampPhotoUrl }}"
+                    alt="Image"
+                    width="70"
+                    [preview]="true"
+                    appendTo="body"
+                  ></p-image>
+                </td>
+                <td>
+                  <p-image
+                    src="{{ customer.bussinesCardPhotoUrl }}"
+                    alt="Image"
+                    width="70"
+                    [preview]="true"
+                    appendTo="body"
+                  ></p-image>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <pagination-controls
+            (pageChange)="currentPage = $event"
+          ></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

@@ -7,7 +7,7 @@ import { WarehosueOperationDetailModel } from 'src/app/models/model/warehouse/wa
 import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
 import { ShelfService } from 'src/app/services/admin/shelf.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 @Component({
   selector: 'app-warehouse-operation-confirm-detail',
@@ -21,7 +21,7 @@ export class WarehouseOperationConfirmDetailComponent
   constructor(
     private httpClientService: HttpClientService,
     private formBuilder: FormBuilder,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private activatedRoute: ActivatedRoute,
     private spinnerService: NgxSpinnerService,
     private shelfService: ShelfService

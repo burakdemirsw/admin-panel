@@ -26,8 +26,8 @@ import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
 import { GetRemainigsProductsRequest } from '../../../models/model/order/getRemainingsProductRequest';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 declare var window: any;
 @Component({
   selector: 'app-shelf-transfer-request',
@@ -50,7 +50,7 @@ export class ShelfTransferRequestComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private orderService: OrderService,
     private router: Router,
     private httpClient: HttpClient,
@@ -130,7 +130,7 @@ export class ShelfTransferRequestComponent implements OnInit {
   }
   setShelveToForm(shelve) {
     this.checkForm.get('shelfNo').setValue(shelve);
-    this.alertifyService.success("Raf Yerleştirildi");
+    this.toasterService.success("Raf Yerleştirildi");
     this.productShelvesDialog = false;
   }
   productShelvesDialog: boolean = false;
@@ -174,12 +174,12 @@ export class ShelfTransferRequestComponent implements OnInit {
     this.selectedButton = Number(type);
 
     if (type === '0') {
-      this.alertifyService.success("Varsayılan Ürünler Getirildi")
+      this.toasterService.success("Varsayılan Ürünler Getirildi")
     } else if (type === '1') {
-      this.alertifyService.success("Raflar Fullendi")
+      this.toasterService.success("Raflar Fullendi")
 
     } else if (type === '2') {
-      this.alertifyService.success("Çanta Ürünleri Getirildi")
+      this.toasterService.success("Çanta Ürünleri Getirildi")
 
     }
     this.transferProducts = response;
@@ -319,10 +319,10 @@ export class ShelfTransferRequestComponent implements OnInit {
             .setValue(response[0].warehouseCode);
           const selectedValue2 = this.checkForm.get('warehouseCode').value;
 
-          // this.alertifyService.success('Form Değeri \n' + selectedValue2); //null geliyor
+          // this.toasterService.success('Form Değeri \n' + selectedValue2); //null geliyor
           return true;
         } else {
-          this.alertifyService.error('Depo Çekilemedi');
+          this.toasterService.error('Depo Çekilemedi');
           return false;
         }
       }
@@ -354,7 +354,7 @@ export class ShelfTransferRequestComponent implements OnInit {
         return result[1];
       }
     } catch (error) {
-      this.alertifyService.error(error.message);
+      this.toasterService.error(error.message);
       return null;
     }
   }
@@ -387,11 +387,11 @@ export class ShelfTransferRequestComponent implements OnInit {
         ) {
           var number = await this.setFormValues(transferModel.barcode, true);
           this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
-          this.alertifyService.success(
+          this.toasterService.success(
             'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
           );
         } else {
-          this.alertifyService.warning('Barkod Alanı Boş.');
+          this.toasterService.warn('Barkod Alanı Boş.');
           return;
         }
       } else if (transferModel.shelfNo != null) {
@@ -413,7 +413,7 @@ export class ShelfTransferRequestComponent implements OnInit {
           //sayım yapıldı ve barkod doğrulaması yapıldı CountProductControl
 
           if (response2.status != 'Barcode') {
-            this.alertifyService.error('Bu Qr Barkoduna Ait Barkod Bulunamadı');
+            this.toasterService.error('Bu Qr Barkoduna Ait Barkod Bulunamadı');
             return;
           }
           //burada parti ve barkod için istek at
@@ -467,14 +467,14 @@ export class ShelfTransferRequestComponent implements OnInit {
 
               this.collectedProducts.push(transferModel);
               this.collectedProducts.reverse();
-              this.alertifyService.success("Okutma Başarılı Sayfa Yenileniyor")
+              this.toasterService.success("Okutma Başarılı Sayfa Yenileniyor")
               setInterval(() => {
 
                 location.reload();
               }, 2000);
               //LİSTEYE EKLENDİ
             } else {
-              this.alertifyService.error('Ekleme Yapılmadı');
+              this.toasterService.error('Ekleme Yapılmadı');
             }
 
             this.generalService.beep();
@@ -514,7 +514,7 @@ export class ShelfTransferRequestComponent implements OnInit {
 
                 this.collectedProducts.push(transferModel);
                 this.collectedProducts.reverse();
-                this.alertifyService.success("Okutma Başarılı Sayfa Yenileniyor")
+                this.toasterService.success("Okutma Başarılı Sayfa Yenileniyor")
                 this.generalService.beep();
                 setInterval(() => {
 
@@ -523,7 +523,7 @@ export class ShelfTransferRequestComponent implements OnInit {
 
                 //LİSTEYE EKLENDİ
               } else {
-                this.alertifyService.error('Ekleme Yapılmadı');
+                this.toasterService.error('Ekleme Yapılmadı');
               }
 
               this.clearForm();
@@ -573,12 +573,12 @@ export class ShelfTransferRequestComponent implements OnInit {
         if (qrOperationResponse) {
           // console.log(this.qrOperationModels);
           this.generalService.beep3();
-          this.alertifyService.success('Qr Operasyonu Geri Alındı');
+          this.toasterService.success('Qr Operasyonu Geri Alındı');
         } else {
-          this.alertifyService.error('Qr Operasyonu Geri Alınamadı');
+          this.toasterService.error('Qr Operasyonu Geri Alınamadı');
         }
       } else {
-        this.alertifyService.error('Qr Operasyonu Geri Alınamadı');
+        this.toasterService.error('Qr Operasyonu Geri Alınamadı');
       }
     }
   }
@@ -597,7 +597,7 @@ export class ShelfTransferRequestComponent implements OnInit {
     if (index !== -1) {
       this.collectedProducts.splice(index, 1);
       this.calculateTotalQty();
-      this.alertifyService.success('Ürün Silindi');
+      this.toasterService.success('Ürün Silindi');
     }
   }
   async setShelfNo(barcode: string): Promise<string> {

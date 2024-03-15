@@ -1,55 +1,5 @@
 <aside id="sidebar" class="sidebar">
   <ul class="sidebar-nav" id="sidebar-nav">
-    <!-- <li class="nav-item"> <a class="nav-link " routerLink="/dashboard"> <i class="bi bi-grid"></i>
-        <span>Dashboard</span> </a></li>
-    <li class="nav-item">
-          <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#"> <i class="bi bi-menu-button-wide"></i><span>Components</span><i class="bi bi-chevron-down ms-auto"></i> </a>
-          <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-            <li> <a routerLink="/tabs"> <i class="bi bi-circle"></i><span>Tabs</span> </a></li>
-             <li> <a routerLink="/alerts"> <i class="bi bi-circle"></i><span>Alerts</span> </a></li>
-             <li> <a routerLink="/accordion"> <i class="bi bi-circle"></i><span>Accordion</span> </a></li>
-             <li> <a routerLink="/badges"> <i class="bi bi-circle"></i><span>Badges</span> </a></li>
-             <li> <a routerLink="/breadcrumbs"> <i class="bi bi-circle"></i><span>Breadcrumbs</span> </a></li>
-             <li> <a routerLink="/buttons"> <i class="bi bi-circle"></i><span>Buttons</span> </a></li>
-             <li> <a routerLink="/cards"> <i class="bi bi-circle"></i><span>Cards</span> </a></li>
-             <li> <a routerLink="/carousel"> <i class="bi bi-circle"></i><span>Carousel</span> </a></li>
-             <li> <a routerLink="/list-group"> <i class="bi bi-circle"></i><span>List group</span> </a></li>
-             <li> <a routerLink="/modal"> <i class="bi bi-circle"></i><span>Modal</span> </a></li>
-
-             <li> <a routerLink="/pagination"> <i class="bi bi-circle"></i><span>Pagination</span> </a></li>
-             <li> <a routerLink="/progress"> <i class="bi bi-circle"></i><span>Progress</span> </a></li>
-             <li> <a routerLink="/spinners"> <i class="bi bi-circle"></i><span>Spinners</span> </a></li>
-             <li> <a routerLink="/tooltips"> <i class="bi bi-circle"></i><span>Tooltips</span> </a></li>
-          </ul>
-       </li>
-      <li class="nav-item">
-          <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#"> <i class="bi bi-journal-text"></i><span>Forms</span><i class="bi bi-chevron-down ms-auto"></i> </a>
-          <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-             <li> <a routerLink="/form-elements"> <i class="bi bi-circle"></i><span>Form Elements</span> </a></li>
-             <li> <a routerLink="/form-layouts"> <i class="bi bi-circle"></i><span>Form Layouts</span> </a></li>
-             <li> <a routerLink="/form-editors"> <i class="bi bi-circle"></i><span>Form Editors</span> </a></li>
-          </ul>
-       </li>
-    <li class="nav-item">
-      <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" > <i
-          class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i class="bi bi-chevron-down ms-auto"></i>
-      </a>
-      <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-        <li> <a routerLink="/tables-general"> <i class="bi bi-circle"></i><span>General Tables</span> </a></li>
-        <li> <a routerLink="/tables-data"> <i class="bi bi-circle"></i><span>Data Tables</span> </a></li>
-      </ul>
-    </li> -->
-
-    <!-- <li class="nav-item">
-      <a class="nav-link collapsed" data-bs-target="#product-nav" data-bs-toggle="collapse"> <i
-          class="fa fa-folder"></i><span>Ürünler</span><i class="bi bi-chevron-down ms-auto"></i>
-      </a>
-      <ul id="product-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-        <li> <a routerLink="product"> <i class="bi bi-circle"></i><span>Ürün Yönetimi</span> </a></li>
-        <li> <a routerLink="operation"> <i class="bi bi-circle"></i><span> Ürün Düzenle</span> </a></li>
-      </ul>
-    </li> -->
-
     <li class="nav-item">
       <a
         class="nav-link collapsed"
@@ -59,6 +9,7 @@
         <i class="fas fa-dolly"></i><span>Sipariş İşlemleri</span
         ><i class="bi bi-chevron-down ms-auto"></i>
       </a>
+
       <ul
         id="Orders-nav"
         class="nav-content collapse"
@@ -80,47 +31,18 @@
           </a>
         </li>
         <li>
-          <a routerLink="create-order">
+          <a (click)="routeNewPage3()">
             <i class="bi bi-circle"></i><span>Sipariş Oluştur</span>
           </a>
         </li>
 
-        <!-- <li>
-          <a routerLink="orders-managament/missing-list">
-            <i class="bi bi-circle"></i><span>Eksik Ürünler</span>
+        <li>
+          <a routerLink="cargo-list">
+            <i class="bi bi-circle"></i><span>Kargolar</span>
           </a>
-        </li> -->
-
-        <!-- <li> <a routerLink="create-purchase-order"> <i class="bi bi-circle"></i><span>Alış Fatura Oluştur </span> </a></li>
-        <li> <a routerLink="create-sale-order"> <i class="bi bi-circle"></i><span>Satış Fatura Oluştur </span> </a></li> -->
-
-        <!-- <li> <a routerLink="order-operation"> <i class="bi bi-circle"></i><span> Siparişleri Düzenle</span> </a></li> -->
-        <!-- <li> <a routerLink="orderBilling-operation"> <i class="bi bi-circle"></i><span> Sipariş Faturalaştır</span> </a></li> -->
-        <!-- <li> <a routerLink="collect-product-of-order"> <i class="bi bi-circle"></i><span> Sipariş Ürünlerini Topla</span> </a></li> -->
-        <!-- <li> <a routerLink="collected-packages"> <i class="bi bi-circle"></i><span> Toplanan Paketler</span> </a></li> -->
-        <!-- <li> <a routerLink="collected-packages-detail"> <i class="bi bi-circle"></i><span> Toplanan Paket Detay</span> </a></li> -->
+        </li>
       </ul>
     </li>
-
-    <!-- <li class="nav-item">
-      <a class="nav-link collapsed" data-bs-target="#Categories-nav" data-bs-toggle="collapse"> <i
-          class="fa fa-folder"></i><span>Kategoriler</span><i class="bi bi-chevron-down ms-auto"></i>
-      </a>
-      <ul id="Categories-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-        <li> <a routerLink="categories-managament"> <i class="bi bi-circle"></i><span>Kategoriler Listesi</span> </a></li>
-        <li> <a routerLink="category-operation"> <i class="bi bi-circle"></i><span> Kategorileri Düzenle</span> </a></li>
-      </ul>
-    </li> -->
-
-    <!-- <li class="nav-item">
-      <a class="nav-link collapsed" data-bs-target="#Shells-nav" data-bs-toggle="collapse"> <i
-          class="fa fa-folder"></i><span>Raf İşlemleri</span><i class="bi bi-chevron-down ms-auto"></i>
-      </a>
-      <ul id="Shells-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-        <li> <a routerLink="shelves-managament"> <i class="bi bi-circle"></i><span>Rafların Lisesi</span> </a></li>
-        <li> <a routerLink="shelf-operation"> <i class="bi bi-circle"></i><span> Raf Ekle</span> </a></li>
-      </ul>
-    </li> -->
 
     <li class="nav-item">
       <a
@@ -136,7 +58,6 @@
         class="nav-content collapse"
         data-bs-parent="#Warehouse-nav"
       >
-        <!-- <li> <a routerLink="warehouse-operation"> <i class="bi bi-circle"></i><span>Depo Lisesi</span> </a></li> -->
         <li>
           <a routerLink="warehouse-transfer-list">
             <i class="bi bi-circle"></i><span>Depolar Arası Transfer</span>
@@ -179,7 +100,7 @@
         data-bs-target="#Product-nav"
         data-bs-toggle="collapse"
       >
-        <i class="fa fa-box"></i><span>Doğrulama İşlemleri</span
+        <i class="fa fa-box"></i><span>Sorgulama İşlemleri</span
         ><i class="bi bi-chevron-down ms-auto"></i>
       </a>
       <ul
@@ -189,12 +110,12 @@
       >
         <li>
           <a routerLink="product-managament">
-            <i class="bi bi-circle"></i><span>Ürün Doğrulama</span>
+            <i class="bi bi-circle"></i><span>Ürün Sorgulama</span>
           </a>
         </li>
         <li>
           <a routerLink="search-qr">
-            <i class="bi bi-circle"></i><span>Qr Doğrulama</span>
+            <i class="bi bi-circle"></i><span>Qr Sorgulama</span>
           </a>
         </li>
       </ul>
@@ -224,6 +145,34 @@
     <li class="nav-item">
       <a
         class="nav-link collapsed"
+        data-bs-target="#User-nav"
+        data-bs-toggle="collapse"
+      >
+        <i class="fa fa-user"></i><span>Kullanıcı & Müşteri İşlemleri</span
+        ><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="User-nav" class="nav-content collapse" data-bs-parent="#User-nav">
+        <li>
+          <a routerLink="customer-list">
+            <i class="bi bi-circle"></i><span>Müşteri Listesi</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="user-list">
+            <i class="bi bi-circle"></i><span>Kulanıcılar</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="register">
+            <i class="bi bi-circle"></i><span>Kullanıcı Ekle</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <li class="nav-item">
+      <a
+        class="nav-link collapsed"
         data-bs-target="#Log-nav"
         data-bs-toggle="collapse"
       >
@@ -242,36 +191,5 @@
         </li>
       </ul>
     </li>
-
-    <!-- <li class="nav-item">
-          <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#"> <i class="bi bi-bar-chart"></i><span>Charts</span><i class="bi bi-chevron-down ms-auto"></i> </a>
-          <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-             <li> <a routerLink="/charts-chartjs"> <i class="bi bi-circle"></i><span>Chart.js</span> </a></li>
-             <li> <a routerLink="/charts-apexcharts"> <i class="bi bi-circle"></i><span>ApexCharts</span> </a></li>
-          </ul>
-       </li>
-       <li class="nav-item">
-          <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#"> <i class="bi bi-gem"></i><span>Icons</span><i class="bi bi-chevron-down ms-auto"></i> </a>
-          <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-             <li> <a routerLink="/icons-bootstrap"> <i class="bi bi-circle"></i><span>Bootstrap Icons</span> </a></li>
-             <li> <a routerLink="/icons-remix"> <i class="bi bi-circle"></i><span>Remix Icons</span> </a></li>
-             <li> <a routerLink="/icons-boxicons"> <i class="bi bi-circle"></i><span>Boxicons</span> </a></li>
-          </ul>
-       </li> -->
-    <!-- <li class="nav-heading">Pages</li>
-    <li class="nav-item"> <a class="nav-link collapsed" routerLink="/user-profile"> <i class="bi bi-person"></i>
-        <span>Profile</span> </a></li>
-    <li class="nav-item"> <a class="nav-link collapsed" routerLink="/pages-faq"> <i class="bi bi-question-circle"></i>
-        <span>F.A.Q</span> </a></li>
-    <li class="nav-item"> <a class="nav-link collapsed" routerLink="/pages-contact"> <i class="bi bi-envelope"></i>
-        <span>Contact</span> </a></li>
-    <li class="nav-item"> <a class="nav-link collapsed" routerLink="/pages-register"> <i class="bi bi-card-list"></i>
-        <span>Register</span> </a></li>
-    <li class="nav-item"> <a class="nav-link collapsed" routerLink="/pages-login"> <i
-          class="bi bi-box-arrow-in-right"></i> <span>Login</span> </a></li>
-    <li class="nav-item"> <a class="nav-link collapsed" routerLink="/pages-error404"> <i class="bi bi-dash-circle"></i>
-        <span>Error 404</span> </a></li>
-    <li class="nav-item"> <a class="nav-link collapsed" routerLink="/pages-blank"> <i class="bi bi-file-earmark"></i>
-        <span>Blank</span> </a></li> -->
   </ul>
 </aside>

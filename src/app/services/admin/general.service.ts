@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { AlertifyService } from '../ui/alertify.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { v4 as isUuid } from 'uuid';
 import { DatePipe } from '@angular/common';
+import { ToasterService } from '../ui/toaster.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +13,7 @@ export class GeneralService {
   constructor(
     private spinnerService: NgxSpinnerService,
     private router: Router,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private datePipe: DatePipe
   ) { }
 
@@ -38,7 +38,7 @@ export class GeneralService {
     setTimeout(() => {
       this.spinnerService.hide();
       this.router.navigate(['/' + url]);
-      this.alertifyService.success(message);
+      this.toasterService.success(message);
     }, 1000);
   }
 
@@ -75,7 +75,7 @@ export class GeneralService {
     });
 
     if (invalidFields) {
-      this.alertifyService.error(`Form Alanı Geçersiz:\n${invalidFields}`);
+      this.toasterService.error(`Form Alanı Geçersiz:\n${invalidFields}`);
     }
   }
   getCurrentDatetime(): string {

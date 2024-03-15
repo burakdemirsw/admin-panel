@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertifyService } from './alertify.service';
 import { AuthService } from './auth.service';
+import { ToasterService } from './toaster.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ export class SessionService {
   private sessionKey = 'userSession';
   private sessionExpirationKey = 'sessionExpiration';
 
-  constructor(private router: Router,private alertifyService:AlertifyService,private authService:AuthService) {}
+  constructor(private router: Router, private toasterService: ToasterService, private authService: AuthService) { }
 
   // Oturum süresini dakika cinsinden belirleyerek oturum oluşturma fonksiyonu
 
@@ -44,14 +44,14 @@ export class SessionService {
   // ... (diğer metodlar aynı kalacak)
 
   // Oturumun hala geçerli olup olmadığını kontrol eden fonksiyon
-  async isSessionValid(): Promise<boolean>{
+  async isSessionValid(): Promise<boolean> {
     const expirationDate = localStorage.getItem(this.sessionExpirationKey);
 
     if (expirationDate) {
       const expirationTime = new Date(expirationDate);
       if (expirationTime > new Date()) {
         const remainingMinutes = this.getSessionRemainingTime();
-        //this.alertifyService.success(`Oturum süresi: ${remainingMinutes} dakika`); // Oturum süresini göster
+        //this.toasterService.success(`Oturum süresi: ${remainingMinutes} dakika`); // Oturum süresini göster
         return true; // Oturum hala geçerli
       } else {
 
@@ -70,11 +70,11 @@ export class SessionService {
 
   async delayAndNavigate() {
     // 2 saniye (2000 milisaniye) bekleyin
-    this.alertifyService.warning('Oturum Süreniz Doldu');
+    this.toasterService.warn('Oturum Süreniz Doldu');
 
-  
+
     // Konsola mesaj yazdırın
-  
+
     // Sayfayı yönlendirin
     this.router.navigate(['/pages-login']);
   }

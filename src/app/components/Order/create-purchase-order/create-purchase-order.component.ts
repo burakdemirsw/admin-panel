@@ -17,7 +17,7 @@ import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 declare var window: any;
 
 @Component({
@@ -38,7 +38,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
   currentPage: number = 1;
   constructor(
     private formBuilder: FormBuilder,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private orderService: OrderService,
     private productService: ProductService,
     private spinnerService: NgxSpinnerService,
@@ -69,7 +69,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
       this.setInput();
       //this.spinnerService.hide();
     } catch (error: any) {
-      this.alertifyService.error(error.message);
+      this.toasterService.error(error.message);
     }
   }
 
@@ -93,7 +93,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
       this.productForm
         .get('currAccCode')
         .setValue(this.invoiceProducts2[0].currAccCode);
-      // this.alertifyService.success(this.productForm.get("officeCode").value+"\n"+   this.productForm.get("warehouseCode").value+"\n"+ this.productForm.get("currAccCode")
+      // this.toasterService.success(this.productForm.get("officeCode").value+"\n"+   this.productForm.get("warehouseCode").value+"\n"+ this.productForm.get("currAccCode")
       // )
     }
   }
@@ -104,7 +104,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
     const formDataJSON = JSON.stringify(model); // Form verilerini JSON'a dönüştür
 
     this.qrCodeValue = formDataJSON;
-    // this.alertifyService.success(this.qrCodeValue)
+    // this.toasterService.success(this.qrCodeValue)
   }
 
   onChangeURL(url: SafeUrl) {
@@ -147,12 +147,12 @@ export class CreatePurchaseOrderComponent implements OnInit {
         this.productForm
           .get('currAccCode')
           .setValue(this.invoiceProducts2[0].currAccCode);
-        // this.alertifyService.success(this.productForm.get("officeCode").value+"\n"+   this.productForm.get("warehouseCode").value+"\n"+ this.productForm.get("currAccCode")
+        // this.toasterService.success(this.productForm.get("officeCode").value+"\n"+   this.productForm.get("warehouseCode").value+"\n"+ this.productForm.get("currAccCode")
         // )
       }
       await this.calculateTotalQty();
     } catch (error: any) {
-      this.alertifyService.warning(error.message);
+      this.toasterService.warn(error.message);
     }
   }
 
@@ -165,7 +165,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
         this.productForm.get('officeCode')?.setValue(this.officeModels[0]);
       }
     } catch (error: any) {
-      this.alertifyService.warning(error.message);
+      this.toasterService.warn(error.message);
     }
   }
 
@@ -211,7 +211,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
         batchCode: [''],
       });
     } catch (error: any) {
-      this.alertifyService.error(error.message);
+      this.toasterService.error(error.message);
     }
   }
 
@@ -311,7 +311,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
         return result[1];
       }
     } catch (error) {
-      this.alertifyService.error(error.message);
+      this.toasterService.error(error.message);
       return null;
     }
   }
@@ -478,9 +478,9 @@ export class CreatePurchaseOrderComponent implements OnInit {
       this.clearFormFields();
 
       this.generalService.beep();
-      this.alertifyService.success('Ürün Başarılı Şekilde Eklendi.');
+      this.toasterService.success('Ürün Başarılı Şekilde Eklendi.');
     } else {
-      this.alertifyService.error('Form Geçerli Değil.');
+      this.toasterService.error('Form Geçerli Değil.');
     }
   }
 
@@ -505,9 +505,9 @@ export class CreatePurchaseOrderComponent implements OnInit {
         );
         this.calculateTotalQty();
         await this.getProductOfInvoice(this.newOrderNumber);
-        this.alertifyService.success('Silme İşlemi Başarılı.');
+        this.toasterService.success('Silme İşlemi Başarılı.');
       } else {
-        this.alertifyService.error('Silme İşlemi Başarısız.');
+        this.toasterService.error('Silme İşlemi Başarısız.');
       }
 
       var model: QrOperationModel = new QrOperationModel();
@@ -550,12 +550,12 @@ export class CreatePurchaseOrderComponent implements OnInit {
         if (qrOperationResponse) {
           // console.log(this.qrOperationModels);
           this.generalService.beep3();
-          this.alertifyService.success('Qr Operasyonu Geri Alındı');
+          this.toasterService.success('Qr Operasyonu Geri Alındı');
         } else {
-          this.alertifyService.error('Qr Operaasyonu Geri Alınamadı');
+          this.toasterService.error('Qr Operaasyonu Geri Alınamadı');
         }
       } else {
-        this.alertifyService.error('Qr Operaasyonu Geri Alınamadı');
+        this.toasterService.error('Qr Operaasyonu Geri Alınamadı');
       }
 
       return response;
@@ -575,9 +575,9 @@ export class CreatePurchaseOrderComponent implements OnInit {
       );
       if (response === true) {
         location.reload();
-        this.alertifyService.success('İşlem Başarılı');
+        this.toasterService.success('İşlem Başarılı');
       } else {
-        this.alertifyService.error('İşlem Başarısız');
+        this.toasterService.error('İşlem Başarısız');
       }
     }
   }
@@ -614,7 +614,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
         return shelfAndBarcode;
       }
     } else {
-      this.alertifyService.warning('Doğrulama Yapılamadı!');
+      this.toasterService.warn('Doğrulama Yapılamadı!');
       return null;
     }
   }

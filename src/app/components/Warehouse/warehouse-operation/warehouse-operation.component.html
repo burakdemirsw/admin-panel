@@ -1,6 +1,6 @@
 <main id="main" class="main">
   <div class="pagetitle">
-    <h1>Depolar Arası İstek</h1>
+    <h1>Depolar Arası {{ pageStatus }}</h1>
     <nav>
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
@@ -55,6 +55,35 @@
                       >
                         <i class="fa fa-angle-down"> </i>
                       </button>
+
+                      <button
+                        data-toggle="tooltip"
+                        data-placement="right"
+                        title="Raflar"
+                        class="btn btn-warning"
+                        type="submit"
+                        (click)="getShelves(item.barcode)"
+                      >
+                        <i class="fa-solid fa-bars"></i>
+                      </button>
+                      <button
+                        data-toggle="tooltip"
+                        data-placement="right"
+                        title="Raflar"
+                        class="btn btn-dark"
+                        type="submit"
+                        (click)="pasteItemToForm(item)"
+                      >
+                        <i class="fa-solid fa-file"></i>
+                      </button>
+
+                      <button
+                        class="btn btn-danger"
+                        type="submit"
+                        (click)="addDeletedItemList(item)"
+                      >
+                        <i class="fa fa-trash"> </i>
+                      </button>
                     </td>
                   </tr>
                 </tbody>
@@ -62,37 +91,28 @@
             </div>
           </div>
         </div>
+        <div class="card mobile" *ngIf="this.pageStatus != 'Transfer'">
+          <div class="card-body">
+            <button
+              type="button"
+              class="btn btn-dark mt-3"
+              style="margin-right: 1rem"
+              (click)="onDataChange('1')"
+            >
+              Raf Fulle
+            </button>
+            <button
+              type="button"
+              class="btn btn-dark mt-3"
+              (click)="onDataChange('0')"
+            >
+              Standart
+            </button>
+          </div>
+        </div>
         <div class="card mobile">
           <div class="card-body">
             <h5 class="card-title">Ürün Transfer Paneli</h5>
-
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <button
-                  type="button"
-                  [ngClass]="
-                    currentDataType === '1' ? 'btn btn-success' : 'btn btn-dark'
-                  "
-                  (click)="onDataChange('1')"
-                >
-                  Raf Fulle
-                </button>
-              </div>
-            </div>
-
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <button
-                  type="button"
-                  [ngClass]="
-                    currentDataType === '0' ? 'btn btn-success' : 'btn btn-dark'
-                  "
-                  (click)="onDataChange('0')"
-                >
-                  Standart
-                </button>
-              </div>
-            </div>
 
             <ul class="nav nav-tabs nav-justified mb-1" id="ex1" role="tablist">
               <!-- <li class="nav-item" role="presentation"><a class="nav-link active" [class.active]="activeTab === 1" (click)="activeTab = 1">Raf
@@ -304,6 +324,9 @@
                     <td>{{ item.itemCode }}</td>
                     <td>{{ item.transferQty }}</td>
                     <td>{{ item.quantity }}</td>
+                    <!-- <td>{{ item.udStock }}</td>
+                    <td>{{ item.mdStock }}</td> -->
+
                     <td>{{ item.itemDescription }}</td>
                     <td>{{ item.barcode }}</td>
                   </tr>
@@ -432,6 +455,20 @@
 
     <p-dialog header="Header" [(visible)]="visible" [style]="{ width: '75vw' }">
       <app-create-qr [barcode]="_barcode" [quantity]="quantity"></app-create-qr>
+    </p-dialog>
+
+    <p-dialog header="Raflar" [(visible)]="productShelvesDialog">
+      <div class="btn-group mr-2" role="group" aria-label="First group">
+        <button
+          *ngFor="let shelve of productShelves; let i = index"
+          (click)="setShelveToForm(shelve)"
+          type="button"
+          [ngClass]="i % 2 === 0 ? 'btn btn-dark' : 'btn btn-secondary'"
+          style="height: 10rem"
+        >
+          {{ shelve }}
+        </button>
+      </div>
     </p-dialog>
   </section>
 </main>

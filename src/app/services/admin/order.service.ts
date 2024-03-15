@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { AlertifyService } from '../ui/alertify.service';
 import { BarcodeAddModel } from 'src/app/models/model/product/barcodeAddModel';
 import { HttpClientService } from '../http-client.service';
 import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
@@ -23,26 +22,32 @@ import { CountConfirmData } from 'src/app/models/model/product/countConfirmModel
 import { int } from '@zxing/library/esm/customTypings';
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
 import { GetCustomerAddress_CM, GetCustomerList_CM } from 'src/app/models/model/order/getCustomerList_CM';
-import { CreateCustomer_CM } from '../../components/Order/create-order/models/createCustomer_CM';
+import { CreateCustomer_CM, AddCustomerAddress_CM } from '../../components/Order/create-order/models/createCustomer_CM';
+import { ClientOrder, ClientOrderBasketItem, ClientOrder_DTO, NebimOrder } from 'src/app/components/Order/create-order/models/nebimOrder';
+import { query } from '@angular/animations';
+import { ToasterService } from '../ui/toaster.service';
+import { ClientCustomer } from '../../components/Customer/customer-list/customer-list.component';
+import { Raport_CR } from 'src/app/models/model/raport/raport_CR';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrderService {
   constructor(
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private httpClientService: HttpClientService,
     private router: Router,
     private httpClient: HttpClient
   ) { }
 
   //satış siparişleri çekme //exec GET_MSRAFOrderList
-  async getOrders(type: int): Promise<SaleOrderModel[]> {
+  async getOrders(type: number, invoiceStatus: number): Promise<SaleOrderModel[]> {
     try {
+      var query: string = `${type}/${invoiceStatus}`
       const response = this.httpClientService
         .get<SaleOrderModel>({
           controller: 'order/get-sale-orders',
-        }, type.toString())
+        }, query)
         .toPromise();
       return response;
     } catch (error: any) {
@@ -50,6 +55,7 @@ export class OrderService {
       return null;
     }
   }
+
   async getMissingOrders(): Promise<SaleOrderModel[]> {
     try {
       const response = this.httpClientService
@@ -122,14 +128,14 @@ export class OrderService {
       )
       .subscribe({
         next: (result) => {
-          this.alertifyService.success('Success');
+          this.toasterService.success('Success');
           window.location.reload();
         },
         error: (err) => {
           if (err.status === 400) {
-            this.alertifyService.warning(err.error);
+            this.toasterService.warn(err.error);
           } else {
-            this.alertifyService.warning(err.message);
+            this.toasterService.warn(err.message);
           }
         },
       });
@@ -216,10 +222,10 @@ export class OrderService {
       if (response) {
 
         if (Boolean(response) == true) {
-          this.alertifyService.success('İşlem Başarılı');
+          this.toasterService.success('İşlem Başarılı');
 
           if (orderNo.includes('WS')) {
-            this.router.navigate(['/orders-managament']);
+            return true;
           } else if (orderNo.includes('BP')) {
             this.router.navigate(['/purchase-orders-managament']);
           } else if (orderNo.includes('WT')) {
@@ -229,7 +235,7 @@ export class OrderService {
           return true;
 
         } else {
-          this.alertifyService.error('İşlem Başarısız');
+          this.toasterService.error('İşlem Başarısız');
           location.reload();
           return false;
         }
@@ -302,11 +308,11 @@ export class OrderService {
         .toPromise();
       if (data) {
         this.router.navigate(['/orders-management']);
-        this.alertifyService.success('Faturalaştırma İşlemi Başarılı')
+        this.toasterService.success('Faturalaştırma İşlemi Başarılı')
         return data;
       }
     } catch (error: any) {
-      this.alertifyService.error('An error occurred:' + error.message);
+      this.toasterService.error('An error occurred:' + error.message);
       return false;
     }
 
@@ -317,7 +323,7 @@ export class OrderService {
     salesPersonCode: string,
     currency: string): Promise<any> {
     if (array.length === 0) {
-      this.alertifyService.warning('Lütfen Ürün EKleyiniz.');
+      this.toasterService.warn('Lütfen Ürün EKleyiniz.');
       return;
     }
 
@@ -344,7 +350,7 @@ export class OrderService {
           return data;
 
         } else {
-          this.alertifyService.error("İşlem Başarısız")
+          this.toasterService.error("İşlem Başarısız")
           return null;
         }
       } catch (error: any) {
@@ -377,7 +383,7 @@ export class OrderService {
       }
       return response;
     } catch (error: any) {
-      this.alertifyService.error('An error occurred:' + error.message);
+      this.toasterService.error('An error occurred:' + error.message);
       return null;
     }
   }
@@ -400,6 +406,16 @@ export class OrderService {
     }
   }
 
+  async createOrder(order: NebimOrder): Promise<any> {
+    try {
+      var response = await this.httpClientService.post<NebimOrder>({ controller: "order/create-order" }, order).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
   //onaylanacak ürünleri çekme
   getInventoryItems(type: string): Promise<InventoryItem[]> {
     try {
@@ -509,6 +525,127 @@ export class OrderService {
       return null;
     }
   }
+
+
+  async getClientOrder(id: string): Promise<any> {
+    try {
+      var response = await this.httpClientService.get<any>({ controller: "order/get-client-order" + "/" + id }).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+
+  async createClientOrder(request: ClientOrder) {
+    try {
+      var response = await this.httpClientService.post<ClientOrder>({ controller: "order/create-client-order" }, request).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+  async createClientOrderBasketItem(request: ClientOrderBasketItem) {
+    try {
+      var response = await this.httpClientService.post<ClientOrderBasketItem>({ controller: "order/create-client-order-basket-item" }, request).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+
+  async updateClientOrderBasketItem(id: string, lineId: string, quantity: number, price: number): Promise<any> {
+    try {
+
+      var query = `${id}/${lineId}/${quantity}/${price}`
+      var response = await this.httpClientService.get<any>({ controller: "order/update-client-order-basket-item" + "/" + query }).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+  async updateClientOrderPayment(orderId: string, paymentDescription: string): Promise<any> {
+    try {
+
+      var query = `${orderId}/${paymentDescription}`
+      var response = await this.httpClientService.get<any>({ controller: "order/update-client-order-payment" + "/" + query }).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+  async editClientCustomer(request: ClientCustomer): Promise<any> {
+    try {
+      var response = await this.httpClientService.post<any>({ controller: "order/edit-client-customer" }, request).toPromise();
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+  async getClientCustomer(salesPersonCode: string): Promise<any> {
+    try {
+      var response = await this.httpClientService.get<any>({ controller: "order/get-client-customer" }, salesPersonCode).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+  async getOrderDetail(orderNumber: string): Promise<any> {
+    try {
+      var response = await this.httpClientService.get<any>({ controller: "order/get-order-detail" + "/" + orderNumber }).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+  async addCustomerAddress(request: AddCustomerAddress_CM): Promise<any> {
+    try {
+      var response = await this.httpClientService.post<any>({ controller: "order/add-customer-address" }, request).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+  async getRaports(day: number): Promise<any> {
+    try {
+      const response = this.httpClientService
+        .get<any>({
+          controller: 'order/get-raports',
+        }, day.toString())
+        .toPromise();
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+
 
   //ExecuteSqlRawAsync
 }

@@ -1,0 +1,75 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Kullanıcılar</h1>
+  </div>
+
+  <section class="section">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive-lg">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Ad</th>
+                <th scope="col">SoyAd</th>
+                <th scope="col">Satış Elemanı Kodu</th>
+                <th scope="col">Email</th>
+                <th scope="col">Şifre</th>
+                <th scope="col">Telefon Numarası</th>
+
+                <th scope="col">İşlemler</th>
+                <!-- <th scope="col">Bildirim Açık</th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of users; let i = index">
+                <!-- <td>
+              <p-image
+              src="{{ personal.photoUrl }}"
+              previewImageSrc="{{ personal.photoUrl }}"
+              alt="Image"
+              width="40"
+              [preview]="true"
+              ></p-image>
+            </td> -->
+                <td>{{ user.id }}</td>
+                <td>{{ user.firstName }}</td>
+                <td>{{ user.lastName }}</td>
+                <td>{{ user.salesPersonCode }}</td>
+                <td>{{ user.email }}</td>
+                <td>****</td>
+                <td>{{ user.phoneNumber }}</td>
+
+                <!-- <td>{{ user.SubscribeToPromotions }}</td> -->
+                <!--  -->
+                <td>
+                  <button
+                    class="btn btn-primary"
+                    status="primary"
+                    routerLink="/user-update/{{ user.id }}"
+                  >
+                    <i class="fa-solid fa-pencil"></i>
+                  </button>
+                  <div
+                    class="btn-group"
+                    role="group"
+                    aria-label="Basic example"
+                  >
+                    <button
+                      class="btn btn-danger"
+                      status="danger"
+                      (click)="deleteUser(user.id)"
+                    >
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

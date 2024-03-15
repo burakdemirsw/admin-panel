@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ProductCreateModel } from 'src/app/models/model/product/productCreateModel';
-import { AlertifyService } from '../ui/alertify.service';
 import { HttpClientService } from '../http-client.service';
 import { Router } from '@angular/router';
 import {
@@ -28,13 +27,14 @@ import {
 import { GeneralService } from './general.service';
 import { FormGroup } from '@angular/forms';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
+import { ToasterService } from '../ui/toaster.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
   constructor(
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private httpClientService: HttpClientService,
     private generalService: GeneralService,
     private httpClient: HttpClient
@@ -51,14 +51,14 @@ export class ProductService {
       )
       .subscribe({
         next: (result) => {
-          this.alertifyService.success('Success');
+          this.toasterService.success('Success');
           window.location.reload();
         },
         error: (err) => {
           if (err.status === 400) {
-            this.alertifyService.warning(err.error);
+            this.toasterService.warn(err.error);
           } else {
-            this.alertifyService.warning(err.message);
+            this.toasterService.warn(err.message);
           }
         },
       });
@@ -267,7 +267,7 @@ export class ProductService {
   //faturanın ürünlerini getirme
   async searchProduct(model: BarcodeSearch_RM): Promise<any> {
     const response = await this.httpClientService
-      .post<BarcodeSearch_RM>({ controller: 'Products/SearchProduct' }, model)
+      .post<BarcodeSearch_RM>({ controller: 'Products/SearchProduct2' }, model)
       .toPromise();
 
     return response;
@@ -374,7 +374,7 @@ export class ProductService {
             );
             if (qrOperationResponse) {
               this.generalService.beep2();
-              this.alertifyService.success('Qr Operasyonu Başarılı');
+              this.toasterService.success('Qr Operasyonu Başarılı');
               // this.qrOperationModels.push(qrOperationModel);
 
               response.state = true;
@@ -384,7 +384,7 @@ export class ProductService {
               return null;
             }
           } else {
-            this.alertifyService.error(
+            this.toasterService.error(
               'qr içindeki barkod ile gelen barkod eşleşmedi'
             );
             //this.clearQrAndBatchCode();

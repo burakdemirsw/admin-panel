@@ -66,40 +66,25 @@ import { ShelfTransferRequestComponent } from './components/Warehouse/shelf-tran
 import { SearchQrComponent } from './components/Product/search-qr/search-qr.component';
 import { BoxCountComponent } from './components/Warehouse/box-count/box-count.component';
 import { CreateOrderComponent } from './components/Order/create-order/create-order.component';
+import { PagesLoginv2Component } from './pages/pages-loginv2/pages-loginv2.component';
+import { UserListComponent } from './components/User/user-list/user-list.component';
+import { CustomerList_VM } from './models/model/order/getCustomerList_CM';
+import { CustomerListComponent } from './components/Customer/customer-list/customer-list.component';
+import { CreateCargoComponent } from './components/cargo/create-cargo/create-cargo.component';
+import { CargoListComponent } from './components/cargo/cargo-list/cargo-list.component';
 
 const routes: Routes = [
-  // { path: 'alerts', component: AlertsComponent },
-  // { path: 'accordion', component: AccordionComponent },
-  // { path: 'badges', component: BadgesComponent },
-  // { path: 'breadcrumbs', component: BreadcrumbsComponent },
-  // { path: 'buttons', component: ButtonsComponent },
-  // { path: 'cards', component: CardsComponent },
-  // { path: 'carousel', component: CarouselComponent },
-  // { path: 'charts-apexcharts', component: ChartsApexchartsComponent },
-  // { path: 'charts-chartjs', component: ChartsChartjsComponent },
-  // { path: 'form-editors', component: FormsEditorsComponent },
-  // { path: 'form-elements', component: FormsElementsComponent },
-  // { path: 'form-layouts', component: FormsLayoutsComponent },
-  // { path: 'icons-bootstrap', component: IconsBootstrapComponent },
-  // { path: 'icons-boxicons', component: IconsBoxiconsComponent },
-  // { path: 'icons-remix', component: IconsRemixComponent },
-  // { path: 'list-group', component: ListGroupComponent },
-  // { path: 'modal', component: ModalComponent },
-  // { path: 'pagination', component: PaginationComponent },
-  // { path: 'progress', component: ProgressComponent },
-  // { path: 'spinners', component: SpinnersComponent },
-  // { path: 'tables-data', component: TablesDataComponent },
-  // { path: 'tables-general', component: TablesGeneralComponent },
-  // { path: 'tabs', component: TabsComponent },
-  // { path: 'tooltips', component: TooltipsComponent },
-  // { path: 'pages-blank', component: PagesBlankComponent },
-  // { path: 'pages-contact', component: PagesContactComponent },
+
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  // { path: 'pages-faq', component: PagesFaqComponent },
-  // { path: 'pages-register', component: PagesRegisterComponent },
+
   {
     path: 'user-profile',
     component: UsersProfileComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'user-list',
+    component: UserListComponent,
     canActivate: [AuthGuard],
   },
   { path: '', component: DashboardComponent, canActivate: [AuthGuard] },
@@ -109,6 +94,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   { path: 'pages-login', component: PagesLoginComponent },
+  { path: 'pages-loginv2', component: PagesLoginv2Component },
   {
     path: 'product-managament',
     component: ProductManagementComponent,
@@ -117,6 +103,21 @@ const routes: Routes = [
   {
     path: 'product-operation',
     component: ProductOperationComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'create-cargo',
+    component: CreateCargoComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'create-cargo/:orderNumber',
+    component: CreateCargoComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'customer-list',
+    component: CustomerListComponent,
     canActivate: [AuthGuard],
   },
   { path: 'home', component: HomepageComponent, canActivate: [AuthGuard] },
@@ -170,9 +171,13 @@ const routes: Routes = [
     component: OrderManagamentComponent,
     canActivate: [AuthGuard],
   },
-
   {
-    path: 'create-order',
+    path: 'cargo-list',
+    component: CargoListComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'create-order/:id',
     component: CreateOrderComponent,
     canActivate: [AuthGuard],
   },
@@ -244,6 +249,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   { path: 'register', component: PagesRegisterComponent },
+  { path: 'user-update/:userId', component: PagesRegisterComponent },
   {
     path: 'warehouse-shelf-count-list',
     component: WarehouseShelfCountListComponent,

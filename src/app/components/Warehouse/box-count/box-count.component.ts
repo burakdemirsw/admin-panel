@@ -16,7 +16,7 @@ import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOf
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 declare var window: any;
 @Component({
   selector: 'app-box-count',
@@ -48,7 +48,7 @@ export class BoxCountComponent implements OnInit {
   ];
   constructor(
     private formBuilder: FormBuilder,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
 
     private productService: ProductService,
     private generalService: GeneralService,
@@ -125,7 +125,7 @@ export class BoxCountComponent implements OnInit {
       orderNo
     );
     if (this.lastCollectedProducts.length >= 100) {
-      this.alertifyService.error("SATIR SAYISI 100'E ULAŞTI");
+      this.toasterService.error("SATIR SAYISI 100'E ULAŞTI");
       this.blocked = true;
     }
     this.calculateTotalQty();
@@ -159,7 +159,7 @@ export class BoxCountComponent implements OnInit {
         return result[1];
       }
     } catch (error) {
-      this.alertifyService.error(error.message);
+      this.toasterService.error(error.message);
       return null;
     }
   }
@@ -208,11 +208,11 @@ export class BoxCountComponent implements OnInit {
           true
         );
         this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
-        this.alertifyService.success(
+        this.toasterService.success(
           'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
         );
       } else {
-        this.alertifyService.warning('Barkod Alanı Boş.');
+        this.toasterService.warn('Barkod Alanı Boş.');
       }
       return;
     } else {
@@ -298,7 +298,7 @@ export class BoxCountComponent implements OnInit {
                   this.clearQrAndBatchCode();
                   this.state = true;
                   setInterval(() => {
-                    this.alertifyService.success("İşlem Başarılı.Sayfa Yeniden Yükleniyor")
+                    this.toasterService.success("İşlem Başarılı.Sayfa Yeniden Yükleniyor")
                     location.reload()
                   }, 2000);
                 } else {
@@ -315,14 +315,14 @@ export class BoxCountComponent implements OnInit {
                     this.clearQrAndBatchCode();
                     this.state = true;
                     setInterval(() => {
-                      this.alertifyService.success("İşlem Başarılı.Sayfa Yeniden Yükleniyor")
+                      this.toasterService.success("İşlem Başarılı.Sayfa Yeniden Yükleniyor")
                       location.reload()
                     }, 2000);
                   } else {
                     this.calculateTotalQty();
                     this.clearQrAndBatchCode();
                     this.state = true;
-                    this.alertifyService.warning('Ekleme Yapılmadı!');
+                    this.toasterService.warn('Ekleme Yapılmadı!');
                   }
                 }
               } else {
@@ -334,7 +334,7 @@ export class BoxCountComponent implements OnInit {
                 this.clearQrAndBatchCode();
                 this.state = true;
                 setInterval(() => {
-                  this.alertifyService.success("İşlem Başarılı.Sayfa Yeniden Yükleniyor")
+                  this.toasterService.success("İşlem Başarılı.Sayfa Yeniden Yükleniyor")
                   location.reload()
                 }, 2000);
               }
@@ -399,7 +399,7 @@ export class BoxCountComponent implements OnInit {
                 this.clearQrAndBatchCode();
                 this.state = true;
                 setInterval(() => {
-                  this.alertifyService.success("İşlem Başarılı.Sayfa Yeniden Yükleniyor")
+                  this.toasterService.success("İşlem Başarılı.Sayfa Yeniden Yükleniyor")
                   location.reload()
                 }, 2000);
               }
@@ -409,7 +409,7 @@ export class BoxCountComponent implements OnInit {
                 true
               );
               this.checkForm.get('quantity')?.setValue(Number(number));
-              this.alertifyService.success(
+              this.toasterService.success(
                 'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
               );
               this.state = true;
@@ -417,7 +417,7 @@ export class BoxCountComponent implements OnInit {
           }
         }
       } catch (error: any) {
-        this.alertifyService.error(error.message);
+        this.toasterService.error(error.message);
         this.state = true;
       }
     }
@@ -462,9 +462,9 @@ export class BoxCountComponent implements OnInit {
       );
       this.calculateTotalQty();
       await this.getProductOfCount(this.currentOrderNo);
-      this.alertifyService.success('Silme İşlemi Başarılı.');
+      this.toasterService.success('Silme İşlemi Başarılı.');
     } else {
-      this.alertifyService.error('Silme İşlemi Başarısız.');
+      this.toasterService.error('Silme İşlemi Başarısız.');
     }
     return response;
   }

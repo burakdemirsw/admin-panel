@@ -1,6 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, ElementRef, Inject, HostListener } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -11,18 +12,31 @@ export class AppComponent {
   title = 'admindashboard';
 
   constructor(@Inject(DOCUMENT) private document, private elementRef: ElementRef, public _router: Router) {
-    const isMobile = window.innerWidth <= 768;
     const bodyClassList = this.document.body.classList;
-
-    this._router.events.subscribe((event) => {
-      if (bodyClassList.contains('toggle-sidebar')) {
-        //console.log('algılandı(1)');
-        bodyClassList.remove('toggle-sidebar');
+    const isMobile = window.innerWidth <= 768;
+    this._router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      if (!bodyClassList.contains('toggle-sidebar')) {
+        this.sidebarToggle();
       }
-    });
+      if (isMobile) {
+        if (bodyClassList.contains('toggle-sidebar')) {
+          this.sidebarToggle();
+        }
+      }
 
+      // Burada istediğiniz işlemi yapabilirsiniz
+    });
   }
 
+
+
+
+  sidebarToggle() {
+    //toggle sidebar function
+    this.document.body.classList.toggle('toggle-sidebar');
+  }
   ngOnInit() {
     var s = document.createElement("script");
     s.type = "text/javascript";

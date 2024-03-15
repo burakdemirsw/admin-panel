@@ -4,7 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ProductCreateModel } from 'src/app/models/model/product/productCreateModel';
 import { ProductModel } from 'src/app/models/model/product/productModel';
 import { ProductService } from 'src/app/services/admin/product.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 declare var alertify: any;
 @Component({
   selector: 'app-product-operation',
@@ -16,7 +16,7 @@ export class ProductOperationComponent implements OnInit {
   activeTab: number = 1;
   constructor(
     private formBuilder: FormBuilder,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private productService: ProductService
     , private spinnerService: NgxSpinnerService
   ) { }
@@ -53,11 +53,11 @@ export class ProductOperationComponent implements OnInit {
     //this.spinnerService.show();
     if (this.productForm.valid) {
       this.productService.createProduct(productData);
-      this.alertifyService.success('Ürün isteği yolladı');
+      this.toasterService.success('Ürün isteği yolladı');
 
       console.log(productData);
     } else {
-      this.alertifyService.error('Formu doldurunuz');
+      this.toasterService.error('Formu doldurunuz');
       console.log(productData);
     }
     setTimeout(() => {

@@ -19,7 +19,7 @@ import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 declare var window: any;
 @Component({
   selector: 'app-create-sale-order',
@@ -29,17 +29,16 @@ declare var window: any;
 export class CreateSaleOrderComponent implements OnInit {
   infoProducts: CreatePurchaseInvoice[] = [];
   addToList(model: any) {
-    this.alertifyService.success(model.itemCode + ' Eklendi');
+    this.toasterService.success(model.itemCode + ' Eklendi');
     this.infoProducts.push(model);
     this.addedProductCount = 'Sayım Paneli(' + this.infoProducts.length + ')';
   }
   constructor(
     private httpClientService: HttpClientService,
     private formBuilder: FormBuilder,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private orderService: OrderService,
     private productService: ProductService,
-    private spinnerService: NgxSpinnerService,
     private warehouseService: WarehouseService,
     private generalService: GeneralService,
     private activatedRoute: ActivatedRoute,
@@ -51,7 +50,7 @@ export class CreateSaleOrderComponent implements OnInit {
     try {
       this.title.setTitle('Satış Faturası Oluştur');
 
-      //this.spinnerService.show();
+
       this.isReturnInvoice = false;
       this.formGenerator();
 
@@ -83,7 +82,7 @@ export class CreateSaleOrderComponent implements OnInit {
   checkIsReturnInvoice() {
     this.isReturnInvoice = !this.productForm.get('isReturn').value;
     if (this.isReturnInvoice) {
-      this.alertifyService.warning(
+      this.toasterService.warn(
         'İade Faturasına Geçildiği İçin Sayım Paneli'
       );
     }
@@ -120,7 +119,7 @@ export class CreateSaleOrderComponent implements OnInit {
       this.productForm
         .get('currAccCode')
         .setValue(this.invoiceProducts2[0].currAccCode);
-      // this.alertifyService.success(this.productForm.get("officeCode").value+"\n"+   this.productForm.get("warehouseCode").value+"\n"+ this.productForm.get("currAccCode")
+      // this.toasterService.success(this.productForm.get("officeCode").value+"\n"+   this.productForm.get("warehouseCode").value+"\n"+ this.productForm.get("currAccCode")
       // )
     }
   }
@@ -131,7 +130,7 @@ export class CreateSaleOrderComponent implements OnInit {
     const formDataJSON = JSON.stringify(model); // Form verilerini JSON'a dönüştür
 
     this.qrCodeValue = formDataJSON;
-    // this.alertifyService.success(this.qrCodeValue)
+    // this.toasterService.success(this.qrCodeValue)
   }
 
   onChangeURL(url: SafeUrl) {
@@ -157,7 +156,7 @@ export class CreateSaleOrderComponent implements OnInit {
 
       this.calculateTotalQty();
     } catch (error: any) {
-      this.alertifyService.warning(error.message);
+      this.toasterService.warn(error.message);
     }
   }
 
@@ -170,7 +169,7 @@ export class CreateSaleOrderComponent implements OnInit {
         this.productForm.get('officeCode')?.setValue(this.officeModels[0]);
       }
     } catch (error: any) {
-      this.alertifyService.warning(error.message);
+      this.toasterService.warn(error.message);
     }
   }
 
@@ -204,13 +203,13 @@ export class CreateSaleOrderComponent implements OnInit {
           this.salesPersonModelList.push(color);
         });
 
-        //this.alertifyService.success("Başarıyla "+this.salesPersonModels.length+" Adet Çekildi")
+        //this.toasterService.success("Başarıyla "+this.salesPersonModels.length+" Adet Çekildi")
       } catch (error: any) {
-        this.alertifyService.error(error.message);
+        this.toasterService.error(error.message);
         return null;
       }
     } catch (error: any) {
-      this.alertifyService.error(error.message);
+      this.toasterService.error(error.message);
     }
   }
 
@@ -262,7 +261,7 @@ export class CreateSaleOrderComponent implements OnInit {
         batchCode: [null],
       });
     } catch (error: any) {
-      this.alertifyService.error(error.message);
+      this.toasterService.error(error.message);
     }
   }
   whichRowIsInvalid() {
@@ -307,9 +306,9 @@ export class CreateSaleOrderComponent implements OnInit {
         );
         this.calculateTotalQty();
         await this.getProductOfInvoice(this.newOrderNumber);
-        this.alertifyService.success('Silme İşlemi Başarılı.');
+        this.toasterService.success('Silme İşlemi Başarılı.');
       } else {
-        this.alertifyService.error('Silme İşlemi Başarısız.');
+        this.toasterService.error('Silme İşlemi Başarısız.');
       }
 
       var model: QrOperationModel = new QrOperationModel();
@@ -353,12 +352,12 @@ export class CreateSaleOrderComponent implements OnInit {
         if (qrOperationResponse) {
           console.log(this.qrOperationModels);
           this.generalService.beep3();
-          this.alertifyService.success('Qr Operasyonu Geri Alındı');
+          this.toasterService.success('Qr Operasyonu Geri Alındı');
         } else {
-          this.alertifyService.error('Qr Operaasyonu Geri Alınamadı');
+          this.toasterService.error('Qr Operaasyonu Geri Alınamadı');
         }
       } else {
-        this.alertifyService.error('Qr Operaasyonu Geri Alınamadı');
+        this.toasterService.error('Qr Operaasyonu Geri Alınamadı');
       }
 
       return response;
@@ -395,14 +394,14 @@ export class CreateSaleOrderComponent implements OnInit {
           this.productForm.get('salesPersonCode').value === '' ||
           this.productForm.get('salesPersonCode').value == null
         ) {
-          this.alertifyService.error('Satış Sorumlusu Alanı Boş');
+          this.toasterService.error('Satış Sorumlusu Alanı Boş');
           return;
         }
         if (
           this.productForm.get('currency').value === '' ||
           this.productForm.get('currency').value == null
         ) {
-          this.alertifyService.error('Vergi Tipi Alanı Boş');
+          this.toasterService.error('Vergi Tipi Alanı Boş');
           return;
         }
 
@@ -456,7 +455,7 @@ export class CreateSaleOrderComponent implements OnInit {
         return result[1];
       }
     } catch (error) {
-      this.alertifyService.error(error.message);
+      this.toasterService.error(error.message);
       return null;
     }
   }
@@ -506,7 +505,7 @@ export class CreateSaleOrderComponent implements OnInit {
             model.currAccCode = currAccCodeValue;
             this.productForm.get('currAccCode').setValue(currAccCodeValue);
           } catch (error) {
-            this.alertifyService.error('Müşteri Kodu Hatası.');
+            this.toasterService.error('Müşteri Kodu Hatası.');
             return;
           }
         }
@@ -644,7 +643,7 @@ export class CreateSaleOrderComponent implements OnInit {
       this.clearFormFields();
 
       this.generalService.beep();
-      this.alertifyService.success('Ürün Başarılı Şekilde Eklendi.');
+      this.toasterService.success('Ürün Başarılı Şekilde Eklendi.');
     } else {
       this.whichRowIsInvalid();
       const formValuesJSON = JSON.stringify(this.productForm.value, null, 2);

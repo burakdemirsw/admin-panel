@@ -8,7 +8,7 @@ import { OrderSaleDetail } from 'src/app/models/model/order/orderSaleDetail';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 @Component({
   selector: 'app-order-billing-operation',
@@ -23,18 +23,18 @@ export class OrderBillingOperationComponent implements OnInit {
   constructor(
     private httpClientService: HttpClientService,
     private formBuilder: FormBuilder,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private orderService: OrderService,
 
     private spinnerService: NgxSpinnerService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.getOrders();
     this.formGenerator('', 0);
     // this.getOrdersProduct("1-WS-2-11626")
   }
- 
+
   getOrders(): any {
     try {
       this.httpClientService
@@ -100,14 +100,14 @@ export class OrderBillingOperationComponent implements OnInit {
 
     if (this.orderBillingForm.valid) {
       //this.orderService.addProductToOrder(barcodeAddModel);
-      this.alertifyService.success('Sipariş Faturalandırma İşlemi Tamamlandı!');
+      this.toasterService.success('Sipariş Faturalandırma İşlemi Tamamlandı!');
       console.log(barcodeAddModel);
       setTimeout(() => {
         this.spinnerService.hide();
       }, 2000);
 
       // } else {
-      //   this.alertifyService.error('Formu doldurunuz');
+      //   this.toasterService.error('Formu doldurunuz');
       //   console.log(barcodeAddModel);
       // }
     }

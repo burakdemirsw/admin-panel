@@ -92,20 +92,20 @@
                         >
                           <i class="fa fa-angle-down"> </i>
                         </button>
-                        <button
+                        <!-- <button
                           data-toggle="tooltip"
                           data-placement="right"
                           title="Eksik Ürün"
                           *ngIf="
-                            this.currentOrderNo.includes('WS') ||
-                            this.currentOrderNo.includes('MIS')
+                            this.currentOrderNo.includes('WS') &&
+                            !_pageDescription
                           "
                           class="btn btn-dark"
                           type="submit"
                           (click)="addMissingProduct(product)"
                         >
                           <i class="fa-solid fa-minus"></i>
-                        </button>
+                        </button> -->
                         <button
                           data-toggle="tooltip"
                           data-placement="right"
@@ -422,8 +422,8 @@
                           data-placement="right"
                           title="Eksik Ürün"
                           *ngIf="
-                            this.currentOrderNo.includes('WS') ||
-                            this.currentOrderNo.includes('MIS')
+                            this.currentOrderNo.includes('WS') &&
+                            !_pageDescription
                           "
                           class="btn btn-dark"
                           type="submit"

@@ -3,7 +3,6 @@ import { Product } from 'src/app/models/model/product/product';
 import { ProductDetail } from 'src/app/models/model/product/productDetail';
 import { ProductModel } from 'src/app/models/model/product/productModel';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ProductList_VM } from 'src/app/models/model/product/productList_VM';
 import { BarcodeSearch_RM, ProductService } from 'src/app/services/admin/product.service';
@@ -11,6 +10,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { GeneralService } from 'src/app/services/admin/general.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 declare var window: any;
 @Component({
   selector: 'app-product-management',
@@ -23,7 +23,7 @@ export class ProductManagementComponent implements OnInit {
   view = true;
   constructor(
     private httpClientService: HttpClientService,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private spinnerService: NgxSpinnerService,
     private productService: ProductService,
     private formBuilder: FormBuilder, private sanitizer: DomSanitizer,
@@ -48,7 +48,7 @@ export class ProductManagementComponent implements OnInit {
     const formDataJSON = JSON.stringify(model.barcode + "--" + model.batchCode + "--" + model.itemCode); // Form verilerini JSON'a dönüştür
 
     this.qrCodeValue = formDataJSON;
-    // this.alertifyService.success(this.qrCodeValue)
+    // this.toasterService.success(this.qrCodeValue)
 
   }
   modalImageUrl: string;
@@ -77,7 +77,7 @@ export class ProductManagementComponent implements OnInit {
         barcode: [null, Validators.required],
       });
     } catch (error: any) {
-      this.alertifyService.error(error.message);
+      this.toasterService.error(error.message);
     }
   }
 
@@ -116,6 +116,6 @@ export class ProductManagementComponent implements OnInit {
   }
   async onSubmit(value: any) {
     await this.getProducts(value.barcode);
-    this.alertifyService.success(value.barcode);
+    this.toasterService.success(value.barcode);
   }
 }

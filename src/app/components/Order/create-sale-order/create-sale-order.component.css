@@ -1,11 +1,11 @@
-.row{
-    --bs-gutter-x: 0.5rem !important; 
-}
-.card{
-    margin-bottom: 10px;
+.row {
+  --bs-gutter-x: 0.5rem !important;
 }
 
-::ng-deep .p-dropdown
-{
-    width: 100% !important;
+.card {
+  margin-bottom: 10px;
+}
+
+::ng-deep .p-dropdown {
+  width: 100% !important;
 }

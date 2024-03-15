@@ -9,7 +9,7 @@ import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/ware
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 @Component({
   selector: 'app-warehouse-shelf-count-list',
@@ -22,7 +22,7 @@ export class WarehouseShelfCountListComponent implements OnInit {
   filterForm: FormGroup;
   constructor(
     private httpClientService: HttpClientService,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private spinnerService: NgxSpinnerService,
     private router: Router,
     private formBuilder: FormBuilder,
@@ -93,9 +93,9 @@ export class WarehouseShelfCountListComponent implements OnInit {
       const response = await this.warehouseService.deleteCountFromId(orderNumber);
       if (response === true) {
         location.reload();
-        this.alertifyService.success("İşlem Başarılı")
+        this.toasterService.success("İşlem Başarılı")
       } else {
-        this.alertifyService.error("İşlem Başarısız")
+        this.toasterService.error("İşlem Başarısız")
 
       }
     }

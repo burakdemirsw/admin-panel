@@ -7,7 +7,6 @@ import { WarehouseModel } from 'src/app/models/model/warehouse/warehouseModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import {
@@ -25,6 +24,7 @@ import { OrderService } from 'src/app/services/admin/order.service';
 import { QrControlCommandModel } from 'src/app/models/model/product/qrControlModel';
 import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 declare var window: any;
 
 @Component({
@@ -46,14 +46,12 @@ export class WarehouseOperationComponent implements OnInit {
   constructor(
     private httpClientService: HttpClientService,
     private formBuilder: FormBuilder,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private activatedRoute: ActivatedRoute,
-    private spinnerService: NgxSpinnerService,
     private router: Router,
     private generalService: GeneralService,
     private productService: ProductService,
     private warehouseService: WarehouseService,
-    private title: Title,
     private httpClient: HttpClient,
     private orderService: OrderService
   ) { } // Add this line
@@ -66,7 +64,6 @@ export class WarehouseOperationComponent implements OnInit {
   itemCode: string = null;
   batchCode: string;
   officeModels: OfficeModel[] = [];
-
   visible: boolean = false;
   _barcode: string = null;
   quantity: number = null;
@@ -75,14 +72,38 @@ export class WarehouseOperationComponent implements OnInit {
     this._barcode = barcode;
     this.quantity = quantity
   }
-
+  pageStatus = '';
   async ngOnInit() {
+    if (location.href.includes('REQ-')) {
+      var ls_currentDataType = localStorage.getItem('currentDataType')
+      if (ls_currentDataType != undefined && !ls_currentDataType) {
+        this.currentDataType = ls_currentDataType.toString();
+        // this.toasterService.success(localStorage.getItem('currentDataType'))
+      } else {
+        this.currentDataType = '0'
+
+
+      }
+      if (this.currentDataType === '1') {
+        this.pageStatus = 'İstek - Standart'
+      } else {
+        this.pageStatus = 'İstek - Raf Fulle'
+      }
+    } else {
+      this.pageStatus = 'Transfer'
+      this.currentDataType = '0'
+
+
+    }
+
+
+
     this.formGenerator();
     this.warehouseForm.valueChanges.subscribe(() => {
       var office = this.warehouseForm.get('office').value
       var officeTo = this.warehouseForm.get('officeTo').value
       if ((office === officeTo) && (office !== null)) {
-        // this.alertifyService.error("Ofisler Farklı Olmalıdır")
+        // this.toasterService.error("Ofisler Farklı Olmalıdır")
         this.warehouseForm.get('office').setValue(null)
         this.warehouseForm.get('officeTo').setValue(null)
       }
@@ -97,11 +118,11 @@ export class WarehouseOperationComponent implements OnInit {
       } else if (this.currentOrderNo.includes('REQ-')) {
         await this.getProductOfCount(this.currentOrderNo);
 
-        await this.getInventoryItems(this.currentDataType);
+
       }
 
       this.warehouseForm.get('orderNo').setValue(this.currentOrderNo);
-      //this.alertifyService.success(this.warehouseForm.get('orderNo').value)
+      //this.toasterService.success(this.warehouseForm.get('orderNo').value)
       //this.spinnerService.hide();
     });
 
@@ -114,7 +135,9 @@ export class WarehouseOperationComponent implements OnInit {
     'Raf',
     'Ürün Kodu',
     'Transfer Miktarı',
-    'Toplam Stok',
+    'UD Stok',
+    // 'MD Stok',
+    // 'UD Stok',
     'Ürün',
     'Barkod',
   ];
@@ -123,12 +146,13 @@ export class WarehouseOperationComponent implements OnInit {
     'Raf',
     'Ürün Kodu',
     'Transfer Miktarı',
-    'Toplam Stok',
+    'UD Stok',
     'Barkod',
     'İşlem',
   ];
-  inventoryItems: InventoryItem[] = [];
   _inventoryItems: InventoryItem[] = [];
+  inventoryItems: InventoryItem[] = [];//transfer Edilecek ürünler
+  warehouseTransferForms: TransferModel[] = []; //eklenen ürünler
   lastCollectedProduct: InventoryItem = null;
 
   goDown2(
@@ -166,23 +190,117 @@ export class WarehouseOperationComponent implements OnInit {
       }
     }
   }
-
-  currentDataType = "0";
+  deletedProductList: InventoryItem[] = [];
+  async addDeletedItemList(item: InventoryItem) {
+    this.deletedProductList.push(item);
+    await this.getProductOfCount(this.currentOrderNo);
+    this.toasterService.info("Ürün Transfer Edilecek Ürünlerden Silindi")
+  }
+  currentDataType;
   async onDataChange(type: string) {
+
+    if (location.href.includes('REQ')) {
+      var ls_currentDataType = localStorage.getItem('currentDataType')
+      if (ls_currentDataType != undefined && ls_currentDataType) {
+        localStorage.removeItem('currentDataType');
+        localStorage.setItem('currentDataType', this.currentDataType)
+      } else {
+        localStorage.setItem('currentDataType', this.currentDataType)
+      }
+      this.currentDataType = type;
+      if (type === '0') {
+        this.toasterService.success("Varsayılan Ürünler Getirildi")
+
+        this.pageStatus = 'İstek - Standart'
+      } else if (type === '1') {
+        this.pageStatus = 'İstek -Raf Fulle'
+        this.toasterService.success("Raflar Fullendi")
+
+      }
+    }
+
     if (type === '0') {
-      this.alertifyService.success("Varsayılan Ürünler Getirildi")
+      this.toasterService.success("Varsayılan Ürünler Getirildi")
+
+      // this.pageStatus = 'Standart'
     } else if (type === '1') {
-      this.alertifyService.success("Raflar Fullendi")
+      // this.pageStatus = 'Raf Fulle'
+      this.toasterService.success("Raflar Fullendi")
 
     }
-    this.currentDataType = type;
+
+
     this.inventoryItems = [];
-    await this.getInventoryItems(this.currentDataType);
+    this.inventoryItems = await this.orderService.getInventoryItems(type); //tansfer edilcek ürünler
+
+
+    if (this.deletedProductList.length > 0) {
+      this.deletedProductList.forEach((deletedItem) => {
+
+        this.inventoryItems.forEach((inventoryItem, _index) => {
+
+
+          if (inventoryItem.barcode === deletedItem.barcode &&
+            inventoryItem.shelfNo === deletedItem.shelfNo &&
+            inventoryItem.itemCode === deletedItem.itemCode) {
+            this.inventoryItems.splice(_index, 1);
+          }
+
+
+        });
+
+      });
+    }
+
+  }
+  pasteItemToForm(item: InventoryItem) {
+    this.warehouseForm.get('shelfNo').setValue(item.shelfNo);
+    this.warehouseForm.get('quantity').setValue(item.quantity);
+    this.warehouseForm.get('barcode').setValue(item.barcode);
+
   }
 
-  async getInventoryItems(type: string) {
-    this.inventoryItems = await this.orderService.getInventoryItems(type);
+  // inventoryItems: InventoryItem[] = [];//transfer Edilecek ürünler
+  // warehouseTransferForms: TransferModel[] = []; //transfer edilen ürünler
+  updateInventoryAndTransfers() {
+    // İşlem sonrası çıkarılacak öğelerin indekslerini tutacak dizi
+    let itemsToRemoveIndexes: number[] = [];
 
+
+    // inventoryItems üzerinde döngü
+    this.inventoryItems.forEach((inventoryItem, index) => {
+      // Eşleşme arama ve güncelleme
+      this.warehouseTransferForms.forEach((transferItem) => {
+        // barcode, shelfNo ve itemCode değerlerine göre eşleşme kontrolü
+        if (inventoryItem.barcode === transferItem.barcode &&
+          inventoryItem.shelfNo === transferItem.shelfNo &&
+          inventoryItem.itemCode === transferItem.itemCode) {
+
+          // Eşleşen üründen quantity değerini çıkart
+          inventoryItem.transferQty -= transferItem.quantity;
+
+          // Eğer transfer edilen miktar sonucunda quantity 0 veya daha az ise
+          if (inventoryItem.transferQty <= 0) {
+            // İlgili inventoryItem'ın çıkarılması için indeksini kaydet
+            itemsToRemoveIndexes.push(index);
+          }
+        }
+      });
+    });
+
+    // Çıkarılacak öğeler için ters döngü (çıkarırken sıralamayı bozmamak için)
+    for (let i = itemsToRemoveIndexes.length - 1; i >= 0; i--) {
+      this.inventoryItems.splice(itemsToRemoveIndexes[i], 1);
+    }
+    itemsToRemoveIndexes = [];
+    //--------------------------------------------------------
+
+    //eğer silinmiş ürün listesinde ürün varsa onları kaldır
+
+    // Çıkarılacak öğeler için ters döngü (çıkarırken sıralamayı bozmamak için)
+
+    //--------------------------------------------------------
+    console.log(this.inventoryItems);
     if (this.inventoryItems.length > 0) {
       if (this.lastCollectedProduct == null) {
         //üste atılcak ürün seçildi
@@ -222,6 +340,59 @@ export class WarehouseOperationComponent implements OnInit {
       }
     }
   }
+
+
+  async getProductOfCount(orderNo: string): Promise<any> { //sayılanları çeker
+    this.warehouseTransferForms =
+      await this.warehouseService.getProductOfTrasfer(orderNo);
+    await this.onDataChange(this.currentDataType);
+    this.updateInventoryAndTransfers();
+    this.calculateTotalQty();
+  }
+
+
+  // async getInventoryItems(type: string) {
+  //   this.inventoryItems = await this.orderService.getInventoryItems(type); //tansfer edilcek ürünler
+
+  //   if (this.inventoryItems.length > 0) {
+  //     if (this.lastCollectedProduct == null) {
+  //       //üste atılcak ürün seçildi
+  //       this._inventoryItems = [];
+  //       this._inventoryItems.push(this.inventoryItems[0]);
+  //       this.lastCollectedProduct = this.inventoryItems[0];
+  //     } else {
+  //       //eğer son sayılan ürün varsa
+  //       var foundedProduct = this.inventoryItems.find(
+  //         (p) =>
+  //           p.barcode == this.lastCollectedProduct.barcode &&
+  //           p.itemCode == this.lastCollectedProduct.itemCode &&
+  //           p.shelfNo == this.lastCollectedProduct.shelfNo
+  //       );
+
+  //       if (foundedProduct) {
+  //         //eğer ürün bulunduysa
+
+  //         if (foundedProduct.quantity > 0) {
+  //           //miktar değeri 0 dan büyükse
+  //           this._inventoryItems = [];
+  //           this._inventoryItems.push(foundedProduct);
+  //           this.lastCollectedProduct = foundedProduct;
+  //         } else {
+  //           //miktar değeri 0 dan küçükse
+  //           this._inventoryItems = [];
+  //           this._inventoryItems.push(this.inventoryItems[0]);
+  //           this.lastCollectedProduct = this.inventoryItems[0];
+  //         }
+  //       } else {
+  //         //üürn bulunmdadıysa
+
+  //         this._inventoryItems = [];
+  //         this._inventoryItems.push(this.inventoryItems[0]);
+  //         this.lastCollectedProduct = this.inventoryItems[0];
+  //       }
+  //     }
+  //   }
+  // }
 
   modalImageUrl: string;
   formModal: any;
@@ -301,7 +472,7 @@ export class WarehouseOperationComponent implements OnInit {
           // console.log('Form Değeri (warehouseCode) \n' + selectedValue2); //null geliyor
           return true;
         } else {
-          this.alertifyService.error('Depo Çekilemedi');
+          this.toasterService.error('Depo Çekilemedi');
           return false;
         }
       } else {
@@ -327,7 +498,7 @@ export class WarehouseOperationComponent implements OnInit {
           // console.log('Form Değeri (warehouseTo) \n' + selectedValue2); //null geliyor
           return true;
         } else {
-          this.alertifyService.error('Depo Çekilemedi');
+          this.toasterService.error('Depo Çekilemedi');
           return false;
         }
       }
@@ -372,16 +543,16 @@ export class WarehouseOperationComponent implements OnInit {
               'warehouse-operation-list'
             );
           } else {
-            this.alertifyService.error('İşlem Başarısız');
+            this.toasterService.error('İşlem Başarısız');
           }
         } catch (error: any) {
           // console.log(error.message);
         }
       } else {
-        this.alertifyService.warning('İşlem iptal edildi.');
+        this.toasterService.warn('İşlem iptal edildi.');
       }
     } else {
-      this.alertifyService.warning('Sipariş No Boş Geliyor.');
+      this.toasterService.warn('Sipariş No Boş Geliyor.');
     }
     //this.spinnerService.hide();
   }
@@ -394,7 +565,7 @@ export class WarehouseOperationComponent implements OnInit {
 
   barcode: string = null;
 
-  warehouseTransferForms: TransferModel[] = [];
+
 
   async setShelfNo(barcode: string): Promise<string> {
     this.shelfNumbers = 'RAFLAR:';
@@ -406,7 +577,7 @@ export class WarehouseOperationComponent implements OnInit {
       this.shelfNumbers += result[0];
       return result[1];
     } else {
-      this.alertifyService.warning('Barkod Alanı Boş.');
+      this.toasterService.warn('Barkod Alanı Boş.');
       return null;
     }
   }
@@ -438,7 +609,7 @@ export class WarehouseOperationComponent implements OnInit {
         return result[1];
       }
     } catch (error) {
-      this.alertifyService.error(error.message);
+      this.toasterService.error(error.message);
       return null;
     }
   }
@@ -468,11 +639,11 @@ export class WarehouseOperationComponent implements OnInit {
       if (formValue.barcode) {
         var number = await this.setFormValues(formValue.barcode, true);
         this.warehouseForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
-        this.alertifyService.success(
+        this.toasterService.success(
           'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
         );
       } else {
-        this.alertifyService.warning('Barkod Alanı Boş.');
+        this.toasterService.warn('Barkod Alanı Boş.');
       }
 
       return;
@@ -551,7 +722,7 @@ export class WarehouseOperationComponent implements OnInit {
                 this.clearQrAndBatchCode();
               } else {
                 this.calculateTotalQty();
-                this.alertifyService.warning('Ekleme Yapılmadı!');
+                this.toasterService.warn('Ekleme Yapılmadı!');
               }
             }
           } else {
@@ -611,21 +782,16 @@ export class WarehouseOperationComponent implements OnInit {
         } else {
           var number = await this.setShelfNo(formValue.barcode);
           this.warehouseForm.get('quantity')?.setValue(Number(number));
-          this.alertifyService.success(
+          this.toasterService.success(
             'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
           );
         }
       }
     } else {
-      this.alertifyService.error('Form Geçersiz');
+      this.toasterService.error('Form Geçersiz');
     }
   }
 
-  async getProductOfCount(orderNo: string): Promise<any> {
-    this.warehouseTransferForms =
-      await this.warehouseService.getProductOfTrasfer(orderNo);
-    this.calculateTotalQty();
-  }
 
   totalCount: number;
   calculateTotalQty() {
@@ -686,7 +852,7 @@ export class WarehouseOperationComponent implements OnInit {
     //this.spinnerService.show();
     setTimeout(() => {
       //this.spinnerService.hide();
-      this.alertifyService.success('NEBIME BAŞARIYLA AKTARILDI!');
+      this.toasterService.success('NEBIME BAŞARIYLA AKTARILDI!');
     }, 2000);
   }
 
@@ -746,9 +912,9 @@ export class WarehouseOperationComponent implements OnInit {
         );
         this.calculateTotalQty();
         await this.getProductOfCount(this.currentOrderNo);
-        this.alertifyService.success('Silme İşlemi Başarılı.');
+        this.toasterService.success('Silme İşlemi Başarılı.');
       } else {
-        this.alertifyService.error('Silme İşlemi Başarısız.');
+        this.toasterService.error('Silme İşlemi Başarısız.');
       }
 
       var model: QrOperationModel = new QrOperationModel();
@@ -788,12 +954,12 @@ export class WarehouseOperationComponent implements OnInit {
         if (qrOperationResponse) {
           // // console.log(this.qrOperationModels);
           this.generalService.beep3();
-          this.alertifyService.success('Qr Operasyonu Geri Alındı');
+          this.toasterService.success('Qr Operasyonu Geri Alındı');
         } else {
-          this.alertifyService.error('Qr Operasyonu Geri Alınamadı');
+          this.toasterService.error('Qr Operasyonu Geri Alınamadı');
         }
       } else {
-        this.alertifyService.error('Qr Operasyonu Geri Alınamadı');
+        this.toasterService.error('Qr Operasyonu Geri Alınamadı');
       }
 
       return response;
@@ -806,4 +972,28 @@ export class WarehouseOperationComponent implements OnInit {
   updateItemStock() {
     location.reload();
   }
+
+
+  //--------------------------------------------------------------------
+  productShelvesDialog: boolean = false;
+  productShelves: string[] = [];
+  async getShelves(barcode: string) {
+    var newResponse = await this.productService.countProductByBarcode(
+      barcode
+    );
+    const shelves = newResponse[0]
+      .split(',')
+      .filter((raflar) => raflar.trim() !== '')
+
+
+    this.productShelves = shelves;
+    this.productShelvesDialog = true;
+  }
+  setShelveToForm(shelve) {
+    this.warehouseForm.get('shelfNo').setValue(shelve);
+    this.toasterService.success("Raf Yerleştirildi");
+    this.productShelvesDialog = false;
+  }
+  //--------------------------------------------------------------------
+
 }

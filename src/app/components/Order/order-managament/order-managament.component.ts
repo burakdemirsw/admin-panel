@@ -9,7 +9,7 @@ import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 @Component({
   selector: 'app-order-managament',
@@ -23,7 +23,7 @@ export class OrderManagamentComponent implements OnInit {
   currentPage: number = 1;
   constructor(
     private httpClientService: HttpClientService,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private spinnerService: NgxSpinnerService,
     private router: Router,
     private orderService: OrderService,
@@ -32,15 +32,21 @@ export class OrderManagamentComponent implements OnInit {
   ) { }
   filterForm: FormGroup;
   pageDescription: boolean = false;
+  _pageDescription: boolean = false;
   pageDescriptionLine: string = "Alınan Siparişler"
+
+
+  invoiceStatus = 2
+  status = 1;
   async ngOnInit() {
     //this.spinnerService.show();
     if (location.href.includes("missing-list")) {
       this.pageDescription = true
       this.pageDescriptionLine = "Eksik Siparişler"
     }
+
     this.formGenerator()
-    await this.getOrders(1);
+    await this.getOrders(this.status, this.invoiceStatus);
     //this.spinnerService.hide();
 
 
@@ -69,7 +75,7 @@ export class OrderManagamentComponent implements OnInit {
     let listNumber: string = (document.getElementById('numberOfList') as HTMLInputElement).value;
 
     if (listNumber == null || listNumber == '') {
-      this.alertifyService.warning('Lütfen Bir Müktar Seçiniz');
+      this.toasterService.warn('Lütfen Bir Müktar Seçiniz');
     } else {
       try {
         // Wait for the products to be fetched before navigating
@@ -88,7 +94,7 @@ export class OrderManagamentComponent implements OnInit {
             this.router.navigate(['/collect-product-of-order/' + this.productsToCollect[0].packageNo]);
           } else {
             // Hiç ürün bulunamadığında nasıl bir işlem yapılacağını ele alın
-            this.alertifyService.warning('İşlem Yapıclacak Veri Gelmedi.');
+            this.toasterService.warn('İşlem Yapıclacak Veri Gelmedi.');
           }
 
           //this.spinnerService.hide();
@@ -105,14 +111,16 @@ export class OrderManagamentComponent implements OnInit {
     const response =
       this.saleOrderModels = await this.orderService.getMissingOrders()
   }
-  async getOrders(type: number): Promise<any> {
+  async getOrders(status: number, invoiceStatus: number): Promise<any> {
 
+    this.status = status;
+    this.invoiceStatus = invoiceStatus;
     if (location.href.includes("missing-list")) {
       const response =
         this.saleOrderModels = await this.orderService.getMissingOrders()
     } else {
       const response =
-        this.saleOrderModels = await this.orderService.getOrders(type)
+        this.saleOrderModels = await this.orderService.getOrders(status, invoiceStatus)
     }
 
 
@@ -127,9 +135,9 @@ export class OrderManagamentComponent implements OnInit {
       const response = await this.orderService.deleteInvoiceProducts(orderNumber);
       if (response === true) {
         location.reload();
-        this.alertifyService.success("İşlem Başarılı")
+        this.toasterService.success("İşlem Başarılı")
       } else {
-        this.alertifyService.error("İşlem Başarısız")
+        this.toasterService.error("İşlem Başarısız")
 
       }
     }

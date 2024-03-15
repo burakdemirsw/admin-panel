@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common'
 import { Router } from '@angular/router';
 import { SessionService } from 'src/app/services/ui/session.service';
+import { UserService } from 'src/app/services/admin/user.service';
 
 @Component({
   selector: 'app-header',
@@ -10,17 +11,21 @@ import { SessionService } from 'src/app/services/ui/session.service';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(@Inject(DOCUMENT) private document: Document,private router : Router ,private sessionService:SessionService) { }
+  constructor(private userService: UserService, @Inject(DOCUMENT) private document: Document, private router: Router, private sessionService: SessionService) { }
 
+  userName: string;
   ngOnInit(): void {
+    var userName = localStorage.getItem('name');
+    if (userName) {
+      this.userName = userName;
+
+    }
   }
-  sidebarToggle()
-  {
+  sidebarToggle() {
     //toggle sidebar function
     this.document.body.classList.toggle('toggle-sidebar');
   }
-  logOut(){
-    localStorage.removeItem("userSession");
-    localStorage.removeItem("sessionExpiration");
-    location.reload() }
+  logOut() {
+    this.userService.logOut();
+  }
 }

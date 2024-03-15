@@ -105,6 +105,21 @@ import { ReferrerPolicyDirective } from './referrer-policy.directive';
 import { TestComponent } from './components/Order/invoice-list/test/test.component';
 import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
+import { PagesLoginv2Component } from './pages/pages-loginv2/pages-loginv2.component';
+import { JwtModule } from '@auth0/angular-jwt';
+import { UserListComponent } from './components/User/user-list/user-list.component';
+import { MessagesModule } from 'primeng/messages';
+import { MessageService } from 'primeng/api';
+import { CustomerListComponent } from './components/Customer/customer-list/customer-list.component';
+import { StepsModule } from 'primeng/steps';
+import { SkeletonModule } from 'primeng/skeleton';
+import { SelectButtonModule } from 'primeng/selectbutton';
+
+import { ChartModule } from 'primeng/chart';
+import { CargoDetailComponent } from './components/cargo/cargo-detail/cargo-detail.component';
+import { CargoListComponent } from './components/cargo/cargo-list/cargo-list.component';
+import { CreateCargoComponent } from './components/cargo/create-cargo/create-cargo.component';
+
 @NgModule({
 
   declarations: [
@@ -179,11 +194,18 @@ import { InputTextModule } from 'primeng/inputtext';
     BoxCountComponent,
     CreateOrderComponent,
     ReferrerPolicyDirective,
-    TestComponent
+    TestComponent,
+    PagesLoginv2Component,
+    UserListComponent,
+    CustomerListComponent,
+    CreateCargoComponent,
+    CargoListComponent,
+    CargoDetailComponent
   ],
 
 
   imports: [
+    SkeletonModule,
     FormsModule,
     ReactiveFormsModule,
     BrowserModule,
@@ -209,12 +231,21 @@ import { InputTextModule } from 'primeng/inputtext';
     TabViewModule,
     CardModule,
     ButtonModule,
-    FileUploadModule, TableModule, InputTextModule
+    StepsModule,
+    ChartModule,
+    SelectButtonModule,
+    FileUploadModule, TableModule, InputTextModule, MessagesModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: () => localStorage.getItem('accessToken'),
+        allowedDomains: ['localhost:7178', 'localhost:7180', '212.156.46.206:7180'],
+      },
+    }),
 
   ],
 
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [DatePipe, AlertifyService, NgModule, NgxPopper, DatePipe, NgxSpinnerModule, {
+  providers: [MessageService, DatePipe, AlertifyService, NgModule, NgxPopper, DatePipe, NgxSpinnerModule, {
     provide: HTTP_INTERCEPTORS,
     useClass: HttpErrorInterceptor,
     multi: true

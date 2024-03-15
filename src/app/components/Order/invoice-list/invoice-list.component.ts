@@ -8,7 +8,7 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 @Component({
   selector: 'app-invoice-list',
@@ -18,7 +18,7 @@ import { AlertifyService } from 'src/app/services/ui/alertify.service';
 export class InvoiceListComponent implements OnInit, OnChanges {
   constructor(
     private httpClientService: HttpClientService,
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private spinnerService: NgxSpinnerService,
     private router: Router,
     private warehouseService: WarehouseService,
@@ -126,9 +126,9 @@ export class InvoiceListComponent implements OnInit, OnChanges {
       const response = await this.orderService.deleteInvoiceProducts(orderNumber);
       if (response === true) {
         location.reload();
-        this.alertifyService.success("İşlem Başarılı")
+        this.toasterService.success("İşlem Başarılı")
       } else {
-        this.alertifyService.error("İşlem Başarısız")
+        this.toasterService.error("İşlem Başarısız")
 
       }
     }

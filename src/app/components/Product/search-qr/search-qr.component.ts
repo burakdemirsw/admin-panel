@@ -9,7 +9,7 @@ import { QrCode } from 'src/app/models/model/product/qrCode';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { ProductService, BarcodeSearch_RM } from 'src/app/services/admin/product.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
-import { AlertifyService } from 'src/app/services/ui/alertify.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 declare var window: any;
 @Component({
   selector: 'app-search-qr',
@@ -22,7 +22,7 @@ export class SearchQrComponent implements OnInit {
   showImage = false; // add this property
   view = true;
   constructor(
-    private alertifyService: AlertifyService,
+    private toasterService: ToasterService,
     private spinnerService: NgxSpinnerService,
     private productService: ProductService,
     private formBuilder: FormBuilder, private sanitizer: DomSanitizer,
@@ -37,7 +37,7 @@ export class SearchQrComponent implements OnInit {
       if (this.currentId != null) {
         await this.getProducts(this.currentId);
       }
-      // this.alertifyService.success(this.currentId)
+      // this.toasterService.success(this.currentId)
     })
     //this.spinnerService.show();
 
@@ -56,7 +56,7 @@ export class SearchQrComponent implements OnInit {
     const formDataJSON = JSON.stringify(model.barcode + "--" + model.batchCode + "--" + model.itemCode); // Form verilerini JSON'a dönüştür
 
     this.qrCodeValue = formDataJSON;
-    // this.alertifyService.success(this.qrCodeValue)
+    // this.toasterService.success(this.qrCodeValue)
 
   }
   modalImageUrl: string;
@@ -85,7 +85,7 @@ export class SearchQrComponent implements OnInit {
         barcode: [null, Validators.required],
       });
     } catch (error: any) {
-      this.alertifyService.error(error.message);
+      this.toasterService.error(error.message);
     }
   }
 
@@ -102,7 +102,7 @@ export class SearchQrComponent implements OnInit {
       var response = await this.httpClientService.post<any>({ controller: 'Order/Qr' }, requestModel).toPromise();
       // Base64 veriyi konsola bas
       if (response) {
-        this.alertifyService.success("Yazdırıldı")
+        this.toasterService.success("Yazdırıldı")
       }
       // console.log(imgData.split('base64,')[1]);
 
@@ -135,6 +135,6 @@ export class SearchQrComponent implements OnInit {
   }
   async onSubmit(value: any) {
     await this.getProducts(value.barcode);
-    this.alertifyService.success(value.barcode);
+    this.toasterService.success(value.barcode);
   }
 }
