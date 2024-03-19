@@ -609,9 +609,34 @@ export class OrderService {
     }
   }
 
+
   async getOrderDetail(orderNumber: string): Promise<any> {
     try {
       var response = await this.httpClientService.get<any>({ controller: "order/get-order-detail" + "/" + orderNumber }).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+  async deleteClientOrder(id: string): Promise<any> {
+    try {
+
+      var response = await this.httpClientService.get<any>({ controller: "order/delete-client-order" + "/" + id }).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+  async deleteClientOrderBasketItem(orderId: string, lineId: string): Promise<any> {
+    try {
+      var query = `${orderId}/${lineId}`
+
+      var response = await this.httpClientService.get<any>({ controller: "order/delete-client-order-basket-item" }, query).toPromise();
 
       return response;
     } catch (error: any) {

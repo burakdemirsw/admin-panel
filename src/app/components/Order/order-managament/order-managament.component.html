@@ -109,7 +109,7 @@
                 <button class="btn btn-primary">Filtrele</button>
               </div>
             </div>
-            <div class="card custom-card mb-3">
+            <!-- <div class="card custom-card mt-3">
               <div class="card-body">
                 <button
                   type="button"
@@ -121,7 +121,7 @@
                 </button>
                 <button
                   type="button"
-                  class="btn custom-btn-danger mt-3"
+                  class="btn custom-btn-primary mt-3"
                   (click)="getOrders(1, 2)"
                 >
                   <i class="fas fa-file-excel"></i> Faturalandırılmayan
@@ -136,7 +136,7 @@
                   Siparişler
                 </button>
               </div>
-            </div>
+            </div> -->
           </form>
         </div>
         <!-- Filtreleme Alanı (Bitiş) -->
@@ -154,7 +154,7 @@
         </button>
         <button
           type="button"
-          class="btn custom-btn-danger mt-3"
+          class="btn custom-btn-primary mt-3"
           (click)="getOrders(0, 2)"
         >
           <i class="fas fa-times-circle"></i> Toplanamaz Siparişler
@@ -211,7 +211,7 @@
                 <th scope="col">Toplanan Miktar</th>
                 <th scope="col">Kalan Miktar</th>
                 <!-- <th scope="col">Durum</th> -->
-
+                <th scope="col">Kargo</th>
                 <th scope="col">Fat. Durum</th>
                 <th scope="col">Sip. Top. Tut.</th>
                 <th scope="col">İşlemler</th>
@@ -250,6 +250,26 @@
                   <button
                     class="btn"
                     [ngClass]="{
+                      'btn-success': order.isShipped === true,
+                      'btn-danger': order.isShipped === false
+                    }"
+                  >
+                    <i
+                      *ngIf="order.isShipped"
+                      class="fa fa-check"
+                      aria-hidden="true"
+                    ></i>
+                    <i
+                      *ngIf="!order.isShipped"
+                      class="fa-solid fa-ban"
+                      aria-hidden="true"
+                    ></i>
+                  </button>
+                </td>
+                <td>
+                  <button
+                    class="btn"
+                    [ngClass]="{
                       'btn-success': order.invoiceStatus === 1,
                       'btn-danger': order.invoiceStatus === 2,
                       'btn-warning': order.invoiceStatus === 3
@@ -269,7 +289,7 @@
                   <div class="btn-group">
                     <div
                       *ngIf="!pageDescription"
-                      class="btn btn-primary"
+                      class="btn btn-success"
                       data-text="Varyasyonlar"
                       [routerLink]="
                         order.invoiceStatus === 1
@@ -295,20 +315,20 @@
                     </div> -->
                     <div
                       *ngIf="!pageDescription"
-                      class="btn btn-danger"
+                      class="btn btn-success"
                       data-text="Sil"
                       (click)="deleteInvoiceProducts(order.orderNumber)"
                     >
                       <i class="fas fa-trash"></i>
                     </div>
-                    <div
+                    <!-- <div
                       *ngIf="!_pageDescription"
-                      class="btn btn-dark"
+                      class="btn btn-success"
                       data-text="Eksik Ürünler"
                       (click)="routeNewPage3(order.orderNumber)"
                     >
                       <i class="fas fa-arrow-right"></i>
-                    </div>
+                    </div> -->
 
                     <div
                       class="btn btn-success"

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { LogFilterModel } from 'src/app/models/model/log/logFilterModel ';
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
-import { CreatePackage_MNG_Request, CreateBarcode_MNG_Request } from 'src/app/components/cargo/create-cargo/models/models';
+import { CreatePackage_MNG_Request, CreateBarcode_MNG_Request, CargoBarcode_VM, CreatePackage_MNG_RM } from 'src/app/components/cargo/create-cargo/models/models';
 
 @Injectable({
   providedIn: 'root'
@@ -18,10 +18,9 @@ export class CargoService {
     private httpClient: HttpClient
   ) { }
 
-  async createCargo(request: CreatePackage_MNG_Request): Promise<any> {
+  async createCargo(request: CreatePackage_MNG_RM): Promise<any> {
     try {
       var response = await this.httpClientService.post<any>({ controller: "cargos/create-cargo" }, request).toPromise();
-
       return response;
     } catch (error: any) {
       console.log(error.message);
@@ -29,9 +28,9 @@ export class CargoService {
     }
   }
 
-  async printBarcode(request: CreateBarcode_MNG_Request): Promise<any> {
+  async createBarcode(request: string): Promise<any> {
     try {
-      var response = await this.httpClientService.post<any>({ controller: "cargos/print-barcode" }, request).toPromise();
+      var response = await this.httpClientService.get<any>({ controller: "cargos/create-barcode" }, request).toPromise();
 
       return response;
     } catch (error: any) {
@@ -43,7 +42,8 @@ export class CargoService {
 
   async printSingleBarcode(request: string): Promise<any> {
     try {
-      var response = await this.httpClientService.get<any>({ controller: "cargos/print-single-barcode" }, request).toPromise();
+      var _request = { ZplBarcode: request }
+      var response = await this.httpClientService.post<any>({ controller: "cargos/print-single-barcode" }, _request).toPromise();
 
       return response;
     } catch (error: any) {
@@ -74,6 +74,19 @@ export class CargoService {
       return null;
     }
   }
+  async deleteCargo(cargo: CargoBarcode_VM): Promise<any> {
+    var request = {
+      ReferenceId: cargo.referenceId,
+      ShipmentId: cargo.shipmentId,
+    }
+    try {
+      var response = await this.httpClientService.post<any>({ controller: "cargos/delete-shipped-cargo" }, request).toPromise();
 
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
 
 }

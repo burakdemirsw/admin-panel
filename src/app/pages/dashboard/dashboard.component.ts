@@ -14,10 +14,14 @@ export class DashboardComponent implements OnInit {
 
   options: any;
   raportData: Raport_CR;
+  userId: number;
   async ngOnInit() {
 
+    this.userId = Number(localStorage.getItem('userId'))
+    if (this.userId === 5) {
+      await this.saleCountRaport();
+    }
 
-    await this.saleCountRaport();
     // var s = document.createElement("script");
     // s.type = "text/javascript";
     // s.src = "../assets/js/main.js";
@@ -34,10 +38,7 @@ export class DashboardComponent implements OnInit {
       days.push(raport.day)
       data.push(raport.orderCount)
     });
-    // response.raport_3.forEach(raport => {
 
-    //   _data.push(raport.orderRevenue)
-    // });
 
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');

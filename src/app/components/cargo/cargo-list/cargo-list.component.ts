@@ -24,6 +24,16 @@ export class CargoListComponent implements OnInit {
   async printSingleBarcode(zplCode) {
     var response = await this.cargoService.printSingleBarcode(zplCode);
   }
+
+  async deleteCargo(cargo: CargoBarcode_VM) {
+    var response = await this.cargoService.deleteCargo(cargo)
+    if (response) {
+      this.toasterService.success("Gönderi Silindi")
+      this.getCargos();
+    } else {
+      this.toasterService.warn("Gönderi Silinemedi")
+    }
+  }
   packageStatus: GetPackageStatus_MNG_Response = null;
   async getCargoDetail(cargo: CargoBarcode_VM, openDialog: boolean) {
     var response = await this.cargoService.getPackageStatus(cargo.referenceId);
@@ -36,4 +46,13 @@ export class CargoListComponent implements OnInit {
     }
   }
 
+
+  async createBarcode(referenceId: string) {
+    var response = await this.cargoService.createBarcode(referenceId);
+    if (response) {
+      this.toasterService.success("BARKOD YAZDIRILDI");
+
+      this.getCargos();
+    }
+  }
 }

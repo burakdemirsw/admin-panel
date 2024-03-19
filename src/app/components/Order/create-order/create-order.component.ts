@@ -19,6 +19,8 @@ import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { Payment_CM, Payment_CR } from 'src/app/models/model/payment/payment_CR';
 import { PaymentService } from 'src/app/services/admin/payment.service';
 import { PostalAddress } from 'src/app/models/nebim/customer/nebimCustomer';
+import { CreatePackage_MNG_RR, CargoSetting, CreatePackage_MNG_Request, OrderDetail, CreateBarcode_MNG_Request, OrderPieceListMNG, CreatePackage_MNG_RM } from '../../cargo/create-cargo/models/models';
+import { CargoService } from 'src/app/services/admin/cargo.service';
 
 @Component({
   selector: 'app-create-order',
@@ -47,7 +49,8 @@ export class CreateOrderComponent implements OnInit {
     private router: Router, private httpClientService: HttpClientService,
     private generalService: GeneralService, private addressService: AddressService,
     private googleDriveService: GoogleDriveService, private productService: ProductService,
-    private formBuilder: FormBuilder, private orderService: OrderService) { }
+    private formBuilder: FormBuilder, private orderService: OrderService,
+    private cargoService: CargoService) { }
 
   ngOnInit(): void {
 
@@ -60,6 +63,7 @@ export class CreateOrderComponent implements OnInit {
     this.getAddresses();
     this.selectOfficeAndWarehosue();
 
+    this.createCargoForm();
     this.activatedRoute.params.subscribe(async (params) => {
       if (params['id']) {
         this.id = params['id']
@@ -79,15 +83,17 @@ export class CreateOrderComponent implements OnInit {
   //--------------------------------------------------------------------------- CLIENT ORDER
   stateOptions: any[] = [{ label: 'Standart', value: '0' }, { label: 'Vergisiz', value: '4' }];
   taxTypeCode: any;
-
-
+  isCompleted: boolean = false;
+  orderNumber: string = "";
   async getClientOrder(state: number) {
     var response = await this.orderService.getClientOrder(this.id);
 
     if (state === 0) {
       if (response.clientOrder) {
         var order = response;
+        this.isCompleted = order.clientOrder.isCompleted
         this.currAccCode = order.clientOrder.customerCode;
+        this.orderNumber = order.clientOrder.orderNumber
         var customer_request = new GetCustomerList_CM();
         customer_request.currAccCode = this.currAccCode;
         var customerResponse = await await this.orderService.getCustomerList_2(customer_request)
@@ -99,9 +105,14 @@ export class CreateOrderComponent implements OnInit {
         request_address.currAccCode = this.currAccCode;
         var response = await this.orderService.getCustomerAddress(request_address)
         if (response) {
-          this.selectedAddresses = response;
-          console.log(this.selectedAddresses)
-          this.toasterService.success("Adres Eklendi")
+          var findedAddress = response.find(x => x.postalAddressID === order.clientOrder.shippingPostalAddressId);
+          if (findedAddress) {
+            this.selectedAddresses.push(findedAddress);
+            this.toasterService.success("Adres Eklendi")
+          } else {
+            this.toasterService.error("Eklenecek Adres Bulunamadı")
+          }
+
         }
         if (order.clientOrder.paymentDescription) {
           this.payment = new Payment();
@@ -134,16 +145,16 @@ export class CreateOrderComponent implements OnInit {
     } else {
       if (response.clientOrder) {
         var order = response;
-
+        this.selectedProducts = [];
         if (order.clientOrderBasketItems.length > 0) {
-          this.selectedProducts = [];
+
           order.clientOrderBasketItems.forEach(basketItem => {
             var object = this.convertLineToObject(basketItem);
             this.selectedProducts.push(object);
           });
         }
 
-        this.toasterService.success("Ürünler Çekildi")
+        //this.toasterService.success("Ürünler Çekildi")
 
       } else {
         this.toasterService.error("Yanıt Yok")
@@ -151,7 +162,13 @@ export class CreateOrderComponent implements OnInit {
     }
 
   }
-
+  async deleteClientOrder() {
+    var response = await this.orderService.deleteClientOrder(this.id);
+    if (response) {
+      this.toasterService.success("Sipariş Silindi");
+      this.createNewOrder();
+    }
+  }
   convertLineToObject(line: ClientOrderBasketItem): ProductList_VM {
     var object = new ProductList_VM();
     object.lineId = line.lineId;
@@ -743,7 +760,7 @@ export class CreateOrderComponent implements OnInit {
 
 
   async addCurrentProducts(request: ProductList_VM) {
-    // this.selectedProducts.push(request);
+
 
     //bu id ye ait bir clientOrder var mı bak
     var order_request = this.createClientOrder_RM()
@@ -763,9 +780,13 @@ export class CreateOrderComponent implements OnInit {
 
 
   }
-  deleteProduct(product: ProductList_VM) {
-    this.selectedProducts = this.selectedProducts.filter(p => p.lineId != product.lineId);
-    this.toasterService.success("Ürün Silindi")
+  async deleteProduct(product: ProductList_VM) {
+    var response = await this.orderService.deleteClientOrderBasketItem(this.id, product.lineId);
+    if (response) {
+
+      this.toasterService.success("Ürün Silindi")
+      await this.getClientOrder(1);
+    }
   }
   clonedProducts: { [s: string]: ProductList_VM } = {};
   onRowEditInit(product: ProductList_VM) {
@@ -791,9 +812,186 @@ export class CreateOrderComponent implements OnInit {
   }
 
   //----------------------------------------------------
+  //---------------------------------------------------- KARGO
+  cargoForm: FormGroup
+  packagingTypes: any[] = [{ name: 'DOSYA', code: '1' }, { name: 'PAKET', code: '3' }, { name: 'KOLİ', code: '4' }]
+  shipmentServiceTypes: any[] = [{ name: 'GÖNDERİCİ ÖDEMELİ', code: '1' }, { name: 'ALICI ÖDEMELİ', code: '2' }]
+
+
+  orderDetail: OrderDetail;
+
+  async getOrderDetail() {
+    this.orderDetail = await this.orderService.getOrderDetail(this.orderNumber);
+
+    if (this.orderDetail) {
+      var request: GetCustomerAddress_CM = new GetCustomerAddress_CM();
+      request.currAccCode = this.orderDetail.currAccCode;
+      this.getCustomerAddresses(request);
+    }
+
+
+  }
+
+  _generateRandomNumber(): number {
+    // 335 ile başlayan bir sayı üretir ve geri kalan 7 hanesini rastgele doldurur
+    const prefix = 335; // Sabit başlangıç
+    const min = Math.pow(10, 6); // Rastgele sayının minimum değeri (1 ile başlaması için)
+    const max = Math.pow(10, 7) - 1; // Rastgele sayının maksimum değeri
+    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min; // 7 haneli rastgele sayı
+
+    return Number(`${prefix}${randomNumber}`);
+  }
+
+  createCargoForm() {
+    this.cargoForm = this.formBuilder.group({
+      packagingType: [null, Validators.required], //select
+      shipmentServiceType: [null, Validators.required], //select
+      isCOD: [false, Validators.required],
+      kg: [1, Validators.required],
+      desi: [1, Validators.required]
+    })
+
+    this.cargoForm.get('packagingType').valueChanges.subscribe((value) => {
+      if (value.code === '3') {
+        this.cargoForm.get('kg').setValue(2)
+        this.cargoForm.get('desi').setValue(2)
+        this.cargoForm.get('kg').setValidators([Validators.required, Validators.min(2)]);
+        this.cargoForm.get('desi').setValidators([Validators.required, Validators.min(2)]);
+      } else if (value.code === '4') {
+        this.cargoForm.get('kg').setValue(1)
+        this.cargoForm.get('desi').setValue(1)
+        this.cargoForm.get('kg').setValidators([Validators.required, Validators.min(1)]);
+        this.cargoForm.get('desi').setValidators([Validators.required, Validators.min(1)]);
+      } else {
+        this.cargoForm.get('kg').setValue(0)
+        this.cargoForm.get('desi').setValue(0)
+        this.cargoForm.get('kg').setValidators([Validators.required, Validators.min(0)]);
+        this.cargoForm.get('desi').setValidators([Validators.required, Validators.min(0)]);
+      }
+      this.cargoForm.get('kg').updateValueAndValidity();
+      this.cargoForm.get('desi').updateValueAndValidity();
+    });
+
+    this.cargoForm.get('kg').valueChanges.subscribe((value) => {
+      if (this.cargoForm.get('packagingType').value.code === '3') { //paket
+        if (value < 2) {
+          this.kgErrorMessage = 'Paket gönderimlerinde KG değeri 2 den büyük olmalıdır'
+        } else {
+          this.kgErrorMessage = ''
+        }
+      } else if (this.cargoForm.get('packagingType').value.code === '4') { //koli
+        if (value < 1) {
+          this.kgErrorMessage = 'Koli gönderimlerinde KG değeri 1 den büyük olmalıdır'
+        } else {
+          this.kgErrorMessage = ''
+        }
+      }
+    });
+    this.cargoForm.get('desi').valueChanges.subscribe((value) => {
+      if (this.cargoForm.get('packagingType').value.code === '3') {
+        if (value < 2) {
+          this.desiErrorMessage = 'Paket gönderimlerinde DESİ değeri 2 den büyük olmalıdır'
+        } else {
+          this.desiErrorMessage = ''
+        }
+      } else if (this.cargoForm.get('packagingType').value.code === '4') {
+        if (value < 1) {
+          this.desiErrorMessage = 'Koli gönderimlerinde DESİ değeri 1 den büyük olmalıdır'
+        } else {
+          this.desiErrorMessage = ''
+        }
+      }
+    });
+  }
+  desiErrorMessage = '';
+  kgErrorMessage = '';
+
+  cargoResponse: CreatePackage_MNG_RR;
+  async submitCargo(formValue: any) {
+    await this.getOrderDetail();
+    if (this.orderDetail) {
+      //console.log(this.cargoForm.value);
+      var content = this.selectedProducts.length.toString() + "Adet Ürün";
+      var cargoSetting: CargoSetting = new CargoSetting(formValue.isCOD === false ? 0 : 1, Number(formValue.packagingType.code), Number(formValue.shipmentServiceType.code), content,
+        this.orderDetail);
+      var referenceId = this._generateRandomNumber();
+      var orderRequest: CreatePackage_MNG_Request = new CreatePackage_MNG_Request(referenceId.toString(), this.orderDetail, cargoSetting)
+
+      //---barcode requesst
+      var barcodeRequest: CreateBarcode_MNG_Request = new CreateBarcode_MNG_Request();
+      barcodeRequest.referenceId = orderRequest.order.referenceId;
+      barcodeRequest.billOfLandingId = orderRequest.order.billOfLandingId;
+      barcodeRequest.isCOD = orderRequest.order.isCod;
+      barcodeRequest.codAmount = orderRequest.order.codAmount;
+      barcodeRequest.packagingType = orderRequest.order.packagingType;
+
+
+
+      var content = orderRequest.orderPieceList.length.toString() + " Adet Ürün";
+      var orderPieces: OrderPieceListMNG[] = []
+      var orderPiece: OrderPieceListMNG = new OrderPieceListMNG();
+      orderPiece.barcode = orderRequest.order.barcode;
+      orderPiece.content = content
+      orderPiece.desi = orderRequest.order.packagingType === 1 ? 0 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('desi').value
+      orderPiece.kg = orderRequest.order.packagingType === 1 ? 0 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('kg').value
+      orderPieces.push(orderPiece);
+      barcodeRequest.orderPieceList = orderPieces;
+      //---
+
+      var _request: CreatePackage_MNG_RM = new CreatePackage_MNG_RM();
+      _request.orderRequest = orderRequest;
+      _request.barcodeRequest = barcodeRequest;
+      var response = await this.cargoService.createCargo(_request);
+      if (response) {
+        this.cargoResponse = response;
+        this.toasterService.success("Kargo Siparişi Oluturuldu (BARKOD BASILABİLİR)");
+      }
+      //console.log(response);
+    }
+
+  }
+
+  async CreateBarcode_RM(): Promise<CreateBarcode_MNG_Request> {
+    if (this.cargoResponse) {
+      var request: CreateBarcode_MNG_Request = new CreateBarcode_MNG_Request();
+      request.referenceId = this.cargoResponse.request.order.referenceId;
+      request.billOfLandingId = this.cargoResponse.request.order.billOfLandingId;
+      request.isCOD = this.cargoResponse.request.order.isCod;
+      request.codAmount = this.cargoResponse.request.order.codAmount;
+      request.packagingType = this.cargoResponse.request.order.packagingType;
+      request.response = this.cargoResponse;
+      var content = this.cargoResponse.request.orderPieceList.length.toString() + " Adet Ürün";
+      var orderPieces: OrderPieceListMNG[] = []
+      var orderPiece: OrderPieceListMNG = new OrderPieceListMNG();
+      orderPiece.barcode = this.cargoResponse.request.order.barcode;
+      orderPiece.content = content
+      orderPiece.desi = this.cargoResponse.request.order.packagingType === 1 ? 0 : this.cargoForm.get('desi').value
+      orderPiece.kg = this.cargoResponse.request.order.packagingType === 1 ? 0 : this.cargoForm.get('kg').value
+      orderPieces.push(orderPiece);
+
+
+      request.orderPieceList = orderPieces;
+      return request;
+
+    } else {
+      return null;
+    }
+  }
+
+  //----------------------------------------------------
 
   //---------------------------------------------------- SİPARİŞ
 
+  sidebarVisible4 = true;
+
+
+  async createNewOrder() {
+    var orderNo = await this.generalService.generateGUID();
+    console.log(location);
+    var Url = location.origin + "/create-order/" + orderNo;
+    location.href = Url
+
+  }
   generateRandomNumber(): string {
     let result = '';
     const characters = '0123456789';
@@ -903,6 +1101,16 @@ export class CreateOrderComponent implements OnInit {
     this.toasterService.success("Ödeme Onaylandı")
   }
   async createOrder() {
+    if (!this.cargoForm.valid) {
+      this.toasterService.error("Kargo Formu Hatalı");
+      return;
+    }
+    console.log(this.payment);
+    if (!this.payment.creditCardTypeCode) {
+
+      this.toasterService.error("Ödeme Tipi Seçiniz");
+      return;
+    }
     if (!this.taxTypeCode) {
       this.toasterService.error("Vergi Tipi Seçiniz");
       return;
@@ -927,12 +1135,20 @@ export class CreateOrderComponent implements OnInit {
 
 
 
-    var request: NebimOrder = new NebimOrder(this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.taxTypeCode);
+    var request: NebimOrder = new NebimOrder(this.selectedCustomers[0].currAccDescription, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.taxTypeCode);
 
     var response = await this.orderService.createOrder(request);
     if (response) {
 
-      this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament")
+      if (response.status === true) {
+        this.orderNumber = response.orderNumber;
+
+
+        await this.submitCargo(this.cargoForm.value);
+        this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament")
+
+      }
+
 
     }
 

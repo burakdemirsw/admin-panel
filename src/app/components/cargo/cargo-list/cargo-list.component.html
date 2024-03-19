@@ -19,11 +19,15 @@
           <table class="table">
             <thead>
               <tr>
-                <th scope="col">Sipariş Numrası</th>
+                <th scope="col">Müşteri</th>
+                <th scope="col">Sipariş Numarası</th>
                 <th scope="col">Referans Id</th>
-                <th scope="col">Oluşturulma Zamanı</th>
-                <!-- <th scope="col">Barkod</th> -->
+                <th scope="col">Gönderi Id</th>
 
+                <th scope="col">Oluşturulma Zamanı</th>
+                <th scope="col">Paketleme Türü</th>
+                <!-- <th scope="col">Desi</th>
+                <th scope="col">Kg</th> -->
                 <th scope="col">İşlemler</th>
               </tr>
             </thead>
@@ -34,9 +38,23 @@
                     | paginate : { itemsPerPage: 10, currentPage: currentPage }
                 "
               >
+                <td>{{ cargo.customer }}</td>
                 <td>{{ cargo.orderNo }}</td>
                 <td>{{ cargo.referenceId }}</td>
-                <td>{{ cargo.createdDate }}</td>
+                <td>{{ cargo.shipmentId }}</td>
+                <td>{{ cargo.createdDate | date : "dd.MM.yyyy HH:mm" }}</td>
+                <td>
+                  {{
+                    cargo.packagingType === 1
+                      ? "DOSYA"
+                      : cargo.packagingType === 3
+                      ? "PAKET"
+                      : "KOLİ"
+                  }}
+                </td>
+                <!-- <td>{{ cargo.desi }}</td>
+                <td>{{ cargo.kg }}</td> -->
+
                 <!-- <td>
                   <div
                     [ngClass]="
@@ -59,6 +77,14 @@
                     </div>
 
                     <div
+                      *ngIf="cargo.barcodeRequest && !cargo.barcodeZplCode"
+                      class="btn btn-success ml-2"
+                      data-text="Kargo"
+                      (click)="createBarcode(cargo.referenceId)"
+                    >
+                      <i class="fa fa-print" aria-hidden="true"></i>
+                    </div>
+                    <div
                       *ngIf="cargo.barcodeZplCode"
                       class="btn btn-success ml-2"
                       data-text="Kargo"
@@ -73,6 +99,14 @@
                       (click)="getCargoDetail(cargo, true)"
                     >
                       <i class="fa fa-bars" aria-hidden="true"></i>
+                    </div>
+                    <div
+                      *ngIf="cargo.shipmentId"
+                      class="btn btn-success"
+                      data-text="Kargo"
+                      (click)="deleteCargo(cargo)"
+                    >
+                      <i class="fa fa-trash" aria-hidden="true"></i>
                     </div>
                   </div>
                 </td>
@@ -99,7 +133,7 @@
           <div class="card-header">Kargo Detayı</div>
           <div class="card-body">
             <ul class="list-group list-group-flush">
-              <li class="list-group-item">
+              <!-- <li class="list-group-item">
                 Sipariş Numarası: {{ packageStatus?.orderId }}
               </li>
               <li class="list-group-item">
@@ -107,7 +141,7 @@
               </li>
               <li class="list-group-item">
                 Gönderi ID: {{ packageStatus?.shipmentId }}
-              </li>
+              </li> -->
               <li class="list-group-item">
                 Göderi Seri Numarası:
                 {{ packageStatus?.shipmentSerialandNumber }}
@@ -126,7 +160,8 @@
                 {{ packageStatus?.shipmentStatusExplanation }}
               </li>
               <li class="list-group-item">
-                Durum Zamanı: {{ packageStatus?.statusDateTime }}
+                Durum Zamanı:
+                {{ packageStatus?.statusDateTime | date : "dd.MM.yyyy HH:mm" }}
               </li>
               <li class="list-group-item">
                 MNG Takip Linki:

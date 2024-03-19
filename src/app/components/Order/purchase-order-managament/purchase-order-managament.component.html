@@ -120,13 +120,13 @@
             <li><a class="dropdown-item">Export To The Excel</a></li>
             <li><a class="dropdown-item">Delete All Selected</a></li>
           </ul> -->
-
+        <!--
         <div class="btn-group mb-3">
           <button type="button" class="btn btn-primary" (click)="routeToCPP()">
             Ürün Topla
           </button>
 
-          <button type="button" class="btn btn-dark">Ürün Paketle</button>
+          <button type="button" class="btn btn-primary">Ürün Paketle</button>
 
           <label for="numberOfList" style="margin-left: 20px"
             >Toplancak Sipariş Miktarı</label
@@ -141,7 +141,7 @@
               {{ number }}
             </option>
           </select>
-        </div>
+        </div> -->
 
         <div style="overflow-x: auto">
           <table class="table">
@@ -191,17 +191,17 @@
                 <td>
                   <div class="btn-group">
                     <div
-                      class="btn btn-primary"
+                      class="btn btn-success"
                       data-text="Varyasyonlar"
                       routerLink="/order-operation/{{ order.orderNumber }}"
                     >
                       <i class="fas fa-sliders-h"></i>
                     </div>
-                    <div class="btn btn-dark" data-text="Fatura Yazdır">
+                    <div class="btn btn-success" data-text="Fatura Yazdır">
                       <i class="fa fa-print"></i>
                     </div>
                     <div
-                      class="btn btn-danger"
+                      class="btn btn-success"
                       data-text="Sil"
                       (click)="deleteInvoiceProducts(order.orderNumber)"
                     >

@@ -24,6 +24,11 @@ export class BasketProductSummary {
 
 
 }
+export class CreatePackage_MNG_RM {
+  orderRequest: CreatePackage_MNG_Request
+  barcodeRequest: CreateBarcode_MNG_Request
+}
+
 export class CreatePackage_MNG_Request {
   order: Order_MNG;
   orderPieceList: OrderPieceListMNG[] = [];
@@ -49,14 +54,35 @@ export class CreatePackage_MNG_Request {
     this.order.marketPlaceSaleCode = "";
 
 
-    od.products.forEach(p => {
-      var product: OrderPieceListMNG = new OrderPieceListMNG()
-      product.barcode = p.barcode == null ? "BARCODE" : p.itemCode;
-      product.content = p.itemCode;
-      product.desi = 1;
-      product.kg = 1;
-      this.orderPieceList.push(product);
-    });
+    if (ct.packagingType === 4) {
+      od.products.forEach(p => {
+        var product: OrderPieceListMNG = new OrderPieceListMNG()
+        product.barcode = p.barcode == null ? "BARCODE" : p.itemCode;
+        product.content = p.itemCode;
+        product.desi = 1;
+        product.kg = 1;
+        this.orderPieceList.push(product);
+      });
+    } else if (ct.packagingType === 3) {
+      od.products.forEach(p => {
+        var product: OrderPieceListMNG = new OrderPieceListMNG()
+        product.barcode = p.barcode == null ? "BARCODE" : p.itemCode;
+        product.content = p.itemCode;
+        product.desi = 2;
+        product.kg = 2;
+        this.orderPieceList.push(product);
+      });
+    } else {
+      od.products.forEach(p => {
+        var product: OrderPieceListMNG = new OrderPieceListMNG()
+        product.barcode = p.barcode == null ? "BARCODE" : p.itemCode;
+        product.content = p.itemCode;
+        product.desi = 0;
+        product.kg = 0;
+        this.orderPieceList.push(product);
+      });
+    }
+
 
     this.recipient = new Recipient_MNG();
     this.recipient.customerId = "";
@@ -191,5 +217,14 @@ export class CargoBarcode_VM {
   barcodeZplCode?: string
   shipmentId?: string;
   createdDate?: Date;
+  desi: number;
+  kg: number;
+  packagingType: number;
+  barcodeRequest: string;
+  customer: string;
+}
+export class NebimOrder_RM {
+  orderNumber: string;
+  status: boolean;
 
 }

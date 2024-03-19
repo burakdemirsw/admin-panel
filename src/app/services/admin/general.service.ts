@@ -34,6 +34,7 @@ export class GeneralService {
     audio.play();
   }
   waitAndNavigate(message: string, url: string) {
+    this.beep();
     this.spinnerService.show();
     setTimeout(() => {
       this.spinnerService.hide();

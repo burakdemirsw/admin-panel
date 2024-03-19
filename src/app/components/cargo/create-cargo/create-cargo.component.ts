@@ -7,7 +7,7 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
-import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from './models/models';
+import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from './models/models';
 import { Address_VM } from 'src/app/models/model/order/ViewModel/provinceVM';
 import { AddressService } from 'src/app/services/admin/address.service';
 import { PostalAddress } from '../../../models/nebim/customer/nebimCustomer';
@@ -44,7 +44,7 @@ export class CreateCargoComponent implements OnInit {
   }
 
   //----------------------------------------------------ADDRESS
-  addresses: CustomerList_VM[] = []
+  addresses: CustomerAddress_VM[] = []
   async getCustomerAddresses(request: GetCustomerAddress_CM) {
     this.addresses = await this.orderService.getCustomerAddress(request)
     this.toasterService.success("Adresler Getirildi")
@@ -74,17 +74,71 @@ export class CreateCargoComponent implements OnInit {
 
     return Number(`${prefix}${randomNumber}`);
   }
+  desiErrorMessage = '';
+  kgErrorMessage = '';
 
   createCargoForm() {
     this.cargoForm = this.formBuilder.group({
       packagingType: [null, Validators.required], //select
       shipmentServiceType: [null, Validators.required], //select
-      isCOD: [false],
-      kg: [1],
-      desi: [1]
+      isCOD: [false, Validators.required],
+      kg: [1, Validators.required],
+      desi: [1, Validators.required]
     })
-  }
 
+    this.cargoForm.get('packagingType').valueChanges.subscribe((value) => {
+      if (value.code === '3') {
+        this.cargoForm.get('kg').setValue(2)
+        this.cargoForm.get('desi').setValue(2)
+        this.cargoForm.get('kg').setValidators([Validators.required, Validators.min(2)]);
+        this.cargoForm.get('desi').setValidators([Validators.required, Validators.min(2)]);
+      } else if (value.code === '4') {
+        this.cargoForm.get('kg').setValue(1)
+        this.cargoForm.get('desi').setValue(1)
+        this.cargoForm.get('kg').setValidators([Validators.required, Validators.min(1)]);
+        this.cargoForm.get('desi').setValidators([Validators.required, Validators.min(1)]);
+      } else {
+        this.cargoForm.get('kg').setValue(0)
+        this.cargoForm.get('desi').setValue(0)
+        this.cargoForm.get('kg').setValidators([Validators.required, Validators.min(0)]);
+        this.cargoForm.get('desi').setValidators([Validators.required, Validators.min(0)]);
+      }
+      this.cargoForm.get('kg').updateValueAndValidity();
+      this.cargoForm.get('desi').updateValueAndValidity();
+    });
+
+    this.cargoForm.get('kg').valueChanges.subscribe((value) => {
+      if (this.cargoForm.get('packagingType').value.code === '3') { //paket
+        if (value < 2) {
+          this.kgErrorMessage = 'Paket gönderimlerinde KG değeri 2 den büyük olmalıdır'
+        } else {
+          this.kgErrorMessage = ''
+        }
+      } else if (this.cargoForm.get('packagingType').value.code === '4') { //koli
+        if (value < 1) {
+          this.kgErrorMessage = 'Koli gönderimlerinde KG değeri 1 den büyük olmalıdır'
+        } else {
+          this.kgErrorMessage = ''
+        }
+      }
+    });
+
+    this.cargoForm.get('desi').valueChanges.subscribe((value) => {
+      if (this.cargoForm.get('packagingType').value.code === '3') {
+        if (value < 2) {
+          this.desiErrorMessage = 'Paket gönderimlerinde DESİ değeri 2 den büyük olmalıdır'
+        } else {
+          this.desiErrorMessage = ''
+        }
+      } else if (this.cargoForm.get('packagingType').value.code === '4') {
+        if (value < 1) {
+          this.desiErrorMessage = 'Koli gönderimlerinde DESİ değeri 1 den büyük olmalıdır'
+        } else {
+          this.desiErrorMessage = ''
+        }
+      }
+    });
+  }
   cargoResponse: CreatePackage_MNG_RR;
   async submitCargo(formValue: any) {
     //console.log(this.cargoForm.value);
@@ -92,7 +146,34 @@ export class CreateCargoComponent implements OnInit {
     var cargoSetting: CargoSetting = new CargoSetting(formValue.isCOD === false ? 0 : 1, Number(formValue.packagingType.code), Number(formValue.shipmentServiceType.code), content,
       this.orderDetail);
     var referenceId = this.generateRandomNumber();
-    var request: CreatePackage_MNG_Request = new CreatePackage_MNG_Request(referenceId.toString(), this.orderDetail, cargoSetting)
+    var orderRequest: CreatePackage_MNG_Request = new CreatePackage_MNG_Request(referenceId.toString(), this.orderDetail, cargoSetting)
+
+
+    var barcodeRequest: CreateBarcode_MNG_Request = new CreateBarcode_MNG_Request();
+    barcodeRequest.referenceId = orderRequest.order.referenceId;
+    barcodeRequest.billOfLandingId = orderRequest.order.billOfLandingId;
+    barcodeRequest.isCOD = orderRequest.order.isCod;
+    barcodeRequest.codAmount = orderRequest.order.codAmount;
+    barcodeRequest.packagingType = orderRequest.order.packagingType;
+    barcodeRequest.response = this.cargoResponse;
+    var content = orderRequest.orderPieceList.length.toString() + " Adet Ürün";
+    var orderPieces: OrderPieceListMNG[] = []
+    var orderPiece: OrderPieceListMNG = new OrderPieceListMNG();
+    orderPiece.barcode = orderRequest.order.barcode;
+    orderPiece.content = content
+    orderPiece.desi = orderRequest.order.packagingType === 1 ? 0 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('desi').value
+    orderPiece.kg = orderRequest.order.packagingType === 1 ? 0 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('kg').value
+    orderPieces.push(orderPiece);
+
+
+    barcodeRequest.orderPieceList = orderPieces;
+
+
+
+    var request: CreatePackage_MNG_RM = new CreatePackage_MNG_RM();
+    request.orderRequest = orderRequest;
+    request.barcodeRequest = barcodeRequest;
+
     var response = await this.cargoService.createCargo(request);
     if (response) {
       this.spinnerService.show();
@@ -106,32 +187,13 @@ export class CreateCargoComponent implements OnInit {
     //console.log(response);
   }
 
+
   async printBarcode() {
-    if (this.cargoResponse) {
-      var request: CreateBarcode_MNG_Request = new CreateBarcode_MNG_Request();
-      request.referenceId = this.cargoResponse.request.order.referenceId;
-      request.billOfLandingId = this.cargoResponse.request.order.billOfLandingId;
-      request.isCOD = this.cargoResponse.request.order.isCod;
-      request.codAmount = this.cargoResponse.request.order.codAmount;
-      request.packagingType = this.cargoResponse.request.order.packagingType;
-      request.response = this.cargoResponse;
-      var content = this.cargoResponse.request.orderPieceList.length.toString() + " Adet Ürün";
-      var orderPieces: OrderPieceListMNG[] = []
-      var orderPiece: OrderPieceListMNG = new OrderPieceListMNG();
-      orderPiece.barcode = this.cargoResponse.request.order.barcode;
-      orderPiece.content = content
-      orderPiece.desi = this.cargoForm.get('desi').value
-      orderPiece.kg = this.cargoForm.get('kg').value
-      orderPieces.push(orderPiece);
+    var response = await this.cargoService.createBarcode(this.cargoResponse.request.order.referenceId);
+    if (response) {
+      this.toasterService.success("BARKOD YAZDIRILDI");
 
 
-      request.orderPieceList = orderPieces;
-
-      var response = await this.cargoService.printBarcode(request)
-      if (response) {
-        this.toasterService.success("Barkod Yazıcıya Gönderildi")
-
-      }
     }
   }
   //---------------------------------------------------- KARGO FYATI (İLÇELER ÇEKİLMİYOR!!!) -> MAİL ATILDI
@@ -171,6 +233,17 @@ export class CreateCargoComponent implements OnInit {
   _neighborhoods: any[] = []
   createCustomerForm: FormGroup;
 
+
+  changeCurrentAddress(address: CustomerAddress_VM) {
+    this.orderDetail.address = address.address
+    this.orderDetail.city = address.cityDescription
+    this.orderDetail.district = address.districtDescription
+    this.generalService.beep()
+    this.toasterService.success("Adres Değiştirildi")
+
+  }
+
+
   async getAddresses() {
     var countries = await this.addressService.getAddress(1)
     this.countries = countries;
@@ -191,7 +264,6 @@ export class CreateCargoComponent implements OnInit {
     ////console.log(countries);
     ////console.log(provinces);
   }
-
 
 
   createCustomerFormMethod() {

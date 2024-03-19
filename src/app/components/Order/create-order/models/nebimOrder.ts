@@ -33,7 +33,7 @@ export class NebimOrder {
   // discounts: Discount[];
   // payments: Payment[];
 
-  constructor(currAccCode: string, orderNo: string, formValue: any, selectedProducts: any, salesPersonCode: string, taxTypeCode: number) {
+  constructor(customerDesc: string, currAccCode: string, orderNo: string, formValue: any, selectedProducts: any, salesPersonCode: string, taxTypeCode: number) {
     this.modelType = 5;
     this.posTerminalID = 1;
     this.shipmentMethodCode = 2;
@@ -69,7 +69,7 @@ export class NebimOrder {
     this.warehouseCode = "MD";
 
     this.documentNumber = orderNo;
-    this.description = orderNo;
+    this.description = customerDesc;
     selectedProducts.forEach(p => {
       var line: Line = new Line();
       line.usedBarcode = p.barcode;
@@ -128,11 +128,16 @@ export class ClientOrder {
   customerCode?: string;
   shippingPostalAddressId: string;
   orderNo?: string;
-  createdDate: Date;
   paymentType: string
   paymentDescription: string;
+  isCompleted: boolean
+  orderNumber: string
+  createdDate: Date;
+  paymentDate: Date
   constructor() {
     this.createdDate = new Date();
+    this.isCompleted = false;
+
   }
 }
 export class ClientOrderBasketItem {

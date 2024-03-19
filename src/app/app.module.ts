@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { SidebarModule } from 'primeng/sidebar';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './layouts/header/header.component';
@@ -234,6 +234,7 @@ import { CreateCargoComponent } from './components/cargo/create-cargo/create-car
     StepsModule,
     ChartModule,
     SelectButtonModule,
+    SidebarModule,
     FileUploadModule, TableModule, InputTextModule, MessagesModule,
     JwtModule.forRoot({
       config: {
