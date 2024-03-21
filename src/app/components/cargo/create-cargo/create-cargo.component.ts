@@ -47,6 +47,7 @@ export class CreateCargoComponent implements OnInit {
   addresses: CustomerAddress_VM[] = []
   async getCustomerAddresses(request: GetCustomerAddress_CM) {
     this.addresses = await this.orderService.getCustomerAddress(request)
+
     this.toasterService.success("Adresler Getirildi")
 
   }
@@ -54,6 +55,9 @@ export class CreateCargoComponent implements OnInit {
     this.selectedAddresses = [];
     this.selectedAddresses.push(request);
     this.toasterService.success("Adres Eklendi")
+    this.orderDetail.address = request.address;
+    this.orderDetail.city = request.cityDescription;
+    this.orderDetail.district = request.districtDescription;
     this.activeIndex = 1;
     this.generalService.beep()
 
@@ -83,7 +87,9 @@ export class CreateCargoComponent implements OnInit {
       shipmentServiceType: [null, Validators.required], //select
       isCOD: [false, Validators.required],
       kg: [1, Validators.required],
-      desi: [1, Validators.required]
+      desi: [1, Validators.required],
+      address_recepient_name: [null, Validators.required],
+
     })
 
     this.cargoForm.get('packagingType').valueChanges.subscribe((value) => {
@@ -141,6 +147,12 @@ export class CreateCargoComponent implements OnInit {
   }
   cargoResponse: CreatePackage_MNG_RR;
   async submitCargo(formValue: any) {
+    var recepient_name = formValue.address_recepient_name;
+    if (recepient_name != null && recepient_name != '') {
+      this.orderDetail.customer = recepient_name;
+      this.toasterService.info('Alıcı Adı Değişikliği Algılandı')
+    }
+
     //console.log(this.cargoForm.value);
     var content = this.orderDetail.products.length.toString() + "Adet Ürün";
     var cargoSetting: CargoSetting = new CargoSetting(formValue.isCOD === false ? 0 : 1, Number(formValue.packagingType.code), Number(formValue.shipmentServiceType.code), content,
@@ -164,8 +176,6 @@ export class CreateCargoComponent implements OnInit {
     orderPiece.desi = orderRequest.order.packagingType === 1 ? 0 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('desi').value
     orderPiece.kg = orderRequest.order.packagingType === 1 ? 0 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('kg').value
     orderPieces.push(orderPiece);
-
-
     barcodeRequest.orderPieceList = orderPieces;
 
 
@@ -207,7 +217,7 @@ export class CreateCargoComponent implements OnInit {
 
   async getOrderDetail(orderNumber: string) {
     this.orderDetail = await this.orderService.getOrderDetail(orderNumber);
-
+    this.cargoForm.get('address_recepient_name').setValue(this.orderDetail.customer)
     if (this.orderDetail) {
       var request: GetCustomerAddress_CM = new GetCustomerAddress_CM();
       request.currAccCode = this.orderDetail.currAccCode;
@@ -320,10 +330,10 @@ export class CreateCargoComponent implements OnInit {
   }
   async submitAddressForm(values: any) {
     var postalAddress: PostalAddress = new PostalAddress();
-    postalAddress.countryCode = values.address_country;
-    postalAddress.stateCode = values.address_region;
-    postalAddress.cityCode = values.address_province;
-    postalAddress.districtCode = values.address_district;
+    postalAddress.countryCode = values.address_country.code;
+    postalAddress.stateCode = values.address_region.code;
+    postalAddress.cityCode = values.address_province.code;
+    postalAddress.districtCode = values.address_district.code;
     postalAddress.address = values.address_description;
     postalAddress.addressTypeCode = "1";
     var request: AddCustomerAddress_CM = new AddCustomerAddress_CM(this.orderDetail.currAccCode, postalAddress);

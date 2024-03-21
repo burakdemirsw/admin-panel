@@ -1,0 +1,272 @@
+<main id="main" class="main">
+  <section class="section">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Müşteri Oluştur</h5>
+        <form [formGroup]="createCustomerForm">
+          <!-- <div class="row">
+                <div class="col-md-6">
+                  <label for="exampleInputEmail1">Ad</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    placeholder="Ad"
+                    formControlName="name"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label for="exampleInputEmail1">Soyad</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="surname"
+                    placeholder="Soy Ad"
+                    formControlName="surname"
+                  />
+                </div>
+              </div> -->
+          <div class="row">
+            <div class="col-md-12">
+              <label for="exampleInputEmail1">Firma Adı (ZORUNLUDUR)</label>
+              <input
+                type="text"
+                class="form-control"
+                id="currAccDescription"
+                placeholder="Firma Adı"
+                formControlName="currAccDescription"
+              />
+            </div>
+            <!-- <div class="col-md-6">
+                  <label for="taxNumber">Vergi Numarası</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="taxNumber"
+                    placeholder="Vergi Numarası"
+                    formControlName="taxNumber"
+                  />
+                </div> -->
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="exampleInputEmail1">Mail (ZORUNLUDUR)</label>
+              <input
+                type="text"
+                class="form-control"
+                id="mail"
+                placeholder="Mail"
+                formControlName="mail"
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="exampleInputEmail1"
+                >Telefon Numarası (ZORUNLUDUR)</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="phoneNumber"
+                placeholder="Telefon"
+                formControlName="phoneNumber"
+              />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="">
+                <div class="row">
+                  <!-- Dosya Yükleme Bölümü -->
+                  <div class="col-md-6">
+                    <div class="input-group mb-3">
+                      <div class="custom-file">
+                        <input
+                          type="file"
+                          class="custom-file-input"
+                          id="inputGroupFile01"
+                          aria-describedby="inputGroupFileAddon01"
+                          (change)="onUpload($event, 'stampPhotoUrl')"
+                        />
+                        <label class="custom-file-label" for="inputGroupFile01"
+                          >Dosya Seç</label
+                        >
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Metin Girişi Bölümü -->
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="stampPhotoUrl">Kaşe</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="stampPhotoUrl"
+                        placeholder="Kaşe Fotoğraf Yolu"
+                        formControlName="stampPhotoUrl"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="input-group mb-3">
+                    <div class="custom-file">
+                      <input
+                        type="file"
+                        class="custom-file-input"
+                        id="inputGroupFile01"
+                        aria-describedby="inputGroupFileAddon01"
+                        (change)="onUpload($event, 'bussinesCardPhotoUrl')"
+                      />
+                      <label class="custom-file-label" for="inputGroupFile01"
+                        >Dosya Seç</label
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="exampleInputEmail1">Kartvizit </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="bussinesCardPhotoUrl"
+                    placeholder="Kartvizit Fotoğraf Yolu"
+                    formControlName="bussinesCardPhotoUrl"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <form
+          [formGroup]="createCustomerForm"
+          (ngSubmit)="submitAddressForm(createCustomerForm.value)"
+        >
+          <div class="form-group">
+            <label for="address_country" class="label">Ülke</label>
+            <select
+              class="form-select"
+              id="address_country"
+              formControlName="address_country"
+              class="form-control"
+            >
+              <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+              <option
+                *ngFor="let country of _countries"
+                value="{{ country.code }}"
+              >
+                {{ country.name }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="address_region" class="label">Bölge</label>
+            <select
+              class="form-select"
+              id="address_region"
+              formControlName="address_region"
+              class="form-control"
+            >
+              <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+              <option *ngFor="let region of _regions" value="{{ region.code }}">
+                {{ region.name }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="address_province" class="label">il</label>
+            <select
+              class="form-select"
+              id="address_province"
+              formControlName="address_province"
+            >
+              <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+              <option
+                *ngFor="let province of _provinces"
+                value="{{ province.code }}"
+              >
+                {{ province.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="address_district" class="label">Vergi Dairesi</label>
+            <select
+              class="form-select"
+              id="address_taxOffice"
+              formControlName="address_taxOffice"
+            >
+              <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+              <option
+                *ngFor="let taxOffice of _taxOffices"
+                value="{{ taxOffice.code }}"
+              >
+                {{ taxOffice.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="address_district" class="label">ilçe</label>
+            <select
+              class="form-select"
+              id="address_district"
+              formControlName="address_district"
+            >
+              <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+              <option
+                *ngFor="let district of _districts"
+                value="{{ district.code }}"
+              >
+                {{ district.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="address_description" class="label"
+              >Adres Tarifi (ZORUNLUDUR)</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="address_description"
+              name="address_description"
+              fullWidth
+              formControlName="address_description"
+            />
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="address_postalCode" class="label">Posta Kodu</label>
+            <input
+              type="text"
+              id="address_postalCode"
+              name="address_postalCode"
+              fullWidth
+              formControlName="address_postalCode"
+              class="form-control"
+            />
+          </div>
+
+          <div class="form-group">
+            <button
+              pButton
+              pRipple
+              class="p-button-success"
+              icon="fa fa-plus"
+              type="submit"
+              label="Müşteri Ekle"
+            ></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>

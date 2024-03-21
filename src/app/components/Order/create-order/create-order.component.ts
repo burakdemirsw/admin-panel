@@ -748,7 +748,6 @@ export class CreateOrderComponent implements OnInit {
 
   async getProducts(request: BarcodeSearch_RM) {
     try {
-
       const response = await this.productService.searchProduct(request);
       this.products = response;
       return response;
@@ -761,22 +760,26 @@ export class CreateOrderComponent implements OnInit {
 
   async addCurrentProducts(request: ProductList_VM) {
 
+    if (request.quantity > 0) {
+      //bu id ye ait bir clientOrder var mı bak
+      var order_request = this.createClientOrder_RM()
+      var order_response = await this.orderService.createClientOrder(order_request)
+      if (order_response) {
 
-    //bu id ye ait bir clientOrder var mı bak
-    var order_request = this.createClientOrder_RM()
-    var order_response = await this.orderService.createClientOrder(order_request)
-    if (order_response) {
 
+        var line_request = this.createClientOrderBasketItem_RM(request);
+        var line_response = await this.orderService.createClientOrderBasketItem(line_request);
+        if (line_response) {
+          this.toasterService.success("Ürün Eklendi")
+          this.generalService.beep()
+          this.getClientOrder(1);
 
-      var line_request = this.createClientOrderBasketItem_RM(request);
-      var line_response = await this.orderService.createClientOrderBasketItem(line_request);
-      if (line_response) {
-        this.toasterService.success("Ürün Eklendi")
-        this.generalService.beep()
-        this.getClientOrder(1);
-
+        }
       }
+    } else {
+      this.toasterService.error('Stok Hatası');
     }
+
 
 
   }
@@ -848,9 +851,29 @@ export class CreateOrderComponent implements OnInit {
       shipmentServiceType: [null, Validators.required], //select
       isCOD: [false, Validators.required],
       kg: [1, Validators.required],
-      desi: [1, Validators.required]
+      desi: [1, Validators.required],
+      address_recepient_name: [null, Validators.required],
+      isActive: [true, Validators.required]
     })
+    this.cargoForm.get('isActive').valueChanges.subscribe((value) => {
+      if (value === false) {
+        this.cargoForm.get('packagingType').clearValidators();
+        this.cargoForm.get('packagingType').updateValueAndValidity();
+        this.cargoForm.get('shipmentServiceType').clearValidators();
+        this.cargoForm.get('shipmentServiceType').updateValueAndValidity();
+        this.cargoForm.get('address_recepient_name').clearValidators();
+        this.cargoForm.get('address_recepient_name').updateValueAndValidity();
+        this.cargoForm.get('isCOD').clearValidators();
+        this.cargoForm.get('kg').clearValidators();
+        this.cargoForm.get('desi').clearValidators();
 
+        if (this.cargoForm.valid) {
+          this.toasterService.success("true")
+        } else {
+          this.generalService.whichRowIsInvalid(this.cargoForm);
+        }
+      }
+    });
     this.cargoForm.get('packagingType').valueChanges.subscribe((value) => {
       if (value.code === '3') {
         this.cargoForm.get('kg').setValue(2)
@@ -902,6 +925,8 @@ export class CreateOrderComponent implements OnInit {
         }
       }
     });
+
+
   }
   desiErrorMessage = '';
   kgErrorMessage = '';
@@ -911,6 +936,18 @@ export class CreateOrderComponent implements OnInit {
     await this.getOrderDetail();
     if (this.orderDetail) {
       //console.log(this.cargoForm.value);
+
+      var recepient_name = formValue.address_recepient_name;
+      if (recepient_name != null && recepient_name != '') {  
+        this.orderDetail.customer = recepient_name;
+        this.toasterService.info('Alıcı Adı Değişikliği Algılandı')
+      }
+      if (this.selectedAddresses.length > 0) {
+        this.orderDetail.address = this.selectedAddresses[0].address;
+        this.orderDetail.city = this.selectedAddresses[0].cityDescription;
+        this.orderDetail.district = this.selectedAddresses[0].districtDescription;
+      }
+
       var content = this.selectedProducts.length.toString() + "Adet Ürün";
       var cargoSetting: CargoSetting = new CargoSetting(formValue.isCOD === false ? 0 : 1, Number(formValue.packagingType.code), Number(formValue.shipmentServiceType.code), content,
         this.orderDetail);
@@ -1144,9 +1181,14 @@ export class CreateOrderComponent implements OnInit {
         this.orderNumber = response.orderNumber;
 
 
-        await this.submitCargo(this.cargoForm.value);
-        this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament")
+        if (this.cargoForm.get('isActive').value === true) {
+          await this.submitCargo(this.cargoForm.value);
 
+
+        } else {
+          this.toasterService.info('KARGO OLUŞTURULMADI')
+        }
+        this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament")
       }
 
 

@@ -391,53 +391,77 @@
 
               <div class="row mb-3">
                 <div class="col-md-6">
-                  <div class="input-group mb-3">
-                    <div class="custom-file">
-                      <input
-                        type="file"
-                        class="custom-file-input"
-                        id="inputGroupFile01"
-                        aria-describedby="inputGroupFileAddon01"
-                        (change)="onUpload($event, 'stampPhotoUrl')"
-                      />
-                      <label class="custom-file-label" for="inputGroupFile01"
-                        >Dosya Seç</label
-                      >
+                  <div class="">
+                    <div class="row">
+                      <!-- Dosya Yükleme Bölümü -->
+                      <div class="col-md-6">
+                        <div class="input-group mb-3">
+                          <div class="custom-file">
+                            <input
+                              type="file"
+                              class="custom-file-input"
+                              id="inputGroupFile01"
+                              aria-describedby="inputGroupFileAddon01"
+                              (change)="onUpload($event, 'stampPhotoUrl')"
+                            />
+                            <label
+                              class="custom-file-label"
+                              for="inputGroupFile01"
+                              >Dosya Seç</label
+                            >
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Metin Girişi Bölümü -->
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="stampPhotoUrl">Kaşe (ZORUNLUDUR)</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="stampPhotoUrl"
+                            placeholder="Kaşe Fotoğraf Yolu"
+                            formControlName="stampPhotoUrl"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <label for="exampleInputEmail1">Kaşe (ZORUNLUDUR)</label>
-
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="stampPhotoUrl"
-                    placeholder="Kaşe Fotoğraf Yolu"
-                    formControlName="stampPhotoUrl"
-                  />
                 </div>
                 <div class="col-md-6">
-                  <div class="input-group mb-3">
-                    <div class="custom-file">
-                      <input
-                        type="file"
-                        class="custom-file-input"
-                        id="inputGroupFile01"
-                        aria-describedby="inputGroupFileAddon01"
-                        (change)="onUpload($event, 'bussinesCardPhotoUrl')"
-                      />
-                      <label class="custom-file-label" for="inputGroupFile01"
-                        >Dosya Seç</label
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="input-group mb-3">
+                        <div class="custom-file">
+                          <input
+                            type="file"
+                            class="custom-file-input"
+                            id="inputGroupFile01"
+                            aria-describedby="inputGroupFileAddon01"
+                            (change)="onUpload($event, 'bussinesCardPhotoUrl')"
+                          />
+                          <label
+                            class="custom-file-label"
+                            for="inputGroupFile01"
+                            >Dosya Seç</label
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="exampleInputEmail1"
+                        >Kartvizit (ZORUNLUDUR)</label
                       >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="bussinesCardPhotoUrl"
+                        placeholder="Kartvizit Fotoğraf Yolu"
+                        formControlName="bussinesCardPhotoUrl"
+                      />
                     </div>
                   </div>
-                  <label for="exampleInputEmail1">Kartvizit (ZORUNLUDUR)</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="bussinesCardPhotoUrl"
-                    placeholder="Kartvizit Fotoğraf Yolu"
-                    formControlName="bussinesCardPhotoUrl"
-                  />
                 </div>
               </div>
             </form>
@@ -673,7 +697,7 @@
               <td>{{ product.barcode }}</td>
 
               <td>
-                {{ product.price | currency : "USD" }}
+                {{ product.price | currency : "₺" }}
               </td>
               <td>{{ product.description }}</td>
               <td>
@@ -767,7 +791,9 @@
                     />
                   </ng-template>
                   <ng-template pTemplate="output">
-                    <span style="font-weight: bold"> {{ product.price }}</span>
+                    <span style="font-weight: bold">
+                      {{ product.price | currency : "₺" }}</span
+                    >
                   </ng-template>
                 </p-cellEditor>
               </td>
@@ -823,6 +849,31 @@
         *ngIf="!isCompleted && selectedProducts.length >= 1"
       >
         <form [formGroup]="cargoForm">
+          <div class="row-mb-3">
+            <div class="form-group mb-3">
+              <label for="address_recepient_name" class="label"
+                >Alıcı Adı (Barkod Üstünde Bu Alan Yer Alacaktır)</label
+              >
+
+              <input
+                type="text"
+                id="address_recepient_name"
+                name="address_recepient_name"
+                fullWidth
+                formControlName="address_recepient_name"
+                class="form-control"
+              />
+              <p style="font-weight: bold">
+                {{
+                  this.cargoForm.get("address_recepient_name")?.value ===
+                    null ||
+                  this.cargoForm.get("address_recepient_name")?.value === ""
+                    ? "Alıcı Adı Yoksa Satış Elemanı Adı ile Gönderim yapılır"
+                    : ""
+                }}
+              </p>
+            </div>
+          </div>
           <div class="row mb-3">
             <div class="col-md">
               <label for="office"> Paketleme Tipi</label>
@@ -891,13 +942,21 @@
               ></p-dropdown>
             </div>
           </div>
-          <!--  <div class="row mb-3">
+          <div class="row mb-3">
             <div class="col-md">
               <label for="office"> Kapıda Ödeme?</label>
               <br />
               <p-inputSwitch formControlName="isCOD"></p-inputSwitch>
             </div>
-          </div> -->
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md">
+              <label for="isActive"> Kargo </label>
+              <br />
+              <p-inputSwitch formControlName="isActive"></p-inputSwitch>
+            </div>
+          </div>
 
           <!-- <div class="row mb-3">
             <div class="col-md">
@@ -965,6 +1024,11 @@
                 <p class="card-text">İl: {{ address.cityDescription }}</p>
                 <p class="card-text">İlçe: {{ address.districtDescription }}</p>
                 <p class="card-text">Adres: {{ address.address }}</p>
+
+                <p class="card-text">
+                  Alıcı Adı:
+                  {{ this.cargoForm.get("address_recepient_name").value }}
+                </p>
                 <button
                   class="btn btn-danger"
                   (click)="deleteCurrentAddress()"
@@ -1005,7 +1069,7 @@
 
                 <p class="card-text">
                   Paketleme Tipi:
-                  {{ this.cargoForm.get("packagingType")?.value.name }}
+                  {{ this.cargoForm.get("packagingType")?.value?.name }}
                 </p>
                 <p class="card-text">
                   Kapıda Ödeme :
@@ -1172,7 +1236,7 @@
             </div>
             <div class="col-md-3 mt-3">
               <div>
-                <h1>TOPLAM : {{ getTotalPrice() | currency }}</h1>
+                <h1>TOPLAM : {{ getTotalPrice() | currency : "₺" }}</h1>
               </div>
             </div>
             <p *ngIf="_discountRate">

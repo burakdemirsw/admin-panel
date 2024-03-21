@@ -134,11 +134,19 @@
         <div div class="card text-center" *ngIf="productsToCollect.length <= 0">
           <div class="card-body">
             <h5 class="card-title">TÜM ÜRÜNLER TOPLANMIŞTIR</h5>
+
             <h1 class="display-1">
               <i class="fa fa-check" aria-hidden="true"></i>
             </h1>
             <p class="card-text" *ngIf="isInvoice">
               Bu Sipariş Faturalaştırılmıştır
+            </p>
+            <p
+              style="cursor: pointer"
+              class="card-title"
+              routerLink="/create-cargo/{{ this.orderNo }}"
+            >
+              Siparişi Kargolayabilirsiniz
             </p>
           </div>
         </div>

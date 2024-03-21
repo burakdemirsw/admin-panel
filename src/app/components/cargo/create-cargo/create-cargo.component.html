@@ -140,6 +140,31 @@
 
       <p-tabPanel header="Kargo Seçenekleri">
         <form [formGroup]="cargoForm">
+          <div class="row-mb-3">
+            <div class="form-group mb-3">
+              <label for="address_recepient_name" class="label"
+                >Alıcı Adı (Barkod Üstünde Bu Alan Yer Alacaktır)</label
+              >
+
+              <input
+                type="text"
+                id="address_recepient_name"
+                name="address_recepient_name"
+                fullWidth
+                formControlName="address_recepient_name"
+                class="form-control"
+              />
+              <p style="font-weight: bold">
+                {{
+                  this.cargoForm.get("address_recepient_name")?.value ===
+                    null ||
+                  this.cargoForm.get("address_recepient_name")?.value === ""
+                    ? "Alıcı Adı Yoksa Satış Elemanı Adı ile Gönderim yapılır"
+                    : ""
+                }}
+              </p>
+            </div>
+          </div>
           <div class="row mb-3">
             <div class="col-md">
               <label for="office"> Paketleme Tipi</label>
@@ -260,6 +285,10 @@
               <div class="card-body">
                 <p class="card-title">Adres</p>
 
+                <p class="card-text">
+                  Alıcı Adı:
+                  {{ this.cargoForm.get("address_recepient_name").value }}
+                </p>
                 <p class="card-text">İl: {{ orderDetail.city }}</p>
                 <p class="card-text">İlçe: {{ orderDetail.district }}</p>
                 <p class="card-text">Adres: {{ orderDetail.address }}</p>

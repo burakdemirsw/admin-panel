@@ -89,15 +89,15 @@ export class CreatePackage_MNG_Request {
     this.recipient.refCustomerId = "";
     this.recipient.cityCode = 0;
     this.recipient.districtCode = 0;
-    this.recipient.cityName = od.city;
-    this.recipient.districtName = od.district;
-    this.recipient.address = od.address;
     this.recipient.businessPhoneNumber = "";
-    this.recipient.email = od.mail;
     this.recipient.taxOffice = "";
     this.recipient.taxNumber = "";
-    this.recipient.fullName = od.customer;
     this.recipient.homePhoneNumber = "";
+    this.recipient.cityName = od.city;
+    this.recipient.districtName = od.district;
+    this.recipient.email = od.mail;
+    this.recipient.address = od.address;
+    this.recipient.fullName = od.customer;
     this.recipient.mobilePhoneNumber = od.phone;
 
 

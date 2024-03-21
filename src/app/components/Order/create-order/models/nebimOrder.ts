@@ -27,8 +27,8 @@ export class NebimOrder {
   isSalesViaInternet: boolean;
   documentNumber: string;
   description: string;
-
-  ordersViaInternetInfo: OrdersViaInternetInfo;
+  isCreditSale: boolean;
+  // ordersViaInternetInfo: OrdersViaInternetInfo;
   lines: Line[];
   // discounts: Discount[];
   // payments: Payment[];
@@ -38,19 +38,20 @@ export class NebimOrder {
     this.posTerminalID = 1;
     this.shipmentMethodCode = 2;
     this.isCompleted = true;
-    this.isSalesViaInternet = true;
+    this.isSalesViaInternet = false;
+    this.isCreditSale = true;
     this.taxTypeCode = taxTypeCode;
     this.deliveryCompanyCode = "";
     this.lines = [];
     // this.discounts = [];
     // this.payments = [];
-    this.ordersViaInternetInfo = new OrdersViaInternetInfo();
-    this.ordersViaInternetInfo.paymentDate = new Date().toUTCString();
-    this.ordersViaInternetInfo.sendDate = new Date().toUTCString();
-    this.ordersViaInternetInfo.salesURL = "www.davye.com";
-    this.ordersViaInternetInfo.paymentAgent = "";
-    this.ordersViaInternetInfo.paymentTypeCode = 2;
-    this.ordersViaInternetInfo.paymentTypeDescription = "Kredi Kartı"
+    //ÖDEME KAPATILDI                        // this.ordersViaInternetInfo = new OrdersViaInternetInfo();
+    //ÖDEME KAPATILDI                           // this.ordersViaInternetInfo.paymentDate = new Date().toUTCString();
+    //ÖDEME KAPATILDI                           // this.ordersViaInternetInfo.sendDate = new Date().toUTCString();
+    //ÖDEME KAPATILDI                           // this.ordersViaInternetInfo.salesURL = "www.davye.com";
+    //ÖDEME KAPATILDI                          // this.ordersViaInternetInfo.paymentAgent = "";
+    //ÖDEME KAPATILDI                          // this.ordersViaInternetInfo.paymentTypeCode = 2;
+    //ÖDEME KAPATILDI                          // this.ordersViaInternetInfo.paymentTypeDescription = "Kredi Kartı"
     // if (payment.paymentType === "1") {
     //   this.ordersViaInternetInfo.paymentTypeDescription = "PAYTR"
     //   this.ordersViaInternetInfo.paymentTypeCode = 2

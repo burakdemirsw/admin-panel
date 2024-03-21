@@ -72,6 +72,7 @@ import { CustomerList_VM } from './models/model/order/getCustomerList_CM';
 import { CustomerListComponent } from './components/Customer/customer-list/customer-list.component';
 import { CreateCargoComponent } from './components/cargo/create-cargo/create-cargo.component';
 import { CargoListComponent } from './components/cargo/cargo-list/cargo-list.component';
+import { AddCustomerComponent } from './components/Customer/add-customer/add-customer.component';
 
 const routes: Routes = [
 
@@ -174,6 +175,11 @@ const routes: Routes = [
   {
     path: 'cargo-list',
     component: CargoListComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'add-customer',
+    component: AddCustomerComponent,
     canActivate: [AuthGuard],
   },
   {

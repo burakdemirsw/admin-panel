@@ -470,5 +470,15 @@
         </button>
       </div>
     </p-dialog>
+    <p-dialog
+      header="Ürün Eklenemedi"
+      [(visible)]="blockedCount"
+      [modal]="true"
+      [style]="{ width: '50vw' }"
+      [draggable]="false"
+      [resizable]="false"
+    >
+      <h1>{{ blockedCountReason }}</h1>
+    </p-dialog>
   </section>
 </main>

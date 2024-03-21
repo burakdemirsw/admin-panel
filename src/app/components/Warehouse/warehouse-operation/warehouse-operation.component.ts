@@ -77,7 +77,7 @@ export class WarehouseOperationComponent implements OnInit {
     if (location.href.includes('REQ-')) {
       var ls_currentDataType = localStorage.getItem('currentDataType')
       if (ls_currentDataType != undefined && !ls_currentDataType) {
-        this.currentDataType = ls_currentDataType.toString();
+        this.currentDataType = ls_currentDataType.toString() == '-1' ? '0' : ls_currentDataType.toString();
         // this.toasterService.success(localStorage.getItem('currentDataType'))
       } else {
         this.currentDataType = '0'
@@ -91,7 +91,7 @@ export class WarehouseOperationComponent implements OnInit {
       }
     } else {
       this.pageStatus = 'Transfer'
-      this.currentDataType = '0'
+      this.currentDataType = '-1'
 
 
     }
@@ -114,7 +114,7 @@ export class WarehouseOperationComponent implements OnInit {
       this.currentOrderNo = 'TP-' + params['number'];
 
       if (!this.currentOrderNo.includes('REQ-')) {
-        await this.getProductOfCount(this.currentOrderNo); //this.list.push(formValue);
+        await this.getProductOfCount(this.currentOrderNo);
       } else if (this.currentOrderNo.includes('REQ-')) {
         await this.getProductOfCount(this.currentOrderNo);
 
@@ -197,7 +197,7 @@ export class WarehouseOperationComponent implements OnInit {
     this.toasterService.info("Ürün Transfer Edilecek Ürünlerden Silindi")
   }
   currentDataType;
-  async onDataChange(type: string) {
+  async onDataChange(currentDataType: string) {
 
     if (location.href.includes('REQ')) {
       var ls_currentDataType = localStorage.getItem('currentDataType')
@@ -207,31 +207,32 @@ export class WarehouseOperationComponent implements OnInit {
       } else {
         localStorage.setItem('currentDataType', this.currentDataType)
       }
-      this.currentDataType = type;
-      if (type === '0') {
+      this.currentDataType = currentDataType;
+      if (currentDataType === '0') {
         this.toasterService.success("Varsayılan Ürünler Getirildi")
 
         this.pageStatus = 'İstek - Standart'
-      } else if (type === '1') {
+      } else if (currentDataType === '1') {
         this.pageStatus = 'İstek -Raf Fulle'
         this.toasterService.success("Raflar Fullendi")
 
       }
+
+      this.inventoryItems = [];
+      this.inventoryItems = await this.orderService.getInventoryItems(currentDataType); //transfer edilcek ürünler
+
     }
 
-    if (type === '0') {
+    if (currentDataType === '0') {
       this.toasterService.success("Varsayılan Ürünler Getirildi")
 
       // this.pageStatus = 'Standart'
-    } else if (type === '1') {
+    } else if (currentDataType === '1') {
       // this.pageStatus = 'Raf Fulle'
       this.toasterService.success("Raflar Fullendi")
 
     }
 
-
-    this.inventoryItems = [];
-    this.inventoryItems = await this.orderService.getInventoryItems(type); //tansfer edilcek ürünler
 
 
     if (this.deletedProductList.length > 0) {
@@ -613,9 +614,21 @@ export class WarehouseOperationComponent implements OnInit {
       return null;
     }
   }
+  blockedCount: boolean = false;
+  blockedCountReason = "";
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
   async onSubmit(formValue: any): Promise<any> {
+
+    for (const product of this.warehouseTransferForms) {
+      if (product.availableQty < product.quantity) {
+        this.blockedCount = true;
+        this.blockedCountReason = "Başarısız Ürün | \n Stok Kodu -" + product.itemCode + "\n Barkod- " + product.barcode;
+
+        return; // Bu return ifadesi fonksiyonun geri kalanının çalışmasını durdurur.
+      }
+    }
+
 
     if (formValue.barcode.includes("=")) {
       formValue.barcode = formValue.barcode.replace(/=/g, "-");

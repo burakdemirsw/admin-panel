@@ -119,6 +119,7 @@ import { ChartModule } from 'primeng/chart';
 import { CargoDetailComponent } from './components/cargo/cargo-detail/cargo-detail.component';
 import { CargoListComponent } from './components/cargo/cargo-list/cargo-list.component';
 import { CreateCargoComponent } from './components/cargo/create-cargo/create-cargo.component';
+import { AddCustomerComponent } from './components/Customer/add-customer/add-customer.component';
 
 @NgModule({
 
@@ -200,7 +201,8 @@ import { CreateCargoComponent } from './components/cargo/create-cargo/create-car
     CustomerListComponent,
     CreateCargoComponent,
     CargoListComponent,
-    CargoDetailComponent
+    CargoDetailComponent,
+    AddCustomerComponent
   ],
 
 
