@@ -84,7 +84,7 @@
                 </ul>
               </div> -->
                 <div class="card-body">
-                  <h5 class="card-title">Gelirler <span>| Bu Ay</span></h5>
+                  <h5 class="card-title">Gelirler <span>| Bu Gün</span></h5>
                   <div class="d-flex align-items-center">
                     <div
                       class="card-icon rounded-circle d-flex align-items-center justify-content-center"
@@ -94,8 +94,10 @@
                     <div class="ps-3">
                       <h6>
                         {{
-                          raportData.raport_1.wsOrderRevenue
-                            | currency : "₺" : true
+                          !raportData.raport_1.wsOrderRevenue
+                            ? "₺0"
+                            : (raportData.raport_1.wsOrderRevenue
+                              | currency : "₺" : true)
                         }}
                       </h6>
                       <!-- <span class="text-success small pt-1 fw-bold">8%</span>

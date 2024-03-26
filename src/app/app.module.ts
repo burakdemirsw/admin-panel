@@ -120,6 +120,7 @@ import { CargoDetailComponent } from './components/cargo/cargo-detail/cargo-deta
 import { CargoListComponent } from './components/cargo/cargo-list/cargo-list.component';
 import { CreateCargoComponent } from './components/cargo/create-cargo/create-cargo.component';
 import { AddCustomerComponent } from './components/Customer/add-customer/add-customer.component';
+import { UnfinishedOrderComponent } from './components/Order/unfinished-order/unfinished-order.component';
 
 @NgModule({
 
@@ -202,7 +203,8 @@ import { AddCustomerComponent } from './components/Customer/add-customer/add-cus
     CreateCargoComponent,
     CargoListComponent,
     CargoDetailComponent,
-    AddCustomerComponent
+    AddCustomerComponent,
+    UnfinishedOrderComponent
   ],
 
 

@@ -264,6 +264,8 @@ export class WarehouseOperationComponent implements OnInit {
   // inventoryItems: InventoryItem[] = [];//transfer Edilecek ürünler
   // warehouseTransferForms: TransferModel[] = []; //transfer edilen ürünler
   updateInventoryAndTransfers() {
+
+    //eğer silinmiş ürün listesinde ürün varsa onları kaldır
     // İşlem sonrası çıkarılacak öğelerin indekslerini tutacak dizi
     let itemsToRemoveIndexes: number[] = [];
 
@@ -295,8 +297,6 @@ export class WarehouseOperationComponent implements OnInit {
     }
     itemsToRemoveIndexes = [];
     //--------------------------------------------------------
-
-    //eğer silinmiş ürün listesinde ürün varsa onları kaldır
 
     // Çıkarılacak öğeler için ters döngü (çıkarırken sıralamayı bozmamak için)
 

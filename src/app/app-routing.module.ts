@@ -73,6 +73,7 @@ import { CustomerListComponent } from './components/Customer/customer-list/custo
 import { CreateCargoComponent } from './components/cargo/create-cargo/create-cargo.component';
 import { CargoListComponent } from './components/cargo/cargo-list/cargo-list.component';
 import { AddCustomerComponent } from './components/Customer/add-customer/add-customer.component';
+import { UnfinishedOrderComponent } from './components/Order/unfinished-order/unfinished-order.component';
 
 const routes: Routes = [
 
@@ -172,6 +173,12 @@ const routes: Routes = [
     component: OrderManagamentComponent,
     canActivate: [AuthGuard],
   },
+
+  {
+    path: 'unfinished-orders',
+    component: UnfinishedOrderComponent,
+    canActivate: [AuthGuard],
+  },
   {
     path: 'cargo-list',
     component: CargoListComponent,
@@ -183,7 +190,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'create-order/:id',
+    path: 'create-order/:orderType/:id',
     component: CreateOrderComponent,
     canActivate: [AuthGuard],
   },

@@ -16,10 +16,11 @@ export class CreateCustomer_CM {
   officeCode: string;
   warehouseCode: string;
   address: Address;
+
   constructor() {
     this.address = new Address();
-    this.mersisNum = "111111111111";
-    this.taxNumber = "111111111111";
+    this.mersisNum = "1111111111";
+    this.taxNumber = "1234567891";
     this.taxOfficeCode = "";
 
   }

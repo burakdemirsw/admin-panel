@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      /* Stylesheet 1: */
+      body {
+        font-family: "Courier New", Courier, monospace;
+        background-color: #f0f0f0;
+        line-height: 24px;
+      }
+
+      .container {
+        min-width: 960px;
+      }
+
+      .wrapper {
+        position: relative;
+        overflow: hidden;
+      }
+
+      #top,
+      #sidebar,
+      #bottom,
+      .menuitem {
+        border-radius: 8px;
+        margin: 8px;
+      }
+
+      #top {
+        background-color: #1e90ff;
+        color: #ffffff;
+        padding: 20px;
+        font-size: 28px;
+      }
+
+      #menubar {
+        width: 220px;
+        float: left;
+      }
+
+      #main {
+        padding: 15px;
+        margin: 0 240px;
+      }
+
+      #sidebar {
+        background-color: #ffa500;
+        color: #ffffff;
+        padding: 15px;
+        width: 200px;
+        position: fixed;
+        right: 0;
+        top: 0;
+        bottom: 0;
+      }
+
+      #bottom {
+        border: 2px solid #000;
+        background-color: #ff69b4;
+        text-align: center;
+        padding: 15px;
+        font-size: 80%;
+        line-height: 16px;
+      }
+
+      #top h1,
+      #top p,
+      #menulist {
+        margin: 0;
+        padding: 0;
+      }
+
+      .menuitem {
+        background-color: #008000;
+        border: 2px solid #008000;
+        list-style-type: none;
+        padding: 5px;
+        cursor: pointer;
+      }
+
+      .menuitem:hover {
+        background-color: #ffffff;
+        color: #008000;
+      }
+
+      .menuitem:first-child {
+        background-color: #ff6347;
+        color: white;
+        font-weight: bold;
+      }
+
+      a {
+        color: #4b0082;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 800px) {
+        #sidebar {
+          width: auto;
+          position: relative;
+        }
+
+        #main {
+          margin-right: 0;
+        }
+      }
+
+      @media (max-width: 600px) {
+        #menubar {
+          width: auto;
+          float: none;
+        }
+
+        #main {
+          margin: 0;
+        }
+      }
+    </style>
+
+    <style>
+      /* Stylesheet 2: */
+      body {
+        font-family: "Georgia", serif;
+        background-color: #ffe4e1;
+        line-height: 22px;
+      }
+
+      .container {
+        min-width: 960px;
+      }
+
+      .wrapper {
+        position: relative;
+        overflow: auto;
+      }
+
+      #top {
+        color: #000000;
+        padding: 25px;
+        font-size: 32px;
+        line-height: 36px;
+      }
+
+      #top h1 {
+        margin: 0;
+        line-height: 42px;
+      }
+
+      #menubar {
+        width: 180px;
+        float: right;
+      }
+
+      #main {
+        padding: 15px;
+        background-color: #ffffff;
+        font: 90% Arial, sans-serif;
+      }
+
+      #main h1,
+      #main h2 {
+        color: #ff4500;
+      }
+
+      #sidebar {
+        background-color: #8a2be2;
+        color: #ffffff;
+        padding: 15px;
+      }
+
+      #bottom {
+        text-align: center;
+        padding: 15px;
+        font-size: 80%;
+        color: #000000;
+      }
+
+      #menulist {
+        padding: 0;
+        font-size: 18px;
+      }
+
+      .menuitem {
+        width: 140px;
+        background-color: #ff4500;
+        border: 2px solid #ff4500;
+        border-radius: 10px;
+        color: #ffffff;
+        list-style-type: none;
+        margin: 8px;
+        padding: 8px;
+        text-align: center;
+        cursor: pointer;
+      }
+
+      .menuitem:nth-child(2) {
+        background-color: #ffffff;
+        color: #ff4500;
+        font-weight: bold;
+      }
+
+      .menuitem:hover {
+        background-color: #ff4500;
+        color: #ffffff;
+      }
+
+      a {
+        color: #8a2be2;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+
+    <style>
+      /* Stylesheet 3: */
+      body {
+        font-family: "Times New Roman", Times, serif;
+        margin: 25px;
+        line-height: 28px;
+      }
+
+      .container {
+        min-width: 960px;
+      }
+
+      .wrapper {
+        position: relative;
+        overflow: hidden;
+      }
+
+      #sidebar {
+        background-color: #ffff00;
+        border: 2px solid #000;
+        padding-left: 20px;
+      }
+
+      #bottom {
+        text-align: center;
+        padding: 15px;
+        font-size: 80%;
+        line-height: 18px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        color: #ff0000;
+      }
+
+      #menulist {
+        padding: 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .menuitem {
+        width: 160px;
+        float: left;
+        background-color: #800080;
+        color: #ffffff;
+        list-style-type: none;
+        margin: 6px;
+        padding: 4px;
+        text-align: center;
+        cursor: pointer;
+      }
+
+      .menuitem:nth-child(3) {
+        background-color: #008080;
+      }
+
+      .menuitem:hover {
+        background-color: #000;
+      }
+
+      a {
+        color: #000000;
+      }
+
+      a:hover {
+        color: #ff8c00;
+      }
+    </style>
+
+    <style>
+      /* Stylesheet 4: */
+      body {
+        font-family: "Tahoma", Geneva, sans-serif;
+        background-color: #f9f9f9;
+        line-height: 22px;
+      }
+
+      .container {
+        min-width: 960px;
+      }
+
+      .wrapper {
+        position: relative;
+        overflow: auto;
+      }
+
+      #top {
+        color: #333333;
+        padding: 20px;
+        font-size: 28px;
+        line-height: 32px;
+      }
+
+      #menubar {
+        width: 220px;
+        float: left;
+      }
+
+      #main {
+        padding: 15px;
+        margin: 0 240px;
+        background-color: #ffffff;
+        font: 90% Arial, sans-serif;
+        color: #555555;
+      }
+
+      #main h1,
+      #main h2 {
+        color: #cc0000;
+      }
+
+      #sidebar {
+        background-color: #eaeaea;
+        color: #333333;
+        padding: 15px;
+      }
+
+      #bottom {
+        text-align: center;
+        padding: 15px;
+        font-size: 80%;
+        color: #333333;
+      }
+
+      #menulist {
+        padding: 0;
+        font-size: 16px;
+      }
+
+      .menuitem {
+        width: 140px;
+        background-color: #cc0000;
+        border: 2px solid #cc0000;
+        border-radius: 8px;
+        color: #ffffff;
+        list-style-type: none;
+        margin: 8px;
+        padding: 8px;
+        text-align: center;
+        cursor: pointer;
+      }
+
+      .menuitem:nth-child(2) {
+        background-color: #ffffff;
+        color: #cc0000;
+        font-weight: bold;
+      }
+
+      .menuitem:hover {
+        background-color: #cc0000;
+        color: #ffffff;
+      }
+
+      a {
+        color: #0066cc;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container wrapper">
+      <div id="top">
+        <h1>BURAK DEMİR 20091000008</h1>
+        <br />
+        <p>Use the menu to select different Stylesheets</p>
+      </div>
+      <div class="wrapper">
+        <div id="menubar">
+          <ul id="menulist">
+            <li class="menuitem" onclick="reStyle(0)">Stylesheet 1</li>
+            <li class="menuitem" onclick="reStyle(1)">Stylesheet 2</li>
+            <li class="menuitem" onclick="reStyle(2)">Stylesheet 3</li>
+          </ul>
+        </div>
+        <div id="main">
+          <h1>Same Page Different Stylesheets</h1>
+          <p>
+            This is a demonstration of how different stylesheets can change the
+            layout of your HTML page. You can change the layout of this page by
+            selecting different stylesheets in the menu, or by selecting one of
+            the following links:<br />
+            <a href="#" onclick="reStyle(0);return false">Stylesheet1</a>,
+            <a href="#" onclick="reStyle(1);return false">Stylesheet2</a>,
+            <a href="#" onclick="reStyle(2);return false">Stylesheet3</a>,
+            <a href="#" onclick="reStyle(3);return false">Stylesheet4</a>.
+          </p>
+          <h2>No Styles</h2>
+          <p>
+            This page uses DIV elements to group different sections of the HTML
+            page. Click here to see how the page looks like with no
+            stylesheet:<br /><a href="#" onclick="noStyles();return false"
+              >No Stylesheet</a
+            >.
+          </p>
+        </div>
+        <div id="sidebar">
+          <h3>Side-Bar</h3>
+          <p>
+            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam
+            nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat
+            volutpat.
+          </p>
+        </div>
+      </div>
+
+      <div id="bottom">
+        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam
+        nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat
+        volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation
+        ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+        Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse
+        molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero
+        eros et accumsan et iusto odio dignissim qui blandit praesent luptatum
+        zzril delenit augue duis dolore te feugait nulla facilisi.
+      </div>
+    </div>
+
+    <script>
+      function noStyles() {
+        document.styleSheets[0].disabled = true;
+        document.styleSheets[1].disabled = true;
+        document.styleSheets[2].disabled = true;
+        document.styleSheets[3].disabled = true;
+      }
+
+      function reStyle(n) {
+        noStyles();
+        document.styleSheets[n].disabled = false;
+      }
+
+      function closeBlackdiv() {
+        var blackdiv, stylediv;
+        blackdiv = document.getElementById("blackdiv");
+        blackdiv.parentNode.removeChild(blackdiv);
+        stylediv = document.getElementById("stylediv");
+        stylediv.parentNode.removeChild(stylediv);
+      }
+
+      function showStyle(n) {
+        var div, text, blackdiv;
+        blackdiv = document.createElement("DIV");
+        blackdiv.setAttribute(
+          "style",
+          "background-color:#000000;position:absolute;width:100%;height:100%;top:0;opacity:0.5;margin-left:-20px;"
+        );
+        blackdiv.setAttribute("id", "blackdiv");
+        blackdiv.setAttribute("onclick", "closeBlackdiv()");
+        document.body.appendChild(blackdiv);
+        div = document.createElement("DIV");
+        div.setAttribute("id", "stylediv");
+        div.setAttribute(
+          "style",
+          "background-color:#ffffff;padding-left:5px;position:absolute;width:auto;height:auto;top:100px;bottom:50px;left:200px;right:200px;overflow:auto;font-family: monospace; white-space: pre;line-height:16px;"
+        );
+        text = document.createTextNode(
+          document.getElementsByTagName("STYLE")[n].innerHTML
+        );
+        div.appendChild(text);
+        document.body.appendChild(div);
+      }
+
+      reStyle(1);
+    </script>
+  </body>
+</html>

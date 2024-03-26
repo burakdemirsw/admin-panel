@@ -23,7 +23,7 @@ import { int } from '@zxing/library/esm/customTypings';
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
 import { GetCustomerAddress_CM, GetCustomerList_CM } from 'src/app/models/model/order/getCustomerList_CM';
 import { CreateCustomer_CM, AddCustomerAddress_CM } from '../../components/Order/create-order/models/createCustomer_CM';
-import { ClientOrder, ClientOrderBasketItem, ClientOrder_DTO, NebimOrder } from 'src/app/components/Order/create-order/models/nebimOrder';
+import { ClientOrder, ClientOrderBasketItem, ClientOrder_DTO, NebimInvoice, NebimOrder } from 'src/app/components/Order/create-order/models/nebimOrder';
 import { query } from '@angular/animations';
 import { ToasterService } from '../ui/toaster.service';
 import { ClientCustomer } from '../../components/Customer/customer-list/customer-list.component';
@@ -416,6 +416,28 @@ export class OrderService {
       return null;
     }
   }
+
+
+  async createOrder2(order: NebimOrder): Promise<any> {
+    try {
+      var response = await this.httpClientService.post<NebimOrder>({ controller: "order/create-order-2" }, order).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+  async createInvoice(request: NebimInvoice): Promise<any> {
+    try {
+      var response = await this.httpClientService.post<NebimInvoice>({ controller: "order/create-sale-invoice" }, request).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
   //onaylanacak ürünleri çekme
   getInventoryItems(type: string): Promise<InventoryItem[]> {
     try {
@@ -539,6 +561,21 @@ export class OrderService {
   }
 
 
+
+
+  async getClientOrders(): Promise<any> {
+    try {
+      var response = await this.httpClientService.get<ClientOrder>({ controller: "order/get-client-orders" }).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+
+  asyn
   async createClientOrder(request: ClientOrder) {
     try {
       var response = await this.httpClientService.post<ClientOrder>({ controller: "order/create-client-order" }, request).toPromise();
@@ -668,6 +705,8 @@ export class OrderService {
       console.log(error.message);
       return null;
     }
+
+
   }
 
 

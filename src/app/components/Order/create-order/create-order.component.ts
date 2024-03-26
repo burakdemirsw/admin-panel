@@ -10,7 +10,7 @@ import { GoogleDriveService } from '../../../services/common/google-drive.servic
 import { AddressService } from 'src/app/services/admin/address.service';
 import { Address_VM } from 'src/app/models/model/order/ViewModel/provinceVM';
 import { AddCustomerAddress_CM, ClientCustomer, CreateCustomer_CM } from './models/createCustomer_CM';
-import { ClientOrder, ClientOrderBasketItem, Line, NebimOrder, Payment } from './models/nebimOrder';
+import { ClientOrder, ClientOrderBasketItem, Line, NebimInvoice, NebimOrder, NebimOrder_2, Payment } from './models/nebimOrder';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
 import { HttpClientService } from 'src/app/services/http-client.service';
@@ -21,6 +21,8 @@ import { PaymentService } from 'src/app/services/admin/payment.service';
 import { PostalAddress } from 'src/app/models/nebim/customer/nebimCustomer';
 import { CreatePackage_MNG_RR, CargoSetting, CreatePackage_MNG_Request, OrderDetail, CreateBarcode_MNG_Request, OrderPieceListMNG, CreatePackage_MNG_RM } from '../../cargo/create-cargo/models/models';
 import { CargoService } from 'src/app/services/admin/cargo.service';
+import { WarehouseService } from 'src/app/services/admin/warehouse.service';
+import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 
 @Component({
   selector: 'app-create-order',
@@ -45,7 +47,9 @@ export class CreateOrderComponent implements OnInit {
   true: boolean = true;
   orderNo: string;
   id: string;
-  constructor(private paymentService: PaymentService, private toasterService: ToasterService, private activatedRoute: ActivatedRoute,
+  orderType: boolean;
+  pageTitle: string;
+  constructor(private warehouseService: WarehouseService, private paymentService: PaymentService, private toasterService: ToasterService, private activatedRoute: ActivatedRoute,
     private router: Router, private httpClientService: HttpClientService,
     private generalService: GeneralService, private addressService: AddressService,
     private googleDriveService: GoogleDriveService, private productService: ProductService,
@@ -64,11 +68,21 @@ export class CreateOrderComponent implements OnInit {
     this.selectOfficeAndWarehosue();
 
     this.createCargoForm();
+
     this.activatedRoute.params.subscribe(async (params) => {
       if (params['id']) {
         this.id = params['id']
         this.getClientOrder(0);
+        if (params['orderType'] === 'quick-order') {
+          this.orderType = true;
+          this.pageTitle = "Sipariş Ver"
+        } else {
 
+          this.pageTitle = "Perakende Sipariş"
+          this.orderType = false;
+        }
+
+        //   this.toasterService.warn(this.orderType.toString())
       }
     })
     var spc = localStorage.getItem('salesPersonCode');
@@ -99,7 +113,7 @@ export class CreateOrderComponent implements OnInit {
         var customerResponse = await await this.orderService.getCustomerList_2(customer_request)
         if (customerResponse) {
           this.selectedCustomers.push(customerResponse[0]);
-          this.toasterService.success("Müşteri Eklendi")
+          // this.toasterService.success("Müşteri Eklendi")
         }
         var request_address = new GetCustomerAddress_CM();
         request_address.currAccCode = this.currAccCode;
@@ -108,7 +122,7 @@ export class CreateOrderComponent implements OnInit {
           var findedAddress = response.find(x => x.postalAddressID === order.clientOrder.shippingPostalAddressId);
           if (findedAddress) {
             this.selectedAddresses.push(findedAddress);
-            this.toasterService.success("Adres Eklendi")
+            // this.toasterService.success("Adres Eklendi")
           } else {
             this.toasterService.error("Eklenecek Adres Bulunamadı")
           }
@@ -130,13 +144,14 @@ export class CreateOrderComponent implements OnInit {
 
         if (order.clientOrderBasketItems.length > 0) {
           this.selectedProducts = [];
+          order.clientOrderBasketItems.reverse();
           order.clientOrderBasketItems.forEach(basketItem => {
             var object = this.convertLineToObject(basketItem);
             this.selectedProducts.push(object);
           });
         }
 
-        this.toasterService.success("Sipariş Çekildi")
+        //this.toasterService.success("Sipariş Çekildi")
 
       } else {
         this.orderNo = this.generateRandomNumber();
@@ -193,13 +208,14 @@ export class CreateOrderComponent implements OnInit {
       request.customerCode = this.currAccCode
       request.id = this.id;
       request.orderNo = this.orderNo;
+      request.customerDescription = this.selectedCustomers[0]?.currAccDescription || null;
+      request.shippingPostalAddressId = this.selectedAddresses[0]?.postalAddressID;
       if (this.payment) {
         request.paymentType = this.payment.creditCardTypeCode;
       } else {
         request.paymentType = null;
       }
 
-      request.shippingPostalAddressId = this.selectedAddresses[0].postalAddressID;
       request.createdDate = new Date();
 
       return request;
@@ -304,7 +320,7 @@ export class CreateOrderComponent implements OnInit {
     var response = await this.orderService.addCustomerAddress(request)
     if (response) {
       var _request: GetCustomerAddress_CM = new GetCustomerAddress_CM();
-      this.toasterService.success(_request.currAccCode);
+      this.toasterService.success(response.currAccCode);
       this.getCustomerAddresses(_request);
     }
 
@@ -519,6 +535,10 @@ export class CreateOrderComponent implements OnInit {
       this.findProductDialog = !this.findProductDialog
     }
   }
+  goToPage(index: number) {
+    this.activeIndex = index;
+    // this.toasterService.info(this.activeIndex.toString())
+  }
   //----------------------------------------------------
 
   //---------------------------------------------------- CUSTOMER
@@ -568,8 +588,12 @@ export class CreateOrderComponent implements OnInit {
             this.currAccCode = response.currAccCode;
             this.getCustomerDialog = true;
             this.getCustomerForm.get("currAccCode").setValue(this.currAccCode);
-            this.getCustomers(this.getCustomerForm.value);
-            this._activeIndex = 0;
+            await this.getCustomers(this.getCustomerForm.value);
+            if (this.customers.length > 0) {
+              await this.selectCurrentCustomer(this.customers[0])
+
+            }
+            this.activeIndex = 3;
           }
 
         }
@@ -587,17 +611,17 @@ export class CreateOrderComponent implements OnInit {
       warehouse: [null],
       salesPersonCode: [null],
       currAccDescription: [null, Validators.required],
-      mail: [null, Validators.required],
+      mail: [' ', Validators.required],
       phoneNumber: [null, Validators.required],
-      stampPhotoUrl: [null, Validators.required],
-      bussinesCardPhotoUrl: [null, Validators.required],
+      stampPhotoUrl: [' ', Validators.required],
+      bussinesCardPhotoUrl: [' ', Validators.required],
       address_country: [null],
       address_province: [null],
       address_district: [null],
       address_region: [null],
       taxNumber: [null],
       address_description: [null],
-      address_postalCode: [null],
+      address_postalCode: [' '],
       address_taxOffice: [null]
     });
 
@@ -662,7 +686,8 @@ export class CreateOrderComponent implements OnInit {
     this.customers = await this.orderService.getCustomerList_2(request)
     console.log(this.customers);
   }
-  selectCurrentCustomer(request: CustomerList_VM) {
+  async selectCurrentCustomer(request: CustomerList_VM) {
+
     this.selectedCustomers = [];
     this.selectedCustomers.push(request);
     this.currAccCode = request.currAccCode
@@ -674,6 +699,8 @@ export class CreateOrderComponent implements OnInit {
     _request.currAccCode = request.currAccCode;
     this.getCustomerAddresses(_request);
     this.selectAddressDialog = true;
+
+
   }
   deleteCurrentCustomer() {
     this.selectedCustomers = [];
@@ -691,12 +718,18 @@ export class CreateOrderComponent implements OnInit {
     console.log(this.customers);
   }
 
-  selectCurrentAddress(request: CustomerAddress_VM) {
-    this.selectedAddresses = [];
-    this.selectedAddresses.push(request);
-    this.toasterService.success("Adres Eklendi")
-    this.activeIndex = 1;
-    this.generalService.beep()
+  async selectCurrentAddress(request: CustomerAddress_VM) {
+
+    var order_request = this.createClientOrder_RM()
+    var order_response = await this.orderService.createClientOrder(order_request)
+    if (order_response) {
+      this.selectedAddresses = [];
+      this.selectedAddresses.push(request);
+      this.toasterService.success("Adres Eklendi")
+      this.activeIndex = 3;
+      this.generalService.beep()
+    }
+
 
   }
   deleteCurrentAddress() {
@@ -742,26 +775,89 @@ export class CreateOrderComponent implements OnInit {
   createGetProductForm() {
     this.getProductsForm = this.formBuilder.group({
       barcode: [null],
+      shelfNo: [null]
       // stockCode: [null],
     });
   }
 
-  async getProducts(request: BarcodeSearch_RM) {
-    try {
-      const response = await this.productService.searchProduct(request);
-      this.products = response;
-      return response;
-    } catch (error: any) {
-      console.log(error.message);
-      return null;
+  async getProducts(request: any, pageType: boolean) {
+
+
+    if (pageType) {
+      try {
+        var _request = new BarcodeSearch_RM();
+        _request.barcode = request.barcode;
+        const response = await this.productService.searchProduct(_request);
+        this.products = response;
+        if (this.products.length > 0) {
+          this.getProductsForm.get('barcode').setValue(null);
+          await this.addCurrentProducts(this.products[0]);
+          this.products = [];
+        }
+        return response;
+      } catch (error: any) {
+        console.log(error.message);
+        return null;
+      }
+    } else {
+      if (!request.shelfNo) {
+        this.generalService.focusNextInput('shelfNo')
+        return;
+      }
+      var check_response = await this.warehouseService.countProductRequest(
+        request.barcode,
+        '',
+        1
+        ,
+        '',
+        '',
+        '',
+        'Order/CountProductControl',
+        this.orderNo,
+        ''
+      );
+      //↑↑↑↑↑↑↑↑↑ BARKOD KONTROL EDİLDİ ↑↑↑↑↑↑↑↑↑
+
+      if (check_response != undefined) {
+        var data: ProductCountModel = check_response;
+
+        if (data.status != 'RAF') {
+          this.getProductsForm.get('barcode').setValue(check_response.description);
+        }
+
+
+        const response = await this.productService.searchProduct3(check_response.description, check_response.batchCode);
+        this.products = response;
+        if (this.products.length > 0) {
+          var totalQty = 0;
+          this.products.forEach(p => {
+            totalQty += p.quantity
+          });
+          if (totalQty <= 0) {
+            this.toasterService.error("STOK HATASI")
+            return;
+          }
+          if (this.products[0].shelfNo != this.getProductsForm.get('shelfNo').value) {
+            this.products[0].shelfNo = this.getProductsForm.get('shelfNo').value
+            this.toasterService.info("RAF NUMARASI EŞLEŞTRİLDİ")
+          }
+          this.getProductsForm.get('barcode').setValue(null);
+          this.getProductsForm.get('shelfNo').setValue(null);
+
+          await this.addCurrentProducts(this.products[0]);
+          this.products = [];
+        }
+        return response;
+
+      }
     }
+
   }
 
 
   async addCurrentProducts(request: ProductList_VM) {
 
     if (request.quantity > 0) {
-      //bu id ye ait bir clientOrder var mı bak
       var order_request = this.createClientOrder_RM()
       var order_response = await this.orderService.createClientOrder(order_request)
       if (order_response) {
@@ -784,18 +880,34 @@ export class CreateOrderComponent implements OnInit {
 
   }
   async deleteProduct(product: ProductList_VM) {
-    var response = await this.orderService.deleteClientOrderBasketItem(this.id, product.lineId);
-    if (response) {
+    const isConfirmed = window.confirm("Ürünü silmek istediğinize emin misiniz?");
 
-      this.toasterService.success("Ürün Silindi")
-      await this.getClientOrder(1);
+    if (isConfirmed) {
+      var response = await this.orderService.deleteClientOrderBasketItem(this.id, product.lineId);
+      if (response) {
+        this.toasterService.success("Ürün Silindi")
+        await this.getClientOrder(1);
+      }
+    } else {
+      // Kullanıcı silmeyi iptal ettiğinde yapılacak işlemler buraya yazılabilir.
+      console.log("Ürün silme işlemi iptal edildi.");
     }
   }
+
   clonedProducts: { [s: string]: ProductList_VM } = {};
   onRowEditInit(product: ProductList_VM) {
     this.clonedProducts[product.lineId as string] = { ...product };
   }
 
+
+  async updateQuantity(qty: number, product: ProductList_VM) {
+    product.quantity += qty
+    var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price)
+    if (response) {
+      this.toasterService.success("Ürün Güncellendi")
+      this.getClientOrder(1);
+    }
+  }
   async onRowEditSave(product: ProductList_VM) {
     if (product.price > 0) {
       this.toasterService.success(product.quantity.toString());
@@ -813,6 +925,7 @@ export class CreateOrderComponent implements OnInit {
     this.products[index] = this.clonedProducts[product.lineId as string];
     delete this.clonedProducts[product.lineId as string];
   }
+
 
   //----------------------------------------------------
   //---------------------------------------------------- KARGO
@@ -867,12 +980,25 @@ export class CreateOrderComponent implements OnInit {
         this.cargoForm.get('kg').clearValidators();
         this.cargoForm.get('desi').clearValidators();
 
-        if (this.cargoForm.valid) {
-          this.toasterService.success("true")
-        } else {
-          this.generalService.whichRowIsInvalid(this.cargoForm);
-        }
+      } else {
+        this.cargoForm.get('packagingType').setValidators(Validators.required);
+        this.cargoForm.get('packagingType').updateValueAndValidity();
+        this.cargoForm.get('shipmentServiceType').setValidators(Validators.required);
+        this.cargoForm.get('shipmentServiceType').updateValueAndValidity();
+        this.cargoForm.get('address_recepient_name').setValidators(Validators.required);
+        this.cargoForm.get('address_recepient_name').updateValueAndValidity();
+        this.cargoForm.get('isCOD').setValidators(Validators.required);
+        this.cargoForm.get('kg').setValidators(Validators.required);
+        this.cargoForm.get('desi').setValidators(Validators.required);
       }
+
+
+
+      // if (this.cargoForm.valid) {
+      //   this.toasterService.success("true")
+      // } else {
+      //   this.generalService.whichRowIsInvalid(this.cargoForm);
+      // }
     });
     this.cargoForm.get('packagingType').valueChanges.subscribe((value) => {
       if (value.code === '3') {
@@ -938,7 +1064,7 @@ export class CreateOrderComponent implements OnInit {
       //console.log(this.cargoForm.value);
 
       var recepient_name = formValue.address_recepient_name;
-      if (recepient_name != null && recepient_name != '') {  
+      if (recepient_name != null && recepient_name != '') {
         this.orderDetail.customer = recepient_name;
         this.toasterService.info('Alıcı Adı Değişikliği Algılandı')
       }
@@ -1023,10 +1149,16 @@ export class CreateOrderComponent implements OnInit {
 
 
   async createNewOrder() {
+
     var orderNo = await this.generalService.generateGUID();
-    console.log(location);
-    var Url = location.origin + "/create-order/" + orderNo;
-    location.href = Url
+    if (this.orderType) {
+      var Url = location.origin + "/create-order/quick-order/" + orderNo;
+      location.href = Url
+    } else {
+      var Url = location.origin + "/create-order/retail-order" + orderNo;
+      location.href = Url
+    }
+
 
   }
   generateRandomNumber(): string {
@@ -1172,27 +1304,74 @@ export class CreateOrderComponent implements OnInit {
 
 
 
-    var request: NebimOrder = new NebimOrder(this.selectedCustomers[0].currAccDescription, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.taxTypeCode);
+    if (this.orderType) {
+      var request: NebimOrder = new NebimOrder(this.selectedCustomers[0].currAccDescription, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.taxTypeCode);
 
-    var response = await this.orderService.createOrder(request);
-    if (response) {
+      var response = await this.orderService.createOrder(request);
+      if (response) {
 
-      if (response.status === true) {
-        this.orderNumber = response.orderNumber;
-
-
-        if (this.cargoForm.get('isActive').value === true) {
-          await this.submitCargo(this.cargoForm.value);
+        if (response.status === true) {
+          this.orderNumber = response.orderNumber;
 
 
-        } else {
-          this.toasterService.info('KARGO OLUŞTURULMADI')
+          if (this.cargoForm.get('isActive').value === true) {
+            await this.submitCargo(this.cargoForm.value);
+
+
+          } else {
+            this.toasterService.info('KARGO OLUŞTURULMADI')
+          }
+          this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament")
         }
-        this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament")
+
+
+      }
+    } else {
+      var _request: NebimOrder_2 = new NebimOrder_2(this.selectedCustomers[0].currAccDescription, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.taxTypeCode);
+
+      var response = await this.orderService.createOrder(_request);
+      if (response) {
+
+        if (response.status === true) {
+          this.orderNumber = response.orderNumber;
+
+
+          if (this.cargoForm.get('isActive').value === true) {
+            await this.submitCargo(this.cargoForm.value);
+
+
+          } else {
+            this.toasterService.info('KARGO OLUŞTURULMADI')
+          }
+        }
+
+
       }
 
 
+      var __request: NebimInvoice = new NebimInvoice(this.selectedCustomers[0].currAccDescription, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.taxTypeCode, this.selectedAddresses[0].postalAddressID);
+
+      __request.lines.forEach(l1 => {
+
+        var fp = response.lines.find(p => p.itemCode === l1.itemCode && p.usedBarcode === l1.usedBarcode && p.qty1 === l1.qty1
+
+        )
+        if (fp) {
+          l1.orderLineId = fp.orderLineId
+
+        }
+
+      });
+
+
+
+      var __response = await this.orderService.createInvoice(__request)
+      if (__response) {
+        this.generalService.waitAndNavigate("Sipariş Oluşturuldu & Faturalaştırıdı", "orders-managament")
+
+      }
     }
+
 
 
   }

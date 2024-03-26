@@ -17,6 +17,12 @@ export class GeneralService {
     private datePipe: DatePipe
   ) { }
 
+  focusNextInput(nextInputId: string) {
+    const nextInput = document.getElementById(nextInputId) as HTMLInputElement;
+    if (nextInput) {
+      nextInput.focus();
+    }
+  }
   beep() {
     const audio = new Audio('assets/music/qrSound.mp3');
     audio.play();

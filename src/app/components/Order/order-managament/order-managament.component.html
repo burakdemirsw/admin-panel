@@ -221,7 +221,7 @@
               <tr
                 *ngFor="
                   let order of saleOrderModels
-                    | paginate : { itemsPerPage: 10, currentPage: currentPage }
+                    | paginate : { itemsPerPage: 50, currentPage: currentPage }
                 "
               >
                 <td>{{ order.orderDate | date : "dd.MM.yyyy HH:mm" }}</td>

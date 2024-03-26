@@ -1,0 +1,68 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Tamamlanmamış Siparişler</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+        <li class="breadcrumb-item">Tables</li>
+        <li class="breadcrumb-item active">General</li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Tamamlanmamış Siparişler</h5>
+
+        <div style="overflow-x: auto">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Müşteri</th>
+                <th scope="col">Sipariş No</th>
+                <th scope="col">Oluşturulma Zamanı</th>
+                <th scope="col">İşlemler</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let order of orders
+                    | paginate : { itemsPerPage: 20, currentPage: currentPage }
+                "
+              >
+                <td>{{ order.customerDescription }}</td>
+                <td>{{ order.orderNo }}</td>
+                <td>{{ order.createdDate | date : "dd.MM.yyyy HH:mm" }}</td>
+
+                <td>
+                  <div class="btn-group">
+                    <div
+                      class="btn btn-success"
+                      data-text="Kargo"
+                      routerLink="/create-order/{{ order.id }}"
+                    >
+                      <i class="fa fa-bars" aria-hidden="true"></i>
+                    </div>
+
+                    <div
+                      class="btn btn-success"
+                      data-text="Kargo"
+                      (click)="deleteClientOrder(order.id)"
+                    >
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <pagination-controls
+            (pageChange)="currentPage = $event"
+          ></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

@@ -272,6 +272,13 @@ export class ProductService {
 
     return response;
   }
+  async searchProduct3(barcode: string, batchCode: string): Promise<any> {
+    const response = await this.httpClientService
+      .get<BarcodeSearch_RM>({ controller: 'Products/SearchProduct3/' + barcode }, batchCode)
+      .toPromise();
+
+    return response;
+  }
 
   async getQr(id: string): Promise<any> {
     const response = await this.httpClientService
@@ -401,3 +408,4 @@ export class ProductService {
 export class BarcodeSearch_RM {
   barcode!: string;
 }
+

@@ -23,9 +23,28 @@
   width: 100%;
 }
 
+/* CSS dosyanızda bu medya sorgusunu kullanarak sadece mobil cihazlarda uygulanacak stil kurallarını belirleyebilirsiniz */
+@media (max-width: 600px) {
 
+  ::ng-deep .p-datatable .p-datatable-tbody td,
+  ::ng-deep .p-datatable .p-datatable-thead th {
+    font-size: 13px;
+  }
 
+  td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
+    overflow-x: auto;
+
+  }
+
+  /* .mobilebutton {
+    height: 40px;
+    width: 40px;
+  } */
+}
 
 .file-upload-wrapper {
   display: flex;
@@ -79,4 +98,29 @@
 
 .file-upload-button:hover {
   background-color: #004494;
+}
+
+
+.table-wrapper {
+  margin-bottom: 2rem;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 0.25rem;
+}
+
+.selected-products-table {
+  background-color: #f8f9fa;
+  /* Hafif gri arkaplan rengi */
+}
+
+.table-header {
+  background-color: #007bff;
+  /* Bootstrap mavi rengi */
+  color: #ffffff;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.table-header h5 {
+  margin: 0;
 }

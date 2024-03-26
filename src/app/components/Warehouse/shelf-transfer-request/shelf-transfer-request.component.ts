@@ -183,6 +183,43 @@ export class ShelfTransferRequestComponent implements OnInit {
 
     }
     this.transferProducts = response;
+
+
+    // İşlem sonrası çıkarılacak öğelerin indekslerini tutacak dizi
+    let itemsToRemoveIndexes: number[] = [];
+
+    console.log(this.collectedProducts);
+    console.log(this.transferProducts);
+    // inventoryItems üzerinde döngü
+    this.transferProducts.forEach((inventoryItem, index) => { //transfer edilcek ürünler
+      // Eşleşme arama ve güncelleme
+      this.collectedProducts.forEach((transferItem) => { //toplanan ürünler
+        // barcode, shelfNo ve itemCode değerlerine göre eşleşme kontrolü
+        if (inventoryItem.barcode === transferItem.barcode &&
+          inventoryItem.targetShelf === transferItem.targetShelfNo &&
+          inventoryItem.shelfNo === transferItem.shelfNo) {
+
+          // Eşleşen üründen quantity değerini çıkart
+          inventoryItem.transferQuantity -= transferItem.quantity;
+
+          // Eğer transfer edilen miktar sonucunda quantity 0 veya daha az ise
+          if (inventoryItem.transferQuantity <= 0) {
+            // İlgili inventoryItem'ın çıkarılması için indeksini kaydet
+            itemsToRemoveIndexes.push(index);
+          }
+        }
+      });
+    });
+
+    // Çıkarılacak öğeler için ters döngü (çıkarırken sıralamayı bozmamak için)
+    for (let i = itemsToRemoveIndexes.length - 1; i >= 0; i--) {
+      this.collectedProducts.splice(itemsToRemoveIndexes[i], 1);
+    }
+    itemsToRemoveIndexes = [];
+    //--------------------------------------------------------
+
+
+    this.collectedProducts
     if (this.transferProducts.length > 0) {
       if (this.lastCollectedProduct == null) {
         //üste atılcak ürün seçildi
@@ -467,11 +504,12 @@ export class ShelfTransferRequestComponent implements OnInit {
 
               this.collectedProducts.push(transferModel);
               this.collectedProducts.reverse();
-              this.toasterService.success("Okutma Başarılı Sayfa Yenileniyor")
-              setInterval(() => {
+              await this.getTransferRequestListModel("0");
+              this.toasterService.success("Okutma Başarılı")
+              // setInterval(() => {
 
-                location.reload();
-              }, 2000);
+              //   location.reload();
+              // }, 2000);
               //LİSTEYE EKLENDİ
             } else {
               this.toasterService.error('Ekleme Yapılmadı');
@@ -514,12 +552,14 @@ export class ShelfTransferRequestComponent implements OnInit {
 
                 this.collectedProducts.push(transferModel);
                 this.collectedProducts.reverse();
-                this.toasterService.success("Okutma Başarılı Sayfa Yenileniyor")
-                this.generalService.beep();
-                setInterval(() => {
+                await this.getTransferRequestListModel("0");
 
-                  location.reload();
-                }, 2000);
+                this.toasterService.success("Okutma Başarılı  ")
+                this.generalService.beep();
+                // setInterval(() => {
+
+                //   location.reload();();
+                // }, 2000);
 
                 //LİSTEYE EKLENDİ
               } else {

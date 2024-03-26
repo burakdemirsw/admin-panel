@@ -31,14 +31,24 @@
           </a>
         </li>
         <li>
-          <a (click)="routeNewPage3()">
-            <i class="bi bi-circle"></i><span>Sipariş Oluştur</span>
+          <a (click)="routeNewPage3(true)">
+            <i class="bi bi-circle"></i><span>Sipariş Ver</span>
+          </a>
+        </li>
+        <li>
+          <a (click)="routeNewPage3(false)">
+            <i class="bi bi-circle"></i><span>Perakende Satış</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="cargo-list">
+            <i class="bi bi-circle"></i><span>Kargolar</span>
           </a>
         </li>
 
         <li>
-          <a routerLink="cargo-list">
-            <i class="bi bi-circle"></i><span>Kargolar</span>
+          <a routerLink="unfinished-orders">
+            <i class="bi bi-circle"></i><span>Tamamlanmamış Siparişler </span>
           </a>
         </li>
       </ul>
