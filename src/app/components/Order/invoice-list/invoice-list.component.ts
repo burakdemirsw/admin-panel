@@ -117,7 +117,12 @@ export class InvoiceListComponent implements OnInit, OnChanges {
       console.log(error.message);
     }
   }
-
+  async returnInvoice() {
+    var result = window.confirm("Bu transferi iade etmek istediğinizden emin misiniz?")
+    if (result) {
+      this.toasterService.success("İşlem Başarılı")
+    }
+  }
   async deleteInvoiceProducts(orderNumber: string) {
 
     const confirmDelete = window.confirm("Bu transferi silmek istediğinizden emin misiniz?");

@@ -11,7 +11,7 @@ import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurcha
 import { CountProductRequestModel2 } from 'src/app/models/model/order/countProductRequestModel2';
 import { OrderBillingListModel } from 'src/app/models/model/order/orderBillingListModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
-import { CountedProduct } from 'src/app/models/model/product/countedProduct';
+import { CountedProduct, CountedProductControl } from 'src/app/models/model/product/countedProduct';
 import { ItemBillingModel } from 'src/app/models/model/product/itemBillingModel ';
 import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
 import {
@@ -24,6 +24,7 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { OrderService } from '../../../services/admin/order.service';
 declare var window: any;
 
 @Component({
@@ -65,6 +66,13 @@ export class WarehosueShelfCountComponent implements OnInit {
     'Barkod',
     'İşlem',
   ];
+
+  _tableHeaders2: string[] = [
+
+    'Ürün Kodu',
+
+    'Durum',
+  ];
   constructor(
     private formBuilder: FormBuilder,
     private toasterService: ToasterService,
@@ -81,6 +89,7 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.title.setTitle('Sayım');
   }
   visible: boolean = false;
+  _visible: boolean = false;
   barcode: string = null;
   quantity: number = null;
   change(barcode: string, quantity: number) {
@@ -543,6 +552,7 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.qrBarcodeUrl = null;
   }
 
+  countedProductControl: CountedProductControl[] = [];
   async completeCountFromService(orderNo: string): Promise<boolean> {
     try {
       // İşlem öncesi kullanıcıya onay iletilisi göster
@@ -580,20 +590,37 @@ export class WarehosueShelfCountComponent implements OnInit {
 
       if (response === true) {
         //this.spinnerService.hide();
-        this.router.navigate(['/warehouse-shelf-count-list']);
+        await this.getControlledProducts();
+
+        //this.router.navigate(['/warehouse-shelf-count-list']);
         return true;
       } else {
         //this.spinnerService.hide();
-        this.toasterService.error('İşlem Başarısız');
+        await this.getControlledProducts();
+
+        // this.toasterService.error('İşlem Başarısız');
         return false;
       }
     } catch (error: any) {
       //this.spinnerService.hide();
-      this.toasterService.error('İşlem Başarısız');
+      await this.getControlledProducts();
+
+      // this.toasterService.error('İşlem Başarısız');
       return false;
     }
   }
+  controlMessage = ""
+  async getControlledProducts() {
+    this.countedProductControl = await this.warehouseService.getProductOfCountControl(this.currentOrderNo);
+    if (this.collectedProducts.length > 0) {
+      this.controlMessage = "Aşağıdaki Ürünlerin Sayımı BAŞARISIZDIR.Lütfen Ürünlerin Parti /  Barkodunu Kontrol Ediniz."
 
+    } else {
+      this.controlMessage = "Sayım Başarılıdır"
+
+    }
+    this._visible = true;
+  }
   async deleteOrderProduct(orderNo: string, product: any): Promise<boolean> {
     const confirmDelete = window.confirm(
       'Bu hareketi silmek istediğinizden emin misiniz?'

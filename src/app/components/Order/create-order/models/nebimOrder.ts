@@ -1,7 +1,7 @@
 import { ProductList_VM } from "src/app/models/model/product/productList_VM";
 
 export class CheckOrderModel {
-  orderHeaderID: string; // TypeScript'te `Guid` yerine genelde `string` kullanılır
+  orderHeaderID: string;
   internalDescription: string;
   customer: string;
 }
@@ -31,10 +31,11 @@ export class NebimOrder {
   DeliveryCompanyCode: string;
   // ordersViaInternetInfo: OrdersViaInternetInfo;
   lines: Line[];
+  discounts: Discount[] = [];
   // discounts: Discount[];
   // payments: Payment[];
 
-  constructor(customerDesc: string, currAccCode: string, orderNo: string, formValue: any, selectedProducts: any, salesPersonCode: string, taxTypeCode: number) {
+  constructor(discountPercentage: number, customerDesc: string, currAccCode: string, orderNo: string, formValue: any, selectedProducts: any, salesPersonCode: string, taxTypeCode: number) {
     this.modelType = 5;
     this.posTerminalID = 1;
     this.shipmentMethodCode = 2;
@@ -81,7 +82,9 @@ export class NebimOrder {
       line.itemCode = p.itemCode;
       this.lines.push(line);
     });
-    // this.payments.push(payment)
+
+    this.discounts.push(new Discount(discountPercentage));
+
   }
 }
 export class NebimOrder_2 {
@@ -90,6 +93,8 @@ export class NebimOrder_2 {
   internalDescription: string;
   orderDate: string;
   officeCode: string;
+  discounts: Discount[] = [];
+
   warehouseCode: string;
   deliveryCompanyCode: string;
   shipmentMethodCode: number;
@@ -106,7 +111,7 @@ export class NebimOrder_2 {
   // discounts: Discount[];
   // payments: Payment[];
 
-  constructor(customerDesc: string, currAccCode: string, orderNo: string, formValue: any, selectedProducts: any, salesPersonCode: string, taxTypeCode: number) {
+  constructor(discountPercentage: number, customerDesc: string, currAccCode: string, orderNo: string, formValue: any, selectedProducts: any, salesPersonCode: string, taxTypeCode: number) {
     this.modelType = 5;
     this.posTerminalID = 1;
     this.shipmentMethodCode = 2;
@@ -114,27 +119,9 @@ export class NebimOrder_2 {
     this.isSalesViaInternet = false;
     this.isCreditSale = true;
     this.taxTypeCode = taxTypeCode;
+
     this.deliveryCompanyCode = "MNG";
     this.lines = [];
-    // this.discounts = [];
-    // this.payments = [];
-    //ÖDEME KAPATILDI                        // this.ordersViaInternetInfo = new OrdersViaInternetInfo();
-    //ÖDEME KAPATILDI                           // this.ordersViaInternetInfo.paymentDate = new Date().toUTCString();
-    //ÖDEME KAPATILDI                           // this.ordersViaInternetInfo.sendDate = new Date().toUTCString();
-    //ÖDEME KAPATILDI                           // this.ordersViaInternetInfo.salesURL = "www.davye.com";
-    //ÖDEME KAPATILDI                          // this.ordersViaInternetInfo.paymentAgent = "";
-    //ÖDEME KAPATILDI                          // this.ordersViaInternetInfo.paymentTypeCode = 2;
-    //ÖDEME KAPATILDI                          // this.ordersViaInternetInfo.paymentTypeDescription = "Kredi Kartı"
-    // if (payment.paymentType === "1") {
-    //   this.ordersViaInternetInfo.paymentTypeDescription = "PAYTR"
-    //   this.ordersViaInternetInfo.paymentTypeCode = 2
-    // } else if (payment.paymentType === "2") {
-    //   this.ordersViaInternetInfo.paymentTypeDescription = "NAKİT"
-    //   this.ordersViaInternetInfo.paymentTypeCode = 1
-    // } else if (payment.paymentType === "4") {
-    //   this.ordersViaInternetInfo.paymentTypeDescription = "HAVALE"
-    //   this.ordersViaInternetInfo.paymentTypeCode = 4
-    // }
 
     this.customerCode = currAccCode;
     this.internalDescription = orderNo;
@@ -144,6 +131,7 @@ export class NebimOrder_2 {
 
     this.documentNumber = orderNo;
     this.description = customerDesc;
+    this.discounts.push(new Discount(discountPercentage));
     selectedProducts.forEach(p => {
       var line: Line_2 = new Line_2();
       line.usedBarcode = p.barcode;
@@ -166,6 +154,7 @@ export class NebimInvoice {
   internalDescription: string;
   invoiceDate: string;
   officeCode: string;
+  docCurrencyCode: string;
   warehouseCode: string;
   isOrderBase: boolean;
   isCreditSale: boolean;
@@ -182,16 +171,17 @@ export class NebimInvoice {
   invoiceNumber: string;
   // ordersViaInternetInfo: OrdersViaInternetInfo;
   lines: Line_3[];
-  // discounts: Discount[];
+  discounts: Discount[] = [];
   // payments: Payment[];
 
-  constructor(customerDesc: string, currAccCode: string, orderNo: string, formValue: any, selectedProducts: any, salesPersonCode: string, taxTypeCode: number, addressId: string) {
+  constructor(discountPercentage: number, exchangeRate: number, docCurrencyCode: string, customerDesc: string, currAccCode: string, orderNo: string, formValue: any, selectedProducts: any, salesPersonCode: string, taxTypeCode: number, addressId: string) {
     this.modelType = 7;
     this.invoiceNumber = "";
     this.eMailAddress = "";
     this.companyCode = 1;
     this.shippingPostalAddressID = addressId;
     this.billingPostalAddressID = addressId;
+    this.docCurrencyCode = docCurrencyCode;
     this.posTerminalID = 1;
     this.shipmentMethodCode = 2;
     this.isCompleted = true;
@@ -205,14 +195,20 @@ export class NebimInvoice {
     this.invoiceDate = new Date().toUTCString();
     this.officeCode = "M";
     this.warehouseCode = "MD";
+    this.discounts.push(new Discount(discountPercentage));
 
     // this.documentNumber = orderNo;
     this.description = customerDesc;
     selectedProducts.forEach(p => {
       var line: Line_3 = new Line_3();
+      if (exchangeRate != 1) {
+        line.price = p.price / exchangeRate;
+      } else {
+        line.price = p.price;
+      }
       line.usedBarcode = p.barcode;
       line.salesPersonCode = salesPersonCode;
-      line.priceVI = p.price;
+      line.priceVI = null;
       line.qty1 = p.quantity;
       line.itemCode = p.itemCode;
       line.batchCode = p.batchCode;
@@ -230,12 +226,25 @@ export class Discount {
   value: number;
   discountReasonCode: string;
   isPercentage: boolean;
+  constructor(
+
+    value: number,
+
+
+  ) {
+    this.discountTypeCode = 1;
+    this.value = value;
+    this.isPercentage = true;
+    this.discountReasonCode = "1";
+  }
+
 }
 
 export class Line {
   itemCode: string;
   qty1: number;
   priceVI: number;
+  price: number;
   salesPersonCode: string;
   usedBarcode: string;
 }
@@ -247,6 +256,7 @@ export class Line_2 extends Line {
 }
 export class Line_3 extends Line_2 {
 
+  currencyCode: string;
   orderLineId: string
 }
 export class ITAttribute {
@@ -301,6 +311,8 @@ export class ClientOrder {
 
   }
 }
+
+
 export class ClientOrderBasketItem {
   orderId: string;
   lineId!: string
@@ -318,6 +330,8 @@ export class ClientOrderBasketItem {
   mD_Stock !: string;
   createdDate: Date;
   updatedDate: Date;
+  discountedPrice: number;
+  basePrice: number;
   constructor() {
     this.createdDate = new Date();
   }

@@ -27,7 +27,7 @@
                   pRipple
                   (click)="changeCurrentAddress(address)"
                   icon="fa fa-plus"
-                  class="p-button-success"
+                  class="p-button-rounded p-button-text"
                 ></button>
               </td>
             </tr>
@@ -163,6 +163,21 @@
                     : ""
                 }}
               </p>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md">
+              <label for="office"> Kargo Şirketi</label>
+              <br />
+              <p-dropdown
+                [filter]="true"
+                filterBy="name"
+                formControlName="cargoFirm"
+                [options]="cargoFirms"
+                optionLabel="name"
+                placeholder=" Kargo Şirketi Seçiniz"
+              ></p-dropdown>
             </div>
           </div>
           <div class="row mb-3">

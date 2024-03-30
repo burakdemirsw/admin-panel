@@ -6,10 +6,13 @@ export class ProductList_VM {
   barcode !: string
   itemCode !: string
   batchCode !: string
-  price: number
   quantity: number
   warehouseCode !: string
   brandDescription !: string
   uD_Stock!: string;
   mD_Stock !: string;
+  price: number
+  basePrice: number;
+  discountedPrice: number;
+
 }

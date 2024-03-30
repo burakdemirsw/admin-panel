@@ -135,7 +135,7 @@
             aria-expanded="false"
             aria-controls="filterCollapse"
           >
-            Satış Faturası Oluştur
+            İade Satış Faturası Oluştur
           </button>
         </div>
         <div style="overflow-x: auto">
@@ -188,6 +188,13 @@
                       (click)="deleteInvoiceProducts(count.orderNo)"
                     >
                       <i class="fas fa-trash"></i>
+                    </button>
+                    <button
+                      class="btn btn-success"
+                      data-text="İade Faturası Kes"
+                      (click)="deleteInvoiceProducts(count.orderNo)"
+                    >
+                      <i class="fas fa-refresh"></i>
                     </button>
                   </div>
                 </td>

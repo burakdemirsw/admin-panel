@@ -74,6 +74,7 @@ import { CreateCargoComponent } from './components/cargo/create-cargo/create-car
 import { CargoListComponent } from './components/cargo/cargo-list/cargo-list.component';
 import { AddCustomerComponent } from './components/Customer/add-customer/add-customer.component';
 import { UnfinishedOrderComponent } from './components/Order/unfinished-order/unfinished-order.component';
+import { CreateArasCargoBarcodeComponent } from './components/cargo/create-aras-cargo-barcode/create-aras-cargo-barcode.component';
 
 const routes: Routes = [
 
@@ -195,7 +196,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
 
-
+  {
+    path: 'create-aras-cargo-barcode',
+    component: CreateArasCargoBarcodeComponent,
+    canActivate: [AuthGuard],
+  },
   {
     path: 'orders-managament/missing-list',
     component: OrderManagamentComponent,

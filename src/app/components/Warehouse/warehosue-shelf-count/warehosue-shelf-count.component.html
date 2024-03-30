@@ -122,7 +122,7 @@
                         qrBarcodeUrl
                       }}</label>
                       <input
-                        type="text"
+                        type="search"
                         id="countPageBarcode"
                         class="form-control"
                         formControlName="barcode"
@@ -409,6 +409,52 @@
       [style]="{ width: '100vw' }"
     >
       <app-create-qr [barcode]="barcode" [quantity]="quantity"></app-create-qr>
+    </p-dialog>
+
+    <p-dialog
+      header="Kontrol"
+      [(visible)]="_visible"
+      [modal]="true"
+      [style]="{ width: '90vw' }"
+      [draggable]="false"
+      [resizable]="false"
+    >
+      <div class="mb-3">
+        <strong>{{ controlMessage }}</strong>
+      </div>
+      <div class="card" *ngIf="countedProductControl.length > 0">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col" *ngFor="let header of _tableHeaders2">
+                    {{ header }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="
+                    let product of countedProductControl
+                      | paginate
+                        : { itemsPerPage: 10, currentPage: currentPage };
+                    let i = index
+                  "
+                >
+                  <td>{{ product.itemCode }}</td>
+                  <td>
+                    {{ product.state === true ? "BAŞARILI" : "BAŞARISIZ" }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <pagination-controls
+              (pageChange)="currentPage = $event"
+            ></pagination-controls>
+          </div>
+        </div>
+      </div>
     </p-dialog>
   </section>
 </main>

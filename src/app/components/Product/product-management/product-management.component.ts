@@ -31,15 +31,35 @@ export class ProductManagementComponent implements OnInit {
   ) { }
   productForm: FormGroup;
   ngOnInit(): void {
-    //this.spinnerService.show();
 
     this.formGenerator();
 
-    //this.spinnerService.hide();
   }
   qrCodeValue: string;
 
   invoiceProducts2: CreatePurchaseInvoice[] = [];
+
+  availableCameras: MediaDeviceInfo[] = [];
+  selectedDevice: MediaDeviceInfo | undefined;
+  enableScanner: boolean = false;
+
+  camerasFoundHandler(cameras: MediaDeviceInfo[]) {
+    this.availableCameras = cameras;
+    if (cameras.length > 0) {
+      this.selectedDevice = cameras[0]; // Varsayılan olarak ilk kamerayı seç
+    }
+  }
+
+  onCameraSelected(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const deviceId = selectElement.value;
+    this.selectedDevice = this.availableCameras.find(c => c.deviceId === deviceId);
+  }
+  scanSuccessHandler(event: any) {
+    console.log('QR Code Data: ', event);
+  }
+
+
   createJson(barcode: string, shelfNo: string) {
 
     var model: ProductList_VM = this.products.find(
@@ -96,7 +116,7 @@ export class ProductManagementComponent implements OnInit {
       }
       var model: BarcodeSearch_RM = new BarcodeSearch_RM();
       model.barcode = barcode;
-      const response = await this.productService.searchProduct(model);
+      const response = await this.productService._searchProduct(model);
       this.products = response;
       return response;
     } catch (error: any) {

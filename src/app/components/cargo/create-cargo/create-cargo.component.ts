@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { CustomerAddress_VM, CustomerList_VM, GetCustomerAddress_CM } from 'src/app/models/model/order/getCustomerList_CM';
 import { GeneralService } from 'src/app/services/admin/general.service';
@@ -25,7 +25,7 @@ export class CreateCargoComponent implements OnInit {
   activeIndex: number = 0;
 
   selectedAddresses: CustomerAddress_VM[] = []
-  constructor(private cargoService: CargoService, private addressService: AddressService, private httpClient: HttpClientService, private toasterService: ToasterService, private orderService: OrderService,
+  constructor(private router: Router, private cargoService: CargoService, private addressService: AddressService, private httpClient: HttpClientService, private toasterService: ToasterService, private orderService: OrderService,
     private activatedRoute: ActivatedRoute, private generalService: GeneralService, private formBuilder: FormBuilder,
     private spinnerService: NgxSpinnerService) { }
 
@@ -67,6 +67,7 @@ export class CreateCargoComponent implements OnInit {
   cargoForm: FormGroup
   packagingTypes: any[] = [{ name: 'DOSYA', code: '1' }, { name: 'PAKET', code: '3' }, { name: 'KOLİ', code: '4' }]
   shipmentServiceTypes: any[] = [{ name: 'GÖNDERİCİ ÖDEMELİ', code: '1' }, { name: 'ALICI ÖDEMELİ', code: '2' }]
+  cargoFirms: any[] = [{ name: 'Mng', code: 1 }, { name: 'Aras', code: 2 }]
 
 
   generateRandomNumber(): number {
@@ -89,7 +90,7 @@ export class CreateCargoComponent implements OnInit {
       kg: [1, Validators.required],
       desi: [1, Validators.required],
       address_recepient_name: [null, Validators.required],
-
+      cargoFirm: [null]
     })
 
     this.cargoForm.get('packagingType').valueChanges.subscribe((value) => {
@@ -147,10 +148,19 @@ export class CreateCargoComponent implements OnInit {
   }
   cargoResponse: CreatePackage_MNG_RR;
   async submitCargo(formValue: any) {
+
+    var cargoFirmId: number = this.cargoForm.get('cargoFirm').value.code;
+
+
     var recepient_name = formValue.address_recepient_name;
     if (recepient_name != null && recepient_name != '') {
       this.orderDetail.customer = recepient_name;
       this.toasterService.info('Alıcı Adı Değişikliği Algılandı')
+    }
+    if (this.selectedAddresses.length > 0) {
+      this.orderDetail.address = this.selectedAddresses[0].address;
+      this.orderDetail.city = this.selectedAddresses[0].cityDescription;
+      this.orderDetail.district = this.selectedAddresses[0].districtDescription;
     }
 
     //console.log(this.cargoForm.value);
@@ -184,13 +194,24 @@ export class CreateCargoComponent implements OnInit {
     request.orderRequest = orderRequest;
     request.barcodeRequest = barcodeRequest;
 
-    var response = await this.cargoService.createCargo(request);
+
+
+    if (cargoFirmId === 2) {
+      request.cargoFirmId = 2;
+    } else {
+      request.barcodeBase64 = null;
+      request.cargoFirmId = 1;
+    }
+
+
+    var response = await this.cargoService.createCargo(request, request.cargoFirmId);
     if (response) {
       this.spinnerService.show();
       setTimeout(() => {
         this.toasterService.success("Barkod Bastırabilirsiniz");
         this.spinnerService.hide()
         this.cargoResponse = response;
+        this.router.navigate(['/cargo-list']);
       }, 15000);
 
     }
@@ -250,6 +271,7 @@ export class CreateCargoComponent implements OnInit {
     this.orderDetail.district = address.districtDescription
     this.generalService.beep()
     this.toasterService.success("Adres Değiştirildi")
+    this.activeIndex = 1;
 
   }
 

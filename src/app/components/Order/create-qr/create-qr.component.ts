@@ -280,6 +280,9 @@ export class CreateQrComponent implements OnInit, OnChanges {
 
         if (result && result[3] != '' && result[3] != undefined) {
           this.checkForm.get('barcode').setValue(result[3]);
+          this.checkForm.get('quantity').setValue(result[1]);
+          this.checkForm.get('batchCode').setValue(result[2].toString());
+
           this.onSubmit(this.checkForm.value);
           return;
         }
@@ -337,8 +340,7 @@ export class CreateQrComponent implements OnInit, OnChanges {
     try {
       this.checkForm.patchValue({
         itemCode: model.itemCode,
-        // shelfNo: model.shelfNo,
-        batchCode: model.batchCode,
+        //batchCode: model.batchCode,
         itemDesc: model.description,
         brand: model.brandDescription,
       });
@@ -374,7 +376,10 @@ export class CreateQrComponent implements OnInit, OnChanges {
     var shelfNo = this.checkForm.get('shelfNo').value;
     this.focusNextInput('barcode');
     this.checkForm.reset();
+    //new Date()
     this.checkForm.get('shelfNo').setValue(shelfNo);
+    this.checkForm.get('dateArea').setValue(new Date());
+    this.checkForm.get('printCount').setValue(1);
   }
   focusNextInput(nextInputId: string) {
     const nextInput = document.getElementById(nextInputId) as HTMLInputElement;

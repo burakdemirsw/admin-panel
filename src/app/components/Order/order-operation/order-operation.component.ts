@@ -58,7 +58,7 @@ export class OrderOperationComponent implements OnInit {
   currentOrderNo: string;
   toWarehouseCode: string;
   private codeReader: BrowserMultiFormatReader;
-  _visible: true;
+  _visible: boolean;
   _visible2: boolean;
   showDialog() {
     this._visible = true;

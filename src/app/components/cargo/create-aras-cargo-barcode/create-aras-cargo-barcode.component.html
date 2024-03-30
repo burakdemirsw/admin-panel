@@ -1,0 +1,80 @@
+<main id="main" class="main">
+  <section class="section">
+    <div>
+      <div class="shipment-label" #captureElement>
+        <div class="text-section">
+          <div>
+            <h5>Gönderici</h5>
+            <h5 style="font-size: 13px">
+              MELİH GÜNAL DENTAL MEDİKAL TİCARET LTD.ŞTİ.
+            </h5>
+          </div>
+          <span>
+            <h5>{{ date | date : "dd.MM.YYYY" }}</h5></span
+          >
+        </div>
+
+        <div class="section">
+          <div class="text-section"><h5>Alıcı</h5></div>
+          <div class="text-section">
+            <label
+              >İsim :
+
+              <label style="font-size: 13px"> {{ receiverName }}</label> </label
+            ><span></span>
+          </div>
+          <div class="text-section">
+            <label
+              >Telefon :
+              <label style="font-size: 13px">
+                {{ this.customer.phone }}</label
+              > </label
+            ><span></span>
+          </div>
+          <div class="text-section">
+            <label
+              >Adres :
+              <label style="font-size: 13px">
+                {{ this.address.address }}</label
+              ></label
+            ><span></span>
+          </div>
+        </div>
+        <!--
+      <div class="section barcode_footer" style="text-align: center">
+        <h1 style="font-size: 30px; font-weight: bold">Standart Kargo</h1>
+      </div> -->
+
+        <!-- Diğer HTML içeriğiniz -->
+
+        <div class="barcode">
+          <div>
+            <h1 style="font-size: 14px; font-weight: bold">
+              Entegrasyon No : {{ referenceId }}
+            </h1>
+            <canvas id="integrationBarcode"></canvas>
+          </div>
+          <div>
+            <h1 style="font-size: 14px; font-weight: bold">
+              Paket Barkod No : {{ referenceId + "01" }}
+            </h1>
+            <canvas id="packageBarcode"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md">
+        <button
+          pButton
+          pRipple
+          style="width: 400px"
+          class="p-button-success"
+          label="Kaydet Ve İlerle"
+          (click)="saveImg()"
+        ></button>
+      </div>
+    </div>
+  </section>
+</main>

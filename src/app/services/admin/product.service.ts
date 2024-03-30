@@ -264,6 +264,15 @@ export class ProductService {
     return response;
   }
 
+  async _searchProduct(model: BarcodeSearch_RM): Promise<any> {
+    const response = await this.httpClientService
+      .post<BarcodeSearch_RM>({ controller: 'Products/SearchProduct' }, model)
+      .toPromise();
+
+    return response;
+  }
+
+
   //faturanın ürünlerini getirme
   async searchProduct(model: BarcodeSearch_RM): Promise<any> {
     const response = await this.httpClientService
@@ -272,9 +281,12 @@ export class ProductService {
 
     return response;
   }
-  async searchProduct3(barcode: string, batchCode: string): Promise<any> {
+  async searchProduct3(barcode: string, batchCode: string, shelfNo: string): Promise<any> {
+    if (batchCode === '0') {
+      batchCode = null;
+    }
     const response = await this.httpClientService
-      .get<BarcodeSearch_RM>({ controller: 'Products/SearchProduct3/' + barcode }, batchCode)
+      .get<BarcodeSearch_RM>({ controller: 'Products/SearchProduct3/' + barcode + "/" + batchCode }, shelfNo)
       .toPromise();
 
     return response;

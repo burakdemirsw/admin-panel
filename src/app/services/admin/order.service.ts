@@ -23,11 +23,12 @@ import { int } from '@zxing/library/esm/customTypings';
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
 import { GetCustomerAddress_CM, GetCustomerList_CM } from 'src/app/models/model/order/getCustomerList_CM';
 import { CreateCustomer_CM, AddCustomerAddress_CM } from '../../components/Order/create-order/models/createCustomer_CM';
-import { ClientOrder, ClientOrderBasketItem, ClientOrder_DTO, NebimInvoice, NebimOrder } from 'src/app/components/Order/create-order/models/nebimOrder';
+import { ClientOrder, ClientOrderBasketItem, ClientOrder_DTO, NebimInvoice, NebimOrder, NebimOrder_2 } from 'src/app/components/Order/create-order/models/nebimOrder';
 import { query } from '@angular/animations';
 import { ToasterService } from '../ui/toaster.service';
 import { ClientCustomer } from '../../components/Customer/customer-list/customer-list.component';
 import { Raport_CR } from 'src/app/models/model/raport/raport_CR';
+import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
 
 @Injectable({
   providedIn: 'root',
@@ -418,7 +419,7 @@ export class OrderService {
   }
 
 
-  async createOrder2(order: NebimOrder): Promise<any> {
+  async createOrder2(order: NebimOrder_2): Promise<any> {
     try {
       var response = await this.httpClientService.post<NebimOrder>({ controller: "order/create-order-2" }, order).toPromise();
 
@@ -709,6 +710,21 @@ export class OrderService {
 
   }
 
+  async getExchangeRates(): Promise<any> {
+    try {
+      const response = await this.httpClientService
+        .get<ExchangeRate>({
+          controller: 'order/get-exchange-rates',
+        })
+        .toPromise();
+      return response[0];
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+
+
+  }
 
 
   //ExecuteSqlRawAsync

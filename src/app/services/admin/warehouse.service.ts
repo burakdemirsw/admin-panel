@@ -13,7 +13,7 @@ import { GeneralService } from './general.service';
 import { CountListModel } from 'src/app/models/model/product/countListModel';
 import { CollectProduct } from 'src/app/models/model/product/collectProduct';
 import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
-import { CountedProduct } from 'src/app/models/model/product/countedProduct';
+import { CountedProduct, CountedProductControl } from 'src/app/models/model/product/countedProduct';
 import { FastTransferModel } from 'src/app/models/model/warehouse/fastTransferModel';
 import { CountListFilterModel } from 'src/app/models/model/filter/countListFilterModel';
 import { InvocieFilterModel } from 'src/app/models/model/filter/invoiceFilterModel';
@@ -206,6 +206,13 @@ export class WarehouseService {
   async getProductOfCount(orderNo: string): Promise<CountedProduct[]> {
     const data = await this.httpClientService
       .get<CountedProduct>({ controller: 'Order/GetProductOfCount/' + orderNo })
+      .toPromise();
+    return data;
+  }
+  //sayım ürünklerini kontrol eder
+  async getProductOfCountControl(orderNo: string): Promise<CountedProductControl[]> {
+    const data = await this.httpClientService
+      .get<CountedProductControl>({ controller: 'Order/get-product-of-count-control/' + orderNo })
       .toPromise();
     return data;
   }

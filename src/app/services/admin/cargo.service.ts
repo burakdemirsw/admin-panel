@@ -18,14 +18,25 @@ export class CargoService {
     private httpClient: HttpClient
   ) { }
 
-  async createCargo(request: CreatePackage_MNG_RM): Promise<any> {
-    try {
-      var response = await this.httpClientService.post<any>({ controller: "cargos/create-cargo" }, request).toPromise();
-      return response;
-    } catch (error: any) {
-      console.log(error.message);
-      return null;
+  async createCargo(request: CreatePackage_MNG_RM, firmId: number): Promise<any> {
+    if (firmId === 1) {
+      try {
+        var response = await this.httpClientService.post<any>({ controller: "cargos/create-cargo" }, request).toPromise();
+        return response;
+      } catch (error: any) {
+        console.log(error.message);
+        return null;
+      }
+    } else {
+      try {
+        var response = await this.httpClientService.post<any>({ controller: "cargos/create-aras-cargo" }, request).toPromise();
+        return response;
+      } catch (error: any) {
+        console.log(error.message);
+        return null;
+      }
     }
+
   }
 
   async createBarcode(request: string): Promise<any> {
@@ -74,13 +85,42 @@ export class CargoService {
       return null;
     }
   }
-  async deleteCargo(cargo: CargoBarcode_VM): Promise<any> {
-    var request = {
-      ReferenceId: cargo.referenceId,
-      ShipmentId: cargo.shipmentId,
+  async deleteCargo(cargo: CargoBarcode_VM, cargoFirmId: number): Promise<any> {
+
+    if (cargoFirmId === 1) {
+      var request = {
+        ReferenceId: cargo.referenceId,
+        ShipmentId: cargo.shipmentId,
+      }
+      try {
+        var response = await this.httpClientService.post<any>({ controller: "cargos/delete-shipped-cargo" }, request).toPromise();
+
+        return response;
+      } catch (error: any) {
+        console.log(error.message);
+        return null;
+      }
+    } else {
+      var request = {
+        ReferenceId: cargo.referenceId,
+        ShipmentId: cargo.shipmentId,
+      }
+      try {
+        var __response = await this.httpClientService.get<any>({ controller: "cargos/delete-aras-order" }, cargo.referenceId).toPromise();
+
+        return __response;
+      } catch (error: any) {
+        console.log(error.message);
+        return null;
+      }
     }
+
+  }
+  async printBarcodeFromBase64(request: string): Promise<any> {
     try {
-      var response = await this.httpClientService.post<any>({ controller: "cargos/delete-shipped-cargo" }, request).toPromise();
+
+      var _request = { ZplBarcode: request }
+      var response = await this.httpClientService.post<any>({ controller: "cargos/print-single-barcode" }, _request).toPromise();
 
       return response;
     } catch (error: any) {
@@ -89,4 +129,5 @@ export class CargoService {
     }
   }
 
+  //PrintBarcodeFromBase64
 }

@@ -8,3 +8,7 @@ export class CountedProduct {
   itemCode !: string
 
 }
+export class CountedProductControl {
+  itemCode: string;
+  state: boolean
+}

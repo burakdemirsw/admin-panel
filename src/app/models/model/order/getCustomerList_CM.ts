@@ -14,6 +14,7 @@ export class CustomerList_VM {
   currAccDescription?: string;
   mail?: string;
   phone?: string;
+  docCurrencyCode?: string;
 }
 
 export class CustomerAddress_VM {

@@ -254,10 +254,10 @@ export class CreateSaleOrderComponent implements OnInit {
         currAccCode2: [null],
         salesPersonCode: [null, Validators.required],
         shelfNo: [null, [Validators.required, Validators.maxLength(10)]],
-        barcode: [null, [Validators.required, Validators.min(5)]],
+        barcode: [null, [Validators.required, Validators.minLength(5)]],
         quantity: [null],
-        isReturn: [false, [Validators.required]],
-        currency: [null, [Validators.required]],
+        isReturn: { value: true, disabled: true },
+        currency: [null, Validators.required],
         batchCode: [null],
       });
     } catch (error: any) {

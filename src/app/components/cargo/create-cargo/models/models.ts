@@ -27,6 +27,8 @@ export class BasketProductSummary {
 export class CreatePackage_MNG_RM {
   orderRequest: CreatePackage_MNG_Request
   barcodeRequest: CreateBarcode_MNG_Request
+  barcodeBase64: string
+  cargoFirmId : number
 }
 
 export class CreatePackage_MNG_Request {
@@ -212,6 +214,7 @@ export class GetPackageStatus_MNG_Response {
 }
 
 export class CargoBarcode_VM {
+  cargoFirmId :number
   orderNo?: string;
   referenceId?: string;
   barcodeZplCode?: string

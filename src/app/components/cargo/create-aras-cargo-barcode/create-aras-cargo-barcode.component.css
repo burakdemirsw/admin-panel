@@ -1,0 +1,91 @@
+.shipment-label {
+  width: 400px;
+  /* Set a fixed width */
+  height: 400px;
+  /* Set a fixed height */
+  border: 1px solid #000;
+  font-family: 'Arial', sans-serif;
+  font-size: 14px;
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: white;
+}
+
+.header,
+.barcode_footer {
+  font-weight: bold;
+}
+
+.section {
+  margin-bottom: 8px;
+}
+
+.barcode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  /* Occupy full width */
+  height: 100%;
+  /* Occupy full height */
+}
+
+.barcode>div {
+  margin-top: 1px;
+}
+
+.barcode img {
+  width: 200px !important;
+  height: 50px;
+  margin-right: 4px;
+}
+
+.text-section {
+  display: flex;
+  justify-content: space-between;
+}
+
+.text-section div {
+  margin-right: 8px;
+}
+
+.text-section label {
+  font-weight: bold;
+}
+
+.text-section span {
+  padding-left: 4px;
+}
+
+/* BEGIN: Additional Styles */
+
+.shipment-label {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+/* END: Additional Styles */
+/* BEGIN: Responsive Styles */
+
+@media (max-width: 600px) {
+  .shipment-label {
+    width: 100%;
+    /* Occupy full width */
+    height: auto;
+    /* Allow height to adjust automatically */
+  }
+
+  .barcode img {
+    width: 100%;
+    /* Occupy full width */
+    height: auto;
+    /* Allow height to adjust automatically */
+  }
+}
+
+/* END: Responsive Styles */

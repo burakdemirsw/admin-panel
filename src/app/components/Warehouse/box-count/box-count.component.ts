@@ -98,11 +98,11 @@ export class BoxCountComponent implements OnInit {
   formGenerator() {
     this.checkForm = this.formBuilder.group({
       barcode: [null, Validators.required],
-      shelfNo: [null, Validators.required],
+      shelfNo: [' ', Validators.required],
       quantity: [null],
-      office: [null, Validators.required],
+      // office: [null, Validators.required],
       batchCode: [null],
-      warehouseCode: [null, Validators.required],
+      // warehouseCode: [null, Validators.required],
       isShelfBased: [null],
     });
   }
@@ -174,9 +174,12 @@ export class BoxCountComponent implements OnInit {
   state: boolean = true;
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
-  async onSubmit(
-    countProductRequestModel: CountProductRequestModel2
-  ): Promise<any> {
+
+  async check() {
+    await this.onSubmit(this.checkForm.value);
+
+  }
+  async control(countProductRequestModel: CountProductRequestModel2) {
     if (countProductRequestModel.barcode === 'http://www.dayve.com') {
       return;
     }
@@ -196,10 +199,16 @@ export class BoxCountComponent implements OnInit {
       this.checkForm.get('quantity')?.setValue(Number(number));
       this.qrBarcodeUrl = countProductRequestModel.barcode;
       if (countProductRequestModel.shelfNo != null) {
-        this.onSubmit(this.checkForm.value);
+        // this.onSubmit(this.checkForm.value);
       }
       return;
     }
+  }
+
+  async onSubmit(
+    countProductRequestModel: CountProductRequestModel2
+  ): Promise<any> {
+
 
     if (!this.checkForm.valid) {
       if (countProductRequestModel.barcode) {
@@ -230,191 +239,60 @@ export class BoxCountComponent implements OnInit {
           this.state = false;
 
           // EĞER GİRİLEN RAF  RAFLARDA VARSA DİREKT SAYAR
-          if (
-            shelves.includes(countProductRequestModel.shelfNo.toLowerCase())
-          ) {
-            var response: ProductCountModel =
-              await this.warehouseService.countProductRequest(
-                countProductRequestModel.barcode,
-                countProductRequestModel.shelfNo,
-                countProductRequestModel.quantity == null
-                  ? Number(newResponse[1])
-                  : countProductRequestModel.quantity,
-                countProductRequestModel.office,
-                countProductRequestModel.warehouseCode,
-                countProductRequestModel.batchCode,
-                'Order/CountProduct3',
-                this.currentOrderNo,
-                ''
-              );
 
-            // SAYIM YAPILDI -------------------------------------------
+          var response: ProductCountModel =
+            await this.warehouseService.countProductRequest(
+              countProductRequestModel.barcode,
+              countProductRequestModel.shelfNo,
+              countProductRequestModel.quantity == null
+                ? Number(newResponse[1])
+                : countProductRequestModel.quantity,
+              countProductRequestModel.office,
+              countProductRequestModel.warehouseCode,
+              countProductRequestModel.batchCode,
+              'Order/CountProduct3',
+              this.currentOrderNo,
+              ''
+            );
 
-            //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-            var qrResponse: QrOperationResponseModel =
-              await this.productService.qrOperationMethod(
-                this.qrBarcodeUrl,
-                this.checkForm,
-                countProductRequestModel,
-                Number(newResponse[1]),
-                false,
-                'CO'
-              );
-            if (qrResponse != null && qrResponse.state === true) {
-              this.qrOperationModels.push(qrResponse.qrOperationModel);
-            } else if (qrResponse === null) {
-              this.clearQrAndBatchCode();
-            }
+          // SAYIM YAPILDI -------------------------------------------
 
-            //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
-
-            if (response != undefined) {
-              var data: ProductCountModel = response;
-              if (data.status == 'RAF') {
-                countProductRequestModel.shelfNo = response.description;
-              } else {
-                countProductRequestModel.barcode = response.description;
-              }
-
-              const parcalanmisVeri = this.shelfNumbers.split(':');
-              const raflarKismi = parcalanmisVeri[1];
-              const raflar = raflarKismi
-                .split(',')
-                .filter((raflar) => raflar.trim() !== '')
-                .map((raflar) => raflar.toLowerCase());
-
-              // RAF DOĞRULAMASI YAPILDI -------------------------------------------
-              if (raflar.length > 0) {
-                if (
-                  raflar.includes(
-                    countProductRequestModel.shelfNo.toLowerCase()
-                  )
-                ) {
-                  //1. ÇIKIŞ
-                  countProductRequestModel.quantity = Number(newResponse[1]);
-                  this.generalService.beep();
-                  await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
-                  this.calculateTotalQty();
-                  this.clearQrAndBatchCode();
-                  this.state = true;
-                  setInterval(() => {
-                    this.toasterService.success("İşlem Başarılı.Sayfa Yeniden Yükleniyor")
-                    location.reload()
-                  }, 2000);
-                } else {
-                  if (confirm('Raf Bulunamadı! Eklensin mi(1)?')) {
-                    this.generalService.beep();
-
-                    var newResponse =
-                      await this.productService.countProductByBarcode(
-                        countProductRequestModel.barcode
-                      );
-                    countProductRequestModel.quantity = Number(newResponse[1]);
-                    await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
-                    this.calculateTotalQty();
-                    this.clearQrAndBatchCode();
-                    this.state = true;
-                    setInterval(() => {
-                      this.toasterService.success("İşlem Başarılı.Sayfa Yeniden Yükleniyor")
-                      location.reload()
-                    }, 2000);
-                  } else {
-                    this.calculateTotalQty();
-                    this.clearQrAndBatchCode();
-                    this.state = true;
-                    this.toasterService.warn('Ekleme Yapılmadı!');
-                  }
-                }
-              } else {
-                countProductRequestModel.quantity = Number(newResponse[1]);
-                this.generalService.beep();
-
-                await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
-                this.calculateTotalQty();
-                this.clearQrAndBatchCode();
-                this.state = true;
-                setInterval(() => {
-                  this.toasterService.success("İşlem Başarılı.Sayfa Yeniden Yükleniyor")
-                  location.reload()
-                }, 2000);
-              }
-            }
+          //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+          var qrResponse: QrOperationResponseModel =
+            await this.productService.qrOperationMethod(
+              this.qrBarcodeUrl,
+              this.checkForm,
+              countProductRequestModel,
+              Number(newResponse[1]),
+              false,
+              'CO'
+            );
+          if (qrResponse != null && qrResponse.state === true) {
+            this.qrOperationModels.push(qrResponse.qrOperationModel);
+          } else if (qrResponse === null) {
+            this.clearQrAndBatchCode();
           }
-          // EĞER GİRİLEN RAF  RAFLARDA YOKSA SORAR
-          else {
-            if (
-              confirm(
-                'Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?'
-              )
-            ) {
-              var number = await this.setFormValues(
-                countProductRequestModel.barcode,
-                false
-              );
-              this.checkForm.get('quantity')?.setValue(Number(number));
 
-              var response: ProductCountModel =
-                await this.warehouseService.countProductRequest(
-                  countProductRequestModel.barcode,
-                  countProductRequestModel.shelfNo,
-                  countProductRequestModel.quantity === null
-                    ? Number(newResponse[1])
-                    : countProductRequestModel.quantity,
-                  countProductRequestModel.office,
-                  countProductRequestModel.warehouseCode,
-                  countProductRequestModel.batchCode,
-                  'Order/CountProduct3',
-                  this.currentOrderNo,
-                  ''
-                );
-              // SAYIM YAPILDI -------------------------------------------
-              //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-              var qrResponse: QrOperationResponseModel =
-                await this.productService.qrOperationMethod(
-                  this.qrBarcodeUrl,
-                  this.checkForm,
-                  countProductRequestModel,
-                  Number(newResponse[1]),
-                  false,
-                  'CO'
-                );
-              if (qrResponse != null && qrResponse.state === true) {
-                this.qrOperationModels.push(qrResponse.qrOperationModel);
-              } else if (qrResponse === null) {
-                this.clearQrAndBatchCode();
-              }
-              //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
+          //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
 
-              if (response != undefined) {
-                var data: ProductCountModel = response;
-                if (data.status == 'RAF') {
-                  countProductRequestModel.shelfNo = response.description;
-                } else {
-                  countProductRequestModel.barcode = response.description;
-                }
-                this.generalService.beep();
-                countProductRequestModel.quantity = Number(newResponse[1]);
-                await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
-                this.calculateTotalQty();
-                this.clearQrAndBatchCode();
-                this.state = true;
-                setInterval(() => {
-                  this.toasterService.success("İşlem Başarılı.Sayfa Yeniden Yükleniyor")
-                  location.reload()
-                }, 2000);
-              }
+          if (response != undefined) {
+            var data: ProductCountModel = response;
+            if (data.status == 'RAF') {
+              countProductRequestModel.shelfNo = response.description;
             } else {
-              var number = await this.setFormValues(
-                countProductRequestModel.barcode,
-                true
-              );
-              this.checkForm.get('quantity')?.setValue(Number(number));
-              this.toasterService.success(
-                'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
-              );
-              this.state = true;
+              countProductRequestModel.barcode = response.description;
             }
+
+            setInterval(() => {
+              this.generalService.beep();
+              this.clearQrAndBatchCode();
+              this.toasterService.success("İşlem Başarılı.Sayfa Yeniden Yükleniyor")
+              location.reload()
+            }, 2000);
           }
+
+          // EĞER GİRİLEN RAF  RAFLARDA YOKSA SORAR
+
         }
       } catch (error: any) {
         this.toasterService.error(error.message);
@@ -426,10 +304,6 @@ export class BoxCountComponent implements OnInit {
   currentbarcode: string;
   barcodeList: string[] = [];
 
-  async check() {
-    await this.onSubmit(this.checkForm.value);
-
-  }
 
   clearShelfNumbers() {
     this.checkForm.get('shelfNo').setValue(null);

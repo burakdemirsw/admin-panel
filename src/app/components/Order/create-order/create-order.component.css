@@ -2,6 +2,12 @@
   width: 100% !important;
 }
 
+
+.thin-column {
+  width: 100px;
+  /* Veya istediğiniz genişlik */
+}
+
 .payment-options {
   text-align: center;
   padding: 20px 0;

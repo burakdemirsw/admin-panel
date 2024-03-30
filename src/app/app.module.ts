@@ -121,6 +121,7 @@ import { CargoListComponent } from './components/cargo/cargo-list/cargo-list.com
 import { CreateCargoComponent } from './components/cargo/create-cargo/create-cargo.component';
 import { AddCustomerComponent } from './components/Customer/add-customer/add-customer.component';
 import { UnfinishedOrderComponent } from './components/Order/unfinished-order/unfinished-order.component';
+import { CreateArasCargoBarcodeComponent } from './components/cargo/create-aras-cargo-barcode/create-aras-cargo-barcode.component';
 
 @NgModule({
 
@@ -204,7 +205,8 @@ import { UnfinishedOrderComponent } from './components/Order/unfinished-order/un
     CargoListComponent,
     CargoDetailComponent,
     AddCustomerComponent,
-    UnfinishedOrderComponent
+    UnfinishedOrderComponent,
+    CreateArasCargoBarcodeComponent
   ],
 
 

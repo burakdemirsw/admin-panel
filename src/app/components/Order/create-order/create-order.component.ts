@@ -23,6 +23,8 @@ import { CreatePackage_MNG_RR, CargoSetting, CreatePackage_MNG_Request, OrderDet
 import { CargoService } from 'src/app/services/admin/cargo.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
+import { Table } from 'primeng/table';
+import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
 
 @Component({
   selector: 'app-create-order',
@@ -49,6 +51,7 @@ export class CreateOrderComponent implements OnInit {
   id: string;
   orderType: boolean;
   pageTitle: string;
+  exchangeRate: ExchangeRate;
   constructor(private warehouseService: WarehouseService, private paymentService: PaymentService, private toasterService: ToasterService, private activatedRoute: ActivatedRoute,
     private router: Router, private httpClientService: HttpClientService,
     private generalService: GeneralService, private addressService: AddressService,
@@ -56,9 +59,11 @@ export class CreateOrderComponent implements OnInit {
     private formBuilder: FormBuilder, private orderService: OrderService,
     private cargoService: CargoService) { }
 
-  ngOnInit(): void {
+  async ngOnInit() {
 
-
+    this.exchangeRate = await this.orderService.getExchangeRates();
+    this.generatedCargoNumber = this._generateRandomNumber();
+    this.createDiscountForm();
     this.createGetCustomerForm();
     this.createCustomerFormMethod();
     this.createGetProductForm();
@@ -78,7 +83,7 @@ export class CreateOrderComponent implements OnInit {
           this.pageTitle = "Sipariş Ver"
         } else {
 
-          this.pageTitle = "Perakende Sipariş"
+          this.pageTitle = "Perakende Satış"
           this.orderType = false;
         }
 
@@ -110,21 +115,27 @@ export class CreateOrderComponent implements OnInit {
         this.orderNumber = order.clientOrder.orderNumber
         var customer_request = new GetCustomerList_CM();
         customer_request.currAccCode = this.currAccCode;
-        var customerResponse = await await this.orderService.getCustomerList_2(customer_request)
-        if (customerResponse) {
-          this.selectedCustomers.push(customerResponse[0]);
-          // this.toasterService.success("Müşteri Eklendi")
+        if (customer_request.currAccCode != null) {
+          var customerResponse = await await this.orderService.getCustomerList_2(customer_request)
+          if (customerResponse) {
+            this.selectedCustomers.push(customerResponse[0]);
+
+          }
+        } else {
+          this.toasterService.error("Eklenecek Müşteri Bulunamadı")
+
         }
+
         var request_address = new GetCustomerAddress_CM();
         request_address.currAccCode = this.currAccCode;
         var response = await this.orderService.getCustomerAddress(request_address)
         if (response) {
-          var findedAddress = response.find(x => x.postalAddressID === order.clientOrder.shippingPostalAddressId);
+          var findedAddress = response.find((x: { postalAddressID: any; }) => x.postalAddressID === order.clientOrder.shippingPostalAddressId);
           if (findedAddress) {
             this.selectedAddresses.push(findedAddress);
             // this.toasterService.success("Adres Eklendi")
           } else {
-            this.toasterService.error("Eklenecek Adres Bulunamadı")
+            //this.toasterService.error("Eklenecek Adres Bulunamadı")
           }
 
         }
@@ -145,7 +156,7 @@ export class CreateOrderComponent implements OnInit {
         if (order.clientOrderBasketItems.length > 0) {
           this.selectedProducts = [];
           order.clientOrderBasketItems.reverse();
-          order.clientOrderBasketItems.forEach(basketItem => {
+          order.clientOrderBasketItems.forEach((basketItem: ClientOrderBasketItem) => {
             var object = this.convertLineToObject(basketItem);
             this.selectedProducts.push(object);
           });
@@ -163,7 +174,7 @@ export class CreateOrderComponent implements OnInit {
         this.selectedProducts = [];
         if (order.clientOrderBasketItems.length > 0) {
 
-          order.clientOrderBasketItems.forEach(basketItem => {
+          order.clientOrderBasketItems.forEach((basketItem: ClientOrderBasketItem) => {
             var object = this.convertLineToObject(basketItem);
             this.selectedProducts.push(object);
           });
@@ -199,6 +210,8 @@ export class CreateOrderComponent implements OnInit {
     object.brandDescription = line.brandDescription;
     object.uD_Stock = line.uD_Stock;
     object.mD_Stock = line.mD_Stock;
+    object.basePrice = line.basePrice;
+    object.discountedPrice = line.discountedPrice;
     return object;
   }
   createClientOrder_RM(): ClientOrder {
@@ -247,7 +260,8 @@ export class CreateOrderComponent implements OnInit {
       request.brandDescription = newLine.brandDescription;
       request.uD_Stock = newLine.uD_Stock;
       request.mD_Stock = newLine.mD_Stock;
-
+      request.basePrice = newLine.basePrice;
+      request.discountedPrice = newLine.discountedPrice;
       return request;
     } catch (error) {
       this.toasterService.error(error.message)
@@ -591,9 +605,9 @@ export class CreateOrderComponent implements OnInit {
             await this.getCustomers(this.getCustomerForm.value);
             if (this.customers.length > 0) {
               await this.selectCurrentCustomer(this.customers[0])
-
+              // await this.getCustomerAddresses(this.customers[0]);
             }
-            this.activeIndex = 3;
+            this.activeIndex = 2;
           }
 
         }
@@ -698,7 +712,7 @@ export class CreateOrderComponent implements OnInit {
     var _request: GetCustomerAddress_CM = new GetCustomerAddress_CM();
     _request.currAccCode = request.currAccCode;
     this.getCustomerAddresses(_request);
-    this.selectAddressDialog = true;
+
 
 
   }
@@ -714,19 +728,25 @@ export class CreateOrderComponent implements OnInit {
     if (this.addresses.length === 1) {
       this.selectCurrentAddress(this.addresses[0])
       this.selectAddressDialog = false;
+      this.activeIndex = 2;
+    } else {
+      this.selectAddressDialog = true;
     }
+
     console.log(this.customers);
   }
 
   async selectCurrentAddress(request: CustomerAddress_VM) {
 
+    this.selectedAddresses = [];
+    this.selectedAddresses.push(request);
     var order_request = this.createClientOrder_RM()
     var order_response = await this.orderService.createClientOrder(order_request)
     if (order_response) {
-      this.selectedAddresses = [];
-      this.selectedAddresses.push(request);
+
+      this.selectAddressDialog = false;
       this.toasterService.success("Adres Eklendi")
-      this.activeIndex = 3;
+      this.activeIndex = 2;
       this.generalService.beep()
     }
 
@@ -738,8 +758,18 @@ export class CreateOrderComponent implements OnInit {
   }
   //----------------------------------------------------
   //---------------------------------------------------- PRODUCTS
+
+  discountForm: FormGroup;
+
+  createDiscountForm() {
+
+    this.discountForm = this.formBuilder.group({
+      cashDiscountRate: [null, Validators.required],
+      percentDiscountRate: [null, Validators.required]
+    });
+  }
   getTotalPrice() {
-    return this.selectedProducts.reduce((acc, product) => acc + (product.quantity * product.price), 0);
+    return this.selectedProducts.reduce((acc, product) => acc + (product.quantity * product.discountedPrice), 0);
   }
 
 
@@ -747,7 +777,7 @@ export class CreateOrderComponent implements OnInit {
 
   selectedSize: any = '';
 
-  discountRate: number;
+  percentDiscountRate: number;
   cashDiscountRate: number;
 
   _discountRate: number;
@@ -757,18 +787,26 @@ export class CreateOrderComponent implements OnInit {
 
     if (discountRate > 0 && discountRate <= 100) {
       this.selectedProducts.forEach(p => {
-        p.price = ((100 - discountRate) / 100) * (p.price);
+        p.discountedPrice = ((100 - discountRate) / 100) * (p.price);
       });
       this._discountRate = discountRate
     }
 
   }
 
+
+  resetDiscount() {
+
+    this.selectedProducts.forEach(p => {
+      p.discountedPrice = p.basePrice;
+    });
+    this.discountForm.reset();
+  }
   cashDiscount(discountAmount: number) {
 
     var value = discountAmount / this.selectedProducts.length
     this.selectedProducts.forEach(p => {
-      p.price = p.price - (value / p.quantity)
+      p.discountedPrice = p.discountedPrice - (value / p.quantity)
     });
 
   }
@@ -806,7 +844,7 @@ export class CreateOrderComponent implements OnInit {
       }
       var check_response = await this.warehouseService.countProductRequest(
         request.barcode,
-        '',
+        request.shelfNo,
         1
         ,
         '',
@@ -826,7 +864,7 @@ export class CreateOrderComponent implements OnInit {
         }
 
 
-        const response = await this.productService.searchProduct3(check_response.description, check_response.batchCode);
+        const response = await this.productService.searchProduct3(check_response.description, check_response.batchCode, this.getProductsForm.value.shelfNo);
         this.products = response;
         if (this.products.length > 0) {
           var totalQty = 0;
@@ -908,19 +946,27 @@ export class CreateOrderComponent implements OnInit {
       this.getClientOrder(1);
     }
   }
-  async onRowEditSave(product: ProductList_VM) {
+
+  @ViewChild('dt1') myTable: Table;
+  async onRowEditSave(product: ProductList_VM, index: number) {
     if (product.price > 0) {
-      this.toasterService.success(product.quantity.toString());
+      // this.toasterService.success(product.quantity.toString());
       var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price)
       if (response) {
         this.toasterService.success("Ürün Güncellendi")
         this.getClientOrder(1);
       }
       delete this.clonedProducts[product.lineId as string];
-    } else {
-    }
-  }
 
+    } else {
+
+    }
+    this.myTable.cancelRowEdit(product);
+  }
+  cancelRowEdit(product: ProductList_VM, index: number) {
+    this.myTable.cancelRowEdit(product);
+
+  }
   onRowEditCancel(product: ProductList_VM, index: number) {
     this.products[index] = this.clonedProducts[product.lineId as string];
     delete this.clonedProducts[product.lineId as string];
@@ -932,10 +978,16 @@ export class CreateOrderComponent implements OnInit {
   cargoForm: FormGroup
   packagingTypes: any[] = [{ name: 'DOSYA', code: '1' }, { name: 'PAKET', code: '3' }, { name: 'KOLİ', code: '4' }]
   shipmentServiceTypes: any[] = [{ name: 'GÖNDERİCİ ÖDEMELİ', code: '1' }, { name: 'ALICI ÖDEMELİ', code: '2' }]
-
+  cargoFirms: any[] = [{ name: 'Mng', code: 1 }, { name: 'Aras', code: 2 }]
 
   orderDetail: OrderDetail;
 
+  arasCargoBarcode: string = null;
+  getBase64(base64: string) {
+    this.arasCargoBarcode = base64;
+    this.toasterService.success("Barkod Oluşturuldu")
+    this.goToPage(2);
+  }
   async getOrderDetail() {
     this.orderDetail = await this.orderService.getOrderDetail(this.orderNumber);
 
@@ -947,7 +999,7 @@ export class CreateOrderComponent implements OnInit {
 
 
   }
-
+  generatedCargoNumber: number = 0;
   _generateRandomNumber(): number {
     // 335 ile başlayan bir sayı üretir ve geri kalan 7 hanesini rastgele doldurur
     const prefix = 335; // Sabit başlangıç
@@ -960,13 +1012,20 @@ export class CreateOrderComponent implements OnInit {
 
   createCargoForm() {
     this.cargoForm = this.formBuilder.group({
-      packagingType: [null, Validators.required], //select
-      shipmentServiceType: [null, Validators.required], //select
-      isCOD: [false, Validators.required],
-      kg: [1, Validators.required],
-      desi: [1, Validators.required],
-      address_recepient_name: [null, Validators.required],
-      isActive: [true, Validators.required]
+      packagingType: [null], //select
+      shipmentServiceType: [null], //select
+      isCOD: [false],
+      kg: [1],
+      desi: [1],
+      address_recepient_name: [null],
+      isActive: [false],
+      cargoFirm: [null]
+    })
+    this.cargoForm.get('cargoFirm').valueChanges.subscribe((value) => {
+      if (value != null) {
+        this.cargoForm.get('isActive').setValue(true);
+      }
+
     })
     this.cargoForm.get('isActive').valueChanges.subscribe((value) => {
       if (value === false) {
@@ -990,15 +1049,10 @@ export class CreateOrderComponent implements OnInit {
         this.cargoForm.get('isCOD').setValidators(Validators.required);
         this.cargoForm.get('kg').setValidators(Validators.required);
         this.cargoForm.get('desi').setValidators(Validators.required);
+
       }
 
 
-
-      // if (this.cargoForm.valid) {
-      //   this.toasterService.success("true")
-      // } else {
-      //   this.generalService.whichRowIsInvalid(this.cargoForm);
-      // }
     });
     this.cargoForm.get('packagingType').valueChanges.subscribe((value) => {
       if (value.code === '3') {
@@ -1056,10 +1110,11 @@ export class CreateOrderComponent implements OnInit {
   }
   desiErrorMessage = '';
   kgErrorMessage = '';
-
   cargoResponse: CreatePackage_MNG_RR;
+
   async submitCargo(formValue: any) {
     await this.getOrderDetail();
+    var cargoFirmId: number = this.cargoForm.get('cargoFirm').value.code;
     if (this.orderDetail) {
       //console.log(this.cargoForm.value);
 
@@ -1077,7 +1132,7 @@ export class CreateOrderComponent implements OnInit {
       var content = this.selectedProducts.length.toString() + "Adet Ürün";
       var cargoSetting: CargoSetting = new CargoSetting(formValue.isCOD === false ? 0 : 1, Number(formValue.packagingType.code), Number(formValue.shipmentServiceType.code), content,
         this.orderDetail);
-      var referenceId = this._generateRandomNumber();
+      var referenceId = this.generatedCargoNumber;
       var orderRequest: CreatePackage_MNG_Request = new CreatePackage_MNG_Request(referenceId.toString(), this.orderDetail, cargoSetting)
 
       //---barcode requesst
@@ -1104,7 +1159,16 @@ export class CreateOrderComponent implements OnInit {
       var _request: CreatePackage_MNG_RM = new CreatePackage_MNG_RM();
       _request.orderRequest = orderRequest;
       _request.barcodeRequest = barcodeRequest;
-      var response = await this.cargoService.createCargo(_request);
+
+      if (cargoFirmId === 2) {
+        _request.barcodeBase64 = this.arasCargoBarcode;
+        _request.cargoFirmId = 2;
+      } else {
+        _request.barcodeBase64 = null;
+        _request.cargoFirmId = 1;
+      }
+
+      var response = await this.cargoService.createCargo(_request, cargoFirmId);
       if (response) {
         this.cargoResponse = response;
         this.toasterService.success("Kargo Siparişi Oluturuldu (BARKOD BASILABİLİR)");
@@ -1150,14 +1214,18 @@ export class CreateOrderComponent implements OnInit {
 
   async createNewOrder() {
 
-    var orderNo = await this.generalService.generateGUID();
-    if (this.orderType) {
-      var Url = location.origin + "/create-order/quick-order/" + orderNo;
-      location.href = Url
-    } else {
-      var Url = location.origin + "/create-order/retail-order" + orderNo;
-      location.href = Url
+    var response = window.confirm("Yeni Sipariş Oluşturulacak. Devam Etmek İstiyor musunuz?");
+    if (response) {
+      var orderNo = await this.generalService.generateGUID();
+      if (this.orderType) {
+        var Url = location.origin + "/create-order/quick-order/" + orderNo;
+        location.href = Url
+      } else {
+        var Url = location.origin + "/create-order/retail-order/" + orderNo;
+        location.href = Url
+      }
     }
+
 
 
   }
@@ -1269,111 +1337,142 @@ export class CreateOrderComponent implements OnInit {
 
     this.toasterService.success("Ödeme Onaylandı")
   }
+
+  calculateDiscountPercent(products: ProductList_VM[]): number {
+    var totalPrice = 0;
+    var discountedTotalPrice = 0;
+    products.forEach(p => {
+      totalPrice += p.basePrice * p.quantity;
+      discountedTotalPrice += p.discountedPrice * p.quantity;
+    });
+    var totalDiscount = ((totalPrice - discountedTotalPrice) / totalPrice) * 100;
+    return parseFloat(totalDiscount.toFixed(2));
+  }
   async createOrder() {
     if (!this.cargoForm.valid) {
       this.toasterService.error("Kargo Formu Hatalı");
       return;
     }
-    console.log(this.payment);
-    if (!this.payment.creditCardTypeCode) {
 
+    if (!this.payment.creditCardTypeCode) {
       this.toasterService.error("Ödeme Tipi Seçiniz");
       return;
     }
+
     if (!this.taxTypeCode) {
       this.toasterService.error("Vergi Tipi Seçiniz");
       return;
     }
+
     var formValue = this.createCustomerForm.value;
+
     if (!this.currAccCode) {
       this.toasterService.error("Müşteri Seçiniz");
       return;
     }
+
     if (!this.salesPersonCode) {
       this.toasterService.error("Satış Elemanı Seçiniz");
       return;
     }
-    // if (!this.payment) {
-    //   this.toasterService.error("Ödeme Seçilmedi Elemanı Seçiniz");
-    //   return;
-    // }
+
     if (this.selectedProducts.length <= 0) {
       this.toasterService.error("Ürün Ekleyiniz");
       return;
     }
 
-
-
+    var discountPercent: number = this.calculateDiscountPercent(this.selectedProducts);
     if (this.orderType) {
-      var request: NebimOrder = new NebimOrder(this.selectedCustomers[0].currAccDescription, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.taxTypeCode);
+      var request: NebimOrder = new NebimOrder(
+        discountPercent,
+        this.selectedCustomers[0].currAccDescription,
+        this.currAccCode,
+        this.orderNo,
+        formValue,
+        this.selectedProducts,
+        this.salesPersonCode,
+        this.taxTypeCode
+      );
 
       var response = await this.orderService.createOrder(request);
-      if (response) {
+      if (response && response.status === true) {
+        this.orderNumber = response.orderNumber;
 
-        if (response.status === true) {
-          this.orderNumber = response.orderNumber;
-
-
-          if (this.cargoForm.get('isActive').value === true) {
-            await this.submitCargo(this.cargoForm.value);
-
-
-          } else {
-            this.toasterService.info('KARGO OLUŞTURULMADI')
-          }
-          this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament")
+        if (this.cargoForm.get('isActive').value === true) {
+          await this.submitCargo(this.cargoForm.value);
+        } else {
+          this.toasterService.info('KARGO OLUŞTURULMADI');
         }
 
-
+        this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament");
       }
     } else {
-      var _request: NebimOrder_2 = new NebimOrder_2(this.selectedCustomers[0].currAccDescription, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.taxTypeCode);
+      var _request: NebimOrder = new NebimOrder(
+        discountPercent,
+        this.selectedCustomers[0].currAccDescription,
+        this.currAccCode,
+        this.orderNo,
+        formValue,
+        this.selectedProducts,
+        this.salesPersonCode,
+        this.taxTypeCode
+      );
 
       var response = await this.orderService.createOrder(_request);
-      if (response) {
+      if (response && response.status === true) {
+        this.orderNumber = response.orderNumber;
 
-        if (response.status === true) {
-          this.orderNumber = response.orderNumber;
-
-
-          if (this.cargoForm.get('isActive').value === true) {
-            await this.submitCargo(this.cargoForm.value);
-
-
-          } else {
-            this.toasterService.info('KARGO OLUŞTURULMADI')
-          }
+        if (this.cargoForm.get('isActive').value === true) {
+          await this.submitCargo(this.cargoForm.value);
+        } else {
+          this.toasterService.info('KARGO OLUŞTURULMADI');
         }
-
-
       }
 
-
-      var __request: NebimInvoice = new NebimInvoice(this.selectedCustomers[0].currAccDescription, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.taxTypeCode, this.selectedAddresses[0].postalAddressID);
+      var exchangeRate: number = 0;
+      if (this.selectedCustomers[0].docCurrencyCode === 'TRY') {
+        exchangeRate = 1;
+      } else if (this.selectedCustomers[0].docCurrencyCode === 'USD') {
+        exchangeRate = this.exchangeRate.usd
+      }
+      else if (this.selectedCustomers[0].docCurrencyCode === 'EUR') {
+        exchangeRate = this.exchangeRate.eur
+      }
+      if (exchangeRate === 0) {
+        this.toasterService.error("EXCHANGE RATE ERROR")
+        return
+      }
+      var __request: NebimInvoice = new NebimInvoice(
+        discountPercent,
+        exchangeRate,
+        this.selectedCustomers[0].docCurrencyCode,
+        this.selectedCustomers[0].currAccDescription,
+        this.currAccCode,
+        this.orderNo,
+        formValue,
+        this.selectedProducts,
+        this.salesPersonCode,
+        this.taxTypeCode,
+        this.selectedAddresses[0].postalAddressID
+      );
 
       __request.lines.forEach(l1 => {
+        var fp = response.lines.find((p: { itemCode: string; usedBarcode: string; qty1: number; }) =>
+          p.itemCode === l1.itemCode && p.usedBarcode === l1.usedBarcode && p.qty1 === l1.qty1
+        );
 
-        var fp = response.lines.find(p => p.itemCode === l1.itemCode && p.usedBarcode === l1.usedBarcode && p.qty1 === l1.qty1
-
-        )
         if (fp) {
-          l1.orderLineId = fp.orderLineId
+          l1.currencyCode = this.selectedCustomers[0].docCurrencyCode;
+          l1.orderLineId = fp.orderLineId;
 
         }
-
       });
 
-
-
-      var __response = await this.orderService.createInvoice(__request)
+      var __response = await this.orderService.createInvoice(__request);
       if (__response) {
-        this.generalService.waitAndNavigate("Sipariş Oluşturuldu & Faturalaştırıdı", "orders-managament")
-
+        this.generalService.waitAndNavigate("Sipariş Oluşturuldu & Faturalaştırıdı", "orders-managament");
       }
     }
-
-
-
   }
 
   //----------------------------------------------------

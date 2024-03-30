@@ -37,34 +37,7 @@
                   [formGroup]="checkForm"
                   (ngSubmit)="onSubmit(checkForm.value)"
                 >
-                  <div class="row mb-1">
-                    <div class="form-group col">
-                      <label for="office">Hangi Ofis</label>
-                      <select
-                        id="office"
-                        class="form-control"
-                        formControlName="office"
-                      >
-                        <option value="M">M</option>
-                        <option value="U">U</option>
-                      </select>
-                    </div>
-                    <div class="form-group col">
-                      <label for="warehouseCode">Hangi Depo</label>
-                      <select
-                        id="warehouseCode"
-                        class="form-control"
-                        formControlName="warehouseCode"
-                      >
-                        <!-- <option *ngFor="let warehouse of warehouseModels" [value]="warehouse.warehouseCode">
-                    {{ warehouse.warehouseDescription }}
-                  </option> -->
-                        <option value="MD">GERÇEK DEPO</option>
-                        <option value="UD">HALKALI DEPO</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="row mb-1">
+                  <!-- <div class="row mb-1">
                     <div class="form-group">
                       <label for="shelfNo">Raf No:</label>
                       <div class="input-group">
@@ -89,7 +62,7 @@
                     <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
                       shelfNumbers
                     }}</label>
-                  </div>
+                  </div> -->
                   <div class="row mb-1">
                     <div class="form-group">
                       <label for="barcode">Barkod: </label>
@@ -101,9 +74,8 @@
                         id="countPageBarcode"
                         class="form-control"
                         formControlName="barcode"
-                        [disabled]="checkForm.disabled"
                         [(ngModel)]="currentbarcode"
-                        (keydown.enter)="onSubmit(checkForm.value)"
+                        (keydown.enter)="control(checkForm.value)"
                       />
                     </div>
                   </div>
@@ -116,7 +88,6 @@
                           id="quantity"
                           class="form-control"
                           formControlName="quantity"
-                          [disabled]="checkForm.disabled"
                         />
                       </div>
                     </div>
@@ -136,15 +107,29 @@
                   </div>
 
                   <div class="row mb-1">
-                    <div class="form-group">
-                      <button
-                        type="button"
-                        class="btn btn-primary"
-                        (click)="check()"
-                        style="width: 100%"
-                      >
-                        Ekle
-                      </button>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          (click)="control(this.checkForm.value)"
+                          style="width: 100%"
+                        >
+                          Kontrol Et
+                        </button>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          (click)="check()"
+                          style="width: 100%"
+                        >
+                          Say
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </form>
