@@ -1199,8 +1199,7 @@ var CreateOrderComponent = /** @class */ (function () {
                     address_recepient_name: [null],
                     isActive: [false],
                     cargoFirm: [null],
-                    address_multi_pack: [false],
-                    address_pack_count: [1]
+                    address_package_count: [1, forms_1.Validators.min(1)]
                 });
                 this.cargoForm.get('cargoFirm').valueChanges.subscribe(function (value) {
                     if (value != null) {
@@ -1385,6 +1384,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         _request = new models_1.CreatePackage_MNG_RM();
                         _request.orderRequest = orderRequest;
                         _request.barcodeRequest = barcodeRequest;
+                        _request.packageCount = formValue.address_package_count; //paket adedi eklendi
                         if (cargoFirmId === 2) {
                             _request.barcodeBase64 = this.arasCargoBarcode;
                             _request.cargoFirmId = 2;
