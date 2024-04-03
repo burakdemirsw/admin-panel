@@ -91,6 +91,7 @@ var CargoListComponent = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         windowResponse = window.confirm("Gönderiyi silmek istediğinize emin misiniz?");
+                        if (!windowResponse) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.cargoService.deleteCargo(cargo, cargoFirmId)];
                     case 1:
                         response = _a.sent();
@@ -101,7 +102,8 @@ var CargoListComponent = /** @class */ (function () {
                         else {
                             this.toasterService.warn("Gönderi Silinemedi");
                         }
-                        return [2 /*return*/];
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
                 }
             });
         });

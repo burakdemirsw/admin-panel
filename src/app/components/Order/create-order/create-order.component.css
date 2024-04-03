@@ -1,132 +1,132 @@
-::ng-deep .p-dropdown {
-  width: 100% !important;
-}
+ ::ng-deep .p-dropdown {
+   width: 100% !important;
+ }
 
 
-.thin-column {
-  width: 100px;
-  /* Veya istediğiniz genişlik */
-}
+ .thin-column {
+   width: 100px;
+   /* Veya istediğiniz genişlik */
+ }
 
-.payment-options {
-  text-align: center;
-  padding: 20px 0;
-}
+ .payment-options {
+   text-align: center;
+   padding: 20px 0;
+ }
 
 
-.btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
-}
+ .btn-primary {
+   background-color: #007bff;
+   border-color: #007bff;
+ }
 
-.btn-primary:hover {
-  background-color: #0069d9;
-  border-color: #0062cc;
-}
+ .btn-primary:hover {
+   background-color: #0069d9;
+   border-color: #0062cc;
+ }
 
-.btn-block {
-  display: block;
-  width: 100%;
-}
+ .btn-block {
+   display: block;
+   width: 100%;
+ }
 
-/* CSS dosyanızda bu medya sorgusunu kullanarak sadece mobil cihazlarda uygulanacak stil kurallarını belirleyebilirsiniz */
-@media (max-width: 600px) {
+ /* CSS dosyanızda bu medya sorgusunu kullanarak sadece mobil cihazlarda uygulanacak stil kurallarını belirleyebilirsiniz */
+ @media (max-width: 600px) {
 
-  ::ng-deep .p-datatable .p-datatable-tbody td,
-  ::ng-deep .p-datatable .p-datatable-thead th {
+   ::ng-deep .p-datatable .p-datatable-tbody td,
+   /* ::ng-deep .p-datatable .p-datatable-thead th {
     font-size: 13px;
-  }
+  } */
 
-  td {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+   td {
+     white-space: nowrap;
+     overflow: hidden;
+     text-overflow: ellipsis;
 
-    overflow-x: auto;
+     overflow-x: auto;
 
-  }
+   }
 
-  /* .mobilebutton {
+   /* .mobilebutton {
     height: 40px;
     width: 40px;
   } */
-}
+ }
 
-.file-upload-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  width: 100%;
-  /* max-width: 400px; */
-  /* İstenilen genişliğe göre ayarlayın */
-  margin: auto;
-  font-family: Arial, sans-serif;
-}
+ .file-upload-wrapper {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   position: relative;
+   width: 100%;
+   /* max-width: 400px; */
+   /* İstenilen genişliğe göre ayarlayın */
+   margin: auto;
+   font-family: Arial, sans-serif;
+ }
 
-.input-file-upload {
-  width: 0.1px;
-  height: 0.1px;
-  opacity: 0;
-  overflow: hidden;
-  position: absolute;
-  z-index: -1;
-}
+ .input-file-upload {
+   width: 0.1px;
+   height: 0.1px;
+   opacity: 0;
+   overflow: hidden;
+   position: absolute;
+   z-index: -1;
+ }
 
-.file-upload-label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
+ .file-upload-label {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   width: 100%;
+   padding: 10px 20px;
+   background-color: #007bff;
+   color: #fff;
+   border-radius: 5px;
+   cursor: pointer;
+   transition: background-color 0.3s;
+ }
 
-.file-upload-label:hover {
-  background-color: #0056b3;
-}
+ .file-upload-label:hover {
+   background-color: #0056b3;
+ }
 
-.file-upload-text {
-  flex-grow: 1;
-}
+ .file-upload-text {
+   flex-grow: 1;
+ }
 
-.file-upload-button {
-  background-color: #0056b3;
-  padding: 5px 15px;
-  margin-left: 10px;
-  border-radius: 3px;
-  cursor: pointer;
-}
+ .file-upload-button {
+   background-color: #0056b3;
+   padding: 5px 15px;
+   margin-left: 10px;
+   border-radius: 3px;
+   cursor: pointer;
+ }
 
-.file-upload-button:hover {
-  background-color: #004494;
-}
+ .file-upload-button:hover {
+   background-color: #004494;
+ }
 
 
-.table-wrapper {
-  margin-bottom: 2rem;
-  border: 1px solid #dee2e6;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 0.25rem;
-}
+ .table-wrapper {
+   margin-bottom: 2rem;
+   border: 1px solid #dee2e6;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+   border-radius: 0.25rem;
+ }
 
-.selected-products-table {
-  background-color: #f8f9fa;
-  /* Hafif gri arkaplan rengi */
-}
+ .selected-products-table {
+   background-color: #f8f9fa;
+   /* Hafif gri arkaplan rengi */
+ }
 
-.table-header {
-  background-color: #007bff;
-  /* Bootstrap mavi rengi */
-  color: #ffffff;
-  padding: 0.75rem 1.25rem;
-  border-bottom: 2px solid #dee2e6;
-}
+ .table-header {
+   background-color: #007bff;
+   /* Bootstrap mavi rengi */
+   color: #ffffff;
+   padding: 0.75rem 1.25rem;
+   border-bottom: 2px solid #dee2e6;
+ }
 
-.table-header h5 {
-  margin: 0;
-}
+ .table-header h5 {
+   margin: 0;
+ }

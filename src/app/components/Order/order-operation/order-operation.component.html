@@ -74,7 +74,7 @@
                         role="group"
                         aria-label="Basic example"
                       >
-                        <!-- <button class="btn btn-danger" type="submit" (click)="
+                        <!-- <button class="btn btn-primary" type="submit" (click)="
                             deleteOrderProduct(orderNo, product.itemCode)
                           ">
                           <i class="fa fa-trash"></i>
@@ -100,7 +100,7 @@
                             this.currentOrderNo.includes('WS') &&
                             !_pageDescription
                           "
-                          class="btn btn-dark"
+                          class="btn btn-primary"
                           type="submit"
                           (click)="addMissingProduct(product)"
                         >
@@ -110,7 +110,7 @@
                           data-toggle="tooltip"
                           data-placement="right"
                           title="Raflar"
-                          class="btn btn-warning"
+                          class="btn btn-primary"
                           type="submit"
                           (click)="getShelves(product.barcode)"
                         >
@@ -153,7 +153,10 @@
 
         <div class="card mobile" *ngIf="productsToCollect.length > 0">
           <div class="card-body">
-            <h5 class="card-title">{{ pageDescription }}</h5>
+            <h5 class="card-title">
+              {{ pageDescription
+              }}{{ customerName != undefined ? "-" + customerName : "" }}
+            </h5>
             <ul class="nav nav-tabs nav-justified mb-1" id="ex1" role="tablist">
               <!-- <li class="nav-item" role="presentation">
                                   <a class="nav-link active" [class.active]="activeTab === 1" (click)="activeTab = 1">Raf
@@ -188,7 +191,7 @@
                           <button
                             type="button"
                             (click)="clearShelfNumbers()"
-                            class="btn btn-dark"
+                            class="btn btn-primary"
                           >
                             Formu Temizle
                           </button>
@@ -214,7 +217,7 @@
                         (keydown.enter)="onSubmit(checkForm.value)"
                       />
                       <div class="input-group-append">
-                        <!-- <button type="button" class="btn btn-dark">Camera</button> -->
+                        <!-- <button type="button" class="btn btn-primary">Camera</button> -->
                       </div>
                     </div>
                   </div>
@@ -283,11 +286,11 @@
         </div>
         <div class="card">
           <div class="card-body" *ngIf="isInvoice === false">
-            <div class="row mt-3">
+            <div class="row mt-3 mb-3">
               <div class="col-md-12">
                 <button
                   type="button"
-                  class="btn btn-dark"
+                  class="btn btn-primary"
                   (click)="collectAndPack(this.collectedProducts)"
                   style="width: 100%"
                 >
@@ -300,7 +303,7 @@
               <div class="col-md-12">
                 <button
                   type="button"
-                  class="btn btn-warning"
+                  class="btn btn-primary"
                   (click)="showDialog2()"
                   style="width: 100%"
                 >
@@ -319,7 +322,7 @@
               >
                 <button
                   type="button"
-                  class="btn btn-warning"
+                  class="btn btn-primary"
                   (click)="showCountPage()"
                   style="width: 100%"
                 >
@@ -327,7 +330,7 @@
                 </button>
                 <button
                   type="button"
-                  class="btn btn-warning"
+                  class="btn btn-primary"
                   (click)="showModal2()"
                 >
                   <i class="fa fa-angle-down" aria-hidden="true"></i>
@@ -411,7 +414,7 @@
                         aria-label="Basic example"
                       >
                         <button
-                          class="btn btn-danger"
+                          class="btn btn-primary"
                           type="submit"
                           (click)="deleteOrderProduct(orderNo, product)"
                         >
@@ -433,7 +436,7 @@
                             this.currentOrderNo.includes('WS') &&
                             !_pageDescription
                           "
-                          class="btn btn-dark"
+                          class="btn btn-primary"
                           type="submit"
                           (click)="addMissingProduct(product)"
                         >
@@ -443,14 +446,14 @@
                           data-toggle="tooltip"
                           data-placement="right"
                           title="Raflar"
-                          class="btn btn-warning"
+                          class="btn btn-primary"
                           type="submit"
                           (click)="getShelves(product.barcode)"
                         >
                           <i class="fa-solid fa-bars"></i>
                         </button>
                         <button
-                          class="btn btn-dark"
+                          class="btn btn-primary"
                           type="submit"
                           (click)="change(product.barcode, product.quantity)"
                         >
@@ -516,7 +519,7 @@
                         [ngClass]="
                           product.availableQty >= product.quantity
                             ? 'btn btn-success'
-                            : 'btn btn-danger'
+                            : 'btn btn-primary'
                         "
                       >
                         {{
@@ -529,13 +532,13 @@
                     <td>
                       <div class="btn-group">
                         <button
-                          class="btn btn-danger"
+                          class="btn btn-primary"
                           type="submit"
                           (click)="deleteOrderProduct(orderNo, product)"
                         >
                           <i class="fas fa-trash"> </i>
                         </button>
-                        <button
+                        <!-- <button
                           class="btn btn-primary"
                           type="submit"
                           (click)="
@@ -547,9 +550,9 @@
                           "
                         >
                           <i class="fas fa-print"> </i>
-                        </button>
+                        </button> -->
                         <button
-                          class="btn btn-dark"
+                          class="btn btn-primary"
                           type="submit"
                           (click)="getShelves(product.barcode)"
                         >
@@ -666,7 +669,7 @@
           *ngFor="let shelve of productShelves; let i = index"
           (click)="setShelveToForm(shelve)"
           type="button"
-          [ngClass]="i % 2 === 0 ? 'btn btn-dark' : 'btn btn-secondary'"
+          [ngClass]="i % 2 === 0 ? 'btn btn-primary' : 'btn btn-secondary'"
           style="height: 10rem"
         >
           {{ shelve }}

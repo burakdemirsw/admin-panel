@@ -351,7 +351,6 @@ export class CreateOrderComponent implements OnInit {
       address_description: [null],
 
 
-
     });
 
     this._createCustomerForm.get('address_region').valueChanges.subscribe(async (value) => { //illeri getir
@@ -790,6 +789,7 @@ export class CreateOrderComponent implements OnInit {
         p.discountedPrice = ((100 - discountRate) / 100) * (p.price);
       });
       this._discountRate = discountRate
+      this.toasterService.success("İndirim Uygulandı")
     }
 
   }
@@ -801,6 +801,8 @@ export class CreateOrderComponent implements OnInit {
       p.discountedPrice = p.basePrice;
     });
     this.discountForm.reset();
+    this.toasterService.success("İndirim Kaldırıldı")
+
   }
   cashDiscount(discountAmount: number) {
 
@@ -808,6 +810,8 @@ export class CreateOrderComponent implements OnInit {
     this.selectedProducts.forEach(p => {
       p.discountedPrice = p.discountedPrice - (value / p.quantity)
     });
+    this.toasterService.success("İndirim Uygulandı")
+
 
   }
   createGetProductForm() {
@@ -829,8 +833,10 @@ export class CreateOrderComponent implements OnInit {
         this.products = response;
         if (this.products.length > 0) {
           this.getProductsForm.get('barcode').setValue(null);
+          // this.products = []; adil açtırdı
           await this.addCurrentProducts(this.products[0]);
-          this.products = [];
+        } else {
+          this.toasterService.error("Ürün Bulunamadı")
         }
         return response;
       } catch (error: any) {
@@ -897,16 +903,19 @@ export class CreateOrderComponent implements OnInit {
 
     if (request.quantity > 0) {
       var order_request = this.createClientOrder_RM()
-      var order_response = await this.orderService.createClientOrder(order_request)
+      var order_response = await this.orderService.createClientOrder(order_request) //sipariş oluşturuldu varsa güncellendi
       if (order_response) {
 
 
         var line_request = this.createClientOrderBasketItem_RM(request);
-        var line_response = await this.orderService.createClientOrderBasketItem(line_request);
+        if (line_request.itemCode.startsWith('FG')) {
+          line_request.quantity = 5;
+        }
+        var line_response = await this.orderService.createClientOrderBasketItem(line_request); //sipariş ürünü oluşturuldu
         if (line_response) {
           this.toasterService.success("Ürün Eklendi")
           this.generalService.beep()
-          this.getClientOrder(1);
+          await this.getClientOrder(1); //sipariş ürünleri çekildi
 
         }
       }
@@ -939,8 +948,11 @@ export class CreateOrderComponent implements OnInit {
 
 
   async updateQuantity(qty: number, product: ProductList_VM) {
+    if (product.itemCode.startsWith('FG')) {
+      qty = qty * 5
+    }
     product.quantity += qty
-    var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price)
+    var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price, product.discountedPrice, product.basePrice)
     if (response) {
       this.toasterService.success("Ürün Güncellendi")
       this.getClientOrder(1);
@@ -951,7 +963,7 @@ export class CreateOrderComponent implements OnInit {
   async onRowEditSave(product: ProductList_VM, index: number) {
     if (product.price > 0) {
       // this.toasterService.success(product.quantity.toString());
-      var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price)
+      var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price, product.discountedPrice, product.basePrice)
       if (response) {
         this.toasterService.success("Ürün Güncellendi")
         this.getClientOrder(1);
@@ -961,10 +973,17 @@ export class CreateOrderComponent implements OnInit {
     } else {
 
     }
-    this.myTable.cancelRowEdit(product);
+    this.cancelRowEdit(product, 0);
   }
+
+
   cancelRowEdit(product: ProductList_VM, index: number) {
-    this.myTable.cancelRowEdit(product);
+
+    this.selectedProducts.forEach(product => {
+      this.myTable.cancelRowEdit(product);
+
+    });
+
 
   }
   onRowEditCancel(product: ProductList_VM, index: number) {
@@ -976,6 +995,13 @@ export class CreateOrderComponent implements OnInit {
   //----------------------------------------------------
   //---------------------------------------------------- KARGO
   cargoForm: FormGroup
+
+  cargoPrices: any[] = [{ name: 'DOSYA (₺90)', code: 90 }, { name: 'PAKET (₺80) ', code: 80 }, { name: 'K.KOLİ (₺115)', code: 115 }
+    , { name: 'O.KOLİ (₺140)', code: 140 },
+  { name: 'B.KOLİ (₺180)', code: 180 }]
+
+
+
   packagingTypes: any[] = [{ name: 'DOSYA', code: '1' }, { name: 'PAKET', code: '3' }, { name: 'KOLİ', code: '4' }]
   shipmentServiceTypes: any[] = [{ name: 'GÖNDERİCİ ÖDEMELİ', code: '1' }, { name: 'ALICI ÖDEMELİ', code: '2' }]
   cargoFirms: any[] = [{ name: 'Mng', code: 1 }, { name: 'Aras', code: 2 }]
@@ -1010,8 +1036,9 @@ export class CreateOrderComponent implements OnInit {
     return Number(`${prefix}${randomNumber}`);
   }
 
-  createCargoForm() {
+  async createCargoForm() {
     this.cargoForm = this.formBuilder.group({
+      address_phoneNumber: [null],
       packagingType: [null], //select
       shipmentServiceType: [null], //select
       isCOD: [false],
@@ -1019,7 +1046,8 @@ export class CreateOrderComponent implements OnInit {
       desi: [1],
       address_recepient_name: [null],
       isActive: [false],
-      cargoFirm: [null]
+      cargoFirm: [null],
+      address_package_count: [1, Validators.min(1)]
     })
     this.cargoForm.get('cargoFirm').valueChanges.subscribe((value) => {
       if (value != null) {
@@ -1036,6 +1064,9 @@ export class CreateOrderComponent implements OnInit {
         this.cargoForm.get('address_recepient_name').clearValidators();
         this.cargoForm.get('address_recepient_name').updateValueAndValidity();
         this.cargoForm.get('isCOD').clearValidators();
+        this.cargoForm.get('address_phoneNumber').clearValidators();
+        this.cargoForm.get('cargoPrice').clearValidators();
+
         this.cargoForm.get('kg').clearValidators();
         this.cargoForm.get('desi').clearValidators();
 
@@ -1047,6 +1078,9 @@ export class CreateOrderComponent implements OnInit {
         this.cargoForm.get('address_recepient_name').setValidators(Validators.required);
         this.cargoForm.get('address_recepient_name').updateValueAndValidity();
         this.cargoForm.get('isCOD').setValidators(Validators.required);
+        this.cargoForm.get('address_phoneNumber').setValidators(Validators.required);
+        this.cargoForm.get('cargoPrice').setValidators(Validators.required);
+
         this.cargoForm.get('kg').setValidators(Validators.required);
         this.cargoForm.get('desi').setValidators(Validators.required);
 
@@ -1054,6 +1088,41 @@ export class CreateOrderComponent implements OnInit {
 
 
     });
+    this.cargoForm.get('cargoPrice').valueChanges.subscribe(async (value) => {
+      var _product: ProductList_VM = this.selectedProducts.find(p => p.itemCode == 'KARGO');
+      if (!_product) {
+
+        if (this.orderType) {
+          this.getProductsForm.get('barcode').setValue('KARGO');
+          await this.getProducts(this.getProductsForm.value, this.orderType);
+
+        } else {
+          this.getProductsForm.get('barcode').setValue('KARGO');
+          this.getProductsForm.get('shelfNo').setValue('KARGO04');
+
+          await this.getProducts(this.getProductsForm.value, this.orderType);
+
+        }
+
+        var __product: ProductList_VM = this.selectedProducts.find(p => p.itemCode == 'KARGO');
+
+        __product.price = value.code;
+
+        __product.basePrice = value.code;
+        __product.discountedPrice = value.code;
+        await this.orderService.updateClientOrderBasketItem(this.id, __product.lineId, __product.quantity, __product.price, __product.discountedPrice, __product.discountedPrice);
+
+      } else {
+        _product.price = value.code;
+        _product.basePrice = value.code;
+
+        _product.discountedPrice = value.code;
+        await this.orderService.updateClientOrderBasketItem(this.id, _product.lineId, _product.quantity, _product.price, _product.discountedPrice, _product.basePrice);
+      }
+
+
+
+    })
     this.cargoForm.get('packagingType').valueChanges.subscribe((value) => {
       if (value.code === '3') {
         this.cargoForm.get('kg').setValue(2)
@@ -1119,10 +1188,17 @@ export class CreateOrderComponent implements OnInit {
       //console.log(this.cargoForm.value);
 
       var recepient_name = formValue.address_recepient_name;
+      var phoneNumber = formValue.address_phoneNumber;
+
       if (recepient_name != null && recepient_name != '') {
         this.orderDetail.customer = recepient_name;
         this.toasterService.info('Alıcı Adı Değişikliği Algılandı')
       }
+      if (phoneNumber != null && phoneNumber != '') {
+        this.orderDetail.phone = phoneNumber;
+        this.toasterService.info('Telefon Değişikliği Algılandı')
+      }
+
       if (this.selectedAddresses.length > 0) {
         this.orderDetail.address = this.selectedAddresses[0].address;
         this.orderDetail.city = this.selectedAddresses[0].cityDescription;
@@ -1159,7 +1235,7 @@ export class CreateOrderComponent implements OnInit {
       var _request: CreatePackage_MNG_RM = new CreatePackage_MNG_RM();
       _request.orderRequest = orderRequest;
       _request.barcodeRequest = barcodeRequest;
-
+      _request.packageCount = formValue.address_package_count //paket adedi eklendi
       if (cargoFirmId === 2) {
         _request.barcodeBase64 = this.arasCargoBarcode;
         _request.cargoFirmId = 2;
@@ -1380,12 +1456,27 @@ export class CreateOrderComponent implements OnInit {
       this.toasterService.error("Ürün Ekleyiniz");
       return;
     }
+    var exchangeRate: number = 0;
+    if (this.selectedCustomers[0].docCurrencyCode === 'TRY') {
+      exchangeRate = 1;
+    } else if (this.selectedCustomers[0].docCurrencyCode === 'USD') {
+      exchangeRate = this.exchangeRate.usd
+    }
+    else if (this.selectedCustomers[0].docCurrencyCode === 'EUR') {
+      exchangeRate = this.exchangeRate.eur
+    }
+    if (exchangeRate === 0) {
+      this.toasterService.error("EXCHANGE RATE ERROR")
+      return
+    }
+
 
     var discountPercent: number = this.calculateDiscountPercent(this.selectedProducts);
     if (this.orderType) {
       var request: NebimOrder = new NebimOrder(
+        exchangeRate,
         discountPercent,
-        this.selectedCustomers[0].currAccDescription,
+        this.cargoForm.get("address_recepient_name").value,
         this.currAccCode,
         this.orderNo,
         formValue,
@@ -1408,8 +1499,9 @@ export class CreateOrderComponent implements OnInit {
       }
     } else {
       var _request: NebimOrder = new NebimOrder(
+        exchangeRate,
         discountPercent,
-        this.selectedCustomers[0].currAccDescription,
+        this.cargoForm.get("address_recepient_name").value,
         this.currAccCode,
         this.orderNo,
         formValue,
@@ -1429,24 +1521,12 @@ export class CreateOrderComponent implements OnInit {
         }
       }
 
-      var exchangeRate: number = 0;
-      if (this.selectedCustomers[0].docCurrencyCode === 'TRY') {
-        exchangeRate = 1;
-      } else if (this.selectedCustomers[0].docCurrencyCode === 'USD') {
-        exchangeRate = this.exchangeRate.usd
-      }
-      else if (this.selectedCustomers[0].docCurrencyCode === 'EUR') {
-        exchangeRate = this.exchangeRate.eur
-      }
-      if (exchangeRate === 0) {
-        this.toasterService.error("EXCHANGE RATE ERROR")
-        return
-      }
+
       var __request: NebimInvoice = new NebimInvoice(
         discountPercent,
         exchangeRate,
         this.selectedCustomers[0].docCurrencyCode,
-        this.selectedCustomers[0].currAccDescription,
+        this.cargoForm.get("address_recepient_name").value,
         this.currAccCode,
         this.orderNo,
         formValue,

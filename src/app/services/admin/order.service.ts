@@ -600,10 +600,10 @@ export class OrderService {
   }
 
 
-  async updateClientOrderBasketItem(id: string, lineId: string, quantity: number, price: number): Promise<any> {
+  async updateClientOrderBasketItem(id: string, lineId: string, quantity: number, price: number, discountedPrice: number, basePrice: number): Promise<any> {
     try {
 
-      var query = `${id}/${lineId}/${quantity}/${price}`
+      var query = `${id}/${lineId}/${quantity}/${price}/${discountedPrice}/${basePrice}`
       var response = await this.httpClientService.get<any>({ controller: "order/update-client-order-basket-item" + "/" + query }).toPromise();
 
       return response;

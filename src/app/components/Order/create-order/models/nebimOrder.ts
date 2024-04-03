@@ -1,4 +1,5 @@
 import { ProductList_VM } from "src/app/models/model/product/productList_VM";
+import { ExchangeRate } from '../../../../models/model/order/exchangeRate';
 
 export class CheckOrderModel {
   orderHeaderID: string;
@@ -29,13 +30,16 @@ export class NebimOrder {
   description: string;
   isCreditSale: boolean;
   DeliveryCompanyCode: string;
+  exchangeRate: number
   // ordersViaInternetInfo: OrdersViaInternetInfo;
   lines: Line[];
   discounts: Discount[] = [];
   // discounts: Discount[];
   // payments: Payment[];
 
-  constructor(discountPercentage: number, customerDesc: string, currAccCode: string, orderNo: string, formValue: any, selectedProducts: any, salesPersonCode: string, taxTypeCode: number) {
+  constructor(exchangeRate: number, discountPercentage: number, customerDesc: string,
+    currAccCode: string, orderNo: string, formValue: any, selectedProducts: any,
+    salesPersonCode: string, taxTypeCode: number) {
     this.modelType = 5;
     this.posTerminalID = 1;
     this.shipmentMethodCode = 2;
@@ -45,39 +49,24 @@ export class NebimOrder {
     this.taxTypeCode = taxTypeCode;
     this.deliveryCompanyCode = "MNG";
     this.lines = [];
-    // this.discounts = [];
-    // this.payments = [];
-    //ÖDEME KAPATILDI                        // this.ordersViaInternetInfo = new OrdersViaInternetInfo();
-    //ÖDEME KAPATILDI                           // this.ordersViaInternetInfo.paymentDate = new Date().toUTCString();
-    //ÖDEME KAPATILDI                           // this.ordersViaInternetInfo.sendDate = new Date().toUTCString();
-    //ÖDEME KAPATILDI                           // this.ordersViaInternetInfo.salesURL = "www.davye.com";
-    //ÖDEME KAPATILDI                          // this.ordersViaInternetInfo.paymentAgent = "";
-    //ÖDEME KAPATILDI                          // this.ordersViaInternetInfo.paymentTypeCode = 2;
-    //ÖDEME KAPATILDI                          // this.ordersViaInternetInfo.paymentTypeDescription = "Kredi Kartı"
-    // if (payment.paymentType === "1") {
-    //   this.ordersViaInternetInfo.paymentTypeDescription = "PAYTR"
-    //   this.ordersViaInternetInfo.paymentTypeCode = 2
-    // } else if (payment.paymentType === "2") {
-    //   this.ordersViaInternetInfo.paymentTypeDescription = "NAKİT"
-    //   this.ordersViaInternetInfo.paymentTypeCode = 1
-    // } else if (payment.paymentType === "4") {
-    //   this.ordersViaInternetInfo.paymentTypeDescription = "HAVALE"
-    //   this.ordersViaInternetInfo.paymentTypeCode = 4
-    // }
-
+    this.exchangeRate = exchangeRate;
     this.customerCode = currAccCode;
     this.internalDescription = orderNo;
+    this.description = customerDesc;
     this.orderDate = new Date().toUTCString();
     this.officeCode = "M";
     this.warehouseCode = "MD";
 
     this.documentNumber = orderNo;
-    this.description = customerDesc;
     selectedProducts.forEach(p => {
       var line: Line = new Line();
       line.usedBarcode = p.barcode;
       line.salesPersonCode = salesPersonCode;
-      line.priceVI = p.price;
+      if (exchangeRate != 1) {
+        line.priceVI = p.price / exchangeRate;
+      } else {
+        line.priceVI = p.price;
+      }
       line.qty1 = p.quantity;
       line.itemCode = p.itemCode;
       this.lines.push(line);
@@ -185,20 +174,19 @@ export class NebimInvoice {
     this.posTerminalID = 1;
     this.shipmentMethodCode = 2;
     this.isCompleted = true;
-    // this.isSalesViaInternet = false;
     this.isCreditSale = true;
     this.isOrderBase = true;
     this.taxTypeCode = taxTypeCode;
     this.lines = [];
     this.customerCode = currAccCode;
     this.internalDescription = orderNo;
+    this.description = customerDesc;
     this.invoiceDate = new Date().toUTCString();
     this.officeCode = "M";
     this.warehouseCode = "MD";
     this.discounts.push(new Discount(discountPercentage));
 
     // this.documentNumber = orderNo;
-    this.description = customerDesc;
     selectedProducts.forEach(p => {
       var line: Line_3 = new Line_3();
       if (exchangeRate != 1) {

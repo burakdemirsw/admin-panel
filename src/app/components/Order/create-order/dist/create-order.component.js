@@ -137,6 +137,9 @@ var CreateOrderComponent = /** @class */ (function () {
         this.selectedSize = '';
         this.products = [];
         this.clonedProducts = {};
+        this.cargoPrices = [{ name: 'DOSYA (₺90)', code: 90 }, { name: 'PAKET (₺80) ', code: 80 }, { name: 'K.KOLİ (₺115)', code: 115 },
+            { name: 'O.KOLİ (₺140)', code: 140 },
+            { name: 'B.KOLİ (₺180)', code: 180 }];
         this.packagingTypes = [{ name: 'DOSYA', code: '1' }, { name: 'PAKET', code: '3' }, { name: 'KOLİ', code: '4' }];
         this.shipmentServiceTypes = [{ name: 'GÖNDERİCİ ÖDEMELİ', code: '1' }, { name: 'ALICI ÖDEMELİ', code: '2' }];
         this.cargoFirms = [{ name: 'Mng', code: 1 }, { name: 'Aras', code: 2 }];
@@ -928,6 +931,7 @@ var CreateOrderComponent = /** @class */ (function () {
                 p.discountedPrice = ((100 - discountRate) / 100) * (p.price);
             });
             this._discountRate = discountRate;
+            this.toasterService.success("İndirim Uygulandı");
         }
     };
     CreateOrderComponent.prototype.resetDiscount = function () {
@@ -935,12 +939,14 @@ var CreateOrderComponent = /** @class */ (function () {
             p.discountedPrice = p.basePrice;
         });
         this.discountForm.reset();
+        this.toasterService.success("İndirim Kaldırıldı");
     };
     CreateOrderComponent.prototype.cashDiscount = function (discountAmount) {
         var value = discountAmount / this.selectedProducts.length;
         this.selectedProducts.forEach(function (p) {
             p.discountedPrice = p.discountedPrice - (value / p.quantity);
         });
+        this.toasterService.success("İndirim Uygulandı");
     };
     CreateOrderComponent.prototype.createGetProductForm = function () {
         this.getProductsForm = this.formBuilder.group({
@@ -955,10 +961,10 @@ var CreateOrderComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!pageType) return [3 /*break*/, 7];
+                        if (!pageType) return [3 /*break*/, 8];
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 5, , 6]);
+                        _a.trys.push([1, 6, , 7]);
                         _request = new product_service_1.BarcodeSearch_RM();
                         _request.barcode = request.barcode;
                         return [4 /*yield*/, this.productService.searchProduct(_request)];
@@ -967,35 +973,39 @@ var CreateOrderComponent = /** @class */ (function () {
                         this.products = response;
                         if (!(this.products.length > 0)) return [3 /*break*/, 4];
                         this.getProductsForm.get('barcode').setValue(null);
+                        // this.products = []; adil açtırdı
                         return [4 /*yield*/, this.addCurrentProducts(this.products[0])];
                     case 3:
+                        // this.products = []; adil açtırdı
                         _a.sent();
-                        this.products = [];
-                        _a.label = 4;
-                    case 4: return [2 /*return*/, response];
-                    case 5:
+                        return [3 /*break*/, 5];
+                    case 4:
+                        this.toasterService.error("Ürün Bulunamadı");
+                        _a.label = 5;
+                    case 5: return [2 /*return*/, response];
+                    case 6:
                         error_3 = _a.sent();
                         console.log(error_3.message);
                         return [2 /*return*/, null];
-                    case 6: return [3 /*break*/, 12];
-                    case 7:
+                    case 7: return [3 /*break*/, 13];
+                    case 8:
                         if (!request.shelfNo) {
                             this.generalService.focusNextInput('shelfNo');
                             return [2 /*return*/];
                         }
                         return [4 /*yield*/, this.warehouseService.countProductRequest(request.barcode, request.shelfNo, 1, '', '', '', 'Order/CountProductControl', this.orderNo, '')];
-                    case 8:
+                    case 9:
                         check_response = _a.sent();
-                        if (!(check_response != undefined)) return [3 /*break*/, 12];
+                        if (!(check_response != undefined)) return [3 /*break*/, 13];
                         data = check_response;
                         if (data.status != 'RAF') {
                             this.getProductsForm.get('barcode').setValue(check_response.description);
                         }
                         return [4 /*yield*/, this.productService.searchProduct3(check_response.description, check_response.batchCode, this.getProductsForm.value.shelfNo)];
-                    case 9:
+                    case 10:
                         response = _a.sent();
                         this.products = response;
-                        if (!(this.products.length > 0)) return [3 /*break*/, 11];
+                        if (!(this.products.length > 0)) return [3 /*break*/, 12];
                         totalQty = 0;
                         this.products.forEach(function (p) {
                             totalQty += p.quantity;
@@ -1011,12 +1021,12 @@ var CreateOrderComponent = /** @class */ (function () {
                         this.getProductsForm.get('barcode').setValue(null);
                         this.getProductsForm.get('shelfNo').setValue(null);
                         return [4 /*yield*/, this.addCurrentProducts(this.products[0])];
-                    case 10:
+                    case 11:
                         _a.sent();
                         this.products = [];
-                        _a.label = 11;
-                    case 11: return [2 /*return*/, response];
-                    case 12: return [2 /*return*/];
+                        _a.label = 12;
+                    case 12: return [2 /*return*/, response];
+                    case 13: return [2 /*return*/];
                 }
             });
         });
@@ -1027,27 +1037,32 @@ var CreateOrderComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!(request.quantity > 0)) return [3 /*break*/, 4];
+                        if (!(request.quantity > 0)) return [3 /*break*/, 5];
                         order_request = this.createClientOrder_RM();
-                        return [4 /*yield*/, this.orderService.createClientOrder(order_request)];
+                        return [4 /*yield*/, this.orderService.createClientOrder(order_request)]; //sipariş oluşturuldu varsa güncellendi
                     case 1:
-                        order_response = _a.sent();
-                        if (!order_response) return [3 /*break*/, 3];
+                        order_response = _a.sent() //sipariş oluşturuldu varsa güncellendi
+                        ;
+                        if (!order_response) return [3 /*break*/, 4];
                         line_request = this.createClientOrderBasketItem_RM(request);
+                        if (line_request.itemCode.startsWith('FG')) {
+                            line_request.quantity = 5;
+                        }
                         return [4 /*yield*/, this.orderService.createClientOrderBasketItem(line_request)];
                     case 2:
                         line_response = _a.sent();
-                        if (line_response) {
-                            this.toasterService.success("Ürün Eklendi");
-                            this.generalService.beep();
-                            this.getClientOrder(1);
-                        }
-                        _a.label = 3;
-                    case 3: return [3 /*break*/, 5];
-                    case 4:
+                        if (!line_response) return [3 /*break*/, 4];
+                        this.toasterService.success("Ürün Eklendi");
+                        this.generalService.beep();
+                        return [4 /*yield*/, this.getClientOrder(1)];
+                    case 3:
+                        _a.sent(); //sipariş ürünleri çekildi
+                        _a.label = 4;
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
                         this.toasterService.error('Stok Hatası');
-                        _a.label = 5;
-                    case 5: return [2 /*return*/];
+                        _a.label = 6;
+                    case 6: return [2 /*return*/];
                 }
             });
         });
@@ -1088,8 +1103,11 @@ var CreateOrderComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        if (product.itemCode.startsWith('FG')) {
+                            qty = qty * 5;
+                        }
                         product.quantity += qty;
-                        return [4 /*yield*/, this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price)];
+                        return [4 /*yield*/, this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price, product.discountedPrice, product.basePrice)];
                     case 1:
                         response = _a.sent();
                         if (response) {
@@ -1108,7 +1126,7 @@ var CreateOrderComponent = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         if (!(product.price > 0)) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price)];
+                        return [4 /*yield*/, this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price, product.discountedPrice, product.basePrice)];
                     case 1:
                         response = _a.sent();
                         if (response) {
@@ -1118,14 +1136,17 @@ var CreateOrderComponent = /** @class */ (function () {
                         delete this.clonedProducts[product.lineId];
                         return [3 /*break*/, 2];
                     case 2:
-                        this.myTable.cancelRowEdit(product);
+                        this.cancelRowEdit(product, 0);
                         return [2 /*return*/];
                 }
             });
         });
     };
     CreateOrderComponent.prototype.cancelRowEdit = function (product, index) {
-        this.myTable.cancelRowEdit(product);
+        var _this = this;
+        this.selectedProducts.forEach(function (product) {
+            _this.myTable.cancelRowEdit(product);
+        });
     };
     CreateOrderComponent.prototype.onRowEditCancel = function (product, index) {
         this.products[index] = this.clonedProducts[product.lineId];
@@ -1165,108 +1186,161 @@ var CreateOrderComponent = /** @class */ (function () {
         return Number("" + prefix + randomNumber);
     };
     CreateOrderComponent.prototype.createCargoForm = function () {
-        var _this = this;
-        this.cargoForm = this.formBuilder.group({
-            packagingType: [null],
-            shipmentServiceType: [null],
-            isCOD: [false],
-            kg: [1],
-            desi: [1],
-            address_recepient_name: [null],
-            isActive: [false],
-            cargoFirm: [null]
-        });
-        this.cargoForm.get('cargoFirm').valueChanges.subscribe(function (value) {
-            if (value != null) {
-                _this.cargoForm.get('isActive').setValue(true);
-            }
-        });
-        this.cargoForm.get('isActive').valueChanges.subscribe(function (value) {
-            if (value === false) {
-                _this.cargoForm.get('packagingType').clearValidators();
-                _this.cargoForm.get('packagingType').updateValueAndValidity();
-                _this.cargoForm.get('shipmentServiceType').clearValidators();
-                _this.cargoForm.get('shipmentServiceType').updateValueAndValidity();
-                _this.cargoForm.get('address_recepient_name').clearValidators();
-                _this.cargoForm.get('address_recepient_name').updateValueAndValidity();
-                _this.cargoForm.get('isCOD').clearValidators();
-                _this.cargoForm.get('kg').clearValidators();
-                _this.cargoForm.get('desi').clearValidators();
-            }
-            else {
-                _this.cargoForm.get('packagingType').setValidators(forms_1.Validators.required);
-                _this.cargoForm.get('packagingType').updateValueAndValidity();
-                _this.cargoForm.get('shipmentServiceType').setValidators(forms_1.Validators.required);
-                _this.cargoForm.get('shipmentServiceType').updateValueAndValidity();
-                _this.cargoForm.get('address_recepient_name').setValidators(forms_1.Validators.required);
-                _this.cargoForm.get('address_recepient_name').updateValueAndValidity();
-                _this.cargoForm.get('isCOD').setValidators(forms_1.Validators.required);
-                _this.cargoForm.get('kg').setValidators(forms_1.Validators.required);
-                _this.cargoForm.get('desi').setValidators(forms_1.Validators.required);
-            }
-        });
-        this.cargoForm.get('packagingType').valueChanges.subscribe(function (value) {
-            if (value.code === '3') {
-                _this.cargoForm.get('kg').setValue(2);
-                _this.cargoForm.get('desi').setValue(2);
-                _this.cargoForm.get('kg').setValidators([forms_1.Validators.required, forms_1.Validators.min(2)]);
-                _this.cargoForm.get('desi').setValidators([forms_1.Validators.required, forms_1.Validators.min(2)]);
-            }
-            else if (value.code === '4') {
-                _this.cargoForm.get('kg').setValue(1);
-                _this.cargoForm.get('desi').setValue(1);
-                _this.cargoForm.get('kg').setValidators([forms_1.Validators.required, forms_1.Validators.min(1)]);
-                _this.cargoForm.get('desi').setValidators([forms_1.Validators.required, forms_1.Validators.min(1)]);
-            }
-            else {
-                _this.cargoForm.get('kg').setValue(0);
-                _this.cargoForm.get('desi').setValue(0);
-                _this.cargoForm.get('kg').setValidators([forms_1.Validators.required, forms_1.Validators.min(0)]);
-                _this.cargoForm.get('desi').setValidators([forms_1.Validators.required, forms_1.Validators.min(0)]);
-            }
-            _this.cargoForm.get('kg').updateValueAndValidity();
-            _this.cargoForm.get('desi').updateValueAndValidity();
-        });
-        this.cargoForm.get('kg').valueChanges.subscribe(function (value) {
-            if (_this.cargoForm.get('packagingType').value.code === '3') { //paket
-                if (value < 2) {
-                    _this.kgErrorMessage = 'Paket gönderimlerinde KG değeri 2 den büyük olmalıdır';
-                }
-                else {
-                    _this.kgErrorMessage = '';
-                }
-            }
-            else if (_this.cargoForm.get('packagingType').value.code === '4') { //koli
-                if (value < 1) {
-                    _this.kgErrorMessage = 'Koli gönderimlerinde KG değeri 1 den büyük olmalıdır';
-                }
-                else {
-                    _this.kgErrorMessage = '';
-                }
-            }
-        });
-        this.cargoForm.get('desi').valueChanges.subscribe(function (value) {
-            if (_this.cargoForm.get('packagingType').value.code === '3') {
-                if (value < 2) {
-                    _this.desiErrorMessage = 'Paket gönderimlerinde DESİ değeri 2 den büyük olmalıdır';
-                }
-                else {
-                    _this.desiErrorMessage = '';
-                }
-            }
-            else if (_this.cargoForm.get('packagingType').value.code === '4') {
-                if (value < 1) {
-                    _this.desiErrorMessage = 'Koli gönderimlerinde DESİ değeri 1 den büyük olmalıdır';
-                }
-                else {
-                    _this.desiErrorMessage = '';
-                }
-            }
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                this.cargoForm = this.formBuilder.group({
+                    address_phoneNumber: [null],
+                    packagingType: [null],
+                    shipmentServiceType: [null],
+                    isCOD: [false],
+                    kg: [1],
+                    desi: [1],
+                    address_recepient_name: [null],
+                    isActive: [false],
+                    cargoFirm: [null],
+                    address_multi_pack: [false],
+                    address_pack_count: [1]
+                });
+                this.cargoForm.get('cargoFirm').valueChanges.subscribe(function (value) {
+                    if (value != null) {
+                        _this.cargoForm.get('isActive').setValue(true);
+                    }
+                });
+                this.cargoForm.get('isActive').valueChanges.subscribe(function (value) {
+                    if (value === false) {
+                        _this.cargoForm.get('packagingType').clearValidators();
+                        _this.cargoForm.get('packagingType').updateValueAndValidity();
+                        _this.cargoForm.get('shipmentServiceType').clearValidators();
+                        _this.cargoForm.get('shipmentServiceType').updateValueAndValidity();
+                        _this.cargoForm.get('address_recepient_name').clearValidators();
+                        _this.cargoForm.get('address_recepient_name').updateValueAndValidity();
+                        _this.cargoForm.get('isCOD').clearValidators();
+                        _this.cargoForm.get('address_phoneNumber').clearValidators();
+                        _this.cargoForm.get('cargoPrice').clearValidators();
+                        _this.cargoForm.get('kg').clearValidators();
+                        _this.cargoForm.get('desi').clearValidators();
+                    }
+                    else {
+                        _this.cargoForm.get('packagingType').setValidators(forms_1.Validators.required);
+                        _this.cargoForm.get('packagingType').updateValueAndValidity();
+                        _this.cargoForm.get('shipmentServiceType').setValidators(forms_1.Validators.required);
+                        _this.cargoForm.get('shipmentServiceType').updateValueAndValidity();
+                        _this.cargoForm.get('address_recepient_name').setValidators(forms_1.Validators.required);
+                        _this.cargoForm.get('address_recepient_name').updateValueAndValidity();
+                        _this.cargoForm.get('isCOD').setValidators(forms_1.Validators.required);
+                        _this.cargoForm.get('address_phoneNumber').setValidators(forms_1.Validators.required);
+                        _this.cargoForm.get('cargoPrice').setValidators(forms_1.Validators.required);
+                        _this.cargoForm.get('kg').setValidators(forms_1.Validators.required);
+                        _this.cargoForm.get('desi').setValidators(forms_1.Validators.required);
+                    }
+                });
+                this.cargoForm.get('cargoPrice').valueChanges.subscribe(function (value) { return __awaiter(_this, void 0, void 0, function () {
+                    var _product, __product;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                _product = this.selectedProducts.find(function (p) { return p.itemCode == 'KARGO'; });
+                                if (!!_product) return [3 /*break*/, 6];
+                                if (!this.orderType) return [3 /*break*/, 2];
+                                this.getProductsForm.get('barcode').setValue('KARGO');
+                                return [4 /*yield*/, this.getProducts(this.getProductsForm.value, this.orderType)];
+                            case 1:
+                                _a.sent();
+                                return [3 /*break*/, 4];
+                            case 2:
+                                this.getProductsForm.get('barcode').setValue('KARGO');
+                                this.getProductsForm.get('shelfNo').setValue('KARGO04');
+                                return [4 /*yield*/, this.getProducts(this.getProductsForm.value, this.orderType)];
+                            case 3:
+                                _a.sent();
+                                _a.label = 4;
+                            case 4:
+                                __product = this.selectedProducts.find(function (p) { return p.itemCode == 'KARGO'; });
+                                __product.price = value.code;
+                                __product.basePrice = value.code;
+                                __product.discountedPrice = value.code;
+                                return [4 /*yield*/, this.orderService.updateClientOrderBasketItem(this.id, __product.lineId, __product.quantity, __product.price, __product.discountedPrice, __product.discountedPrice)];
+                            case 5:
+                                _a.sent();
+                                return [3 /*break*/, 8];
+                            case 6:
+                                _product.price = value.code;
+                                _product.basePrice = value.code;
+                                _product.discountedPrice = value.code;
+                                return [4 /*yield*/, this.orderService.updateClientOrderBasketItem(this.id, _product.lineId, _product.quantity, _product.price, _product.discountedPrice, _product.basePrice)];
+                            case 7:
+                                _a.sent();
+                                _a.label = 8;
+                            case 8: return [2 /*return*/];
+                        }
+                    });
+                }); });
+                this.cargoForm.get('packagingType').valueChanges.subscribe(function (value) {
+                    if (value.code === '3') {
+                        _this.cargoForm.get('kg').setValue(2);
+                        _this.cargoForm.get('desi').setValue(2);
+                        _this.cargoForm.get('kg').setValidators([forms_1.Validators.required, forms_1.Validators.min(2)]);
+                        _this.cargoForm.get('desi').setValidators([forms_1.Validators.required, forms_1.Validators.min(2)]);
+                    }
+                    else if (value.code === '4') {
+                        _this.cargoForm.get('kg').setValue(1);
+                        _this.cargoForm.get('desi').setValue(1);
+                        _this.cargoForm.get('kg').setValidators([forms_1.Validators.required, forms_1.Validators.min(1)]);
+                        _this.cargoForm.get('desi').setValidators([forms_1.Validators.required, forms_1.Validators.min(1)]);
+                    }
+                    else {
+                        _this.cargoForm.get('kg').setValue(0);
+                        _this.cargoForm.get('desi').setValue(0);
+                        _this.cargoForm.get('kg').setValidators([forms_1.Validators.required, forms_1.Validators.min(0)]);
+                        _this.cargoForm.get('desi').setValidators([forms_1.Validators.required, forms_1.Validators.min(0)]);
+                    }
+                    _this.cargoForm.get('kg').updateValueAndValidity();
+                    _this.cargoForm.get('desi').updateValueAndValidity();
+                });
+                this.cargoForm.get('kg').valueChanges.subscribe(function (value) {
+                    if (_this.cargoForm.get('packagingType').value.code === '3') { //paket
+                        if (value < 2) {
+                            _this.kgErrorMessage = 'Paket gönderimlerinde KG değeri 2 den büyük olmalıdır';
+                        }
+                        else {
+                            _this.kgErrorMessage = '';
+                        }
+                    }
+                    else if (_this.cargoForm.get('packagingType').value.code === '4') { //koli
+                        if (value < 1) {
+                            _this.kgErrorMessage = 'Koli gönderimlerinde KG değeri 1 den büyük olmalıdır';
+                        }
+                        else {
+                            _this.kgErrorMessage = '';
+                        }
+                    }
+                });
+                this.cargoForm.get('desi').valueChanges.subscribe(function (value) {
+                    if (_this.cargoForm.get('packagingType').value.code === '3') {
+                        if (value < 2) {
+                            _this.desiErrorMessage = 'Paket gönderimlerinde DESİ değeri 2 den büyük olmalıdır';
+                        }
+                        else {
+                            _this.desiErrorMessage = '';
+                        }
+                    }
+                    else if (_this.cargoForm.get('packagingType').value.code === '4') {
+                        if (value < 1) {
+                            _this.desiErrorMessage = 'Koli gönderimlerinde DESİ değeri 1 den büyük olmalıdır';
+                        }
+                        else {
+                            _this.desiErrorMessage = '';
+                        }
+                    }
+                });
+                return [2 /*return*/];
+            });
         });
     };
     CreateOrderComponent.prototype.submitCargo = function (formValue) {
         return __awaiter(this, void 0, void 0, function () {
-            var cargoFirmId, recepient_name, content, cargoSetting, referenceId, orderRequest, barcodeRequest, content, orderPieces, orderPiece, _request, response;
+            var cargoFirmId, recepient_name, phoneNumber, content, cargoSetting, referenceId, orderRequest, barcodeRequest, content, orderPieces, orderPiece, _request, response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.getOrderDetail()];
@@ -1275,9 +1349,14 @@ var CreateOrderComponent = /** @class */ (function () {
                         cargoFirmId = this.cargoForm.get('cargoFirm').value.code;
                         if (!this.orderDetail) return [3 /*break*/, 3];
                         recepient_name = formValue.address_recepient_name;
+                        phoneNumber = formValue.address_phoneNumber;
                         if (recepient_name != null && recepient_name != '') {
                             this.orderDetail.customer = recepient_name;
                             this.toasterService.info('Alıcı Adı Değişikliği Algılandı');
+                        }
+                        if (phoneNumber != null && phoneNumber != '') {
+                            this.orderDetail.phone = phoneNumber;
+                            this.toasterService.info('Telefon Değişikliği Algılandı');
                         }
                         if (this.selectedAddresses.length > 0) {
                             this.orderDetail.address = this.selectedAddresses[0].address;
@@ -1515,7 +1594,7 @@ var CreateOrderComponent = /** @class */ (function () {
     };
     CreateOrderComponent.prototype.createOrder = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var formValue, discountPercent, request, response, _request, response, exchangeRate, __request, __response;
+            var formValue, exchangeRate, discountPercent, request, response, _request, response, __request, __response;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -1545,9 +1624,23 @@ var CreateOrderComponent = /** @class */ (function () {
                             this.toasterService.error("Ürün Ekleyiniz");
                             return [2 /*return*/];
                         }
+                        exchangeRate = 0;
+                        if (this.selectedCustomers[0].docCurrencyCode === 'TRY') {
+                            exchangeRate = 1;
+                        }
+                        else if (this.selectedCustomers[0].docCurrencyCode === 'USD') {
+                            exchangeRate = this.exchangeRate.usd;
+                        }
+                        else if (this.selectedCustomers[0].docCurrencyCode === 'EUR') {
+                            exchangeRate = this.exchangeRate.eur;
+                        }
+                        if (exchangeRate === 0) {
+                            this.toasterService.error("EXCHANGE RATE ERROR");
+                            return [2 /*return*/];
+                        }
                         discountPercent = this.calculateDiscountPercent(this.selectedProducts);
                         if (!this.orderType) return [3 /*break*/, 6];
-                        request = new nebimOrder_1.NebimOrder(discountPercent, this.selectedCustomers[0].currAccDescription, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.taxTypeCode);
+                        request = new nebimOrder_1.NebimOrder(exchangeRate, discountPercent, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.taxTypeCode);
                         return [4 /*yield*/, this.orderService.createOrder(request)];
                     case 1:
                         response = _a.sent();
@@ -1566,7 +1659,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         _a.label = 5;
                     case 5: return [3 /*break*/, 12];
                     case 6:
-                        _request = new nebimOrder_1.NebimOrder(discountPercent, this.selectedCustomers[0].currAccDescription, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.taxTypeCode);
+                        _request = new nebimOrder_1.NebimOrder(exchangeRate, discountPercent, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.taxTypeCode);
                         return [4 /*yield*/, this.orderService.createOrder(_request)];
                     case 7:
                         response = _a.sent();
@@ -1581,21 +1674,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         this.toasterService.info('KARGO OLUŞTURULMADI');
                         _a.label = 10;
                     case 10:
-                        exchangeRate = 0;
-                        if (this.selectedCustomers[0].docCurrencyCode === 'TRY') {
-                            exchangeRate = 1;
-                        }
-                        else if (this.selectedCustomers[0].docCurrencyCode === 'USD') {
-                            exchangeRate = this.exchangeRate.usd;
-                        }
-                        else if (this.selectedCustomers[0].docCurrencyCode === 'EUR') {
-                            exchangeRate = this.exchangeRate.eur;
-                        }
-                        if (exchangeRate === 0) {
-                            this.toasterService.error("EXCHANGE RATE ERROR");
-                            return [2 /*return*/];
-                        }
-                        __request = new nebimOrder_1.NebimInvoice(discountPercent, exchangeRate, this.selectedCustomers[0].docCurrencyCode, this.selectedCustomers[0].currAccDescription, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.taxTypeCode, this.selectedAddresses[0].postalAddressID);
+                        __request = new nebimOrder_1.NebimInvoice(discountPercent, exchangeRate, this.selectedCustomers[0].docCurrencyCode, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.taxTypeCode, this.selectedAddresses[0].postalAddressID);
                         __request.lines.forEach(function (l1) {
                             var fp = response.lines.find(function (p) {
                                 return p.itemCode === l1.itemCode && p.usedBarcode === l1.usedBarcode && p.qty1 === l1.qty1;

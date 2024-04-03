@@ -736,14 +736,14 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
-    OrderService.prototype.updateClientOrderBasketItem = function (id, lineId, quantity, price) {
+    OrderService.prototype.updateClientOrderBasketItem = function (id, lineId, quantity, price, discountedPrice, basePrice) {
         return __awaiter(this, void 0, Promise, function () {
             var query, response, error_18;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        query = id + "/" + lineId + "/" + quantity + "/" + price;
+                        query = id + "/" + lineId + "/" + quantity + "/" + price + "/" + discountedPrice + "/" + basePrice;
                         return [4 /*yield*/, this.httpClientService.get({ controller: "order/update-client-order-basket-item" + "/" + query }).toPromise()];
                     case 1:
                         response = _a.sent();

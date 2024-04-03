@@ -28,7 +28,8 @@ export class CreatePackage_MNG_RM {
   orderRequest: CreatePackage_MNG_Request
   barcodeRequest: CreateBarcode_MNG_Request
   barcodeBase64: string
-  cargoFirmId : number
+  cargoFirmId: number
+  packageCount: number
 }
 
 export class CreatePackage_MNG_Request {
@@ -214,7 +215,7 @@ export class GetPackageStatus_MNG_Response {
 }
 
 export class CargoBarcode_VM {
-  cargoFirmId :number
+  cargoFirmId: number
   orderNo?: string;
   referenceId?: string;
   barcodeZplCode?: string

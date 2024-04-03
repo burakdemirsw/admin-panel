@@ -4,6 +4,7 @@ th {
 
 ::ng-deep .p-datatable .p-datatable-thead>tr>th {
   padding: 4px 10px;
+
   /* Başlık hücrelerinin iç boşluklarını azalt */
 }
 
@@ -11,3 +12,24 @@ th {
   padding: 2px 10px;
   /* Veri hücrelerinin iç boşluklarını azalt */
 }
+
+
+@media only screen and (max-width: 768px) {
+
+  /* This covers most tablets and mobile phones */
+  ::ng-deep .p-datatable .p-datatable-table {
+    width: auto !important;
+  }
+}
+
+.country-column {
+  width: 100px;
+  /* Örnek bir genişlik */
+}
+
+.region-column {
+  width: 100px;
+  /* Örnek bir genişlik */
+}
+
+/* Diğer kolonlar için de benzer şekilde sınıflar tanımlayabilirsiniz */

@@ -29,7 +29,7 @@ exports.CheckCustomerModel = CheckCustomerModel;
 var NebimOrder = /** @class */ (function () {
     // discounts: Discount[];
     // payments: Payment[];
-    function NebimOrder(discountPercentage, customerDesc, currAccCode, orderNo, formValue, selectedProducts, salesPersonCode, taxTypeCode) {
+    function NebimOrder(exchangeRate, discountPercentage, customerDesc, currAccCode, orderNo, formValue, selectedProducts, salesPersonCode, taxTypeCode) {
         var _this = this;
         this.discounts = [];
         this.modelType = 5;
@@ -41,37 +41,24 @@ var NebimOrder = /** @class */ (function () {
         this.taxTypeCode = taxTypeCode;
         this.deliveryCompanyCode = "MNG";
         this.lines = [];
-        // this.discounts = [];
-        // this.payments = [];
-        //ÖDEME KAPATILDI                        // this.ordersViaInternetInfo = new OrdersViaInternetInfo();
-        //ÖDEME KAPATILDI                           // this.ordersViaInternetInfo.paymentDate = new Date().toUTCString();
-        //ÖDEME KAPATILDI                           // this.ordersViaInternetInfo.sendDate = new Date().toUTCString();
-        //ÖDEME KAPATILDI                           // this.ordersViaInternetInfo.salesURL = "www.davye.com";
-        //ÖDEME KAPATILDI                          // this.ordersViaInternetInfo.paymentAgent = "";
-        //ÖDEME KAPATILDI                          // this.ordersViaInternetInfo.paymentTypeCode = 2;
-        //ÖDEME KAPATILDI                          // this.ordersViaInternetInfo.paymentTypeDescription = "Kredi Kartı"
-        // if (payment.paymentType === "1") {
-        //   this.ordersViaInternetInfo.paymentTypeDescription = "PAYTR"
-        //   this.ordersViaInternetInfo.paymentTypeCode = 2
-        // } else if (payment.paymentType === "2") {
-        //   this.ordersViaInternetInfo.paymentTypeDescription = "NAKİT"
-        //   this.ordersViaInternetInfo.paymentTypeCode = 1
-        // } else if (payment.paymentType === "4") {
-        //   this.ordersViaInternetInfo.paymentTypeDescription = "HAVALE"
-        //   this.ordersViaInternetInfo.paymentTypeCode = 4
-        // }
+        this.exchangeRate = exchangeRate;
         this.customerCode = currAccCode;
         this.internalDescription = orderNo;
+        this.description = customerDesc;
         this.orderDate = new Date().toUTCString();
         this.officeCode = "M";
         this.warehouseCode = "MD";
         this.documentNumber = orderNo;
-        this.description = customerDesc;
         selectedProducts.forEach(function (p) {
             var line = new Line();
             line.usedBarcode = p.barcode;
             line.salesPersonCode = salesPersonCode;
-            line.priceVI = p.price;
+            if (exchangeRate != 1) {
+                line.priceVI = p.price / exchangeRate;
+            }
+            else {
+                line.priceVI = p.price;
+            }
             line.qty1 = p.quantity;
             line.itemCode = p.itemCode;
             _this.lines.push(line);
@@ -137,19 +124,18 @@ var NebimInvoice = /** @class */ (function () {
         this.posTerminalID = 1;
         this.shipmentMethodCode = 2;
         this.isCompleted = true;
-        // this.isSalesViaInternet = false;
         this.isCreditSale = true;
         this.isOrderBase = true;
         this.taxTypeCode = taxTypeCode;
         this.lines = [];
         this.customerCode = currAccCode;
         this.internalDescription = orderNo;
+        this.description = customerDesc;
         this.invoiceDate = new Date().toUTCString();
         this.officeCode = "M";
         this.warehouseCode = "MD";
         this.discounts.push(new Discount(discountPercentage));
         // this.documentNumber = orderNo;
-        this.description = customerDesc;
         selectedProducts.forEach(function (p) {
             var line = new Line_3();
             if (exchangeRate != 1) {

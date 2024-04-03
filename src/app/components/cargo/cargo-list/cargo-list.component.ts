@@ -25,10 +25,9 @@ export class CargoListComponent implements OnInit {
     var response = await this.cargoService.printSingleBarcode(zplCode);
   }
 
-  async deleteCargo(cargo: CargoBarcode_VM,cargoFirmId : number) {
+  async deleteCargo(cargo: CargoBarcode_VM, cargoFirmId: number) {
     var windowResponse = window.confirm("Gönderiyi silmek istediğinize emin misiniz?")
-
-    {
+    if (windowResponse) {
 
       var response = await this.cargoService.deleteCargo(cargo, cargoFirmId)
       if (response) {
@@ -38,6 +37,7 @@ export class CargoListComponent implements OnInit {
         this.toasterService.warn("Gönderi Silinemedi")
       }
     }
+
 
 
   }

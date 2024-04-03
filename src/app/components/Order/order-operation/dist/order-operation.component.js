@@ -121,7 +121,7 @@ var OrderOperationComponent = /** @class */ (function () {
                     case 0: 
                     //this.spinnerService.show();
                     return [4 /*yield*/, this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
-                            var orderNumber, orderNumberType, orderNumberType;
+                            var orderNumber, orderNumberType, orderNumberType, response;
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
@@ -148,34 +148,38 @@ var OrderOperationComponent = /** @class */ (function () {
                                         return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'BP')];
                                     case 1:
                                         _a.sent(); //toplanan ve toplanacak ürünleri çeker
-                                        return [3 /*break*/, 11];
+                                        return [3 /*break*/, 12];
                                     case 2:
-                                        if (!(orderNumberType === 'WS')) return [3 /*break*/, 4];
-                                        return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'WS')];
+                                        if (!(orderNumberType === 'WS')) return [3 /*break*/, 5];
+                                        return [4 /*yield*/, this.orderService.getOrderDetail(params['orderNumber'])];
                                     case 3:
-                                        _a.sent(); //toplanan ve toplanacak ürünleri çeker
-                                        return [3 /*break*/, 11];
+                                        response = _a.sent();
+                                        this.customerName = response.description;
+                                        return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'WS')];
                                     case 4:
-                                        if (!(orderNumberType === 'WT' || orderNumber.startsWith("W-"))) return [3 /*break*/, 9];
-                                        if (!orderNumber.startsWith("W-")) return [3 /*break*/, 6];
+                                        _a.sent(); //toplanan ve toplanacak ürünleri çeker
+                                        return [3 /*break*/, 12];
+                                    case 5:
+                                        if (!(orderNumberType === 'WT' || orderNumber.startsWith("W-"))) return [3 /*break*/, 10];
+                                        if (!orderNumber.startsWith("W-")) return [3 /*break*/, 7];
                                         this.currentOrderNo = params['orderNumber'].split('W-')[1];
                                         return [4 /*yield*/, this.getAllProducts(params['orderNumber'].split('W-')[1], 'WT')];
-                                    case 5:
+                                    case 6:
                                         _a.sent(); //toplanan ve toplanacak ürünleri çeker
-                                        return [3 /*break*/, 8];
-                                    case 6: return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'WT')];
-                                    case 7:
+                                        return [3 /*break*/, 9];
+                                    case 7: return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'WT')];
+                                    case 8:
                                         _a.sent(); //toplanan ve toplanacak ürünleri çeker
-                                        _a.label = 8;
-                                    case 8: return [3 /*break*/, 11];
-                                    case 9:
-                                        if (!orderNumber.includes("MIS")) return [3 /*break*/, 11];
+                                        _a.label = 9;
+                                    case 9: return [3 /*break*/, 12];
+                                    case 10:
+                                        if (!orderNumber.includes("MIS")) return [3 /*break*/, 12];
                                         orderNumberType = "MIS";
                                         return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'MIS')];
-                                    case 10:
-                                        _a.sent(); //toplanan ve toplanacak ürünleri çeker
-                                        _a.label = 11;
                                     case 11:
+                                        _a.sent(); //toplanan ve toplanacak ürünleri çeker
+                                        _a.label = 12;
+                                    case 12:
                                         if (location.href.includes("MIS")) {
                                             this._pageDescription = true;
                                         }

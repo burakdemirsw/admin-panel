@@ -88,6 +88,7 @@ export class OrderOperationComponent implements OnInit {
   }
   isBPTransferForm: boolean = false;
   isInvoice: boolean = false;
+  customerName: string;
   async ngOnInit() {
 
     //this.spinnerService.show();
@@ -119,6 +120,8 @@ export class OrderOperationComponent implements OnInit {
       if (orderNumberType === 'BP') {
         await this.getAllProducts(params['orderNumber'], 'BP'); //toplanan ve toplanacak ürünleri çeker
       } else if (orderNumberType === 'WS') {
+        var response = await this.orderService.getOrderDetail(params['orderNumber']);
+        this.customerName = response.description;
         await this.getAllProducts(params['orderNumber'], 'WS'); //toplanan ve toplanacak ürünleri çeker
       } else if (orderNumberType === 'WT' || orderNumber.startsWith("W-")) {
         if (orderNumber.startsWith("W-")) {

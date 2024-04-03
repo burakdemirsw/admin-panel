@@ -164,14 +164,17 @@
           href="#"
           data-bs-toggle="dropdown"
         >
-          <img
+          <!-- <img
             src="assets/img/melih.jpeg"
             alt="Profil"
             class="rounded-circle"
-          />
-          <span class="d-none d-md-block dropdown-toggle ps-2">{{
-            userName
-          }}</span>
+          /> -->
+          <h4 class="d-none d-md-block dropdown-toggle ps-2">
+            {{
+              userName.split(" ")[0].substring(0, 1) +
+                userName.split(" ")[1].substring(0, 1)
+            }}
+          </h4>
         </a>
         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
           <li class="dropdown-header">
