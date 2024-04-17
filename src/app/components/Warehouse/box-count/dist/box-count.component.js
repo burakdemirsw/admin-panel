@@ -47,9 +47,10 @@ var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
 var ClientUrls_1 = require("src/app/models/const/ClientUrls");
 var BoxCountComponent = /** @class */ (function () {
-    function BoxCountComponent(formBuilder, toasterService, productService, generalService, warehouseService, title, sanitizer) {
+    function BoxCountComponent(formBuilder, toasterService, headerService, productService, generalService, warehouseService, title, sanitizer) {
         this.formBuilder = formBuilder;
         this.toasterService = toasterService;
+        this.headerService = headerService;
         this.productService = productService;
         this.generalService = generalService;
         this.warehouseService = warehouseService;
@@ -92,6 +93,7 @@ var BoxCountComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        this.headerService.updatePageTitle('Kutu Sayım');
                         this.formGenerator();
                         return [4 /*yield*/, this.generalService.generateGUID()];
                     case 1:

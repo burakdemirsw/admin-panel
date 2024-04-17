@@ -67,7 +67,8 @@ var payment_CR_1 = require("src/app/models/model/payment/payment_CR");
 var nebimCustomer_1 = require("src/app/models/nebim/customer/nebimCustomer");
 var models_1 = require("../../cargo/create-cargo/models/models");
 var CreateOrderComponent = /** @class */ (function () {
-    function CreateOrderComponent(warehouseService, paymentService, toasterService, activatedRoute, router, httpClientService, generalService, addressService, googleDriveService, productService, formBuilder, orderService, cargoService) {
+    function CreateOrderComponent(headerService, warehouseService, paymentService, toasterService, activatedRoute, router, httpClientService, generalService, addressService, googleDriveService, productService, formBuilder, orderService, cargoService) {
+        this.headerService = headerService;
         this.warehouseService = warehouseService;
         this.paymentService = paymentService;
         this.toasterService = toasterService;
@@ -199,7 +200,7 @@ var CreateOrderComponent = /** @class */ (function () {
                                         this.pageTitle = "Perakende Satış";
                                         this.orderType = false;
                                     }
-                                    //   this.toasterService.warn(this.orderType.toString())
+                                    this.headerService.updatePageTitle(this.pageTitle);
                                 }
                                 return [2 /*return*/];
                             });

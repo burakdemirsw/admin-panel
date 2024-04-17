@@ -1,14 +1,14 @@
 import { DatePipe } from '@angular/common';
-import { Component, ElementRef, ViewChild, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import html2canvas from 'html2canvas';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { ProductList_VM } from 'src/app/models/model/product/productList_VM';
 import { QrCode } from 'src/app/models/model/product/qrCode';
 import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
+import { HeaderService } from 'src/app/services/admin/header.service';
 import {
   BarcodeSearch_RM,
   ProductService,
@@ -26,15 +26,21 @@ export class CreateQrComponent implements OnInit, OnChanges {
 
   @Input() barcode: string = null;
   @Input() quantity: number = null;
+  @Input() batchCode: string = null;
   ngOnChanges(changes: SimpleChanges): void {
     if (changes["barcode"] && !changes["barcode"].isFirstChange()) {
-      console.log("Barkod değişti:", changes["barcode"].currentValue);
       this.checkForm.get('barcode').setValue(changes["barcode"].currentValue)
+
     }
+    if (changes["batchCode"] && !changes["batchCode"].isFirstChange()) {
+      this.checkForm.get('batchCode').setValue(changes["batchCode"].currentValue)
+    }
+
 
     if (changes["quantity"] && !changes["quantity"].isFirstChange()) {
       this.checkForm.get('quantity').setValue(changes["quantity"].currentValue)
     }
+    this.onSubmit(this.checkForm.value);
   }
 
   checkForm: FormGroup;
@@ -50,6 +56,7 @@ export class CreateQrComponent implements OnInit, OnChanges {
     private httpClientService: HttpClientService,
     private datePipe: DatePipe,
     private warehouseService: WarehouseService,
+    private headerService: HeaderService
 
   ) { }
 
@@ -58,7 +65,7 @@ export class CreateQrComponent implements OnInit, OnChanges {
   @ViewChild('captureElement') captureElement: ElementRef;
   boxId: string;
   async ngOnInit() {
-
+    this.headerService.updatePageTitle("Kutu Etiketi Oluştur")
     this.formGenerator();
     this.focusNextInput('barcode');
     // Subscribe to the valueChanges observable to detect changes

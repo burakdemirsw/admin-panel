@@ -62,11 +62,11 @@ var UserService = /** @class */ (function () {
                     case 1:
                         response = _a.sent();
                         if (response) {
-                            console.log(response);
+                            // console.log(response);
                             return [2 /*return*/, true];
                         }
                         else {
-                            console.log("Kayıt Başarısız");
+                            // console.log("Kayıt Başarısız");
                             return [2 /*return*/, false];
                         }
                         return [2 /*return*/];
@@ -85,11 +85,11 @@ var UserService = /** @class */ (function () {
                     case 1:
                         response = _a.sent();
                         if (response) {
-                            console.log(response);
+                            // console.log(response);
                             return [2 /*return*/, true];
                         }
                         else {
-                            console.log("Güncelleme Başarısız");
+                            // console.log("Güncelleme Başarısız");
                             return [2 /*return*/, false];
                         }
                         return [2 /*return*/];
@@ -111,13 +111,13 @@ var UserService = /** @class */ (function () {
                     case 1:
                         response = _a.sent();
                         if (response) {
-                            console.log(response);
+                            // console.log(response);
                         }
                         else {
-                            console.log("response alınamadı");
+                            // console.log("response alınamadı")
                         }
                         userClientInfoResponse = response;
-                        console.log("Çevirilen Model: " + userClientInfoResponse);
+                        // console.log("Çevirilen Model: " + userClientInfoResponse)
                         localStorage.setItem("accessToken", userClientInfoResponse.token.accessToken == null ? "" : userClientInfoResponse.token.accessToken);
                         localStorage.setItem("refreshToken", userClientInfoResponse.token.refreshToken == null ? "" : userClientInfoResponse.token.refreshToken);
                         localStorage.setItem("salesPersonCode", userClientInfoResponse.salesPersonCode == null ? "" : userClientInfoResponse.salesPersonCode);
@@ -128,17 +128,17 @@ var UserService = /** @class */ (function () {
                         localStorage.setItem("name", userClientInfoResponse.name.toString() == null ? "" : userClientInfoResponse.name.toString());
                         localStorage.setItem("surname", userClientInfoResponse.surname.toString() == null ? "" : userClientInfoResponse.surname.toString());
                         if (response) {
-                            console.log(response);
+                            // console.log(response);
                             return [2 /*return*/, true];
                         }
                         else {
-                            console.log("Giriş Başarısız");
+                            // console.log("Giriş Başarısız");
                             return [2 /*return*/, false];
                         }
                         return [3 /*break*/, 3];
                     case 2:
                         error_1 = _a.sent();
-                        console.log("Login:" + error_1);
+                        // console.log("Login:" + error)
                         return [2 /*return*/, false];
                     case 3: return [2 /*return*/];
                 }
@@ -167,11 +167,11 @@ var UserService = /** @class */ (function () {
                         localStorage.setItem("name", userClientInfoResponse.name.toString());
                         localStorage.setItem("surname", userClientInfoResponse.surname.toString());
                         if (response) {
-                            console.log(response);
+                            // console.log(response);
                             return [2 /*return*/, true];
                         }
                         else {
-                            console.log('Refresh Token Alınamadı');
+                            // console.log('Refresh Token Alınamadı');
                             return [2 /*return*/, false];
                         }
                         return [2 /*return*/];

@@ -50,7 +50,7 @@ var ClientUrls_1 = require("src/app/models/const/ClientUrls");
 var qrCode_1 = require("src/app/models/model/product/qrCode");
 var product_service_1 = require("src/app/services/admin/product.service");
 var CreateQrComponent = /** @class */ (function () {
-    function CreateQrComponent(formBuilder, toasterService, sanitizer, generalService, productService, httpClientService, datePipe, warehouseService) {
+    function CreateQrComponent(formBuilder, toasterService, sanitizer, generalService, productService, httpClientService, datePipe, warehouseService, headerService) {
         this.formBuilder = formBuilder;
         this.toasterService = toasterService;
         this.sanitizer = sanitizer;
@@ -59,8 +59,10 @@ var CreateQrComponent = /** @class */ (function () {
         this.httpClientService = httpClientService;
         this.datePipe = datePipe;
         this.warehouseService = warehouseService;
+        this.headerService = headerService;
         this.barcode = null;
         this.quantity = null;
+        this.batchCode = null;
         this.activeTab = 1;
         this.qrCodeValue = '';
         this.qrCodeDownloadLink = this.sanitizer.bypassSecurityTrustResourceUrl('');
@@ -71,12 +73,15 @@ var CreateQrComponent = /** @class */ (function () {
     }
     CreateQrComponent.prototype.ngOnChanges = function (changes) {
         if (changes["barcode"] && !changes["barcode"].isFirstChange()) {
-            console.log("Barkod değişti:", changes["barcode"].currentValue);
             this.checkForm.get('barcode').setValue(changes["barcode"].currentValue);
+        }
+        if (changes["batchCode"] && !changes["batchCode"].isFirstChange()) {
+            this.checkForm.get('batchCode').setValue(changes["batchCode"].currentValue);
         }
         if (changes["quantity"] && !changes["quantity"].isFirstChange()) {
             this.checkForm.get('quantity').setValue(changes["quantity"].currentValue);
         }
+        this.onSubmit(this.checkForm.value);
     };
     CreateQrComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -84,6 +89,7 @@ var CreateQrComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        this.headerService.updatePageTitle("Kutu Etiketi Oluştur");
                         this.formGenerator();
                         this.focusNextInput('barcode');
                         // Subscribe to the valueChanges observable to detect changes
@@ -445,6 +451,9 @@ var CreateQrComponent = /** @class */ (function () {
     __decorate([
         core_1.Input()
     ], CreateQrComponent.prototype, "quantity");
+    __decorate([
+        core_1.Input()
+    ], CreateQrComponent.prototype, "batchCode");
     __decorate([
         core_1.ViewChild('qrCode')
     ], CreateQrComponent.prototype, "qrCode");

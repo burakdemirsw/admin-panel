@@ -1,14 +1,20 @@
 @media (max-width: 767px) {
-    /* .mobile {
+  /* .mobile {
         max-height:50%;
         overflow-y: auto;
     } */
 }
-.badge-success{
-    background-color: green !important;
-    color: white;
-}  
-.badge-danger{
-    background-color: red !important;
-    color: white;    
+
+.badge-success {
+  background-color: green !important;
+  color: white;
+}
+
+.badge-danger {
+  background-color: red !important;
+  color: white;
+}
+
+::ng-deep .p-dropdown {
+  width: 100% !important;
 }

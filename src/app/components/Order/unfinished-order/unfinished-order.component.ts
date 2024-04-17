@@ -4,6 +4,7 @@ import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { CargoBarcode_VM, GetPackageStatus_MNG_Response } from '../../cargo/create-cargo/models/models';
 import { ClientOrder } from '../create-order/models/nebimOrder';
 import { OrderService } from 'src/app/services/admin/order.service';
+import { HeaderService } from 'src/app/services/admin/header.service';
 
 @Component({
   selector: 'app-unfinished-order',
@@ -12,19 +13,23 @@ import { OrderService } from 'src/app/services/admin/order.service';
 })
 export class UnfinishedOrderComponent implements OnInit {
 
-  constructor(private toasterService: ToasterService, private orderService: OrderService) { }
+  constructor(private headerService: HeaderService
+    , private toasterService: ToasterService, private orderService: OrderService) { }
   currentPage = 1;
   orders: ClientOrder[] = [];
   visible: boolean = false;
   currentOrderState: boolean = false;
   ngOnInit(): void {
     this.getOrders(this.currentOrderState);
+
   }
 
   async getOrders(isCompleted: boolean) {
+    this.headerService.updatePageTitle("Panel Siparişleri");
     this.currentOrderState = isCompleted;
     this.orders = await this.orderService.getClientOrders(isCompleted);
     this.filterOrdersByRole();
+    this.headerService.updatePageTitle((this.currentOrderState == true ? "Tamamlanmış" : "Tamamlanmamış") + " Siparişler");
   }
   filterOrdersByRole() {
     if (localStorage.getItem('roleDescription') != 'Admin') {

@@ -29,6 +29,7 @@ import { QrControlCommandModel } from 'src/app/models/model/product/qrControlMod
 import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { HeaderService } from '../../../services/admin/header.service';
 
 declare var window: any;
 
@@ -62,7 +63,8 @@ export class FastTransferComponent implements OnInit {
     private warehouseService: WarehouseService,
     private generalService: GeneralService,
     private httpClientService: HttpClientService,
-    private title: Title
+    private title: Title,
+    private headerService: HeaderService
   ) {
     this.codeReader = new BrowserMultiFormatReader();
   }
@@ -96,7 +98,7 @@ export class FastTransferComponent implements OnInit {
 
   async ngOnInit() {
     this.title.setTitle('Raflar Arası Transfer');
-    //this.spinnerService.show();
+    this.headerService.updatePageTitle('Raflar Arası Transfer');
     this.formGenerator();
     this.currentOrderNo = (await this.generalService.generateGUID()).toString();
     this.collectedProducts = [];
@@ -117,6 +119,8 @@ export class FastTransferComponent implements OnInit {
       nextInput.focus();
     }
   }
+  offices: any[] = ["M", "U"]
+  warehouses: any[] = ["MD", "UD"]
   formGenerator() {
     this.checkForm = this.formBuilder.group({
       barcode: [null, Validators.required],
@@ -126,6 +130,18 @@ export class FastTransferComponent implements OnInit {
       quantity: [null],
       batchCode: [null],
       targetShelfNo: [null, Validators.required],
+    });
+
+    this.checkForm.get('office').valueChanges.subscribe(value => {
+      if (value === 'M') {
+        this.checkForm.get('warehouseCode').setValue('MD');
+      }
+    });
+
+    this.checkForm.get('office').valueChanges.subscribe(value => {
+      if (value === 'U') {
+        this.checkForm.get('warehouseCode').setValue('UD');
+      }
     });
   }
   async confirmTransfer(operationNumberList: string[]) {

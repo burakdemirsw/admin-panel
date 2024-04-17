@@ -1,21 +1,9 @@
 <main id="main" class="main">
-  <div class="pagetitle">
-    <h1>{{ pageDescriptionLine }}</h1>
-    <nav>
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-        <li class="breadcrumb-item">Tables</li>
-        <li class="breadcrumb-item active">General</li>
-      </ol>
-    </nav>
-  </div>
-
   <section class="section">
     <div class="card" *ngIf="!pageDescription">
       <div class="card-body">
-        <h5 class="card-title">{{ pageDescriptionLine }} Filtreleme</h5>
         <!-- Filtreleme Alanı (Başlangıç) -->
-        <div class="btn-group mb-3">
+        <div class="btn-group mb-3 mt-4">
           <button
             class="btn btn-primary"
             type="button"
@@ -207,7 +195,7 @@
                 <th scope="col">Açıklama</th>
 
                 <th scope="col">Miktar</th>
-                <!-- <th scope="col">Tutar</th> -->
+                <th scope="col">Tutar</th>
                 <th scope="col">Toplanan Miktar</th>
                 <th scope="col">Kalan Miktar</th>
                 <!-- <th scope="col">Durum</th> -->
@@ -234,7 +222,7 @@
                 <td>{{ order.description }}</td>
 
                 <td>{{ order.qty1 }}</td>
-                <!-- <td>{{ order.price.toString() }}</td> -->
+                <td>{{ order.price.toString() | currency : "₺" }}</td>
                 <td>{{ order.collectedQty }}</td>
                 <td>{{ order.remainingQty }}</td>
                 <!-- <td>

@@ -8,6 +8,7 @@ import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { GeneralService } from '../../services/admin/general.service';
+import { HeaderService } from 'src/app/services/admin/header.service';
 
 @Component({
   selector: 'app-pages-register',
@@ -21,12 +22,13 @@ export class PagesRegisterComponent implements OnInit {
     private generalService: GeneralService,
     private formBuilder: FormBuilder,
     private userService: UserService,
-    private router: Router,
+    private headerService: HeaderService,
     private alertifyService: AlertifyService, private httpClientService: HttpClientService, private activatedRoute: ActivatedRoute
   ) { }
 
   userList: UserList_VM[] = []
   async ngOnInit() {
+    this.headerService.updatePageTitle("Kullanıcı Ekle")
     this.formGenerator();
     await this.getSalesPersonModels()
 

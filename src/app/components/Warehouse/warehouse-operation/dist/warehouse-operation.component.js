@@ -50,7 +50,7 @@ var barcodeModel_1 = require("src/app/models/model/product/barcodeModel");
 var qrOperationModel_1 = require("src/app/models/model/product/qrOperationModel");
 var warehouseModel_1 = require("src/app/models/model/warehouse/warehouseModel");
 var WarehouseOperationComponent = /** @class */ (function () {
-    function WarehouseOperationComponent(httpClientService, formBuilder, toasterService, activatedRoute, router, generalService, productService, warehouseService, httpClient, orderService) {
+    function WarehouseOperationComponent(httpClientService, formBuilder, toasterService, activatedRoute, router, generalService, productService, warehouseService, httpClient, orderService, headerService) {
         this.httpClientService = httpClientService;
         this.formBuilder = formBuilder;
         this.toasterService = toasterService;
@@ -61,6 +61,7 @@ var WarehouseOperationComponent = /** @class */ (function () {
         this.warehouseService = warehouseService;
         this.httpClient = httpClient;
         this.orderService = orderService;
+        this.headerService = headerService;
         this.currentOrderNo = '';
         this.activeTab = 1;
         this.isDisabled = true;
@@ -80,6 +81,8 @@ var WarehouseOperationComponent = /** @class */ (function () {
         this._barcode = null;
         this.quantity = null;
         this.pageStatus = '';
+        this.offices = ["M", "U"];
+        this.warehouses = ["MD", "UD"];
         this.inventoryItemColums = [
             'Fotoğraf',
             'Raf',
@@ -155,15 +158,6 @@ var WarehouseOperationComponent = /** @class */ (function () {
                     this.toasterService.info("xxx");
                 }
                 this.formGenerator();
-                this.warehouseForm.valueChanges.subscribe(function () {
-                    var office = _this.warehouseForm.get('office').value;
-                    var officeTo = _this.warehouseForm.get('officeTo').value;
-                    if ((office === officeTo) && (office !== null)) {
-                        // this.toasterService.error("Ofisler Farklı Olmalıdır")
-                        _this.warehouseForm.get('office').setValue(null);
-                        _this.warehouseForm.get('officeTo').setValue(null);
-                    }
-                });
                 //this.spinnerService.show();
                 this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
                     return __generator(this, function (_a) {
@@ -263,6 +257,7 @@ var WarehouseOperationComponent = /** @class */ (function () {
                         _a.inventoryItems = _b.sent(); //transfer edilcek ürünler
                         _b.label = 2;
                     case 2:
+                        this.headerService.updatePageTitle("Depolar Arası " + this.pageStatus);
                         // if (currentDataType === '0') {
                         //   this.toasterService.success("Varsayılan Ürünler Getirildi")
                         //   // this.pageStatus = 'Standart'
@@ -392,6 +387,7 @@ var WarehouseOperationComponent = /** @class */ (function () {
         this.formModal.show();
     };
     WarehouseOperationComponent.prototype.formGenerator = function () {
+        var _this = this;
         try {
             this.warehouseForm = this.formBuilder.group({
                 id: [null],
@@ -404,6 +400,35 @@ var WarehouseOperationComponent = /** @class */ (function () {
                 warehouse: [null, forms_1.Validators.required],
                 warehouseTo: [null, forms_1.Validators.required],
                 orderNo: [null, forms_1.Validators.required]
+            });
+            this.warehouseForm.valueChanges.subscribe(function () {
+                var office = _this.warehouseForm.get('office').value;
+                var officeTo = _this.warehouseForm.get('officeTo').value;
+                if ((office === officeTo) && (office !== null)) {
+                    // this.toasterService.error("Ofisler Farklı Olmalıdır")
+                    _this.warehouseForm.get('office').setValue(null);
+                    _this.warehouseForm.get('officeTo').setValue(null);
+                }
+            });
+            this.warehouseForm.get('office').valueChanges.subscribe(function (value) {
+                if (value === 'M') {
+                    _this.warehouseForm.get('warehouse').setValue('MD');
+                }
+            });
+            this.warehouseForm.get('office').valueChanges.subscribe(function (value) {
+                if (value === 'U') {
+                    _this.warehouseForm.get('warehouse').setValue('UD');
+                }
+            });
+            this.warehouseForm.get('officeTo').valueChanges.subscribe(function (value) {
+                if (value === 'M') {
+                    _this.warehouseForm.get('warehouseTo').setValue('MD');
+                }
+            });
+            this.warehouseForm.get('officeTo').valueChanges.subscribe(function (value) {
+                if (value === 'U') {
+                    _this.warehouseForm.get('warehouseTo').setValue('UD');
+                }
             });
         }
         catch (error) {
@@ -435,92 +460,6 @@ var WarehouseOperationComponent = /** @class */ (function () {
             });
         });
     };
-    WarehouseOperationComponent.prototype.getSelectedOffice = function (from) {
-        var _a, _b;
-        return __awaiter(this, void 0, Promise, function () {
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0:
-                        if (!(from == 1)) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.getWarehouseList((_a = this.warehouseForm.get('office')) === null || _a === void 0 ? void 0 : _a.value, 1)];
-                    case 1:
-                        _c.sent();
-                        return [3 /*break*/, 4];
-                    case 2: return [4 /*yield*/, this.getWarehouseList((_b = this.warehouseForm.get('officeTo')) === null || _b === void 0 ? void 0 : _b.value, 2)];
-                    case 3:
-                        _c.sent();
-                        _c.label = 4;
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    WarehouseOperationComponent.prototype.getWarehouseList = function (value, from) {
-        return __awaiter(this, void 0, Promise, function () {
-            var selectElement, response, selectedValue2, selectElement, response, selectedValue2, error_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 5, , 6]);
-                        if (!(from === 1)) return [3 /*break*/, 2];
-                        selectElement = document.getElementById('office');
-                        value = selectElement.value == '' ? 'M' : selectElement.value;
-                        return [4 /*yield*/, this.httpClientService
-                                .get({
-                                controller: 'Warehouse/GetWarehouseModel/' + value
-                            })
-                                .toPromise()];
-                    case 1:
-                        response = _a.sent();
-                        if (response) {
-                            this.warehouseModels.push(response[0]);
-                            this.warehouseForm
-                                .get('warehouse')
-                                .setValue(response[0].warehouseCode);
-                            selectedValue2 = this.warehouseForm.get('warehouse').value;
-                            console.clear();
-                            // console.log('Form Değeri (warehouseCode) \n' + selectedValue2); //null geliyor
-                            return [2 /*return*/, true];
-                        }
-                        else {
-                            this.toasterService.error('Depo Çekilemedi');
-                            return [2 /*return*/, false];
-                        }
-                        return [3 /*break*/, 4];
-                    case 2:
-                        selectElement = document.getElementById('officeTo');
-                        value = selectElement.value == '' ? 'M' : selectElement.value;
-                        return [4 /*yield*/, this.httpClientService
-                                .get({
-                                controller: 'Warehouse/GetWarehouseModel/' + value
-                            })
-                                .toPromise()];
-                    case 3:
-                        response = _a.sent();
-                        if (response) {
-                            this.warehouseModels2.push(response[0]);
-                            this.warehouseForm
-                                .get('warehouseTo')
-                                .setValue(response[0].warehouseCode);
-                            selectedValue2 = this.warehouseForm.get('warehouseTo').value;
-                            console.clear();
-                            // console.log('Form Değeri (warehouseTo) \n' + selectedValue2); //null geliyor
-                            return [2 /*return*/, true];
-                        }
-                        else {
-                            this.toasterService.error('Depo Çekilemedi');
-                            return [2 /*return*/, false];
-                        }
-                        _a.label = 4;
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
-                        error_2 = _a.sent();
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
-                }
-            });
-        });
-    };
     WarehouseOperationComponent.prototype.onModelChanged = function (value) {
         this.getShelfByQrDetail(value);
     };
@@ -531,7 +470,7 @@ var WarehouseOperationComponent = /** @class */ (function () {
     };
     WarehouseOperationComponent.prototype.transferToNebim = function (currentOrderNo) {
         return __awaiter(this, void 0, void 0, function () {
-            var userConfirmed, data, error_3;
+            var userConfirmed, data, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -557,7 +496,7 @@ var WarehouseOperationComponent = /** @class */ (function () {
                         }
                         return [3 /*break*/, 4];
                     case 3:
-                        error_3 = _a.sent();
+                        error_2 = _a.sent();
                         return [3 /*break*/, 4];
                     case 4: return [3 /*break*/, 6];
                     case 5:
@@ -600,7 +539,7 @@ var WarehouseOperationComponent = /** @class */ (function () {
     };
     WarehouseOperationComponent.prototype.setFormValues = function (barcode, check) {
         return __awaiter(this, void 0, Promise, function () {
-            var result, currentShelfNo, result, error_4;
+            var result, currentShelfNo, result, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -629,8 +568,8 @@ var WarehouseOperationComponent = /** @class */ (function () {
                         return [2 /*return*/, result[1]];
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_4 = _a.sent();
-                        this.toasterService.error(error_4.message);
+                        error_3 = _a.sent();
+                        this.toasterService.error(error_3.message);
                         return [2 /*return*/, null];
                     case 7: return [2 /*return*/];
                 }

@@ -40,7 +40,7 @@
                     [ngClass]="{ 'success-row': product.quantity === 0 }"
                   >
                     <!-- <td>
-                      <input
+                      <input      pInputText
                         class="form-check-input"
                         type="checkbox"
                         id="pi{{ product.packageNo }}"
@@ -153,124 +153,98 @@
 
         <div class="card mobile" *ngIf="productsToCollect.length > 0">
           <div class="card-body">
-            <h5 class="card-title">
+            <!-- <h5 class="card-title">
               {{ pageDescription
               }}{{ customerName != undefined ? "-" + customerName : "" }}
-            </h5>
-            <ul class="nav nav-tabs nav-justified mb-1" id="ex1" role="tablist">
-              <!-- <li class="nav-item" role="presentation">
-                                  <a class="nav-link active" [class.active]="activeTab === 1" (click)="activeTab = 1">Raf
-                                      Düzenleme</a>
-                              </li> -->
-            </ul>
+            </h5> -->
 
-            <div class="tab-content" id="ex2-content">
-              <div
-                class="tab-pane fade show"
-                [class.active]="activeTab === 1"
-                id="ex3-tabs-1"
-                role="tabpanel"
-                aria-labelledby="ex3-tab-1"
-              >
-                <form
-                  [formGroup]="checkForm"
-                  (ngSubmit)="onSubmit(checkForm.value)"
-                >
-                  <div class="row mb-1">
-                    <div class="form-group">
-                      <label for="shelfNo">Raf No:</label>
-                      <div class="input-group">
-                        <input
-                          type="text"
-                          id="shelfNo"
-                          class="form-control"
-                          formControlName="shelfNo"
-                          (keydown.enter)="focusNextInput('barcode')"
-                        />
-                        <div class="input-group-append">
-                          <button
-                            type="button"
-                            (click)="clearShelfNumbers()"
-                            class="btn btn-primary"
-                          >
-                            Formu Temizle
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
-                      shelfNumbers
-                    }}</label>
-                  </div>
-
-                  <div class="row mb-1">
-                    <div class="form-group">
-                      <label for="barcode">Barkod:</label>
-                      <label *ngIf="qrBarcodeUrl !== ''" for="qrBarcode">{{
-                        qrBarcodeUrl
-                      }}</label>
-                      <input
-                        type="text"
-                        id="barcode"
-                        class="form-control"
-                        formControlName="barcode"
-                        (keydown.enter)="onSubmit(checkForm.value)"
-                      />
-                      <div class="input-group-append">
-                        <!-- <button type="button" class="btn btn-primary">Camera</button> -->
-                      </div>
+            <form
+              class="mt-3"
+              [formGroup]="checkForm"
+              (ngSubmit)="onSubmit(checkForm.value)"
+            >
+              <div class="row mb-3">
+                <div class="form-group">
+                  <div class="input-group">
+                    <input
+                      pInputText
+                      placeholder="Raf No"
+                      type="text"
+                      id="shelfNo"
+                      class="form-control"
+                      formControlName="shelfNo"
+                      (keydown.enter)="focusNextInput('barcode')"
+                    />
+                    <div class="input-group-append">
+                      <button
+                        type="button"
+                        style="height: 100%"
+                        (click)="clearShelfNumbers()"
+                        class="btn btn-primary"
+                      >
+                        Formu Temizle
+                      </button>
                     </div>
                   </div>
-
-                  <div class="row mb-1">
-                    <div class="form-group col">
-                      <div class="form-group">
-                        <label for="quantity">Miktar</label>
-                        <input
-                          type="number"
-                          id="quantity"
-                          class="form-control"
-                          formControlName="quantity"
-                        />
-                      </div>
-                    </div>
-
-                    <div class="form-group col">
-                      <div class="form-group">
-                        <label for="quantity">Parti</label>
-                        <input
-                          type="text"
-                          id="batchCode"
-                          class="form-control"
-                          formControlName="batchCode"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </form>
+                </div>
+                <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
+                  shelfNumbers
+                }}</label>
               </div>
-              <div
-                class="tab-pane fade show"
-                [class.active]="activeTab === 2"
-                id="ex3-tabs-2"
-                role="tabpanel-2"
-                aria-labelledby="ex3-tab-2"
-              ></div>
-              <div
-                class="tab-pane fade show"
-                [class.active]="activeTab === 3"
-                id="ex3-tabs-3"
-                role="tabpanel-3"
-                aria-labelledby="ex3-tab-3"
-              >
-                Prices
+
+              <div class="row mb-3">
+                <div class="form-group">
+                  <label *ngIf="qrBarcodeUrl !== null" for="qrBarcode">{{
+                    qrBarcodeUrl
+                  }}</label>
+                  <input
+                    placeholder="Barkod"
+                    pInputText
+                    type="text"
+                    id="barcode"
+                    class="form-control"
+                    formControlName="barcode"
+                    (keydown.enter)="onSubmit(checkForm.value)"
+                  />
+                  <div class="input-group-append">
+                    <!-- <button type="button" class="btn btn-primary">Camera</button> -->
+                  </div>
+                </div>
               </div>
-            </div>
+
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <div class="form-group">
+                    <input
+                      pInputText
+                      type="number"
+                      placeholder="Miktar"
+                      id="quantity"
+                      class="form-control"
+                      formControlName="quantity"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group col">
+                  <div class="form-group">
+                    <input
+                      placeholder="Parti"
+                      pInputText
+                      type="text"
+                      id="batchCode"
+                      class="form-control"
+                      formControlName="batchCode"
+                    />
+                  </div>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
         <div class="card" *ngIf="productsToCollect.length > 0">
           <div class="card-body">
-            <div class="row mb-1">
+            <div class="row mb-3">
               <div class="col-md-12">
                 <button
                   type="button"
@@ -299,7 +273,7 @@
               </div>
             </div>
 
-            <div class="row mb-1" *ngIf="this.currentOrderNo.includes('BP')">
+            <div class="row mb-3" *ngIf="this.currentOrderNo.includes('BP')">
               <div class="col-md-12">
                 <button
                   type="button"
@@ -379,7 +353,7 @@
                     [ngClass]="{ 'success-row': product.quantity === 0 }"
                   >
                     <!-- <td>
-                      <input
+                      <input      pInputText
                         class="form-check-input"
                         type="checkbox"
                         id="pi{{ product.packageNo }}"

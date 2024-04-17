@@ -45,20 +45,18 @@ exports.__esModule = true;
 exports.WarehosueShelfCountComponent = void 0;
 var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
+var library_1 = require("@zxing/library");
 var ClientUrls_1 = require("src/app/models/const/ClientUrls");
 var countProductRequestModel2_1 = require("src/app/models/model/order/countProductRequestModel2");
-var library_1 = require("@zxing/library");
 var WarehosueShelfCountComponent = /** @class */ (function () {
-    function WarehosueShelfCountComponent(formBuilder, toasterService, spinnerService, httpClient, productService, generalService, warehouseService, activatedRoute, router, title, sanitizer) {
+    function WarehosueShelfCountComponent(formBuilder, toasterService, httpClient, productService, generalService, warehouseService, activatedRoute, title, sanitizer) {
         this.formBuilder = formBuilder;
         this.toasterService = toasterService;
-        this.spinnerService = spinnerService;
         this.httpClient = httpClient;
         this.productService = productService;
         this.generalService = generalService;
         this.warehouseService = warehouseService;
         this.activatedRoute = activatedRoute;
-        this.router = router;
         this.title = title;
         this.sanitizer = sanitizer;
         this.infoProducts = [];
@@ -94,7 +92,10 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         this._visible = false;
         this.barcode = null;
         this.quantity = null;
+        this.batchCode = null;
         this.shelfNumbers = 'RAFLAR:';
+        this.offices = ["M", "U"];
+        this.warehouses = ["MD", "UD"];
         this.shelves = [];
         this.shelves2 = [];
         this.orderBillingList = [];
@@ -116,10 +117,11 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         this.controlMessage = "";
         this.title.setTitle('Sayım');
     }
-    WarehosueShelfCountComponent.prototype.change = function (barcode, quantity) {
+    WarehosueShelfCountComponent.prototype.change = function (barcode, quantity, batchCode) {
         this.visible = !this.visible;
         this.barcode = barcode;
         this.quantity = quantity;
+        this.batchCode = batchCode;
     };
     WarehosueShelfCountComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -342,9 +344,9 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
-                        if (countProductRequestModel.barcode === 'http://www.dayve.com') {
-                            return [2 /*return*/];
-                        }
+                        // if (countProductRequestModel.barcode === 'http://www.dayve.com') {
+                        //   return;
+                        // }
                         while (countProductRequestModel.barcode.includes('=')) {
                             countProductRequestModel.barcode =
                                 countProductRequestModel.barcode.replace('=', '-');

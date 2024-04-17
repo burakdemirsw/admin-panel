@@ -1,5 +1,5 @@
 <main id="main" class="main">
-  <div class="pagetitle">
+  <!-- <div class="pagetitle">
     <h1>Raf Aktarma İstek Paneli</h1>
     <nav>
       <ol class="breadcrumb">
@@ -8,7 +8,7 @@
         <li class="breadcrumb-item active">General</li>
       </ol>
     </nav>
-  </div>
+  </div> -->
 
   <section class="section">
     <div class="row">
@@ -83,7 +83,7 @@
                 [ngClass]="
                   selectedButton === 0 ? 'btn btn-success' : 'btn btn-dark'
                 "
-                (click)="goPage('0')"  
+                (click)="goPage('0')"
               >
                 Varsayılan
               </button>
@@ -112,202 +112,173 @@
           <div class="card-body">
             <!-- <h5 class="card-title">Raf Aktarma İstek Paneli</h5> -->
 
-            <div class="tab-content" id="ex2-content">
-              <div
-                class="tab-pane fade show"
-                [class.active]="activeTab === 1"
-                id="ex3-tabs-1"
-                role="tabpanel"
-                aria-labelledby="ex3-tab-1"
-              >
-                <form
-                  [formGroup]="checkForm"
-                  (ngSubmit)="onSubmit(checkForm.value)"
-                >
-                  <div class="row mb-3">
-                    <div class="col-md-12">
-                      <h5 class="card-title">Alınacak Ürün</h5>
-                      <hr />
-                    </div>
-                  </div>
-
-                  <div class="row mb-1">
-                    <div class="form-group col">
-                      <label for="office">Hangi Ofis</label>
-                      <select
-                        id="office"
-                        class="form-control"
-                        formControlName="office"
-                        (change)="getSelectedOffice(1)"
-                      >
-                        <option>M</option>
-                        <option>U</option>
-                      </select>
-                    </div>
-
-                    <div class="form-group col">
-                      <label for="warehouseCode">Hangi Depo</label>
-                      <select
-                        id="warehouseCode"
-                        class="form-control"
-                        formControlName="warehouseCode"
-                      >
-                        <option
-                          *ngFor="let warehouse of warehouseModels"
-                          [value]="warehouse.warehouseCode"
-                        >
-                          {{ warehouse.warehouseDescription }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div class="row mb-3">
-                    <div class="form-group">
-                      <label for="shelfNo">Raf No:</label>
-                      <div class="input-group">
-                        <input
-                          type="text"
-                          id="shelfNo"
-                          class="form-control"
-                          formControlName="shelfNo"
-                          (keydown.enter)="focusNextInput('barcode')"
-                        />
-                        <div class="input-group-append">
-                          <button
-                            type="button"
-                            (click)="clearShelfNumbers()"
-                            class="btn btn-dark"
-                          >
-                            Formu Temizle
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row mb-3">
-                    <div class="form-group col">
-                      <label for="barcode">Barkod:</label>
-                      <label *ngIf="qrBarcodeUrl !== null" for="qrBarcode">{{
-                        qrBarcodeUrl
-                      }}</label>
-                      <input
-                        type="text"
-                        id="barcode"
-                        class="form-control"
-                        formControlName="barcode"
-                        (keydown.enter)="onSubmit(checkForm.value)"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="row mb-1">
-                    <div class="form-group col">
-                      <div class="form-group">
-                        <label for="quantity">Miktar:</label>
-                        <input
-                          type="number"
-                          id="quantity"
-                          class="form-control"
-                          formControlName="quantity"
-                        />
-                      </div>
-                    </div>
-
-                    <div class="form-group col">
-                      <div class="form-group">
-                        <label for="batchCode">Parti:</label>
-                        <input
-                          type="text"
-                          id="batchCode"
-                          class="form-control"
-                          formControlName="batchCode"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Gönderilecek Raf -->
-                  <div class="row mb-3">
-                    <div class="col-md-12">
-                      <h5>Gönderilecek Raf</h5>
-                      <hr />
-                    </div>
-                  </div>
-
-                  <div class="row mb-3">
-                    <div class="form-group col">
-                      <label for="targetShelfNo">Raf:</label>
-                      <div class="input-group">
-                        <input
-                          type="text"
-                          id="targetShelfNo"
-                          class="form-control"
-                          formControlName="targetShelfNo"
-                          (keydown.enter)="onSubmit(checkForm.value)"
-                        />
-                        <div class="input-group-append">
-                          <button
-                            type="button"
-                            (click)="clearTargetShelfNumber()"
-                            class="btn btn-dark"
-                          >
-                            Tüm Formu Temizle
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
-                      shelfNumbers
-                    }}</label>
-                  </div>
-                  <div class="row mb-1">
-                    <div class="form-group col">
-                      <div class="form-group">
-                        <button
-                          type="button"
-                          class="btn btn-primary"
-                          style="width: 100%; margin-top: 1%"
-                          (click)="onSubmit(checkForm.value)"
-                        >
-                          Ekle
-                        </button>
-                      </div>
-                    </div>
-
-                    <div class="form-group col">
-                      <div class="form-group">
-                        <button
-                          type="button"
-                          class="btn btn-dark"
-                          style="width: 100%; margin-top: 1%"
-                          (click)="finishTransfer(checkForm.value)"
-                        >
-                          Transferi Tamamla
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
+            <form
+              class="mt-4"
+              [formGroup]="checkForm"
+              (ngSubmit)="onSubmit(checkForm.value)"
+            >
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <h5 class="card-title">Alınacak Ürün</h5>
+                  <hr />
+                </div>
               </div>
-              <div
-                class="tab-pane fade show"
-                [class.active]="activeTab === 2"
-                id="ex3-tabs-2"
-                role="tabpanel-2"
-                aria-labelledby="ex3-tab-2"
-              ></div>
-              <div
-                class="tab-pane fade show"
-                [class.active]="activeTab === 3"
-                id="ex3-tabs-3"
-                role="tabpanel-3"
-                aria-labelledby="ex3-tab-3"
-              >
-                Prices
+
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <p-dropdown
+                    formControlName="office"
+                    [options]="offices"
+                    [showClear]="true"
+                    placeholder="Ofis"
+                  ></p-dropdown>
+                </div>
+
+                <div class="form-group col">
+                  <p-dropdown
+                    formControlName="warehosue"
+                    [options]="warehouses"
+                    [showClear]="true"
+                    placeholder="Depo"
+                    formControlName="warehouseCode"
+                  ></p-dropdown>
+                </div>
               </div>
-            </div>
+
+              <div class="row mb-3">
+                <div class="form-group">
+                  <div class="input-group">
+                    <input
+                      pInputText
+                      type="text"
+                      placeholder="Raf No"
+                      id="shelfNo"
+                      class="form-control"
+                      formControlName="shelfNo"
+                      (keydown.enter)="focusNextInput('barcode')"
+                    />
+                    <div class="input-group-append">
+                      <button
+                        type="button"
+                        style="height: 100%"
+                        (click)="clearShelfNumbers()"
+                        class="btn btn-dark"
+                      >
+                        Formu Temizle
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <label *ngIf="qrBarcodeUrl !== null" for="qrBarcode">{{
+                    qrBarcodeUrl
+                  }}</label>
+                  <input
+                    placeholder="Barkod"
+                    pInputText
+                    type="text"
+                    id="barcode"
+                    class="form-control"
+                    formControlName="barcode"
+                    (keydown.enter)="onSubmit(checkForm.value)"
+                  />
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <div class="form-group">
+                    <input
+                      placeholder="Miktar"
+                      pInputText
+                      type="number"
+                      id="quantity"
+                      class="form-control"
+                      formControlName="quantity"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group col">
+                  <div class="form-group">
+                    <input
+                      placeholder="Parti Kodu"
+                      pInputText
+                      type="text"
+                      id="batchCode"
+                      class="form-control"
+                      formControlName="batchCode"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Gönderilecek Raf -->
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <h5>Gönderilecek Raf</h5>
+                  <hr />
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <div class="input-group">
+                    <input
+                      pInputText
+                      placeholder="Hedef Raf No"
+                      type="text"
+                      id="targetShelfNo"
+                      class="form-control"
+                      formControlName="targetShelfNo"
+                      (keydown.enter)="onSubmit(checkForm.value)"
+                    />
+                    <div class="input-group-append">
+                      <button
+                        type="button"
+                        (click)="clearTargetShelfNumber()"
+                        class="btn btn-dark"
+                      >
+                        Tüm Formu Temizle
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
+                  shelfNumbers
+                }}</label>
+              </div>
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <div class="form-group">
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      style="width: 100%; margin-top: 1%"
+                      (click)="onSubmit(checkForm.value)"
+                    >
+                      Ekle
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-group col">
+                  <div class="form-group">
+                    <button
+                      type="button"
+                      class="btn btn-dark"
+                      style="width: 100%; margin-top: 1%"
+                      (click)="finishTransfer(checkForm.value)"
+                    >
+                      Transferi Tamamla
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
 

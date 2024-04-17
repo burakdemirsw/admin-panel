@@ -134,6 +134,8 @@ var editor_1 = require("primeng/editor");
 var toolbar_1 = require("primeng/toolbar");
 var nebim_stock_control_component_1 = require("./components/Product/nebim-stock-control/nebim-stock-control.component");
 var nebim_get_orders_component_1 = require("./components/Order/nebim-get-orders/nebim-get-orders.component");
+var nebim_product_extract_component_1 = require("./components/Product/nebim-product-extract/nebim-product-extract.component");
+var create_barcode_component_1 = require("./components/Product/create-barcode/create-barcode.component");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -223,7 +225,9 @@ var AppModule = /** @class */ (function () {
                 create_aras_cargo_barcode_component_1.CreateArasCargoBarcodeComponent,
                 devolopment_list_component_1.DevolopmentListComponent,
                 nebim_stock_control_component_1.NebimStockControlComponent,
-                nebim_get_orders_component_1.NebimGetOrdersComponent
+                nebim_get_orders_component_1.NebimGetOrdersComponent,
+                nebim_product_extract_component_1.NebimProductExtractComponent,
+                create_barcode_component_1.CreateBarcodeComponent,
             ],
             imports: [
                 toolbar_1.ToolbarModule,

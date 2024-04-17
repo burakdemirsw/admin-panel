@@ -20,6 +20,7 @@ import { FastTransferModel } from 'src/app/models/model/warehouse/fastTransferMo
 import { TransferRequestListModel } from 'src/app/models/model/warehouse/transferRequestListModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
+import { HeaderService } from 'src/app/services/admin/header.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
@@ -56,7 +57,8 @@ export class ShelfTransferRequestComponent implements OnInit {
     private warehouseService: WarehouseService,
     private generalService: GeneralService,
     private httpClientService: HttpClientService,
-    private title: Title
+    private title: Title,
+    private headerService: HeaderService
   ) {
     this.codeReader = new BrowserMultiFormatReader();
   }
@@ -105,7 +107,8 @@ export class ShelfTransferRequestComponent implements OnInit {
   async ngOnInit() {
 
 
-    this.title.setTitle('Raflar Arası Transfer');
+    this.title.setTitle('Raflar Arası Transfer İstek');
+    this.headerService.updatePageTitle('Raflar Arası Transfer İstek');
     //this.spinnerService.show();
     this.formGenerator();
     this.currentOrderNo = (await this.generalService.generateGUID()).toString();
@@ -119,6 +122,10 @@ export class ShelfTransferRequestComponent implements OnInit {
     this.collectedProducts = [];
     //this.spinnerService.hide();
   }
+
+  offices: any[] = ["M", "U"]
+
+  warehouses: any[] = ["MD", "UD"]
 
 
   goPage(pageType: string) {
@@ -320,6 +327,18 @@ export class ShelfTransferRequestComponent implements OnInit {
       quantity: [null],
       batchCode: [null],
       targetShelfNo: [null, Validators.required],
+    });
+
+    this.checkForm.get('office').valueChanges.subscribe(value => {
+      if (value === 'M') {
+        this.checkForm.get('warehouseCode').setValue('MD');
+      }
+    });
+
+    this.checkForm.get('office').valueChanges.subscribe(value => {
+      if (value === 'U') {
+        this.checkForm.get('warehouseCode').setValue('UD');
+      }
     });
   }
   async confirmTransfer(operationNumberList: string[]) {

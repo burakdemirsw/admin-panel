@@ -46,7 +46,8 @@ exports.DevolopmentListComponent = void 0;
 var core_1 = require("@angular/core");
 var development_1 = require("src/app/models/model/development/development");
 var DevolopmentListComponent = /** @class */ (function () {
-    function DevolopmentListComponent(formBuilder, toasterService, developmentService) {
+    function DevolopmentListComponent(HeaderService, formBuilder, toasterService, developmentService) {
+        this.HeaderService = HeaderService;
         this.formBuilder = formBuilder;
         this.toasterService = toasterService;
         this.developmentService = developmentService;
@@ -68,6 +69,7 @@ var DevolopmentListComponent = /** @class */ (function () {
         this.addTask_Header = "";
     }
     DevolopmentListComponent.prototype.ngOnInit = function () {
+        this.HeaderService.updatePageTitle("İstek Yönetimi");
         this.createSearchTaskForm();
         this.getAllZones();
         this.getAllDevelopments(this.searchTaskForm.value.searchTask_IsCompleted, this.searchTaskForm.value.searchTask_DevelopmentId);

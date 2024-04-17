@@ -45,7 +45,8 @@ exports.__esModule = true;
 exports.CargoListComponent = void 0;
 var core_1 = require("@angular/core");
 var CargoListComponent = /** @class */ (function () {
-    function CargoListComponent(toasterService, cargoService) {
+    function CargoListComponent(headerService, toasterService, cargoService) {
+        this.headerService = headerService;
         this.toasterService = toasterService;
         this.cargoService = cargoService;
         this.currentPage = 1;
@@ -55,6 +56,7 @@ var CargoListComponent = /** @class */ (function () {
         this.packageStatus = null;
     }
     CargoListComponent.prototype.ngOnInit = function () {
+        this.headerService.updatePageTitle("Kargolar");
         this.getCargos(this.cargoState);
     };
     CargoListComponent.prototype.getCargos = function (isPrinted) {

@@ -13,6 +13,7 @@ import { CreateCustomer_CM } from '../../Order/create-order/models/createCustome
 import { ClientCustomer } from '../customer-list/customer-list.component';
 import { GoogleDriveService } from 'src/app/services/common/google-drive.service';
 import { CustomerList_VM, GetCustomerList_CM } from 'src/app/models/model/order/getCustomerList_CM';
+import { HeaderService } from 'src/app/services/admin/header.service';
 
 @Component({
   selector: 'app-add-customer',
@@ -22,6 +23,7 @@ import { CustomerList_VM, GetCustomerList_CM } from 'src/app/models/model/order/
 export class AddCustomerComponent implements OnInit {
 
   ngOnInit(): void {
+    this.headerService.updatePageTitle("Müşteri Oluştur")
     this.createCustomerFormMethod();
     this.getAddresses();
   }
@@ -43,7 +45,7 @@ export class AddCustomerComponent implements OnInit {
   _neighborhoods: any[] = []
 
   constructor(private router: Router, private cargoService: CargoService, private addressService: AddressService, private httpClient: HttpClientService, private toasterService: ToasterService, private orderService: OrderService,
-    private activatedRoute: ActivatedRoute, private generalService: GeneralService, private formBuilder: FormBuilder,
+    private headerService: HeaderService, private generalService: GeneralService, private formBuilder: FormBuilder,
     private spinnerService: NgxSpinnerService, private googleDriveService: GoogleDriveService) { }
 
 
@@ -62,17 +64,16 @@ export class AddCustomerComponent implements OnInit {
       if (!formValue.address_country) {
         request.address = null
       } else {
-        request.address.country = formValue.address_country;
-        request.address.province = formValue.address_province;
-        request.address.district = formValue.address_district;
-        request.address.region = formValue.address_region;
-        request.address.taxOffice = formValue.address_taxOffice;
+        request.address.country = formValue.address_country.code;
+        request.address.province = formValue.address_province.code;
+        request.address.district = formValue.address_district.code;
+        request.address.region = formValue.address_region.code;
+        request.address.taxOffice = formValue.address_taxOffice.code;
         request.address.description = formValue.address_description;
         request.address.postalCode = formValue.address_postalCode;
       }
 
 
-      console.log(request)
 
       if (true) {
         var response = await this.orderService.createCustomer(request);
@@ -120,7 +121,7 @@ export class AddCustomerComponent implements OnInit {
 
     this.createCustomerForm.get('address_region').valueChanges.subscribe(async (value) => { //illeri getir
       var _value = this.createCustomerForm.get('address_region').value;
-      var response = await this.addressService.getAddress(3, _value)
+      var response = await this.addressService.getAddress(3, _value.code)
       this.provinces = response
 
       this._provinces = [];
@@ -133,7 +134,7 @@ export class AddCustomerComponent implements OnInit {
     this.createCustomerForm.get('address_province').valueChanges.subscribe(async (value) => { //ilçeleri getir
       var _value = this.createCustomerForm.get('address_province').value;
 
-      var response = await this.addressService.getAddress(4, _value)
+      var response = await this.addressService.getAddress(4, _value.code)
       this.districts = response
 
       this._districts = [];
@@ -145,7 +146,7 @@ export class AddCustomerComponent implements OnInit {
 
       var _value = this.createCustomerForm.get('address_province').value;
 
-      var response = await this.addressService.getAddress(5, _value)
+      var response = await this.addressService.getAddress(5, _value.code)
       this.taxOffices = response
 
       this._taxOffices = [];
@@ -210,8 +211,7 @@ export class AddCustomerComponent implements OnInit {
       this._regions.push(region);
     });
 
-    //console.log(countries);
-    //console.log(provinces);
+
   }
 
 

@@ -3,6 +3,7 @@ import { Development, DevelopmentTask, DevelopmentTask_VM, Development_RM, Devel
 import { DevelopmentService } from 'src/app/services/admin/development.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { HeaderService } from '../../../services/admin/header.service';
 
 @Component({
   selector: 'app-devolopment-list',
@@ -27,11 +28,11 @@ export class DevolopmentListComponent implements OnInit {
   searchTaskForm: FormGroup;
   optionList: any = [{ value: true, label: "Tamamlananlar" }, { value: false, label: "Tamamlanmayanlar" }];
 
-  constructor(private formBuilder: FormBuilder, private toasterService: ToasterService, private developmentService: DevelopmentService) { }
+  constructor(private HeaderService: HeaderService, private formBuilder: FormBuilder, private toasterService: ToasterService, private developmentService: DevelopmentService) { }
   raport: Development_Raport;
   ngOnInit(): void {
 
-
+    this.HeaderService.updatePageTitle("İstek Yönetimi")
     this.createSearchTaskForm();
     this.getAllZones();
     this.getAllDevelopments(this.searchTaskForm.value.searchTask_IsCompleted, this.searchTaskForm.value.searchTask_DevelopmentId);

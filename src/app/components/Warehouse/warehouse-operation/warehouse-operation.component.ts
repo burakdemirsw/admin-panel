@@ -16,6 +16,7 @@ import { WarehouseItem } from 'src/app/models/model/warehouse/warehouseItem';
 import { WarehouseModel } from 'src/app/models/model/warehouse/warehouseModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
+import { HeaderService } from 'src/app/services/admin/header.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
@@ -49,7 +50,8 @@ export class WarehouseOperationComponent implements OnInit {
     private productService: ProductService,
     private warehouseService: WarehouseService,
     private httpClient: HttpClient,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private headerService: HeaderService
   ) { } // Add this line
   warehouseModels: WarehouseOfficeModel[] = [];
   warehouseModels2: WarehouseOfficeModel[] = [];
@@ -98,15 +100,6 @@ export class WarehouseOperationComponent implements OnInit {
     }
 
     this.formGenerator();
-    this.warehouseForm.valueChanges.subscribe(() => {
-      var office = this.warehouseForm.get('office').value
-      var officeTo = this.warehouseForm.get('officeTo').value
-      if ((office === officeTo) && (office !== null)) {
-        // this.toasterService.error("Ofisler Farklı Olmalıdır")
-        this.warehouseForm.get('office').setValue(null)
-        this.warehouseForm.get('officeTo').setValue(null)
-      }
-    });
 
     //this.spinnerService.show();
     this.activatedRoute.params.subscribe(async (params) => {
@@ -128,6 +121,9 @@ export class WarehouseOperationComponent implements OnInit {
 
     //  await this.getOfficeCodeList();
   }
+  offices: any[] = ["M", "U"]
+  warehouses: any[] = ["MD", "UD"]
+
 
   inventoryItemColums: string[] = [
     'Fotoğraf',
@@ -222,7 +218,7 @@ export class WarehouseOperationComponent implements OnInit {
       this.inventoryItems = await this.orderService.getInventoryItems(currentDataType); //transfer edilcek ürünler
 
     }
-
+    this.headerService.updatePageTitle("Depolar Arası " + this.pageStatus)
     // if (currentDataType === '0') {
     //   this.toasterService.success("Varsayılan Ürünler Getirildi")
 
@@ -352,48 +348,6 @@ export class WarehouseOperationComponent implements OnInit {
   }
 
 
-  // async getInventoryItems(type: string) {
-  //   this.inventoryItems = await this.orderService.getInventoryItems(type); //tansfer edilcek ürünler
-
-  //   if (this.inventoryItems.length > 0) {
-  //     if (this.lastCollectedProduct == null) {
-  //       //üste atılcak ürün seçildi
-  //       this._inventoryItems = [];
-  //       this._inventoryItems.push(this.inventoryItems[0]);
-  //       this.lastCollectedProduct = this.inventoryItems[0];
-  //     } else {
-  //       //eğer son sayılan ürün varsa
-  //       var foundedProduct = this.inventoryItems.find(
-  //         (p) =>
-  //           p.barcode == this.lastCollectedProduct.barcode &&
-  //           p.itemCode == this.lastCollectedProduct.itemCode &&
-  //           p.shelfNo == this.lastCollectedProduct.shelfNo
-  //       );
-
-  //       if (foundedProduct) {
-  //         //eğer ürün bulunduysa
-
-  //         if (foundedProduct.quantity > 0) {
-  //           //miktar değeri 0 dan büyükse
-  //           this._inventoryItems = [];
-  //           this._inventoryItems.push(foundedProduct);
-  //           this.lastCollectedProduct = foundedProduct;
-  //         } else {
-  //           //miktar değeri 0 dan küçükse
-  //           this._inventoryItems = [];
-  //           this._inventoryItems.push(this.inventoryItems[0]);
-  //           this.lastCollectedProduct = this.inventoryItems[0];
-  //         }
-  //       } else {
-  //         //üürn bulunmdadıysa
-
-  //         this._inventoryItems = [];
-  //         this._inventoryItems.push(this.inventoryItems[0]);
-  //         this.lastCollectedProduct = this.inventoryItems[0];
-  //       }
-  //     }
-  //   }
-  // }
 
   modalImageUrl: string;
   formModal: any;
@@ -421,6 +375,42 @@ export class WarehouseOperationComponent implements OnInit {
         warehouseTo: [null, Validators.required],
         orderNo: [null, Validators.required],
       });
+
+      this.warehouseForm.valueChanges.subscribe(() => {
+        var office = this.warehouseForm.get('office').value
+        var officeTo = this.warehouseForm.get('officeTo').value
+        if ((office === officeTo) && (office !== null)) {
+          // this.toasterService.error("Ofisler Farklı Olmalıdır")
+          this.warehouseForm.get('office').setValue(null)
+          this.warehouseForm.get('officeTo').setValue(null)
+        }
+      });
+
+      this.warehouseForm.get('office').valueChanges.subscribe(value => {
+        if (value === 'M') {
+          this.warehouseForm.get('warehouse').setValue('MD');
+        }
+      });
+
+      this.warehouseForm.get('office').valueChanges.subscribe(value => {
+        if (value === 'U') {
+          this.warehouseForm.get('warehouse').setValue('UD');
+        }
+      });
+      this.warehouseForm.get('officeTo').valueChanges.subscribe(value => {
+        if (value === 'M') {
+          this.warehouseForm.get('warehouseTo').setValue('MD');
+        }
+      });
+
+      this.warehouseForm.get('officeTo').valueChanges.subscribe(value => {
+        if (value === 'U') {
+          this.warehouseForm.get('warehouseTo').setValue('UD');
+        }
+      });
+
+
+
     } catch (error) {
       console.error(error);
       // Handle the error as needed.
@@ -435,74 +425,6 @@ export class WarehouseOperationComponent implements OnInit {
         })
         .toPromise();
       this.officeModels = response;
-    } catch (error: any) {
-      //// console.log(error.message);
-    }
-  }
-  async getSelectedOffice(from: number): Promise<any> {
-    if (from == 1) {
-      await this.getWarehouseList(this.warehouseForm.get('office')?.value, 1);
-    } else {
-      await this.getWarehouseList(this.warehouseForm.get('officeTo')?.value, 2);
-    }
-  }
-
-  async getWarehouseList(value: string, from: number): Promise<any> {
-    try {
-      if (from === 1) {
-        const selectElement = document.getElementById(
-          'office'
-        ) as HTMLSelectElement;
-
-        value = selectElement.value == '' ? 'M' : selectElement.value;
-        const response = await this.httpClientService
-          .get<WarehouseOfficeModel>({
-            controller: 'Warehouse/GetWarehouseModel/' + value,
-          })
-          .toPromise();
-
-        if (response) {
-          this.warehouseModels.push(response[0]);
-
-          this.warehouseForm
-            .get('warehouse')
-            .setValue(response[0].warehouseCode);
-          const selectedValue2 = this.warehouseForm.get('warehouse').value;
-
-          console.clear();
-          // console.log('Form Değeri (warehouseCode) \n' + selectedValue2); //null geliyor
-          return true;
-        } else {
-          this.toasterService.error('Depo Çekilemedi');
-          return false;
-        }
-      } else {
-        const selectElement = document.getElementById(
-          'officeTo'
-        ) as HTMLSelectElement;
-
-        value = selectElement.value == '' ? 'M' : selectElement.value;
-        const response = await this.httpClientService
-          .get<WarehouseOfficeModel>({
-            controller: 'Warehouse/GetWarehouseModel/' + value,
-          })
-          .toPromise();
-
-        if (response) {
-          this.warehouseModels2.push(response[0]);
-
-          this.warehouseForm
-            .get('warehouseTo')
-            .setValue(response[0].warehouseCode);
-          const selectedValue2 = this.warehouseForm.get('warehouseTo').value;
-          console.clear();
-          // console.log('Form Değeri (warehouseTo) \n' + selectedValue2); //null geliyor
-          return true;
-        } else {
-          this.toasterService.error('Depo Çekilemedi');
-          return false;
-        }
-      }
     } catch (error: any) {
       //// console.log(error.message);
     }

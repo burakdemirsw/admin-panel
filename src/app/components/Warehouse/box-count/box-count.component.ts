@@ -14,6 +14,7 @@ import {
 } from 'src/app/models/model/shelfNameModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
+import { HeaderService } from 'src/app/services/admin/header.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
@@ -49,7 +50,7 @@ export class BoxCountComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private toasterService: ToasterService,
-
+    private headerService: HeaderService,
     private productService: ProductService,
     private generalService: GeneralService,
     private warehouseService: WarehouseService,
@@ -61,6 +62,7 @@ export class BoxCountComponent implements OnInit {
   }
   shelfNumbers: string = 'RAFLAR:';
   async ngOnInit() {
+    this.headerService.updatePageTitle('Kutu Sayım');
     this.formGenerator();
     var guid = await this.generalService.generateGUID();
     this.currentOrderNo = 'BXC-' + guid

@@ -13,13 +13,19 @@ exports.HeaderComponent = void 0;
 var core_1 = require("@angular/core");
 var common_1 = require("@angular/common");
 var HeaderComponent = /** @class */ (function () {
-    function HeaderComponent(userService, document, router, sessionService) {
+    function HeaderComponent(headerService, userService, document, router, sessionService) {
+        this.headerService = headerService;
         this.userService = userService;
         this.document = document;
         this.router = router;
         this.sessionService = sessionService;
+        this.currentPageTitle = '';
     }
     HeaderComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.headerService.currentPageTitle.subscribe(function (title) {
+            _this.currentPageTitle = title;
+        });
         var userName = localStorage.getItem('name') + " " + localStorage.getItem('surname');
         if (userName) {
             this.userName = userName;
@@ -38,7 +44,7 @@ var HeaderComponent = /** @class */ (function () {
             templateUrl: './header.component.html',
             styleUrls: ['./header.component.css']
         }),
-        __param(1, core_1.Inject(common_1.DOCUMENT))
+        __param(2, core_1.Inject(common_1.DOCUMENT))
     ], HeaderComponent);
     return HeaderComponent;
 }());

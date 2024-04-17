@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BarcodeAddModel } from 'src/app/models/model/product/barcodeAddModel';
-import { HttpClientService } from '../http-client.service';
 import { CategoryModel } from 'src/app/models/model/category/categoryModel';
+import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 
 @Injectable({

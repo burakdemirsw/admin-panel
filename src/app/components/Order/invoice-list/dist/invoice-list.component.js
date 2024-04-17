@@ -45,7 +45,8 @@ exports.__esModule = true;
 exports.InvoiceListComponent = void 0;
 var core_1 = require("@angular/core");
 var InvoiceListComponent = /** @class */ (function () {
-    function InvoiceListComponent(httpClientService, toasterService, spinnerService, router, warehouseService, generalService, formBuilder, orderService) {
+    function InvoiceListComponent(headerService, httpClientService, toasterService, spinnerService, router, warehouseService, generalService, formBuilder, orderService) {
+        this.headerService = headerService;
         this.httpClientService = httpClientService;
         this.toasterService = toasterService;
         this.spinnerService = spinnerService;
@@ -83,6 +84,7 @@ var InvoiceListComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.getInvoiceList()];
                     case 1:
                         _a.sent();
+                        this.headerService.updatePageTitle("Faturalar Alış/Satış");
                         return [2 /*return*/];
                 }
             });

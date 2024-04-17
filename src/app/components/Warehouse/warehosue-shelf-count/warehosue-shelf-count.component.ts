@@ -1,9 +1,9 @@
-import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Exception } from '@zxing/library';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
@@ -16,7 +16,6 @@ import { ItemBillingModel } from 'src/app/models/model/product/itemBillingModel 
 import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
 import {
   ProductCountModel,
-
 } from 'src/app/models/model/shelfNameModel';
 import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
@@ -24,8 +23,6 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
-import { OrderService } from '../../../services/admin/order.service';
-import { Exception } from '@zxing/library';
 declare var window: any;
 
 @Component({
@@ -77,13 +74,11 @@ export class WarehosueShelfCountComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private toasterService: ToasterService,
-    private spinnerService: NgxSpinnerService,
     private httpClient: HttpClient,
     private productService: ProductService,
     private generalService: GeneralService,
     private warehouseService: WarehouseService,
     private activatedRoute: ActivatedRoute,
-    private router: Router,
     private title: Title,
     private sanitizer: DomSanitizer
   ) {
@@ -93,10 +88,12 @@ export class WarehosueShelfCountComponent implements OnInit {
   _visible: boolean = false;
   barcode: string = null;
   quantity: number = null;
-  change(barcode: string, quantity: number) {
+  batchCode: string = null;
+  change(barcode: string, quantity: number, batchCode: string) {
     this.visible = !this.visible;
     this.barcode = barcode;
-    this.quantity = quantity
+    this.quantity = quantity;
+    this.batchCode = batchCode;
   }
   shelfNumbers: string = 'RAFLAR:';
   async ngOnInit() {
@@ -111,6 +108,9 @@ export class WarehosueShelfCountComponent implements OnInit {
       }
     });
   }
+  offices: any[] = ["M", "U"]
+  warehouses: any[] = ["MD", "UD"]
+
   shelves: AvailableShelf[] = [];
   shelves2: AvailableShelf[] = [];
   createJson(barcode: string, shelfNo: string, batchCode: string) {
@@ -302,9 +302,9 @@ export class WarehosueShelfCountComponent implements OnInit {
   async onSubmit(
     countProductRequestModel: CountProductRequestModel2
   ): Promise<any> {
-    if (countProductRequestModel.barcode === 'http://www.dayve.com') {
-      return;
-    }
+    // if (countProductRequestModel.barcode === 'http://www.dayve.com') {
+    //   return;
+    // }
     while (countProductRequestModel.barcode.includes('=')) {
       countProductRequestModel.barcode =
         countProductRequestModel.barcode.replace('=', '-');

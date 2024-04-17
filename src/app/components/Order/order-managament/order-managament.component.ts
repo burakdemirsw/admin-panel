@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Observable } from 'rxjs';
+import { Head, Observable } from 'rxjs';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
 import { PrinterInvoiceRequestModel } from 'src/app/models/model/order/printerInvoiceRequestModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
+import { HeaderService } from 'src/app/services/admin/header.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
@@ -22,6 +23,7 @@ export class OrderManagamentComponent implements OnInit {
   saleOrderModels: SaleOrderModel[]
   currentPage: number = 1;
   constructor(
+    private headerService: HeaderService,
     private httpClientService: HttpClientService,
     private toasterService: ToasterService,
     private spinnerService: NgxSpinnerService,
@@ -88,6 +90,8 @@ export class OrderManagamentComponent implements OnInit {
 
       this.pageDescriptionLine = "Kısmi Faturalaştırılan Siparişler"
     }
+    this.headerService.updatePageTitle(this.pageDescriptionLine);
+
   }
   formGenerator() {
     this.filterForm = this.formBuilder.group({

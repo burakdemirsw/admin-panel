@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CargoBarcode_VM, GetPackageStatus_MNG_Response } from '../create-cargo/models/models';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { CargoService } from 'src/app/services/admin/cargo.service';
+import { HeaderService } from 'src/app/services/admin/header.service';
 
 @Component({
   selector: 'app-cargo-list',
@@ -10,12 +11,13 @@ import { CargoService } from 'src/app/services/admin/cargo.service';
 })
 export class CargoListComponent implements OnInit {
 
-  constructor(private toasterService: ToasterService, private cargoService: CargoService) { }
+  constructor(private headerService: HeaderService, private toasterService: ToasterService, private cargoService: CargoService) { }
   currentPage = 1;
   cargos: CargoBarcode_VM[] = [];
   visible: boolean = false;
   cargoState: boolean = false;
   ngOnInit(): void {
+    this.headerService.updatePageTitle("Kargolar");
     this.getCargos(this.cargoState);
   }
 

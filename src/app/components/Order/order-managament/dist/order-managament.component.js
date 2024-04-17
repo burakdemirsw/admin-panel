@@ -46,7 +46,8 @@ exports.OrderManagamentComponent = void 0;
 var core_1 = require("@angular/core");
 var printerInvoiceRequestModel_1 = require("src/app/models/model/order/printerInvoiceRequestModel");
 var OrderManagamentComponent = /** @class */ (function () {
-    function OrderManagamentComponent(httpClientService, toasterService, spinnerService, router, orderService, formBuilder, activatedRoute) {
+    function OrderManagamentComponent(headerService, httpClientService, toasterService, spinnerService, router, orderService, formBuilder, activatedRoute) {
+        this.headerService = headerService;
         this.httpClientService = httpClientService;
         this.toasterService = toasterService;
         this.spinnerService = spinnerService;
@@ -111,6 +112,7 @@ var OrderManagamentComponent = /** @class */ (function () {
         if (this.status == 0 && this.invoiceStatus == 3) {
             this.pageDescriptionLine = "Kısmi Faturalaştırılan Siparişler";
         }
+        this.headerService.updatePageTitle(this.pageDescriptionLine);
     };
     OrderManagamentComponent.prototype.formGenerator = function () {
         this.filterForm = this.formBuilder.group({

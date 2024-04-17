@@ -1,135 +1,155 @@
 <main id="main" class="main">
-    <div class="pagetitle">
-        <h1>Log Listesi</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-                <li class="breadcrumb-item">Tables</li>
-                <li class="breadcrumb-item active">General</li>
-            </ol>
-        </nav>
-    </div>
-
-    <section class="section">
-
-
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Log Filtreleme</h5>
-                <!-- Filtreleme Alanı (Başlangıç) -->
-                <div class="btn-group mb-3">
-                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
-                        <i class="fa fa-bars" aria-hidden="true"></i>
-                    </button>
-                </div>
-
-                <div class="collapse" id="filterCollapse">
-                    <form [formGroup]="filterForm" (ngSubmit)="onSubmit(filterForm.value)">
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="messageHeader">Mesaj Başlığı</label>
-                                    <input type="text" id="messageHeader" class="form-control"
-                                        formControlName="messageHeader" />
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="level">Tip</label>
-                                    <input type="text" id="level" class="form-control" formControlName="level" />
-                                </div>
-                            </div>
-
-
-
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="endDate">İşlem Bitiş Tarihi:</label>
-                                    <input type="date" id="endDate" class="form-control" formControlName="endDate" />
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="startDate">İşlem Başlangıç Tarihi:</label>
-                                    <input type="date" id="startDate" class="form-control"
-                                        formControlName="startDate" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-md-4">
-                                <button class="btn btn-primary">Filtrele</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <!-- Filtreleme Alanı (Bitiş) -->
-
-            </div>
-
-
+  <section class="section">
+    <div class="card">
+      <div class="card-body">
+        <!-- Filtreleme Alanı (Başlangıç) -->
+        <div class="btn-group mb-3 mt-4">
+          <button
+            class="btn btn-primary"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#filterCollapse"
+            aria-expanded="false"
+            aria-controls="filterCollapse"
+          >
+            <i class="fa fa-bars" aria-hidden="true"></i>
+          </button>
         </div>
 
+        <div class="collapse" id="filterCollapse">
+          <form
+            [formGroup]="filterForm"
+            (ngSubmit)="onSubmit(filterForm.value)"
+          >
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="messageHeader">Mesaj Başlığı</label>
+                  <input
+                    type="text"
+                    id="messageHeader"
+                    class="form-control"
+                    formControlName="messageHeader"
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="level">Tip</label>
+                  <input
+                    type="text"
+                    id="level"
+                    class="form-control"
+                    formControlName="level"
+                  />
+                </div>
+              </div>
 
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Ürünler</h5>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="endDate">İşlem Bitiş Tarihi:</label>
+                  <input
+                    type="date"
+                    id="endDate"
+                    class="form-control"
+                    formControlName="endDate"
+                  />
+                </div>
+              </div>
 
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="startDate">İşlem Başlangıç Tarihi:</label>
+                  <input
+                    type="date"
+                    id="startDate"
+                    class="form-control"
+                    formControlName="startDate"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-md-4">
+                <button class="btn btn-primary">Filtrele</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <!-- Filtreleme Alanı (Bitiş) -->
+      </div>
+    </div>
 
-
-                <div style="overflow-x: auto">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Id</th>
-                                <th scope="col">Log Başlığı</th>
-                                <th scope="col">Durum</th>
-                                <th scope="col">Hata Mesajı</th>
-                                <th scope="col">İstek</th>
-                                <th scope="col">Log</th>
-                                <!-- <th scope="col">İstek Adresi</th> -->
-                                <th scope="col">Tarih</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                *ngFor="let log of log_VMList | paginate: { itemsPerPage: 10, currentPage: currentPage } ">
-                                <td>{{ log.id }}</td>     
-                                <td>{{ log.messageHeader }}</td>
-                                <td>
-                                    <div class="btn" [ngClass]="{
+    <div class="card">
+      <div class="card-body">
+        <div style="overflow-x: auto">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Log Başlığı</th>
+                <th scope="col">Durum</th>
+                <th scope="col">Hata Mesajı</th>
+                <th scope="col">İstek</th>
+                <th scope="col">Log</th>
+                <!-- <th scope="col">İstek Adresi</th> -->
+                <th scope="col">Tarih</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let log of log_VMList
+                    | paginate : { itemsPerPage: 10, currentPage: currentPage }
+                "
+              >
+                <td>{{ log.id }}</td>
+                <td>{{ log.messageHeader }}</td>
+                <td>
+                  <div
+                    class="btn"
+                    [ngClass]="{
                       'btn-warning': log.level === 'WARNING',
                       'btn-success': log.level === 'SUCCESS',
                       'btn-primary': log.level === 'INFO',
                       'btn-danger': log.level === 'ERROR'
-                    }">{{ log.level }}</div>
-                                </td>
-                          
-                                <td>{{ log.exceptionText }}</td>
-                                      
-                                <td>
-                                    <textarea rows="5" cols="50" [(ngModel)]="log.request" *ngIf="log.request" readonly></textarea>
-                                </td>
+                    }"
+                  >
+                    {{ log.level }}
+                  </div>
+                </td>
 
-                                <td>
-                                    <textarea rows="5" cols="50" [(ngModel)]="log.logEvent" readonly></textarea>
-                                </td>
-                              
-                                <!-- <td>{{ log.requestPath }}</td> -->
-                                <td>{{ log.createdDate }}</td>
+                <td>{{ log.exceptionText }}</td>
 
+                <td>
+                  <textarea
+                    rows="5"
+                    cols="50"
+                    [(ngModel)]="log.request"
+                    *ngIf="log.request"
+                    readonly
+                  ></textarea>
+                </td>
 
+                <td>
+                  <textarea
+                    rows="5"
+                    cols="50"
+                    [(ngModel)]="log.logEvent"
+                    readonly
+                  ></textarea>
+                </td>
 
-                            </tr>
-                        </tbody>
-                    </table>
-                    <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
-
-                </div>
-            </div>
+                <!-- <td>{{ log.requestPath }}</td> -->
+                <td>{{ log.createdDate }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <pagination-controls
+            (pageChange)="currentPage = $event"
+          ></pagination-controls>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 </main>

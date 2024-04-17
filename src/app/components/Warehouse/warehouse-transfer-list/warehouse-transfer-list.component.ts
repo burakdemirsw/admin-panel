@@ -7,6 +7,7 @@ import { WarehouseTransferListFilterModel } from 'src/app/models/model/filter/wa
 import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
 import { WarehosueTransferListModel } from 'src/app/models/model/warehouse/warehosueTransferListModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
+import { HeaderService } from 'src/app/services/admin/header.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
@@ -21,6 +22,7 @@ export class WarehouseTransferListComponent implements OnInit {
   warehouseTransferListModels: WarehosueTransferListModel[]
   filterForm: FormGroup
   constructor(
+    private hs: HeaderService,
     private httpClientService: HttpClientService,
     private toasterService: ToasterService,
     private spinnerService: NgxSpinnerService,
@@ -34,7 +36,7 @@ export class WarehouseTransferListComponent implements OnInit {
     this.formGenerator();
     await this.getWarehouseOperations();
 
-
+    this.hs.updatePageTitle("Depolar Arası Transfer")
     //this.spinnerService.hide();
 
   }
@@ -51,11 +53,11 @@ export class WarehouseTransferListComponent implements OnInit {
 
   async routeNewPage(orderNumber: string | null) {
     if (orderNumber != null) {
-      this.router.navigate(["/warehouse-operation/" + orderNumber.split('TP-')[1]])
+      this.router.navigate(["/warehouse-operation/" + orderNumber.split('TP-')[1] + "/" + "0"])
 
     } else {
       const result = await this.generalService.generateGUID()
-      this.router.navigate(["/warehouse-operation/" + result])
+      this.router.navigate(["/warehouse-operation/" + result + "/" + "0"])
     }
   }
 

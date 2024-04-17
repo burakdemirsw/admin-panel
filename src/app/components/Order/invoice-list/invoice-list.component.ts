@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -9,6 +9,7 @@ import { OrderService } from 'src/app/services/admin/order.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { HeaderService } from '../../../services/admin/header.service';
 
 @Component({
   selector: 'app-invoice-list',
@@ -17,6 +18,7 @@ import { ToasterService } from 'src/app/services/ui/toaster.service';
 })
 export class InvoiceListComponent implements OnInit, OnChanges {
   constructor(
+    private headerService: HeaderService,
     private httpClientService: HttpClientService,
     private toasterService: ToasterService,
     private spinnerService: NgxSpinnerService,
@@ -49,6 +51,7 @@ export class InvoiceListComponent implements OnInit, OnChanges {
     //this.spinnerService.show();
     this.formGenerator();
     await this.getInvoiceList();
+    this.headerService.updatePageTitle("Faturalar Alış/Satış");
 
     //this.spinnerService.hide();
 

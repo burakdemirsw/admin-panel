@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { GetUserFilter, UserList_VM } from 'src/app/models/model/user/userRegister_VM';
+import { HeaderService } from 'src/app/services/admin/header.service';
 import { UserService } from 'src/app/services/admin/user.service';
 import { GoogleDriveService } from 'src/app/services/common/google-drive.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
@@ -17,11 +18,12 @@ export class UserListComponent implements OnInit {
     private alertifyService: AlertifyService,
     private formBuilder: FormBuilder,
     private router: Router,
-    private googleDriveService: GoogleDriveService,
+    private headerService: HeaderService,
     private userService: UserService
   ) { }
 
   async ngOnInit() {
+    this.headerService.updatePageTitle("Kullanıcılar")
     await this.getUsers();
   }
 

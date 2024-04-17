@@ -1,22 +1,9 @@
 <main id="main" class="main">
-  <div class="pagetitle">
-    <h1>{{ pageTitle }}</h1>
-    <nav>
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item active">USD: {{ exchangeRate.usd }}</li>
-        <li class="breadcrumb-item active">EUR:{{ exchangeRate.eur }}</li>
-      </ol>
-    </nav>
-  </div>
-
+  <!-- <ol class="breadcrumb">
+    <li class="breadcrumb-item active">USD: {{ exchangeRate.usd }}</li>
+    <li class="breadcrumb-item active">EUR:{{ exchangeRate.eur }}</li>
+  </ol> -->
   <section class="section">
-    <!-- <input type="file" (change)="onFileSelected($event)" />
-    <button (click)="extractText()">Extract Text</button>
-    <hr />
-    <div *ngIf="extractedText">
-      <h3>Extracted Text:</h3>
-      <pre>{{ extractedText }}</pre>
-    </div> -->
     <p-tabView
       id="closableTabView"
       [scrollable]="true"

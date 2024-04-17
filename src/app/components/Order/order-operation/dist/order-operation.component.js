@@ -52,7 +52,8 @@ var createPurchaseInvoice_1 = require("src/app/models/model/invoice/createPurcha
 var qrOperationModel_1 = require("src/app/models/model/product/qrOperationModel");
 var warehouseOperationProductModel_1 = require("src/app/models/model/warehouse/warehouseOperationProductModel");
 var OrderOperationComponent = /** @class */ (function () {
-    function OrderOperationComponent(toasterService, formBuilder, orderService, activatedRoute, router, httpClient, productService, warehouseService, generalService, title, sanitizer) {
+    function OrderOperationComponent(headerService, toasterService, formBuilder, orderService, activatedRoute, router, httpClient, productService, warehouseService, generalService, title, sanitizer) {
+        this.headerService = headerService;
         this.toasterService = toasterService;
         this.formBuilder = formBuilder;
         this.orderService = orderService;
@@ -344,6 +345,7 @@ var OrderOperationComponent = /** @class */ (function () {
             this.operation = 'Transferi Onayla';
             this.pageDescription = 'Transfer Onaylama Detay ' + this.currentOrderNo;
         }
+        this.headerService.updatePageTitle(this.pageDescription);
     };
     OrderOperationComponent.prototype.getAllProducts = function (orderNo, orderNoType) {
         return __awaiter(this, void 0, Promise, function () {
@@ -679,6 +681,7 @@ var OrderOperationComponent = /** @class */ (function () {
                     case 6:
                         number = _e.sent();
                         productModel.barcode = this.checkForm.get('barcode').value;
+                        // productModel.batchCode = this.checkForm.get('batchCode').value;
                         (_a = this.checkForm.get('quantity')) === null || _a === void 0 ? void 0 : _a.setValue(Number(number)); //quantity alanı dolduruldu
                         return [3 /*break*/, 8];
                     case 7:
@@ -690,6 +693,7 @@ var OrderOperationComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.setFormValues(productModel.barcode, true)];
                     case 10:
                         number = _e.sent();
+                        productModel.batchCode = this.checkForm.get('batchCode').value;
                         productModel.barcode = this.checkForm.get('barcode').value;
                         (_b = this.checkForm.get('quantity')) === null || _b === void 0 ? void 0 : _b.setValue(Number(number)); //quantity alanı dolduruldu
                         _e.label = 11;

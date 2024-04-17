@@ -3,6 +3,7 @@ import { DOCUMENT } from '@angular/common'
 import { Router } from '@angular/router';
 import { SessionService } from 'src/app/services/ui/session.service';
 import { UserService } from 'src/app/services/admin/user.service';
+import { HeaderService } from '../../services/admin/header.service';
 
 @Component({
   selector: 'app-header',
@@ -11,10 +12,14 @@ import { UserService } from 'src/app/services/admin/user.service';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(private userService: UserService, @Inject(DOCUMENT) private document: Document, private router: Router, private sessionService: SessionService) { }
+  constructor(private headerService: HeaderService, private userService: UserService, @Inject(DOCUMENT) private document: Document, private router: Router, private sessionService: SessionService) { }
 
   userName: string;
+  currentPageTitle: string = '';
   ngOnInit(): void {
+    this.headerService.currentPageTitle.subscribe(title => {
+      this.currentPageTitle = title;
+    });
     var userName = localStorage.getItem('name') + " " + localStorage.getItem('surname');
 
     if (userName) {

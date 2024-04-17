@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClientService } from '../http-client.service';
 import { LogFilterModel } from 'src/app/models/model/log/logFilterModel ';
+import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 
 @Injectable({

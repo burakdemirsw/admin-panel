@@ -1,6 +1,7 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { OrderService } from 'src/app/services/admin/order.service';
-import { Raport_1, Raport_CR, Raport_2 } from '../../models/model/raport/raport_CR';
+import { Raport_CR } from '../../models/model/raport/raport_CR';
+import { HeaderService } from '../../services/admin/header.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,14 +10,14 @@ import { Raport_1, Raport_CR, Raport_2 } from '../../models/model/raport/raport_
 })
 export class DashboardComponent implements OnInit {
 
-  constructor(private elementRef: ElementRef, private orderService: OrderService) { }
+  constructor(private headerService: HeaderService, private elementRef: ElementRef, private orderService: OrderService) { }
   data: any;
 
   options: any;
   raportData: Raport_CR;
   userId: number;
   async ngOnInit() {
-
+    this.headerService.updatePageTitle("Anasayfa")
     this.userId = Number(localStorage.getItem('userId'))
     if (this.userId === 5) {
       await this.saleCountRaport();

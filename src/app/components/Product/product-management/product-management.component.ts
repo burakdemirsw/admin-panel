@@ -11,6 +11,7 @@ import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurcha
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { HeaderService } from '../../../services/admin/header.service';
 declare var window: any;
 @Component({
   selector: 'app-product-management',
@@ -22,16 +23,15 @@ export class ProductManagementComponent implements OnInit {
   showImage = false; // add this property
   view = true;
   constructor(
-    private httpClientService: HttpClientService,
+
     private toasterService: ToasterService,
-    private spinnerService: NgxSpinnerService,
     private productService: ProductService,
     private formBuilder: FormBuilder, private sanitizer: DomSanitizer,
-    private generalService: GeneralService
+    private headerService: HeaderService
   ) { }
   productForm: FormGroup;
   ngOnInit(): void {
-
+    this.headerService.updatePageTitle("Ürün Sorgulama")
     this.formGenerator();
 
   }

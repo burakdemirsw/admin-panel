@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ProductCreateModel } from 'src/app/models/model/product/productCreateModel';
-import { HttpClientService } from '../http-client.service';
 import { ShelfModel } from 'src/app/models/model/shelf/ShelfModel';
+import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 
 @Injectable({

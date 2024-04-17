@@ -15,248 +15,225 @@
       <div style="width: 100%">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Kutu Etiketi Oluştur</h5>
-
-            <div class="tab-content" id="ex2-content">
-              <div
-                class="tab-pane fade show"
-                [class.active]="activeTab === 1"
-                id="ex3-tabs-1"
-                role="tabpanel"
-                aria-labelledby="ex3-tab-1"
-              >
-                <form
-                  [formGroup]="checkForm"
-                  (ngSubmit)="onSubmit(checkForm.value)"
+            <form
+              class="mt-4"
+              [formGroup]="checkForm"
+              (ngSubmit)="onSubmit(checkForm.value)"
+            >
+              <div class="row mb-3">
+                <div
+                  class="form-group"
+                  *ngIf="this.checkForm.get('countMultiple').value"
                 >
-                  <div class="row mb-3">
-                    <div
-                      class="form-group"
-                      *ngIf="this.checkForm.get('countMultiple').value"
-                    >
-                      <label for="boxId">Kutu Id</label>
-                      <input
-                        type="text"
-                        id="boxId"
-                        class="form-control"
-                        formControlName="boxId"
-                        [disabled]="checkForm.disabled"
-                      />
-                      <div class="input-group-append">
-                        <button
-                          type="button"
-                          (click)="newBox()"
-                          class="btn btn-dark"
-                        >
-                          Yeni Kutu Oluştur
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row mb-3">
-                    <div class="form-group">
-                      <label for="barcode">Barkod</label>
-                      <input
-                        type="text"
-                        id="barcode"
-                        class="form-control"
-                        formControlName="barcode"
-                        [disabled]="checkForm.disabled"
-                        (keydown.enter)="onSubmit(checkForm.value)"
-                      />
-                    </div>
-                  </div>
-                  <div class="form-group col">
-                    <div class="form-group">
-                      <label for="itemCode">Ürün Kodu</label>
-
-                      <input
-                        type="text"
-                        id="itemCode"
-                        class="form-control"
-                        formControlName="itemCode"
-                        (keydown.enter)="onSubmit(checkForm.value)"
-                        [disabled]="checkForm.disabled"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="row mb-3">
-                    <div class="form-group">
-                      <label for="shelfNo">Raf No:</label>
-                      <div class="input-group">
-                        <input
-                          type="text"
-                          id="shelfNo"
-                          class="form-control"
-                          formControlName="shelfNo"
-                        />
-                        <div class="input-group-append">
-                          <button
-                            type="button"
-                            (click)="clearShelfNumbers()"
-                            class="btn btn-dark"
-                          >
-                            Formu Temizle
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
-                      shelfNumbers
-                    }}</label>
-                  </div>
-
-                  <div class="row mb-3">
-                    <div class="form-group col">
-                      <div class="form-group">
-                        <label for="quantity">Miktar</label>
-
-                        <input
-                          type="number"
-                          id="quantity"
-                          class="form-control"
-                          formControlName="quantity"
-                          [disabled]="checkForm.disabled"
-                        />
-                      </div>
-                    </div>
-
-                    <div class="form-group col">
-                      <div class="form-group">
-                        <label for="batchCode">Parti</label>
-
-                        <input
-                          type="text"
-                          id="batchCode"
-                          class="form-control"
-                          formControlName="batchCode"
-                          (keydown.enter)="onSubmit(checkForm.value)"
-                          [disabled]="checkForm.disabled"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row mb-3">
-                    <div class="form-group col">
-                      <div class="form-group">
-                        <label for="boxNo">İTH Kutu No</label>
-
-                        <input
-                          type="text"
-                          id="boxNo"
-                          class="form-control"
-                          formControlName="boxNo"
-                          (keydown.enter)="onSubmit(checkForm.value)"
-                          [disabled]="checkForm.disabled"
-                        />
-                      </div>
-                    </div>
-
-                    <div class="form-group col">
-                      <div class="form-group">
-                        <label for="itemDesc">Ürün Adı</label>
-
-                        <input
-                          type="text"
-                          id="itemDesc"
-                          class="form-control"
-                          formControlName="itemDesc"
-                          (keydown.enter)="onSubmit(checkForm.value)"
-                          [disabled]="checkForm.disabled"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row mb-3">
-                    <div class="form-group col">
-                      <div class="form-group">
-                        <label for="address">Kopya Sayısı</label>
-
-                        <input
-                          type="number"
-                          id="printCount"
-                          class="form-control"
-                          formControlName="printCount"
-                          (keydown.enter)="onSubmit(checkForm.value)"
-                          [disabled]="checkForm.disabled"
-                        />
-                      </div>
-                    </div>
-
-                    <div class="form-group col">
-                      <div class="form-group">
-                        <label for="brand">Marka</label>
-
-                        <input
-                          type="text"
-                          id="brand"
-                          class="form-control"
-                          formControlName="brand"
-                          (keydown.enter)="onSubmit(checkForm.value)"
-                          [disabled]="checkForm.disabled"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row mb-3">
-                    <div class="form-group col">
-                      <div class="form-group">
-                        <label for="countMultiple">Çoklu Ürün Okutma</label>
-                        <p-inputSwitch
-                          id="countMultiple"
-                          class="form-control"
-                          formControlName="countMultiple"
-                        ></p-inputSwitch>
-                      </div>
-                    </div>
-
-                    <div class="form-group col">
-                      <div class="form-group">
-                        <label for="doubleVerification">Çift Doğrulama</label>
-                        <p-inputSwitch
-                          id="doubleVerification"
-                          class="form-control"
-                          formControlName="doubleVerification"
-                        ></p-inputSwitch>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="form-group col">
+                  <input
+                    pInputText
+                    type="text"
+                    id="boxId"
+                    class="form-control"
+                    formControlName="boxId"
+                    [disabled]="checkForm.disabled"
+                    placeholder="Kutu Id"
+                  />
+                  <div class="input-group-append">
                     <button
                       type="button"
+                      (click)="newBox()"
                       class="btn btn-dark"
-                      style="margin-left: 20px; color: white"
-                      (click)="onSubmit(checkForm.value)"
-                      style="width: 100%"
                     >
-                      Etiket Oluştur
+                      Yeni Kutu Oluştur
                     </button>
                   </div>
-                </form>
+                </div>
               </div>
-              <div
-                class="tab-pane fade show"
-                [class.active]="activeTab === 2"
-                id="ex3-tabs-2"
-                role="tabpanel-2"
-                aria-labelledby="ex3-tab-2"
-              ></div>
-              <div
-                class="tab-pane fade show"
-                [class.active]="activeTab === 3"
-                id="ex3-tabs-3"
-                role="tabpanel-3"
-                aria-labelledby="ex3-tab-3"
-              >
-                Prices
+
+              <div class="row mb-3">
+                <div class="form-group">
+                  <input
+                    pInputText
+                    type="text"
+                    id="barcode"
+                    class="form-control"
+                    formControlName="barcode"
+                    [disabled]="checkForm.disabled"
+                    (keydown.enter)="onSubmit(checkForm.value)"
+                    placeholder="Barkod"
+                  />
+                </div>
               </div>
-            </div>
+              <div class="form-group col mb-3">
+                <div class="form-group">
+                  <input
+                    pInputText
+                    type="text"
+                    id="itemCode"
+                    class="form-control"
+                    formControlName="itemCode"
+                    (keydown.enter)="onSubmit(checkForm.value)"
+                    [disabled]="checkForm.disabled"
+                    placeholder="Ürün Kodu"
+                  />
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="form-group">
+                  <div class="input-group">
+                    <input
+                      pInputText
+                      type="text"
+                      id="shelfNo"
+                      class="form-control"
+                      formControlName="shelfNo"
+                      placeholder="Raf No"
+                    />
+                    <div class="input-group-append">
+                      <button
+                        type="button"
+                        (click)="clearShelfNumbers()"
+                        class="btn btn-dark"
+                        style="height: 100%"
+                      >
+                        Formu Temizle
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
+                  shelfNumbers
+                }}</label>
+              </div>
+
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <div class="form-group">
+                    <input
+                      pInputText
+                      type="number"
+                      id="quantity"
+                      class="form-control"
+                      formControlName="quantity"
+                      [disabled]="checkForm.disabled"
+                      placeholder="Miktar"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group col">
+                  <div class="form-group">
+                    <input
+                      pInputText
+                      type="text"
+                      id="batchCode"
+                      class="form-control"
+                      formControlName="batchCode"
+                      (keydown.enter)="onSubmit(checkForm.value)"
+                      [disabled]="checkForm.disabled"
+                      placeholder="Parti"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <div class="form-group">
+                    <input
+                      pInputText
+                      type="text"
+                      id="boxNo"
+                      class="form-control"
+                      formControlName="boxNo"
+                      (keydown.enter)="onSubmit(checkForm.value)"
+                      [disabled]="checkForm.disabled"
+                      placeholder="İTH Kutu No"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group col">
+                  <div class="form-group">
+                    <input
+                      pInputText
+                      type="text"
+                      id="itemDesc"
+                      class="form-control"
+                      formControlName="itemDesc"
+                      (keydown.enter)="onSubmit(checkForm.value)"
+                      [disabled]="checkForm.disabled"
+                      placeholder="Ürün Adı"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <div class="form-group">
+                    <input
+                      pInputText
+                      type="number"
+                      id="printCount"
+                      class="form-control"
+                      formControlName="printCount"
+                      (keydown.enter)="onSubmit(checkForm.value)"
+                      [disabled]="checkForm.disabled"
+                      placeholder="Kopya Sayısı"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group col">
+                  <div class="form-group">
+                    <input
+                      pInputText
+                      type="text"
+                      id="brand"
+                      class="form-control"
+                      formControlName="brand"
+                      (keydown.enter)="onSubmit(checkForm.value)"
+                      [disabled]="checkForm.disabled"
+                      placeholder="Marka"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <div class="form-group">
+                    <label for="countMultiple">Çoklu Ürün Okutma</label>
+                    <p-inputSwitch
+                      id="countMultiple"
+                      class="form-control"
+                      formControlName="countMultiple"
+                    ></p-inputSwitch>
+                  </div>
+                </div>
+
+                <div class="form-group col">
+                  <div class="form-group">
+                    <label for="doubleVerification">Çift Doğrulama</label>
+                    <p-inputSwitch
+                      id="doubleVerification"
+                      class="form-control"
+                      formControlName="doubleVerification"
+                    ></p-inputSwitch>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group col">
+                <button
+                  type="button"
+                  class="btn btn-dark"
+                  style="margin-left: 20px; color: white"
+                  (click)="onSubmit(checkForm.value)"
+                  style="width: 100%"
+                >
+                  Etiket Oluştur
+                </button>
+              </div>
+            </form>
           </div>
         </div>
 

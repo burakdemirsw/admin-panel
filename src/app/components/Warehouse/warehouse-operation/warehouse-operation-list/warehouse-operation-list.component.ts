@@ -5,6 +5,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { WarehouseOperationListFilterModel } from 'src/app/models/model/filter/warehouseOperationListFilterModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
+import { HeaderService } from 'src/app/services/admin/header.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
@@ -26,7 +27,7 @@ export class WarehouseOperationListComponent implements OnInit {
     private router: Router,
     private warehosueService: WarehouseService,
     private formBuilder: FormBuilder,
-    private orderService: OrderService
+    private orderService: OrderService, private headerService: HeaderService
   ) { }
 
   async ngOnInit() {
@@ -34,7 +35,7 @@ export class WarehouseOperationListComponent implements OnInit {
     this.formGenerator();
     await this.getWarehouseOperations('0');
     this.spinnerService.hide();
-
+    this.headerService.updatePageTitle("Havuzda Kalan Transfer Paneli")
   }
   //--------------------------------------------------------------------------------------------- ITEMS TO BRING
   itemsToCollectDialog: boolean = false;

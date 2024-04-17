@@ -47,14 +47,12 @@ var core_1 = require("@angular/core");
 var product_service_1 = require("src/app/services/admin/product.service");
 var forms_1 = require("@angular/forms");
 var ProductManagementComponent = /** @class */ (function () {
-    function ProductManagementComponent(httpClientService, toasterService, spinnerService, productService, formBuilder, sanitizer, generalService) {
-        this.httpClientService = httpClientService;
+    function ProductManagementComponent(toasterService, productService, formBuilder, sanitizer, headerService) {
         this.toasterService = toasterService;
-        this.spinnerService = spinnerService;
         this.productService = productService;
         this.formBuilder = formBuilder;
         this.sanitizer = sanitizer;
-        this.generalService = generalService;
+        this.headerService = headerService;
         this.products = [];
         this.showImage = false; // add this property
         this.view = true;
@@ -66,6 +64,7 @@ var ProductManagementComponent = /** @class */ (function () {
         this.visible = false;
     }
     ProductManagementComponent.prototype.ngOnInit = function () {
+        this.headerService.updatePageTitle("Ürün Sorgulama");
         this.formGenerator();
     };
     ProductManagementComponent.prototype.camerasFoundHandler = function (cameras) {

@@ -47,11 +47,11 @@ var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
 var userRegister_VM_1 = require("src/app/models/model/user/userRegister_VM");
 var PagesRegisterComponent = /** @class */ (function () {
-    function PagesRegisterComponent(generalService, formBuilder, userService, router, alertifyService, httpClientService, activatedRoute) {
+    function PagesRegisterComponent(generalService, formBuilder, userService, headerService, alertifyService, httpClientService, activatedRoute) {
         this.generalService = generalService;
         this.formBuilder = formBuilder;
         this.userService = userService;
-        this.router = router;
+        this.headerService = headerService;
         this.alertifyService = alertifyService;
         this.httpClientService = httpClientService;
         this.activatedRoute = activatedRoute;
@@ -67,6 +67,7 @@ var PagesRegisterComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        this.headerService.updatePageTitle("Kullanıcı Ekle");
                         this.formGenerator();
                         return [4 /*yield*/, this.getSalesPersonModels()];
                     case 1:

@@ -45,7 +45,8 @@ exports.__esModule = true;
 exports.UnfinishedOrderComponent = void 0;
 var core_1 = require("@angular/core");
 var UnfinishedOrderComponent = /** @class */ (function () {
-    function UnfinishedOrderComponent(toasterService, orderService) {
+    function UnfinishedOrderComponent(headerService, toasterService, orderService) {
+        this.headerService = headerService;
         this.toasterService = toasterService;
         this.orderService = orderService;
         this.currentPage = 1;
@@ -62,12 +63,14 @@ var UnfinishedOrderComponent = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        this.headerService.updatePageTitle("Panel Siparişleri");
                         this.currentOrderState = isCompleted;
                         _a = this;
                         return [4 /*yield*/, this.orderService.getClientOrders(isCompleted)];
                     case 1:
                         _a.orders = _b.sent();
                         this.filterOrdersByRole();
+                        this.headerService.updatePageTitle((this.currentOrderState == true ? "Tamamlanmış" : "Tamamlanmamış") + " Siparişler");
                         return [2 /*return*/];
                 }
             });

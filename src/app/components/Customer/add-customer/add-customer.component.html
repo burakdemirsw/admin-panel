@@ -2,34 +2,11 @@
   <section class="section">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Müşteri Oluştur</h5>
-        <form [formGroup]="createCustomerForm">
-          <!-- <div class="row">
-                <div class="col-md-6">
-                  <label for="exampleInputEmail1">Ad</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="name"
-                    placeholder="Ad"
-                    formControlName="name"
-                  />
-                </div>
-                <div class="col-md-6">
-                  <label for="exampleInputEmail1">Soyad</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="surname"
-                    placeholder="Soy Ad"
-                    formControlName="surname"
-                  />
-                </div>
-              </div> -->
-          <div class="row">
+        <form [formGroup]="createCustomerForm" class="mt-4">
+          <div class="row mb-3">
             <div class="col-md-12">
-              <label for="exampleInputEmail1">Firma Adı (ZORUNLUDUR)</label>
               <input
+                pInputText
                 type="text"
                 class="form-control"
                 id="currAccDescription"
@@ -37,21 +14,11 @@
                 formControlName="currAccDescription"
               />
             </div>
-            <!-- <div class="col-md-6">
-                  <label for="taxNumber">Vergi Numarası</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="taxNumber"
-                    placeholder="Vergi Numarası"
-                    formControlName="taxNumber"
-                  />
-                </div> -->
           </div>
           <div class="row mb-3">
             <div class="col-md-6">
-              <label for="exampleInputEmail1">Mail (ZORUNLUDUR)</label>
               <input
+                pInputText
                 type="text"
                 class="form-control"
                 id="mail"
@@ -60,10 +27,8 @@
               />
             </div>
             <div class="col-md-6">
-              <label for="exampleInputEmail1"
-                >Telefon Numarası (ZORUNLUDUR)</label
-              >
               <input
+                pInputText
                 type="text"
                 class="form-control"
                 id="phoneNumber"
@@ -82,6 +47,7 @@
                     <div class="input-group mb-3">
                       <div class="custom-file">
                         <input
+                          pInputText
                           type="file"
                           class="custom-file-input"
                           id="inputGroupFile01"
@@ -98,8 +64,8 @@
                   <!-- Metin Girişi Bölümü -->
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label for="stampPhotoUrl">Kaşe</label>
                       <input
+                        pInputText
                         type="text"
                         class="form-control"
                         id="stampPhotoUrl"
@@ -117,6 +83,7 @@
                   <div class="input-group mb-3">
                     <div class="custom-file">
                       <input
+                        pInputText
                         type="file"
                         class="custom-file-input"
                         id="inputGroupFile01"
@@ -130,8 +97,8 @@
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <label for="exampleInputEmail1">Kartvizit </label>
                   <input
+                    pInputText
                     type="text"
                     class="form-control"
                     id="bussinesCardPhotoUrl"
@@ -147,93 +114,58 @@
           [formGroup]="createCustomerForm"
           (ngSubmit)="submitAddressForm(createCustomerForm.value)"
         >
-          <div class="form-group">
-            <label for="address_country" class="label">Ülke</label>
-            <select
-              class="form-select"
-              id="address_country"
+          <div class="form-group mb-3">
+            <p-dropdown
               formControlName="address_country"
-              class="form-control"
-            >
-              <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-              <option
-                *ngFor="let country of _countries"
-                value="{{ country.code }}"
-              >
-                {{ country.name }}
-              </option>
-            </select>
+              [options]="_countries"
+              optionLabel="name"
+              [showClear]="true"
+              placeholder="Ülke"
+            ></p-dropdown>
           </div>
-          <div class="form-group">
-            <label for="address_region" class="label">Bölge</label>
-            <select
-              class="form-select"
-              id="address_region"
+          <div class="form-group mb-3">
+            <p-dropdown
               formControlName="address_region"
-              class="form-control"
-            >
-              <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-              <option *ngFor="let region of _regions" value="{{ region.code }}">
-                {{ region.name }}
-              </option>
-            </select>
+              [options]="_regions"
+              optionLabel="name"
+              [showClear]="true"
+              placeholder="Bölge"
+            ></p-dropdown>
           </div>
-          <div class="form-group">
-            <label for="address_province" class="label">il</label>
-            <select
-              class="form-select"
-              id="address_province"
+          <div class="form-group mb-3">
+            <p-dropdown
               formControlName="address_province"
-            >
-              <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-              <option
-                *ngFor="let province of _provinces"
-                value="{{ province.code }}"
-              >
-                {{ province.name }}
-              </option>
-            </select>
+              [options]="_provinces"
+              optionLabel="name"
+              [showClear]="true"
+              placeholder="il"
+            ></p-dropdown>
           </div>
 
-          <div class="form-group">
-            <label for="address_district" class="label">Vergi Dairesi</label>
-            <select
-              class="form-select"
-              id="address_taxOffice"
+          <div class="form-group mb-3">
+            <p-dropdown
               formControlName="address_taxOffice"
-            >
-              <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-              <option
-                *ngFor="let taxOffice of _taxOffices"
-                value="{{ taxOffice.code }}"
-              >
-                {{ taxOffice.name }}
-              </option>
-            </select>
+              [options]="_taxOffices"
+              optionLabel="name"
+              [showClear]="true"
+              placeholder="Vergi Dairesi"
+            ></p-dropdown>
           </div>
 
-          <div class="form-group">
-            <label for="address_district" class="label">ilçe</label>
-            <select
-              class="form-select"
-              id="address_district"
+          <div class="form-group mb-3">
+            <p-dropdown
               formControlName="address_district"
-            >
-              <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-              <option
-                *ngFor="let district of _districts"
-                value="{{ district.code }}"
-              >
-                {{ district.name }}
-              </option>
-            </select>
+              [options]="_districts"
+              optionLabel="name"
+              [showClear]="true"
+              placeholder="İlçe"
+            ></p-dropdown>
           </div>
 
-          <div class="form-group">
-            <label for="address_description" class="label"
-              >Adres Tarifi (ZORUNLUDUR)</label
-            >
+          <div class="form-group mb-3">
             <input
+              placeholder="Adres*"
+              pInputText
               type="text"
               class="form-control"
               id="address_description"
@@ -244,8 +176,9 @@
           </div>
 
           <div class="form-group mb-3">
-            <label for="address_postalCode" class="label">Posta Kodu</label>
             <input
+              placeholder="Posta Kodu"
+              pInputText
               type="text"
               id="address_postalCode"
               name="address_postalCode"

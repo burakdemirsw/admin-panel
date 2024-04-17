@@ -219,7 +219,8 @@ import { CreateBarcodeComponent } from './components/Product/create-barcode/crea
     NebimStockControlComponent,
     NebimGetOrdersComponent,
     NebimProductExtractComponent,
-    CreateBarcodeComponent],
+    CreateBarcodeComponent,
+  ],
 
 
   imports: [

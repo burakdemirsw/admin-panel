@@ -44,8 +44,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.OrderService = void 0;
 var core_1 = require("@angular/core");
-var orderBillingRequestModel_1 = require("src/app/models/model/invoice/orderBillingRequestModel");
 var ClientUrls_1 = require("src/app/models/const/ClientUrls");
+var orderBillingRequestModel_1 = require("src/app/models/model/invoice/orderBillingRequestModel");
 var OrderService = /** @class */ (function () {
     function OrderService(toasterService, httpClientService, router, httpClient) {
         this.toasterService = toasterService;
@@ -68,7 +68,7 @@ var OrderService = /** @class */ (function () {
                     return [2 /*return*/, response];
                 }
                 catch (error) {
-                    console.log(error.message);
+                    // console.log(error.message);
                     return [2 /*return*/, null];
                 }
                 return [2 /*return*/];
@@ -88,7 +88,7 @@ var OrderService = /** @class */ (function () {
                     return [2 /*return*/, response];
                 }
                 catch (error) {
-                    console.log(error.message);
+                    // console.log(error.message);
                     return [2 /*return*/, null];
                 }
                 return [2 /*return*/];
@@ -108,7 +108,7 @@ var OrderService = /** @class */ (function () {
                     return [2 /*return*/, response];
                 }
                 catch (error) {
-                    console.log(error.message);
+                    // console.log(error.message);
                     return [2 /*return*/, null];
                 }
                 return [2 /*return*/];
@@ -128,7 +128,7 @@ var OrderService = /** @class */ (function () {
                     return [2 /*return*/, response];
                 }
                 catch (error) {
-                    console.log(error.message);
+                    // console.log(error.message);
                     return [2 /*return*/, null];
                 }
                 return [2 /*return*/];
@@ -146,7 +146,7 @@ var OrderService = /** @class */ (function () {
             return response;
         }
         catch (error) {
-            console.log(error.message);
+            // console.log(error.message);
             return null;
         }
     };
@@ -194,7 +194,7 @@ var OrderService = /** @class */ (function () {
             });
         }
         catch (error) {
-            console.log(error.message);
+            // console.log(error.message);
             throw error; // Rethrow the error if necessary
         }
     };
@@ -278,7 +278,7 @@ var OrderService = /** @class */ (function () {
                         return [3 /*break*/, 3];
                     case 2:
                         error_1 = _a.sent();
-                        console.log(error_1.message);
+                        // console.log(error.message);
                         return [2 /*return*/, false];
                     case 3: return [2 /*return*/, false];
                 }
@@ -380,7 +380,7 @@ var OrderService = /** @class */ (function () {
                         '/Order/CountProductPurchase', model)
                         .toPromise();
                     if (response) {
-                        console.log(response);
+                        // console.log(response);
                         if (Boolean(response) == true) {
                         }
                         else {
@@ -414,7 +414,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, result];
                     case 2:
                         error_4 = _a.sent();
-                        console.log(error_4.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -434,7 +434,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_5 = _a.sent();
-                        console.log(error_5.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -454,7 +454,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_6 = _a.sent();
-                        console.log(error_6.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -474,7 +474,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_7 = _a.sent();
-                        console.log(error_7.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -492,7 +492,7 @@ var OrderService = /** @class */ (function () {
             return response;
         }
         catch (error) {
-            console.log(error.message);
+            // console.log(error.message);
             return null;
         }
     };
@@ -509,7 +509,7 @@ var OrderService = /** @class */ (function () {
                     return [2 /*return*/, response];
                 }
                 catch (error) {
-                    console.log(error.message);
+                    // console.log(error.message);
                     return [2 /*return*/, null];
                 }
                 return [2 /*return*/];
@@ -529,7 +529,7 @@ var OrderService = /** @class */ (function () {
                     return [2 /*return*/, response];
                 }
                 catch (error) {
-                    console.log(error.message);
+                    // console.log(error.message);
                     return [2 /*return*/, null];
                 }
                 return [2 /*return*/];
@@ -549,7 +549,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_8 = _a.sent();
-                        console.log(error_8.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -569,7 +569,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_9 = _a.sent();
-                        console.log(error_9.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -589,7 +589,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_10 = _a.sent();
-                        console.log(error_10.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -609,7 +609,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_11 = _a.sent();
-                        console.log(error_11.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -629,7 +629,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_12 = _a.sent();
-                        console.log(error_12.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -649,7 +649,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_13 = _a.sent();
-                        console.log(error_13.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -669,7 +669,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_14 = _a.sent();
-                        console.log(error_14.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -689,7 +689,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_15 = _a.sent();
-                        console.log(error_15.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -709,7 +709,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_16 = _a.sent();
-                        console.log(error_16.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -729,7 +729,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_17 = _a.sent();
-                        console.log(error_17.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -750,7 +750,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_18 = _a.sent();
-                        console.log(error_18.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -771,7 +771,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_19 = _a.sent();
-                        console.log(error_19.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -791,7 +791,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_20 = _a.sent();
-                        console.log(error_20.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -811,7 +811,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_21 = _a.sent();
-                        console.log(error_21.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -831,7 +831,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_22 = _a.sent();
-                        console.log(error_22.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -851,7 +851,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_23 = _a.sent();
-                        console.log(error_23.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -872,7 +872,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_24 = _a.sent();
-                        console.log(error_24.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -892,7 +892,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2:
                         error_25 = _a.sent();
-                        console.log(error_25.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -912,7 +912,7 @@ var OrderService = /** @class */ (function () {
                     return [2 /*return*/, response];
                 }
                 catch (error) {
-                    console.log(error.message);
+                    // console.log(error.message);
                     return [2 /*return*/, null];
                 }
                 return [2 /*return*/];
@@ -936,7 +936,7 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response[0]];
                     case 2:
                         error_26 = _a.sent();
-                        console.log(error_26.message);
+                        // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -956,7 +956,7 @@ var OrderService = /** @class */ (function () {
                     return [2 /*return*/, response];
                 }
                 catch (error) {
-                    console.log(error.message);
+                    // console.log(error.message);
                     return [2 /*return*/, null];
                 }
                 return [2 /*return*/];

@@ -27,6 +27,7 @@ import { Table } from 'primeng/table';
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
 import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
+import { HeaderService } from 'src/app/services/admin/header.service';
 
 @Component({
   selector: 'app-create-order',
@@ -55,7 +56,7 @@ export class CreateOrderComponent implements OnInit {
   pageTitle: string;
   exchangeRate: ExchangeRate;
   isCollapsed: boolean = false;
-  constructor(private warehouseService: WarehouseService, private paymentService: PaymentService, private toasterService: ToasterService, private activatedRoute: ActivatedRoute,
+  constructor(private headerService: HeaderService, private warehouseService: WarehouseService, private paymentService: PaymentService, private toasterService: ToasterService, private activatedRoute: ActivatedRoute,
     private router: Router, private httpClientService: HttpClientService,
     private generalService: GeneralService, private addressService: AddressService,
     private googleDriveService: GoogleDriveService, private productService: ProductService,
@@ -90,7 +91,7 @@ export class CreateOrderComponent implements OnInit {
           this.orderType = false;
         }
 
-        //   this.toasterService.warn(this.orderType.toString())
+        this.headerService.updatePageTitle(this.pageTitle);
       }
     })
     var spc = localStorage.getItem('salesPersonCode');

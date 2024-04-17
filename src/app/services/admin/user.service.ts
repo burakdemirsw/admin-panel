@@ -17,10 +17,10 @@ export class UserService {
       .toPromise();
 
     if (response) {
-      console.log(response);
+      // console.log(response);
       return true;
     } else {
-      console.log("Kayıt Başarısız");
+      // console.log("Kayıt Başarısız");
       return false;
     }
   }
@@ -31,10 +31,10 @@ export class UserService {
       .toPromise();
 
     if (response) {
-      console.log(response);
+      // console.log(response);
       return true;
     } else {
-      console.log("Güncelleme Başarısız");
+      // console.log("Güncelleme Başarısız");
       return false;
     }
   }
@@ -46,12 +46,12 @@ export class UserService {
         .post<UserLoginCommandModel | any>({ controller: "users/login" }, model)
         .toPromise();
       if (response) {
-        console.log(response);
+        // console.log(response);
       } else {
-        console.log("response alınamadı")
+        // console.log("response alınamadı")
       }
       const userClientInfoResponse: UserClientInfoResponse = response;
-      console.log("Çevirilen Model: " + userClientInfoResponse)
+      // console.log("Çevirilen Model: " + userClientInfoResponse)
 
       localStorage.setItem("accessToken", userClientInfoResponse.token.accessToken == null ? "" : userClientInfoResponse.token.accessToken);
       localStorage.setItem("refreshToken", userClientInfoResponse.token.refreshToken == null ? "" : userClientInfoResponse.token.refreshToken);
@@ -66,14 +66,14 @@ export class UserService {
 
 
       if (response) {
-        console.log(response);
+        // console.log(response);
         return true;
       } else {
-        console.log("Giriş Başarısız");
+        // console.log("Giriş Başarısız");
         return false;
       }
     } catch (error) {
-      console.log("Login:" + error)
+      // console.log("Login:" + error)
       return false;
     }
 
@@ -102,10 +102,10 @@ export class UserService {
     localStorage.setItem("surname", userClientInfoResponse.surname.toString());
 
     if (response) {
-      console.log(response);
+      // console.log(response);
       return true;
     } else {
-      console.log('Refresh Token Alınamadı');
+      // console.log('Refresh Token Alınamadı');
       return false;
     }
   }

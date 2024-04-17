@@ -2,31 +2,32 @@
   <section class="section">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Qr Sorgula</h5>
-        <form [formGroup]="qrForm" (ngSubmit)="onSubmit(qrForm.value)">
+        <form
+          [formGroup]="qrForm"
+          (ngSubmit)="onSubmit(qrForm.value)"
+          class="mt-4"
+        >
           <div class="form-row">
             <div class="form-group col-md-12 mb-3">
-              <label for="barcode">Barkod</label>
               <div class="input-group">
                 <input
-                  type="text"
+                  pInputText
+                  placeholder="Barkod"
+                  type="search"
                   id="barcode"
                   class="form-control"
                   formControlName="barcode"
                 />
                 <div class="input-group-append">
                   <button
-                    type="button"
-                    (click)="clearBarcode()"
-                    class="btn btn-dark"
+                    class="btn btn-primary"
+                    type="submit"
+                    style="height: 100%"
                   >
-                    Formu Temizle
+                    Sorgula
                   </button>
                 </div>
               </div>
-            </div>
-            <div class="form-group col-md-6">
-              <button class="btn btn-primary btn-block">Sorgula</button>
             </div>
           </div>
         </form>

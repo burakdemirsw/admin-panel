@@ -32,6 +32,7 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { HeaderService } from 'src/app/services/admin/header.service';
 
 declare var window: any;
 
@@ -72,6 +73,7 @@ export class OrderOperationComponent implements OnInit {
   _pageDescription: boolean = false;
   selectedInvoiceType: any;
   constructor(
+    private headerService: HeaderService,
     private toasterService: ToasterService,
     private formBuilder: FormBuilder,
     private orderService: OrderService,
@@ -289,6 +291,9 @@ export class OrderOperationComponent implements OnInit {
 
       this.pageDescription = 'Transfer Onaylama Detay ' + this.currentOrderNo;
     }
+
+    this.headerService.updatePageTitle(this.pageDescription);
+
   }
   addedProductCount: string = '';
   lastCollectedProduct: ProductOfOrder = null;
@@ -398,6 +403,8 @@ export class OrderOperationComponent implements OnInit {
       batchCode: [null, Validators.required],
       invoiceType: [null, Validators.required]
     });
+
+
   }
   async confirmTransfer(operationNumberList: string[]): Promise<any> {
     //transfer onaylama yapılır ve transfer listesinin ekranına atar!
@@ -616,6 +623,7 @@ export class OrderOperationComponent implements OnInit {
         if (productModel.barcode != null) {
           var number = await this.setFormValues(productModel.barcode, true);
           productModel.barcode = this.checkForm.get('barcode').value;
+          // productModel.batchCode = this.checkForm.get('batchCode').value;
           this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
         } else {
           this.toasterService.warn('Formu Doldurunuz.');
@@ -625,6 +633,7 @@ export class OrderOperationComponent implements OnInit {
       else if (productModel.shelfNo && productModel.barcode && productModel.quantity == null) {
         // this.toasterService.success("Durum Algılandı | Düzenleme Sağlandı...")
         var number = await this.setFormValues(productModel.barcode, true);
+        productModel.batchCode = this.checkForm.get('batchCode').value;
         productModel.barcode = this.checkForm.get('barcode').value;
         this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
       }

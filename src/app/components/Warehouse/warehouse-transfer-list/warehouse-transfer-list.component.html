@@ -1,22 +1,9 @@
-<p>warehouse-transfer-list works!</p>
 <main id="main" class="main">
-  <div class="pagetitle">
-    <h1>Depolar Arası Transfer</h1>
-    <nav>
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-        <li class="breadcrumb-item">Tables</li>
-        <li class="breadcrumb-item active">General</li>
-      </ol>
-    </nav>
-  </div>
-
   <section class="section">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Depolar Arası Transfer Filtreleme</h5>
         <!-- Filtreleme Alanı (Başlangıç) -->
-        <div class="btn-group mb-3">
+        <div class="btn-group mb-3 mt-4">
           <button
             class="btn btn-primary"
             type="button"
@@ -110,9 +97,7 @@
 
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Depolar Arası Transfer İşlemleri</h5>
-
-        <div class="btn-group mb-3">
+        <div class="btn-group mb-3 mt-4">
           <button
             class="btn btn-primary"
             type="button"
@@ -165,7 +150,6 @@
                       class="btn btn-success"
                       data-text="Transfere Git"
                       (click)="routeNewPage(operation.orderNumber)"
-                      routerLink="/order-operation/{{ operation.orderNumber }}"
                     >
                       <i class="fas fa-sliders-h"></i>
                     </button>

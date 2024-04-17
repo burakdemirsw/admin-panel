@@ -1,35 +1,27 @@
-import { Injectable } from '@angular/core';
-import { BarcodeAddModel } from 'src/app/models/model/product/barcodeAddModel';
-import { HttpClientService } from '../http-client.service';
-import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
-import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
-import { Observable } from 'rxjs/internal/Observable';
-import { Router } from '@angular/router';
-import { catchError, map } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { OrderBillingRequestModel } from 'src/app/models/model/invoice/orderBillingRequestModel';
-import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
-import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
-import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { int } from '@zxing/library/esm/customTypings';
+import { Observable } from 'rxjs/internal/Observable';
+import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, NebimOrder_2 } from 'src/app/components/Order/create-order/models/nebimOrder';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
-import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/warehouseOperationProductModel';
-import { InventoryItem } from 'src/app/models/model/product/inventoryItemModel';
-import { TransferRequestListModel } from 'src/app/models/model/warehouse/transferRequestListModel';
-import { InventoryResponseModel } from 'src/app/models/model/order/inventoryResponseModel';
-import { CountConfirmData } from 'src/app/models/model/product/countConfirmModel';
-import { int } from '@zxing/library/esm/customTypings';
+import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
-import { GetCustomerAddress_CM, GetCustomerList_CM } from 'src/app/models/model/order/getCustomerList_CM';
-import { CreateCustomer_CM, AddCustomerAddress_CM } from '../../components/Order/create-order/models/createCustomer_CM';
-import { ClientOrder, ClientOrderBasketItem, ClientOrder_DTO, NebimInvoice, NebimOrder, NebimOrder_2 } from 'src/app/components/Order/create-order/models/nebimOrder';
-import { query } from '@angular/animations';
-import { ToasterService } from '../ui/toaster.service';
-import { ClientCustomer } from '../../components/Customer/customer-list/customer-list.component';
-import { Raport_CR } from 'src/app/models/model/raport/raport_CR';
+import { OrderBillingRequestModel } from 'src/app/models/model/invoice/orderBillingRequestModel';
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
+import { GetCustomerAddress_CM, GetCustomerList_CM } from 'src/app/models/model/order/getCustomerList_CM';
 import { GetNebimOrders_RM } from 'src/app/models/model/order/getOrder_RM';
+import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
+import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
+import { BarcodeAddModel } from 'src/app/models/model/product/barcodeAddModel';
+import { CountConfirmData } from 'src/app/models/model/product/countConfirmModel';
+import { InventoryItem } from 'src/app/models/model/product/inventoryItemModel';
+import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
+import { ClientCustomer } from '../../components/Customer/customer-list/customer-list.component';
+import { AddCustomerAddress_CM, CreateCustomer_CM } from '../../components/Order/create-order/models/createCustomer_CM';
+import { HttpClientService } from '../http-client.service';
+import { ToasterService } from '../ui/toaster.service';
 
 @Injectable({
   providedIn: 'root',
@@ -53,7 +45,7 @@ export class OrderService {
         .toPromise();
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -67,7 +59,7 @@ export class OrderService {
         .toPromise();
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -83,7 +75,7 @@ export class OrderService {
         .toPromise();
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -97,7 +89,7 @@ export class OrderService {
         .toPromise();
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -115,7 +107,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -165,7 +157,7 @@ export class OrderService {
         controller: endpoint + orderNo,
       });
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       throw error; // Rethrow the error if necessary
     }
   }
@@ -243,7 +235,7 @@ export class OrderService {
         }
       }
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return false;
     }
     return false;
@@ -278,10 +270,10 @@ export class OrderService {
     //       model
     //     )
     //     .subscribe((data) => {
-    //       console.log(data);
+    //       // console.log(data);
     //     });
     // } catch (error: any) {
-    //   console.log(error.message);
+    //   // console.log(error.message);
     // }
     // Diğer işlemler...
 
@@ -375,7 +367,7 @@ export class OrderService {
         )
         .toPromise();
       if (response) {
-        console.log(response);
+        // console.log(response);
         if (Boolean(response) == true) {
 
         } else {
@@ -403,7 +395,7 @@ export class OrderService {
 
       return result;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -414,7 +406,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -426,7 +418,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -436,7 +428,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -451,7 +443,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -464,7 +456,7 @@ export class OrderService {
         .toPromise();
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -478,7 +470,7 @@ export class OrderService {
         .toPromise();
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -489,7 +481,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -501,7 +493,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -512,7 +504,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -523,7 +515,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -534,7 +526,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -545,7 +537,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -557,7 +549,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -571,7 +563,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -584,7 +576,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -595,7 +587,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -609,7 +601,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -622,7 +614,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -632,7 +624,7 @@ export class OrderService {
       var response = await this.httpClientService.post<any>({ controller: "order/edit-client-customer" }, request).toPromise();
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -643,7 +635,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -655,7 +647,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -667,7 +659,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -679,7 +671,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -690,7 +682,7 @@ export class OrderService {
 
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
   }
@@ -704,7 +696,7 @@ export class OrderService {
         .toPromise();
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
 
@@ -720,7 +712,7 @@ export class OrderService {
         .toPromise();
       return response[0];
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
 
@@ -735,7 +727,7 @@ export class OrderService {
         .toPromise();
       return response;
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
       return null;
     }
 

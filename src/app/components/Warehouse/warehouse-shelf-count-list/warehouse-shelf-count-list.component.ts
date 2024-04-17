@@ -7,6 +7,7 @@ import { CountListFilterModel } from 'src/app/models/model/filter/countListFilte
 import { CountListModel } from 'src/app/models/model/product/countListModel';
 import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
+import { HeaderService } from 'src/app/services/admin/header.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
@@ -29,7 +30,8 @@ export class WarehouseShelfCountListComponent implements OnInit {
 
     private warehouseService: WarehouseService,
     private generalService: GeneralService,
-    private title: Title
+    private title: Title,
+    private headerService: HeaderService
   ) { }
 
   async ngOnInit() {
@@ -39,7 +41,7 @@ export class WarehouseShelfCountListComponent implements OnInit {
     this.formGenerator();
     await this.getGetCountList();
 
-
+    this.headerService.updatePageTitle("Sayımlar")
     //this.spinnerService.hide();
 
   }

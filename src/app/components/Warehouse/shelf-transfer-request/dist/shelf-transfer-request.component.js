@@ -50,7 +50,7 @@ var ClientUrls_1 = require("src/app/models/const/ClientUrls");
 var countProductRequestModel_1 = require("src/app/models/model/order/countProductRequestModel");
 var qrOperationModel_1 = require("src/app/models/model/product/qrOperationModel");
 var ShelfTransferRequestComponent = /** @class */ (function () {
-    function ShelfTransferRequestComponent(formBuilder, toasterService, orderService, router, httpClient, activatedRoute, productService, warehouseService, generalService, httpClientService, title) {
+    function ShelfTransferRequestComponent(formBuilder, toasterService, orderService, router, httpClient, activatedRoute, productService, warehouseService, generalService, httpClientService, title, headerService) {
         this.formBuilder = formBuilder;
         this.toasterService = toasterService;
         this.orderService = orderService;
@@ -62,6 +62,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
         this.generalService = generalService;
         this.httpClientService = httpClientService;
         this.title = title;
+        this.headerService = headerService;
         this.lastCollectedProducts = [];
         this.collectedProducts = [];
         this.process = false;
@@ -102,6 +103,8 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
             'Çekmece Adedi',
             'İşlem'
         ];
+        this.offices = ["M", "U"];
+        this.warehouses = ["MD", "UD"];
         this.productShelvesDialog = false;
         this.productShelves = [];
         this.deletedProductList = [];
@@ -117,7 +120,8 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        this.title.setTitle('Raflar Arası Transfer');
+                        this.title.setTitle('Raflar Arası Transfer İstek');
+                        this.headerService.updatePageTitle('Raflar Arası Transfer İstek');
                         //this.spinnerService.show();
                         this.formGenerator();
                         _a = this;
@@ -340,6 +344,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
         }
     };
     ShelfTransferRequestComponent.prototype.formGenerator = function () {
+        var _this = this;
         this.checkForm = this.formBuilder.group({
             barcode: [null, forms_1.Validators.required],
             office: [null, forms_1.Validators.required],
@@ -348,6 +353,16 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
             quantity: [null],
             batchCode: [null],
             targetShelfNo: [null, forms_1.Validators.required]
+        });
+        this.checkForm.get('office').valueChanges.subscribe(function (value) {
+            if (value === 'M') {
+                _this.checkForm.get('warehouseCode').setValue('MD');
+            }
+        });
+        this.checkForm.get('office').valueChanges.subscribe(function (value) {
+            if (value === 'U') {
+                _this.checkForm.get('warehouseCode').setValue('UD');
+            }
         });
     };
     ShelfTransferRequestComponent.prototype.confirmTransfer = function (operationNumberList) {

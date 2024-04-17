@@ -2,65 +2,37 @@
   <section class="section">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Ürün Sorgula</h5>
         <form
+          class="mt-4"
           [formGroup]="productForm"
           (ngSubmit)="onSubmit(productForm.value)"
         >
           <div class="form-row">
-            <div class="form-group col-md-12 mb-3">
-              <label for="barcode">Barkod</label>
+            <div class="form-group">
               <div class="input-group">
                 <input
+                  pInputText
+                  placeholder="Barkod"
                   type="search"
                   id="barcode"
                   class="form-control"
                   formControlName="barcode"
                 />
-                <!-- <div class="input-group-append">
+                <div class="input-group-append">
                   <button
-                    type="button"
-                    (click)="clearBarcode()"
-                    class="btn btn-dark"
+                    class="btn btn-primary"
+                    type="submit"
+                    style="height: 100%"
                   >
-                    Formu Temizle
+                    Sorgula
                   </button>
-                </div> -->
+                </div>
               </div>
-            </div>
-            <div class="form-group col-md-6">
-              <button class="btn btn-primary btn-block">Sorgula</button>
             </div>
           </div>
 
           <div class="form-row">
-            <div class="form-group col-md-12 mb-3">
-              <!-- <label for="barcode">Barkod</label> -->
-              <!-- app.component.html -->
-              <!-- Güncellenmiş app.component.html -->
-              <!-- <div class="container">
-                <button (click)="enableScanner = !enableScanner">
-                  {{ enableScanner ? "Kamerayı Kapat" : "Kamerayı Aç" }}
-                </button>
-                <div *ngIf="enableScanner">
-                  <label for="cameras">Kamera Seçin:</label>
-                  <select id="cameras" (change)="onCameraSelected($event)">
-                    <option
-                      *ngFor="let camera of availableCameras"
-                      [value]="camera.deviceId"
-                    >
-                      {{ camera.label }}
-                    </option>
-                  </select>
-
-                  <zxing-scanner
-                    [device]="selectedDevice"
-                    (camerasFound)="camerasFoundHandler($event)"
-                    (scanSuccess)="scanSuccessHandler($event)"
-                  ></zxing-scanner>
-                </div>
-              </div> -->
-            </div>
+            <div class="form-group col-md-12 mb-3"></div>
           </div>
         </form>
       </div>

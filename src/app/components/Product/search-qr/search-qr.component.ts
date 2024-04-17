@@ -4,9 +4,11 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Exception } from '@zxing/library';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { Header } from 'primeng/api';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { QrCode } from 'src/app/models/model/product/qrCode';
 import { GeneralService } from 'src/app/services/admin/general.service';
+import { HeaderService } from 'src/app/services/admin/header.service';
 import { ProductService, BarcodeSearch_RM } from 'src/app/services/admin/product.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
@@ -23,15 +25,17 @@ export class SearchQrComponent implements OnInit {
   view = true;
   constructor(
     private toasterService: ToasterService,
-    private spinnerService: NgxSpinnerService,
+
     private productService: ProductService,
     private formBuilder: FormBuilder, private sanitizer: DomSanitizer,
     private activatedRoute: ActivatedRoute,
-    private httpClientService: HttpClientService
+    private httpClientService: HttpClientService,
+    private headerService: HeaderService
   ) { }
   currentId: string = null
   qrForm: FormGroup;
   async ngOnInit() {
+    this.headerService.updatePageTitle("QR Kod Sorgulama")
     this.activatedRoute.params.subscribe(async (params) => {
       this.currentId = params['id']
       if (this.currentId != null) {

@@ -50,7 +50,7 @@ var countProductRequestModel_1 = require("src/app/models/model/order/countProduc
 var library_1 = require("@zxing/library");
 var qrOperationModel_1 = require("src/app/models/model/product/qrOperationModel");
 var FastTransferComponent = /** @class */ (function () {
-    function FastTransferComponent(formBuilder, toasterService, orderService, router, httpClient, spinnerService, productService, warehouseService, generalService, httpClientService, title) {
+    function FastTransferComponent(formBuilder, toasterService, orderService, router, httpClient, spinnerService, productService, warehouseService, generalService, httpClientService, title, headerService) {
         this.formBuilder = formBuilder;
         this.toasterService = toasterService;
         this.orderService = orderService;
@@ -62,6 +62,7 @@ var FastTransferComponent = /** @class */ (function () {
         this.generalService = generalService;
         this.httpClientService = httpClientService;
         this.title = title;
+        this.headerService = headerService;
         this.lastCollectedProducts = [];
         this.collectedProducts = [];
         this.process = false;
@@ -76,6 +77,8 @@ var FastTransferComponent = /** @class */ (function () {
         this.warehouseModels = [];
         this.shelfNoList = [];
         this.barcodeValue = null; // Değişkeni tanımlayın
+        this.offices = ["M", "U"];
+        this.warehouses = ["MD", "UD"];
         this.qrBarcodeUrl = null;
         this.qrOperationModels = [];
         this.codeReader = new library_1.BrowserMultiFormatReader();
@@ -97,7 +100,7 @@ var FastTransferComponent = /** @class */ (function () {
                 switch (_b.label) {
                     case 0:
                         this.title.setTitle('Raflar Arası Transfer');
-                        //this.spinnerService.show();
+                        this.headerService.updatePageTitle('Raflar Arası Transfer');
                         this.formGenerator();
                         _a = this;
                         return [4 /*yield*/, this.generalService.generateGUID()];
@@ -124,6 +127,7 @@ var FastTransferComponent = /** @class */ (function () {
         }
     };
     FastTransferComponent.prototype.formGenerator = function () {
+        var _this = this;
         this.checkForm = this.formBuilder.group({
             barcode: [null, forms_1.Validators.required],
             office: [null, forms_1.Validators.required],
@@ -132,6 +136,16 @@ var FastTransferComponent = /** @class */ (function () {
             quantity: [null],
             batchCode: [null],
             targetShelfNo: [null, forms_1.Validators.required]
+        });
+        this.checkForm.get('office').valueChanges.subscribe(function (value) {
+            if (value === 'M') {
+                _this.checkForm.get('warehouseCode').setValue('MD');
+            }
+        });
+        this.checkForm.get('office').valueChanges.subscribe(function (value) {
+            if (value === 'U') {
+                _this.checkForm.get('warehouseCode').setValue('UD');
+            }
         });
     };
     FastTransferComponent.prototype.confirmTransfer = function (operationNumberList) {
