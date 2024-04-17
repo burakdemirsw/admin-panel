@@ -314,11 +314,11 @@ var CreateQrComponent = /** @class */ (function () {
     };
     CreateQrComponent.prototype.onSubmit = function (m) {
         return __awaiter(this, void 0, void 0, function () {
-            var model, result, _a, response, p, guid, formData, response2, data2, json;
+            var model, result, result, _a, response, p, guid, formData, response2, data2, json;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        if (!m.barcode) return [3 /*break*/, 7];
+                        if (!m.barcode) return [3 /*break*/, 9];
                         model = new product_service_1.BarcodeSearch_RM();
                         model.barcode = m.barcode;
                         if (!m.barcode.includes('http')) return [3 /*break*/, 2];
@@ -332,27 +332,38 @@ var CreateQrComponent = /** @class */ (function () {
                             this.onSubmit(this.checkForm.value);
                             return [2 /*return*/];
                         }
-                        _b.label = 2;
-                    case 2:
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, this.productService.countProductByBarcode(m.barcode)];
+                    case 3:
+                        result = _b.sent();
+                        if (result && result[3] != '' && result[3] != undefined) {
+                            this.checkForm.get('barcode').setValue(result[3]);
+                            if (!m.quantity) {
+                                this.checkForm.get('quantity').setValue(result[1]);
+                            }
+                            this.checkForm.get('batchCode').setValue(result[2].toString());
+                        }
+                        _b.label = 4;
+                    case 4:
                         _a = this;
                         return [4 /*yield*/, this.productService.searchProduct(model)];
-                    case 3:
+                    case 5:
                         _a.products = _b.sent();
-                        if (!this.products) return [3 /*break*/, 6];
+                        if (!this.products) return [3 /*break*/, 8];
                         this.address = m.address;
                         this.getCurrentDateTime();
                         response = this.setFormValues(this.products[0], m);
                         this.brand = this.products[0].brandDescription;
-                        if (!true) return [3 /*break*/, 6];
+                        if (!true) return [3 /*break*/, 8];
                         p = this.products[0];
                         return [4 /*yield*/, this.generalService.generateGUID()];
-                    case 4:
+                    case 6:
                         guid = _b.sent();
                         this.currentQr = guid;
                         m.id = this.currentQr;
                         formData = this.checkForm.value;
                         return [4 /*yield*/, this.warehouseService.countProductRequest(formData.barcode, '', 0, '', '', '', 'Order/CountProductControl', '', '')];
-                    case 5:
+                    case 7:
                         response2 = _b.sent();
                         if (response != undefined) {
                             data2 = response2;
@@ -365,12 +376,12 @@ var CreateQrComponent = /** @class */ (function () {
                         else {
                             this.generalService.whichRowIsInvalid(this.checkForm);
                         }
-                        _b.label = 6;
-                    case 6: return [3 /*break*/, 8];
-                    case 7:
-                        this.generalService.whichRowIsInvalid(this.checkForm);
                         _b.label = 8;
-                    case 8: return [2 /*return*/];
+                    case 8: return [3 /*break*/, 10];
+                    case 9:
+                        this.generalService.whichRowIsInvalid(this.checkForm);
+                        _b.label = 10;
+                    case 10: return [2 /*return*/];
                 }
             });
         });
@@ -379,7 +390,7 @@ var CreateQrComponent = /** @class */ (function () {
         try {
             this.checkForm.patchValue({
                 itemCode: model.itemCode,
-                //batchCode: model.batchCode,
+                // batchCode: model.batchCode,
                 itemDesc: model.description,
                 brand: model.brandDescription
             });

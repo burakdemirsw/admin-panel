@@ -10,8 +10,10 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 export class SidebarComponent implements OnInit {
 
   constructor(private router: Router, private generalService: GeneralService) { }
-
+  roleDescription: string;
   ngOnInit(): void {
+    this.roleDescription = localStorage.getItem("roleDescription")
+
   }
   async routeNewPage() {
     const result = await this.generalService.generateGUID()
@@ -19,7 +21,7 @@ export class SidebarComponent implements OnInit {
   }
   async routeNewPage2() {
     const result = await this.generalService.generateGUID()
-    this.router.navigate(["/warehouse-operation/" + "REQ-" + result])
+    this.router.navigate(["/warehouse-operation/" + "REQ-" + result + "/0"])
   }
 
   async routeNewPage3(pageDesc: boolean) {
@@ -32,7 +34,10 @@ export class SidebarComponent implements OnInit {
     }
 
   }
-
+  async routeNewPage4() {
+    const result = await this.generalService.generateGUID()
+    this.router.navigate(["/create-barcode/" + result])
+  }
 
 
 }

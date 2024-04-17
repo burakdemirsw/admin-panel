@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Observable } from 'rxjs';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
@@ -27,7 +27,8 @@ export class OrderManagamentComponent implements OnInit {
     private spinnerService: NgxSpinnerService,
     private router: Router,
     private orderService: OrderService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private activatedRoute: ActivatedRoute
 
   ) { }
   filterForm: FormGroup;
@@ -36,10 +37,21 @@ export class OrderManagamentComponent implements OnInit {
   pageDescriptionLine: string = "Alınan Siparişler"
 
 
-  invoiceStatus = 2
   status = 1;
+  invoiceStatus = 2
   async ngOnInit() {
     //this.spinnerService.show();
+
+    this.activatedRoute.queryParams.subscribe(params => {
+      if (params['status']) {
+        this.status = params['status']
+      }
+      if (params['invoiceStatus']) {
+        this.invoiceStatus = params['invoiceStatus']
+      }
+
+
+    });
     if (location.href.includes("missing-list")) {
       this.pageDescription = true
       this.pageDescriptionLine = "Eksik Siparişler"
@@ -48,11 +60,35 @@ export class OrderManagamentComponent implements OnInit {
     this.formGenerator()
     await this.getOrders(this.status, this.invoiceStatus);
     //this.spinnerService.hide();
-
+    this.setPageDescription();
 
   }
   productsToCollect: ProductOfOrder[];
 
+
+  setPageDescription() {
+
+    if (this.status == 1 && this.invoiceStatus == 2) {
+
+      this.pageDescriptionLine = "Toplanabilir Faturalandırılmayan Siparişler"
+    }
+    if (this.status == 0 && this.invoiceStatus == 2) {
+
+      this.pageDescriptionLine = "Toplanamaz Siparişler"
+    } if (this.status == -1 && this.invoiceStatus == -1) {
+
+      this.pageDescriptionLine = "Eksik Ürünlü Siparişler"
+    } if (this.status == 1 && this.invoiceStatus == 1) {
+
+      this.pageDescriptionLine = "Faturalandırılan Siparişler"
+    } if (this.status == 1 && this.invoiceStatus == 2) {
+
+      this.pageDescriptionLine = "Toplanabilir Faturalandırılmayan Siparişler"
+    } if (this.status == 0 && this.invoiceStatus == 3) {
+
+      this.pageDescriptionLine = "Kısmi Faturalaştırılan Siparişler"
+    }
+  }
   formGenerator() {
     this.filterForm = this.formBuilder.group({
       orderNo: [null],
@@ -108,8 +144,15 @@ export class OrderManagamentComponent implements OnInit {
     }
   }
   async getMissingOrders() {
+    this.status = -1
+    this.invoiceStatus = -1;
     const response =
       this.saleOrderModels = await this.orderService.getMissingOrders()
+
+
+    this.filterOrdersByRole();
+    this.setPageDescription();
+
   }
   async getOrders(status: number, invoiceStatus: number): Promise<any> {
 
@@ -121,12 +164,19 @@ export class OrderManagamentComponent implements OnInit {
     } else {
       const response =
         this.saleOrderModels = await this.orderService.getOrders(status, invoiceStatus)
+
     }
-
-
+    this.filterOrdersByRole();
+    this.setPageDescription();
 
   }
 
+  filterOrdersByRole() {
+    if (localStorage.getItem('roleDescription') != 'Admin') {
+      this.saleOrderModels = this.saleOrderModels.filter(x => x.salespersonCode == localStorage.getItem('salesPersonCode'))
+      this.toasterService.info('Sadece Kendi Siparişlerinizi Görebilirsiniz.')
+    }
+  }
   async deleteInvoiceProducts(orderNumber: string) {
 
     const confirmDelete = window.confirm("Bu transferi silmek istediğinizden emin misiniz?");

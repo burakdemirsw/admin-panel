@@ -235,6 +235,9 @@ export class FastTransferComponent implements OnInit {
           barcode
         );
         this.shelfNumbers += result[0];
+        this.checkForm.get('barcode').setValue(result[3]);
+
+        this.checkForm.get('batchCode').setValue(result[2].toString());
         return result[1];
       }
     } catch (error) {

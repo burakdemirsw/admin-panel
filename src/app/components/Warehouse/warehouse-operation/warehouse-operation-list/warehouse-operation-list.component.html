@@ -201,7 +201,9 @@
                           operation.innerNumber
                         )
                       "
-                      routerLink="/order-operation/{{ operation.innerNumber }}"
+                      routerLink="/order-operation/{{
+                        operation.innerNumber
+                      }}/false/{{ operation.toWarehouseCode }}"
                     >
                       <i class="fas fa-sliders-h"></i>
                     </button>

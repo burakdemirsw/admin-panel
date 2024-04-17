@@ -128,6 +128,12 @@ var create_cargo_component_1 = require("./components/cargo/create-cargo/create-c
 var add_customer_component_1 = require("./components/Customer/add-customer/add-customer.component");
 var unfinished_order_component_1 = require("./components/Order/unfinished-order/unfinished-order.component");
 var create_aras_cargo_barcode_component_1 = require("./components/cargo/create-aras-cargo-barcode/create-aras-cargo-barcode.component");
+var devolopment_list_component_1 = require("./components/Devolopment/devolopment-list/devolopment-list.component");
+var fieldset_1 = require("primeng/fieldset");
+var editor_1 = require("primeng/editor");
+var toolbar_1 = require("primeng/toolbar");
+var nebim_stock_control_component_1 = require("./components/Product/nebim-stock-control/nebim-stock-control.component");
+var nebim_get_orders_component_1 = require("./components/Order/nebim-get-orders/nebim-get-orders.component");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -214,9 +220,13 @@ var AppModule = /** @class */ (function () {
                 cargo_detail_component_1.CargoDetailComponent,
                 add_customer_component_1.AddCustomerComponent,
                 unfinished_order_component_1.UnfinishedOrderComponent,
-                create_aras_cargo_barcode_component_1.CreateArasCargoBarcodeComponent
+                create_aras_cargo_barcode_component_1.CreateArasCargoBarcodeComponent,
+                devolopment_list_component_1.DevolopmentListComponent,
+                nebim_stock_control_component_1.NebimStockControlComponent,
+                nebim_get_orders_component_1.NebimGetOrdersComponent
             ],
             imports: [
+                toolbar_1.ToolbarModule,
                 skeleton_1.SkeletonModule,
                 forms_1.FormsModule,
                 forms_2.ReactiveFormsModule,
@@ -247,7 +257,7 @@ var AppModule = /** @class */ (function () {
                 chart_1.ChartModule,
                 selectbutton_1.SelectButtonModule,
                 sidebar_1.SidebarModule,
-                fileupload_1.FileUploadModule, table_1.TableModule, inputtext_1.InputTextModule, messages_1.MessagesModule,
+                fileupload_1.FileUploadModule, table_1.TableModule, inputtext_1.InputTextModule, messages_1.MessagesModule, fieldset_1.FieldsetModule, editor_1.EditorModule,
                 angular_jwt_1.JwtModule.forRoot({
                     config: {
                         tokenGetter: function () { return localStorage.getItem('accessToken'); },

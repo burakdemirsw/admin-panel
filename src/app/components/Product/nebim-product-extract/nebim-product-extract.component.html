@@ -1,0 +1,124 @@
+<main id="main" class="main">
+  <section class="section">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Stok Kontrol</h5>
+        <form [formGroup]="form" (ngSubmit)="onSubmit(form.value)">
+          <div class="form-row">
+            <div class="form-group col-md-6 mb-3">
+              <label for="startDate">Başlangıç Tarihi</label>
+              <div class="input-group">
+                <input
+                  type="datetime-local"
+                  id="startDate"
+                  class="form-control"
+                  formControlName="startDate"
+                />
+              </div>
+            </div>
+            <div class="form-group col-md-6 mb-3">
+              <label for="endDate">Bitiş Tarihi</label>
+              <div class="input-group">
+                <input
+                  type="datetime-local"
+                  id="endDate"
+                  class="form-control"
+                  formControlName="endDate"
+                />
+              </div>
+            </div>
+            <div class="form-group col-md-6 mb-3">
+              <label for="cycleStatus">Döngü Durumu</label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  id="cycleStatus"
+                  class="form-control"
+                  formControlName="cycleStatus"
+                />
+              </div>
+            </div>
+            <div class="form-group col-md-6 mb-3">
+              <label for="colorStatus">Renk Durumu</label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  id="colorStatus"
+                  class="form-control"
+                  formControlName="colorStatus"
+                />
+              </div>
+            </div>
+            <div class="form-group col-md-6 mb-3">
+              <label for="dimentionStatus">Boyut Durumu</label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  id="dimentionStatus"
+                  class="form-control"
+                  formControlName="dimentionStatus"
+                />
+              </div>
+            </div>
+            <div class="form-group col-md-6 mb-3">
+              <label for="warehouseCode">Depo Kodu</label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  id="warehouseCode"
+                  class="form-control"
+                  formControlName="warehouseCode"
+                />
+              </div>
+            </div>
+            <div class="form-group col-md-12">
+              <button class="btn btn-primary btn-block">Sorgula</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card" *ngIf="this.products.length > 0">
+      <div class="card-body">
+        <h5 class="card-title">Ürünler</h5>
+
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Tarih</th>
+                <th scope="col">Hareket Türü</th>
+                <th scope="col">Belge No</th>
+                <th scope="col">Ürün Kodu</th>
+                <th scope="col">Renk</th>
+                <th scope="col">Hesap Kodu</th>
+                <th scope="col">Hesap Adı</th>
+                <th scope="col">İşlem Açıklaması</th>
+                <th scope="col">Giriş Miktarı</th>
+                <th scope="col">Çıkış Miktarı</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of products; let i = index">
+                <td>{{ product.operationDate }}</td>
+                <td>{{ product.movementType }}</td>
+                <td>{{ product.documentRefNumber }}</td>
+                <td>{{ product.productCode }}</td>
+                <td>{{ product.colorDescription }}</td>
+                <td>{{ product.accountCode }}</td>
+                <td>{{ product.accountName }}</td>
+                <td>{{ product.processDescription }}</td>
+                <td>{{ product.inQuantity }}</td>
+                <td>{{ product.outQuantity }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- <qrcode style="display: none" (qrCodeURL)="onChangeURL($event)" [qrdata]="qrCodeValue" [width]="256"
+      [errorCorrectionLevel]="'M'"></qrcode> -->
+    <!-- <app-image-modal [imageUrl]="modalImageUrl" [title]="'Ürün Detay'"></app-image-modal>  -->
+  </section>
+</main>

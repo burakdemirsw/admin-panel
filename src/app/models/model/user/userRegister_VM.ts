@@ -7,6 +7,7 @@ export class UserRegister_VM {
   phoneNumber?: string;
   gender: string;
   salesPersonCode: string;
+  roleDescription: string;
 
 }
 export class Token {
@@ -44,6 +45,7 @@ export class UserClientInfoResponse {
   refreshTokenCommandResponse: RefreshTokenCommandResponse
   name: string
   surname: string
+  roleDescription: string
 }
 export class RefreshTokenCommandResponse {
   state?: boolean;
@@ -58,6 +60,7 @@ export class UserList_VM {
   password?: string;
   phoneNumber?: string;
   salesPersonCode?: string
+  roleDescription?: string
 
 }
 export class PasswordRequest_CM {

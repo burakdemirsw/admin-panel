@@ -128,8 +128,12 @@ var OrderOperationComponent = /** @class */ (function () {
                                         this.formGenerator();
                                         orderNumber = params['orderNumber'];
                                         if (params['isInvoice']) {
-                                            this.isInvoice = Boolean(params['isInvoice']);
-                                            this.toasterService.success(this.isInvoice.toString());
+                                            this.isInvoice = params['isInvoice'] === "true" ? true : false;
+                                            // this.toasterService.success(this.isInvoice.toString())
+                                        }
+                                        if (params['warehouseCode']) {
+                                            this.warehouseCode = (params['warehouseCode']);
+                                            // this.toasterService.success(this.warehouseCode)
                                         }
                                         // if (orderNumber.includes('MIS')) {
                                         //   orderNumber = orderNumber.split('MIS-')[0]
@@ -198,23 +202,28 @@ var OrderOperationComponent = /** @class */ (function () {
         });
     };
     //-----------------------------------------------------EKSIK URUNLER İŞLEMLERİ
-    OrderOperationComponent.prototype.addMissingProduct = function (product) {
+    OrderOperationComponent.prototype.addMissingProduct = function (products) {
         return __awaiter(this, void 0, void 0, function () {
-            var _product, response;
+            var missingProducts, response;
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _product = new productOfOrders_1.ProductOfOrder();
-                        _product = Object.assign({}, product);
-                        _product.shelfNo = "MIS-" + this.currentOrderNo;
-                        return [4 /*yield*/, this.orderService.addMissingProduct(_product)];
+                        missingProducts = [];
+                        products.forEach(function (product) {
+                            var _product = new productOfOrders_1.ProductOfOrder();
+                            _product = Object.assign({}, product);
+                            _product.shelfNo = "MIS-" + _this.currentOrderNo;
+                            missingProducts.push(_product);
+                        });
+                        return [4 /*yield*/, this.orderService.addMissingProduct(missingProducts)];
                     case 1:
                         response = _a.sent();
                         if (!response) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.getAllProducts(this.currentOrderNo, 'WS')];
                     case 2:
                         _a.sent();
-                        this.toasterService.success("Ürün,Eksik Ürünlere Eklendi");
+                        this.toasterService.success("Ürünler Eksik Ürünlere Eklendi");
                         _a.label = 3;
                     case 3: return [2 /*return*/];
                 }
@@ -468,7 +477,6 @@ var OrderOperationComponent = /** @class */ (function () {
     OrderOperationComponent.prototype.collectAndPack_WS = function (products) {
         return __awaiter(this, void 0, void 0, function () {
             var response, response2, _response;
-            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -490,11 +498,9 @@ var OrderOperationComponent = /** @class */ (function () {
                     case 3:
                         _response = _a.sent();
                         if (_response) {
-                            console.log(this.productsToCollect);
+                            ////console.log(this.productsToCollect)
                             if (this.productsToCollect.length > 0) {
-                                this.productsToCollect.forEach(function (product) {
-                                    _this.addMissingProduct(product);
-                                });
+                                this.addMissingProduct(this.productsToCollect);
                             }
                             this.router.navigate(['/orders-managament']);
                         }
@@ -510,7 +516,6 @@ var OrderOperationComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log(this.currentOrderNo);
                         orderType = "";
                         if (this.currentOrderNo.includes("MIS")) {
                             orderType = "MIS";
@@ -619,18 +624,16 @@ var OrderOperationComponent = /** @class */ (function () {
                         this.shelfNumbers += result[0];
                         if (check) {
                             currentShelfNo = this.checkForm.get('shelfNo').value;
-                            // if(currentShelfNo==null ){
-                            //   this.checkForm.get('shelfNo').setValue(result[0].split(',')[0]);
-                            // }
                             this.checkForm.get('batchCode').setValue(result[2]);
                             this.checkForm.get('barcode').setValue(result[3]);
                         }
                         return [2 /*return*/, result[1]];
-                    case 3: return [4 /*yield*/, this.productService.countProductByBarcode(barcode)];
+                    case 3: return [4 /*yield*/, this.productService.countProductByBarcode4(barcode, this.warehouseCode)];
                     case 4:
                         result = _a.sent();
                         this.shelfNumbers += result[0];
-                        this.checkForm.get('batchCode').setValue(result[2]); //batch code alanı dolduruldu --19.02
+                        this.checkForm.get('barcode').setValue(result[3]);
+                        this.checkForm.get('batchCode').setValue(result[2].toString());
                         return [2 /*return*/, result[1]];
                     case 5: return [3 /*break*/, 7];
                     case 6:
@@ -712,7 +715,7 @@ var OrderOperationComponent = /** @class */ (function () {
                         }
                         foundModel = this.productsToCollect.find(function (o) { return o.barcode == productModel.barcode; });
                         if (!true) return [3 /*break*/, 28];
-                        return [4 /*yield*/, this.productService.countProductByBarcode(productModel.barcode)];
+                        return [4 /*yield*/, this.productService.countProductByBarcode4(productModel.barcode, this.warehouseCode)];
                     case 13:
                         newResponse = _e.sent();
                         shelves = newResponse[0]
@@ -820,8 +823,7 @@ var OrderOperationComponent = /** @class */ (function () {
                     case 33: return [3 /*break*/, 46];
                     case 34:
                         if (!(productModel.shelfNo && productModel.barcode)) return [3 /*break*/, 46];
-                        return [4 /*yield*/, this.warehouseService.countProductRequest(productModel.barcode, productModel.shelfNo, //anan
-                            productModel.quantity == null
+                        return [4 /*yield*/, this.warehouseService.countProductRequest(productModel.barcode, productModel.shelfNo, productModel.quantity == null
                                 ? Number(CONSTQTY)
                                 : productModel.quantity, null, null, productModel.batchCode, 'Order/CountProductControl', this.orderNo, productModel.currAccCode)];
                     case 35:
@@ -1050,7 +1052,7 @@ var OrderOperationComponent = /** @class */ (function () {
             var newResponse, shelves;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.productService.countProductByBarcode(barcode)];
+                    case 0: return [4 /*yield*/, this.productService.countProductByBarcode4(barcode, this.warehouseCode)];
                     case 1:
                         newResponse = _a.sent();
                         shelves = newResponse[0]
@@ -1075,7 +1077,7 @@ var OrderOperationComponent = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         this.shelfNumbers = 'RAFLAR:';
-                        return [4 /*yield*/, this.productService.countProductByBarcode(barcode)];
+                        return [4 /*yield*/, this.productService.countProductByBarcode4(barcode, this.warehouseCode)];
                     case 1:
                         result = _a.sent();
                         this.shelfNumbers += result[0];
@@ -1091,7 +1093,7 @@ var OrderOperationComponent = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         this.shelfNumbers = 'RAFLAR:';
-                        return [4 /*yield*/, this.productService.countProductByBarcode(barcode)];
+                        return [4 /*yield*/, this.productService.countProductByBarcode4(barcode, this.warehouseCode)];
                     case 1:
                         result = _a.sent();
                         // this.shelfNumbers += result[0];
@@ -1128,8 +1130,13 @@ var OrderOperationComponent = /** @class */ (function () {
             }
             this.checkForm.get('batchCode').setValue(null);
         }
+        if (this.currentOrderNo.includes('WT')) {
+            this.focusNextInput('shelfNo');
+        }
+        else {
+            this.focusNextInput('barcode');
+        }
         this.checkForm.get('barcode').setValue(null);
-        this.focusNextInput('barcode');
         this.shelfNumbers = 'RAFLAR:';
         this.qrBarcodeUrl = null;
         this.checkForm.get('batchCode').setValue(null);
@@ -1208,7 +1215,7 @@ var OrderOperationComponent = /** @class */ (function () {
                     case 14:
                         model = new qrOperationModel_1.QrOperationModel();
                         qrOperationModel = new qrOperationModel_1.QrOperationModel();
-                        // console.log(this.qrOperationModels);
+                        ////console.log(this.qrOperationModels);
                         qrOperationModel = this.qrOperationModels.find(function (p) {
                             return p.barcode == product.barcode &&
                                 p.batchCode == product.batchCode &&
@@ -1237,7 +1244,7 @@ var OrderOperationComponent = /** @class */ (function () {
                     case 15:
                         qrOperationResponse = _b.sent();
                         if (qrOperationResponse) {
-                            // console.log(this.qrOperationModels);
+                            ////console.log(this.qrOperationModels);
                             this.generalService.beep3();
                             this.toasterService.success('Qr Operasyonu Geri Alındı');
                         }

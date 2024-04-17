@@ -1,6 +1,11 @@
 <aside id="sidebar" class="sidebar">
   <ul class="sidebar-nav" id="sidebar-nav">
-    <li class="nav-item">
+    <li
+      class="nav-item"
+      *ngIf="
+        this.roleDescription == 'Admin' || this.roleDescription == 'Salesman'
+      "
+    >
       <a
         class="nav-link collapsed"
         data-bs-target="#Orders-nav"
@@ -16,37 +21,47 @@
         data-bs-parent="#sidebar-nav"
       >
         <li>
-          <a routerLink="orders-managament">
+          <a routerLink="orders-managament/1/2">
             <i class="bi bi-circle"></i><span>Alınan Siparişler </span>
           </a>
         </li>
-        <li>
+        <li *ngIf="this.roleDescription == 'Admin'">
           <a routerLink="purchase-orders-managament">
             <i class="bi bi-circle"></i><span>Verilen Siparişler </span>
           </a>
         </li>
-        <li>
+        <li *ngIf="this.roleDescription == 'Admin'">
           <a routerLink="invoice-list">
             <i class="bi bi-circle"></i><span>Faturalar (Alış / Satış)</span>
           </a>
         </li>
-        <li>
+        <li
+          *ngIf="
+            this.roleDescription == 'Admin' ||
+            this.roleDescription == 'Salesman'
+          "
+        >
           <a (click)="routeNewPage3(true)">
             <i class="bi bi-circle"></i><span>Sipariş Ver</span>
           </a>
         </li>
-        <li>
+        <li *ngIf="this.roleDescription == 'Admin'">
           <a (click)="routeNewPage3(false)">
             <i class="bi bi-circle"></i><span>Perakende Satış</span>
           </a>
         </li>
-        <li>
+        <li *ngIf="this.roleDescription == 'Admin'">
           <a routerLink="cargo-list">
             <i class="bi bi-circle"></i><span>Kargolar</span>
           </a>
         </li>
 
-        <li>
+        <li
+          *ngIf="
+            this.roleDescription == 'Admin' ||
+            this.roleDescription == 'Salesman'
+          "
+        >
           <a routerLink="unfinished-orders">
             <i class="bi bi-circle"></i><span>Panel Siparişleri </span>
           </a>
@@ -54,7 +69,7 @@
       </ul>
     </li>
 
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
       <a
         class="nav-link collapsed"
         data-bs-target="#Warehouse-nav"
@@ -73,16 +88,17 @@
             <i class="bi bi-circle"></i><span>Depolar Arası Transfer</span>
           </a>
         </li>
+        <li (click)="routeNewPage2()">
+          <a> <i class="bi bi-circle"></i><span>Depolar Arası İstek</span> </a>
+        </li>
         <li>
           <a routerLink="fast-transfer">
             <i class="bi bi-circle"></i><span>Raflar Arası Transfer</span>
           </a>
         </li>
-        <li (click)="routeNewPage2()">
-          <a> <i class="bi bi-circle"></i><span>Depolar Arası İstek</span> </a>
-        </li>
+
         <li>
-          <a routerLink="shelf-transfer-request">
+          <a routerLink="shelf-transfer-request/1">
             <i class="bi bi-circle"></i><span>Raf Aktarma İsteği</span>
           </a>
         </li>
@@ -104,7 +120,7 @@
         </li>
       </ul>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
       <a
         class="nav-link collapsed"
         data-bs-target="#Product-nav"
@@ -130,7 +146,7 @@
         </li>
       </ul>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
       <a
         class="nav-link collapsed"
         data-bs-target="#Barcode-nav"
@@ -149,10 +165,16 @@
             <i class="bi bi-circle"></i><span>Kutu Etiketi Oluştur</span>
           </a>
         </li>
+
+        <li>
+          <a (click)="routeNewPage4()">
+            <i class="bi bi-circle"></i><span>Barkod Oluştur</span>
+          </a>
+        </li>
       </ul>
     </li>
 
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
       <a
         class="nav-link collapsed"
         data-bs-target="#User-nav"
@@ -186,7 +208,7 @@
       </ul>
     </li>
 
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
       <a
         class="nav-link collapsed"
         data-bs-target="#Log-nav"
@@ -203,6 +225,56 @@
         <li>
           <a routerLink="log-managament">
             <i class="bi bi-circle"></i><span>Loglar</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
+      <a
+        class="nav-link collapsed"
+        data-bs-target="#devolopment-nav"
+        data-bs-toggle="collapse"
+      >
+        <i class="bi bi-question-octagon-fill"></i><span>Geliştirmeler</span
+        ><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul
+        id="devolopment-nav"
+        class="nav-content collapse"
+        data-bs-parent="#devolopment-nav"
+      >
+        <li>
+          <a routerLink="devolopment-list">
+            <i class="bi bi-circle"></i><span>İstekler</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <li class="nav-item">
+      <a
+        class="nav-link collapsed"
+        data-bs-target="#nebim-nav"
+        data-bs-toggle="collapse"
+      >
+        <i class="fa-solid fa-gear"></i><span>Nebim</span
+        ><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul
+        id="nebim-nav"
+        class="nav-content collapse"
+        data-bs-parent="#nebim-nav"
+      >
+        <li>
+          <a routerLink="nebim-stock-control">
+            <i class="bi bi-circle"></i><span>Stok Kontrol</span>
+          </a>
+          <a routerLink="nebim-get-orders">
+            <i class="bi bi-circle"></i><span>Sipariş Kontrol</span>
+          </a>
+          <a routerLink="nebim-product-extract">
+            <i class="bi bi-circle"></i><span>Ürün Ekstresi</span>
           </a>
         </li>
       </ul>

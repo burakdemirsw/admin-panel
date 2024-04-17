@@ -88,6 +88,7 @@ var CreateOrderComponent = /** @class */ (function () {
         this.payment = new nebimOrder_1.Payment();
         this.activeIndex = 0;
         this["true"] = true;
+        this.isCollapsed = false;
         //--------------------------------------------------------------------------- CLIENT ORDER
         this.stateOptions = [{ label: 'Standart', value: '0' }, { label: 'Vergisiz', value: '4' }];
         this.isCompleted = false;
@@ -136,6 +137,8 @@ var CreateOrderComponent = /** @class */ (function () {
         this.addresses = [];
         this.selectedSize = '';
         this.products = [];
+        this.qrBarcodeUrl = null;
+        this.qrOperationModels = [];
         this.clonedProducts = {};
         this.cargoPrices = [{ name: 'DOSYA (₺90)', code: 90 }, { name: 'PAKET (₺80) ', code: 80 }, { name: 'K.KOLİ (₺115)', code: 115 },
             { name: 'O.KOLİ (₺140)', code: 140 },
@@ -147,6 +150,7 @@ var CreateOrderComponent = /** @class */ (function () {
         this.generatedCargoNumber = 0;
         this.desiErrorMessage = '';
         this.kgErrorMessage = '';
+        this.showCargo = false;
         //----------------------------------------------------
         //---------------------------------------------------- SİPARİŞ
         this.sidebarVisible4 = true;
@@ -872,18 +876,29 @@ var CreateOrderComponent = /** @class */ (function () {
                 switch (_b.label) {
                     case 0:
                         _a = this;
-                        return [4 /*yield*/, this.orderService.getCustomerAddress(request)];
+                        return [4 /*yield*/, this.orderService.getCustomerAddress(request)
+                            // if (this.addresses.length === 1) {
+                            //   this.selectCurrentAddress(this.addresses[0])
+                            //   this.selectAddressDialog = false;
+                            //   this.activeIndex = 2;
+                            // } else {
+                            //   this.selectAddressDialog = true;
+                            // }
+                        ];
                     case 1:
                         _a.addresses = _b.sent();
-                        if (this.addresses.length === 1) {
-                            this.selectCurrentAddress(this.addresses[0]);
-                            this.selectAddressDialog = false;
-                            this.activeIndex = 2;
+                        // if (this.addresses.length === 1) {
+                        //   this.selectCurrentAddress(this.addresses[0])
+                        //   this.selectAddressDialog = false;
+                        //   this.activeIndex = 2;
+                        // } else {
+                        //   this.selectAddressDialog = true;
+                        // }
+                        if (this.addresses.length === 0) {
+                            this._activeIndex = 1;
+                            this.toasterService.error("Adres Bulunamadı Adres Ekleyiniz");
                         }
-                        else {
-                            this.selectAddressDialog = true;
-                        }
-                        console.log(this.customers);
+                        this.selectAddressDialog = true;
                         return [2 /*return*/];
                 }
             });
@@ -905,6 +920,8 @@ var CreateOrderComponent = /** @class */ (function () {
                             this.selectAddressDialog = false;
                             this.toasterService.success("Adres Eklendi");
                             this.activeIndex = 2;
+                            this.getCustomerForm.reset();
+                            this.customers = [];
                             this.generalService.beep();
                         }
                         return [2 /*return*/];
@@ -957,55 +974,133 @@ var CreateOrderComponent = /** @class */ (function () {
     };
     CreateOrderComponent.prototype.getProducts = function (request, pageType) {
         return __awaiter(this, void 0, void 0, function () {
-            var _request, response, error_3, check_response, data, response, totalQty;
+            var _request, response, totalQty, totalQuantity, error_3, result, check_response, data, response, totalQty, totalQuantity;
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!pageType) return [3 /*break*/, 8];
+                        if (!pageType) return [3 /*break*/, 10];
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 6, , 7]);
+                        _a.trys.push([1, 8, , 9]);
                         _request = new product_service_1.BarcodeSearch_RM();
                         _request.barcode = request.barcode;
                         return [4 /*yield*/, this.productService.searchProduct(_request)];
                     case 2:
                         response = _a.sent();
+                        if (response.length == 0) {
+                            this.toasterService.error("Ürün Sorgusundan Yanıt Alınamadı");
+                            return [2 /*return*/];
+                        }
                         this.products = response;
-                        if (!(this.products.length > 0)) return [3 /*break*/, 4];
+                        if (!(this.products.length > 0)) return [3 /*break*/, 6];
+                        if (this.products.length > 0) {
+                            totalQty = 0;
+                            this.products.forEach(function (p) {
+                                totalQty += p.quantity;
+                            });
+                            if (totalQty <= 0) {
+                                this.toasterService.error("STOK HATASI");
+                                return [2 /*return*/];
+                            }
+                        }
                         this.getProductsForm.get('barcode').setValue(null);
-                        // this.products = []; adil açtırdı
-                        return [4 /*yield*/, this.addCurrentProducts(this.products[0])];
-                    case 3:
-                        // this.products = []; adil açtırdı
-                        _a.sent();
-                        return [3 /*break*/, 5];
+                        totalQuantity = 0;
+                        this.selectedProducts.forEach(function (product) {
+                            if (product.barcode === _this.products[0].barcode) {
+                                totalQuantity += product.quantity;
+                            }
+                        });
+                        if (!(totalQuantity >= this.products[0].quantity)) return [3 /*break*/, 3];
+                        this.toasterService.error("STOK HATASI");
+                        return [2 /*return*/];
+                    case 3: return [4 /*yield*/, this.addCurrentProducts(this.products[0])];
                     case 4:
-                        this.toasterService.error("Ürün Bulunamadı");
+                        _a.sent();
                         _a.label = 5;
-                    case 5: return [2 /*return*/, response];
+                    case 5: return [3 /*break*/, 7];
                     case 6:
+                        this.toasterService.error("Ürün Bulunamadı");
+                        _a.label = 7;
+                    case 7: return [2 /*return*/, response];
+                    case 8:
                         error_3 = _a.sent();
                         console.log(error_3.message);
                         return [2 /*return*/, null];
-                    case 7: return [3 /*break*/, 13];
-                    case 8:
+                    case 9: return [3 /*break*/, 18];
+                    case 10:
                         if (!request.shelfNo) {
                             this.generalService.focusNextInput('shelfNo');
+                            this.toasterService.error("Raf Numarası Giriniz");
                             return [2 /*return*/];
                         }
-                        return [4 /*yield*/, this.warehouseService.countProductRequest(request.barcode, request.shelfNo, 1, '', '', '', 'Order/CountProductControl', this.orderNo, '')];
-                    case 9:
+                        if (!(request.barcode.includes('http') || this.generalService.isGuid(request.barcode))) return [3 /*break*/, 12];
+                        return [4 /*yield*/, this.productService.countProductByBarcode3(request.barcode)];
+                    case 11:
+                        result = _a.sent();
+                        if (result == null) {
+                            this.toasterService.error("Qr Sorgusu Hatalı");
+                            return [2 /*return*/];
+                        }
+                        this.getProductsForm.get('barcode').setValue(result[3]);
+                        // this.qrBarcodeUrl = request.barcode;
+                        // const response = await this.productService.searchProduct3(result[3], result[2], request.shelfNo);
+                        // if (response.length == 0) {
+                        //   this.toasterService.error("Ürün Sorgusundan Yanıt Alınamadı");
+                        //   return;
+                        // }
+                        // this.products = response;
+                        // if (this.products.length > 0) {
+                        //   var totalQty = 0;
+                        //   this.products.forEach(p => {
+                        //     totalQty += p.quantity
+                        //   });
+                        //   if (totalQty <= 0) {
+                        //     this.toasterService.error("STOK HATASI")
+                        //     return;
+                        //   }
+                        //   if (this.products[0].shelfNo != this.getProductsForm.get('shelfNo').value) {
+                        //     this.products[0].shelfNo = this.getProductsForm.get('shelfNo').value
+                        //     this.toasterService.info("RAF NUMARASI EŞLEŞTRİLDİ")
+                        //   }
+                        //   await this.addCurrentProducts(this.products[0]);
+                        //   var checkForm: any = { shelfNo: this.getProductsForm.value.shelfNo, quantity: this.products[0].itemCode.startsWith('FG') ? 5 : 1, batchCode: this.products[0].batchCode }
+                        //   var qrResponse: QrOperationResponseModel =
+                        //     await this.productService.qrOperationMethod(
+                        //       this.qrBarcodeUrl,
+                        //       this.getProductsForm,
+                        //       checkForm,
+                        //       checkForm.quantity,
+                        //       false,
+                        //       'WS'
+                        //     );
+                        //   if (qrResponse != null && qrResponse.state === true) {
+                        //     this.qrOperationModels.push(qrResponse.qrOperationModel);
+                        //   } else if (qrResponse === null) {
+                        //     this.qrBarcodeUrl = null
+                        //   }
+                        //   this.getProductsForm.get('barcode').setValue(null);
+                        //   this.getProductsForm.get('shelfNo').setValue(null);
+                        //   this.products = [];
+                        // }
+                        return [2 /*return*/];
+                    case 12: return [4 /*yield*/, this.warehouseService.countProductRequest(request.barcode, request.shelfNo, 1, '', '', '', 'Order/CountProductControl', this.orderNo, '')];
+                    case 13:
                         check_response = _a.sent();
-                        if (!(check_response != undefined)) return [3 /*break*/, 13];
+                        if (!(check_response != undefined)) return [3 /*break*/, 18];
                         data = check_response;
                         if (data.status != 'RAF') {
                             this.getProductsForm.get('barcode').setValue(check_response.description);
                         }
                         return [4 /*yield*/, this.productService.searchProduct3(check_response.description, check_response.batchCode, this.getProductsForm.value.shelfNo)];
-                    case 10:
+                    case 14:
                         response = _a.sent();
+                        if (response.length == 0) {
+                            this.toasterService.error("Ürün Sorgusundan Yanıt Alınamadı");
+                            return [2 /*return*/];
+                        }
                         this.products = response;
-                        if (!(this.products.length > 0)) return [3 /*break*/, 12];
+                        if (!(this.products.length > 0)) return [3 /*break*/, 17];
                         totalQty = 0;
                         this.products.forEach(function (p) {
                             totalQty += p.quantity;
@@ -1018,32 +1113,42 @@ var CreateOrderComponent = /** @class */ (function () {
                             this.products[0].shelfNo = this.getProductsForm.get('shelfNo').value;
                             this.toasterService.info("RAF NUMARASI EŞLEŞTRİLDİ");
                         }
+                        totalQuantity = 0;
+                        this.selectedProducts.forEach(function (product) {
+                            if (product.barcode === _this.products[0].barcode) {
+                                totalQuantity += product.quantity;
+                            }
+                        });
+                        if (!(totalQuantity >= this.products[0].quantity)) return [3 /*break*/, 15];
+                        this.toasterService.error("STOK HATASI");
+                        return [2 /*return*/];
+                    case 15:
                         this.getProductsForm.get('barcode').setValue(null);
                         this.getProductsForm.get('shelfNo').setValue(null);
                         return [4 /*yield*/, this.addCurrentProducts(this.products[0])];
-                    case 11:
+                    case 16:
                         _a.sent();
                         this.products = [];
-                        _a.label = 12;
-                    case 12: return [2 /*return*/, response];
-                    case 13: return [2 /*return*/];
+                        _a.label = 17;
+                    case 17: return [2 /*return*/, response];
+                    case 18: return [2 /*return*/];
                 }
             });
         });
     };
     CreateOrderComponent.prototype.addCurrentProducts = function (request) {
-        return __awaiter(this, void 0, void 0, function () {
+        return __awaiter(this, void 0, Promise, function () {
             var order_request, order_response, line_request, line_response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!(request.quantity > 0)) return [3 /*break*/, 5];
+                        if (!(request.quantity > 0)) return [3 /*break*/, 8];
                         order_request = this.createClientOrder_RM();
                         return [4 /*yield*/, this.orderService.createClientOrder(order_request)]; //sipariş oluşturuldu varsa güncellendi
                     case 1:
                         order_response = _a.sent() //sipariş oluşturuldu varsa güncellendi
                         ;
-                        if (!order_response) return [3 /*break*/, 4];
+                        if (!order_response) return [3 /*break*/, 6];
                         line_request = this.createClientOrderBasketItem_RM(request);
                         if (line_request.itemCode.startsWith('FG')) {
                             line_request.quantity = 5;
@@ -1056,13 +1161,16 @@ var CreateOrderComponent = /** @class */ (function () {
                         this.generalService.beep();
                         return [4 /*yield*/, this.getClientOrder(1)];
                     case 3:
-                        _a.sent(); //sipariş ürünleri çekildi
-                        _a.label = 4;
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
+                        _a.sent();
+                        return [2 /*return*/, true];
+                    case 4: return [2 /*return*/, false];
+                    case 5: return [3 /*break*/, 7];
+                    case 6: return [2 /*return*/, false];
+                    case 7: return [3 /*break*/, 9];
+                    case 8:
                         this.toasterService.error('Stok Hatası');
-                        _a.label = 6;
-                    case 6: return [2 /*return*/];
+                        return [2 /*return*/, false];
+                    case 9: return [2 /*return*/];
                 }
             });
         });
@@ -1396,6 +1504,7 @@ var CreateOrderComponent = /** @class */ (function () {
                             _orderPiece.desi = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('desi').value;
                             _orderPiece.kg = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('kg').value;
                             orderPieces.push(_orderPiece);
+                            barcodeRequest.orderPieceList = orderPieces;
                         }
                         else {
                             this.toasterService.error("Paket Adedi 1 den küçük olamaz");
@@ -1455,6 +1564,13 @@ var CreateOrderComponent = /** @class */ (function () {
             });
         });
     };
+    CreateOrderComponent.prototype.showCargoForm = function (state) {
+        if (state === false) {
+            this.activeIndex = 3;
+            this.toasterService.success("Kargo Bilgileri Güncellendi");
+        }
+        this.cargoForm.get('isActive').setValue(state);
+    };
     CreateOrderComponent.prototype.createNewOrder = function () {
         return __awaiter(this, void 0, void 0, function () {
             var response, orderNo, Url, Url;
@@ -1512,6 +1628,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         payment.creditCardTypeCode = "PAYTR IFRAME";
                         payment.amount = this.selectedProducts.reduce(function (total, product) { return total + product.price; }, 0);
                         this.payment = payment;
+                        this.toasterService.success("Ödeme Onaylandı");
                         _a.label = 3;
                     case 3: return [3 /*break*/, 16];
                     case 4:
@@ -1527,6 +1644,7 @@ var CreateOrderComponent = /** @class */ (function () {
                             payment.creditCardTypeCode = "NAKİT";
                             payment.amount = this.selectedProducts.reduce(function (total, product) { return total + product.price; }, 0);
                             this.payment = payment;
+                            this.toasterService.success("Ödeme Onaylandı");
                         }
                         return [2 /*return*/, null];
                     case 6:
@@ -1542,6 +1660,7 @@ var CreateOrderComponent = /** @class */ (function () {
                             payment.creditCardTypeCode = "HAVALE";
                             payment.amount = this.selectedProducts.reduce(function (total, product) { return total + product.price; }, 0);
                             this.payment = payment;
+                            this.toasterService.success("Ödeme Onaylandı");
                         }
                         return [2 /*return*/, null];
                     case 8:
@@ -1557,6 +1676,7 @@ var CreateOrderComponent = /** @class */ (function () {
                             payment.creditCardTypeCode = "VADE";
                             payment.amount = this.selectedProducts.reduce(function (total, product) { return total + product.price; }, 0);
                             this.payment = payment;
+                            this.toasterService.success("Ödeme Onaylandı");
                         }
                         return [2 /*return*/, null];
                     case 10:
@@ -1572,6 +1692,7 @@ var CreateOrderComponent = /** @class */ (function () {
                             payment.creditCardTypeCode = "POS";
                             payment.amount = this.selectedProducts.reduce(function (total, product) { return total + product.price; }, 0);
                             this.payment = payment;
+                            this.toasterService.success("Ödeme Onaylandı");
                         }
                         return [2 /*return*/, null];
                     case 12:
@@ -1590,6 +1711,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         payment.creditCardTypeCode = "PAYTRSMS";
                         payment.amount = this.selectedProducts.reduce(function (total, product) { return total + product.price; }, 0);
                         this.payment = payment;
+                        this.toasterService.success("Ödeme Onaylandı");
                         _a.label = 15;
                     case 15: return [2 /*return*/, null];
                     case 16:
@@ -1674,7 +1796,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         this.toasterService.info('KARGO OLUŞTURULMADI');
                         _a.label = 4;
                     case 4:
-                        this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament");
+                        this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament/1/2");
                         _a.label = 5;
                     case 5: return [3 /*break*/, 12];
                     case 6:
@@ -1707,7 +1829,7 @@ var CreateOrderComponent = /** @class */ (function () {
                     case 11:
                         __response = _a.sent();
                         if (__response) {
-                            this.generalService.waitAndNavigate("Sipariş Oluşturuldu & Faturalaştırıdı", "orders-managament");
+                            this.generalService.waitAndNavigate("Sipariş Oluşturuldu & Faturalaştırıdı", "orders-managament/1/1");
                         }
                         _a.label = 12;
                     case 12: return [2 /*return*/];

@@ -50,13 +50,13 @@ var ClientUrls_1 = require("src/app/models/const/ClientUrls");
 var countProductRequestModel_1 = require("src/app/models/model/order/countProductRequestModel");
 var qrOperationModel_1 = require("src/app/models/model/product/qrOperationModel");
 var ShelfTransferRequestComponent = /** @class */ (function () {
-    function ShelfTransferRequestComponent(formBuilder, toasterService, orderService, router, httpClient, spinnerService, productService, warehouseService, generalService, httpClientService, title) {
+    function ShelfTransferRequestComponent(formBuilder, toasterService, orderService, router, httpClient, activatedRoute, productService, warehouseService, generalService, httpClientService, title) {
         this.formBuilder = formBuilder;
         this.toasterService = toasterService;
         this.orderService = orderService;
         this.router = router;
         this.httpClient = httpClient;
-        this.spinnerService = spinnerService;
+        this.activatedRoute = activatedRoute;
         this.productService = productService;
         this.warehouseService = warehouseService;
         this.generalService = generalService;
@@ -104,6 +104,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
         ];
         this.productShelvesDialog = false;
         this.productShelves = [];
+        this.deletedProductList = [];
         this.selectedButton = 0;
         this.qrBarcodeUrl = null;
         this.qrOperationModels = [];
@@ -112,6 +113,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
     ShelfTransferRequestComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _a;
+            var _this = this;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -122,14 +124,27 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.generalService.generateGUID()];
                     case 1:
                         _a.currentOrderNo = (_b.sent()).toString();
-                        return [4 /*yield*/, this.getTransferRequestListModel("0")];
-                    case 2:
-                        _b.sent();
+                        this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        if (!params["type"]) return [3 /*break*/, 2];
+                                        return [4 /*yield*/, this.getTransferRequestListModel(params["type"])];
+                                    case 1:
+                                        _a.sent();
+                                        _a.label = 2;
+                                    case 2: return [2 /*return*/];
+                                }
+                            });
+                        }); });
                         this.collectedProducts = [];
                         return [2 /*return*/];
                 }
             });
         });
+    };
+    ShelfTransferRequestComponent.prototype.goPage = function (pageType) {
+        location.href = location.origin + "/shelf-transfer-request/" + pageType;
     };
     //-------------------
     ShelfTransferRequestComponent.prototype.getShelves = function (barcode) {
@@ -194,6 +209,21 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
             });
         });
     };
+    ShelfTransferRequestComponent.prototype.addDeletedItemList = function (item) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.deletedProductList.push(item);
+                        return [4 /*yield*/, this.getTransferRequestListModel(this.selectedButton.toString())];
+                    case 1:
+                        _a.sent();
+                        this.toasterService.info("Ürün Transfer Edilecek Ürünlerden Silindi");
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     ShelfTransferRequestComponent.prototype.getTransferRequestListModel = function (type) {
         return __awaiter(this, void 0, void 0, function () {
             var response, itemsToRemoveIndexes, i, foundedProduct;
@@ -204,6 +234,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                     case 1:
                         response = _a.sent();
                         this.selectedButton = Number(type);
+                        console.log(type);
                         if (type === '0') {
                             this.toasterService.success("Varsayılan Ürünler Getirildi");
                         }
@@ -214,9 +245,20 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                             this.toasterService.success("Çanta Ürünleri Getirildi");
                         }
                         this.transferProducts = response;
+                        if (this.deletedProductList.length > 0) {
+                            this.deletedProductList.forEach(function (deletedItem) {
+                                _this.transferProducts.forEach(function (inventoryItem, _index) {
+                                    if (inventoryItem.barcode === deletedItem.barcode &&
+                                        inventoryItem.shelfNo === deletedItem.shelfNo &&
+                                        inventoryItem.itemCode === deletedItem.itemCode) {
+                                        _this.transferProducts.splice(_index, 1);
+                                    }
+                                });
+                            });
+                        }
                         itemsToRemoveIndexes = [];
-                        console.log(this.collectedProducts);
-                        console.log(this.transferProducts);
+                        //console.log(this.collectedProducts);
+                        //console.log(this.transferProducts);
                         // inventoryItems üzerinde döngü
                         this.transferProducts.forEach(function (inventoryItem, index) {
                             // Eşleşme arama ve güncelleme
@@ -405,7 +447,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
     };
     ShelfTransferRequestComponent.prototype.setFormValues = function (barcode, check) {
         return __awaiter(this, void 0, Promise, function () {
-            var result, result, error_2;
+            var result, items, result, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -417,6 +459,12 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.productService.countProductByBarcode3(barcode)];
                     case 2:
                         result = _a.sent();
+                        if (result[0].includes("CANTA")) {
+                            items = result[0].split(",");
+                            items = items.filter(function (item) { return !item.startsWith("CANTA"); });
+                            // Daha sonra, result[0]'ı güncelliyoruz
+                            result[0] = items.join(",");
+                        }
                         this.shelfNumbers += result[0];
                         if (check) {
                             this.checkForm.get('shelfNo').setValue(result[0].split(',')[0]);
@@ -428,6 +476,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                     case 4:
                         result = _a.sent();
                         this.shelfNumbers += result[0];
+                        this.checkForm.get('batchCode').setValue(result[2]); //lot yerleştirir
                         return [2 /*return*/, result[1]];
                     case 5: return [3 /*break*/, 7];
                     case 6:
@@ -526,7 +575,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
                         this.collectedProducts.push(transferModel);
                         this.collectedProducts.reverse();
-                        return [4 /*yield*/, this.getTransferRequestListModel("0")];
+                        return [4 /*yield*/, this.getTransferRequestListModel(this.selectedButton.toString())];
                     case 13:
                         _c.sent();
                         this.toasterService.success("Okutma Başarılı");
@@ -537,6 +586,9 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                     case 15:
                         this.generalService.beep();
                         this.clearForm();
+                        if (this.selectedButton == 2) {
+                            this.checkForm.get('targetShelfNo').setValue(transferModel.targetShelfNo);
+                        }
                         return [3 /*break*/, 22];
                     case 16:
                         if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 22];
@@ -555,14 +607,18 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         }
                         else if (qrResponse === null) {
                             this.clearForm();
+                            console.log(this.selectedButton.toString());
+                            if (this.selectedButton == 2) {
+                                this.checkForm.get('targetShelfNo').setValue(transferModel.targetShelfNo);
+                            }
                         }
                         //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
                         this.collectedProducts.push(transferModel);
                         this.collectedProducts.reverse();
-                        return [4 /*yield*/, this.getTransferRequestListModel("0")];
+                        return [4 /*yield*/, this.getTransferRequestListModel(this.selectedButton.toString())];
                     case 19:
                         _c.sent();
-                        this.toasterService.success("Okutma Başarılı  ");
+                        this.toasterService.success("Okutma Başarılı");
                         this.generalService.beep();
                         return [3 /*break*/, 21];
                     case 20:
@@ -570,6 +626,10 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         _c.label = 21;
                     case 21:
                         this.clearForm();
+                        console.log(this.selectedButton.toString());
+                        if (this.selectedButton == 2) {
+                            this.checkForm.get('targetShelfNo').setValue(transferModel.targetShelfNo);
+                        }
                         _c.label = 22;
                     case 22: return [3 /*break*/, 24];
                     case 23:
@@ -617,7 +677,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                     case 2:
                         qrOperationResponse = _a.sent();
                         if (qrOperationResponse) {
-                            // console.log(this.qrOperationModels);
+                            // //console.log(this.qrOperationModels);
                             this.generalService.beep3();
                             this.toasterService.success('Qr Operasyonu Geri Alındı');
                         }
@@ -705,7 +765,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
         this.checkForm.get('shelfNo').setValue(null);
         this.checkForm.get('batchCode').setValue(null);
         this.checkForm.get('targetShelfNo').setValue(null);
-        this.focusNextInput('targetShelfNo');
+        this.focusNextInput('shelfNo');
         this.qrBarcodeUrl = null;
         this.shelfNumbers = 'RAFLAR:';
         this.calculateTotalQty();

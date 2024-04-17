@@ -67,10 +67,17 @@ var UnfinishedOrderComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.orderService.getClientOrders(isCompleted)];
                     case 1:
                         _a.orders = _b.sent();
+                        this.filterOrdersByRole();
                         return [2 /*return*/];
                 }
             });
         });
+    };
+    UnfinishedOrderComponent.prototype.filterOrdersByRole = function () {
+        if (localStorage.getItem('roleDescription') != 'Admin') {
+            this.orders = this.orders.filter(function (x) { return x.customerCode == localStorage.getItem('salesPersonCode'); });
+            this.toasterService.info('Sadece Kendi Siparişlerinizi Görebilirsiniz.');
+        }
     };
     UnfinishedOrderComponent.prototype.deleteClientOrder = function (id) {
         return __awaiter(this, void 0, void 0, function () {

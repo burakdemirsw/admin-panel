@@ -9,51 +9,55 @@ exports.__esModule = true;
 exports.AppRoutingModule = void 0;
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
-var dashboard_component_1 = require("./pages/dashboard/dashboard.component");
-var pages_error404_component_1 = require("./pages/pages-error404/pages-error404.component");
-var pages_login_component_1 = require("./pages/pages-login/pages-login.component");
-var pages_register_component_1 = require("./pages/pages-register/pages-register.component");
-var users_profile_component_1 = require("./pages/users-profile/users-profile.component");
+var category_managament_component_1 = require("./components/Category/category-managament/category-managament.component");
+var category_operation_component_1 = require("./components/Category/category-operation/category-operation.component");
+var add_customer_component_1 = require("./components/Customer/add-customer/add-customer.component");
+var customer_list_component_1 = require("./components/Customer/customer-list/customer-list.component");
+var devolopment_list_component_1 = require("./components/Devolopment/devolopment-list/devolopment-list.component");
+var homepage_component_1 = require("./components/Homepage/homepage.component");
+var log_managament_component_1 = require("./components/Log/log-managament/log-managament.component");
+var collect_product_of_order_component_1 = require("./components/Order/collect-product-of-order/collect-product-of-order.component");
+var collected_package_detail_component_1 = require("./components/Order/collected-package-detail/collected-package-detail.component");
+var collected_packages_component_1 = require("./components/Order/collected-packages/collected-packages.component");
+var create_order_component_1 = require("./components/Order/create-order/create-order.component");
+var create_purchase_order_component_1 = require("./components/Order/create-purchase-order/create-purchase-order.component");
+var create_qr_component_1 = require("./components/Order/create-qr/create-qr.component");
+var create_sale_order_component_1 = require("./components/Order/create-sale-order/create-sale-order.component");
+var invoice_list_component_1 = require("./components/Order/invoice-list/invoice-list.component");
+var nebim_get_orders_component_1 = require("./components/Order/nebim-get-orders/nebim-get-orders.component");
+var order_billing_operation_component_1 = require("./components/Order/order-billing-operation/order-billing-operation.component");
+var order_managament_component_1 = require("./components/Order/order-managament/order-managament.component");
+var order_operation_component_1 = require("./components/Order/order-operation/order-operation.component");
+var purchase_order_managament_component_1 = require("./components/Order/purchase-order-managament/purchase-order-managament.component");
+var sale_order_managament_component_1 = require("./components/Order/sale-order-managament/sale-order-managament.component");
+var unfinished_order_component_1 = require("./components/Order/unfinished-order/unfinished-order.component");
+var nebim_product_extract_component_1 = require("./components/Product/nebim-product-extract/nebim-product-extract.component");
+var nebim_stock_control_component_1 = require("./components/Product/nebim-stock-control/nebim-stock-control.component");
 var product_management_component_1 = require("./components/Product/product-management/product-management.component");
 var product_operation_component_1 = require("./components/Product/product-operation/product-operation.component");
-var homepage_component_1 = require("./components/Homepage/homepage.component");
-var category_operation_component_1 = require("./components/Category/category-operation/category-operation.component");
-var order_operation_component_1 = require("./components/Order/order-operation/order-operation.component");
-var order_managament_component_1 = require("./components/Order/order-managament/order-managament.component");
-var category_managament_component_1 = require("./components/Category/category-managament/category-managament.component");
-var shelves_managament_component_1 = require("./components/Shelf/shelves-managament/shelves-managament.component");
-var shelve_operation_component_1 = require("./components/Shelf/shelve-operation/shelve-operation.component");
-var warehouse_operation_component_1 = require("./components/Warehouse/warehouse-operation/warehouse-operation.component");
-var order_billing_operation_component_1 = require("./components/Order/order-billing-operation/order-billing-operation.component");
-var auth_guard_1 = require("./components/auth.guard");
-var collect_product_of_order_component_1 = require("./components/Order/collect-product-of-order/collect-product-of-order.component");
-var warehouse_operation_list_component_1 = require("./components/Warehouse/warehouse-operation/warehouse-operation-list/warehouse-operation-list.component");
-var warehouse_operation_confirm_detail_component_1 = require("./components/Warehouse/warehouse-operation/warehouse-operation-confirm-detail/warehouse-operation-confirm-detail.component");
-var collected_packages_component_1 = require("./components/Order/collected-packages/collected-packages.component");
-var collected_package_detail_component_1 = require("./components/Order/collected-package-detail/collected-package-detail.component");
-var warehosue_shelf_count_component_1 = require("./components/Warehouse/warehosue-shelf-count/warehosue-shelf-count.component");
-var sale_order_managament_component_1 = require("./components/Order/sale-order-managament/sale-order-managament.component");
-var purchase_order_managament_component_1 = require("./components/Order/purchase-order-managament/purchase-order-managament.component");
-var create_purchase_order_component_1 = require("./components/Order/create-purchase-order/create-purchase-order.component");
-var create_sale_order_component_1 = require("./components/Order/create-sale-order/create-sale-order.component");
-var warehouse_shelf_count_list_component_1 = require("./components/Warehouse/warehouse-shelf-count-list/warehouse-shelf-count-list.component");
-var invoice_list_component_1 = require("./components/Order/invoice-list/invoice-list.component");
-var fast_transfer_component_1 = require("./components/Warehouse/fast-transfer/fast-transfer.component");
-var create_qr_component_1 = require("./components/Order/create-qr/create-qr.component");
-var warehouse_transfer_list_component_1 = require("./components/Warehouse/warehouse-transfer-list/warehouse-transfer-list.component");
-var log_managament_component_1 = require("./components/Log/log-managament/log-managament.component");
-var shelf_transfer_request_component_1 = require("./components/Warehouse/shelf-transfer-request/shelf-transfer-request.component");
 var search_qr_component_1 = require("./components/Product/search-qr/search-qr.component");
-var box_count_component_1 = require("./components/Warehouse/box-count/box-count.component");
-var create_order_component_1 = require("./components/Order/create-order/create-order.component");
-var pages_loginv2_component_1 = require("./pages/pages-loginv2/pages-loginv2.component");
+var shelve_operation_component_1 = require("./components/Shelf/shelve-operation/shelve-operation.component");
+var shelves_managament_component_1 = require("./components/Shelf/shelves-managament/shelves-managament.component");
 var user_list_component_1 = require("./components/User/user-list/user-list.component");
-var customer_list_component_1 = require("./components/Customer/customer-list/customer-list.component");
-var create_cargo_component_1 = require("./components/cargo/create-cargo/create-cargo.component");
+var box_count_component_1 = require("./components/Warehouse/box-count/box-count.component");
+var fast_transfer_component_1 = require("./components/Warehouse/fast-transfer/fast-transfer.component");
+var shelf_transfer_request_component_1 = require("./components/Warehouse/shelf-transfer-request/shelf-transfer-request.component");
+var warehosue_shelf_count_component_1 = require("./components/Warehouse/warehosue-shelf-count/warehosue-shelf-count.component");
+var warehouse_operation_confirm_detail_component_1 = require("./components/Warehouse/warehouse-operation/warehouse-operation-confirm-detail/warehouse-operation-confirm-detail.component");
+var warehouse_operation_list_component_1 = require("./components/Warehouse/warehouse-operation/warehouse-operation-list/warehouse-operation-list.component");
+var warehouse_operation_component_1 = require("./components/Warehouse/warehouse-operation/warehouse-operation.component");
+var warehouse_shelf_count_list_component_1 = require("./components/Warehouse/warehouse-shelf-count-list/warehouse-shelf-count-list.component");
+var warehouse_transfer_list_component_1 = require("./components/Warehouse/warehouse-transfer-list/warehouse-transfer-list.component");
+var auth_guard_1 = require("./components/auth.guard");
 var cargo_list_component_1 = require("./components/cargo/cargo-list/cargo-list.component");
-var add_customer_component_1 = require("./components/Customer/add-customer/add-customer.component");
-var unfinished_order_component_1 = require("./components/Order/unfinished-order/unfinished-order.component");
 var create_aras_cargo_barcode_component_1 = require("./components/cargo/create-aras-cargo-barcode/create-aras-cargo-barcode.component");
+var create_cargo_component_1 = require("./components/cargo/create-cargo/create-cargo.component");
+var dashboard_component_1 = require("./pages/dashboard/dashboard.component");
+var pages_error404_component_1 = require("./pages/pages-error404/pages-error404.component");
+var pages_loginv2_component_1 = require("./pages/pages-loginv2/pages-loginv2.component");
+var pages_register_component_1 = require("./pages/pages-register/pages-register.component");
+var users_profile_component_1 = require("./pages/users-profile/users-profile.component");
+var create_barcode_component_1 = require("./components/Product/create-barcode/create-barcode.component");
 var routes = [
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     {
@@ -72,7 +76,7 @@ var routes = [
         component: dashboard_component_1.DashboardComponent,
         canActivate: [auth_guard_1.AuthGuard]
     },
-    { path: 'pages-login', component: pages_login_component_1.PagesLoginComponent },
+    { path: 'pages-login', component: pages_loginv2_component_1.PagesLoginv2Component },
     { path: 'pages-loginv2', component: pages_loginv2_component_1.PagesLoginv2Component },
     {
         path: 'product-managament',
@@ -136,7 +140,7 @@ var routes = [
         canActivate: [auth_guard_1.AuthGuard]
     },
     {
-        path: 'order-operation/:orderNumber/:isInvoice',
+        path: 'order-operation/:orderNumber/:isInvoice/:warehouseCode',
         component: order_operation_component_1.OrderOperationComponent,
         canActivate: [auth_guard_1.AuthGuard]
     },
@@ -146,7 +150,7 @@ var routes = [
         canActivate: [auth_guard_1.AuthGuard]
     },
     {
-        path: 'orders-managament',
+        path: 'orders-managament/:status/:invoiceStatus',
         component: order_managament_component_1.OrderManagamentComponent,
         canActivate: [auth_guard_1.AuthGuard]
     },
@@ -206,7 +210,7 @@ var routes = [
         canActivate: [auth_guard_1.AuthGuard]
     },
     {
-        path: 'warehouse-operation/:number',
+        path: 'warehouse-operation/:number/:type',
         component: warehouse_operation_component_1.WarehouseOperationComponent,
         canActivate: [auth_guard_1.AuthGuard]
     },
@@ -269,13 +273,22 @@ var routes = [
         canActivate: [auth_guard_1.AuthGuard]
     },
     {
-        path: 'shelf-transfer-request',
+        path: 'shelf-transfer-request/:type',
         component: shelf_transfer_request_component_1.ShelfTransferRequestComponent,
+        canActivate: [auth_guard_1.AuthGuard]
+    },
+    {
+        path: 'devolopment-list',
+        component: devolopment_list_component_1.DevolopmentListComponent,
         canActivate: [auth_guard_1.AuthGuard]
     },
     { path: 'box-count', component: box_count_component_1.BoxCountComponent, canActivate: [auth_guard_1.AuthGuard] },
     { path: 'search-qr/:id', component: search_qr_component_1.SearchQrComponent },
     { path: 'search-qr', component: search_qr_component_1.SearchQrComponent },
+    { path: 'nebim-get-orders', component: nebim_get_orders_component_1.NebimGetOrdersComponent },
+    { path: 'nebim-stock-control', component: nebim_stock_control_component_1.NebimStockControlComponent },
+    { path: 'nebim-product-extract', component: nebim_product_extract_component_1.NebimProductExtractComponent },
+    { path: 'create-barcode/:operationNo', component: create_barcode_component_1.CreateBarcodeComponent },
     { path: '**', component: pages_error404_component_1.PagesError404Component },
 ];
 var AppRoutingModule = /** @class */ (function () {

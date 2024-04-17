@@ -13,7 +13,6 @@
   <section class="section">
     <div class="row">
       <div style="width: 100%">
-
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">Sipariş Toplama Paneli</h5>
@@ -25,33 +24,65 @@
             </ul>
 
             <div class="tab-content" id="ex2-content">
-              <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1" role="tabpanel"
-                aria-labelledby="ex3-tab-1">
-                <form [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)">
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 1"
+                id="ex3-tabs-1"
+                role="tabpanel"
+                aria-labelledby="ex3-tab-1"
+              >
+                <form
+                  [formGroup]="checkForm"
+                  (ngSubmit)="onSubmit(checkForm.value)"
+                >
                   <div class="row mb-3">
                     <div class="form-group">
                       <label for="shelfNo">Raf No:</label>
-                      <input type="text" id="shelfNo" class="form-control" formControlName="shelfNo"
-                        (keydown.enter)="focusNextInput('barcode')" />
+                      <input
+                        type="text"
+                        id="shelfNo"
+                        class="form-control"
+                        formControlName="shelfNo"
+                        (keydown.enter)="focusNextInput('barcode')"
+                      />
                     </div>
                   </div>
                   <div class="row mb-3">
                     <div class="form-group">
                       <label for="barcode">Barkod:</label>
-                      <input type="text" id="barcode" class="form-control" formControlName="barcode"
-                        (keydown.enter)="onSubmit(checkForm.value)" />
+                      <input
+                        type="text"
+                        id="barcode"
+                        class="form-control"
+                        formControlName="barcode"
+                        (keydown.enter)="onSubmit(checkForm.value)"
+                      />
                     </div>
                   </div>
 
-                  <button type="button" class="btn btn-primary" (click)="onSubmit(checkForm.value)">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="onSubmit(checkForm.value)"
+                  >
                     Ekle
                   </button>
                 </form>
               </div>
-              <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2" role="tabpanel-2"
-                aria-labelledby="ex3-tab-2"></div>
-              <div class="tab-pane fade show" [class.active]="activeTab === 3" id="ex3-tabs-3" role="tabpanel-3"
-                aria-labelledby="ex3-tab-3">
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 2"
+                id="ex3-tabs-2"
+                role="tabpanel-2"
+                aria-labelledby="ex3-tab-2"
+              ></div>
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 3"
+                id="ex3-tabs-3"
+                role="tabpanel-3"
+                aria-labelledby="ex3-tab-3"
+              >
                 Prices
               </div>
             </div>
@@ -62,7 +93,7 @@
           <div class="card-body">
             <h5 class="card-title">Toplanacak Siparişler</h5>
             <div class="table-responsive">
-              <table class="table">
+              <table class="table table-striped">
                 <thead>
                   <tr>
                     <th scope="col">Raf Numarası</th>
@@ -100,8 +131,6 @@
             <p class="card-text">Adet Ürün Toplandı</p>
           </div>
         </div>
-
-
       </div>
     </div>
   </section>

@@ -64,9 +64,9 @@ export class CargoService {
   }
 
 
-  async getShippedCargos(): Promise<any> {
+  async getShippedCargos(isPrinted: boolean): Promise<any> {
     try {
-      var response = await this.httpClientService.get<any>({ controller: "cargos/get-shipped-cargos" }).toPromise();
+      var response = await this.httpClientService.get<any>({ controller: "cargos/get-shipped-cargos" }, isPrinted.toString()).toPromise();
 
       return response;
     } catch (error: any) {

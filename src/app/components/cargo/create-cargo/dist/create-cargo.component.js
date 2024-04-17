@@ -242,7 +242,6 @@ var CreateCargoComponent = /** @class */ (function () {
     CreateCargoComponent.prototype.submitCargo = function (formValue) {
         return __awaiter(this, void 0, void 0, function () {
             var cargoFirmId, recepient_name, content, cargoSetting, referenceId, orderRequest, barcodeRequest, totalProductQuantity, content, orderPieces, index, orderPiece, _orderPiece, request, response;
-            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -289,6 +288,7 @@ var CreateCargoComponent = /** @class */ (function () {
                             _orderPiece.desi = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('desi').value;
                             _orderPiece.kg = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('kg').value;
                             orderPieces.push(_orderPiece);
+                            barcodeRequest.orderPieceList = orderPieces;
                         }
                         else {
                             this.toasterService.error("Paket Adedi 1 den küçük olamaz");
@@ -308,13 +308,8 @@ var CreateCargoComponent = /** @class */ (function () {
                     case 1:
                         response = _a.sent();
                         if (response) {
-                            this.spinnerService.show();
-                            setTimeout(function () {
-                                _this.toasterService.success("Barkod Bastırabilirsiniz");
-                                _this.spinnerService.hide();
-                                _this.cargoResponse = response;
-                                _this.router.navigate(['/cargo-list']);
-                            }, 15000);
+                            this.cargoResponse = response;
+                            this.router.navigate(['/cargo-list']);
                         }
                         return [2 /*return*/];
                 }

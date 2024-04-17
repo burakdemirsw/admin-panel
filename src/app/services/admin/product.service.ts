@@ -1,33 +1,32 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ProductCreateModel } from 'src/app/models/model/product/productCreateModel';
-import { HttpClientService } from '../http-client.service';
-import { Router } from '@angular/router';
-import {
-  ProductCountModel,
-  ProductCountModel3,
-} from 'src/app/models/model/shelfNameModel';
-import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
-import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
-import { ProductCountModel2 } from 'src/app/models/model/product/productCountModel2';
-import { WarehouseFormModel } from 'src/app/models/model/warehouse/warehosueTransferModel';
-import { ProductList_VM } from 'src/app/models/model/product/productList_VM';
-import { QrCode } from 'src/app/models/model/product/qrCode';
-import { QrControlCommandModel } from 'src/app/models/model/product/qrControlModel';
 import {
   BarcodeModelResponse,
   BarcodeModel_A,
 } from 'src/app/models/model/barcode/barcodeModel_A';
+import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
+import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
+import { GetProductExtract_RM, GetProductStock_RM } from 'src/app/models/model/product/getProductStock';
+import { ProductCountModel2 } from 'src/app/models/model/product/productCountModel2';
+import { ProductCreateModel } from 'src/app/models/model/product/productCreateModel';
+import { QrCode } from 'src/app/models/model/product/qrCode';
+import { QrControlCommandModel } from 'src/app/models/model/product/qrControlModel';
 import {
   QrOperationModel,
   QrOperationModel2,
 } from 'src/app/models/model/product/qrOperationModel';
-import { GeneralService } from './general.service';
-import { FormGroup } from '@angular/forms';
-import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
+import {
+  ProductCountModel,
+  ProductCountModel3,
+} from 'src/app/models/model/shelfNameModel';
+import { WarehouseFormModel } from 'src/app/models/model/warehouse/warehosueTransferModel';
+import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
+import { GeneralService } from './general.service';
+import { CreateBarcodeModel } from 'src/app/components/Product/create-barcode/models/createBarcode';
 
 @Injectable({
   providedIn: 'root',
@@ -86,13 +85,46 @@ export class ProductService {
       results.push(shelfNumbers);
       results.push(model[0].status);
       results.push(model[0].batchCode);
-
+      results.push(model[0].barcode);
       return results;
     } catch (error: any) {
       console.error(error.message);
       return null;
     }
   }
+
+  //alış satış ve transfer işlemlerinde barkod ile ürün sayma işlemi
+  async countProductByBarcode4(barcode: string, warehosueCode: string): Promise<string[]> {
+    try {
+      if (barcode.includes('/')) {
+        barcode = barcode.replace(/\//g, '-');
+      }
+      if (warehosueCode == 'ONL') {
+        warehosueCode = "MD";
+      }
+      const model: ProductCountModel[] = await this.httpClientService
+        .get<ProductCountModel>({
+          controller: 'Order/GetShelvesOfProduct4/' + barcode + "/" + warehosueCode,
+        })
+        .toPromise();
+
+      var shelfNumbers: string = '';
+      model.forEach((element) => {
+        shelfNumbers += element.description + ',';
+      });
+      var results: string[] = [];
+      results.push(shelfNumbers);
+      results.push(model[0].status);
+      results.push(model[0].batchCode);
+      results.push(model[0].barcode);
+      return results;
+    } catch (error: any) {
+      console.error(error.message);
+      return null;
+    }
+  }
+
+
 
   //barkod ile ürün sayma işlemi | ürün kodu
   async countProductByBarcode2(barcode: string): Promise<string> {
@@ -415,6 +447,43 @@ export class ProductService {
       }
     }
     return null;
+  }
+
+  async getProductStock(request: GetProductStock_RM): Promise<any> {
+    const response = await this.httpClientService.post<GetProductStock_RM>({
+      controller: 'Products/get-product-stock'
+    }, request).toPromise();
+    return response;
+  }
+
+  async getProductExtract(request: GetProductExtract_RM): Promise<any> {
+    const response = await this.httpClientService.post<GetProductExtract_RM>({
+      controller: 'Products/get-product-extract'
+    }, request).toPromise();
+    return response;
+  }
+  async addBarcodeModel(request: CreateBarcodeModel): Promise<any> {
+    const response = await this.httpClientService.post<CreateBarcodeModel>({
+      controller: 'Products/add-barcode-model'
+    }, request).toPromise();
+    return response;
+  } async deleteBarcodeModel(request: string): Promise<any> {
+    const response = await this.httpClientService.get<any>({
+      controller: 'Products/delete-barcode-model'
+    }, request).toPromise();
+    return response;
+  }
+  async getBarcodeModels(request: string): Promise<CreateBarcodeModel[]> {
+    const response = await this.httpClientService.get<CreateBarcodeModel>({
+      controller: 'Products/get-barcode-models'
+    }, request).toPromise();
+    return response;
+  }
+  async sendBarcodeModelsToNebim(request: string): Promise<any> {
+    const response = await this.httpClientService.get<any>({
+      controller: 'Products/send-barcode-models-to-nebim'
+    }, request).toPromise();
+    return response;
   }
 }
 export class BarcodeSearch_RM {

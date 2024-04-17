@@ -245,7 +245,7 @@ export class CreateCargoComponent implements OnInit {
       _orderPiece.desi = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('desi').value
       _orderPiece.kg = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('kg').value
       orderPieces.push(_orderPiece);
-
+      barcodeRequest.orderPieceList = orderPieces;
     } else {
       this.toasterService.error("Paket Adedi 1 den küçük olamaz");
       return;
@@ -271,13 +271,8 @@ export class CreateCargoComponent implements OnInit {
 
     var response = await this.cargoService.createCargo(request, request.cargoFirmId);
     if (response) {
-      this.spinnerService.show();
-      setTimeout(() => {
-        this.toasterService.success("Barkod Bastırabilirsiniz");
-        this.spinnerService.hide()
-        this.cargoResponse = response;
-        this.router.navigate(['/cargo-list']);
-      }, 15000);
+      this.cargoResponse = response;
+      this.router.navigate(['/cargo-list']);
 
     }
     //console.log(response);

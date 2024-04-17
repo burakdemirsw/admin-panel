@@ -277,7 +277,7 @@ var WarehouseService = /** @class */ (function () {
             });
         });
     };
-    //depolar arası transfer ürünlerini çeker
+    //depolar arası transferin taplann ürünlerini çeker
     WarehouseService.prototype.getProductOfTrasfer = function (orderNo) {
         return __awaiter(this, void 0, Promise, function () {
             var data;

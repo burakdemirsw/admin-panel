@@ -56,6 +56,7 @@ export class UserService {
       localStorage.setItem("accessToken", userClientInfoResponse.token.accessToken == null ? "" : userClientInfoResponse.token.accessToken);
       localStorage.setItem("refreshToken", userClientInfoResponse.token.refreshToken == null ? "" : userClientInfoResponse.token.refreshToken);
       localStorage.setItem("salesPersonCode", userClientInfoResponse.salesPersonCode == null ? "" : userClientInfoResponse.salesPersonCode);
+      localStorage.setItem("roleDescription", userClientInfoResponse.roleDescription == null ? "" : userClientInfoResponse.roleDescription);
 
       localStorage.setItem("userId", userClientInfoResponse.userId.toString() == null ? "" : userClientInfoResponse.userId.toString());
       localStorage.setItem("mail", userClientInfoResponse.mail.toString() == null ? "" : userClientInfoResponse.mail.toString());
@@ -90,6 +91,8 @@ export class UserService {
 
 
     localStorage.setItem("accessToken", userClientInfoResponse.refreshTokenCommandResponse.token.accessToken);
+    localStorage.setItem("roleDescription", userClientInfoResponse.roleDescription.toString());
+
     localStorage.setItem("refreshToken", userClientInfoResponse.refreshTokenCommandResponse.token.refreshToken);
     localStorage.setItem("userId", userClientInfoResponse.userId.toString());
     localStorage.setItem("mail", userClientInfoResponse.mail.toString());
@@ -146,7 +149,7 @@ export class UserService {
         model.mail = localStorage.getItem("phoneNumber")
         model.mail = localStorage.getItem("name")
         model.mail = localStorage.getItem("surname")
-
+        model.roleDescription = localStorage.getItem("roleDescription")
         return model;
       } else {
         return null;

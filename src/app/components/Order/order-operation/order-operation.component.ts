@@ -89,6 +89,7 @@ export class OrderOperationComponent implements OnInit {
   isBPTransferForm: boolean = false;
   isInvoice: boolean = false;
   customerName: string;
+  warehouseCode: string; //depokodu
   async ngOnInit() {
 
     //this.spinnerService.show();
@@ -98,8 +99,12 @@ export class OrderOperationComponent implements OnInit {
 
       var orderNumber: string = params['orderNumber'];
       if (params['isInvoice']) {
-        this.isInvoice = Boolean(params['isInvoice']);
-        this.toasterService.success(this.isInvoice.toString())
+        this.isInvoice = params['isInvoice'] === "true" ? true : false;
+        // this.toasterService.success(this.isInvoice.toString())
+      }
+      if (params['warehouseCode']) {
+        this.warehouseCode = (params['warehouseCode']);
+        // this.toasterService.success(this.warehouseCode)
       }
       // if (orderNumber.includes('MIS')) {
       //   orderNumber = orderNumber.split('MIS-')[0]
@@ -147,15 +152,25 @@ export class OrderOperationComponent implements OnInit {
 
 
   //-----------------------------------------------------EKSIK URUNLER İŞLEMLERİ
-  async addMissingProduct(product: ProductOfOrder) {
-    var _product = new ProductOfOrder();
-    _product = Object.assign({}, product);
-    _product.shelfNo = "MIS-" + this.currentOrderNo;
+  async addMissingProduct(products: ProductOfOrder[]) {
+
+    var missingProducts: ProductOfOrder[] = []
+
+    products.forEach(product => {
+      var _product = new ProductOfOrder();
+      _product = Object.assign({}, product);
+      _product.shelfNo = "MIS-" + this.currentOrderNo;
+
+      missingProducts.push(_product);
+    });
+
+
+
     // var response = await this.httpClientService.post<ProductOfOrder>({ controller: "order/destroy-item" }, _product).toPromise();
-    var response = await this.orderService.addMissingProduct(_product);
+    var response = await this.orderService.addMissingProduct(missingProducts);
     if (response) {
       await this.getAllProducts(this.currentOrderNo, 'WS')
-      this.toasterService.success("Ürün,Eksik Ürünlere Eklendi")
+      this.toasterService.success("Ürünler Eksik Ürünlere Eklendi")
     }
   }
 
@@ -416,11 +431,9 @@ export class OrderOperationComponent implements OnInit {
 
         var _response = await this.orderService.collectAndPack(products, this.currentOrderNo, this.selectedInvoiceType.key);
         if (_response) {
-          console.log(this.productsToCollect)
+          ////console.log(this.productsToCollect)
           if (this.productsToCollect.length > 0) {
-            this.productsToCollect.forEach(product => {
-              this.addMissingProduct(product);
-            });
+            this.addMissingProduct(this.productsToCollect);
           }
           this.router.navigate(['/orders-managament']);
         }
@@ -431,7 +444,7 @@ export class OrderOperationComponent implements OnInit {
     //this.spinnerService.hide();
   }
   async collectAndPack(products: ProductOfOrder[]) {
-    console.log(this.currentOrderNo);
+    //console.log(this.currentOrderNo);
     var orderType: string = "";
     if (this.currentOrderNo.includes("MIS")) {
       orderType = "MIS"
@@ -546,9 +559,6 @@ export class OrderOperationComponent implements OnInit {
         this.shelfNumbers += result[0];
         if (check) {
           var currentShelfNo = this.checkForm.get('shelfNo').value;
-          // if(currentShelfNo==null ){
-          //   this.checkForm.get('shelfNo').setValue(result[0].split(',')[0]);
-          // }
 
           this.checkForm.get('batchCode').setValue(result[2]);
           this.checkForm.get('barcode').setValue(result[3]);
@@ -556,11 +566,13 @@ export class OrderOperationComponent implements OnInit {
 
         return result[1];
       } else {
-        var result: string[] = await this.productService.countProductByBarcode(
-          barcode
+        var result: string[] = await this.productService.countProductByBarcode4(
+          barcode, this.warehouseCode
         );
         this.shelfNumbers += result[0];
-        this.checkForm.get('batchCode').setValue(result[2])//batch code alanı dolduruldu --19.02
+        this.checkForm.get('barcode').setValue(result[3]);
+
+        this.checkForm.get('batchCode').setValue(result[2].toString());
         return result[1];
       }
     } catch (error) {
@@ -652,8 +664,8 @@ export class OrderOperationComponent implements OnInit {
         //↑↑↑↑↑↑↑↑↑ EŞLEŞEN ÜRÜN BULUNDU ↑↑↑↑↑↑↑↑↑
 
         if (true) {
-          var newResponse = await this.productService.countProductByBarcode(
-            productModel.barcode
+          var newResponse = await this.productService.countProductByBarcode4(
+            productModel.barcode, this.warehouseCode
           );
           const shelves = newResponse[0]
             .split(',')
@@ -804,10 +816,10 @@ export class OrderOperationComponent implements OnInit {
           this.toasterService.warn('Formu Doldurunuz.');
           return;
         }
-      } else if (productModel.shelfNo && productModel.barcode) {
+      } else if (productModel.shelfNo && productModel.barcode) { //form doldurulduysa
         var response = await this.warehouseService.countProductRequest(
           productModel.barcode,
-          productModel.shelfNo,  //anan
+          productModel.shelfNo,
           productModel.quantity == null
             ? Number(CONSTQTY)
             : productModel.quantity,
@@ -1105,8 +1117,8 @@ export class OrderOperationComponent implements OnInit {
   productShelvesDialog: boolean = false;
   productShelves: string[] = [];
   async getShelves(barcode: string) {
-    var newResponse = await this.productService.countProductByBarcode(
-      barcode
+    var newResponse = await this.productService.countProductByBarcode4(
+      barcode, this.warehouseCode
     );
     const shelves = newResponse[0]
       .split(',')
@@ -1125,8 +1137,8 @@ export class OrderOperationComponent implements OnInit {
   async setShelfNo(barcode: string): Promise<string> {
     this.shelfNumbers = 'RAFLAR:';
 
-    var result: string[] = await this.productService.countProductByBarcode(
-      barcode
+    var result: string[] = await this.productService.countProductByBarcode4(
+      barcode, this.warehouseCode
     );
 
     this.shelfNumbers += result[0];
@@ -1136,8 +1148,8 @@ export class OrderOperationComponent implements OnInit {
   async getQuantity(barcode: string): Promise<string> {
     this.shelfNumbers = 'RAFLAR:';
 
-    var result: string[] = await this.productService.countProductByBarcode(
-      barcode
+    var result: string[] = await this.productService.countProductByBarcode4(
+      barcode, this.warehouseCode
     );
 
     // this.shelfNumbers += result[0];
@@ -1173,8 +1185,14 @@ export class OrderOperationComponent implements OnInit {
       this.checkForm.get('batchCode').setValue(null);
 
     }
+    if (this.currentOrderNo.includes('WT')) {
+
+      this.focusNextInput('shelfNo');
+    } else {
+      this.focusNextInput('barcode');
+
+    }
     this.checkForm.get('barcode').setValue(null);
-    this.focusNextInput('barcode');
     this.shelfNumbers = 'RAFLAR:';
     this.qrBarcodeUrl = null;
     this.checkForm.get('batchCode').setValue(null);
@@ -1230,7 +1248,7 @@ export class OrderOperationComponent implements OnInit {
       }
       var model: QrOperationModel = new QrOperationModel();
       var qrOperationModel: QrOperationModel = new QrOperationModel();
-      // console.log(this.qrOperationModels);
+      ////console.log(this.qrOperationModels);
       qrOperationModel = this.qrOperationModels.find(
         (p) =>
           p.barcode == product.barcode &&
@@ -1267,7 +1285,7 @@ export class OrderOperationComponent implements OnInit {
           model
         );
         if (qrOperationResponse) {
-          // console.log(this.qrOperationModels);
+          ////console.log(this.qrOperationModels);
           this.generalService.beep3();
           this.toasterService.success('Qr Operasyonu Geri Alındı');
         } else {

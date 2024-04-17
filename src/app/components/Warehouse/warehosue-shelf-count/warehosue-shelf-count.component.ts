@@ -25,6 +25,7 @@ import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { OrderService } from '../../../services/admin/order.service';
+import { Exception } from '@zxing/library';
 declare var window: any;
 
 @Component({
@@ -213,8 +214,8 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.lastCollectedProducts = await this.warehouseService.getProductOfCount(
       orderNo
     );
-    if (this.lastCollectedProducts.length >= 100) {
-      this.toasterService.error("SATIR SAYISI 100'E ULAŞTI");
+    if (this.lastCollectedProducts.length >= 200) {
+      this.toasterService.error("SATIR SAYISI 200'E ULAŞTI");
       this.blocked = true;
     }
     this.calculateTotalQty();
@@ -254,23 +255,32 @@ export class WarehosueShelfCountComponent implements OnInit {
         var result: string[] = await this.productService.countProductByBarcode3(
           barcode
         );
-        this.shelfNumbers += result[0];
-        if (check) {
-          var currentShelfNo = this.checkForm.get('shelfNo').value;
-          // if(currentShelfNo==null ){
-          //   this.checkForm.get('shelfNo').setValue(result[0].split(',')[0]);
-          // }
+        if (result) {
+          this.shelfNumbers += result[0];
+          if (check) {
+            var currentShelfNo = this.checkForm.get('shelfNo').value;
+            // if(currentShelfNo==null ){
+            //   this.checkForm.get('shelfNo').setValue(result[0].split(',')[0]);
+            // }
 
-          this.checkForm.get('batchCode').setValue(result[2]);
-          this.checkForm.get('barcode').setValue(result[3]);
+            this.checkForm.get('batchCode').setValue(result[2]);
+            this.checkForm.get('barcode').setValue(result[3]);
+          }
+
+          return result[1];
+        } else {
+          throw new Exception('setFormValues error');
         }
 
-        return result[1];
       } else {
         var result: string[] = await this.productService.countProductByBarcode(
           barcode
         );
         this.shelfNumbers += result[0];
+        this.checkForm.get('barcode').setValue(result[3]);
+
+        this.checkForm.get('batchCode').setValue(result[2].toString());
+
         return result[1];
       }
     } catch (error) {
@@ -308,6 +318,11 @@ export class WarehosueShelfCountComponent implements OnInit {
         countProductRequestModel.barcode,
         true
       );
+      if (number == null) {
+
+
+        return;
+      }
       this.checkForm.get('quantity')?.setValue(Number(number));
       this.qrBarcodeUrl = countProductRequestModel.barcode;
       if (countProductRequestModel.shelfNo != null) {

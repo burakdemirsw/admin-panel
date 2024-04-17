@@ -29,6 +29,7 @@ import { ToasterService } from '../ui/toaster.service';
 import { ClientCustomer } from '../../components/Customer/customer-list/customer-list.component';
 import { Raport_CR } from 'src/app/models/model/raport/raport_CR';
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
+import { GetNebimOrders_RM } from 'src/app/models/model/order/getOrder_RM';
 
 @Injectable({
   providedIn: 'root',
@@ -482,9 +483,9 @@ export class OrderService {
     }
   }
 
-  async addMissingProduct(product: ProductOfOrder): Promise<any> {
+  async addMissingProduct(products: ProductOfOrder[]): Promise<any> {
     try {
-      var response = await this.httpClientService.post<ProductOfOrder>({ controller: "order/destroy-item" }, product).toPromise();
+      var response = await this.httpClientService.post<ProductOfOrder[]>({ controller: "order/add-missing-item" }, products).toPromise();
 
       return response;
     } catch (error: any) {
@@ -725,7 +726,21 @@ export class OrderService {
 
 
   }
+  async getNebimOrders(request: GetNebimOrders_RM): Promise<any> {
+    try {
+      const response = this.httpClientService
+        .post<any>({
+          controller: 'order/get-nebim-orders',
+        }, request)
+        .toPromise();
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
 
+
+  }
 
   //ExecuteSqlRawAsync
 }

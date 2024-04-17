@@ -45,10 +45,10 @@ exports.__esModule = true;
 exports.WarehouseOperationComponent = void 0;
 var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
-var barcodeModel_1 = require("src/app/models/model/product/barcodeModel");
-var warehouseModel_1 = require("src/app/models/model/warehouse/warehouseModel");
 var ClientUrls_1 = require("src/app/models/const/ClientUrls");
+var barcodeModel_1 = require("src/app/models/model/product/barcodeModel");
 var qrOperationModel_1 = require("src/app/models/model/product/qrOperationModel");
+var warehouseModel_1 = require("src/app/models/model/warehouse/warehouseModel");
 var WarehouseOperationComponent = /** @class */ (function () {
     function WarehouseOperationComponent(httpClientService, formBuilder, toasterService, activatedRoute, router, generalService, productService, warehouseService, httpClient, orderService) {
         this.httpClientService = httpClientService;
@@ -86,8 +86,7 @@ var WarehouseOperationComponent = /** @class */ (function () {
             'Ürün Kodu',
             'Transfer Miktarı',
             'UD Stok',
-            // 'MD Stok',
-            // 'UD Stok',
+            'MD Stok',
             'Ürün',
             'Barkod',
         ];
@@ -97,8 +96,9 @@ var WarehouseOperationComponent = /** @class */ (function () {
             'Ürün Kodu',
             'Transfer Miktarı',
             'UD Stok',
+            'MD Stok',
             'Barkod',
-            'İşlem',
+            'İşlemler',
         ];
         this._inventoryItems = [];
         this.inventoryItems = []; //transfer Edilecek ürünler
@@ -124,18 +124,24 @@ var WarehouseOperationComponent = /** @class */ (function () {
     };
     WarehouseOperationComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var ls_currentDataType;
             var _this = this;
             return __generator(this, function (_a) {
                 if (location.href.includes('REQ-')) {
-                    ls_currentDataType = localStorage.getItem('currentDataType');
-                    if (ls_currentDataType != undefined && !ls_currentDataType) {
-                        this.currentDataType = ls_currentDataType.toString() == '-1' ? '0' : ls_currentDataType.toString();
-                        // this.toasterService.success(localStorage.getItem('currentDataType'))
-                    }
-                    else {
-                        this.currentDataType = '0';
-                    }
+                    this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            if (params["type"]) {
+                                this.currentDataType = params["type"];
+                            }
+                            return [2 /*return*/];
+                        });
+                    }); });
+                    // var ls_currentDataType = localStorage.getItem('currentDataType')
+                    // if (ls_currentDataType != undefined && ls_currentDataType) {
+                    //   this.currentDataType = ls_currentDataType.toString() == '-1' ? '0' : ls_currentDataType.toString();
+                    //   //this.toasterService.success(localStorage.getItem('currentDataType'))
+                    // } else {
+                    //   this.currentDataType = '0'
+                    // }
                     if (this.currentDataType === '1') {
                         this.pageStatus = 'İstek - Standart';
                     }
@@ -146,6 +152,7 @@ var WarehouseOperationComponent = /** @class */ (function () {
                 else {
                     this.pageStatus = 'Transfer';
                     this.currentDataType = '-1';
+                    this.toasterService.info("xxx");
                 }
                 this.formGenerator();
                 this.warehouseForm.valueChanges.subscribe(function () {
@@ -227,22 +234,19 @@ var WarehouseOperationComponent = /** @class */ (function () {
             });
         });
     };
+    WarehouseOperationComponent.prototype.goPage = function (currentDataType) {
+        location.href = location.origin + "/warehouse-operation/" + this.currentOrderNo.split("TP-")[1] + "/" + currentDataType;
+    };
     WarehouseOperationComponent.prototype.onDataChange = function (currentDataType) {
         return __awaiter(this, void 0, void 0, function () {
-            var ls_currentDataType, _a;
+            var _a;
             var _this = this;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         if (!location.href.includes('REQ')) return [3 /*break*/, 2];
-                        ls_currentDataType = localStorage.getItem('currentDataType');
-                        if (ls_currentDataType != undefined && ls_currentDataType) {
-                            localStorage.removeItem('currentDataType');
-                            localStorage.setItem('currentDataType', this.currentDataType);
-                        }
-                        else {
-                            localStorage.setItem('currentDataType', this.currentDataType);
-                        }
+                        localStorage.removeItem('currentDataType');
+                        localStorage.setItem('currentDataType', this.currentDataType);
                         this.currentDataType = currentDataType;
                         if (currentDataType === '0') {
                             this.toasterService.success("Varsayılan Ürünler Getirildi");
@@ -259,14 +263,13 @@ var WarehouseOperationComponent = /** @class */ (function () {
                         _a.inventoryItems = _b.sent(); //transfer edilcek ürünler
                         _b.label = 2;
                     case 2:
-                        if (currentDataType === '0') {
-                            this.toasterService.success("Varsayılan Ürünler Getirildi");
-                            // this.pageStatus = 'Standart'
-                        }
-                        else if (currentDataType === '1') {
-                            // this.pageStatus = 'Raf Fulle'
-                            this.toasterService.success("Raflar Fullendi");
-                        }
+                        // if (currentDataType === '0') {
+                        //   this.toasterService.success("Varsayılan Ürünler Getirildi")
+                        //   // this.pageStatus = 'Standart'
+                        // } else if (currentDataType === '1') {
+                        //   // this.pageStatus = 'Raf Fulle'
+                        //   this.toasterService.success("Raflar Fullendi")
+                        // }
                         if (this.deletedProductList.length > 0) {
                             this.deletedProductList.forEach(function (deletedItem) {
                                 _this.inventoryItems.forEach(function (inventoryItem, _index) {
@@ -816,7 +819,7 @@ var WarehouseOperationComponent = /** @class */ (function () {
         this.warehouseForm.get('shelfNo').setValue(null);
         this.shelfNumbers = 'RAFLAR:';
         this.qrBarcodeUrl = null;
-        this.focusNextInput('barcode');
+        this.focusNextInput('shelfNo');
     };
     WarehouseOperationComponent.prototype.resetForm = function () {
         this.warehouseForm.patchValue({
@@ -936,7 +939,7 @@ var WarehouseOperationComponent = /** @class */ (function () {
                             totalQuantity_1 = matchingData.reduce(function (acc, curr) { return acc + curr.qty; }, 0);
                             qrOperationModel.qty = totalQuantity_1;
                         }
-                        // qrOperationModel nesnesini model'e kopyala
+                        //qrOperationModel nesnesini model'e kopyala
                         model = Object.assign({}, qrOperationModel);
                         if (qrOperationModel.isReturn) {
                             model.isReturn = false;

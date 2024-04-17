@@ -451,6 +451,8 @@ export class CreateSaleOrderComponent implements OnInit {
         var result: string[] = await this.productService.countProductByBarcode(
           barcode
         );
+        this.productForm.get('batchCode').setValue(result[2]);
+        this.productForm.get('barcode').setValue(result[3]);
         this.shelfNumbers += result[0];
         return result[1];
       }

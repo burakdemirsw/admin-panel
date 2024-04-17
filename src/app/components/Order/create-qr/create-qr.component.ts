@@ -286,6 +286,19 @@ export class CreateQrComponent implements OnInit, OnChanges {
           this.onSubmit(this.checkForm.value);
           return;
         }
+      } else {
+        var result: string[] = await this.productService.countProductByBarcode(
+          m.barcode
+        );
+        if (result && result[3] != '' && result[3] != undefined) {
+          this.checkForm.get('barcode').setValue(result[3]);
+          if (!m.quantity) {
+            this.checkForm.get('quantity').setValue(result[1]);
+
+          }
+          this.checkForm.get('batchCode').setValue(result[2].toString());
+
+        }
       }
       this.products = await this.productService.searchProduct(model);
 
@@ -340,7 +353,7 @@ export class CreateQrComponent implements OnInit, OnChanges {
     try {
       this.checkForm.patchValue({
         itemCode: model.itemCode,
-        //batchCode: model.batchCode,
+        // batchCode: model.batchCode,
         itemDesc: model.description,
         brand: model.brandDescription,
       });

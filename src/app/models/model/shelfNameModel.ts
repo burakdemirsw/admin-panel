@@ -2,6 +2,7 @@ export class ProductCountModel {
   status !: string
   description !: string
   batchCode !: string
+  barcode: string
 }
 
 export class ProductCountModel3 {

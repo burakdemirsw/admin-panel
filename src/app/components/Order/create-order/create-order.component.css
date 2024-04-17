@@ -52,61 +52,6 @@
   } */
  }
 
- .file-upload-wrapper {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   position: relative;
-   width: 100%;
-   /* max-width: 400px; */
-   /* İstenilen genişliğe göre ayarlayın */
-   margin: auto;
-   font-family: Arial, sans-serif;
- }
-
- .input-file-upload {
-   width: 0.1px;
-   height: 0.1px;
-   opacity: 0;
-   overflow: hidden;
-   position: absolute;
-   z-index: -1;
- }
-
- .file-upload-label {
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-   width: 100%;
-   padding: 10px 20px;
-   background-color: #007bff;
-   color: #fff;
-   border-radius: 5px;
-   cursor: pointer;
-   transition: background-color 0.3s;
- }
-
- .file-upload-label:hover {
-   background-color: #0056b3;
- }
-
- .file-upload-text {
-   flex-grow: 1;
- }
-
- .file-upload-button {
-   background-color: #0056b3;
-   padding: 5px 15px;
-   margin-left: 10px;
-   border-radius: 3px;
-   cursor: pointer;
- }
-
- .file-upload-button:hover {
-   background-color: #004494;
- }
-
-
  .table-wrapper {
    margin-bottom: 2rem;
    border: 1px solid #dee2e6;
@@ -129,4 +74,125 @@
 
  .table-header h5 {
    margin: 0;
+ }
+
+ .fileUpload {
+   background: #00bcbe;
+   -webkit-border-radius: 15px;
+   -moz-border-radius: 15px;
+   border-radius: 15px;
+   color: #fff;
+   font-size: 1em;
+   font-weight: bold;
+   margin: 1.25em auto;
+   /*20px/16px 0*/
+   overflow: hidden;
+   padding: 0.875em;
+   /*14px/16px*/
+   position: relative;
+   text-align: center;
+   width: 120px;
+   cursor: pointer;
+ }
+
+ .fileUpload:hover,
+ .fileUpload:active,
+ .fileUpload:focus {
+   background: #00a2a4;
+   cursor: pointer;
+ }
+
+ .fileUpload input.upload {
+   position: absolute;
+   top: 0;
+   right: 0;
+   margin: 0;
+   padding: 0;
+   font-size: 20px;
+   cursor: pointer;
+   opacity: 0;
+   filter: alpha(opacity=0);
+   width: 148px;
+   height: 46px;
+   cursor: pointer;
+ }
+
+ input[type="file"] {
+   position: fixed;
+   right: 100%;
+   bottom: 100%;
+ }
+
+ .custom-file-upload {
+   border: 1px solid #ccc;
+   display: inline-block;
+   padding: 6px 12px;
+   cursor: pointer;
+ }
+
+ .fileUpload {
+   background: #007bff;
+   -webkit-border-radius: 15px;
+   -moz-border-radius: 15px;
+   border-radius: 15px;
+   color: #fff;
+   font-size: 1em;
+   font-weight: bold;
+   margin: 1.25em auto;
+   /*20px/16px 0*/
+   overflow: hidden;
+   padding: 0.875em;
+   /*14px/16px*/
+   position: relative;
+   text-align: center;
+   width: 120px;
+   cursor: pointer;
+ }
+
+ .fileUpload:hover,
+ .fileUpload:active,
+ .fileUpload:focus {
+   background: #007bff;
+   cursor: pointer;
+ }
+
+ .fileUpload input.upload {
+   position: absolute;
+   top: 0;
+   right: 0;
+   margin: 0;
+   padding: 0;
+   font-size: 20px;
+   cursor: pointer;
+   opacity: 0;
+   filter: alpha(opacity=0);
+   width: 148px;
+
+   cursor: pointer;
+ }
+
+ input[type="file"] {
+   position: fixed;
+   right: 100%;
+   bottom: 100%;
+ }
+
+ .custom-file-upload {
+   border: 1px solid #ccc;
+   display: inline-block;
+   padding: 6px 12px;
+   cursor: pointer;
+ }
+
+ .card-hover {
+   cursor: pointer;
+ }
+
+ .card-hover:hover {
+   transform: scale(1.05);
+   /* Kartı büyüt */
+   transition: transform 0.3s ease-in-out;
+   /* Animasyon için geçiş süresi */
+   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+   /* Gölgelendirme efekti */
  }

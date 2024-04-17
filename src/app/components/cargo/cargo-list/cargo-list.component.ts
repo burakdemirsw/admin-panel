@@ -14,12 +14,14 @@ export class CargoListComponent implements OnInit {
   currentPage = 1;
   cargos: CargoBarcode_VM[] = [];
   visible: boolean = false;
+  cargoState: boolean = false;
   ngOnInit(): void {
-    this.getCargos();
+    this.getCargos(this.cargoState);
   }
 
-  async getCargos() {
-    this.cargos = await this.cargoService.getShippedCargos();
+  async getCargos(isPrinted: boolean) {
+    this.cargoState = isPrinted;
+    this.cargos = await this.cargoService.getShippedCargos(this.cargoState);
   }
   async printSingleBarcode(zplCode) {
     var response = await this.cargoService.printSingleBarcode(zplCode);
@@ -32,7 +34,7 @@ export class CargoListComponent implements OnInit {
       var response = await this.cargoService.deleteCargo(cargo, cargoFirmId)
       if (response) {
         this.toasterService.success("Gönderi Silindi")
-        this.getCargos();
+        this.getCargos(this.cargoState);
       } else {
         this.toasterService.warn("Gönderi Silinemedi")
       }
@@ -59,7 +61,7 @@ export class CargoListComponent implements OnInit {
     if (response) {
       this.toasterService.success("BARKOD YAZDIRILDI");
 
-      this.getCargos();
+      this.getCargos(this.cargoState);
     }
   }
 }

@@ -217,7 +217,7 @@ export class WarehouseService {
     return data;
   }
 
-  //depolar arası transfer ürünlerini çeker
+  //depolar arası transferin taplann ürünlerini çeker
   async getProductOfTrasfer(orderNo: string): Promise<TransferModel[]> {
     const data = await this.httpClientService
       .get<TransferModel>({

@@ -536,14 +536,14 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
-    OrderService.prototype.addMissingProduct = function (product) {
+    OrderService.prototype.addMissingProduct = function (products) {
         return __awaiter(this, void 0, Promise, function () {
             var response, error_8;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService.post({ controller: "order/destroy-item" }, product).toPromise()];
+                        return [4 /*yield*/, this.httpClientService.post({ controller: "order/add-missing-item" }, products).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];
@@ -940,6 +940,26 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
+            });
+        });
+    };
+    OrderService.prototype.getNebimOrders = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                try {
+                    response = this.httpClientService
+                        .post({
+                        controller: 'order/get-nebim-orders'
+                    }, request)
+                        .toPromise();
+                    return [2 /*return*/, response];
+                }
+                catch (error) {
+                    console.log(error.message);
+                    return [2 /*return*/, null];
+                }
+                return [2 /*return*/];
             });
         });
     };

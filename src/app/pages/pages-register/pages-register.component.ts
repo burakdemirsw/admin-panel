@@ -96,6 +96,8 @@ export class PagesRegisterComponent implements OnInit {
     }
   }
 
+  roleDescriptions: any[] = [{ role: "Admin" }, { role: "Salesman" }, { role: "Test User" }]
+  selectedRole: any;
   formGenerator() {
     this.registerForm = this.formBuilder.group({
       firstName: [null, Validators.required],
@@ -106,13 +108,14 @@ export class PagesRegisterComponent implements OnInit {
       password: [null],
       confirmPassword: [null],
       gender: ["Erkek"],
+      roleDescription: [null],
 
 
     });
   }
 
   async submitForm() {
-    console.log(this.registerForm.value);
+
 
     //ekleme işlemi yapılcak
     if (!this.isUpdate) {
@@ -133,6 +136,8 @@ export class PagesRegisterComponent implements OnInit {
             email: this.registerForm.value.email,
             phoneNumber: this.registerForm.value.phoneNumber,
             gender: this.registerForm.value.gender,
+            roleDescription: this.registerForm.value.roleDescription.role
+
 
           };
 
@@ -167,6 +172,7 @@ export class PagesRegisterComponent implements OnInit {
             email: this.registerForm.value.email,
             phoneNumber: this.registerForm.value.phoneNumber,
             gender: this.registerForm.value.gender,
+            roleDescription: this.registerForm.value.roleDescription.role
           };
 
           var response = await this.userService.update(model);

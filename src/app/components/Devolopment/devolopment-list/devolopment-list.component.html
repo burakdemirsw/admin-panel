@@ -1,0 +1,347 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Geliştirmeler</h1>
+  </div>
+
+  <section class="section">
+    <div class="">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="card text-center card-hover">
+            <div class="card-body">
+              <h5 class="card-title">Yapılacak Görev Sayısı</h5>
+              <h1>{{ this.raport.unfinishedCount }}</h1>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="card text-center card-hover">
+            <div class="card-body">
+              <h5 class="card-title">Kontrol Edilen Görev Sayısı</h5>
+              <h1>{{ this.raport.dailyLooked }}</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="card text-center card-hover">
+            <div class="card-body">
+              <h5 class="card-title">Bugün Oluşturulan Görev Sayısı</h5>
+              <h1>{{ this.raport.dailyCreatedCount }}</h1>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="card text-center card-hover">
+            <div class="card-body">
+              <h5 class="card-title">Bu Hafta Tamamlanan Görev Sayısı</h5>
+              <h1>{{ this.raport.weeklyCompletedCount }}</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-12 mb-3">
+          <p-panel header="Filtre" [collapsed]="false" [toggleable]="true">
+            <form [formGroup]="searchTaskForm">
+              <div class="row mb-3">
+                <div class="col-md-3 mb-3">
+                  <div class="form-group">
+                    <select
+                      class="form-control"
+                      id="zone"
+                      formControlName="searchTask_DevelopmentId"
+                    >
+                      <option
+                        *ngFor="let dev of devolopments"
+                        value="{{ dev.id }}"
+                      >
+                        {{ dev.zone }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                  <div class="form-group">
+                    <select
+                      class="form-control"
+                      id="zone"
+                      formControlName="searchTask_IsCompleted"
+                    >
+                      <
+                      <option
+                        *ngFor="let opt of optionList"
+                        [value]="opt.value"
+                      >
+                        {{ opt.label }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-2 mb-3">
+                  <div class="form-group">
+                    <button
+                      class="btn btn-success"
+                      style="width: 100%"
+                      (click)="
+                        getAllDevelopments(
+                          this.searchTaskForm.value.searchTask_IsCompleted,
+                          this.searchTaskForm.value.searchTask_DevelopmentId
+                        )
+                      "
+                    >
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="col-md-2 mb-3">
+                  <button
+                    class="btn btn-success"
+                    (click)="addTaskVisible = true"
+                    style="width: 100%"
+                  >
+                    Görev Ekle
+                  </button>
+                </div>
+                <div class="col-md-2 mb-3">
+                  <button
+                    class="btn btn-success"
+                    (click)="addZoneVisible = true"
+                    style="width: 100%"
+                  >
+                    Başlık Ekle
+                  </button>
+                </div>
+              </div>
+            </form>
+          </p-panel>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-body">
+              <!-- <h5 class="card-title">Geliştirmeler</h5> -->
+
+              <div style="overflow-x: auto">
+                <table class="table table-striped">
+                  <thead class="bg-light">
+                    <tr>
+                      <th scope="col">Id</th>
+
+                      <th scope="col">Sayfa</th>
+                      <th scope="col">Başlık</th>
+                      <th scope="col">Açıklama</th>
+                      <th scope="col">Sonuç</th>
+                      <th scope="col">Oluşturulma Zamanı</th>
+                      <th scope="col">Tamamlanma Zamanı</th>
+
+                      <th scope="col">İşlemler</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      *ngFor="
+                        let task of tasks
+                          | paginate
+                            : { itemsPerPage: 25, currentPage: currentPage };
+                        let i = index
+                      "
+                    >
+                      <td>{{ i + 1 }}</td>
+                      <td>{{ task.zone }}</td>
+                      <td>{{ task.header }}</td>
+
+                      <td>
+                        <p-editor
+                          [(ngModel)]="task.description"
+                          [readonly]="true"
+                          [style]="{ height: '200px' }"
+                          *ngIf="task.description"
+                        >
+                          <p-header hidden>
+                            <span class="ql-formats"></span> </p-header
+                        ></p-editor>
+                      </td>
+                      <td>
+                        <span
+                          class="btn"
+                          [ngClass]="{
+                            'btn-success': task.isCompleted,
+                            'btn-warning': !task.isCompleted,
+                            blinking: !task.isCompleted
+                          }"
+                        >
+                          <i *ngIf="task.isCompleted" class="fa fa-check"></i>
+                          <i
+                            *ngIf="!task.isCompleted"
+                            class="fa fa-exclamation"
+                          ></i>
+                        </span>
+                      </td>
+
+                      <td>
+                        {{ task.createdDate | date : "dd.MM.YYYY HH:mm" }}
+                      </td>
+                      <td>
+                        {{ task.finishedDate | date : "dd.MM.YYYY HH:mm" }}
+                      </td>
+
+                      <td>
+                        <div class="btn-group">
+                          <button
+                            class="btn btn-success"
+                            (click)="updateTaskStatus(task, true)"
+                          >
+                            <i class="fa fa-check"></i>
+                          </button>
+
+                          <button
+                            class="btn btn-success"
+                            (click)="updateTaskStatus(task, false)"
+                          >
+                            <i class="fa fa-cancel"></i>
+                          </button>
+                          <button
+                            class="btn btn-success"
+                            (click)="openModal(task)"
+                          >
+                            <i class="fa fa-pencil"></i>
+                          </button>
+                          <button
+                            class="btn btn-success"
+                            (click)="deleteTask(task)"
+                          >
+                            <i class="fa fa-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <pagination-controls
+                  (pageChange)="currentPage = $event"
+                ></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p-dialog
+        header="{{ this.selectedTask.id }}-Açıklama Güncelle"
+        [(visible)]="visible"
+        [modal]="true"
+        [style]="{ width: '50vw' }"
+        [draggable]="false"
+        [resizable]="false"
+      >
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Başlık"
+                [(ngModel)]="updateTask_Header"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <p-editor
+              [(ngModel)]="description"
+              [style]="{ height: '320px' }"
+            ></p-editor>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <button class="btn btn-success" (click)="updateTaskDescription()">
+              Güncelle
+            </button>
+          </div>
+        </div>
+      </p-dialog>
+
+      <p-dialog
+        header="Başlık Ekle"
+        [(visible)]="addZoneVisible"
+        [modal]="true"
+        [style]="{ width: '50vw' }"
+        [draggable]="false"
+        [resizable]="false"
+      >
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <input
+              type="search"
+              class="form-control"
+              placeholder="Başlık Ekle"
+              [(ngModel)]="zone"
+              (keyup.enter)="addZone()"
+            />
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <button class="btn btn-success" (click)="addZone()">Ekle</button>
+          </div>
+        </div>
+      </p-dialog>
+
+      <p-dialog
+        header="Görev Ekle"
+        [(visible)]="addTaskVisible"
+        [modal]="true"
+        [style]="{ width: '80vw' }"
+        [draggable]="false"
+        [resizable]="false"
+      >
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <div class="form-group">
+              <select class="form-control" id="zone" [(ngModel)]="addTask_Zone">
+                <option *ngFor="let dev of devolopments" value="{{ dev.id }}">
+                  {{ dev.zone }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Başlık"
+                [(ngModel)]="addTask_Header"
+                (keyup.enter)="addTask()"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="form-group">
+            <p-editor
+              [(ngModel)]="addTask_Description"
+              [style]="{ height: '200px' }"
+              (keyup.enter)="addTask()"
+            ></p-editor>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="form-group">
+            <button class="btn btn-success" (click)="addTask()">Ekle</button>
+          </div>
+        </div>
+      </p-dialog>
+    </div>
+  </section>
+</main>

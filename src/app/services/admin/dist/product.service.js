@@ -45,9 +45,9 @@ exports.__esModule = true;
 exports.BarcodeSearch_RM = exports.ProductService = void 0;
 var core_1 = require("@angular/core");
 var ClientUrls_1 = require("src/app/models/const/ClientUrls");
+var qrOperationResponseModel_1 = require("src/app/models/model/client/qrOperationResponseModel");
 var qrControlModel_1 = require("src/app/models/model/product/qrControlModel");
 var qrOperationModel_1 = require("src/app/models/model/product/qrOperationModel");
-var qrOperationResponseModel_1 = require("src/app/models/model/client/qrOperationResponseModel");
 var ProductService = /** @class */ (function () {
     function ProductService(toasterService, httpClientService, generalService, httpClient) {
         this.toasterService = toasterService;
@@ -104,6 +104,7 @@ var ProductService = /** @class */ (function () {
                         results.push(shelfNumbers);
                         results.push(model[0].status);
                         results.push(model[0].batchCode);
+                        results.push(model[0].barcode);
                         return [2 /*return*/, results];
                     case 2:
                         error_1 = _a.sent();
@@ -114,10 +115,50 @@ var ProductService = /** @class */ (function () {
             });
         });
     };
+    //alış satış ve transfer işlemlerinde barkod ile ürün sayma işlemi
+    ProductService.prototype.countProductByBarcode4 = function (barcode, warehosueCode) {
+        return __awaiter(this, void 0, Promise, function () {
+            var model, shelfNumbers, results, error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        if (barcode.includes('/')) {
+                            barcode = barcode.replace(/\//g, '-');
+                        }
+                        if (warehosueCode == 'ONL') {
+                            warehosueCode = "MD";
+                        }
+                        return [4 /*yield*/, this.httpClientService
+                                .get({
+                                controller: 'Order/GetShelvesOfProduct4/' + barcode + "/" + warehosueCode
+                            })
+                                .toPromise()];
+                    case 1:
+                        model = _a.sent();
+                        shelfNumbers = '';
+                        model.forEach(function (element) {
+                            shelfNumbers += element.description + ',';
+                        });
+                        results = [];
+                        results.push(shelfNumbers);
+                        results.push(model[0].status);
+                        results.push(model[0].batchCode);
+                        results.push(model[0].barcode);
+                        return [2 /*return*/, results];
+                    case 2:
+                        error_2 = _a.sent();
+                        console.error(error_2.message);
+                        return [2 /*return*/, null];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     //barkod ile ürün sayma işlemi | ürün kodu
     ProductService.prototype.countProductByBarcode2 = function (barcode) {
         return __awaiter(this, void 0, Promise, function () {
-            var model, error_2;
+            var model, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -140,8 +181,8 @@ var ProductService = /** @class */ (function () {
                         }
                         return [3 /*break*/, 3];
                     case 2:
-                        error_2 = _a.sent();
-                        console.error(error_2.message);
+                        error_3 = _a.sent();
+                        console.error(error_3.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -150,7 +191,7 @@ var ProductService = /** @class */ (function () {
     };
     ProductService.prototype.countProductByBarcode3 = function (barcode) {
         return __awaiter(this, void 0, Promise, function () {
-            var qrModel, model, countModel, shelfNumbers, results, error_3;
+            var qrModel, model, countModel, shelfNumbers, results, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -187,8 +228,8 @@ var ProductService = /** @class */ (function () {
                         }
                         return [3 /*break*/, 3];
                     case 2:
-                        error_3 = _a.sent();
-                        console.error(error_3.message);
+                        error_4 = _a.sent();
+                        console.error(error_4.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -232,7 +273,7 @@ var ProductService = /** @class */ (function () {
     //sayım içindeki ürünü silme
     ProductService.prototype.deleteOrderProduct = function (orderNo, itemCode, lineId) {
         return __awaiter(this, void 0, Promise, function () {
-            var requestModel, response, error_4;
+            var requestModel, response, error_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -255,8 +296,8 @@ var ProductService = /** @class */ (function () {
                         }
                         return [3 /*break*/, 3];
                     case 2:
-                        error_4 = _a.sent();
-                        console.error('Hata (90):', error_4);
+                        error_5 = _a.sent();
+                        console.error('Hata (90):', error_5);
                         return [2 /*return*/, false];
                     case 3: return [2 /*return*/];
                 }
@@ -266,7 +307,7 @@ var ProductService = /** @class */ (function () {
     //transfer ürünleriini sayma
     ProductService.prototype.countTransferProduct = function (model) {
         return __awaiter(this, void 0, Promise, function () {
-            var response, error_5;
+            var response, error_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -284,8 +325,8 @@ var ProductService = /** @class */ (function () {
                         }
                         return [3 /*break*/, 3];
                     case 2:
-                        error_5 = _a.sent();
-                        console.error(error_5);
+                        error_6 = _a.sent();
+                        console.error(error_6);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -294,7 +335,7 @@ var ProductService = /** @class */ (function () {
     };
     ProductService.prototype.deleteProductFromFastTransfer = function (orderNo, itemCode) {
         return __awaiter(this, void 0, Promise, function () {
-            var requestModel, response, error_6;
+            var requestModel, response, error_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -316,8 +357,8 @@ var ProductService = /** @class */ (function () {
                         }
                         return [3 /*break*/, 3];
                     case 2:
-                        error_6 = _a.sent();
-                        console.error('Hata (90):', error_6);
+                        error_7 = _a.sent();
+                        console.error('Hata (90):', error_7);
                         return [2 /*return*/, false];
                     case 3: return [2 /*return*/];
                 }
@@ -539,6 +580,96 @@ var ProductService = /** @class */ (function () {
                     case 4: return [3 /*break*/, 6];
                     case 5: return [2 /*return*/, null];
                     case 6: return [2 /*return*/, null];
+                }
+            });
+        });
+    };
+    ProductService.prototype.getProductStock = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.post({
+                            controller: 'Products/get-product-stock'
+                        }, request).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    ProductService.prototype.getProductExtract = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.post({
+                            controller: 'Products/get-product-extract'
+                        }, request).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    ProductService.prototype.addBarcodeModel = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.post({
+                            controller: 'Products/add-barcode-model'
+                        }, request).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    ProductService.prototype.deleteBarcodeModel = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.get({
+                            controller: 'Products/delete-barcode-model'
+                        }, request).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    ProductService.prototype.getBarcodeModels = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.get({
+                            controller: 'Products/get-barcode-models'
+                        }, request).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    ProductService.prototype.sendBarcodeModelsToNebim = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.get({
+                            controller: 'Products/send-barcode-models-to-nebim'
+                        }, request).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
                 }
             });
         });

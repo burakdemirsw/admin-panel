@@ -308,6 +308,8 @@ export class CreatePurchaseOrderComponent implements OnInit {
           barcode
         );
         this.shelfNumbers += result[0];
+        this.productForm.get('batchCode').setValue(result[2]);
+        this.productForm.get('barcode').setValue(result[3]);
         return result[1];
       }
     } catch (error) {

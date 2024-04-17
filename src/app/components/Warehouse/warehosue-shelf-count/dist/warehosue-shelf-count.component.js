@@ -47,6 +47,7 @@ var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
 var ClientUrls_1 = require("src/app/models/const/ClientUrls");
 var countProductRequestModel2_1 = require("src/app/models/model/order/countProductRequestModel2");
+var library_1 = require("@zxing/library");
 var WarehosueShelfCountComponent = /** @class */ (function () {
     function WarehosueShelfCountComponent(formBuilder, toasterService, spinnerService, httpClient, productService, generalService, warehouseService, activatedRoute, router, title, sanitizer) {
         this.formBuilder = formBuilder;
@@ -240,8 +241,8 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.warehouseService.getProductOfCount(orderNo)];
                     case 1:
                         _a.lastCollectedProducts = _b.sent();
-                        if (this.lastCollectedProducts.length >= 100) {
-                            this.toasterService.error("SATIR SAYISI 100'E ULAŞTI");
+                        if (this.lastCollectedProducts.length >= 200) {
+                            this.toasterService.error("SATIR SAYISI 200'E ULAŞTI");
                             this.blocked = true;
                         }
                         this.calculateTotalQty();
@@ -288,20 +289,28 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.productService.countProductByBarcode3(barcode)];
                     case 2:
                         result = _a.sent();
-                        this.shelfNumbers += result[0];
-                        if (check) {
-                            currentShelfNo = this.checkForm.get('shelfNo').value;
-                            // if(currentShelfNo==null ){
-                            //   this.checkForm.get('shelfNo').setValue(result[0].split(',')[0]);
-                            // }
-                            this.checkForm.get('batchCode').setValue(result[2]);
-                            this.checkForm.get('barcode').setValue(result[3]);
+                        if (result) {
+                            this.shelfNumbers += result[0];
+                            if (check) {
+                                currentShelfNo = this.checkForm.get('shelfNo').value;
+                                // if(currentShelfNo==null ){
+                                //   this.checkForm.get('shelfNo').setValue(result[0].split(',')[0]);
+                                // }
+                                this.checkForm.get('batchCode').setValue(result[2]);
+                                this.checkForm.get('barcode').setValue(result[3]);
+                            }
+                            return [2 /*return*/, result[1]];
                         }
-                        return [2 /*return*/, result[1]];
+                        else {
+                            throw new library_1.Exception('setFormValues error');
+                        }
+                        return [3 /*break*/, 5];
                     case 3: return [4 /*yield*/, this.productService.countProductByBarcode(barcode)];
                     case 4:
                         result = _a.sent();
                         this.shelfNumbers += result[0];
+                        this.checkForm.get('barcode').setValue(result[3]);
+                        this.checkForm.get('batchCode').setValue(result[2].toString());
                         return [2 /*return*/, result[1]];
                     case 5: return [3 /*break*/, 7];
                     case 6:
@@ -345,6 +354,9 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.setFormValues(countProductRequestModel.barcode, true)];
                     case 1:
                         number = _e.sent();
+                        if (number == null) {
+                            return [2 /*return*/];
+                        }
                         (_a = this.checkForm.get('quantity')) === null || _a === void 0 ? void 0 : _a.setValue(Number(number));
                         this.qrBarcodeUrl = countProductRequestModel.barcode;
                         if (countProductRequestModel.shelfNo != null) {

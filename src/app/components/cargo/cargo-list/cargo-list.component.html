@@ -11,12 +11,31 @@
   </div>
 
   <section class="section">
+    <div class="card custom-card mb-3">
+      <div class="card-body">
+        <button
+          type="button"
+          class="btn custom-btn-primary mt-3"
+          (click)="getCargos(true)"
+        >
+          <i class="fas fa-check"></i> Yazdırılan Kargolar
+        </button>
+        <button
+          type="button"
+          class="btn custom-btn-primary mt-3"
+          (click)="getCargos(false)"
+        >
+          <i class="fas fa-times"></i> Yazdırılmayan Kargolar
+        </button>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Kargolar</h5>
 
         <div style="overflow-x: auto">
-          <table class="table">
+          <table class="table table-striped">
             <thead>
               <tr>
                 <th scope="col">Kargo Şirketi</th>
@@ -27,6 +46,7 @@
 
                 <th scope="col">Oluşturulma Zamanı</th>
                 <th scope="col">Paketleme Türü</th>
+                <th scope="col">Yazdırma Durumu</th>
                 <!-- <th scope="col">Desi</th>
                 <th scope="col">Kg</th> -->
                 <th scope="col">İşlemler</th>
@@ -70,6 +90,27 @@
                   </div>
                 </td> -->
                 <td>
+                  <button
+                    class="btn"
+                    [ngClass]="{
+                      'btn-success': cargo.isPrinted === true,
+                      'btn-danger': cargo.isPrinted === false
+                    }"
+                  >
+                    <i
+                      *ngIf="cargo.isPrinted === true"
+                      class="fa fa-check"
+                      aria-hidden="true"
+                    ></i>
+                    <i
+                      *ngIf="cargo.isPrinted === false"
+                      class="fa-solid fa-ban"
+                      aria-hidden="true"
+                    ></i>
+                  </button>
+                </td>
+
+                <td>
                   <div class="btn-group">
                     <div
                       class="btn btn-success"
@@ -80,7 +121,6 @@
                     </div>
 
                     <div
-                   
                       class="btn btn-success ml-2"
                       data-text="Kargo"
                       (click)="createBarcode(cargo.referenceId)"

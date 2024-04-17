@@ -1,0 +1,158 @@
+<main id="main" class="main">
+  <!-- <div class="pagetitle">
+    <h1>Sayım Paneli</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+        <li class="breadcrumb-item">Tables</li>
+        <li class="breadcrumb-item active">Sayım Paneli</li>
+      </ol>
+    </nav>
+  </div> -->
+
+  <section class="section">
+    <div class="row">
+      <div style="width: 100%">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Barkod Oluştur</h5>
+
+            <div class="tab-content" id="ex2-content">
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 1"
+                id="ex3-tabs-1"
+                role="tabpanel"
+                aria-labelledby="ex3-tab-1"
+              >
+                <form
+                  [formGroup]="checkForm"
+                  (ngSubmit)="onSubmit(checkForm.value)"
+                >
+                  <div class="row mb-3">
+                    <div class="form-group">
+                      <label for="barcode">Barkod</label>
+                      <input
+                        type="text"
+                        id="barcode"
+                        class="form-control"
+                        formControlName="barcode"
+                        [disabled]="checkForm.disabled"
+                        (keydown.enter)="onSubmit(checkForm.value)"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="form-group col">
+                      <div class="form-group">
+                        <label for="quantity">Miktar</label>
+
+                        <input
+                          type="number"
+                          id="quantity"
+                          class="form-control"
+                          formControlName="quantity"
+                          [disabled]="checkForm.disabled"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="form-group col">
+                      <div class="form-group">
+                        <label for="batchCode">Parti</label>
+
+                        <input
+                          type="text"
+                          id="batchCode"
+                          class="form-control"
+                          formControlName="batchCode"
+                          (keydown.enter)="onSubmit(checkForm.value)"
+                          [disabled]="checkForm.disabled"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col mb-3">
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      style="margin-left: 20px; color: white"
+                      (click)="onSubmit(checkForm.value)"
+                      style="width: 100%"
+                    >
+                      Etiket Oluştur
+                    </button>
+                  </div>
+                  <div class="form-group col">
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      style="margin-left: 20px; color: white"
+                      (click)="completeOperation()"
+                      style="width: 100%"
+                    >
+                      Operasyonu Tamamla
+                    </button>
+                  </div>
+                </form>
+              </div>
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 2"
+                id="ex3-tabs-2"
+                role="tabpanel-2"
+                aria-labelledby="ex3-tab-2"
+              ></div>
+              <div
+                class="tab-pane fade show"
+                [class.active]="activeTab === 3"
+                id="ex3-tabs-3"
+                role="tabpanel-3"
+                aria-labelledby="ex3-tab-3"
+              >
+                Prices
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" *ngIf="countedProducts.length > 0">
+          <div class="card-body">
+            <!-- <h1 class="card-title">Toplanacak Siparişler</h1> -->
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Barkod</th>
+                    <th scope="col">Lot</th>
+                    <th scope="col">Miktar</th>
+                    <th scope="col">İşlem</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let product of countedProducts; let i = index">
+                    <td>{{ product.barcode }}</td>
+                    <td>{{ product.batchCode }}</td>
+                    <td>{{ product.quantity }}</td>
+
+                    <td>
+                      <button
+                        class="btn btn-danger"
+                        type="submit"
+                        (click)="deleteProduct(product)"
+                      >
+                        <i class="fa fa-trash"> </i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

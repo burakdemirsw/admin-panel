@@ -48,7 +48,7 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="warehouseCode">Depo Kodu</label>
+                  <label for="warehouseCode"> Depo Kodu</label>
                   <input
                     type="text"
                     id="warehouseCode"
@@ -132,9 +132,9 @@
                 <!-- <th scope="col">Seç</th> -->
                 <th scope="col">İşlem Tarihi</th>
                 <th scope="col">İç Numara</th>
-                <th scope="col">Depo Kodu</th>
-                <th scope="col">Miktar</th>
+                <th scope="col">Gönderen Depo Kodu</th>
                 <th scope="col">Hedef Depo Kodu</th>
+                <th scope="col">Miktar</th>
 
                 <th scope="col">İşlemler</th>
               </tr>
@@ -156,8 +156,8 @@
                 <td>{{ operation.orderNumber }}</td>
 
                 <td>{{ operation.warehouseCode }}</td>
-                <td>{{ operation.quantity }}</td>
                 <td>{{ operation.toWarehouseCode }}</td>
+                <td>{{ operation.quantity }}</td>
 
                 <td>
                   <div class="btn-group">

@@ -122,6 +122,14 @@ import { CreateCargoComponent } from './components/cargo/create-cargo/create-car
 import { AddCustomerComponent } from './components/Customer/add-customer/add-customer.component';
 import { UnfinishedOrderComponent } from './components/Order/unfinished-order/unfinished-order.component';
 import { CreateArasCargoBarcodeComponent } from './components/cargo/create-aras-cargo-barcode/create-aras-cargo-barcode.component';
+import { DevolopmentListComponent } from './components/Devolopment/devolopment-list/devolopment-list.component';
+import { FieldsetModule } from 'primeng/fieldset';
+import { EditorModule } from 'primeng/editor';
+import { ToolbarModule } from 'primeng/toolbar';
+import { NebimStockControlComponent } from './components/Product/nebim-stock-control/nebim-stock-control.component';
+import { NebimGetOrdersComponent } from './components/Order/nebim-get-orders/nebim-get-orders.component';
+import { NebimProductExtractComponent } from './components/Product/nebim-product-extract/nebim-product-extract.component';
+import { CreateBarcodeComponent } from './components/Product/create-barcode/create-barcode.component';
 
 @NgModule({
 
@@ -206,11 +214,16 @@ import { CreateArasCargoBarcodeComponent } from './components/cargo/create-aras-
     CargoDetailComponent,
     AddCustomerComponent,
     UnfinishedOrderComponent,
-    CreateArasCargoBarcodeComponent
-  ],
+    CreateArasCargoBarcodeComponent,
+    DevolopmentListComponent,
+    NebimStockControlComponent,
+    NebimGetOrdersComponent,
+    NebimProductExtractComponent,
+    CreateBarcodeComponent],
 
 
   imports: [
+    ToolbarModule,
     SkeletonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -241,7 +254,7 @@ import { CreateArasCargoBarcodeComponent } from './components/cargo/create-aras-
     ChartModule,
     SelectButtonModule,
     SidebarModule,
-    FileUploadModule, TableModule, InputTextModule, MessagesModule,
+    FileUploadModule, TableModule, InputTextModule, MessagesModule, FieldsetModule, EditorModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => localStorage.getItem('accessToken'),

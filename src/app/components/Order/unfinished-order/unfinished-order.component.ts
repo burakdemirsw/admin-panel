@@ -24,8 +24,14 @@ export class UnfinishedOrderComponent implements OnInit {
   async getOrders(isCompleted: boolean) {
     this.currentOrderState = isCompleted;
     this.orders = await this.orderService.getClientOrders(isCompleted);
+    this.filterOrdersByRole();
   }
-
+  filterOrdersByRole() {
+    if (localStorage.getItem('roleDescription') != 'Admin') {
+      this.orders = this.orders.filter(x => x.customerCode == localStorage.getItem('salesPersonCode'))
+      this.toasterService.info('Sadece Kendi Siparişlerinizi Görebilirsiniz.')
+    }
+  }
 
   async deleteClientOrder(id: string) {
     var windowResponse = window.confirm("Silmek istediğinize emin misiniz?")

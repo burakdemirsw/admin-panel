@@ -1,0 +1,82 @@
+<main id="main" class="main">
+  <section class="section">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Stok Kontrol</h5>
+        <form [formGroup]="form" (ngSubmit)="onSubmit(form.value)">
+          <div class="form-row">
+            <div class="form-group col-md-6 mb-3">
+              <label for="barcode">Barkod</label>
+              <div class="input-group">
+                <input
+                  type="search"
+                  id="barcode"
+                  class="form-control"
+                  formControlName="barcode"
+                />
+              </div>
+            </div>
+            <div class="form-group col-md-6 mb-3">
+              <label for="itemcode">Ürün Kodu</label>
+              <div class="input-group">
+                <input
+                  type="search"
+                  id="itemcode"
+                  class="form-control"
+                  formControlName="itemCode"
+                />
+              </div>
+            </div>
+            <div class="form-group col-md-12">
+              <button class="btn btn-primary btn-block">Sorgula</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card" *ngIf="this.products.length > 0">
+      <div class="card-body">
+        <h5 class="card-title">Ürünler</h5>
+
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Resim</th>
+                <th scope="col">Ürün</th>
+                <th scope="col">Stok Kodu</th>
+                <th scope="col">Renk</th>
+                <th scope="col">Beden</th>
+                <th scope="col">Depo</th>
+                <th scope="col">Stok</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of products; let i = index">
+                <td>{{ i }}</td>
+                <td class="image-icon-td">
+                  <p-image
+                    src="{{ product.imageUrl }}"
+                    alt="Image"
+                    width="50"
+                    [preview]="true"
+                  ></p-image>
+                </td>
+                <td>{{ product.itemDescription }}</td>
+                <td>{{ product.itemCode }}</td>
+                <td>{{ product.colorDescription }}</td>
+                <td>{{ product.itemDim1Code }}</td>
+                <td>{{ product.warehouseCode }}</td>
+                <td>{{ product.quantity }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- <qrcode style="display: none" (qrCodeURL)="onChangeURL($event)" [qrdata]="qrCodeValue" [width]="256"
+      [errorCorrectionLevel]="'M'"></qrcode> -->
+    <!-- <app-image-modal [imageUrl]="modalImageUrl" [title]="'Ürün Detay'"></app-image-modal>  -->
+  </section>
+</main>

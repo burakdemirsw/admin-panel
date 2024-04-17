@@ -535,6 +535,8 @@ var CreateSaleOrderComponent = /** @class */ (function () {
                     case 3: return [4 /*yield*/, this.productService.countProductByBarcode(barcode)];
                     case 4:
                         result = _a.sent();
+                        this.productForm.get('batchCode').setValue(result[2]);
+                        this.productForm.get('barcode').setValue(result[3]);
                         this.shelfNumbers += result[0];
                         return [2 /*return*/, result[1]];
                     case 5: return [3 /*break*/, 7];

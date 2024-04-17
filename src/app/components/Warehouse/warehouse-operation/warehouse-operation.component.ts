@@ -1,29 +1,25 @@
-import { OnInit, Component } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Route, Router } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ClientUrls } from 'src/app/models/const/ClientUrls';
+import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
 import { BarcodeModel } from 'src/app/models/model/product/barcodeModel';
+import { InventoryItem } from 'src/app/models/model/product/inventoryItemModel';
+import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
+import {
+  ProductCountModel
+} from 'src/app/models/model/shelfNameModel';
+import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
+import { TransferModel } from 'src/app/models/model/warehouse/transferModel';
+import { WarehouseItem } from 'src/app/models/model/warehouse/warehouseItem';
 import { WarehouseModel } from 'src/app/models/model/warehouse/warehouseModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
-import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
-import { HttpClientService } from 'src/app/services/http-client.service';
 import { GeneralService } from 'src/app/services/admin/general.service';
-import { ProductService } from 'src/app/services/admin/product.service';
-import {
-  ProductCountModel,
-  ProductCountModel3,
-} from 'src/app/models/model/shelfNameModel';
-import { WarehouseService } from 'src/app/services/admin/warehouse.service';
-import { TransferModel } from 'src/app/models/model/warehouse/transferModel';
-import { Title } from '@angular/platform-browser';
-import { HttpClient } from '@angular/common/http';
-import { ClientUrls } from 'src/app/models/const/ClientUrls';
-import { WarehouseItem } from 'src/app/models/model/warehouse/warehouseItem';
-import { InventoryItem } from 'src/app/models/model/product/inventoryItemModel';
 import { OrderService } from 'src/app/services/admin/order.service';
-import { QrControlCommandModel } from 'src/app/models/model/product/qrControlModel';
-import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
-import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
+import { ProductService } from 'src/app/services/admin/product.service';
+import { WarehouseService } from 'src/app/services/admin/warehouse.service';
+import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 declare var window: any;
 
@@ -75,15 +71,20 @@ export class WarehouseOperationComponent implements OnInit {
   pageStatus = '';
   async ngOnInit() {
     if (location.href.includes('REQ-')) {
-      var ls_currentDataType = localStorage.getItem('currentDataType')
-      if (ls_currentDataType != undefined && !ls_currentDataType) {
-        this.currentDataType = ls_currentDataType.toString() == '-1' ? '0' : ls_currentDataType.toString();
-        // this.toasterService.success(localStorage.getItem('currentDataType'))
-      } else {
-        this.currentDataType = '0'
+      this.activatedRoute.params.subscribe(async (params) => {
+        if (params["type"]) {
+          this.currentDataType = params["type"];
+        }
+      });
+      // var ls_currentDataType = localStorage.getItem('currentDataType')
+      // if (ls_currentDataType != undefined && ls_currentDataType) {
+      //   this.currentDataType = ls_currentDataType.toString() == '-1' ? '0' : ls_currentDataType.toString();
+      //   //this.toasterService.success(localStorage.getItem('currentDataType'))
+      // } else {
+      //   this.currentDataType = '0'
 
 
-      }
+      // }
       if (this.currentDataType === '1') {
         this.pageStatus = 'İstek - Standart'
       } else {
@@ -92,11 +93,9 @@ export class WarehouseOperationComponent implements OnInit {
     } else {
       this.pageStatus = 'Transfer'
       this.currentDataType = '-1'
-
+      this.toasterService.info("xxx")
 
     }
-
-
 
     this.formGenerator();
     this.warehouseForm.valueChanges.subscribe(() => {
@@ -136,8 +135,7 @@ export class WarehouseOperationComponent implements OnInit {
     'Ürün Kodu',
     'Transfer Miktarı',
     'UD Stok',
-    // 'MD Stok',
-    // 'UD Stok',
+    'MD Stok',
     'Ürün',
     'Barkod',
   ];
@@ -147,8 +145,9 @@ export class WarehouseOperationComponent implements OnInit {
     'Ürün Kodu',
     'Transfer Miktarı',
     'UD Stok',
+    'MD Stok',
     'Barkod',
-    'İşlem',
+    'İşlemler',
   ];
   _inventoryItems: InventoryItem[] = [];
   inventoryItems: InventoryItem[] = [];//transfer Edilecek ürünler
@@ -196,17 +195,18 @@ export class WarehouseOperationComponent implements OnInit {
     await this.getProductOfCount(this.currentOrderNo);
     this.toasterService.info("Ürün Transfer Edilecek Ürünlerden Silindi")
   }
-  currentDataType;
+  currentDataType: string;
+  goPage(currentDataType: string) {
+    location.href = location.origin + "/warehouse-operation/" + this.currentOrderNo.split("TP-")[1] + "/" + currentDataType
+  }
   async onDataChange(currentDataType: string) {
 
     if (location.href.includes('REQ')) {
-      var ls_currentDataType = localStorage.getItem('currentDataType')
-      if (ls_currentDataType != undefined && ls_currentDataType) {
-        localStorage.removeItem('currentDataType');
-        localStorage.setItem('currentDataType', this.currentDataType)
-      } else {
-        localStorage.setItem('currentDataType', this.currentDataType)
-      }
+
+
+      localStorage.removeItem('currentDataType');
+      localStorage.setItem('currentDataType', this.currentDataType)
+
       this.currentDataType = currentDataType;
       if (currentDataType === '0') {
         this.toasterService.success("Varsayılan Ürünler Getirildi")
@@ -223,15 +223,15 @@ export class WarehouseOperationComponent implements OnInit {
 
     }
 
-    if (currentDataType === '0') {
-      this.toasterService.success("Varsayılan Ürünler Getirildi")
+    // if (currentDataType === '0') {
+    //   this.toasterService.success("Varsayılan Ürünler Getirildi")
 
-      // this.pageStatus = 'Standart'
-    } else if (currentDataType === '1') {
-      // this.pageStatus = 'Raf Fulle'
-      this.toasterService.success("Raflar Fullendi")
+    //   // this.pageStatus = 'Standart'
+    // } else if (currentDataType === '1') {
+    //   // this.pageStatus = 'Raf Fulle'
+    //   this.toasterService.success("Raflar Fullendi")
 
-    }
+    // }
 
 
 
@@ -640,7 +640,7 @@ export class WarehouseOperationComponent implements OnInit {
       formValue.barcode.includes('http') ||
       this.generalService.isGuid(formValue.barcode)
     ) {
-      var number = await this.setFormValues(formValue.barcode, true);
+      var number = await this.setFormValues(formValue.barcode, true); //burası uzun
       this.qrBarcodeUrl = formValue.barcode;
       this.warehouseForm.get('quantity')?.setValue(Number(number));
 
@@ -824,7 +824,7 @@ export class WarehouseOperationComponent implements OnInit {
     this.shelfNumbers = 'RAFLAR:';
     this.qrBarcodeUrl = null;
 
-    this.focusNextInput('barcode');
+    this.focusNextInput('shelfNo');
   }
   resetForm() {
     this.warehouseForm.patchValue({
@@ -955,7 +955,7 @@ export class WarehouseOperationComponent implements OnInit {
           );
           qrOperationModel.qty = totalQuantity;
         }
-        // qrOperationModel nesnesini model'e kopyala
+        //qrOperationModel nesnesini model'e kopyala
         model = Object.assign({}, qrOperationModel);
 
         if (qrOperationModel.isReturn) {

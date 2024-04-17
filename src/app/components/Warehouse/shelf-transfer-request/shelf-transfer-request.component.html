@@ -15,7 +15,7 @@
       <div style="width: 100%">
         <div class="card" *ngIf="_transferProducts.length > 0">
           <div class="card-body">
-            <h5 class="card-title">Toplanan Ürünler</h5>
+            <h5 class="card-title">Toplanacak Ürünler</h5>
             <div class="table-responsive">
               <table class="table">
                 <thead>
@@ -60,6 +60,13 @@
                       >
                         <i class="fa fa-angle-down"> </i>
                       </button>
+                      <button
+                        class="btn btn-primary"
+                        type="submit"
+                        (click)="addDeletedItemList(product)"
+                      >
+                        <i class="fa fa-trash"></i>
+                      </button>
                     </td>
                   </tr>
                 </tbody>
@@ -76,7 +83,7 @@
                 [ngClass]="
                   selectedButton === 0 ? 'btn btn-success' : 'btn btn-dark'
                 "
-                (click)="onDataChange('0')"
+                (click)="goPage('0')"  
               >
                 Varsayılan
               </button>
@@ -85,7 +92,7 @@
                 [ngClass]="
                   selectedButton === 1 ? 'btn btn-success' : 'btn btn-dark'
                 "
-                (click)="onDataChange('1')"
+                (click)="goPage('1')"
               >
                 Rafları Fulle
               </button>
@@ -94,7 +101,7 @@
                 [ngClass]="
                   selectedButton === 2 ? 'btn btn-success' : 'btn btn-dark'
                 "
-                (click)="onDataChange('2')"
+                (click)="goPage('2')"
               >
                 Çanta
               </button>

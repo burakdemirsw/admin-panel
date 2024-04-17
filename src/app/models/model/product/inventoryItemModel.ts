@@ -8,5 +8,7 @@ export class InventoryItem {
   barcode: string
   udStock: number;
   mdStock: number;
+  uD_Stock: number;
+  mD_Stock: number;
 
 }

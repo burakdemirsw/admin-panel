@@ -199,7 +199,7 @@
           <table class="table">
             <thead>
               <tr>
-                <th scope="col">Sipariş Zamanı</th>
+                <th scope="col">Sipariş Tarihi</th>
                 <th scope="col">Sipariş Numarası</th>
                 <th scope="col">Müşteri Kodu</th>
                 <th scope="col">Müşteri Adı</th>
@@ -207,12 +207,14 @@
                 <th scope="col">Açıklama</th>
 
                 <th scope="col">Miktar</th>
-                <th scope="col">Tutar</th>
+                <!-- <th scope="col">Tutar</th> -->
                 <th scope="col">Toplanan Miktar</th>
                 <th scope="col">Kalan Miktar</th>
                 <!-- <th scope="col">Durum</th> -->
+                <th scope="col">Depo</th>
+
                 <th scope="col">Kargo</th>
-                <th scope="col">Fat. Durum</th>
+                <th scope="col">Fatura</th>
                 <!-- <th scope="col">Sip. Top. Tut.</th> -->
                 <th scope="col">İşlemler</th>
               </tr>
@@ -232,7 +234,7 @@
                 <td>{{ order.description }}</td>
 
                 <td>{{ order.qty1 }}</td>
-                <td>{{ order.price.toString() }}</td>
+                <!-- <td>{{ order.price.toString() }}</td> -->
                 <td>{{ order.collectedQty }}</td>
                 <td>{{ order.remainingQty }}</td>
                 <!-- <td>
@@ -246,6 +248,8 @@
                     {{ order.status === 2 ? "Toplanamaz" : "Toplanabilir" }}
                   </button>
                 </td> -->
+                <td>{{ order.warehouseCode }}</td>
+
                 <td>
                   <button
                     class="btn"
@@ -271,19 +275,28 @@
                     class="btn"
                     [ngClass]="{
                       'btn-success': order.invoiceStatus === 1,
-                      'btn-danger': order.invoiceStatus === 2,
-                      'btn-warning': order.invoiceStatus === 3
+                      'btn-danger':
+                        order.invoiceStatus === 2 || order.invoiceStatus === 3
                     }"
                   >
-                    {{
-                      order.invoiceStatus === 1
-                        ? "Faturalandırıldı"
-                        : order.invoiceStatus === 2
-                        ? "Faturalandırılmadı"
-                        : "K. Faturalandırıldı"
-                    }}
+                    <i
+                      *ngIf="order.invoiceStatus === 1"
+                      class="fa fa-check"
+                      aria-hidden="true"
+                    ></i>
+                    <i
+                      *ngIf="order.invoiceStatus === 2"
+                      class="fa-solid fa-ban"
+                      aria-hidden="true"
+                    ></i>
+                    <i
+                      *ngIf="order.invoiceStatus === 3"
+                      class="fa fa-exclamation-triangle"
+                      aria-hidden="true"
+                    ></i>
                   </button>
                 </td>
+
                 <!-- <td>{{ order.price }}</td> -->
                 <td>
                   <div class="btn-group">
@@ -293,8 +306,16 @@
                       data-text="Varyasyonlar"
                       [routerLink]="
                         order.invoiceStatus === 1
-                          ? '/order-operation/' + order.orderNumber + '/true'
-                          : '/order-operation/' + order.orderNumber
+                          ? '/order-operation/' +
+                            order.orderNumber +
+                            '/true' +
+                            '/' +
+                            order.warehouseCode
+                          : '/order-operation/' +
+                            order.orderNumber +
+                            '/false' +
+                            '/' +
+                            order.warehouseCode
                       "
                     >
                       <i class="fas fa-sliders-h"></i>

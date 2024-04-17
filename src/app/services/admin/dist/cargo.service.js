@@ -126,14 +126,14 @@ var CargoService = /** @class */ (function () {
             });
         });
     };
-    CargoService.prototype.getShippedCargos = function () {
+    CargoService.prototype.getShippedCargos = function (isPrinted) {
         return __awaiter(this, void 0, Promise, function () {
             var response, error_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService.get({ controller: "cargos/get-shipped-cargos" }).toPromise()];
+                        return [4 /*yield*/, this.httpClientService.get({ controller: "cargos/get-shipped-cargos" }, isPrinted.toString()).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];

@@ -62,11 +62,24 @@ export class NebimOrder {
       var line: Line = new Line();
       line.usedBarcode = p.barcode;
       line.salesPersonCode = salesPersonCode;
-      if (exchangeRate != 1) {
-        line.priceVI = p.price / exchangeRate;
-      } else {
-        line.priceVI = p.price;
+      if (this.taxTypeCode != 4) { //standart ise
+        if (exchangeRate != 1) { //dövizli ise
+          line.priceVI = null;
+          line.price = parseFloat((p.price / exchangeRate).toFixed(1));
+        } else { //dövizli değilse
+          line.priceVI = null;
+          line.price = parseFloat(p.price.toFixed(1));
+        }
+      } else { //vergisiz ise
+        if (exchangeRate != 1) { //dövizli ise
+          line.priceVI = parseFloat((p.price / exchangeRate).toFixed(1));
+          line.price = parseFloat((p.price / exchangeRate).toFixed(1));
+        } else { //dövizli değilse
+          line.priceVI = parseFloat((p.price).toFixed(1));
+          line.price = parseFloat((p.price).toFixed(1));
+        }
       }
+
       line.qty1 = p.quantity;
       line.itemCode = p.itemCode;
       this.lines.push(line);
@@ -190,9 +203,10 @@ export class NebimInvoice {
     selectedProducts.forEach(p => {
       var line: Line_3 = new Line_3();
       if (exchangeRate != 1) {
-        line.price = p.price / exchangeRate;
+
+        line.price = parseFloat((p.price / exchangeRate).toFixed(1));
       } else {
-        line.price = p.price;
+        line.price = parseFloat((p.price).toFixed(1));
       }
       line.usedBarcode = p.barcode;
       line.salesPersonCode = salesPersonCode;

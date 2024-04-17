@@ -51,19 +51,21 @@ var CargoListComponent = /** @class */ (function () {
         this.currentPage = 1;
         this.cargos = [];
         this.visible = false;
+        this.cargoState = false;
         this.packageStatus = null;
     }
     CargoListComponent.prototype.ngOnInit = function () {
-        this.getCargos();
+        this.getCargos(this.cargoState);
     };
-    CargoListComponent.prototype.getCargos = function () {
+    CargoListComponent.prototype.getCargos = function (isPrinted) {
         return __awaiter(this, void 0, void 0, function () {
             var _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        this.cargoState = isPrinted;
                         _a = this;
-                        return [4 /*yield*/, this.cargoService.getShippedCargos()];
+                        return [4 /*yield*/, this.cargoService.getShippedCargos(this.cargoState)];
                     case 1:
                         _a.cargos = _b.sent();
                         return [2 /*return*/];
@@ -97,7 +99,7 @@ var CargoListComponent = /** @class */ (function () {
                         response = _a.sent();
                         if (response) {
                             this.toasterService.success("Gönderi Silindi");
-                            this.getCargos();
+                            this.getCargos(this.cargoState);
                         }
                         else {
                             this.toasterService.warn("Gönderi Silinemedi");
@@ -138,7 +140,7 @@ var CargoListComponent = /** @class */ (function () {
                         response = _a.sent();
                         if (response) {
                             this.toasterService.success("BARKOD YAZDIRILDI");
-                            this.getCargos();
+                            this.getCargos(this.cargoState);
                         }
                         return [2 /*return*/];
                 }

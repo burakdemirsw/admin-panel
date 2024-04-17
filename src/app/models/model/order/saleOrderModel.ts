@@ -12,4 +12,5 @@ export class SaleOrderModel {
   description: string
   invoiceStatus: number
   isShipped: boolean;
+  warehouseCode: string;
 }
