@@ -29,7 +29,6 @@ export class CreatePackage_MNG_RM {
   barcodeRequest: CreateBarcode_MNG_Request
   barcodeBase64: string
   cargoFirmId: number
-  packageCount: number
 }
 
 export class CreatePackage_MNG_Request {

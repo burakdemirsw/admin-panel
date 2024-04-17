@@ -1199,7 +1199,8 @@ var CreateOrderComponent = /** @class */ (function () {
                     address_recepient_name: [null],
                     isActive: [false],
                     cargoFirm: [null],
-                    address_package_count: [1, forms_1.Validators.min(1)]
+                    address_package_count: [1, forms_1.Validators.min(1)],
+                    cargoPrice: [null]
                 });
                 this.cargoForm.get('cargoFirm').valueChanges.subscribe(function (value) {
                     if (value != null) {
@@ -1239,6 +1240,8 @@ var CreateOrderComponent = /** @class */ (function () {
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
+                                if (this.cargoForm.get('packagingType').value.code === '1') {
+                                }
                                 _product = this.selectedProducts.find(function (p) { return p.itemCode == 'KARGO'; });
                                 if (!!_product) return [3 /*break*/, 6];
                                 if (!this.orderType) return [3 /*break*/, 2];
@@ -1339,7 +1342,7 @@ var CreateOrderComponent = /** @class */ (function () {
     };
     CreateOrderComponent.prototype.submitCargo = function (formValue) {
         return __awaiter(this, void 0, void 0, function () {
-            var cargoFirmId, recepient_name, phoneNumber, content, cargoSetting, referenceId, orderRequest, barcodeRequest, content, orderPieces, orderPiece, _request, response;
+            var cargoFirmId, recepient_name, phoneNumber, content, cargoSetting, referenceId, orderRequest, barcodeRequest, totalProductQuantity, content, orderPieces, index, orderPiece, _orderPiece, _request, response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.getOrderDetail()];
@@ -1372,19 +1375,35 @@ var CreateOrderComponent = /** @class */ (function () {
                         barcodeRequest.isCOD = orderRequest.order.isCod;
                         barcodeRequest.codAmount = orderRequest.order.codAmount;
                         barcodeRequest.packagingType = orderRequest.order.packagingType;
-                        content = orderRequest.orderPieceList.length.toString() + " Adet Ürün";
+                        totalProductQuantity = this.selectedProducts.reduce(function (total, product) { return total + product.quantity; }, 0);
+                        content = totalProductQuantity.toString() + " Adet Ürün";
                         orderPieces = [];
-                        orderPiece = new models_1.OrderPieceListMNG();
-                        orderPiece.barcode = orderRequest.order.barcode;
-                        orderPiece.content = content;
-                        orderPiece.desi = orderRequest.order.packagingType === 1 ? 0 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('desi').value;
-                        orderPiece.kg = orderRequest.order.packagingType === 1 ? 0 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('kg').value;
-                        orderPieces.push(orderPiece);
-                        barcodeRequest.orderPieceList = orderPieces;
+                        if (formValue.address_package_count > 1) {
+                            for (index = 1; index <= formValue.address_package_count; index++) {
+                                orderPiece = new models_1.OrderPieceListMNG();
+                                orderPiece.barcode = orderRequest.order.barcode + "0" + index.toString();
+                                orderPiece.content = (totalProductQuantity / formValue.address_package_count).toString() + " Adet Ürün";
+                                orderPiece.desi = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('desi').value;
+                                orderPiece.kg = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('kg').value;
+                                orderPieces.push(orderPiece);
+                            }
+                            barcodeRequest.orderPieceList = orderPieces;
+                        }
+                        else if (formValue.address_package_count === 1) {
+                            _orderPiece = new models_1.OrderPieceListMNG();
+                            _orderPiece.barcode = orderRequest.order.barcode;
+                            _orderPiece.content = content;
+                            _orderPiece.desi = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('desi').value;
+                            _orderPiece.kg = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('kg').value;
+                            orderPieces.push(_orderPiece);
+                        }
+                        else {
+                            this.toasterService.error("Paket Adedi 1 den küçük olamaz");
+                            return [2 /*return*/];
+                        }
                         _request = new models_1.CreatePackage_MNG_RM();
                         _request.orderRequest = orderRequest;
                         _request.barcodeRequest = barcodeRequest;
-                        _request.packageCount = formValue.address_package_count; //paket adedi eklendi
                         if (cargoFirmId === 2) {
                             _request.barcodeBase64 = this.arasCargoBarcode;
                             _request.cargoFirmId = 2;

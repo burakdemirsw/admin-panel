@@ -1086,7 +1086,7 @@
               ></p-dropdown>
             </div>
           </div>
-          <div class="row mb-3">
+          <div class="row">
             <div class="col-md-6">
               <p-panel
                 header="KG & DESİ"
@@ -1128,21 +1128,7 @@
               </p-panel>
             </div>
           </div>
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="office"> Paket Fiyatlandırması</label>
-              <br />
-              <p-dropdown
-                [filter]="true"
-                filterBy="name"
-                formControlName="cargoPrice"
-                [options]="cargoPrices"
-                optionLabel="name"
-                placeholder="Paket Fiyatlandırması Seçiniz"
-              ></p-dropdown>
-            </div>
-          </div>
-          <div class="mb-3"></div>
+
           <div class="row mb-3">
             <div class="col-md-6">
               <label for="office"> Gönderim Türü</label>
@@ -1157,8 +1143,21 @@
               ></p-dropdown>
             </div>
           </div>
-
-          <div class="row">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="office"> Paket Fiyatlandırması</label>
+              <br />
+              <p-dropdown
+                [filter]="true"
+                filterBy="name"
+                formControlName="cargoPrice"
+                [options]="cargoPrices"
+                optionLabel="name"
+                placeholder="Paket Fiyatlandırması Seçiniz"
+              ></p-dropdown>
+            </div>
+          </div>
+          <div class="row mb-3">
             <div class="col-md-6 form-group mb-3">
               <label for="address_package_count" class="label"
                 >Paket Adedi</label
@@ -1576,27 +1575,6 @@
           </p-table>
         </div>
 
-        <div class="mb-3"></div>
-
-        <div
-          class="row"
-          #TAXFREE?
-          *ngIf="
-            this.selectedCustomers.length > 0 &&
-            this.selectedAddresses.length > 0 &&
-            this.cargoForm.valid
-          "
-        >
-          <div class="col-md-3">
-            <p-selectButton
-              [options]="stateOptions"
-              [(ngModel)]="taxTypeCode"
-              optionLabel="label"
-              optionValue="value"
-            ></p-selectButton>
-          </div>
-        </div>
-
         <!-- Payment Options -->
         <div class="mb-3"></div>
         <div
@@ -1607,6 +1585,24 @@
             !isCompleted
           "
         >
+          <div
+            class="row"
+            #TAXFREE?
+            *ngIf="
+              this.selectedCustomers.length > 0 &&
+              this.selectedAddresses.length > 0 &&
+              this.cargoForm.valid
+            "
+          >
+            <div class="col-md-3">
+              <p-selectButton
+                [options]="stateOptions"
+                [(ngModel)]="taxTypeCode"
+                optionLabel="label"
+                optionValue="value"
+              ></p-selectButton>
+            </div>
+          </div>
           <div class="mb-3"></div>
           <div class="container-fluid payment-options">
             <div class="row">

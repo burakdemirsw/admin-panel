@@ -129,78 +129,119 @@ var CreateCargoComponent = /** @class */ (function () {
         return Number("" + prefix + randomNumber);
     };
     CreateCargoComponent.prototype.createCargoForm = function () {
-        var _this = this;
-        this.cargoForm = this.formBuilder.group({
-            packagingType: [null, forms_1.Validators.required],
-            shipmentServiceType: [null, forms_1.Validators.required],
-            isCOD: [false, forms_1.Validators.required],
-            kg: [1, forms_1.Validators.required],
-            desi: [1, forms_1.Validators.required],
-            address_recepient_name: [null, forms_1.Validators.required],
-            cargoFirm: [null]
-        });
-        this.cargoForm.get('packagingType').valueChanges.subscribe(function (value) {
-            if (value.code === '3') {
-                _this.cargoForm.get('kg').setValue(2);
-                _this.cargoForm.get('desi').setValue(2);
-                _this.cargoForm.get('kg').setValidators([forms_1.Validators.required, forms_1.Validators.min(2)]);
-                _this.cargoForm.get('desi').setValidators([forms_1.Validators.required, forms_1.Validators.min(2)]);
-            }
-            else if (value.code === '4') {
-                _this.cargoForm.get('kg').setValue(1);
-                _this.cargoForm.get('desi').setValue(1);
-                _this.cargoForm.get('kg').setValidators([forms_1.Validators.required, forms_1.Validators.min(1)]);
-                _this.cargoForm.get('desi').setValidators([forms_1.Validators.required, forms_1.Validators.min(1)]);
-            }
-            else {
-                _this.cargoForm.get('kg').setValue(0);
-                _this.cargoForm.get('desi').setValue(0);
-                _this.cargoForm.get('kg').setValidators([forms_1.Validators.required, forms_1.Validators.min(0)]);
-                _this.cargoForm.get('desi').setValidators([forms_1.Validators.required, forms_1.Validators.min(0)]);
-            }
-            _this.cargoForm.get('kg').updateValueAndValidity();
-            _this.cargoForm.get('desi').updateValueAndValidity();
-        });
-        this.cargoForm.get('kg').valueChanges.subscribe(function (value) {
-            if (_this.cargoForm.get('packagingType').value.code === '3') { //paket
-                if (value < 2) {
-                    _this.kgErrorMessage = 'Paket gönderimlerinde KG değeri 2 den büyük olmalıdır';
-                }
-                else {
-                    _this.kgErrorMessage = '';
-                }
-            }
-            else if (_this.cargoForm.get('packagingType').value.code === '4') { //koli
-                if (value < 1) {
-                    _this.kgErrorMessage = 'Koli gönderimlerinde KG değeri 1 den büyük olmalıdır';
-                }
-                else {
-                    _this.kgErrorMessage = '';
-                }
-            }
-        });
-        this.cargoForm.get('desi').valueChanges.subscribe(function (value) {
-            if (_this.cargoForm.get('packagingType').value.code === '3') {
-                if (value < 2) {
-                    _this.desiErrorMessage = 'Paket gönderimlerinde DESİ değeri 2 den büyük olmalıdır';
-                }
-                else {
-                    _this.desiErrorMessage = '';
-                }
-            }
-            else if (_this.cargoForm.get('packagingType').value.code === '4') {
-                if (value < 1) {
-                    _this.desiErrorMessage = 'Koli gönderimlerinde DESİ değeri 1 den büyük olmalıdır';
-                }
-                else {
-                    _this.desiErrorMessage = '';
-                }
-            }
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                this.cargoForm = this.formBuilder.group({
+                    address_phoneNumber: [null],
+                    packagingType: [null],
+                    shipmentServiceType: [null],
+                    isCOD: [false],
+                    kg: [1],
+                    desi: [1],
+                    address_recepient_name: [null],
+                    isActive: [false],
+                    cargoFirm: [null],
+                    address_package_count: [1, forms_1.Validators.min(1)]
+                });
+                this.cargoForm.get('cargoFirm').valueChanges.subscribe(function (value) {
+                    if (value != null) {
+                        _this.cargoForm.get('isActive').setValue(true);
+                    }
+                });
+                this.cargoForm.get('isActive').valueChanges.subscribe(function (value) {
+                    if (value === false) {
+                        _this.cargoForm.get('packagingType').clearValidators();
+                        _this.cargoForm.get('packagingType').updateValueAndValidity();
+                        _this.cargoForm.get('shipmentServiceType').clearValidators();
+                        _this.cargoForm.get('shipmentServiceType').updateValueAndValidity();
+                        _this.cargoForm.get('address_recepient_name').clearValidators();
+                        _this.cargoForm.get('address_recepient_name').updateValueAndValidity();
+                        _this.cargoForm.get('isCOD').clearValidators();
+                        _this.cargoForm.get('address_phoneNumber').clearValidators();
+                        _this.cargoForm.get('cargoPrice').clearValidators();
+                        _this.cargoForm.get('kg').clearValidators();
+                        _this.cargoForm.get('desi').clearValidators();
+                    }
+                    else {
+                        _this.cargoForm.get('packagingType').setValidators(forms_1.Validators.required);
+                        _this.cargoForm.get('packagingType').updateValueAndValidity();
+                        _this.cargoForm.get('shipmentServiceType').setValidators(forms_1.Validators.required);
+                        _this.cargoForm.get('shipmentServiceType').updateValueAndValidity();
+                        _this.cargoForm.get('address_recepient_name').setValidators(forms_1.Validators.required);
+                        _this.cargoForm.get('address_recepient_name').updateValueAndValidity();
+                        _this.cargoForm.get('isCOD').setValidators(forms_1.Validators.required);
+                        _this.cargoForm.get('address_phoneNumber').setValidators(forms_1.Validators.required);
+                        _this.cargoForm.get('cargoPrice').setValidators(forms_1.Validators.required);
+                        _this.cargoForm.get('kg').setValidators(forms_1.Validators.required);
+                        _this.cargoForm.get('desi').setValidators(forms_1.Validators.required);
+                    }
+                });
+                this.cargoForm.get('packagingType').valueChanges.subscribe(function (value) {
+                    if (value.code === '3') {
+                        _this.cargoForm.get('kg').setValue(2);
+                        _this.cargoForm.get('desi').setValue(2);
+                        _this.cargoForm.get('kg').setValidators([forms_1.Validators.required, forms_1.Validators.min(2)]);
+                        _this.cargoForm.get('desi').setValidators([forms_1.Validators.required, forms_1.Validators.min(2)]);
+                    }
+                    else if (value.code === '4') {
+                        _this.cargoForm.get('kg').setValue(1);
+                        _this.cargoForm.get('desi').setValue(1);
+                        _this.cargoForm.get('kg').setValidators([forms_1.Validators.required, forms_1.Validators.min(1)]);
+                        _this.cargoForm.get('desi').setValidators([forms_1.Validators.required, forms_1.Validators.min(1)]);
+                    }
+                    else {
+                        _this.cargoForm.get('kg').setValue(0);
+                        _this.cargoForm.get('desi').setValue(0);
+                        _this.cargoForm.get('kg').setValidators([forms_1.Validators.required, forms_1.Validators.min(0)]);
+                        _this.cargoForm.get('desi').setValidators([forms_1.Validators.required, forms_1.Validators.min(0)]);
+                    }
+                    _this.cargoForm.get('kg').updateValueAndValidity();
+                    _this.cargoForm.get('desi').updateValueAndValidity();
+                });
+                this.cargoForm.get('kg').valueChanges.subscribe(function (value) {
+                    if (_this.cargoForm.get('packagingType').value.code === '3') { //paket
+                        if (value < 2) {
+                            _this.kgErrorMessage = 'Paket gönderimlerinde KG değeri 2 den büyük olmalıdır';
+                        }
+                        else {
+                            _this.kgErrorMessage = '';
+                        }
+                    }
+                    else if (_this.cargoForm.get('packagingType').value.code === '4') { //koli
+                        if (value < 1) {
+                            _this.kgErrorMessage = 'Koli gönderimlerinde KG değeri 1 den büyük olmalıdır';
+                        }
+                        else {
+                            _this.kgErrorMessage = '';
+                        }
+                    }
+                });
+                this.cargoForm.get('desi').valueChanges.subscribe(function (value) {
+                    if (_this.cargoForm.get('packagingType').value.code === '3') {
+                        if (value < 2) {
+                            _this.desiErrorMessage = 'Paket gönderimlerinde DESİ değeri 2 den büyük olmalıdır';
+                        }
+                        else {
+                            _this.desiErrorMessage = '';
+                        }
+                    }
+                    else if (_this.cargoForm.get('packagingType').value.code === '4') {
+                        if (value < 1) {
+                            _this.desiErrorMessage = 'Koli gönderimlerinde DESİ değeri 1 den büyük olmalıdır';
+                        }
+                        else {
+                            _this.desiErrorMessage = '';
+                        }
+                    }
+                });
+                return [2 /*return*/];
+            });
         });
     };
     CreateCargoComponent.prototype.submitCargo = function (formValue) {
         return __awaiter(this, void 0, void 0, function () {
-            var cargoFirmId, recepient_name, content, cargoSetting, referenceId, orderRequest, barcodeRequest, content, orderPieces, orderPiece, request, response;
+            var cargoFirmId, recepient_name, content, cargoSetting, referenceId, orderRequest, barcodeRequest, totalProductQuantity, content, orderPieces, index, orderPiece, _orderPiece, request, response;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -227,15 +268,32 @@ var CreateCargoComponent = /** @class */ (function () {
                         barcodeRequest.codAmount = orderRequest.order.codAmount;
                         barcodeRequest.packagingType = orderRequest.order.packagingType;
                         barcodeRequest.response = this.cargoResponse;
-                        content = orderRequest.orderPieceList.length.toString() + " Adet Ürün";
+                        totalProductQuantity = this.orderDetail.products.reduce(function (total, product) { return total + product.quantity; }, 0);
+                        content = totalProductQuantity.toString() + " Adet Ürün";
                         orderPieces = [];
-                        orderPiece = new models_1.OrderPieceListMNG();
-                        orderPiece.barcode = orderRequest.order.barcode;
-                        orderPiece.content = content;
-                        orderPiece.desi = orderRequest.order.packagingType === 1 ? 0 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('desi').value;
-                        orderPiece.kg = orderRequest.order.packagingType === 1 ? 0 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('kg').value;
-                        orderPieces.push(orderPiece);
-                        barcodeRequest.orderPieceList = orderPieces;
+                        if (formValue.address_package_count > 1) {
+                            for (index = 1; index <= formValue.address_package_count; index++) {
+                                orderPiece = new models_1.OrderPieceListMNG();
+                                orderPiece.barcode = orderRequest.order.barcode + "0" + index.toString();
+                                orderPiece.content = (totalProductQuantity / formValue.address_package_count).toString() + " Adet Ürün";
+                                orderPiece.desi = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('desi').value;
+                                orderPiece.kg = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('kg').value;
+                                orderPieces.push(orderPiece);
+                            }
+                            barcodeRequest.orderPieceList = orderPieces;
+                        }
+                        else if (formValue.address_package_count === 1) {
+                            _orderPiece = new models_1.OrderPieceListMNG();
+                            _orderPiece.barcode = orderRequest.order.barcode;
+                            _orderPiece.content = content;
+                            _orderPiece.desi = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('desi').value;
+                            _orderPiece.kg = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('kg').value;
+                            orderPieces.push(_orderPiece);
+                        }
+                        else {
+                            this.toasterService.error("Paket Adedi 1 den küçük olamaz");
+                            return [2 /*return*/];
+                        }
                         request = new models_1.CreatePackage_MNG_RM();
                         request.orderRequest = orderRequest;
                         request.barcodeRequest = barcodeRequest;

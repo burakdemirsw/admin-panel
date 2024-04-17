@@ -676,14 +676,14 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
-    OrderService.prototype.getClientOrders = function () {
+    OrderService.prototype.getClientOrders = function (isCompleted) {
         return __awaiter(this, void 0, Promise, function () {
             var response, error_15;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/get-client-orders" }).toPromise()];
+                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/get-client-orders" }, isCompleted.toString()).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];

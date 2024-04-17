@@ -82,16 +82,59 @@ export class CreateCargoComponent implements OnInit {
   desiErrorMessage = '';
   kgErrorMessage = '';
 
-  createCargoForm() {
+
+  async createCargoForm() {
     this.cargoForm = this.formBuilder.group({
-      packagingType: [null, Validators.required], //select
-      shipmentServiceType: [null, Validators.required], //select
-      isCOD: [false, Validators.required],
-      kg: [1, Validators.required],
-      desi: [1, Validators.required],
-      address_recepient_name: [null, Validators.required],
-      cargoFirm: [null]
+      address_phoneNumber: [null],
+      packagingType: [null], //select
+      shipmentServiceType: [null], //select
+      isCOD: [false],
+      kg: [1],
+      desi: [1],
+      address_recepient_name: [null],
+      isActive: [false],
+      cargoFirm: [null],
+      address_package_count: [1, Validators.min(1)]
     })
+    this.cargoForm.get('cargoFirm').valueChanges.subscribe((value) => {
+      if (value != null) {
+        this.cargoForm.get('isActive').setValue(true);
+      }
+
+    })
+    this.cargoForm.get('isActive').valueChanges.subscribe((value) => {
+      if (value === false) {
+        this.cargoForm.get('packagingType').clearValidators();
+        this.cargoForm.get('packagingType').updateValueAndValidity();
+        this.cargoForm.get('shipmentServiceType').clearValidators();
+        this.cargoForm.get('shipmentServiceType').updateValueAndValidity();
+        this.cargoForm.get('address_recepient_name').clearValidators();
+        this.cargoForm.get('address_recepient_name').updateValueAndValidity();
+        this.cargoForm.get('isCOD').clearValidators();
+        this.cargoForm.get('address_phoneNumber').clearValidators();
+        this.cargoForm.get('cargoPrice').clearValidators();
+
+        this.cargoForm.get('kg').clearValidators();
+        this.cargoForm.get('desi').clearValidators();
+
+      } else {
+        this.cargoForm.get('packagingType').setValidators(Validators.required);
+        this.cargoForm.get('packagingType').updateValueAndValidity();
+        this.cargoForm.get('shipmentServiceType').setValidators(Validators.required);
+        this.cargoForm.get('shipmentServiceType').updateValueAndValidity();
+        this.cargoForm.get('address_recepient_name').setValidators(Validators.required);
+        this.cargoForm.get('address_recepient_name').updateValueAndValidity();
+        this.cargoForm.get('isCOD').setValidators(Validators.required);
+        this.cargoForm.get('address_phoneNumber').setValidators(Validators.required);
+        this.cargoForm.get('cargoPrice').setValidators(Validators.required);
+
+        this.cargoForm.get('kg').setValidators(Validators.required);
+        this.cargoForm.get('desi').setValidators(Validators.required);
+
+      }
+
+
+    });
 
     this.cargoForm.get('packagingType').valueChanges.subscribe((value) => {
       if (value.code === '3') {
@@ -129,7 +172,6 @@ export class CreateCargoComponent implements OnInit {
         }
       }
     });
-
     this.cargoForm.get('desi').valueChanges.subscribe((value) => {
       if (this.cargoForm.get('packagingType').value.code === '3') {
         if (value < 2) {
@@ -145,6 +187,8 @@ export class CreateCargoComponent implements OnInit {
         }
       }
     });
+
+
   }
   cargoResponse: CreatePackage_MNG_RR;
   async submitCargo(formValue: any) {
@@ -178,17 +222,38 @@ export class CreateCargoComponent implements OnInit {
     barcodeRequest.codAmount = orderRequest.order.codAmount;
     barcodeRequest.packagingType = orderRequest.order.packagingType;
     barcodeRequest.response = this.cargoResponse;
-    var content = orderRequest.orderPieceList.length.toString() + " Adet Ürün";
+    var totalProductQuantity = this.orderDetail.products.reduce((total, product) => total + product.quantity, 0);
+    var content = totalProductQuantity.toString() + " Adet Ürün";
     var orderPieces: OrderPieceListMNG[] = []
-    var orderPiece: OrderPieceListMNG = new OrderPieceListMNG();
-    orderPiece.barcode = orderRequest.order.barcode;
-    orderPiece.content = content
-    orderPiece.desi = orderRequest.order.packagingType === 1 ? 0 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('desi').value
-    orderPiece.kg = orderRequest.order.packagingType === 1 ? 0 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('kg').value
-    orderPieces.push(orderPiece);
-    barcodeRequest.orderPieceList = orderPieces;
 
 
+    if (formValue.address_package_count > 1) {
+
+      for (let index = 1; index <= formValue.address_package_count; index++) {
+        var orderPiece: OrderPieceListMNG = new OrderPieceListMNG();
+        orderPiece.barcode = orderRequest.order.barcode + "0" + index.toString();
+        orderPiece.content = (totalProductQuantity / formValue.address_package_count).toString() + " Adet Ürün";
+        orderPiece.desi = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('desi').value
+        orderPiece.kg = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('kg').value
+        orderPieces.push(orderPiece);
+      }
+      barcodeRequest.orderPieceList = orderPieces;
+    } else if (formValue.address_package_count === 1) {
+      var _orderPiece: OrderPieceListMNG = new OrderPieceListMNG();
+      _orderPiece.barcode = orderRequest.order.barcode;
+      _orderPiece.content = content
+      _orderPiece.desi = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('desi').value
+      _orderPiece.kg = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('kg').value
+      orderPieces.push(_orderPiece);
+
+    } else {
+      this.toasterService.error("Paket Adedi 1 den küçük olamaz");
+      return;
+    }
+
+
+
+    //---
 
     var request: CreatePackage_MNG_RM = new CreatePackage_MNG_RM();
     request.orderRequest = orderRequest;

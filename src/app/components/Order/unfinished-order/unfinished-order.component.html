@@ -1,6 +1,9 @@
 <main id="main" class="main">
   <div class="pagetitle">
-    <h1>Tamamlanmamış Siparişler</h1>
+    <h1>
+      {{ this.currentOrderState ? "Tamamlanmış" : "Tamamlanmamış" }}
+      Panel Siparişleri
+    </h1>
     <nav>
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
@@ -11,9 +14,28 @@
   </div>
 
   <section class="section">
+    <div class="card custom-card mb-3">
+      <div class="card-body">
+        <button
+          type="button"
+          class="btn custom-btn-primary mt-3"
+          (click)="getOrders(true)"
+        >
+          <i class="fas fa-check"></i> Tamamlanmış Siparişler
+        </button>
+        <button
+          type="button"
+          class="btn custom-btn-primary mt-3"
+          (click)="getOrders(false)"
+        >
+          <i class="fas fa-times-circle"></i> Tamamlanmamış Siparişler
+        </button>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Tamamlanmamış Siparişler</h5>
+        <h5 class="card-title">Paneş Siparişleri</h5>
 
         <div style="overflow-x: auto">
           <table class="table">
@@ -41,7 +63,7 @@
                     <div
                       class="btn btn-success"
                       data-text="Kargo"
-                      routerLink="/create-order/{{ order.id }}"
+                      routerLink="/create-order/quick-order/{{ order.id }}"
                     >
                       <i class="fa fa-bars" aria-hidden="true"></i>
                     </div>

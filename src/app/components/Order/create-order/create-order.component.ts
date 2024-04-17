@@ -1047,7 +1047,8 @@ export class CreateOrderComponent implements OnInit {
       address_recepient_name: [null],
       isActive: [false],
       cargoFirm: [null],
-      address_package_count: [1, Validators.min(1)]
+      address_package_count: [1, Validators.min(1)],
+      cargoPrice: [null]
     })
     this.cargoForm.get('cargoFirm').valueChanges.subscribe((value) => {
       if (value != null) {
@@ -1089,37 +1090,42 @@ export class CreateOrderComponent implements OnInit {
 
     });
     this.cargoForm.get('cargoPrice').valueChanges.subscribe(async (value) => {
-      var _product: ProductList_VM = this.selectedProducts.find(p => p.itemCode == 'KARGO');
-      if (!_product) {
+      if (this.cargoForm.get('packagingType').value.code === '1') {
 
-        if (this.orderType) {
-          this.getProductsForm.get('barcode').setValue('KARGO');
-          await this.getProducts(this.getProductsForm.value, this.orderType);
+      }
+      var _product: ProductList_VM = this.selectedProducts.find(p => p.itemCode == 'KARGO');
+      {
+        if (!_product) {
+
+          if (this.orderType) {
+            this.getProductsForm.get('barcode').setValue('KARGO');
+            await this.getProducts(this.getProductsForm.value, this.orderType);
+
+          } else {
+            this.getProductsForm.get('barcode').setValue('KARGO');
+            this.getProductsForm.get('shelfNo').setValue('KARGO04');
+
+            await this.getProducts(this.getProductsForm.value, this.orderType);
+
+          }
+
+          var __product: ProductList_VM = this.selectedProducts.find(p => p.itemCode == 'KARGO');
+
+          __product.price = value.code;
+
+          __product.basePrice = value.code;
+          __product.discountedPrice = value.code;
+          await this.orderService.updateClientOrderBasketItem(this.id, __product.lineId, __product.quantity, __product.price, __product.discountedPrice, __product.discountedPrice);
 
         } else {
-          this.getProductsForm.get('barcode').setValue('KARGO');
-          this.getProductsForm.get('shelfNo').setValue('KARGO04');
+          _product.price = value.code;
+          _product.basePrice = value.code;
 
-          await this.getProducts(this.getProductsForm.value, this.orderType);
-
+          _product.discountedPrice = value.code;
+          await this.orderService.updateClientOrderBasketItem(this.id, _product.lineId, _product.quantity, _product.price, _product.discountedPrice, _product.basePrice);
         }
 
-        var __product: ProductList_VM = this.selectedProducts.find(p => p.itemCode == 'KARGO');
-
-        __product.price = value.code;
-
-        __product.basePrice = value.code;
-        __product.discountedPrice = value.code;
-        await this.orderService.updateClientOrderBasketItem(this.id, __product.lineId, __product.quantity, __product.price, __product.discountedPrice, __product.discountedPrice);
-
-      } else {
-        _product.price = value.code;
-        _product.basePrice = value.code;
-
-        _product.discountedPrice = value.code;
-        await this.orderService.updateClientOrderBasketItem(this.id, _product.lineId, _product.quantity, _product.price, _product.discountedPrice, _product.basePrice);
       }
-
 
 
     })
@@ -1219,23 +1225,42 @@ export class CreateOrderComponent implements OnInit {
       barcodeRequest.codAmount = orderRequest.order.codAmount;
       barcodeRequest.packagingType = orderRequest.order.packagingType;
 
-
-
-      var content = orderRequest.orderPieceList.length.toString() + " Adet Ürün";
+      var totalProductQuantity = this.selectedProducts.reduce((total, product) => total + product.quantity, 0);
+      var content = totalProductQuantity.toString() + " Adet Ürün";
       var orderPieces: OrderPieceListMNG[] = []
-      var orderPiece: OrderPieceListMNG = new OrderPieceListMNG();
-      orderPiece.barcode = orderRequest.order.barcode;
-      orderPiece.content = content
-      orderPiece.desi = orderRequest.order.packagingType === 1 ? 0 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('desi').value
-      orderPiece.kg = orderRequest.order.packagingType === 1 ? 0 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('kg').value
-      orderPieces.push(orderPiece);
-      barcodeRequest.orderPieceList = orderPieces;
+
+
+      if (formValue.address_package_count > 1) {
+
+        for (let index = 1; index <= formValue.address_package_count; index++) {
+          var orderPiece: OrderPieceListMNG = new OrderPieceListMNG();
+          orderPiece.barcode = orderRequest.order.barcode + "0" + index.toString();
+          orderPiece.content = (totalProductQuantity / formValue.address_package_count).toString() + " Adet Ürün";
+          orderPiece.desi = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('desi').value
+          orderPiece.kg = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('kg').value
+          orderPieces.push(orderPiece);
+        }
+        barcodeRequest.orderPieceList = orderPieces;
+      } else if (formValue.address_package_count === 1) {
+        var _orderPiece: OrderPieceListMNG = new OrderPieceListMNG();
+        _orderPiece.barcode = orderRequest.order.barcode;
+        _orderPiece.content = content
+        _orderPiece.desi = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('desi').value
+        _orderPiece.kg = orderRequest.order.packagingType === 1 ? 1 : orderRequest.order.packagingType === 3 ? 2 : this.cargoForm.get('kg').value
+        orderPieces.push(_orderPiece);
+
+      } else {
+        this.toasterService.error("Paket Adedi 1 den küçük olamaz");
+        return;
+      }
+
+
+
       //---
 
       var _request: CreatePackage_MNG_RM = new CreatePackage_MNG_RM();
       _request.orderRequest = orderRequest;
       _request.barcodeRequest = barcodeRequest;
-      _request.packageCount = formValue.address_package_count //paket adedi eklendi
       if (cargoFirmId === 2) {
         _request.barcodeBase64 = this.arasCargoBarcode;
         _request.cargoFirmId = 2;

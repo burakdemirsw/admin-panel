@@ -564,9 +564,9 @@ export class OrderService {
 
 
 
-  async getClientOrders(): Promise<any> {
+  async getClientOrders(isCompleted: boolean): Promise<any> {
     try {
-      var response = await this.httpClientService.get<ClientOrder>({ controller: "order/get-client-orders" }).toPromise();
+      var response = await this.httpClientService.get<ClientOrder>({ controller: "order/get-client-orders" }, isCompleted.toString()).toPromise();
 
       return response;
     } catch (error: any) {

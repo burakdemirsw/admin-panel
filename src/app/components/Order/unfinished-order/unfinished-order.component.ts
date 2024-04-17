@@ -16,20 +16,26 @@ export class UnfinishedOrderComponent implements OnInit {
   currentPage = 1;
   orders: ClientOrder[] = [];
   visible: boolean = false;
+  currentOrderState: boolean = false;
   ngOnInit(): void {
-    this.getOrders();
+    this.getOrders(this.currentOrderState);
   }
 
-  async getOrders() {
-    this.orders = await this.orderService.getClientOrders();
+  async getOrders(isCompleted: boolean) {
+    this.currentOrderState = isCompleted;
+    this.orders = await this.orderService.getClientOrders(isCompleted);
   }
 
 
   async deleteClientOrder(id: string) {
+    var windowResponse = window.confirm("Silmek istediğinize emin misiniz?")
+
+    if (!windowResponse)
+      return;
     var response = await this.orderService.deleteClientOrder(id);
     if (response) {
       this.toasterService.success("Sipariş Silindi")
-      this.getOrders()
+      this.getOrders(this.currentOrderState)
     }
   }
 }

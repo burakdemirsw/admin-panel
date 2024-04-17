@@ -142,32 +142,56 @@
         <form [formGroup]="cargoForm">
           <div class="row-mb-3">
             <div class="form-group mb-3">
-              <label for="address_recepient_name" class="label"
-                >Alıcı Adı (Barkod Üstünde Bu Alan Yer Alacaktır)</label
-              >
+              <div class="col-md-6 form-group mb-3">
+                <label for="address_recepient_name" class="label"
+                  >Alıcı Adı (Barkod Üstünde Bu Alan Yer Alacaktır)</label
+                >
 
+                <input
+                  type="text"
+                  id="address_recepient_name"
+                  name="address_recepient_name"
+                  fullWidth
+                  formControlName="address_recepient_name"
+                  class="form-control"
+                />
+                <p style="font-weight: bold">
+                  {{
+                    this.cargoForm.get("address_recepient_name")?.value ===
+                      null ||
+                    this.cargoForm.get("address_recepient_name")?.value === ""
+                      ? "Alıcı Adı Yoksa Satış Elemanı Adı ile Gönderim yapılır"
+                      : ""
+                  }}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 form-group mb-3">
+              <label for="address_phoneNumber" class="label"
+                >Alıcı Telefon Numarası</label
+              >
               <input
                 type="text"
-                id="address_recepient_name"
-                name="address_recepient_name"
-                fullWidth
-                formControlName="address_recepient_name"
                 class="form-control"
+                id="address_phoneNumber"
+                name="address_phoneNumber"
+                fullWidth
+                formControlName="address_phoneNumber"
               />
               <p style="font-weight: bold">
                 {{
-                  this.cargoForm.get("address_recepient_name")?.value ===
-                    null ||
-                  this.cargoForm.get("address_recepient_name")?.value === ""
-                    ? "Alıcı Adı Yoksa Satış Elemanı Adı ile Gönderim yapılır"
+                  this.cargoForm.get("address_phoneNumber")?.value === null ||
+                  this.cargoForm.get("address_phoneNumber")?.value === ""
+                    ? "Alıcı Telefonu Yoksa Satış Elemanı Telefonu ile Gönderim Yapılır"
                     : ""
                 }}
               </p>
             </div>
           </div>
-
           <div class="row mb-3">
-            <div class="col-md">
+            <div class="col-md-6">
               <label for="office"> Kargo Şirketi</label>
               <br />
               <p-dropdown
@@ -181,7 +205,7 @@
             </div>
           </div>
           <div class="row mb-3">
-            <div class="col-md">
+            <div class="col-md-6">
               <label for="office"> Paketleme Tipi</label>
               <br />
               <p-dropdown
@@ -203,7 +227,7 @@
             "
           >
             <div class="row mb-3">
-              <div class="col-md">
+              <div class="col-md-6">
                 <label for="office"> Kg</label>
                 <br />
                 <input
@@ -218,7 +242,7 @@
             </div>
 
             <div class="row mb-3">
-              <div class="col-md">
+              <div class="col-md-6">
                 <label for="office"> Desi</label>
                 <br />
                 <input
@@ -234,7 +258,7 @@
           </p-panel>
           <div class="mb-3"></div>
           <div class="row mb-3">
-            <div class="col-md">
+            <div class="col-md-6">
               <label for="office"> Gönderim Türü</label>
               <br />
               <p-dropdown
@@ -247,8 +271,34 @@
               ></p-dropdown>
             </div>
           </div>
+
+          <div class="row">
+            <div class="col-md-6 form-group mb-3">
+              <label for="address_package_count" class="label"
+                >Paket Adedi</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                id="address_package_count"
+                name="address_package_count"
+                fullWidth
+                formControlName="address_package_count"
+              />
+              <p
+                style="font-weight: bold"
+                *ngIf="
+                  cargoForm.get('address_package_count').value <
+                  this.orderDetail.products.length
+                "
+              >
+                {{ "Seçilen Koli Adedi Ürün Sayısından Az Olamaz" }}
+              </p>
+            </div>
+          </div>
+
           <!-- <div class="row mb-3">
-            <div class="col-md">
+            <div class="col-md-6">
               <label for="office"> Kapıda Ödeme?</label>
               <br />
               <p-inputSwitch formControlName="isCOD"></p-inputSwitch>
@@ -256,7 +306,7 @@
           </div> -->
 
           <!-- <div class="row mb-3">
-            <div class="col-md">
+            <div class="col-md-6">
               <button
                 pButton
                 pRipple
