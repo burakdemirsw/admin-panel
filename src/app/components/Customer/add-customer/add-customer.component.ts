@@ -9,7 +9,7 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
-import { CreateCustomer_CM } from '../../Order/create-order/models/createCustomer_CM';
+import { CreateCustomer_CM } from '../../../models/model/order/createCustomer_CM';
 import { ClientCustomer } from '../customer-list/customer-list.component';
 import { GoogleDriveService } from 'src/app/services/common/google-drive.service';
 import { CustomerList_VM, GetCustomerList_CM } from 'src/app/models/model/order/getCustomerList_CM';

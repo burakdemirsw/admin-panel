@@ -45,11 +45,11 @@ exports.__esModule = true;
 exports.WarehouseShelfCountListComponent = void 0;
 var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
+var createBarcode_1 = require("../../Product/create-barcode/models/createBarcode");
 var WarehouseShelfCountListComponent = /** @class */ (function () {
-    function WarehouseShelfCountListComponent(httpClientService, toasterService, spinnerService, router, formBuilder, warehouseService, generalService, title, headerService) {
-        this.httpClientService = httpClientService;
+    function WarehouseShelfCountListComponent(toasterService, productService, router, formBuilder, warehouseService, generalService, title, headerService) {
         this.toasterService = toasterService;
-        this.spinnerService = spinnerService;
+        this.productService = productService;
         this.router = router;
         this.formBuilder = formBuilder;
         this.warehouseService = warehouseService;
@@ -58,6 +58,7 @@ var WarehouseShelfCountListComponent = /** @class */ (function () {
         this.headerService = headerService;
         this.currentPage = 1; // Başlangıçta ilk sayfayı göster
         this.innerNumberList = [];
+        this.visible = false;
     }
     WarehouseShelfCountListComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -176,10 +177,31 @@ var WarehouseShelfCountListComponent = /** @class */ (function () {
             });
         });
     };
-    WarehouseShelfCountListComponent.prototype.filterList = function () {
+    WarehouseShelfCountListComponent.prototype.showModal = function (operationNo) {
+        this.selectedOrderNo = operationNo;
+        this.visible = !this.visible;
+    };
+    WarehouseShelfCountListComponent.prototype.sendBarcodesToNebim = function (isPackage) {
         return __awaiter(this, void 0, void 0, function () {
+            var request, response;
             return __generator(this, function (_a) {
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0:
+                        request = new createBarcode_1.CreateBarcodeFromOrder_RM(isPackage);
+                        request.operationNo = this.selectedOrderNo;
+                        request.from = "warehouse-shelf-count";
+                        request.products = null;
+                        return [4 /*yield*/, this.productService.sendBarcodesToNebim(request)];
+                    case 1:
+                        response = _a.sent();
+                        if (response) {
+                            this.toasterService.success("İşlem Başarılı");
+                        }
+                        else {
+                            this.toasterService.error("İşlem Başarısız");
+                        }
+                        return [2 /*return*/];
+                }
             });
         });
     };

@@ -212,6 +212,13 @@
                     >
                       <i class="fas fa-trash"></i>
                     </div>
+                    <div
+                      class="btn btn-success"
+                      data-text="Barkod Etiketi Oluştur"
+                      (click)="showModal(order.orderNumber)"
+                    >
+                      <i class="fa fa-barcode" aria-hidden="true"></i>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -223,5 +230,29 @@
         </div>
       </div>
     </div>
+
+    <p-dialog
+      header="Barkod Türü Seçiniz - {{ this.selectedOrderNo }}"
+      [(visible)]="visible"
+      [modal]="true"
+      [style]="{ width: '50vw' }"
+      [draggable]="false"
+      [resizable]="false"
+    >
+      <button
+        type="button"
+        class="btn custom-btn-primary mt-3"
+        (click)="this.sendBarcodesToNebim(true)"
+      >
+        Koli
+      </button>
+      <button
+        type="button"
+        class="btn custom-btn-primary mt-3"
+        (click)="this.sendBarcodesToNebim(false)"
+      >
+        Barkod
+      </button>
+    </p-dialog>
   </section>
 </main>

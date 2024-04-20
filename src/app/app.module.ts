@@ -130,6 +130,10 @@ import { NebimStockControlComponent } from './components/Product/nebim-stock-con
 import { NebimGetOrdersComponent } from './components/Order/nebim-get-orders/nebim-get-orders.component';
 import { NebimProductExtractComponent } from './components/Product/nebim-product-extract/nebim-product-extract.component';
 import { CreateBarcodeComponent } from './components/Product/create-barcode/create-barcode.component';
+import { FastTransferListComponent } from './components/Warehouse/fast-transfer/fast-transfer-list/fast-transfer-list.component';
+import { FastTransferPipe } from './services/pipes/fast-transfer.pipe';
+import { RetailInvoiceListComponent } from './components2/invoice/retail-invoice-list/retail-invoice-list.component';
+import { RetailOrderManagementComponent } from './components2/order/retail-order-management/retail-order-management.component';
 
 @NgModule({
 
@@ -220,10 +224,15 @@ import { CreateBarcodeComponent } from './components/Product/create-barcode/crea
     NebimGetOrdersComponent,
     NebimProductExtractComponent,
     CreateBarcodeComponent,
+    FastTransferListComponent,
+    FastTransferPipe,
+    RetailInvoiceListComponent,
+    RetailOrderManagementComponent,
   ],
 
 
   imports: [
+
     ToolbarModule,
     SkeletonModule,
     FormsModule,

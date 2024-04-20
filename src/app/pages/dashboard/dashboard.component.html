@@ -1,13 +1,4 @@
 <main id="main" class="main">
-  <!-- <div class="pagetitle">
-    <h1>Anasayfa</h1>
-    <nav>
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a routerLink="/">Ana Sayfa</a></li>
-        <li class="breadcrumb-item active">Panel</li>
-      </ol>
-    </nav>
-  </div> -->
   <section class="section dashboard">
     <div *ngIf="this.userId != 5">
       <div class="container">
@@ -166,6 +157,7 @@
                     type="line"
                     [data]="data"
                     [options]="options"
+                    height="300"
                   ></p-chart>
                 </div>
               </div>

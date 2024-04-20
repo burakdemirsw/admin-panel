@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { CargoBarcode_VM, CreatePackage_MNG_RM } from 'src/app/components/cargo/create-cargo/models/models';
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
+import { CreatePackage_MNG_RM, CargoBarcode_VM } from 'src/app/components/cargo/create-cargo/models/models';
 
 @Injectable({
   providedIn: 'root'

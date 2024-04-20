@@ -2,26 +2,23 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { CountProductRequestModel } from 'src/app/models/model/order/countProductRequestModel';
 import { OrderBillingListModel } from 'src/app/models/model/order/orderBillingListModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { ItemBillingModel } from 'src/app/models/model/product/itemBillingModel ';
 import {
-  ProductCountModel,
-  ProductCountModel3,
+  ProductCountModel
 } from 'src/app/models/model/shelfNameModel';
 import { ProductService } from 'src/app/services/admin/product.service';
-import { HttpClientService } from 'src/app/services/http-client.service';
 import { OrderService } from '../../../services/admin/order.service';
 
 import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
 import { BrowserMultiFormatReader } from '@zxing/library';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
 import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
 import { CountConfirmData } from 'src/app/models/model/product/countConfirmModel';
-import { QrControlCommandModel } from 'src/app/models/model/product/qrControlModel';
 import {
   QrOperationModel
 } from 'src/app/models/model/product/qrOperationModel';
@@ -29,10 +26,9 @@ import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/ware
 import { WarehouseOperationDetailModel } from 'src/app/models/model/warehouse/warehouseOperationDetailModel';
 import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/warehouseOperationProductModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
-import { WarehouseService } from 'src/app/services/admin/warehouse.service';
-import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
-import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
+import { WarehouseService } from 'src/app/services/admin/warehouse.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 declare var window: any;
 
@@ -578,7 +574,6 @@ export class OrderOperationComponent implements OnInit {
         );
         this.shelfNumbers += result[0];
         this.checkForm.get('barcode').setValue(result[3]);
-
         this.checkForm.get('batchCode').setValue(result[2].toString());
         return result[1];
       }

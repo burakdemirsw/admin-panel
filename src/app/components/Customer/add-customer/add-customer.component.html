@@ -45,18 +45,15 @@
                   <!-- Dosya Yükleme Bölümü -->
                   <div class="col-md-6">
                     <div class="input-group mb-3">
-                      <div class="custom-file">
+                      <div class="fileUpload">
                         <input
-                          pInputText
                           type="file"
-                          class="custom-file-input"
+                          class="upload"
                           id="inputGroupFile01"
                           aria-describedby="inputGroupFileAddon01"
                           (change)="onUpload($event, 'stampPhotoUrl')"
                         />
-                        <label class="custom-file-label" for="inputGroupFile01"
-                          >Dosya Seç</label
-                        >
+                        <span> <i class="fas fa-camera"></i></span>
                       </div>
                     </div>
                   </div>
@@ -64,8 +61,8 @@
                   <!-- Metin Girişi Bölümü -->
                   <div class="col-md-6">
                     <div class="form-group">
+                      <label for="stampPhotoUrl">Kaşe </label>
                       <input
-                        pInputText
                         type="text"
                         class="form-control"
                         id="stampPhotoUrl"
@@ -81,24 +78,21 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="input-group mb-3">
-                    <div class="custom-file">
+                    <div class="fileUpload">
                       <input
-                        pInputText
                         type="file"
-                        class="custom-file-input"
+                        class="upload"
                         id="inputGroupFile01"
                         aria-describedby="inputGroupFileAddon01"
                         (change)="onUpload($event, 'bussinesCardPhotoUrl')"
                       />
-                      <label class="custom-file-label" for="inputGroupFile01"
-                        >Dosya Seç</label
-                      >
+                      <span> <i class="fas fa-camera"></i></span>
                     </div>
                   </div>
                 </div>
                 <div class="col-md-6">
+                  <label for="exampleInputEmail1">Kartvizit</label>
                   <input
-                    pInputText
                     type="text"
                     class="form-control"
                     id="bussinesCardPhotoUrl"

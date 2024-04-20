@@ -53,7 +53,6 @@ var ProductManagementComponent = /** @class */ (function () {
         this.formBuilder = formBuilder;
         this.sanitizer = sanitizer;
         this.headerService = headerService;
-        this.products = [];
         this.showImage = false; // add this property
         this.view = true;
         this.invoiceProducts2 = [];
@@ -62,6 +61,7 @@ var ProductManagementComponent = /** @class */ (function () {
         this.qrCodeDownloadLink = this.sanitizer.bypassSecurityTrustResourceUrl('');
         this.selectedProductList = [];
         this.visible = false;
+        this.products = [];
     }
     ProductManagementComponent.prototype.ngOnInit = function () {
         this.headerService.updatePageTitle("Ürün Sorgulama");

@@ -26,7 +26,7 @@ import { WarehouseFormModel } from 'src/app/models/model/warehouse/warehosueTran
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 import { GeneralService } from './general.service';
-import { CreateBarcodeModel } from 'src/app/components/Product/create-barcode/models/createBarcode';
+import { CreateBarcodeFromOrder_RM, CreateBarcodeModel } from 'src/app/components/Product/create-barcode/models/createBarcode';
 
 @Injectable({
   providedIn: 'root',
@@ -64,7 +64,7 @@ export class ProductService {
     return true;
   }
 
-  //barkod ile ürün sayma işlemi
+  //create_order-fastTrasn barkod ile ürün sayma işlemi
   async countProductByBarcode(barcode: string): Promise<string[]> {
     try {
       if (barcode.includes('/')) {
@@ -188,7 +188,7 @@ export class ProductService {
     }
   }
 
-  //sayılan ürünleri getirme
+  //order operation toplanan ürünleri getirme
   async getCollectedOrderProducts(
     orderNo: string
   ): Promise<CollectedProduct[]> {
@@ -481,6 +481,13 @@ export class ProductService {
   }
   async sendBarcodeModelsToNebim(request: string): Promise<any> {
     const response = await this.httpClientService.get<any>({
+      controller: 'Products/send-barcode-models-to-nebim'
+    }, request).toPromise();
+    return response;
+  }
+
+  async sendBarcodesToNebim(request: CreateBarcodeFromOrder_RM): Promise<any> {
+    const response = await this.httpClientService.post<CreateBarcodeFromOrder_RM>({
       controller: 'Products/send-barcode-models-to-nebim'
     }, request).toPromise();
     return response;

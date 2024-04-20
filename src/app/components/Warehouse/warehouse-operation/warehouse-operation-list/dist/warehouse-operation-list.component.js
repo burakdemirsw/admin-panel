@@ -44,22 +44,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.WarehouseOperationListComponent = void 0;
 var core_1 = require("@angular/core");
+var createBarcode_1 = require("src/app/components/Product/create-barcode/models/createBarcode");
 var WarehouseOperationListComponent = /** @class */ (function () {
-    function WarehouseOperationListComponent(httpClientService, alertifyService, spinnerService, router, warehosueService, formBuilder, orderService, headerService) {
+    function WarehouseOperationListComponent(httpClientService, productService, spinnerService, router, warehosueService, formBuilder, orderService, headerService, toasterService) {
         this.httpClientService = httpClientService;
-        this.alertifyService = alertifyService;
+        this.productService = productService;
         this.spinnerService = spinnerService;
         this.router = router;
         this.warehosueService = warehosueService;
         this.formBuilder = formBuilder;
         this.orderService = orderService;
         this.headerService = headerService;
+        this.toasterService = toasterService;
         this.currentPage = 1;
         //--------------------------------------------------------------------------------------------- ITEMS TO BRING
         this.itemsToCollectDialog = false;
         this.itemsToCollect = [];
         this.innerNumberList = [];
         this.selectedButton = 0;
+        this.visible = false;
     }
     WarehouseOperationListComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -201,6 +204,34 @@ var WarehouseOperationListComponent = /** @class */ (function () {
                         console.log(error_1.message);
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    WarehouseOperationListComponent.prototype.showModal = function (operationNo) {
+        this.selectedOrderNo = operationNo;
+        this.visible = !this.visible;
+    };
+    WarehouseOperationListComponent.prototype.sendBarcodesToNebim = function (isPackage) {
+        return __awaiter(this, void 0, void 0, function () {
+            var request, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        request = new createBarcode_1.CreateBarcodeFromOrder_RM(isPackage);
+                        request.operationNo = this.selectedOrderNo;
+                        request.from = "order-operation";
+                        request.products = null;
+                        return [4 /*yield*/, this.productService.sendBarcodesToNebim(request)];
+                    case 1:
+                        response = _a.sent();
+                        if (response) {
+                            this.toasterService.success("İşlem Başarılı");
+                        }
+                        else {
+                            this.toasterService.error("İşlem Başarısız");
+                        }
+                        return [2 /*return*/];
                 }
             });
         });

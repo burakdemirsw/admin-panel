@@ -1,33 +1,32 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CustomerAddress_VM, CustomerList_VM, GetCustomerList_CM } from '../../../models/model/order/getCustomerList_CM';
-import { OrderService } from '../../../services/admin/order.service';
-import { GetCustomerAddress_CM } from 'src/app/models/model/order/getCustomerList_CM';
-import { BarcodeSearch_RM, ProductService } from 'src/app/services/admin/product.service';
-import { ProductList_VM } from 'src/app/models/model/product/productList_VM';
-import * as Tesseract from 'tesseract.js';
-import { GoogleDriveService } from '../../../services/common/google-drive.service';
-import { AddressService } from 'src/app/services/admin/address.service';
-import { Address_VM } from 'src/app/models/model/order/ViewModel/provinceVM';
-import { AddCustomerAddress_CM, ClientCustomer, CreateCustomer_CM } from './models/createCustomer_CM';
-import { ClientOrder, ClientOrderBasketItem, Line, NebimInvoice, NebimOrder, NebimOrder_2, Payment } from './models/nebimOrder';
-import { GeneralService } from 'src/app/services/admin/general.service';
-import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
-import { HttpClientService } from 'src/app/services/http-client.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToasterService } from 'src/app/services/ui/toaster.service';
-import { Payment_CM, Payment_CR } from 'src/app/models/model/payment/payment_CR';
-import { PaymentService } from 'src/app/services/admin/payment.service';
-import { PostalAddress } from 'src/app/models/nebim/customer/nebimCustomer';
-import { CreatePackage_MNG_RR, CargoSetting, CreatePackage_MNG_Request, OrderDetail, CreateBarcode_MNG_Request, OrderPieceListMNG, CreatePackage_MNG_RM } from '../../cargo/create-cargo/models/models';
-import { CargoService } from 'src/app/services/admin/cargo.service';
-import { WarehouseService } from 'src/app/services/admin/warehouse.service';
-import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 import { Table } from 'primeng/table';
+import { Address_VM } from 'src/app/models/model/order/ViewModel/provinceVM';
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
-import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
+import { GetCustomerAddress_CM } from 'src/app/models/model/order/getCustomerList_CM';
+import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
+import { Payment_CM, Payment_CR } from 'src/app/models/model/payment/payment_CR';
+import { ProductList_VM } from 'src/app/models/model/product/productList_VM';
 import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
+import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
+import { PostalAddress } from 'src/app/models/nebim/customer/nebimCustomer';
+import { AddressService } from 'src/app/services/admin/address.service';
+import { CargoService } from 'src/app/services/admin/cargo.service';
+import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
+import { PaymentService } from 'src/app/services/admin/payment.service';
+import { BarcodeSearch_RM, ProductService } from 'src/app/services/admin/product.service';
+import { WarehouseService } from 'src/app/services/admin/warehouse.service';
+import { HttpClientService } from 'src/app/services/http-client.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
+import * as Tesseract from 'tesseract.js';
+import { AddCustomerAddress_CM, ClientCustomer, CreateCustomer_CM } from '../../../models/model/order/createCustomer_CM';
+import { CustomerAddress_VM, CustomerList_VM, GetCustomerList_CM } from '../../../models/model/order/getCustomerList_CM';
+import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, Payment } from '../../../models/model/order/nebimOrder';
+import { OrderService } from '../../../services/admin/order.service';
+import { GoogleDriveService } from '../../../services/common/google-drive.service';
+import { OrderDetail, CreatePackage_MNG_RR, CargoSetting, CreatePackage_MNG_Request, CreateBarcode_MNG_Request, OrderPieceListMNG, CreatePackage_MNG_RM } from '../../cargo/create-cargo/models/models';
 
 @Component({
   selector: 'app-create-order',
@@ -65,17 +64,16 @@ export class CreateOrderComponent implements OnInit {
 
   async ngOnInit() {
 
+    this.createGetProductForm();
     this.exchangeRate = await this.orderService.getExchangeRates();
     this.generatedCargoNumber = this._generateRandomNumber();
     this.createDiscountForm();
     this.createGetCustomerForm();
     this.createCustomerFormMethod();
-    this.createGetProductForm();
     this.createOfficeWarehouseForm();
     this._createCustomerFormMethod();
     this.getAddresses();
     this.selectOfficeAndWarehosue();
-
     this.createCargoForm();
 
     this.activatedRoute.params.subscribe(async (params) => {
@@ -233,7 +231,7 @@ export class CreateOrderComponent implements OnInit {
         request.paymentType = null;
       }
 
-      request.createdDate = new Date();
+      request.createdDate = new Date(3);
 
       return request;
     } catch (error) {
@@ -833,7 +831,7 @@ export class CreateOrderComponent implements OnInit {
       // stockCode: [null],
     });
   }
-
+  shelfNumbers: string = 'RAFLAR:'
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
   async getProducts(request: any, pageType: boolean) {
@@ -893,6 +891,12 @@ export class CreateOrderComponent implements OnInit {
       }
     } else {
       if (!request.shelfNo) {
+
+        var result: string[] = await this.productService.countProductByBarcode(
+          request.barcode
+        );
+        this.shelfNumbers += result[0];
+
         this.generalService.focusNextInput('shelfNo')
         this.toasterService.error("Raf Numarası Giriniz");
         return;
@@ -1021,6 +1025,7 @@ export class CreateOrderComponent implements OnInit {
               this.getProductsForm.get('shelfNo').setValue(null);
 
               await this.addCurrentProducts(this.products[0]);
+              this.shelfNumbers = 'RAFLAR:'
               this.products = [];
             }
 

@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { CountListFilterModel } from 'src/app/models/model/filter/countListFilterModel';
+import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
 import { CountListModel } from 'src/app/models/model/product/countListModel';
-import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
+import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
-import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { CreateBarcodeFromOrder_RM } from '../../Product/create-barcode/models/createBarcode';
 
 @Component({
   selector: 'app-warehouse-shelf-count-list',
@@ -22,9 +22,9 @@ export class WarehouseShelfCountListComponent implements OnInit {
   currentPage: number = 1; // Başlangıçta ilk sayfayı göster
   filterForm: FormGroup;
   constructor(
-    private httpClientService: HttpClientService,
+
     private toasterService: ToasterService,
-    private spinnerService: NgxSpinnerService,
+    private productService: ProductService,
     private router: Router,
     private formBuilder: FormBuilder,
 
@@ -112,7 +112,22 @@ export class WarehouseShelfCountListComponent implements OnInit {
       //this.spinnerService.hide()
     }
   }
-  async filterList() {
-
+  visible: boolean = false;
+  selectedOrderNo: string;
+  showModal(operationNo: string) {
+    this.selectedOrderNo = operationNo;
+    this.visible = !this.visible;
+  }
+  async sendBarcodesToNebim(isPackage: boolean) {
+    var request = new CreateBarcodeFromOrder_RM(isPackage)
+    request.operationNo = this.selectedOrderNo;
+    request.from = "warehouse-shelf-count";
+    request.products = null;
+    var response = await this.productService.sendBarcodesToNebim(request);
+    if (response) {
+      this.toasterService.success("İşlem Başarılı")
+    } else {
+      this.toasterService.error("İşlem Başarısız")
+    }
   }
 }

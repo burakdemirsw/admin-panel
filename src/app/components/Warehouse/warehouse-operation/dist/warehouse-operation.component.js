@@ -100,6 +100,7 @@ var WarehouseOperationComponent = /** @class */ (function () {
             'Transfer Miktarı',
             'UD Stok',
             'MD Stok',
+            'Ürün',
             'Barkod',
             'İşlemler',
         ];

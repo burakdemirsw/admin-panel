@@ -132,24 +132,27 @@
     </div>
 
     <div class="card custom-card mb-3">
-      <div class="card-body">
+      <div
+        class="card-body d-flex justify-content-start mt-3"
+        style="overflow-x: auto"
+      >
         <button
           type="button"
-          class="btn custom-btn-primary mt-3"
+          class="btn custom-btn-primary"
           (click)="getOrders(1, 2)"
         >
           <i class="fas fa-check"></i> Toplanabilir Siparişler
         </button>
         <button
           type="button"
-          class="btn custom-btn-primary mt-3"
+          class="btn custom-btn-primary"
           (click)="getOrders(0, 2)"
         >
           <i class="fas fa-times-circle"></i> Toplanamaz Siparişler
         </button>
         <button
           type="button"
-          class="btn custom-btn-primary mt-3"
+          class="btn custom-btn-primary"
           (click)="getMissingOrders()"
         >
           <i class="fas fa-exclamation-triangle"></i> Eksik Ürünlü Siparişler
@@ -197,7 +200,7 @@
                 <th scope="col">Miktar</th>
                 <th scope="col">Tutar</th>
                 <th scope="col">Toplanan Miktar</th>
-                <th scope="col">Kalan Miktar</th>
+                <th scope="col">Toplanalabilir Miktar</th>
                 <!-- <th scope="col">Durum</th> -->
                 <th scope="col">Depo</th>
 
@@ -346,6 +349,13 @@
                     >
                       <i class="fa fa-truck" aria-hidden="true"></i>
                     </div>
+                    <div
+                      class="btn btn-success"
+                      data-text="Barkod Etiketi Oluştur"
+                      (click)="showModal(order.orderNumber)"
+                    >
+                      <i class="fa fa-barcode" aria-hidden="true"></i>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -357,5 +367,29 @@
         </div>
       </div>
     </div>
+
+    <p-dialog
+      header="Barkod Türü Seçiniz - {{ this.selectedOrderNo }}"
+      [(visible)]="visible"
+      [modal]="true"
+      [style]="{ width: '50vw' }"
+      [draggable]="false"
+      [resizable]="false"
+    >
+      <button
+        type="button"
+        class="btn custom-btn-primary mt-3"
+        (click)="this.sendBarcodesToNebim(true)"
+      >
+        Koli
+      </button>
+      <button
+        type="button"
+        class="btn custom-btn-primary mt-3"
+        (click)="this.sendBarcodesToNebim(false)"
+      >
+        Barkod
+      </button>
+    </p-dialog>
   </section>
 </main>

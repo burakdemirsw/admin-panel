@@ -192,11 +192,7 @@ export class CreateSaleOrderComponent implements OnInit {
   async getSalesPersonModels(): Promise<any> {
     try {
       try {
-        this.salesPersonModels = await this.httpClientService
-          .get<SalesPersonModel>({
-            controller: 'Order/GetSalesPersonModels',
-          })
-          .toPromise();
+        this.salesPersonModels = await this.orderService.getSalesPersonModels();
 
         this.salesPersonModels.forEach((c) => {
           var color: any = { name: c.firstLastName, code: c.salespersonCode };

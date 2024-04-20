@@ -72,7 +72,7 @@ export class InvoiceListComponent implements OnInit, OnChanges {
   }
 
   async onSubmit(model: InvocieFilterModel) {
-    this.countList = await this.warehouseService.getInvoiceListByFilter(model);
+    this.countList = await this.orderService.getInvoiceListByFilter(model);
 
   }
 
@@ -115,7 +115,7 @@ export class InvoiceListComponent implements OnInit, OnChanges {
 
   async getInvoiceList(): Promise<any> {
     try {
-      this.countList = await this.warehouseService.getInvoiceList();
+      this.countList = await this.orderService.getInvoiceList();
     } catch (error: any) {
       console.log(error.message);
     }

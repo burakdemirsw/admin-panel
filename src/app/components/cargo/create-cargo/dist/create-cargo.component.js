@@ -46,9 +46,9 @@ exports.CreateCargoComponent = void 0;
 var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
 var getCustomerList_CM_1 = require("src/app/models/model/order/getCustomerList_CM");
-var models_1 = require("./models/models");
+var createCustomer_CM_1 = require("../../../models/model/order/createCustomer_CM");
 var nebimCustomer_1 = require("../../../models/nebim/customer/nebimCustomer");
-var createCustomer_CM_1 = require("../../Order/create-order/models/createCustomer_CM");
+var models_1 = require("./models/models");
 var CreateCargoComponent = /** @class */ (function () {
     function CreateCargoComponent(router, cargoService, addressService, httpClient, toasterService, orderService, activatedRoute, generalService, formBuilder, spinnerService) {
         this.router = router;

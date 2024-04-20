@@ -45,7 +45,7 @@ exports.__esModule = true;
 exports.AddCustomerComponent = void 0;
 var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
-var createCustomer_CM_1 = require("../../Order/create-order/models/createCustomer_CM");
+var createCustomer_CM_1 = require("../../../models/model/order/createCustomer_CM");
 var customer_list_component_1 = require("../customer-list/customer-list.component");
 var AddCustomerComponent = /** @class */ (function () {
     function AddCustomerComponent(router, cargoService, addressService, httpClient, toasterService, orderService, headerService, generalService, formBuilder, spinnerService, googleDriveService) {

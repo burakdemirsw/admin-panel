@@ -2,9 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Exception } from '@zxing/library';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
@@ -195,6 +194,20 @@ export class WarehosueShelfCountComponent implements OnInit {
       isShelfBased: [false],
       isShelfBased2: [false]
     });
+
+
+    this.checkForm.get('office').valueChanges.subscribe(value => {
+      if (value === 'M') {
+        this.checkForm.get('warehouseCode').setValue('MD');
+      }
+    });
+
+    this.checkForm.get('office').valueChanges.subscribe(value => {
+      if (value === 'U') {
+        this.checkForm.get('warehouseCode').setValue('UD');
+      }
+    });
+
   }
 
   list: CountProductRequestModel2[] = [];
@@ -214,10 +227,10 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.lastCollectedProducts = await this.warehouseService.getProductOfCount(
       orderNo
     );
-    if (this.lastCollectedProducts.length >= 200) {
-      this.toasterService.error("SATIR SAYISI 200'E ULAŞTI");
-      this.blocked = true;
-    }
+    // if (this.lastCollectedProducts.length >= 200) {
+    //   this.toasterService.error("SATIR SAYISI 200'E ULAŞTI");
+    //   this.blocked = true;
+    // }
     this.calculateTotalQty();
   }
 

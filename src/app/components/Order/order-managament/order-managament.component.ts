@@ -2,15 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Head, Observable } from 'rxjs';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
 import { PrinterInvoiceRequestModel } from 'src/app/models/model/order/printerInvoiceRequestModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { OrderService } from 'src/app/services/admin/order.service';
+import { ProductService } from 'src/app/services/admin/product.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { CreateBarcodeFromOrder_RM } from '../../Product/create-barcode/models/createBarcode';
 
 @Component({
   selector: 'app-order-managament',
@@ -30,7 +31,8 @@ export class OrderManagamentComponent implements OnInit {
     private router: Router,
     private orderService: OrderService,
     private formBuilder: FormBuilder,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private productService: ProductService
 
   ) { }
   filterForm: FormGroup;
@@ -85,7 +87,7 @@ export class OrderManagamentComponent implements OnInit {
       this.pageDescriptionLine = "Faturalandırılan Siparişler"
     } if (this.status == 1 && this.invoiceStatus == 2) {
 
-      this.pageDescriptionLine = "Toplanabilir Faturalandırılmayan Siparişler"
+      this.pageDescriptionLine = "Toplanabilir Siparişler"
     } if (this.status == 0 && this.invoiceStatus == 3) {
 
       this.pageDescriptionLine = "Kısmi Faturalaştırılan Siparişler"
@@ -218,6 +220,24 @@ export class OrderManagamentComponent implements OnInit {
 
   async routeNewPage3(orderNumber: string) {
     this.router.navigate(["/order-operation/" + "MIS-" + orderNumber])
+  }
+  visible: boolean = false;
+  selectedOrderNo: string;
+  showModal(operationNo: string) {
+    this.selectedOrderNo = operationNo;
+    this.visible = !this.visible;
+  }
+  async sendBarcodesToNebim(isPackage: boolean) {
+    var request = new CreateBarcodeFromOrder_RM(isPackage)
+    request.operationNo = this.selectedOrderNo;
+    request.from = "order-operation";
+    request.products = null;
+    var response = await this.productService.sendBarcodesToNebim(request);
+    if (response) {
+      this.toasterService.success("İşlem Başarılı")
+    } else {
+      this.toasterService.error("İşlem Başarısız")
+    }
   }
 
 }

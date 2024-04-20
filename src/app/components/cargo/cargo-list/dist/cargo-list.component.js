@@ -75,19 +75,9 @@ var CargoListComponent = /** @class */ (function () {
             });
         });
     };
-    CargoListComponent.prototype.printSingleBarcode = function (zplCode) {
-        return __awaiter(this, void 0, void 0, function () {
-            var response;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.cargoService.printSingleBarcode(zplCode)];
-                    case 1:
-                        response = _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
+    // async printSingleBarcode(zplCode) {
+    //   var response = await this.cargoService.printSingleBarcode(zplCode);
+    // }
     CargoListComponent.prototype.deleteCargo = function (cargo, cargoFirmId) {
         return __awaiter(this, void 0, void 0, function () {
             var windowResponse, response;
@@ -137,14 +127,17 @@ var CargoListComponent = /** @class */ (function () {
             var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.cargoService.createBarcode(referenceId)];
+                    case 0:
+                        if (!window.confirm("Barkod yazdırmak istediğinize emin misiniz?")) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.cargoService.createBarcode(referenceId)];
                     case 1:
                         response = _a.sent();
                         if (response) {
                             this.toasterService.success("BARKOD YAZDIRILDI");
                             this.getCargos(this.cargoState);
                         }
-                        return [2 /*return*/];
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
                 }
             });
         });

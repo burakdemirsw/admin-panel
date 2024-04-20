@@ -87,6 +87,7 @@
             <div class="col-md-4">
               <label for="barcode">Barkod</label>
               <input
+                pInputText
                 type="search"
                 class="form-control"
                 id="barcode"
@@ -98,10 +99,13 @@
             <div class="col-md-4" *ngIf="!this.orderType">
               <label for="shelfNo">Raf Numarası</label>
               <input
+                pInputText
                 type="search"
                 class="form-control"
                 id="shelfNo"
-                placeholder="Raf Numarası"
+                placeholder="{{
+                  shelfNumbers != 'RAFLAR:' ? shelfNumbers : 'Raf No'
+                }}"
                 formControlName="shelfNo"
               />
             </div>

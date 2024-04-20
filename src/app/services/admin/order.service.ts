@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { int } from '@zxing/library/esm/customTypings';
 import { Observable } from 'rxjs/internal/Observable';
-import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, NebimOrder_2 } from 'src/app/components/Order/create-order/models/nebimOrder';
+import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, NebimOrder_2 } from 'src/app/models/model/order/nebimOrder';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
@@ -19,9 +19,12 @@ import { CountConfirmData } from 'src/app/models/model/product/countConfirmModel
 import { InventoryItem } from 'src/app/models/model/product/inventoryItemModel';
 import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 import { ClientCustomer } from '../../components/Customer/customer-list/customer-list.component';
-import { AddCustomerAddress_CM, CreateCustomer_CM } from '../../components/Order/create-order/models/createCustomer_CM';
+import { AddCustomerAddress_CM, CreateCustomer_CM } from '../../models/model/order/createCustomer_CM';
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
+import { InvocieFilterModel } from 'src/app/models/model/filter/invoiceFilterModel';
+import { CountListModel } from 'src/app/models/model/product/countListModel';
+import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
 
 @Injectable({
   providedIn: 'root',
@@ -79,6 +82,25 @@ export class OrderService {
       return null;
     }
   }
+
+  //fatura listesini çeker
+  async getInvoiceList(): Promise<CountListModel[]> {
+    const data = await this.httpClientService
+      .get<CountListModel>({ controller: 'Order/GetInvoiceList' }) //Get_InvoicesList
+      .toPromise();
+    return data;
+  }
+
+  //fatura listesini filtreye göre çeker
+  async getInvoiceListByFilter(
+    model: InvocieFilterModel
+  ): Promise<CountListModel[]> {
+    const data = await this.httpClientService
+      .post<any>({ controller: 'Order/GetInvoiceListByFilter' }, model)
+      .toPromise();
+    return data;
+  }
+
 
   async getOrdersByFilter(model: OrderFilterModel): Promise<SaleOrderModel[]> {
     try {
@@ -241,6 +263,18 @@ export class OrderService {
     return false;
   }
 
+
+  async getSalesPersonModels(): Promise<SalesPersonModel[]> {
+
+    var response = await this.httpClientService
+      .get<SalesPersonModel>({
+        controller: 'Order/GetSalesPersonModels',
+      })
+      .toPromise();
+
+    return response;
+
+  }
   //sipariş numarasına göre transfer yapma
 
   async postModel(orderNo: string,): Promise<any> {

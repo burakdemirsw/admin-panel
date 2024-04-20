@@ -276,11 +276,7 @@ var CreateSaleOrderComponent = /** @class */ (function () {
                     case 1:
                         _b.trys.push([1, 3, , 4]);
                         _a = this;
-                        return [4 /*yield*/, this.httpClientService
-                                .get({
-                                controller: 'Order/GetSalesPersonModels'
-                            })
-                                .toPromise()];
+                        return [4 /*yield*/, this.orderService.getSalesPersonModels()];
                     case 2:
                         _a.salesPersonModels = _b.sent();
                         this.salesPersonModels.forEach(function (c) {

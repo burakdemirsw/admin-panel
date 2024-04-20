@@ -51,6 +51,7 @@ var SidebarComponent = /** @class */ (function () {
     }
     SidebarComponent.prototype.ngOnInit = function () {
         this.roleDescription = localStorage.getItem("roleDescription");
+        this.userId = localStorage.getItem("userId");
     };
     SidebarComponent.prototype.routeNewPage = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -111,6 +112,37 @@ var SidebarComponent = /** @class */ (function () {
                     case 1:
                         result = _a.sent();
                         this.router.navigate(["/create-barcode/" + result]);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    SidebarComponent.prototype.routeNewPage5 = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.generalService.generateGUID()];
+                    case 1:
+                        result = _a.sent();
+                        this.router.navigate(["/shelf-transfer-request/" + result +
+                                "/0"
+                        ]);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    SidebarComponent.prototype.routeNewPage6 = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.generalService.generateGUID()];
+                    case 1:
+                        result = _a.sent();
+                        this.router.navigate(["/fast-transfer/" + result
+                        ]);
                         return [2 /*return*/];
                 }
             });

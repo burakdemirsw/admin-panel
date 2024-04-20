@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ClientCustomer } from '../../Order/create-order/models/createCustomer_CM';
+import { ClientCustomer } from '../../../models/model/order/createCustomer_CM';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 

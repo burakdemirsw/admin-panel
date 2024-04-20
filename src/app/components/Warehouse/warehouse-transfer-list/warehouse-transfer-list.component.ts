@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { WarehouseOperationListFilterModel } from 'src/app/models/model/filter/warehouseOperationListFilterModel';
 import { WarehouseTransferListFilterModel } from 'src/app/models/model/filter/warehouseTransferListFilterModel';
 import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
 import { WarehosueTransferListModel } from 'src/app/models/model/warehouse/warehosueTransferListModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
+import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { CreateBarcodeFromOrder_RM } from '../../Product/create-barcode/models/createBarcode';
 
 @Component({
   selector: 'app-warehouse-transfer-list',
@@ -25,7 +25,7 @@ export class WarehouseTransferListComponent implements OnInit {
     private hs: HeaderService,
     private httpClientService: HttpClientService,
     private toasterService: ToasterService,
-    private spinnerService: NgxSpinnerService,
+    private productService: ProductService,
     private router: Router,
     private warehosueService: WarehouseService,
     private formBuilder: FormBuilder, private generalService: GeneralService
@@ -120,5 +120,29 @@ export class WarehouseTransferListComponent implements OnInit {
       console.log(error.message);
     }
   }
+
+  visible: boolean = false;
+  selectedOrderNo: string;
+  showModal(operationNo: string) {
+    this.selectedOrderNo = operationNo;
+    this.visible = !this.visible;
+  }
+  async sendBarcodesToNebim(isPackage: boolean) {
+    var request = new CreateBarcodeFromOrder_RM(isPackage)
+    request.operationNo = this.selectedOrderNo;
+    request.from = "warehouse-operation";
+    request.products = null;
+    var response = await this.productService.sendBarcodesToNebim(request);
+    if (response) {
+      this.toasterService.success("İşlem Başarılı")
+    } else {
+      this.toasterService.error("İşlem Başarısız")
+    }
+  }
+  async routeNewPage2() {
+    const result = await this.generalService.generateGUID()
+    this.router.navigate(["/warehouse-operation/" + "REQ-" + result + "/0"])
+  }
+
 
 }

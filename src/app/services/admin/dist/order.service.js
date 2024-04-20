@@ -115,6 +115,38 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
+    //fatura listesini çeker
+    OrderService.prototype.getInvoiceList = function () {
+        return __awaiter(this, void 0, Promise, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({ controller: 'Order/GetInvoiceList' }) //Get_InvoicesList
+                            .toPromise()];
+                    case 1:
+                        data = _a.sent();
+                        return [2 /*return*/, data];
+                }
+            });
+        });
+    };
+    //fatura listesini filtreye göre çeker
+    OrderService.prototype.getInvoiceListByFilter = function (model) {
+        return __awaiter(this, void 0, Promise, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .post({ controller: 'Order/GetInvoiceListByFilter' }, model)
+                            .toPromise()];
+                    case 1:
+                        data = _a.sent();
+                        return [2 /*return*/, data];
+                }
+            });
+        });
+    };
     OrderService.prototype.getOrdersByFilter = function (model) {
         return __awaiter(this, void 0, Promise, function () {
             var response;
@@ -281,6 +313,23 @@ var OrderService = /** @class */ (function () {
                         // console.log(error.message);
                         return [2 /*return*/, false];
                     case 3: return [2 /*return*/, false];
+                }
+            });
+        });
+    };
+    OrderService.prototype.getSalesPersonModels = function () {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({
+                            controller: 'Order/GetSalesPersonModels'
+                        })
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
                 }
             });
         });

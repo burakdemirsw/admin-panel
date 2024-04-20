@@ -93,23 +93,31 @@
       </div>
     </div>
 
+    <div class="card custom-card mb-3">
+      <div class="card-body">
+        <div class="btn-group mt-4">
+          <button
+            class="btn btn-primary"
+            type="button"
+            (click)="routeNewPage(null)"
+          >
+            Yeni Transfer Yap
+          </button>
+          <button
+            class="btn btn-primary"
+            type="button"
+            (click)="routeNewPage2()"
+          >
+            Depolar Arası İstek
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Filtreleme Alanı (Bitiş) -->
 
     <div class="card">
       <div class="card-body">
-        <div class="btn-group mb-3 mt-4">
-          <button
-            class="btn btn-primary"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#filterCollapse"
-            (click)="routeNewPage(null)"
-            aria-expanded="false"
-            aria-controls="filterCollapse"
-          >
-            Yeni Transfer Yap
-          </button>
-        </div>
         <div style="overflow-x: auto">
           <table class="table">
             <thead>
@@ -161,6 +169,13 @@
                     >
                       <i class="fas fa-trash"></i>
                     </button>
+                    <div
+                      class="btn btn-success"
+                      data-text="Barkod Etiketi Oluştur"
+                      (click)="showModal(operation.orderNumber)"
+                    >
+                      <i class="fa fa-barcode" aria-hidden="true"></i>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -172,5 +187,29 @@
         </div>
       </div>
     </div>
+
+    <p-dialog
+      header="Barkod Türü Seçiniz - {{ this.selectedOrderNo }}"
+      [(visible)]="visible"
+      [modal]="true"
+      [style]="{ width: '50vw' }"
+      [draggable]="false"
+      [resizable]="false"
+    >
+      <button
+        type="button"
+        class="btn custom-btn-primary mt-3"
+        (click)="this.sendBarcodesToNebim(true)"
+      >
+        Koli
+      </button>
+      <button
+        type="button"
+        class="btn custom-btn-primary mt-3"
+        (click)="this.sendBarcodesToNebim(false)"
+      >
+        Barkod
+      </button>
+    </p-dialog>
   </section>
 </main>

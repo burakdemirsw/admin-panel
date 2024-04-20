@@ -44,7 +44,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.ClientCustomer = exports.CustomerListComponent = void 0;
 var core_1 = require("@angular/core");
-var createCustomer_CM_1 = require("../../Order/create-order/models/createCustomer_CM");
+var createCustomer_CM_1 = require("../../../models/model/order/createCustomer_CM");
 exports.ClientCustomer = createCustomer_CM_1.ClientCustomer;
 var CustomerListComponent = /** @class */ (function () {
     function CustomerListComponent(orderService, headerService) {

@@ -68,6 +68,7 @@
         <!-- Filtreleme Alanı (Bitiş) -->
       </div>
     </div>
+
     <div class="card">
       <div class="card-body">
         <div class="btn-group mt-3" role="group" aria-label="Basic example">
@@ -202,9 +203,13 @@
                     >
                       <i class="fas fa-eye"></i>
                     </button>
-                    <!-- <button class="btn btn-danger" data-text="Sil">
-                        <i class="fas fa-trash"></i>
-                      </button> -->
+                    <div
+                      class="btn btn-success"
+                      data-text="Barkod Etiketi Oluştur"
+                      (click)="showModal(operation.innerNumber)"
+                    >
+                      <i class="fa fa-barcode" aria-hidden="true"></i>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -293,6 +298,30 @@
           </div>
         </div>
       </div>
+    </p-dialog>
+
+    <p-dialog
+      header="Barkod Türü Seçiniz - {{ this.selectedOrderNo }}"
+      [(visible)]="visible"
+      [modal]="true"
+      [style]="{ width: '50vw' }"
+      [draggable]="false"
+      [resizable]="false"
+    >
+      <button
+        type="button"
+        class="btn custom-btn-primary mt-3"
+        (click)="this.sendBarcodesToNebim(true)"
+      >
+        Koli
+      </button>
+      <button
+        type="button"
+        class="btn custom-btn-primary mt-3"
+        (click)="this.sendBarcodesToNebim(false)"
+      >
+        Barkod
+      </button>
     </p-dialog>
   </section>
 </main>

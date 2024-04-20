@@ -10,3 +10,20 @@ export class CreateBarcodeModel {
 
 
 }
+export class CreateBarcodeFromOrder_RM {
+  operationNo: string;
+  from: string
+  products: CreateBarcodeModel[] = []
+  packageDescription: string
+
+
+  constructor(isPackage: boolean) {
+    if (isPackage) {
+      this.packageDescription = "Koli"
+    } else {
+      this.packageDescription = "Ürün"
+    }
+  }
+
+
+}

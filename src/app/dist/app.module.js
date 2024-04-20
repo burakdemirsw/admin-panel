@@ -136,6 +136,8 @@ var nebim_stock_control_component_1 = require("./components/Product/nebim-stock-
 var nebim_get_orders_component_1 = require("./components/Order/nebim-get-orders/nebim-get-orders.component");
 var nebim_product_extract_component_1 = require("./components/Product/nebim-product-extract/nebim-product-extract.component");
 var create_barcode_component_1 = require("./components/Product/create-barcode/create-barcode.component");
+var fast_transfer_list_component_1 = require("./components/Warehouse/fast-transfer/fast-transfer-list/fast-transfer-list.component");
+var fast_transfer_pipe_1 = require("./services/pipes/fast-transfer.pipe");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -228,6 +230,8 @@ var AppModule = /** @class */ (function () {
                 nebim_get_orders_component_1.NebimGetOrdersComponent,
                 nebim_product_extract_component_1.NebimProductExtractComponent,
                 create_barcode_component_1.CreateBarcodeComponent,
+                fast_transfer_list_component_1.FastTransferListComponent,
+                fast_transfer_pipe_1.FastTransferPipe,
             ],
             imports: [
                 toolbar_1.ToolbarModule,

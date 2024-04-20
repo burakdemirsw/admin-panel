@@ -1,33 +1,27 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClientService } from '../http-client.service';
-import { CountProductRequestModel2, CountProductRequestModel3 } from 'src/app/models/model/order/countProductRequestModel2';
-import {
-  ProductCountModel,
-  ProductCountModel3,
-} from 'src/app/models/model/shelfNameModel';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
-import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
-import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
-import { GeneralService } from './general.service';
-import { CountListModel } from 'src/app/models/model/product/countListModel';
-import { CollectProduct } from 'src/app/models/model/product/collectProduct';
-import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
-import { CountedProduct, CountedProductControl } from 'src/app/models/model/product/countedProduct';
-import { FastTransferModel } from 'src/app/models/model/warehouse/fastTransferModel';
 import { CountListFilterModel } from 'src/app/models/model/filter/countListFilterModel';
 import { InvocieFilterModel } from 'src/app/models/model/filter/invoiceFilterModel';
-import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
 import { WarehouseOperationListFilterModel } from 'src/app/models/model/filter/warehouseOperationListFilterModel';
-import { TransferModel } from 'src/app/models/model/warehouse/transferModel';
-import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/warehouseOperationProductModel';
 import { WarehouseTransferListFilterModel } from 'src/app/models/model/filter/warehouseTransferListFilterModel';
-import { TransferRequestListModel } from 'src/app/models/model/warehouse/transferRequestListModel';
+import { CountProductRequestModel2, CountProductRequestModel3 } from 'src/app/models/model/order/countProductRequestModel2';
+import { CountListModel } from 'src/app/models/model/product/countListModel';
+import { CountedProduct, CountedProductControl } from 'src/app/models/model/product/countedProduct';
+import {
+  ProductCountModel
+} from 'src/app/models/model/shelfNameModel';
 import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
-import { QrControlCommandModel } from 'src/app/models/model/product/qrControlModel';
-import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
-import { FormGroup } from '@angular/forms';
+import { FastTransferListModel, FastTransferModel, FastTransferModel2 } from 'src/app/models/model/warehouse/fastTransferModel';
+import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
+import { TransferModel } from 'src/app/models/model/warehouse/transferModel';
+import { TransferRequestListModel } from 'src/app/models/model/warehouse/transferRequestListModel';
+import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
+import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
+import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/warehouseOperationProductModel';
+import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
+import { GeneralService } from './general.service';
 
 @Injectable({
   providedIn: 'root',
@@ -184,23 +178,6 @@ export class WarehouseService {
     return data;
   }
 
-  //fatura listesini çeker
-  async getInvoiceList(): Promise<CountListModel[]> {
-    const data = await this.httpClientService
-      .get<CountListModel>({ controller: 'Order/GetInvoiceList' }) //Get_InvoicesList
-      .toPromise();
-    return data;
-  }
-
-  //fatura listesini filtreye göre çeker
-  async getInvoiceListByFilter(
-    model: InvocieFilterModel
-  ): Promise<CountListModel[]> {
-    const data = await this.httpClientService
-      .post<any>({ controller: 'Order/GetInvoiceListByFilter' }, model)
-      .toPromise();
-    return data;
-  }
 
   //sayım ürünklerini çeker 100 adet
   async getProductOfCount(orderNo: string): Promise<CountedProduct[]> {
@@ -260,110 +237,96 @@ export class WarehouseService {
 
   //transfer işlemlerini çeker
   async getWarehouseOperations(status: string): Promise<any> {
-    try {
-      const data = this.httpClientService
-        .get<WarehouseOperationListModel>({
-          controller: 'Warehouse/GetWarehosueOperationList',
-        }, status)
-        .toPromise();
 
-      return data;
-    } catch (error: any) {
-      console.log(error.message);
-    }
+    const data = this.httpClientService
+      .get<WarehouseOperationListModel>({
+        controller: 'Warehouse/GetWarehosueOperationList',
+      }, status)
+      .toPromise();
+
+    return data;
+
   }
 
   async getWarehosueOperationListByInnerNumber(
     innerNumber: string
   ): Promise<any> {
-    try {
-      const data = this.httpClientService
-        .get<WarehouseOperationListModel>(
-          {
-            controller: 'Warehouse/getWarehosueOperationListByInnerNumber',
-          },
-          innerNumber
-        )
-        .toPromise();
 
-      return data;
-    } catch (error: any) {
-      console.log(error.message);
-    }
+    const data = this.httpClientService
+      .get<WarehouseOperationListModel>(
+        {
+          controller: 'Warehouse/getWarehosueOperationListByInnerNumber',
+        },
+        innerNumber
+      )
+      .toPromise();
+
+    return data;
+
   }
 
   //transfer operasyonlarını nebimden filtreleyerek çeker
   async getWarehosueOperationListByFilter(
     model: WarehouseOperationListFilterModel
   ): Promise<any> {
-    try {
-      const data = this.httpClientService
-        .post<WarehouseOperationListModel>(
-          {
-            controller: 'Warehouse/GetWarehosueOperationListByFilter',
-          },
-          model
-        )
-        .toPromise();
 
-      return data;
-    } catch (error: any) {
-      console.log(error.message);
-    }
+    const data = this.httpClientService
+      .post<WarehouseOperationListModel>(
+        {
+          controller: 'Warehouse/GetWarehosueOperationListByFilter',
+        },
+        model
+      )
+      .toPromise();
+
+    return data;
+
   }
 
   //transfer işlemlerini filtreleyerek çeker
   async getWarehosueTransferListByFilter(
     model: WarehouseTransferListFilterModel
   ): Promise<any> {
-    try {
-      const data = this.httpClientService
-        .post<WarehouseTransferListFilterModel>(
-          {
-            controller: 'Warehouse/GetWarehosueTransferList',
-          },
-          model
-        )
-        .toPromise();
 
-      return data;
-    } catch (error: any) {
-      console.log(error.message);
-    }
+    const data = this.httpClientService
+      .post<WarehouseTransferListFilterModel>(
+        {
+          controller: 'Warehouse/GetWarehosueTransferList',
+        },
+        model
+      )
+      .toPromise();
+
+    return data;
+
   }
 
   //transfer işlemi
   async transfer(model: WarehouseOperationProductModel): Promise<any> {
-    try {
-      const result = await this.httpClientService
-        .post<WarehouseOperationProductModel>(
-          {
-            controller: 'Warehouse/Transfer',
-          },
-          model
-        )
-        .toPromise();
 
-      return result;
-    } catch (error: any) {
-      console.log(error.message);
-      return null;
-    }
+    const result = await this.httpClientService
+      .post<WarehouseOperationProductModel>(
+        {
+          controller: 'Warehouse/Transfer',
+        },
+        model
+      )
+      .toPromise();
+
+    return result;
+
   }
   //deleteCountById
   async deleteTransferFromId(id: string): Promise<any> {
-    try {
-      const result = await this.httpClientService
-        .get<any>({
-          controller: 'Warehouse/DeleteWarehouseTransferById/' + id,
-        })
-        .toPromise();
 
-      return result;
-    } catch (error: any) {
-      console.log(error.message);
-      return null;
-    }
+    const result = await this.httpClientService
+      .get<any>({
+        controller: 'Warehouse/DeleteWarehouseTransferById/' + id,
+      })
+      .toPromise();
+
+    return result;
+
   }
 
   async deleteCountFromId(id: string): Promise<any> {
@@ -381,30 +344,64 @@ export class WarehouseService {
     }
   }
   async getTransferRequestListModel(type: string): Promise<TransferRequestListModel[]> {
-    try {
-      const response = this.httpClientService
-        .get<TransferRequestListModel>({
-          controller: 'Warehouse/TransferRequestList'
-        }, type)
-        .toPromise();
-      return response;
-    } catch (error: any) {
-      console.log(error.message);
-      return null;
-    }
+
+    const response = this.httpClientService
+      .get<TransferRequestListModel>({
+        controller: 'Warehouse/TransferRequestList'
+      }, type)
+      .toPromise();
+    return response;
+
   }
 
   //sayılabilecek rafları çeker
   // Get_MSRAFWillBeCounted
   async getAvailableShelves(): Promise<AvailableShelf[]> {
-    try {
-      const data = await this.httpClientService
-        .get<AvailableShelf>({ controller: 'Order/GetAvailableShelves' })
-        .toPromise();
-      return data;
-    } catch (error) {
-      console.log(error.message);
-      return null;
-    }
+
+    const data = await this.httpClientService
+      .get<AvailableShelf>({ controller: 'Order/GetAvailableShelves' })
+      .toPromise();
+    return data;
+
   }
+
+
+  //raflar arası transfer ----------------------------------------------------
+  async addFastTransferModel(request: FastTransferModel2): Promise<boolean> {
+
+    const response = await this.httpClientService
+      .post<any>({ controller: 'Warehouse/add-fast-transfer-model' }, request)
+      .toPromise();
+    return response;
+
+  }
+
+  async deleteFastTransferModel(request: string): Promise<any> {
+
+    const response = await this.httpClientService
+      .get<any>({ controller: 'Warehouse/delete-fast-transfer-model' }, request)
+      .toPromise();
+    return response;
+
+  }
+
+  async getFastTransferModels(request: string): Promise<any> {
+
+    const response = await this.httpClientService
+      .get<any>({ controller: 'Warehouse/get-fast-transfer-models' }, request)
+      .toPromise();
+    return response;
+
+  }
+
+  // Get fast transfer list models
+  async getFastTransferListModels(): Promise<FastTransferListModel[]> {
+    const response = await this.httpClientService
+      .get<FastTransferListModel>({
+        controller: 'Warehouse/get-fast-transfer-list',
+      })
+      .toPromise();
+    return response;
+  }
+  //---------------------------------------------------------------------------
 }

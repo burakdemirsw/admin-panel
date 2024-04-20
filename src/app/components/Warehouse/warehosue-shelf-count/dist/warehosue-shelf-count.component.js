@@ -214,6 +214,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         this.itemBillingModels.splice(index, 1); // İlgili satırı listeden sil
     };
     WarehosueShelfCountComponent.prototype.formGenerator = function () {
+        var _this = this;
         this.checkForm = this.formBuilder.group({
             barcode: [null, forms_1.Validators.required],
             shelfNo: [null, forms_1.Validators.required],
@@ -223,6 +224,16 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
             warehouseCode: [null, forms_1.Validators.required],
             isShelfBased: [false],
             isShelfBased2: [false]
+        });
+        this.checkForm.get('office').valueChanges.subscribe(function (value) {
+            if (value === 'M') {
+                _this.checkForm.get('warehouseCode').setValue('MD');
+            }
+        });
+        this.checkForm.get('office').valueChanges.subscribe(function (value) {
+            if (value === 'U') {
+                _this.checkForm.get('warehouseCode').setValue('UD');
+            }
         });
     };
     WarehosueShelfCountComponent.prototype.calculateTotalQty = function () {
@@ -243,10 +254,10 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.warehouseService.getProductOfCount(orderNo)];
                     case 1:
                         _a.lastCollectedProducts = _b.sent();
-                        if (this.lastCollectedProducts.length >= 200) {
-                            this.toasterService.error("SATIR SAYISI 200'E ULAŞTI");
-                            this.blocked = true;
-                        }
+                        // if (this.lastCollectedProducts.length >= 200) {
+                        //   this.toasterService.error("SATIR SAYISI 200'E ULAŞTI");
+                        //   this.blocked = true;
+                        // }
                         this.calculateTotalQty();
                         return [2 /*return*/];
                 }

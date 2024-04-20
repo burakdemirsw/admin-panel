@@ -49,6 +49,8 @@ import { PagesLoginv2Component } from './pages/pages-loginv2/pages-loginv2.compo
 import { PagesRegisterComponent } from './pages/pages-register/pages-register.component';
 import { UsersProfileComponent } from './pages/users-profile/users-profile.component';
 import { CreateBarcodeComponent } from './components/Product/create-barcode/create-barcode.component';
+import { FastTransferListComponent } from './components/Warehouse/fast-transfer/fast-transfer-list/fast-transfer-list.component';
+import { RetailInvoiceListComponent } from './components2/invoice/retail-invoice-list/retail-invoice-list.component';
 
 const routes: Routes = [
 
@@ -206,6 +208,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'fast-transfer-list',
+    component: FastTransferListComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'warehouse-operation/:number/:type',
     component: WarehouseOperationComponent,
     canActivate: [AuthGuard],
@@ -253,7 +260,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'fast-transfer',
+    path: 'fast-transfer/:operationNo',
     component: FastTransferComponent,
     canActivate: [AuthGuard],
   },
@@ -269,7 +276,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'shelf-transfer-request/:type',
+    path: 'shelf-transfer-request/:operationNo/:type',
     component: ShelfTransferRequestComponent,
     canActivate: [AuthGuard],
   },
@@ -286,7 +293,10 @@ const routes: Routes = [
   { path: 'nebim-product-extract', component: NebimProductExtractComponent },
   { path: 'create-barcode/:operationNo', component: CreateBarcodeComponent },
 
+  //-------------------------------------------------------------------------
+  { path: 'retail-invoice-list', component: RetailInvoiceListComponent },
   { path: '**', component: PagesError404Component },
+
 
   // {path:  'warehouse-managament', component: WarehouseManagamentComponent}
 ];

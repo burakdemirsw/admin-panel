@@ -56,15 +56,15 @@ exports.__esModule = true;
 exports.CreateOrderComponent = void 0;
 var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
-var getCustomerList_CM_1 = require("../../../models/model/order/getCustomerList_CM");
-var getCustomerList_CM_2 = require("src/app/models/model/order/getCustomerList_CM");
-var product_service_1 = require("src/app/services/admin/product.service");
-var productList_VM_1 = require("src/app/models/model/product/productList_VM");
-var Tesseract = require("tesseract.js");
-var createCustomer_CM_1 = require("./models/createCustomer_CM");
-var nebimOrder_1 = require("./models/nebimOrder");
+var getCustomerList_CM_1 = require("src/app/models/model/order/getCustomerList_CM");
 var payment_CR_1 = require("src/app/models/model/payment/payment_CR");
+var productList_VM_1 = require("src/app/models/model/product/productList_VM");
 var nebimCustomer_1 = require("src/app/models/nebim/customer/nebimCustomer");
+var product_service_1 = require("src/app/services/admin/product.service");
+var Tesseract = require("tesseract.js");
+var createCustomer_CM_1 = require("../../../models/model/order/createCustomer_CM");
+var getCustomerList_CM_2 = require("../../../models/model/order/getCustomerList_CM");
+var nebimOrder_1 = require("../../../models/model/order/nebimOrder");
 var models_1 = require("../../cargo/create-cargo/models/models");
 var CreateOrderComponent = /** @class */ (function () {
     function CreateOrderComponent(headerService, warehouseService, paymentService, toasterService, activatedRoute, router, httpClientService, generalService, addressService, googleDriveService, productService, formBuilder, orderService, cargoService) {
@@ -138,6 +138,7 @@ var CreateOrderComponent = /** @class */ (function () {
         this.addresses = [];
         this.selectedSize = '';
         this.products = [];
+        this.shelfNumbers = 'RAFLAR:';
         this.qrBarcodeUrl = null;
         this.qrOperationModels = [];
         this.clonedProducts = {};
@@ -173,6 +174,7 @@ var CreateOrderComponent = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        this.createGetProductForm();
                         _a = this;
                         return [4 /*yield*/, this.orderService.getExchangeRates()];
                     case 1:
@@ -181,7 +183,6 @@ var CreateOrderComponent = /** @class */ (function () {
                         this.createDiscountForm();
                         this.createGetCustomerForm();
                         this.createCustomerFormMethod();
-                        this.createGetProductForm();
                         this.createOfficeWarehouseForm();
                         this._createCustomerFormMethod();
                         this.getAddresses();
@@ -232,7 +233,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         this.isCompleted = order.clientOrder.isCompleted;
                         this.currAccCode = order.clientOrder.customerCode;
                         this.orderNumber = order.clientOrder.orderNumber;
-                        customer_request = new getCustomerList_CM_1.GetCustomerList_CM();
+                        customer_request = new getCustomerList_CM_2.GetCustomerList_CM();
                         customer_request.currAccCode = this.currAccCode;
                         if (!(customer_request.currAccCode != null)) return [3 /*break*/, 4];
                         return [4 /*yield*/, this.orderService.getCustomerList_2(customer_request)];
@@ -247,7 +248,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         this.toasterService.error("Eklenecek Müşteri Bulunamadı");
                         _a.label = 5;
                     case 5:
-                        request_address = new getCustomerList_CM_2.GetCustomerAddress_CM();
+                        request_address = new getCustomerList_CM_1.GetCustomerAddress_CM();
                         request_address.currAccCode = this.currAccCode;
                         return [4 /*yield*/, this.orderService.getCustomerAddress(request_address)];
                     case 6:
@@ -360,7 +361,7 @@ var CreateOrderComponent = /** @class */ (function () {
             else {
                 request.paymentType = null;
             }
-            request.createdDate = new Date();
+            request.createdDate = new Date(3);
             return request;
         }
         catch (error) {
@@ -458,7 +459,7 @@ var CreateOrderComponent = /** @class */ (function () {
                     case 1:
                         response = _a.sent();
                         if (response) {
-                            _request = new getCustomerList_CM_2.GetCustomerAddress_CM();
+                            _request = new getCustomerList_CM_1.GetCustomerAddress_CM();
                             this.toasterService.success(response.currAccCode);
                             this.getCustomerAddresses(_request);
                         }
@@ -858,7 +859,7 @@ var CreateOrderComponent = /** @class */ (function () {
                 this.openDialog("getCustomerDialog");
                 this.toasterService.success("Müşteri Seçildi");
                 this.generalService.beep();
-                _request = new getCustomerList_CM_2.GetCustomerAddress_CM();
+                _request = new getCustomerList_CM_1.GetCustomerAddress_CM();
                 _request.currAccCode = request.currAccCode;
                 this.getCustomerAddresses(_request);
                 return [2 /*return*/];
@@ -975,7 +976,7 @@ var CreateOrderComponent = /** @class */ (function () {
     };
     CreateOrderComponent.prototype.getProducts = function (request, pageType) {
         return __awaiter(this, void 0, void 0, function () {
-            var _request, response, totalQty, totalQuantity, error_3, result, check_response, data, response, totalQty, totalQuantity;
+            var _request, response, totalQty, totalQuantity, error_3, result, result, check_response, data, response, totalQty, totalQuantity;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -1028,16 +1029,20 @@ var CreateOrderComponent = /** @class */ (function () {
                         error_3 = _a.sent();
                         console.log(error_3.message);
                         return [2 /*return*/, null];
-                    case 9: return [3 /*break*/, 18];
+                    case 9: return [3 /*break*/, 20];
                     case 10:
-                        if (!request.shelfNo) {
-                            this.generalService.focusNextInput('shelfNo');
-                            this.toasterService.error("Raf Numarası Giriniz");
-                            return [2 /*return*/];
-                        }
-                        if (!(request.barcode.includes('http') || this.generalService.isGuid(request.barcode))) return [3 /*break*/, 12];
-                        return [4 /*yield*/, this.productService.countProductByBarcode3(request.barcode)];
+                        if (!!request.shelfNo) return [3 /*break*/, 12];
+                        return [4 /*yield*/, this.productService.countProductByBarcode(request.barcode)];
                     case 11:
+                        result = _a.sent();
+                        this.shelfNumbers += result[0];
+                        this.generalService.focusNextInput('shelfNo');
+                        this.toasterService.error("Raf Numarası Giriniz");
+                        return [2 /*return*/];
+                    case 12:
+                        if (!(request.barcode.includes('http') || this.generalService.isGuid(request.barcode))) return [3 /*break*/, 14];
+                        return [4 /*yield*/, this.productService.countProductByBarcode3(request.barcode)];
+                    case 13:
                         result = _a.sent();
                         if (result == null) {
                             this.toasterService.error("Qr Sorgusu Hatalı");
@@ -1085,23 +1090,23 @@ var CreateOrderComponent = /** @class */ (function () {
                         //   this.products = [];
                         // }
                         return [2 /*return*/];
-                    case 12: return [4 /*yield*/, this.warehouseService.countProductRequest(request.barcode, request.shelfNo, 1, '', '', '', 'Order/CountProductControl', this.orderNo, '')];
-                    case 13:
+                    case 14: return [4 /*yield*/, this.warehouseService.countProductRequest(request.barcode, request.shelfNo, 1, '', '', '', 'Order/CountProductControl', this.orderNo, '')];
+                    case 15:
                         check_response = _a.sent();
-                        if (!(check_response != undefined)) return [3 /*break*/, 18];
+                        if (!(check_response != undefined)) return [3 /*break*/, 20];
                         data = check_response;
                         if (data.status != 'RAF') {
                             this.getProductsForm.get('barcode').setValue(check_response.description);
                         }
                         return [4 /*yield*/, this.productService.searchProduct3(check_response.description, check_response.batchCode, this.getProductsForm.value.shelfNo)];
-                    case 14:
+                    case 16:
                         response = _a.sent();
                         if (response.length == 0) {
                             this.toasterService.error("Ürün Sorgusundan Yanıt Alınamadı");
                             return [2 /*return*/];
                         }
                         this.products = response;
-                        if (!(this.products.length > 0)) return [3 /*break*/, 17];
+                        if (!(this.products.length > 0)) return [3 /*break*/, 19];
                         totalQty = 0;
                         this.products.forEach(function (p) {
                             totalQty += p.quantity;
@@ -1120,19 +1125,20 @@ var CreateOrderComponent = /** @class */ (function () {
                                 totalQuantity += product.quantity;
                             }
                         });
-                        if (!(totalQuantity >= this.products[0].quantity)) return [3 /*break*/, 15];
+                        if (!(totalQuantity >= this.products[0].quantity)) return [3 /*break*/, 17];
                         this.toasterService.error("STOK HATASI");
                         return [2 /*return*/];
-                    case 15:
+                    case 17:
                         this.getProductsForm.get('barcode').setValue(null);
                         this.getProductsForm.get('shelfNo').setValue(null);
                         return [4 /*yield*/, this.addCurrentProducts(this.products[0])];
-                    case 16:
+                    case 18:
                         _a.sent();
+                        this.shelfNumbers = 'RAFLAR:';
                         this.products = [];
-                        _a.label = 17;
-                    case 17: return [2 /*return*/, response];
-                    case 18: return [2 /*return*/];
+                        _a.label = 19;
+                    case 19: return [2 /*return*/, response];
+                    case 20: return [2 /*return*/];
                 }
             });
         });
@@ -1277,7 +1283,7 @@ var CreateOrderComponent = /** @class */ (function () {
                     case 1:
                         _a.orderDetail = _b.sent();
                         if (this.orderDetail) {
-                            request = new getCustomerList_CM_2.GetCustomerAddress_CM();
+                            request = new getCustomerList_CM_1.GetCustomerAddress_CM();
                             request.currAccCode = this.orderDetail.currAccCode;
                             this.getCustomerAddresses(request);
                         }

@@ -46,8 +46,9 @@ exports.SearchQrComponent = void 0;
 var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
 var library_1 = require("@zxing/library");
+var product_service_1 = require("src/app/services/admin/product.service");
 var SearchQrComponent = /** @class */ (function () {
-    function SearchQrComponent(toasterService, productService, formBuilder, sanitizer, activatedRoute, httpClientService, headerService) {
+    function SearchQrComponent(toasterService, productService, formBuilder, sanitizer, activatedRoute, httpClientService, headerService, generalService) {
         this.toasterService = toasterService;
         this.productService = productService;
         this.formBuilder = formBuilder;
@@ -55,6 +56,7 @@ var SearchQrComponent = /** @class */ (function () {
         this.activatedRoute = activatedRoute;
         this.httpClientService = httpClientService;
         this.headerService = headerService;
+        this.generalService = generalService;
         this.qrCodes = [];
         this.showImage = false; // add this property
         this.view = true;
@@ -63,12 +65,13 @@ var SearchQrComponent = /** @class */ (function () {
         this.qrCodeDownloadLink = this.sanitizer.bypassSecurityTrustResourceUrl('');
         this.selectedProductList = [];
         this.visible = false;
+        this._products = [];
     }
     SearchQrComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
-                this.headerService.updatePageTitle("QR Kod Sorgulama");
+                this.headerService.updatePageTitle("Ürün & Qr Sorgulama");
                 this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
                     return __generator(this, function (_a) {
                         switch (_a.label) {
@@ -144,11 +147,12 @@ var SearchQrComponent = /** @class */ (function () {
     };
     SearchQrComponent.prototype.getProducts = function (barcode) {
         return __awaiter(this, void 0, void 0, function () {
-            var response, error_1;
+            var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 4, , 5]);
+                        if (!(this.generalService.isGuid(barcode) || barcode.includes('http'))) return [3 /*break*/, 4];
+                        this._products = [];
                         if (!(this.currentId || barcode)) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.productService.getQr(barcode)];
                     case 1:
@@ -156,12 +160,40 @@ var SearchQrComponent = /** @class */ (function () {
                         this.qrCodes = response;
                         return [2 /*return*/, response];
                     case 2: throw new library_1.Exception("id alanı boş");
-                    case 3: return [3 /*break*/, 5];
+                    case 3: return [3 /*break*/, 6];
                     case 4:
+                        this.qrCodes = [];
+                        return [4 /*yield*/, this.getProducts2(barcode)];
+                    case 5:
+                        _a.sent();
+                        _a.label = 6;
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    SearchQrComponent.prototype.getProducts2 = function (barcode) {
+        return __awaiter(this, void 0, void 0, function () {
+            var model, response, error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        if (barcode.includes("=")) {
+                            barcode = barcode.replace(/=/g, "-");
+                        }
+                        model = new product_service_1.BarcodeSearch_RM();
+                        model.barcode = barcode;
+                        return [4 /*yield*/, this.productService._searchProduct(model)];
+                    case 1:
+                        response = _a.sent();
+                        this._products = response;
+                        return [2 /*return*/, response];
+                    case 2:
                         error_1 = _a.sent();
                         console.log(error_1.message);
                         return [2 /*return*/, null];
-                    case 5: return [2 /*return*/];
+                    case 3: return [2 /*return*/];
                 }
             });
         });

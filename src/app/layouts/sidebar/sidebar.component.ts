@@ -11,8 +11,10 @@ export class SidebarComponent implements OnInit {
 
   constructor(private router: Router, private generalService: GeneralService) { }
   roleDescription: string;
+  userId: string;
   ngOnInit(): void {
     this.roleDescription = localStorage.getItem("roleDescription")
+    this.userId = localStorage.getItem("userId")
 
   }
   async routeNewPage() {
@@ -39,5 +41,18 @@ export class SidebarComponent implements OnInit {
     this.router.navigate(["/create-barcode/" + result])
   }
 
+  async routeNewPage5() {
+    const result = await this.generalService.generateGUID()
+    this.router.navigate(["/shelf-transfer-request/" + result +
+      "/0"
+    ])
+  }
+
+  async routeNewPage6() {
+    const result = await this.generalService.generateGUID()
+    this.router.navigate(["/fast-transfer/" + result
+
+    ])
+  }
 
 }

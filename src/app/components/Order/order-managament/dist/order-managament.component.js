@@ -45,8 +45,9 @@ exports.__esModule = true;
 exports.OrderManagamentComponent = void 0;
 var core_1 = require("@angular/core");
 var printerInvoiceRequestModel_1 = require("src/app/models/model/order/printerInvoiceRequestModel");
+var createBarcode_1 = require("../../Product/create-barcode/models/createBarcode");
 var OrderManagamentComponent = /** @class */ (function () {
-    function OrderManagamentComponent(headerService, httpClientService, toasterService, spinnerService, router, orderService, formBuilder, activatedRoute) {
+    function OrderManagamentComponent(headerService, httpClientService, toasterService, spinnerService, router, orderService, formBuilder, activatedRoute, productService) {
         this.headerService = headerService;
         this.httpClientService = httpClientService;
         this.toasterService = toasterService;
@@ -55,6 +56,7 @@ var OrderManagamentComponent = /** @class */ (function () {
         this.orderService = orderService;
         this.formBuilder = formBuilder;
         this.activatedRoute = activatedRoute;
+        this.productService = productService;
         this.numberOfList = [1, 10, 20, 50, 100];
         this.currentPage = 1;
         this.pageDescription = false;
@@ -62,6 +64,7 @@ var OrderManagamentComponent = /** @class */ (function () {
         this.pageDescriptionLine = "Alınan Siparişler";
         this.status = 1;
         this.invoiceStatus = 2;
+        this.visible = false;
     }
     OrderManagamentComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -107,7 +110,7 @@ var OrderManagamentComponent = /** @class */ (function () {
             this.pageDescriptionLine = "Faturalandırılan Siparişler";
         }
         if (this.status == 1 && this.invoiceStatus == 2) {
-            this.pageDescriptionLine = "Toplanabilir Faturalandırılmayan Siparişler";
+            this.pageDescriptionLine = "Toplanabilir Siparişler";
         }
         if (this.status == 0 && this.invoiceStatus == 3) {
             this.pageDescriptionLine = "Kısmi Faturalaştırılan Siparişler";
@@ -286,6 +289,34 @@ var OrderManagamentComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 this.router.navigate(["/order-operation/" + "MIS-" + orderNumber]);
                 return [2 /*return*/];
+            });
+        });
+    };
+    OrderManagamentComponent.prototype.showModal = function (operationNo) {
+        this.selectedOrderNo = operationNo;
+        this.visible = !this.visible;
+    };
+    OrderManagamentComponent.prototype.sendBarcodesToNebim = function (isPackage) {
+        return __awaiter(this, void 0, void 0, function () {
+            var request, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        request = new createBarcode_1.CreateBarcodeFromOrder_RM(isPackage);
+                        request.operationNo = this.selectedOrderNo;
+                        request.from = "order-operation";
+                        request.products = null;
+                        return [4 /*yield*/, this.productService.sendBarcodesToNebim(request)];
+                    case 1:
+                        response = _a.sent();
+                        if (response) {
+                            this.toasterService.success("İşlem Başarılı");
+                        }
+                        else {
+                            this.toasterService.error("İşlem Başarısız");
+                        }
+                        return [2 /*return*/];
+                }
             });
         });
     };

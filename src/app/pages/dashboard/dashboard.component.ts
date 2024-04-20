@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit } from '@angular/core';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { Raport_CR } from '../../models/model/raport/raport_CR';
 import { HeaderService } from '../../services/admin/header.service';
+import { style } from '@angular/animations';
 
 @Component({
   selector: 'app-dashboard',
@@ -68,6 +69,7 @@ export class DashboardComponent implements OnInit {
     };
 
     this.options = {
+
       maintainAspectRatio: false,
       aspectRatio: 0.5,
       plugins: {

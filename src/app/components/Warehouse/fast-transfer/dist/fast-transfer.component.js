@@ -47,27 +47,25 @@ var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
 var ClientUrls_1 = require("src/app/models/const/ClientUrls");
 var countProductRequestModel_1 = require("src/app/models/model/order/countProductRequestModel");
-var library_1 = require("@zxing/library");
 var qrOperationModel_1 = require("src/app/models/model/product/qrOperationModel");
 var FastTransferComponent = /** @class */ (function () {
-    function FastTransferComponent(formBuilder, toasterService, orderService, router, httpClient, spinnerService, productService, warehouseService, generalService, httpClientService, title, headerService) {
+    function FastTransferComponent(formBuilder, toasterService, orderService, router, httpClient, productService, warehouseService, generalService, httpClientService, title, headerService, activatedRoute) {
         this.formBuilder = formBuilder;
         this.toasterService = toasterService;
         this.orderService = orderService;
         this.router = router;
         this.httpClient = httpClient;
-        this.spinnerService = spinnerService;
         this.productService = productService;
         this.warehouseService = warehouseService;
         this.generalService = generalService;
         this.httpClientService = httpClientService;
         this.title = title;
         this.headerService = headerService;
+        this.activatedRoute = activatedRoute;
         this.lastCollectedProducts = [];
         this.collectedProducts = [];
         this.process = false;
         this.activeTab = 1;
-        // warehouseModels: WarehouseOperationDetailModel[] = [];
         this.pageDescription = null;
         this.shelfNumbers = 'RAFLAR:';
         this.url2 = ClientUrls_1.ClientUrls.baseUrl + '/Order/CountTransferProductPuschase';
@@ -77,11 +75,11 @@ var FastTransferComponent = /** @class */ (function () {
         this.warehouseModels = [];
         this.shelfNoList = [];
         this.barcodeValue = null; // Değişkeni tanımlayın
+        this.collectedFastTransferModels = [];
         this.offices = ["M", "U"];
         this.warehouses = ["MD", "UD"];
         this.qrBarcodeUrl = null;
         this.qrOperationModels = [];
-        this.codeReader = new library_1.BrowserMultiFormatReader();
     }
     FastTransferComponent.prototype.logger = function (event) {
         // Seçilen değeri alın
@@ -95,19 +93,87 @@ var FastTransferComponent = /** @class */ (function () {
     };
     FastTransferComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        this.title.setTitle('Raflar Arası Transfer');
-                        this.headerService.updatePageTitle('Raflar Arası Transfer');
-                        this.formGenerator();
-                        _a = this;
-                        return [4 /*yield*/, this.generalService.generateGUID()];
+            var _this = this;
+            return __generator(this, function (_a) {
+                this.title.setTitle('Raflar Arası Transfer');
+                this.headerService.updatePageTitle('Raflar Arası Transfer');
+                this.formGenerator();
+                // this.currentOrderNo = (await this.generalService.generateGUID()).toString();
+                this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                if (!params['operationNo']) return [3 /*break*/, 2];
+                                this.currentOrderNo = params['operationNo'];
+                                // this.toasterService.info('İşlem Numarası: ' + this.currentOrderNo);
+                                return [4 /*yield*/, this.getFastTransferModels()];
+                            case 1:
+                                // this.toasterService.info('İşlem Numarası: ' + this.currentOrderNo);
+                                _a.sent();
+                                _a.label = 2;
+                            case 2: return [2 /*return*/];
+                        }
+                    });
+                }); });
+                this.collectedProducts = [];
+                return [2 /*return*/];
+            });
+        });
+    };
+    FastTransferComponent.prototype.getFastTransferModels = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.warehouseService.getFastTransferModels(this.currentOrderNo)];
                     case 1:
-                        _a.currentOrderNo = (_b.sent()).toString();
-                        this.collectedProducts = [];
+                        response = _a.sent();
+                        if (response) {
+                            this.collectedFastTransferModels = response;
+                        }
                         return [2 /*return*/];
+                }
+            });
+        });
+    };
+    FastTransferComponent.prototype.deleteFastTransferModel = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.warehouseService.deleteFastTransferModel(request)];
+                    case 1:
+                        response = _a.sent();
+                        if (response) {
+                            this.toasterService.success("Başarılı");
+                            this.getFastTransferModels();
+                            return [2 /*return*/, true];
+                        }
+                        else {
+                            return [2 /*return*/, false];
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    FastTransferComponent.prototype.addFastTransferModel = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.warehouseService.addFastTransferModel(request)];
+                    case 1:
+                        response = _a.sent();
+                        if (!response) return [3 /*break*/, 3];
+                        this.toasterService.success("Başarılı");
+                        return [4 /*yield*/, this.getFastTransferModels()];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/, true];
+                    case 3:
+                        this.toasterService.error("Başarısız");
+                        return [2 /*return*/, false];
                 }
             });
         });
@@ -115,7 +181,7 @@ var FastTransferComponent = /** @class */ (function () {
     FastTransferComponent.prototype.calculateTotalQty = function () {
         //toplanan ürünler yazısı için
         var totalQty = 0;
-        this.collectedProducts.forEach(function (item) {
+        this.collectedFastTransferModels.forEach(function (item) {
             totalQty += item.quantity;
         });
         this.totalCount = totalQty;
@@ -285,11 +351,11 @@ var FastTransferComponent = /** @class */ (function () {
         });
     };
     FastTransferComponent.prototype.onSubmit = function (transferModel) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, Promise, function () {
-            var number, CONSTQTY, number, response2, qrmodelResponse, newResponse, shelves, response, qrResponse, response;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var number, CONSTQTY, number, response2, qrmodelResponse, newResponse, shelves, response, qrResponse, response, number;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         if (transferModel.barcode.includes("=")) {
                             transferModel.barcode = transferModel.barcode.replace(/=/g, "-");
@@ -298,7 +364,7 @@ var FastTransferComponent = /** @class */ (function () {
                             this.generalService.isGuid(transferModel.barcode))) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.setFormValues(transferModel.barcode, true)];
                     case 1:
-                        number = _c.sent();
+                        number = _d.sent();
                         this.qrBarcodeUrl = transferModel.barcode;
                         (_a = this.checkForm.get('quantity')) === null || _a === void 0 ? void 0 : _a.setValue(Number(number));
                         //this.onSubmit(this.checkForm.value);
@@ -307,37 +373,42 @@ var FastTransferComponent = /** @class */ (function () {
                         transferModel.operationId = this.currentOrderNo;
                         return [4 /*yield*/, this.getQuantity(transferModel.barcode)];
                     case 3:
-                        CONSTQTY = _c.sent();
-                        if (!(transferModel.barcode && !transferModel.shelfNo)) return [3 /*break*/, 5];
+                        CONSTQTY = _d.sent();
+                        if (!(transferModel.barcode && !transferModel.shelfNo || transferModel.barcode && !transferModel.batchCode)) return [3 /*break*/, 5];
                         return [4 /*yield*/, this.setFormValues(transferModel.barcode, true)];
                     case 4:
-                        number = _c.sent();
+                        number = _d.sent();
                         (_b = this.checkForm.get('quantity')) === null || _b === void 0 ? void 0 : _b.setValue(Number(number)); //quantity alanı dolduruldu
                         this.toasterService.success('Raflar Getirildi Ve Miktar Alanı Dolduruldu.');
-                        return [3 /*break*/, 17];
+                        return [3 /*break*/, 18];
                     case 5:
-                        if (!(transferModel.shelfNo != null)) return [3 /*break*/, 17];
+                        if (!(transferModel.shelfNo != null)) return [3 /*break*/, 18];
                         if (!(this.checkForm.valid === true)) return [3 /*break*/, 16];
                         return [4 /*yield*/, this.warehouseService.countProductRequest(transferModel.barcode, transferModel.shelfNo, transferModel.quantity == null
                                 ? Number(CONSTQTY)
                                 : transferModel.quantity, null, null, transferModel.batchCode, 'Order/CountProductControl', this.orderNo, '')];
                     case 6:
-                        response2 = _c.sent();
+                        response2 = _d.sent();
                         // barkod doğrulaması yapıldı CountProductControl
                         if (response2.status != 'Barcode') {
                             this.toasterService.error('Bu Qr Barkoduna Ait Barkod Bulunamadı');
                             return [2 /*return*/];
                         }
+                        else {
+                            transferModel.barcode = response2.description;
+                        }
                         return [4 /*yield*/, this.productService.qrControl(transferModel.barcode)];
                     case 7:
-                        qrmodelResponse = _c.sent();
+                        qrmodelResponse = _d.sent();
                         if (qrmodelResponse.batchCode) {
-                            transferModel.batchCode = qrmodelResponse.batchCode;
+                            if (transferModel.batchCode == null || transferModel.batchCode === '') {
+                                transferModel.batchCode = qrmodelResponse.batchCode;
+                            }
                             // transferModel.barcode = qrmodelResponse.barcode; //qr basılmadı
                         }
                         return [4 /*yield*/, this.productService.countProductByBarcode(transferModel.barcode)];
                     case 8:
-                        newResponse = _c.sent();
+                        newResponse = _d.sent();
                         shelves = newResponse[0]
                             .split(',')
                             .filter(function (raflar) { return raflar.trim() !== ''; })
@@ -347,13 +418,13 @@ var FastTransferComponent = /** @class */ (function () {
                             transferModel.quantity != null
                                 ? transferModel.quantity
                                 : Number(CONSTQTY);
-                        return [4 /*yield*/, this.warehouseService.fastTransfer(transferModel)];
+                        return [4 /*yield*/, this.addFastTransferModel(transferModel)];
                     case 9:
-                        response = _c.sent();
-                        if (!(response > 0)) return [3 /*break*/, 11];
+                        response = _d.sent();
+                        if (!(response === true)) return [3 /*break*/, 11];
                         return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, transferModel, Number(CONSTQTY), false, 'FT')];
                     case 10:
-                        qrResponse = _c.sent();
+                        qrResponse = _d.sent();
                         if (qrResponse != null && qrResponse.state === true) {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
                         }
@@ -361,13 +432,11 @@ var FastTransferComponent = /** @class */ (function () {
                             this.qrBarcodeUrl = null;
                         }
                         //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
-                        this.collectedProducts.push(transferModel);
-                        this.collectedProducts.reverse();
                         this.generalService.beep();
                         return [3 /*break*/, 12];
                     case 11:
                         this.toasterService.error('Ekleme Yapılmadı');
-                        _c.label = 12;
+                        _d.label = 12;
                     case 12:
                         this.clearForm();
                         return [3 /*break*/, 15];
@@ -376,45 +445,50 @@ var FastTransferComponent = /** @class */ (function () {
                         if (!transferModel.quantity) {
                             transferModel.quantity = Number(CONSTQTY);
                         }
-                        return [4 /*yield*/, this.warehouseService.fastTransfer(transferModel)];
+                        return [4 /*yield*/, this.addFastTransferModel(transferModel)];
                     case 14:
-                        response = _c.sent();
+                        response = _d.sent();
                         //RAFLAR ARASI TRANSFER YAPILDI----------------------------------
-                        if (response > 0) {
-                            this.collectedProducts.push(transferModel);
-                            this.collectedProducts.reverse();
+                        if (response == true) {
                             this.generalService.beep();
                         }
                         else {
                             this.toasterService.error('Ekleme Yapılmadı');
                         }
                         this.clearForm();
-                        _c.label = 15;
-                    case 15: return [3 /*break*/, 17];
-                    case 16:
-                        this.toasterService.error('Form Geçerli Değil');
-                        _c.label = 17;
-                    case 17: return [2 /*return*/];
+                        _d.label = 15;
+                    case 15: return [3 /*break*/, 18];
+                    case 16: return [4 /*yield*/, this.setFormValues(transferModel.barcode, true)];
+                    case 17:
+                        number = _d.sent();
+                        (_c = this.checkForm.get('quantity')) === null || _c === void 0 ? void 0 : _c.setValue(Number(number)); //quantity alanı dolduruldu
+                        if (this.checkForm.value.targetShelfNo == null || this.checkForm.value.targetShelfNo == '') {
+                            // this.generalService.whichRowIsInvalid(this.checkForm);
+                            this.toasterService.info("Hedef Raf Numarası Boş Olamaz");
+                            this.focusNextInput('targetShelfNo');
+                        }
+                        _d.label = 18;
+                    case 18: return [2 /*return*/];
                 }
             });
         });
     };
     FastTransferComponent.prototype.deleteFastTransfer = function (qrModel) {
         return __awaiter(this, void 0, void 0, function () {
-            var confirmDelete, shelfNo, response, model, qrOperationModel, qrOperationResponse;
+            var confirmDelete, response, model, qrOperationModel, qrOperationResponse;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         confirmDelete = window.confirm('Bu hareketi silmek istediğinizden emin misiniz?');
                         if (!confirmDelete) return [3 /*break*/, 4];
-                        shelfNo = qrModel.shelfNo;
-                        qrModel.shelfNo = qrModel.targetShelfNo;
-                        qrModel.targetShelfNo = shelfNo;
-                        return [4 /*yield*/, this.warehouseService.fastTransfer(qrModel)];
+                        return [4 /*yield*/, this.deleteFastTransferModel(qrModel.id)];
                     case 1:
                         response = _a.sent();
                         if (response) {
-                            this.deleteFromList(qrModel);
+                            this.generalService.beep3();
+                        }
+                        else {
+                            return [2 /*return*/];
                         }
                         model = new qrOperationModel_1.QrOperationModel();
                         qrOperationModel = new qrOperationModel_1.QrOperationModel();
@@ -452,22 +526,6 @@ var FastTransferComponent = /** @class */ (function () {
             });
         });
     };
-    FastTransferComponent.prototype.deleteFromList = function (model) {
-        // collectedProducrts dizisinde model'i bul
-        var index = this.collectedProducts.findIndex(function (p) {
-            return p.barcode == model.barcode &&
-                p.batchCode == model.batchCode &&
-                p.quantity == model.quantity &&
-                p.shelfNo == model.shelfNo &&
-                p.targetShelfNo == model.targetShelfNo;
-        });
-        // Eğer bulunduysa, diziden kaldır
-        if (index !== -1) {
-            this.collectedProducts.splice(index, 1);
-            this.calculateTotalQty();
-            this.toasterService.success('Ürün Silindi');
-        }
-    };
     FastTransferComponent.prototype.getQuantity = function (barcode) {
         return __awaiter(this, void 0, Promise, function () {
             var result;
@@ -504,24 +562,6 @@ var FastTransferComponent = /** @class */ (function () {
         this.qrBarcodeUrl = null;
         this.shelfNumbers = 'RAFLAR:';
         this.calculateTotalQty();
-    };
-    FastTransferComponent.prototype.deleteCountProduct = function (orderNo, itemCode) {
-        return __awaiter(this, void 0, Promise, function () {
-            var result, _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0: return [4 /*yield*/, this.productService.deleteProductFromFastTransfer(this.currentOrderNo, itemCode)];
-                    case 1:
-                        result = _b.sent();
-                        _a = this;
-                        return [4 /*yield*/, this.warehouseService.getGetAllFastTransferModelById(this.currentOrderNo)];
-                    case 2:
-                        _a.collectedProducts =
-                            _b.sent();
-                        return [2 /*return*/, false];
-                }
-            });
-        });
     };
     FastTransferComponent = __decorate([
         core_1.Component({

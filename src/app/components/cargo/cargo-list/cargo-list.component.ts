@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { CargoBarcode_VM, GetPackageStatus_MNG_Response } from '../create-cargo/models/models';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { CargoService } from 'src/app/services/admin/cargo.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
+import { CargoBarcode_VM, GetPackageStatus_MNG_Response } from '../create-cargo/models/models';
 
 @Component({
   selector: 'app-cargo-list',
@@ -25,9 +25,9 @@ export class CargoListComponent implements OnInit {
     this.cargoState = isPrinted;
     this.cargos = await this.cargoService.getShippedCargos(this.cargoState);
   }
-  async printSingleBarcode(zplCode) {
-    var response = await this.cargoService.printSingleBarcode(zplCode);
-  }
+  // async printSingleBarcode(zplCode) {
+  //   var response = await this.cargoService.printSingleBarcode(zplCode);
+  // }
 
   async deleteCargo(cargo: CargoBarcode_VM, cargoFirmId: number) {
     var windowResponse = window.confirm("Gönderiyi silmek istediğinize emin misiniz?")
@@ -59,11 +59,15 @@ export class CargoListComponent implements OnInit {
 
 
   async createBarcode(referenceId: string) {
-    var response = await this.cargoService.createBarcode(referenceId);
-    if (response) {
-      this.toasterService.success("BARKOD YAZDIRILDI");
 
-      this.getCargos(this.cargoState);
+    if (window.confirm("Barkod yazdırmak istediğinize emin misiniz?")) {
+      var response = await this.cargoService.createBarcode(referenceId);
+      if (response) {
+        this.toasterService.success("BARKOD YAZDIRILDI");
+
+        this.getCargos(this.cargoState);
+      }
     }
+
   }
 }

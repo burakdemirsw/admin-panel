@@ -118,6 +118,9 @@
                           id="shelfNo"
                           class="form-control"
                           formControlName="shelfNo"
+                          placeholder="{{
+                            shelfNumbers != 'RAFLAR:' ? shelfNumbers : 'Raf No'
+                          }}"
                           (keydown.enter)="focusNextInput('barcode')"
                         />
                         <div class="input-group-append">
@@ -132,9 +135,9 @@
                       </div>
                     </div>
                   </div>
-                  <div *ngIf="shelfNumbers !== 'RAFLAR:'" class="text">
+                  <!-- <div *ngIf="shelfNumbers !== 'RAFLAR:'" class="text">
                     {{ shelfNumbers }}
-                  </div>
+                  </div> -->
                   <div class="row mb-1">
                     <div class="form-group">
                       <label for="barcode">Barkod:</label>

@@ -1,5 +1,3 @@
-import { ProductList_VM } from "src/app/models/model/product/productList_VM";
-import { ExchangeRate } from '../../../../models/model/order/exchangeRate';
 
 export class CheckOrderModel {
   orderHeaderID: string;
@@ -84,7 +82,15 @@ export class NebimOrder {
       line.itemCode = p.itemCode;
       this.lines.push(line);
     });
+    if (salesPersonCode == 'MD') {
+      var payment: Payment = new Payment()
+      payment.paymentType = "NAKIT";
+      payment.code = "TRD";
+      payment.currencyCode = "TRY";
+      payment.amount = this.lines.reduce((a, b) => a + (b.price) * b.qty1, 0);
 
+    }
+    // this.payments = [];
     this.discounts.push(new Discount(discountPercentage));
 
   }

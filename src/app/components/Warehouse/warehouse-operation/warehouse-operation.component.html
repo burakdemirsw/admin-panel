@@ -30,7 +30,7 @@
                     <td>{{ item.uD_Stock }}</td>
                     <td>{{ item.mD_Stock }}</td>
 
-                    <!-- <td>{{ item.itemDescription }}</td> -->
+                    <td>{{ item.itemDescription }}</td>
                     <td>{{ item.barcode }}</td>
                     <td>
                       <div class="btn-group" role="group">
@@ -155,7 +155,9 @@
                 <div class="form-group">
                   <div class="input-group">
                     <input
-                      placeholder="Raf No"
+                      placeholder="{{
+                        shelfNumbers != 'RAFLAR:' ? shelfNumbers : 'Raf No'
+                      }}"
                       pInputText
                       type="text"
                       id="shelfNo"
@@ -175,9 +177,9 @@
                     </div>
                   </div>
                 </div>
-                <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
+                <!-- <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
                   shelfNumbers
-                }}</label>
+                }}</label> -->
               </div>
               <!-- Diğer inputlar -->
               <div class="row mb-3">
@@ -271,11 +273,9 @@
                     </td>
                     <td>{{ item.shelfNo }}</td>
                     <td>{{ item.itemCode }}</td>
+                    <td>{{ item.transferQty }}</td>
                     <td>{{ item.uD_Stock }}</td>
                     <td>{{ item.mD_Stock }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <!-- <td>{{ item.udStock }}</td>
-                    <td>{{ item.mdStock }}</td> -->
 
                     <td>{{ item.itemDescription }}</td>
                     <td>{{ item.barcode }}</td>

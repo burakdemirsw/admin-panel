@@ -1,13 +1,10 @@
-import { PostalAddress } from '../../../../models/nebim/customer/nebimCustomer';
-export class CreateCustomer_CM {
-  // name: string;
-  // surname: string;
+import { PostalAddress } from "../../nebim/customer/nebimCustomer";
 
+export class CreateCustomer_CM {
   currAccDescription: string;
   taxNumber: string;
   taxOfficeCode: string;
   mersisNum: string;
-
   mail: string;
   phoneNumber: string;
   firmDescription: string;

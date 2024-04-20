@@ -106,7 +106,7 @@ var InvoiceListComponent = /** @class */ (function () {
                 switch (_b.label) {
                     case 0:
                         _a = this;
-                        return [4 /*yield*/, this.warehouseService.getInvoiceListByFilter(model)];
+                        return [4 /*yield*/, this.orderService.getInvoiceListByFilter(model)];
                     case 1:
                         _a.countList = _b.sent();
                         return [2 /*return*/];
@@ -181,7 +181,7 @@ var InvoiceListComponent = /** @class */ (function () {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
                         _a = this;
-                        return [4 /*yield*/, this.warehouseService.getInvoiceList()];
+                        return [4 /*yield*/, this.orderService.getInvoiceList()];
                     case 1:
                         _a.countList = _b.sent();
                         return [3 /*break*/, 3];

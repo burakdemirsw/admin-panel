@@ -1,10 +1,8 @@
 @import "../node_modules/ngx-spinner/animations/ball-scale-multiple.css";
 @import "../node_modules/ngx-spinner/animations/line-scale-pulse-out.css";
-
 @import "primeng/resources/themes/lara-light-blue/theme.css";
 @import "primeng/resources/primeng.css";
 @import "../node_modules/primeicons/primeicons.css";
-
 @import "../node_modules/@ng-select/ng-select/themes/default.theme.css";
 
 /* @import "../node_modules/@ng-select/ng-select/themes/material.theme.css"; */
@@ -33,6 +31,12 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
 }
+
+.card-title {
+  padding: 5px !important;
+}
+
+
 
 /* Özel Renkler (Ornek) */
 .custom-btn-primary {

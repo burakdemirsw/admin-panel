@@ -142,6 +142,7 @@ export class WarehouseOperationComponent implements OnInit {
     'Transfer Miktarı',
     'UD Stok',
     'MD Stok',
+    'Ürün',
     'Barkod',
     'İşlemler',
   ];

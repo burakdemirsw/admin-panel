@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
-import { PrinterInvoiceRequestModel } from 'src/app/models/model/order/printerInvoiceRequestModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { CreateBarcodeFromOrder_RM } from '../../Product/create-barcode/models/createBarcode';
+import { Product } from 'src/app/models/model/product/product';
+import { ProductService } from 'src/app/services/admin/product.service';
 
 @Component({
   selector: 'app-purchase-order-managament',
@@ -25,7 +26,8 @@ export class PurchaseOrderManagamentComponent implements OnInit {
     private toasterService: ToasterService,
     private router: Router,
     private orderService: OrderService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private productService: ProductService
 
 
 
@@ -104,5 +106,23 @@ export class PurchaseOrderManagamentComponent implements OnInit {
 
   }
 
+  visible: boolean = false;
+  selectedOrderNo: string;
+  showModal(operationNo: string) {
+    this.selectedOrderNo = operationNo;
+    this.visible = !this.visible;
+  }
+  async sendBarcodesToNebim(isPackage: boolean) {
+    var request = new CreateBarcodeFromOrder_RM(isPackage)
+    request.operationNo = this.selectedOrderNo;
+    request.from = "order-operation";
+    request.products = null;
+    var response = await this.productService.sendBarcodesToNebim(request);
+    if (response) {
+      this.toasterService.success("İşlem Başarılı")
+    } else {
+      this.toasterService.error("İşlem Başarısız")
+    }
+  }
 
 }

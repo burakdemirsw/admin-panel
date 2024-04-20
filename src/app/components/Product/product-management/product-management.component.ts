@@ -19,7 +19,7 @@ declare var window: any;
   styleUrls: ['./product-management.component.css'],
 })
 export class ProductManagementComponent implements OnInit {
-  products: ProductList_VM[] = [];
+
   showImage = false; // add this property
   view = true;
   constructor(
@@ -106,7 +106,7 @@ export class ProductManagementComponent implements OnInit {
   openShelvesModal(id: any) {
     this.visible = true;
   }
-
+  products: ProductList_VM[] = [];
   async getProducts(barcode: string) {
     try {
 

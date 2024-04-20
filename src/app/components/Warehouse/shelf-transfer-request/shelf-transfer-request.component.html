@@ -15,7 +15,7 @@
       <div style="width: 100%">
         <div class="card" *ngIf="_transferProducts.length > 0">
           <div class="card-body">
-            <h5 class="card-title">Toplanacak Ürünler</h5>
+            <h1 class="card-title">Toplanacak Ürünler</h1>
             <div class="table-responsive">
               <table class="table">
                 <thead>
@@ -46,27 +46,33 @@
                     <td>{{ product.barcode }}</td>
                     <td>{{ product.drawerCount }}</td>
                     <td>
-                      <button
-                        class="btn btn-primary"
-                        type="submit"
-                        (click)="
-                          goDown2(
-                            product.barcode,
-                            product.shelfNo,
-                            product.itemCode,
-                            product.transferQuantity
-                          )
-                        "
+                      <div
+                        class="btn-group"
+                        role="group"
+                        aria-label="Button Group"
                       >
-                        <i class="fa fa-angle-down"> </i>
-                      </button>
-                      <button
-                        class="btn btn-primary"
-                        type="submit"
-                        (click)="addDeletedItemList(product)"
-                      >
-                        <i class="fa fa-trash"></i>
-                      </button>
+                        <button
+                          class="btn btn-primary"
+                          type="submit"
+                          (click)="
+                            goDown2(
+                              product.barcode,
+                              product.shelfNo,
+                              product.itemCode,
+                              product.transferQuantity
+                            )
+                          "
+                        >
+                          <i class="fa fa-angle-down"></i>
+                        </button>
+                        <button
+                          class="btn btn-primary"
+                          type="submit"
+                          (click)="addDeletedItemList(product)"
+                        >
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -117,7 +123,7 @@
               [formGroup]="checkForm"
               (ngSubmit)="onSubmit(checkForm.value)"
             >
-              <div class="row mb-3">
+              <div class="row">
                 <div class="col-md-12">
                   <h5 class="card-title">Alınacak Ürün</h5>
                   <hr />
@@ -217,7 +223,7 @@
               </div>
 
               <!-- Gönderilecek Raf -->
-              <div class="row mb-3">
+              <div class="row">
                 <div class="col-md-12">
                   <h5>Gönderilecek Raf</h5>
                   <hr />
@@ -229,27 +235,30 @@
                   <div class="input-group">
                     <input
                       pInputText
-                      placeholder="Hedef Raf No"
-                      type="text"
+                      placeholder="{{
+                        shelfNumbers != 'RAFLAR:' ? shelfNumbers : 'Raf No'
+                      }}"
+                      type="search"
                       id="targetShelfNo"
                       class="form-control"
                       formControlName="targetShelfNo"
                       (keydown.enter)="onSubmit(checkForm.value)"
                     />
-                    <div class="input-group-append">
+                    <!-- <div class="input-group-append">
                       <button
                         type="button"
                         (click)="clearTargetShelfNumber()"
                         class="btn btn-dark"
+                        style="height: 100%"
                       >
                         Tüm Formu Temizle
                       </button>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
-                <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
+                <!-- <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
                   shelfNumbers
-                }}</label>
+                }}</label> -->
               </div>
               <div class="row mb-3">
                 <div class="form-group col">
@@ -257,7 +266,7 @@
                     <button
                       type="button"
                       class="btn btn-primary"
-                      style="width: 100%; margin-top: 1%"
+                      style="width: 100%"
                       (click)="onSubmit(checkForm.value)"
                     >
                       Ekle
@@ -270,7 +279,7 @@
                     <button
                       type="button"
                       class="btn btn-dark"
-                      style="width: 100%; margin-top: 1%"
+                      style="width: 100%"
                       (click)="finishTransfer(checkForm.value)"
                     >
                       Transferi Tamamla
@@ -296,6 +305,14 @@
         <div class="card" *ngIf="transferProducts.length > 0">
           <div class="card-body">
             <h5 class="card-title">Toplanacak Ürünler</h5>
+            <!-- Arama kutusu -->
+            <input
+              type="text"
+              [(ngModel)]="searchText"
+              placeholder="Ara..."
+              class="form-control mb-3"
+            />
+
             <div class="table-responsive">
               <table class="table">
                 <thead>
@@ -309,14 +326,15 @@
                   <tr
                     *ngFor="
                       let product of transferProducts
+                        | fastTransfer
+                          : searchText
+                          : ['targetShelf', 'itemCode']
                         | paginate
                           : { itemsPerPage: 10, currentPage: currentPage };
                       let i = index
                     "
                   >
-                    <td>
-                      {{ i + 1 }}
-                    </td>
+                    <td>{{ i + 1 }}</td>
                     <td>{{ product.itemCode }}</td>
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.transferQuantity }}</td>
@@ -343,7 +361,7 @@
           </div>
         </div>
 
-        <div class="card" *ngIf="collectedProducts.length > 0">
+        <div class="card" *ngIf="collectedFastTransferModels.length > 0">
           <div class="card-body">
             <h5 class="card-title">Toplanan Ürünler</h5>
             <div class="table-responsive">
@@ -351,7 +369,9 @@
                 <thead>
                   <tr>
                     <th scope="col">Id</th>
-                    <!-- <th scope="col">Fotoğraf</th> -->
+                    <th scope="col">Fotoğraf</th>
+                    <th scope="col">Ürün</th>
+                    <th scope="col">Stok Kodu</th>
 
                     <th scope="col">Raf Numarası</th>
                     <th scope="col">Barkod</th>
@@ -362,15 +382,26 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let product of collectedProducts; let i = index">
+                  <tr
+                    *ngFor="
+                      let product of collectedFastTransferModels;
+                      let i = index
+                    "
+                  >
                     <td>
                       {{ i + 1 }}
                     </td>
-
-                    <!-- <td>
-                        <img src="null" alt="Resim" width="50" height="50" (click)="openImageModal(null)">
-
-                      </td> -->
+                    <td>
+                      <img
+                        src="{{ product.photoUrl }}"
+                        alt="Resim"
+                        width="50"
+                        height="50"
+                        (click)="openImageModal(product.photoUrl)"
+                      />
+                    </td>
+                    <td>{{ product.description }}</td>
+                    <td>{{ product.itemCode }}</td>
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.barcode }}</td>
                     <td>{{ product.quantity }}</td>

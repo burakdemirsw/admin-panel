@@ -83,7 +83,9 @@
                   <div class="input-group">
                     <input
                       pInputText
-                      placeholder="Raf No"
+                      placeholder="{{
+                        shelfNumbers != 'RAFLAR:' ? shelfNumbers : 'Raf No'
+                      }}"
                       type="text"
                       id="shelfNo"
                       class="form-control"
@@ -102,9 +104,9 @@
                     </div>
                   </div>
                 </div>
-                <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
+                <!-- <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
                   shelfNumbers
-                }}</label>
+                }}</label> -->
               </div>
               <div class="row mb-3">
                 <div class="form-group">

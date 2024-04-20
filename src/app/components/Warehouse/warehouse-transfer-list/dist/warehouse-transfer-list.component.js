@@ -45,18 +45,20 @@ exports.__esModule = true;
 exports.WarehouseTransferListComponent = void 0;
 var core_1 = require("@angular/core");
 var warehouseTransferListFilterModel_1 = require("src/app/models/model/filter/warehouseTransferListFilterModel");
+var createBarcode_1 = require("../../Product/create-barcode/models/createBarcode");
 var WarehouseTransferListComponent = /** @class */ (function () {
-    function WarehouseTransferListComponent(hs, httpClientService, toasterService, spinnerService, router, warehosueService, formBuilder, generalService) {
+    function WarehouseTransferListComponent(hs, httpClientService, toasterService, productService, router, warehosueService, formBuilder, generalService) {
         this.hs = hs;
         this.httpClientService = httpClientService;
         this.toasterService = toasterService;
-        this.spinnerService = spinnerService;
+        this.productService = productService;
         this.router = router;
         this.warehosueService = warehosueService;
         this.formBuilder = formBuilder;
         this.generalService = generalService;
         this.currentPage = 1;
         this.innerNumberList = [];
+        this.visible = false;
     }
     WarehouseTransferListComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -190,6 +192,48 @@ var WarehouseTransferListComponent = /** @class */ (function () {
                         console.log(error_1.message);
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    WarehouseTransferListComponent.prototype.showModal = function (operationNo) {
+        this.selectedOrderNo = operationNo;
+        this.visible = !this.visible;
+    };
+    WarehouseTransferListComponent.prototype.sendBarcodesToNebim = function (isPackage) {
+        return __awaiter(this, void 0, void 0, function () {
+            var request, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        request = new createBarcode_1.CreateBarcodeFromOrder_RM(isPackage);
+                        request.operationNo = this.selectedOrderNo;
+                        request.from = "warehouse-operation";
+                        request.products = null;
+                        return [4 /*yield*/, this.productService.sendBarcodesToNebim(request)];
+                    case 1:
+                        response = _a.sent();
+                        if (response) {
+                            this.toasterService.success("İşlem Başarılı");
+                        }
+                        else {
+                            this.toasterService.error("İşlem Başarısız");
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    WarehouseTransferListComponent.prototype.routeNewPage2 = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.generalService.generateGUID()];
+                    case 1:
+                        result = _a.sent();
+                        this.router.navigate(["/warehouse-operation/" + "REQ-" + result + "/0"]);
+                        return [2 /*return*/];
                 }
             });
         });

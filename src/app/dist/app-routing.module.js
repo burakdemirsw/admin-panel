@@ -58,6 +58,8 @@ var pages_loginv2_component_1 = require("./pages/pages-loginv2/pages-loginv2.com
 var pages_register_component_1 = require("./pages/pages-register/pages-register.component");
 var users_profile_component_1 = require("./pages/users-profile/users-profile.component");
 var create_barcode_component_1 = require("./components/Product/create-barcode/create-barcode.component");
+var fast_transfer_list_component_1 = require("./components/Warehouse/fast-transfer/fast-transfer-list/fast-transfer-list.component");
+var retail_invoice_list_component_1 = require("./components2/invoice/retail-invoice-list/retail-invoice-list.component");
 var routes = [
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     {
@@ -210,6 +212,11 @@ var routes = [
         canActivate: [auth_guard_1.AuthGuard]
     },
     {
+        path: 'fast-transfer-list',
+        component: fast_transfer_list_component_1.FastTransferListComponent,
+        canActivate: [auth_guard_1.AuthGuard]
+    },
+    {
         path: 'warehouse-operation/:number/:type',
         component: warehouse_operation_component_1.WarehouseOperationComponent,
         canActivate: [auth_guard_1.AuthGuard]
@@ -257,7 +264,7 @@ var routes = [
         canActivate: [auth_guard_1.AuthGuard]
     },
     {
-        path: 'fast-transfer',
+        path: 'fast-transfer/:operationNo',
         component: fast_transfer_component_1.FastTransferComponent,
         canActivate: [auth_guard_1.AuthGuard]
     },
@@ -273,7 +280,7 @@ var routes = [
         canActivate: [auth_guard_1.AuthGuard]
     },
     {
-        path: 'shelf-transfer-request/:type',
+        path: 'shelf-transfer-request/:operationNo/:type',
         component: shelf_transfer_request_component_1.ShelfTransferRequestComponent,
         canActivate: [auth_guard_1.AuthGuard]
     },
@@ -289,6 +296,8 @@ var routes = [
     { path: 'nebim-stock-control', component: nebim_stock_control_component_1.NebimStockControlComponent },
     { path: 'nebim-product-extract', component: nebim_product_extract_component_1.NebimProductExtractComponent },
     { path: 'create-barcode/:operationNo', component: create_barcode_component_1.CreateBarcodeComponent },
+    //-------------------------------------------------------------------------
+    { path: 'retail-invoice-list', component: retail_invoice_list_component_1.RetailInvoiceListComponent },
     { path: '**', component: pages_error404_component_1.PagesError404Component },
 ];
 var AppRoutingModule = /** @class */ (function () {

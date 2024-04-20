@@ -1,19 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MenuItem } from 'primeng/api';
-import { CustomerAddress_VM, CustomerList_VM, GetCustomerAddress_CM } from 'src/app/models/model/order/getCustomerList_CM';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { Address_VM } from 'src/app/models/model/order/ViewModel/provinceVM';
+import { CustomerAddress_VM, GetCustomerAddress_CM } from 'src/app/models/model/order/getCustomerList_CM';
+import { AddressService } from 'src/app/services/admin/address.service';
+import { CargoService } from 'src/app/services/admin/cargo.service';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
-import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from './models/models';
-import { Address_VM } from 'src/app/models/model/order/ViewModel/provinceVM';
-import { AddressService } from 'src/app/services/admin/address.service';
+import { AddCustomerAddress_CM } from '../../../models/model/order/createCustomer_CM';
 import { PostalAddress } from '../../../models/nebim/customer/nebimCustomer';
-import { CargoService } from 'src/app/services/admin/cargo.service';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { AddCustomerAddress_CM } from '../../Order/create-order/models/createCustomer_CM';
+import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from './models/models';
 
 @Component({
   selector: 'app-create-cargo',

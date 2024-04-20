@@ -213,38 +213,6 @@ var WarehouseService = /** @class */ (function () {
             });
         });
     };
-    //fatura listesini çeker
-    WarehouseService.prototype.getInvoiceList = function () {
-        return __awaiter(this, void 0, Promise, function () {
-            var data;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.httpClientService
-                            .get({ controller: 'Order/GetInvoiceList' }) //Get_InvoicesList
-                            .toPromise()];
-                    case 1:
-                        data = _a.sent();
-                        return [2 /*return*/, data];
-                }
-            });
-        });
-    };
-    //fatura listesini filtreye göre çeker
-    WarehouseService.prototype.getInvoiceListByFilter = function (model) {
-        return __awaiter(this, void 0, Promise, function () {
-            var data;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.httpClientService
-                            .post({ controller: 'Order/GetInvoiceListByFilter' }, model)
-                            .toPromise()];
-                    case 1:
-                        data = _a.sent();
-                        return [2 /*return*/, data];
-                }
-            });
-        });
-    };
     //sayım ürünklerini çeker 100 adet
     WarehouseService.prototype.getProductOfCount = function (orderNo) {
         return __awaiter(this, void 0, Promise, function () {
@@ -350,18 +318,12 @@ var WarehouseService = /** @class */ (function () {
         return __awaiter(this, void 0, Promise, function () {
             var data;
             return __generator(this, function (_a) {
-                try {
-                    data = this.httpClientService
-                        .get({
-                        controller: 'Warehouse/GetWarehosueOperationList'
-                    }, status)
-                        .toPromise();
-                    return [2 /*return*/, data];
-                }
-                catch (error) {
-                    console.log(error.message);
-                }
-                return [2 /*return*/];
+                data = this.httpClientService
+                    .get({
+                    controller: 'Warehouse/GetWarehosueOperationList'
+                }, status)
+                    .toPromise();
+                return [2 /*return*/, data];
             });
         });
     };
@@ -369,18 +331,12 @@ var WarehouseService = /** @class */ (function () {
         return __awaiter(this, void 0, Promise, function () {
             var data;
             return __generator(this, function (_a) {
-                try {
-                    data = this.httpClientService
-                        .get({
-                        controller: 'Warehouse/getWarehosueOperationListByInnerNumber'
-                    }, innerNumber)
-                        .toPromise();
-                    return [2 /*return*/, data];
-                }
-                catch (error) {
-                    console.log(error.message);
-                }
-                return [2 /*return*/];
+                data = this.httpClientService
+                    .get({
+                    controller: 'Warehouse/getWarehosueOperationListByInnerNumber'
+                }, innerNumber)
+                    .toPromise();
+                return [2 /*return*/, data];
             });
         });
     };
@@ -389,18 +345,12 @@ var WarehouseService = /** @class */ (function () {
         return __awaiter(this, void 0, Promise, function () {
             var data;
             return __generator(this, function (_a) {
-                try {
-                    data = this.httpClientService
-                        .post({
-                        controller: 'Warehouse/GetWarehosueOperationListByFilter'
-                    }, model)
-                        .toPromise();
-                    return [2 /*return*/, data];
-                }
-                catch (error) {
-                    console.log(error.message);
-                }
-                return [2 /*return*/];
+                data = this.httpClientService
+                    .post({
+                    controller: 'Warehouse/GetWarehosueOperationListByFilter'
+                }, model)
+                    .toPromise();
+                return [2 /*return*/, data];
             });
         });
     };
@@ -409,42 +359,29 @@ var WarehouseService = /** @class */ (function () {
         return __awaiter(this, void 0, Promise, function () {
             var data;
             return __generator(this, function (_a) {
-                try {
-                    data = this.httpClientService
-                        .post({
-                        controller: 'Warehouse/GetWarehosueTransferList'
-                    }, model)
-                        .toPromise();
-                    return [2 /*return*/, data];
-                }
-                catch (error) {
-                    console.log(error.message);
-                }
-                return [2 /*return*/];
+                data = this.httpClientService
+                    .post({
+                    controller: 'Warehouse/GetWarehosueTransferList'
+                }, model)
+                    .toPromise();
+                return [2 /*return*/, data];
             });
         });
     };
     //transfer işlemi
     WarehouseService.prototype.transfer = function (model) {
         return __awaiter(this, void 0, Promise, function () {
-            var result, error_4;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService
-                                .post({
-                                controller: 'Warehouse/Transfer'
-                            }, model)
-                                .toPromise()];
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .post({
+                            controller: 'Warehouse/Transfer'
+                        }, model)
+                            .toPromise()];
                     case 1:
                         result = _a.sent();
                         return [2 /*return*/, result];
-                    case 2:
-                        error_4 = _a.sent();
-                        console.log(error_4.message);
-                        return [2 /*return*/, null];
-                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -452,31 +389,24 @@ var WarehouseService = /** @class */ (function () {
     //deleteCountById
     WarehouseService.prototype.deleteTransferFromId = function (id) {
         return __awaiter(this, void 0, Promise, function () {
-            var result, error_5;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService
-                                .get({
-                                controller: 'Warehouse/DeleteWarehouseTransferById/' + id
-                            })
-                                .toPromise()];
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({
+                            controller: 'Warehouse/DeleteWarehouseTransferById/' + id
+                        })
+                            .toPromise()];
                     case 1:
                         result = _a.sent();
                         return [2 /*return*/, result];
-                    case 2:
-                        error_5 = _a.sent();
-                        console.log(error_5.message);
-                        return [2 /*return*/, null];
-                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     WarehouseService.prototype.deleteCountFromId = function (id) {
         return __awaiter(this, void 0, Promise, function () {
-            var result, error_6;
+            var result, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -490,8 +420,8 @@ var WarehouseService = /** @class */ (function () {
                         result = _a.sent();
                         return [2 /*return*/, result];
                     case 2:
-                        error_6 = _a.sent();
-                        console.log(error_6.message);
+                        error_4 = _a.sent();
+                        console.log(error_4.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -502,19 +432,12 @@ var WarehouseService = /** @class */ (function () {
         return __awaiter(this, void 0, Promise, function () {
             var response;
             return __generator(this, function (_a) {
-                try {
-                    response = this.httpClientService
-                        .get({
-                        controller: 'Warehouse/TransferRequestList'
-                    }, type)
-                        .toPromise();
-                    return [2 /*return*/, response];
-                }
-                catch (error) {
-                    console.log(error.message);
-                    return [2 /*return*/, null];
-                }
-                return [2 /*return*/];
+                response = this.httpClientService
+                    .get({
+                    controller: 'Warehouse/TransferRequestList'
+                }, type)
+                    .toPromise();
+                return [2 /*return*/, response];
             });
         });
     };
@@ -522,22 +445,79 @@ var WarehouseService = /** @class */ (function () {
     // Get_MSRAFWillBeCounted
     WarehouseService.prototype.getAvailableShelves = function () {
         return __awaiter(this, void 0, Promise, function () {
-            var data, error_7;
+            var data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService
-                                .get({ controller: 'Order/GetAvailableShelves' })
-                                .toPromise()];
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({ controller: 'Order/GetAvailableShelves' })
+                            .toPromise()];
                     case 1:
                         data = _a.sent();
                         return [2 /*return*/, data];
-                    case 2:
-                        error_7 = _a.sent();
-                        console.log(error_7.message);
-                        return [2 /*return*/, null];
-                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    //raflar arası transfer ----------------------------------------------------
+    WarehouseService.prototype.addFastTransferModel = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .post({ controller: 'Warehouse/add-fast-transfer-model' }, request)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    WarehouseService.prototype.deleteFastTransferModel = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({ controller: 'Warehouse/delete-fast-transfer-model' }, request)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    WarehouseService.prototype.getFastTransferModels = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({ controller: 'Warehouse/get-fast-transfer-models' }, request)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    // Get fast transfer list models
+    WarehouseService.prototype.getFastTransferListModels = function () {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({
+                            controller: 'Warehouse/get-fast-transfer-list'
+                        })
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
                 }
             });
         });
