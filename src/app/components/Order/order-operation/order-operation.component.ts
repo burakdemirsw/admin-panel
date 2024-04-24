@@ -149,6 +149,7 @@ export class OrderOperationComponent implements OnInit {
       this.setPageDescription(orderNumberType);
     });
   }
+  //selam ben burak
   async addOrderStatus() {
     var request = new OrderStatus();
     request.id = await this.generalService.generateGUID();

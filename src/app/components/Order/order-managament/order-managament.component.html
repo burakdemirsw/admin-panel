@@ -21,11 +21,12 @@
             [formGroup]="filterForm"
             (ngSubmit)="onSubmit(filterForm.value)"
           >
-            <div class="row">
+            <div class="row mb-3">
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="orderNo">Sipariş Numarası</label>
                   <input
+                    pInputText
+                    placeholder="Sipariş Numarası"
                     type="text"
                     id="orderNo"
                     class="form-control"
@@ -35,8 +36,9 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="currAccCode"> Müşteri Kodu</label>
                   <input
+                    pInputText
+                    placeholder="Müşteri Kodu"
                     type="text"
                     id="currAccCode"
                     class="form-control"
@@ -47,8 +49,9 @@
 
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="customerName">Müşteri Adı</label>
                   <input
+                    pInputText
+                    placeholder="Müşteri Adı"
                     type="text"
                     id="customerName"
                     class="form-control"
@@ -57,11 +60,12 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div class="row mb-3">
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="sellerCode">Satıcı Kodu</label>
                   <input
+                    pInputText
+                    placeholder="Satıcı Kodu"
                     type="text"
                     id="sellerCode"
                     class="form-control"
@@ -71,8 +75,9 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="startDate">İşlem Başlangıç Tarihi:</label>
                   <input
+                    pInputText
+                    placeholder="İşlem Başlangıç Tarihi"
                     type="date"
                     id="startDate"
                     class="form-control"
@@ -82,8 +87,9 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="endDate">İşlem Bitiş Tarihi:</label>
                   <input
+                    pInputText
+                    placeholder="İşlem Bitiş Tarihi"
                     type="date"
                     id="endDate"
                     class="form-control"
