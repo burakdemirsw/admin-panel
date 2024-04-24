@@ -55,6 +55,7 @@ var InvoiceListComponent = /** @class */ (function () {
         this.generalService = generalService;
         this.formBuilder = formBuilder;
         this.orderService = orderService;
+        this.offices = ["Alış", "Satış"];
         this.barcode = null;
         this.quantity = null;
         this.currentPage = 1; // Başlangıçta ilk sayfayı göster

@@ -37,11 +37,6 @@
         </div> -->
         <!-- RAFLAR KALDIRILDI -->
 
-        <div class="card" *ngIf="blocked">
-          <div class="card-body">
-            <h5 class="card-title">SATIR SAYISI 100'E ULAŞTI</h5>
-          </div>
-        </div>
         <div class="card" *ngIf="!blocked">
           <div class="card-body">
             <form
@@ -56,16 +51,6 @@
                     [showClear]="true"
                     placeholder="Ofis"
                   ></p-dropdown>
-
-                  <!-- <select
-                        id="office"
-                        class="form-select"
-                        aria-label="Default select example"
-                      >
-                        <option selected disabled>Hangi Ofis</option>
-                        <option value="M">M</option>
-                        <option value="U">U</option>
-                      </select> -->
                 </div>
 
                 <div class="form-group col">
@@ -104,9 +89,6 @@
                     </div>
                   </div>
                 </div>
-                <!-- <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
-                  shelfNumbers
-                }}</label> -->
               </div>
               <div class="row mb-3">
                 <div class="form-group">
@@ -222,7 +204,6 @@
         <div class="card" *ngIf="infoProducts.length > 0">
           <div class="card-body">
             <h5 class="card-title">Bilgilendirme Alanı</h5>
-            <!-- <h1 class="card-title">Toplanacak Siparişler</h1> -->
             <div class="table-responsive">
               <table class="table">
                 <thead>
@@ -305,21 +286,6 @@
                           <i class="fa fa-trash"></i>
                         </button>
 
-                        <!-- Yeni -->
-                        <!-- <button
-                          class="btn btn-primary"
-                          style="margin-left: 1rem"
-                          type="submit"
-                          (click)="
-                            createJson(
-                              product.barcode,
-                              product.shelfNo,
-                              product.batchCode
-                            )
-                          "
-                        >
-                          <i class="fa fa-print" aria-hidden="true"></i>
-                        </button> -->
                         <button
                           class="btn btn-primary"
                           type="submit"
@@ -354,26 +320,6 @@
           </div>
         </div>
       </div>
-      <!-- <div class="card" *ngIf="shelves.length > 0">
-        <div class="card-body">
-          <h5 class="card-title">Raflar</h5>
-          <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Raf</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr *ngFor="let shelve of shelves; let i = index">
-                  <td>{{ shelve.description }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div> -->
     </div>
 
     <!-- Yeni -->

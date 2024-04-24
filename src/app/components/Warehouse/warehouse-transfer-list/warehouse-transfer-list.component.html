@@ -21,11 +21,12 @@
             [formGroup]="filterForm"
             (ngSubmit)="onSubmit(filterForm.value)"
           >
-            <div class="row">
+            <div class="row mb-3">
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="orderNumber">Sipariş Numarası</label>
                   <input
+                    pInputText
+                    placeholder="Sipariş Numarası"
                     type="text"
                     id="orderNumber"
                     class="form-control"
@@ -35,8 +36,9 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="warehouseCode"> Depo Kodu</label>
                   <input
+                    pInputText
+                    placeholder=" Depo Kodu"
                     type="text"
                     id="warehouseCode"
                     class="form-control"
@@ -47,8 +49,9 @@
 
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="toWarehouseCode">Hedef Depo Kodu</label>
                   <input
+                    pInputText
+                    placeholder=" Hedef Depo Kodu"
                     type="text"
                     id="toWarehouseCode"
                     class="form-control"
@@ -61,8 +64,9 @@
             <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="operationStartDate">İşlem Başlangıç Tarihi</label>
                   <input
+                    pInputText
+                    placeholder="İşlem Başlangıç Tarihi"
                     type="date"
                     id="operationStartDate"
                     class="form-control"
@@ -72,8 +76,9 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="operationEndDate">İşlem Bitiş Tarihi</label>
                   <input
+                    pInputText
+                    placeholder="İşlem Bitiş Tarihi"
                     type="date"
                     id="operationEndDate"
                     class="form-control"
@@ -124,7 +129,7 @@
               <tr>
                 <!-- <th scope="col">Seç</th> -->
                 <th scope="col">İşlem Tarihi</th>
-                <th scope="col">İç Numara</th>
+                <!-- <th scope="col">İç Numara</th> -->
                 <th scope="col">Gönderen Depo Kodu</th>
                 <th scope="col">Hedef Depo Kodu</th>
                 <th scope="col">Miktar</th>
@@ -146,7 +151,7 @@
                   {{ operation.operationDate | date : "dd.MM.yyyy HH:mm" }}
                 </td>
 
-                <td>{{ operation.orderNumber }}</td>
+                <!-- <td>{{ operation.orderNumber }}</td> -->
 
                 <td>{{ operation.warehouseCode }}</td>
                 <td>{{ operation.toWarehouseCode }}</td>

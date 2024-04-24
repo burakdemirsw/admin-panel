@@ -60,7 +60,7 @@ import { ShelveOperationComponent } from './components/Shelf/shelve-operation/sh
 import { WarehouseOperationComponent } from './components/Warehouse/warehouse-operation/warehouse-operation.component';
 import { OrderBillingOperationComponent } from './components/Order/order-billing-operation/order-billing-operation.component';
 import { FilterShelvesPipe } from './pipes/filter-shelves.pipe';
-import { CollectProductOfOrderComponent } from './components/Order/collect-product-of-order/collect-product-of-order.component';
+import { CollectProductOfOrderComponent } from './components2/order/collect-product-of-order/collect-product-of-order.component';
 import { WarehouseOperationListComponent } from './components/Warehouse/warehouse-operation/warehouse-operation-list/warehouse-operation-list.component';
 import { WarehouseOperationConfirmDetailComponent } from './components/Warehouse/warehouse-operation/warehouse-operation-confirm-detail/warehouse-operation-confirm-detail.component';
 import { HttpErrorInterceptor } from './services/ui/http-error-interceptor.service';
@@ -134,6 +134,9 @@ import { FastTransferListComponent } from './components/Warehouse/fast-transfer/
 import { FastTransferPipe } from './services/pipes/fast-transfer.pipe';
 import { RetailInvoiceListComponent } from './components2/invoice/retail-invoice-list/retail-invoice-list.component';
 import { RetailOrderManagementComponent } from './components2/order/retail-order-management/retail-order-management.component';
+import { CollectedPackagesComponent as CollectedPackagesComponent2 } from './components2/order/collected-packages/collected-packages.component';
+import { OrderStateComponent } from './components/Order/order-state/order-state.component';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 @NgModule({
 
@@ -228,6 +231,8 @@ import { RetailOrderManagementComponent } from './components2/order/retail-order
     FastTransferPipe,
     RetailInvoiceListComponent,
     RetailOrderManagementComponent,
+    CollectedPackagesComponent2,
+    OrderStateComponent
   ],
 
 
@@ -264,6 +269,7 @@ import { RetailOrderManagementComponent } from './components2/order/retail-order
     ChartModule,
     SelectButtonModule,
     SidebarModule,
+    OverlayPanelModule,
     FileUploadModule, TableModule, InputTextModule, MessagesModule, FieldsetModule, EditorModule,
     JwtModule.forRoot({
       config: {

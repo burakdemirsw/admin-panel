@@ -1,17 +1,20 @@
 <main id="main" class="main">
   <section class="section">
     <div class="card custom-card mb-3">
-      <div class="card-body">
+      <div
+        class="card-body d-flex justify-content-start mt-3"
+        style="overflow-x: auto"
+      >
         <button
           type="button"
-          class="btn custom-btn-primary mt-3"
+          class="btn custom-btn-primary"
           (click)="routeNewPage6()"
         >
           <i class="fas fa-plus"></i> Raflar Arası Transfer
         </button>
         <button
           type="button"
-          class="btn custom-btn-primary mt-3"
+          class="btn custom-btn-primary"
           (click)="routeNewPage5()"
         >
           <i class="fas fa-plus"></i> Raflar Aktarma İsteği
@@ -25,7 +28,7 @@
           <table class="table">
             <thead>
               <tr>
-                <th scope="col">Id</th>
+                <!-- <th scope="col">Id</th> -->
 
                 <th scope="col">Tarih</th>
                 <th scope="col">İşlemler</th>
@@ -38,7 +41,7 @@
                     | paginate : { itemsPerPage: 10, currentPage: currentPage }
                 "
               >
-                <td>{{ operation.operationId }}</td>
+                <!-- <td>{{ operation.operationId }}</td> -->
 
                 <td>{{ operation.createdDate | date : "dd-MM-YY HH:mm" }}</td>
                 <td>

@@ -13,6 +13,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
 
   intercept(request: HttpRequest<any>, next: HttpHandler) {
+    if (request.url.includes('get-customer-list-2')) {
+      return next.handle(request);
+    }
     this.spinnerService.show();
     setInterval(() => {
 

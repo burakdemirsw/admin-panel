@@ -1,15 +1,15 @@
 export class ProductOfOrder {
-  id: string;
+
   barcode: string;
   quantity: number;
   itemCode: string;
+  photoUrl: string
   colorCode: string;
   colorDescription: string;
   itemDim1Code: string;
+  rowNumber: number
   shelfNo: string
   packageNo: string
-  rowNumber: number
-  photoUrl: string
   countedQty: number
   currentQty: number
   description: string

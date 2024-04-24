@@ -58,7 +58,7 @@ var RetailOrderService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.httpClientService
-                            .get({ controller: 'Order/Retail/GetInvoiceList' }) //Get_InvoicesList
+                            .get({ controller: 'Order/Retail/get-invoice-list' }) //Get_InvoicesList
                             .toPromise()];
                     case 1:
                         data = _a.sent();
@@ -94,7 +94,7 @@ var RetailOrderService = /** @class */ (function () {
                         }
                         return [4 /*yield*/, this.httpClientService
                                 .post({
-                                controller: 'Order/Retail/CollectAndPack/' + model
+                                controller: 'Order/Retail/billing-order/' + model
                             }, model)
                                 .toPromise()];
                     case 1:
@@ -136,7 +136,7 @@ var RetailOrderService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.httpClientService
-                            .get({ controller: 'Order/Retail/GetProductOfInvoice' }, //Get_ProductOfInvoice
+                            .get({ controller: 'Order/Retail/get-product-of-invoice' }, //Get_ProductOfInvoice
                         orderNo)
                             .toPromise()];
                     case 1:
@@ -158,6 +158,164 @@ var RetailOrderService = /** @class */ (function () {
                             .toPromise()];
                     case 1:
                         response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    //
+    RetailOrderService.prototype.countProductOfOrder = function (model) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .post({
+                            controller: 'Order/Retail/count-product'
+                        }, model)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    RetailOrderService.prototype.getProductOfOrder = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({
+                            controller: 'Order/Retail/get-products-of-orders/' + request
+                        })
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    //satış siparişleri çekme //exec GET_MSRAFOrderList
+    RetailOrderService.prototype.getOrders = function (type, invoiceStatus) {
+        return __awaiter(this, void 0, Promise, function () {
+            var query, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        query = type + "/" + invoiceStatus;
+                        return [4 /*yield*/, this.httpClientService
+                                .get({
+                                controller: 'Order/get-sale-orders'
+                            }, query)
+                                .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    //toplanacak olan ürünleri çeker
+    RetailOrderService.prototype.getItemsToBeCollected = function (orderNo) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({
+                            controller: 'Order/Retail/get-order-detail-by-id/' + orderNo
+                        }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    RetailOrderService.prototype.addCollectedProductsOfRetailOrder = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .post({
+                            controller: 'Order/Retail/add-collected-products-of-retail-order'
+                        }, request)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    RetailOrderService.prototype.deleteCollectedProductsOfRetailOrder = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({
+                            controller: 'Order/Retail/delete-collected-products-of-retail-order'
+                        }, request)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    RetailOrderService.prototype.deleteCollectedProductsOfRetailOrderList = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({
+                            controller: 'Order/Retail/delete-collected-products-of-retail-order-list'
+                        }, request)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    RetailOrderService.prototype.getCollectedProductsOfRetailOrder = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({
+                            controller: 'Order/Retail/get-collected-products-of-retail-order'
+                        }, request)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    RetailOrderService.prototype.getGetCollectedProductsPackages = function () {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({
+                            controller: 'Order/Retail/get-collected-products-package'
+                        })
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        // console.log(response);
                         return [2 /*return*/, response];
                 }
             });

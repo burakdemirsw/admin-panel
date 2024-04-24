@@ -7,7 +7,7 @@ import { CustomerListComponent } from './components/Customer/customer-list/custo
 import { DevolopmentListComponent } from './components/Devolopment/devolopment-list/devolopment-list.component';
 import { HomepageComponent } from './components/Homepage/homepage.component';
 import { LogManagamentComponent } from './components/Log/log-managament/log-managament.component';
-import { CollectProductOfOrderComponent } from './components/Order/collect-product-of-order/collect-product-of-order.component';
+import { CollectProductOfOrderComponent } from './components2/order/collect-product-of-order/collect-product-of-order.component';
 import { CollectedPackageDetailComponent } from './components/Order/collected-package-detail/collected-package-detail.component';
 import { CollectedPackagesComponent } from './components/Order/collected-packages/collected-packages.component';
 import { CreateOrderComponent } from './components/Order/create-order/create-order.component';
@@ -51,6 +51,9 @@ import { UsersProfileComponent } from './pages/users-profile/users-profile.compo
 import { CreateBarcodeComponent } from './components/Product/create-barcode/create-barcode.component';
 import { FastTransferListComponent } from './components/Warehouse/fast-transfer/fast-transfer-list/fast-transfer-list.component';
 import { RetailInvoiceListComponent } from './components2/invoice/retail-invoice-list/retail-invoice-list.component';
+import { RetailOrderManagementComponent } from './components2/order/retail-order-management/retail-order-management.component';
+import { CollectedPackagesComponent as CollectedPackagesComponent2 } from './components2/order/collected-packages/collected-packages.component';
+import { OrderStateComponent } from './components/Order/order-state/order-state.component';
 
 const routes: Routes = [
 
@@ -285,6 +288,7 @@ const routes: Routes = [
     component: DevolopmentListComponent,
     canActivate: [AuthGuard],
   },
+  { path: 'order-state', component: OrderStateComponent },
   { path: 'box-count', component: BoxCountComponent, canActivate: [AuthGuard] },
   { path: 'search-qr/:id', component: SearchQrComponent },
   { path: 'search-qr', component: SearchQrComponent },
@@ -295,6 +299,9 @@ const routes: Routes = [
 
   //-------------------------------------------------------------------------
   { path: 'retail-invoice-list', component: RetailInvoiceListComponent },
+  { path: 'retail-orders-managament/:status/:invoiceStatus', component: RetailOrderManagementComponent },
+  { path: 'retail-orders-collected-packages', component: CollectedPackagesComponent2 },
+  //-------------------------------------------------------------------------
   { path: '**', component: PagesError404Component },
 
 

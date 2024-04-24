@@ -6,7 +6,7 @@
           <div class="card-body">
             <h5 class="card-title">İade Satış Fatura Oluşturma Paneli</h5>
             <ul
-              class="nav nav-tabs nav-justified mb-1"
+              class="nav nav-tabs nav-justified mb-3"
               id="ex1"
               role="tablist"
             ></ul>
@@ -22,57 +22,36 @@
                   [formGroup]="productForm"
                   (ngSubmit)="onSubmit(productForm.value)"
                 >
-                  <div class="row mb-1">
+                  <div class="row mb-3">
                     <div class="form-group col">
-                      <label for="officeCode">Ofis</label>
-                      <select
-                        id="officeCode"
-                        class="form-control"
+                      <p-dropdown
                         formControlName="officeCode"
-                        (change)="getSelectedOffice()"
-                      >
-                        <option
-                          *ngFor="let office of officeModels"
-                          [value]="office.officeCode"
-                        >
-                          {{ office.officeCode }}
-                        </option>
-                      </select>
+                        [options]="offices"
+                        [showClear]="true"
+                        placeholder="Ofis"
+                      ></p-dropdown>
                     </div>
                     <div class="form-group col">
-                      <label for="warehouseCode">Depo</label>
-                      <select
-                        id="warehouseCode"
-                        class="form-control"
+                      <p-dropdown
                         formControlName="warehouseCode"
-                      >
-                        <option
-                          *ngFor="let warehouse of warehouseModels"
-                          [value]="warehouse.warehouseCode"
-                        >
-                          {{ warehouse.warehouseDescription }}
-                        </option>
-                      </select>
+                        [options]="warehouses"
+                        [showClear]="true"
+                        placeholder="Depo"
+                      ></p-dropdown>
                     </div>
                     <div class="form-group col">
-                      <label for="currency">Vergi Tipi</label>
-                      <select
-                        id="currency"
-                        class="form-control"
+                      <p-dropdown
                         formControlName="currency"
-                      >
-                        <option
-                          *ngFor="let currency of currencyList"
-                          [value]="currency === 'Standart' ? 0 : 4"
-                        >
-                          {{ currency }}
-                        </option>
-                      </select>
+                        [options]="currencyList"
+                        [showClear]="true"
+                        placeholder="Fatura Tipi"
+                      ></p-dropdown>
                     </div>
                   </div>
-                  <div class="row mb-1">
-                    <label for="currAccCode2">Müşteri Kodu</label>
+                  <div class="row mb-3">
                     <input
+                      pInputText
+                      placeholder="Müşteri Kodu"
                       type="text"
                       id="currAccCode2"
                       class="form-control"
@@ -80,14 +59,9 @@
                       (keydown.enter)="focusNextInput('currAccCode')"
                     />
                   </div>
-                  <div class="row mb-1">
-                    <label for="currAccCode">Müşteri</label>
-                    <!-- <ng-select class="form-control"
-                                 style="padding: 0 !important;min-height: 36px !important;  " id="currAccCode"
-                                 formControlName="currAccCode" [items]="customerList" bindLabel="currAccDescription"
-                                 bindValue="currAccCode" [searchable]="true">
-                              </ng-select> -->
+                  <div class="row mb-3">
                     <p-dropdown
+                      placeholder="Müşteri"
                       formControlName="currAccCode"
                       [options]="customerList2"
                       [(ngModel)]="selectedCustomer"
@@ -95,12 +69,9 @@
                       [filter]="true"
                     ></p-dropdown>
                   </div>
-                  <div class="row mb-1">
-                    <label for="salesPersonCode">Satış Elemanı</label>
-                    <!-- <ng-select class="form-control" style="padding: 0 !important  " id="salesPersonCode"
-                                 formControlName="salesPersonCode" [items]="salesPersonModels" bindLabel="firstLastName"
-                                 bindValue="salespersonCode" [searchable]="true"></ng-select> -->
+                  <div class="row mb-3">
                     <p-dropdown
+                      placeholder="Satış Elemanı"
                       formControlName="salesPersonCode"
                       [options]="salesPersonModelList"
                       [(ngModel)]="selectedPerson"
@@ -109,11 +80,12 @@
                     ></p-dropdown>
                   </div>
 
-                  <div class="row mb-1">
+                  <div class="row mb-3">
                     <div class="form-group">
-                      <label for="shelfNo">Raf:</label>
                       <div class="input-group">
                         <input
+                          pInputText
+                          placeholder="Müşteri Kodu"
                           type="text"
                           id="shelfNo"
                           class="form-control"
@@ -138,13 +110,14 @@
                   <!-- <div *ngIf="shelfNumbers !== 'RAFLAR:'" class="text">
                     {{ shelfNumbers }}
                   </div> -->
-                  <div class="row mb-1">
+                  <div class="row mb-3">
                     <div class="form-group">
-                      <label for="barcode">Barkod:</label>
                       <label *ngIf="qrBarcodeUrl !== null" for="qrBarcode">{{
                         qrBarcodeUrl
                       }}</label>
                       <input
+                        pInputText
+                        placeholder="Barcode"
                         type="text"
                         id="barcode"
                         class="form-control"
@@ -153,10 +126,11 @@
                       />
                     </div>
                   </div>
-                  <div class="row mb-1">
+                  <div class="row mb-3">
                     <div class="form-group col">
-                      <label for="quantity">Miktar</label>
                       <input
+                        pInputText
+                        placeholder="Miktar"
                         type="number"
                         id="quantity"
                         class="form-control"
@@ -165,8 +139,9 @@
                       />
                     </div>
                     <div class="form-group col">
-                      <label for="batchCode">Parti:</label>
                       <input
+                        pInputText
+                        placeholder="Parti"
                         type="text"
                         id="batchCode"
                         class="form-control"
@@ -188,7 +163,7 @@
                       ></p-inputSwitch>
                     </div>
                   </div>
-                  <div class="row mb-1">
+                  <div class="row mb-3">
                     <div class="form-group col">
                       <button
                         type="button"

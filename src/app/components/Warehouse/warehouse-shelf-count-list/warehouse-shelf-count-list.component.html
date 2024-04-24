@@ -21,11 +21,12 @@
             [formGroup]="filterForm"
             (ngSubmit)="onSubmit(filterForm.value)"
           >
-            <div class="row">
+            <div class="row mb-3">
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="orderNo">Sipariş Numarası:</label>
                   <input
+                    pInputText
+                    placeholder="Sipariş Numarası:"
                     type="text"
                     id="orderNo"
                     class="form-control"
@@ -35,8 +36,9 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="totalProduct">Toplam Sayılan Ürün Sayısı:</label>
                   <input
+                    pInputText
+                    placeholder="Toplam Sayılan Ürün Sayısı"
                     type="number"
                     id="totalProduct"
                     class="form-control"
@@ -46,8 +48,9 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="startDate">İşlem Başlangıç Tarihi:</label>
                   <input
+                    pInputText
+                    placeholder="İşlem Başlangıç Tarihi"
                     type="date"
                     id="startDate"
                     class="form-control"
@@ -59,8 +62,9 @@
             <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="endDate">İşlem Bitiş Tarihi:</label>
                   <input
+                    pInputText="İşlem Bitiş Tarihi"
+                    placeholder=""
                     type="date"
                     id="endDate"
                     class="form-control"
@@ -80,21 +84,22 @@
       </div>
     </div>
 
+    <div class="card custom-card mb-3">
+      <div
+        class="card-body d-flex justify-content-start mt-3"
+        style="overflow-x: auto"
+      >
+        <button
+          type="button"
+          class="btn custom-btn-primary"
+          (click)="newCount()"
+        >
+          <i class="fas fa-plus"></i> Yeni Sayım Yap
+        </button>
+      </div>
+    </div>
     <div class="card">
       <div class="card-body">
-        <div class="btn-group mb-3 mt-4">
-          <button
-            class="btn btn-primary"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#filterCollapse"
-            (click)="newCount()"
-            aria-expanded="false"
-            aria-controls="filterCollapse"
-          >
-            Yeni Sayım Yap
-          </button>
-        </div>
         <div style="overflow-x: auto">
           <table class="table">
             <thead>
@@ -102,7 +107,7 @@
                 <th scope="col">Seç</th>
                 <th scope="col">İşlem Tarihi</th>
                 <th scope="col">Toplam Sayılan Ürün Sayısı</th>
-                <th scope="col">Sipariş Numarası</th>
+                <!-- <th scope="col">Sipariş Numarası</th> -->
               </tr>
             </thead>
             <tbody>
@@ -125,7 +130,7 @@
                   {{ count.lastUpdateDate | date : "dd.MM.yyyy HH:mm:ss" }}
                 </td>
                 <td>{{ count.totalProduct }}</td>
-                <td>{{ count.orderNo }}</td>
+                <!-- <td>{{ count.orderNo }}</td> -->
 
                 <td>
                   <div class="btn-group">

@@ -46,6 +46,10 @@ export class CreateSaleOrderComponent implements OnInit {
     private sanitizer: DomSanitizer
   ) { }
   selectedCustomer: any;
+  offices: any[] = ["M", "U"]
+  warehouses: any[] = ["MD", "UD"]
+  currencyList: string[] = ['Standart', 'Vergisiz']; //vergi tipi
+
   async ngOnInit() {
     try {
       this.title.setTitle('Satış Faturası Oluştur');
@@ -56,11 +60,8 @@ export class CreateSaleOrderComponent implements OnInit {
 
       this.activatedRoute.params.subscribe(async (params) => {
         this.newOrderNumber = 'WSI-' + params['orderNo'];
-        await this.getOfficeCodeList(); //ofis kod
+
         await this.getProductOfInvoice(this.newOrderNumber);
-        await this.getWarehouseList(
-          (document.getElementById('officeCode') as HTMLOptionElement).value
-        ); //depo kodu
         await this.getCustomerList(); //müşteriler kodu
         await this.getSalesPersonModels(); //personeller kodu
         this.setInput();
@@ -97,19 +98,16 @@ export class CreateSaleOrderComponent implements OnInit {
   activeTab = 1;
   productForm: FormGroup;
   warehouseModels: WarehouseOfficeModel[] = [];
-  currencyList: string[] = ['Standart', 'Vergisiz']; //vergi tipi
   visible: boolean = false;
   qrCodeValue: string;
   qrCodeDownloadLink: any = this.sanitizer.bypassSecurityTrustResourceUrl('');
   setInput() {
     if (this.invoiceProducts2.length > 0) {
       if (this.invoiceProducts2[0].officeCode == 'M') {
-        (document.getElementById('officeCode') as HTMLOptionElement).value =
-          'M';
+
         this.productForm.get('officeCode').setValue('M');
       } else {
-        (document.getElementById('officeCode') as HTMLOptionElement).value =
-          'U';
+
         this.productForm.get('officeCode').setValue('U');
       }
 
@@ -256,6 +254,20 @@ export class CreateSaleOrderComponent implements OnInit {
         currency: [null, Validators.required],
         batchCode: [null],
       });
+
+      this.productForm.get('officeCode').valueChanges.subscribe(value => {
+        if (value === 'M') {
+          this.productForm.get('warehouseCode').setValue('MD');
+        }
+      });
+
+      this.productForm.get('officeCode').valueChanges.subscribe(value => {
+        if (value === 'U') {
+          this.productForm.get('warehouseCode').setValue('UD');
+        }
+      });
+
+
     } catch (error: any) {
       this.toasterService.error(error.message);
     }

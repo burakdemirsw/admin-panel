@@ -1,0 +1,32 @@
+.bg-secondary {
+  background: rgba(116, 120, 141, .15) !important;
+  color: #74788d !important;
+}
+
+.big-font {
+  font-size: 20px !important;
+}
+
+.btn-success {
+  background-color: #00d335;
+  /* Varsayılan yeşil arka plan */
+  border-color: #00000000 !important;
+  animation: blink-animation 2s infinite;
+}
+
+.null-status {
+  background-color: red;
+  border-color: #00000000 !important;
+  animation: blink-animation 2s infinite;
+}
+
+@keyframes blink-animation {
+
+  0%,
+  100% {}
+
+  50% {
+    background-color: transparent;
+    border-color: transparent;
+  }
+}

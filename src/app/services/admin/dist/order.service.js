@@ -58,20 +58,13 @@ var OrderService = /** @class */ (function () {
         return __awaiter(this, void 0, Promise, function () {
             var query, response;
             return __generator(this, function (_a) {
-                try {
-                    query = type + "/" + invoiceStatus;
-                    response = this.httpClientService
-                        .get({
-                        controller: 'order/get-sale-orders'
-                    }, query)
-                        .toPromise();
-                    return [2 /*return*/, response];
-                }
-                catch (error) {
-                    // console.log(error.message);
-                    return [2 /*return*/, null];
-                }
-                return [2 /*return*/];
+                query = type + "/" + invoiceStatus;
+                response = this.httpClientService
+                    .get({
+                    controller: 'order/get-sale-orders'
+                }, query)
+                    .toPromise();
+                return [2 /*return*/, response];
             });
         });
     };
@@ -79,19 +72,12 @@ var OrderService = /** @class */ (function () {
         return __awaiter(this, void 0, Promise, function () {
             var response;
             return __generator(this, function (_a) {
-                try {
-                    response = this.httpClientService
-                        .get({
-                        controller: 'order/get-orders-with-missing-items'
-                    })
-                        .toPromise();
-                    return [2 /*return*/, response];
-                }
-                catch (error) {
-                    // console.log(error.message);
-                    return [2 /*return*/, null];
-                }
-                return [2 /*return*/];
+                response = this.httpClientService
+                    .get({
+                    controller: 'order/get-orders-with-missing-items'
+                })
+                    .toPromise();
+                return [2 /*return*/, response];
             });
         });
     };
@@ -99,19 +85,12 @@ var OrderService = /** @class */ (function () {
         return __awaiter(this, void 0, Promise, function () {
             var response;
             return __generator(this, function (_a) {
-                try {
-                    response = this.httpClientService
-                        .post({
-                        controller: 'Order/GetPurchaseOrdersByFilter'
-                    }, model)
-                        .toPromise();
-                    return [2 /*return*/, response];
-                }
-                catch (error) {
-                    // console.log(error.message);
-                    return [2 /*return*/, null];
-                }
-                return [2 /*return*/];
+                response = this.httpClientService
+                    .post({
+                    controller: 'Order/GetPurchaseOrdersByFilter'
+                }, model)
+                    .toPromise();
+                return [2 /*return*/, response];
             });
         });
     };
@@ -151,36 +130,23 @@ var OrderService = /** @class */ (function () {
         return __awaiter(this, void 0, Promise, function () {
             var response;
             return __generator(this, function (_a) {
-                try {
-                    response = this.httpClientService
-                        .post({
-                        controller: 'Order/GetOrdersByFilter'
-                    }, model)
-                        .toPromise();
-                    return [2 /*return*/, response];
-                }
-                catch (error) {
-                    // console.log(error.message);
-                    return [2 /*return*/, null];
-                }
-                return [2 /*return*/];
+                response = this.httpClientService
+                    .post({
+                    controller: 'Order/GetOrdersByFilter'
+                }, model)
+                    .toPromise();
+                return [2 /*return*/, response];
             });
         });
     };
     //alış siparişlerini çekme GET_MSRAFSalesOrderDetailBP
     OrderService.prototype.getPurchaseOrders = function () {
-        try {
-            var response = this.httpClientService
-                .get({
-                controller: 'Order/GetPurchaseOrders'
-            })
-                .toPromise();
-            return response;
-        }
-        catch (error) {
-            // console.log(error.message);
-            return null;
-        }
+        var response = this.httpClientService
+            .get({
+            controller: 'Order/GetPurchaseOrders'
+        })
+            .toPromise();
+        return response;
     };
     //sipariş ekleme
     OrderService.prototype.addProductToOrder = function (model) {
@@ -207,28 +173,22 @@ var OrderService = /** @class */ (function () {
     };
     //toplanacak ürünleri çeker
     OrderService.prototype.getCollectedProducts = function (orderNo, orderNoType) {
-        try {
-            var endpoint = '';
-            if (orderNoType === 'BP') {
-                endpoint = 'Order/GetPurchaseOrderSaleDetail/'; //GET_MSRAFSalesOrderDetailBP
-            }
-            else if (orderNoType === 'WT') {
-                endpoint = 'Warehouse/GetWarehouseOperationDetail/'; //Usp_GETTransferOnayla
-            }
-            else if (orderNoType === 'WS') {
-                endpoint = 'Order/GetOrderSaleDetail/'; //GET_MSRAFSalesOrderDetail
-            }
-            else if (orderNoType === 'MIS') {
-                endpoint = 'Order/get-missing-products-of-order/'; //GET_MSRAFOrderListMissing
-            }
-            return this.httpClientService.get({
-                controller: endpoint + orderNo
-            });
+        var endpoint = '';
+        if (orderNoType === 'BP') {
+            endpoint = 'Order/GetPurchaseOrderSaleDetail/'; //GET_MSRAFSalesOrderDetailBP
         }
-        catch (error) {
-            // console.log(error.message);
-            throw error; // Rethrow the error if necessary
+        else if (orderNoType === 'WT') {
+            endpoint = 'Warehouse/GetWarehouseOperationDetail/'; //Usp_GETTransferOnayla
         }
+        else if (orderNoType === 'WS') {
+            endpoint = 'Order/GetOrderSaleDetail/'; //GET_MSRAFSalesOrderDetail
+        }
+        else if (orderNoType === 'MIS') {
+            endpoint = 'Order/get-missing-products-of-order/'; //GET_MSRAFOrderListMissing
+        }
+        return this.httpClientService.get({
+            controller: endpoint + orderNo
+        });
     };
     //transferi onaylama
     OrderService.prototype.confirmTransfer = function (operationNumberList) {
@@ -1009,6 +969,33 @@ var OrderService = /** @class */ (function () {
                     return [2 /*return*/, null];
                 }
                 return [2 /*return*/];
+            });
+        });
+    };
+    OrderService.prototype.addOrderStatus = function (orderStatus) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                response = this.httpClientService
+                    .post({
+                    controller: 'order/add-order-status'
+                }, orderStatus)
+                    .toPromise();
+                return [2 /*return*/, response];
+            });
+        });
+    };
+    OrderService.prototype.getSaleOrdersWithStatus = function (type, invoiceStatus) {
+        return __awaiter(this, void 0, Promise, function () {
+            var query, response;
+            return __generator(this, function (_a) {
+                query = type + "/" + invoiceStatus;
+                response = this.httpClientService
+                    .get({
+                    controller: 'order/get-orders-with-statuses'
+                }, query)
+                    .toPromise();
+                return [2 /*return*/, response];
             });
         });
     };

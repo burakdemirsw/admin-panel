@@ -51,6 +51,7 @@ var library_1 = require("@zxing/library");
 var createPurchaseInvoice_1 = require("src/app/models/model/invoice/createPurchaseInvoice");
 var qrOperationModel_1 = require("src/app/models/model/product/qrOperationModel");
 var warehouseOperationProductModel_1 = require("src/app/models/model/warehouse/warehouseOperationProductModel");
+var orderStatus_1 = require("src/app/models/model/order/orderStatus");
 var OrderOperationComponent = /** @class */ (function () {
     function OrderOperationComponent(headerService, toasterService, formBuilder, orderService, activatedRoute, router, httpClient, productService, warehouseService, generalService, title, sanitizer) {
         this.headerService = headerService;
@@ -153,38 +154,41 @@ var OrderOperationComponent = /** @class */ (function () {
                                         return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'BP')];
                                     case 1:
                                         _a.sent(); //toplanan ve toplanacak ürünleri çeker
-                                        return [3 /*break*/, 12];
+                                        return [3 /*break*/, 13];
                                     case 2:
-                                        if (!(orderNumberType === 'WS')) return [3 /*break*/, 5];
-                                        return [4 /*yield*/, this.orderService.getOrderDetail(params['orderNumber'])];
+                                        if (!(orderNumberType === 'WS')) return [3 /*break*/, 6];
+                                        return [4 /*yield*/, this.addOrderStatus()];
                                     case 3:
+                                        _a.sent();
+                                        return [4 /*yield*/, this.orderService.getOrderDetail(params['orderNumber'])];
+                                    case 4:
                                         response = _a.sent();
                                         this.customerName = response.description;
                                         return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'WS')];
-                                    case 4:
-                                        _a.sent(); //toplanan ve toplanacak ürünleri çeker
-                                        return [3 /*break*/, 12];
                                     case 5:
-                                        if (!(orderNumberType === 'WT' || orderNumber.startsWith("W-"))) return [3 /*break*/, 10];
-                                        if (!orderNumber.startsWith("W-")) return [3 /*break*/, 7];
+                                        _a.sent(); //toplanan ve toplanacak ürünleri çeker
+                                        return [3 /*break*/, 13];
+                                    case 6:
+                                        if (!(orderNumberType === 'WT' || orderNumber.startsWith("W-"))) return [3 /*break*/, 11];
+                                        if (!orderNumber.startsWith("W-")) return [3 /*break*/, 8];
                                         this.currentOrderNo = params['orderNumber'].split('W-')[1];
                                         return [4 /*yield*/, this.getAllProducts(params['orderNumber'].split('W-')[1], 'WT')];
-                                    case 6:
+                                    case 7:
                                         _a.sent(); //toplanan ve toplanacak ürünleri çeker
-                                        return [3 /*break*/, 9];
-                                    case 7: return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'WT')];
-                                    case 8:
+                                        return [3 /*break*/, 10];
+                                    case 8: return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'WT')];
+                                    case 9:
                                         _a.sent(); //toplanan ve toplanacak ürünleri çeker
-                                        _a.label = 9;
-                                    case 9: return [3 /*break*/, 12];
-                                    case 10:
-                                        if (!orderNumber.includes("MIS")) return [3 /*break*/, 12];
+                                        _a.label = 10;
+                                    case 10: return [3 /*break*/, 13];
+                                    case 11:
+                                        if (!orderNumber.includes("MIS")) return [3 /*break*/, 13];
                                         orderNumberType = "MIS";
                                         return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'MIS')];
-                                    case 11:
-                                        _a.sent(); //toplanan ve toplanacak ürünleri çeker
-                                        _a.label = 12;
                                     case 12:
+                                        _a.sent(); //toplanan ve toplanacak ürünleri çeker
+                                        _a.label = 13;
+                                    case 13:
                                         if (location.href.includes("MIS")) {
                                             this._pageDescription = true;
                                         }
@@ -197,6 +201,35 @@ var OrderOperationComponent = /** @class */ (function () {
                     case 1:
                         //this.spinnerService.show();
                         _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    OrderOperationComponent.prototype.addOrderStatus = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var request, _a, response;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        request = new orderStatus_1.OrderStatus();
+                        _a = request;
+                        return [4 /*yield*/, this.generalService.generateGUID()];
+                    case 1:
+                        _a.id = _b.sent();
+                        request.orderNo = this.currentOrderNo;
+                        request.status = 'Hazırlanıyor';
+                        request.warehousePerson = localStorage.getItem('name') + ' ' + localStorage.getItem('surname');
+                        request.createdDate = new Date();
+                        return [4 /*yield*/, this.orderService.addOrderStatus(request)];
+                    case 2:
+                        response = _b.sent();
+                        if (response) {
+                            this.toasterService.success('Durum Güncellendi');
+                        }
+                        else {
+                            this.toasterService.error('Durum Güncellenemedi');
+                        }
                         return [2 /*return*/];
                 }
             });

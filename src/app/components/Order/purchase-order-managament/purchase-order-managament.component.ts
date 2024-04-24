@@ -10,6 +10,7 @@ import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { CreateBarcodeFromOrder_RM } from '../../Product/create-barcode/models/createBarcode';
 import { Product } from 'src/app/models/model/product/product';
 import { ProductService } from 'src/app/services/admin/product.service';
+import { HeaderService } from 'src/app/services/admin/header.service';
 
 @Component({
   selector: 'app-purchase-order-managament',
@@ -27,14 +28,14 @@ export class PurchaseOrderManagamentComponent implements OnInit {
     private router: Router,
     private orderService: OrderService,
     private formBuilder: FormBuilder,
-    private productService: ProductService
-
+    private productService: ProductService,
+    private headerService: HeaderService
 
 
   ) { }
   filterForm: FormGroup;
   async ngOnInit() {
-    //this.spinnerService.show();
+    this.headerService.updatePageTitle("Verilen Siparişler");
     this.formGenerator();
     await this.getPurchaseOrders();
     //this.spinnerService.hide();

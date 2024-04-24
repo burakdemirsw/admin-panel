@@ -46,13 +46,14 @@ exports.PurchaseOrderManagamentComponent = void 0;
 var core_1 = require("@angular/core");
 var createBarcode_1 = require("../../Product/create-barcode/models/createBarcode");
 var PurchaseOrderManagamentComponent = /** @class */ (function () {
-    function PurchaseOrderManagamentComponent(httpClientService, toasterService, router, orderService, formBuilder, productService) {
+    function PurchaseOrderManagamentComponent(httpClientService, toasterService, router, orderService, formBuilder, productService, headerService) {
         this.httpClientService = httpClientService;
         this.toasterService = toasterService;
         this.router = router;
         this.orderService = orderService;
         this.formBuilder = formBuilder;
         this.productService = productService;
+        this.headerService = headerService;
         this.numberOfList = [1, 10, 20, 50, 100];
         this.currentPage = 1;
         this.visible = false;
@@ -62,7 +63,7 @@ var PurchaseOrderManagamentComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        //this.spinnerService.show();
+                        this.headerService.updatePageTitle("Verilen Siparişler");
                         this.formGenerator();
                         return [4 /*yield*/, this.getPurchaseOrders()];
                     case 1:

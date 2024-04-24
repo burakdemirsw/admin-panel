@@ -67,7 +67,7 @@ var shelve_operation_component_1 = require("./components/Shelf/shelve-operation/
 var warehouse_operation_component_1 = require("./components/Warehouse/warehouse-operation/warehouse-operation.component");
 var order_billing_operation_component_1 = require("./components/Order/order-billing-operation/order-billing-operation.component");
 var filter_shelves_pipe_1 = require("./pipes/filter-shelves.pipe");
-var collect_product_of_order_component_1 = require("./components/Order/collect-product-of-order/collect-product-of-order.component");
+var collect_product_of_order_component_1 = require("./components2/order/collect-product-of-order/collect-product-of-order.component");
 var warehouse_operation_list_component_1 = require("./components/Warehouse/warehouse-operation/warehouse-operation-list/warehouse-operation-list.component");
 var warehouse_operation_confirm_detail_component_1 = require("./components/Warehouse/warehouse-operation/warehouse-operation-confirm-detail/warehouse-operation-confirm-detail.component");
 var http_error_interceptor_service_1 = require("./services/ui/http-error-interceptor.service");
@@ -138,6 +138,11 @@ var nebim_product_extract_component_1 = require("./components/Product/nebim-prod
 var create_barcode_component_1 = require("./components/Product/create-barcode/create-barcode.component");
 var fast_transfer_list_component_1 = require("./components/Warehouse/fast-transfer/fast-transfer-list/fast-transfer-list.component");
 var fast_transfer_pipe_1 = require("./services/pipes/fast-transfer.pipe");
+var retail_invoice_list_component_1 = require("./components2/invoice/retail-invoice-list/retail-invoice-list.component");
+var retail_order_management_component_1 = require("./components2/order/retail-order-management/retail-order-management.component");
+var collected_packages_component_2 = require("./components2/order/collected-packages/collected-packages.component");
+var order_state_component_1 = require("./components/Order/order-state/order-state.component");
+var overlaypanel_1 = require("primeng/overlaypanel");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -232,6 +237,10 @@ var AppModule = /** @class */ (function () {
                 create_barcode_component_1.CreateBarcodeComponent,
                 fast_transfer_list_component_1.FastTransferListComponent,
                 fast_transfer_pipe_1.FastTransferPipe,
+                retail_invoice_list_component_1.RetailInvoiceListComponent,
+                retail_order_management_component_1.RetailOrderManagementComponent,
+                collected_packages_component_2.CollectedPackagesComponent,
+                order_state_component_1.OrderStateComponent
             ],
             imports: [
                 toolbar_1.ToolbarModule,
@@ -265,6 +274,7 @@ var AppModule = /** @class */ (function () {
                 chart_1.ChartModule,
                 selectbutton_1.SelectButtonModule,
                 sidebar_1.SidebarModule,
+                overlaypanel_1.OverlayPanelModule,
                 fileupload_1.FileUploadModule, table_1.TableModule, inputtext_1.InputTextModule, messages_1.MessagesModule, fieldset_1.FieldsetModule, editor_1.EditorModule,
                 angular_jwt_1.JwtModule.forRoot({
                     config: {

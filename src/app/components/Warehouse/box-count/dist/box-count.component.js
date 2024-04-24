@@ -79,7 +79,6 @@ var BoxCountComponent = /** @class */ (function () {
         this.list = [];
         this.totalCount = 0;
         this.currentPage = 1;
-        this.lastCollectedProducts = [];
         this.state = true;
         this.qrBarcodeUrl = null;
         this.qrOperationModels = [];
@@ -131,34 +130,6 @@ var BoxCountComponent = /** @class */ (function () {
             isShelfBased: [null]
         });
     };
-    BoxCountComponent.prototype.calculateTotalQty = function () {
-        //toplanan ürünler yazısı için
-        var totalQty = 0;
-        this.lastCollectedProducts.forEach(function (item) {
-            totalQty += item.quantity;
-        });
-        this.totalCount = totalQty;
-    };
-    BoxCountComponent.prototype.getProductOfCount = function (orderNo) {
-        return __awaiter(this, void 0, Promise, function () {
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _a = this;
-                        return [4 /*yield*/, this.warehouseService.getProductOfCount(orderNo)];
-                    case 1:
-                        _a.lastCollectedProducts = _b.sent();
-                        if (this.lastCollectedProducts.length >= 100) {
-                            this.toasterService.error("SATIR SAYISI 100'E ULAŞTI");
-                            this.blocked = true;
-                        }
-                        this.calculateTotalQty();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
     BoxCountComponent.prototype.setFormValues = function (barcode, check) {
         return __awaiter(this, void 0, Promise, function () {
             var state, result, currentShelfNo, result, error_1;
@@ -177,9 +148,6 @@ var BoxCountComponent = /** @class */ (function () {
                         this.shelfNumbers += result[0];
                         if (check) {
                             currentShelfNo = this.checkForm.get('shelfNo').value;
-                            // if(currentShelfNo==null ){
-                            //   this.checkForm.get('shelfNo').setValue(result[0].split(',')[0]);
-                            // }
                             this.checkForm.get('batchCode').setValue(result[2]);
                             this.checkForm.get('barcode').setValue(result[3]);
                         }
@@ -216,8 +184,21 @@ var BoxCountComponent = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.onSubmit(this.checkForm.value)];
+                    case 0:
+                        if (!((this.qrBarcodeUrl == null || this.qrBarcodeUrl == undefined) && (this.checkForm.value.barcode.includes('http') || this.generalService.isGuid(this.checkForm.value.barcode)))) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.control(this.checkForm.value)];
                     case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                    case 2:
+                        if ((this.qrBarcodeUrl == null || this.qrBarcodeUrl == undefined)) {
+                            this.toasterService.error('Lütfen Bir Qr Kod Giriniz');
+                            this.clearQrAndBatchCode();
+                            ;
+                            return [2 /*return*/];
+                        }
+                        return [4 /*yield*/, this.onSubmit(this.checkForm.value)];
+                    case 3:
                         _a.sent();
                         return [2 /*return*/];
                 }
@@ -258,7 +239,6 @@ var BoxCountComponent = /** @class */ (function () {
         var _a;
         return __awaiter(this, void 0, Promise, function () {
             var number, url, newResponse, shelves, response, qrResponse, data, error_2;
-            var _this = this;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -300,6 +280,7 @@ var BoxCountComponent = /** @class */ (function () {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
                         }
                         else if (qrResponse === null) {
+                            this.toasterService.error('QR Kod Okunamadı.');
                             this.clearQrAndBatchCode();
                         }
                         //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
@@ -311,12 +292,9 @@ var BoxCountComponent = /** @class */ (function () {
                             else {
                                 countProductRequestModel.barcode = response.description;
                             }
-                            setInterval(function () {
-                                _this.generalService.beep();
-                                _this.clearQrAndBatchCode();
-                                _this.toasterService.success("İşlem Başarılı.Sayfa Yeniden Yükleniyor");
-                                location.reload();
-                            }, 2000);
+                            this.generalService.beep();
+                            this.clearQrAndBatchCode();
+                            this.state = true;
                         }
                         _b.label = 9;
                     case 9: return [3 /*break*/, 11];
@@ -355,18 +333,14 @@ var BoxCountComponent = /** @class */ (function () {
                     case 0: return [4 /*yield*/, this.productService.deleteOrderProduct(this.currentOrderNo, product.itemCode, product.lineId)];
                     case 1:
                         response = _a.sent();
-                        if (!response) return [3 /*break*/, 3];
-                        this.list = this.list.filter(function (o) { return !(o.barcode == product.itemCode && o.shelfNo == product.shelfNo); });
-                        this.calculateTotalQty();
-                        return [4 /*yield*/, this.getProductOfCount(this.currentOrderNo)];
-                    case 2:
-                        _a.sent();
-                        this.toasterService.success('Silme İşlemi Başarılı.');
-                        return [3 /*break*/, 4];
-                    case 3:
-                        this.toasterService.error('Silme İşlemi Başarısız.');
-                        _a.label = 4;
-                    case 4: return [2 /*return*/, response];
+                        if (response) {
+                            this.list = this.list.filter(function (o) { return !(o.barcode == product.itemCode && o.shelfNo == product.shelfNo); });
+                            this.toasterService.success('Silme İşlemi Başarılı.');
+                        }
+                        else {
+                            this.toasterService.error('Silme İşlemi Başarısız.');
+                        }
+                        return [2 /*return*/, response];
                 }
             });
         });

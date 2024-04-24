@@ -29,6 +29,7 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { OrderStatus } from 'src/app/models/model/order/orderStatus';
 
 declare var window: any;
 
@@ -123,6 +124,7 @@ export class OrderOperationComponent implements OnInit {
       if (orderNumberType === 'BP') {
         await this.getAllProducts(params['orderNumber'], 'BP'); //toplanan ve toplanacak ürünleri çeker
       } else if (orderNumberType === 'WS') {
+        await this.addOrderStatus();
         var response = await this.orderService.getOrderDetail(params['orderNumber']);
         this.customerName = response.description;
         await this.getAllProducts(params['orderNumber'], 'WS'); //toplanan ve toplanacak ürünleri çeker
@@ -147,7 +149,20 @@ export class OrderOperationComponent implements OnInit {
       this.setPageDescription(orderNumberType);
     });
   }
-
+  async addOrderStatus() {
+    var request = new OrderStatus();
+    request.id = await this.generalService.generateGUID();
+    request.orderNo = this.currentOrderNo;
+    request.status = 'Hazırlanıyor';
+    request.warehousePerson = localStorage.getItem('name') + ' ' + localStorage.getItem('surname');
+    request.createdDate = new Date();
+    const response = await this.orderService.addOrderStatus(request);
+    if (response) {
+      this.toasterService.success('Durum Güncellendi');
+    } else {
+      this.toasterService.error('Durum Güncellenemedi');
+    }
+  }
 
   //-----------------------------------------------------EKSIK URUNLER İŞLEMLERİ
   async addMissingProduct(products: ProductOfOrder[]) {

@@ -113,25 +113,6 @@ export class BoxCountComponent implements OnInit {
   totalCount: number = 0;
   currentPage: number = 1;
 
-  calculateTotalQty() {
-    //toplanan ürünler yazısı için
-    let totalQty = 0;
-    this.lastCollectedProducts.forEach((item) => {
-      totalQty += item.quantity;
-    });
-    this.totalCount = totalQty;
-  }
-  lastCollectedProducts: CountedProduct[] = [];
-  async getProductOfCount(orderNo: string): Promise<any> {
-    this.lastCollectedProducts = await this.warehouseService.getProductOfCount(
-      orderNo
-    );
-    if (this.lastCollectedProducts.length >= 100) {
-      this.toasterService.error("SATIR SAYISI 100'E ULAŞTI");
-      this.blocked = true;
-    }
-    this.calculateTotalQty();
-  }
 
   async setFormValues(barcode: string, check: boolean): Promise<string> {
     this.shelfNumbers = 'RAFLAR:';
@@ -144,10 +125,6 @@ export class BoxCountComponent implements OnInit {
         this.shelfNumbers += result[0];
         if (check) {
           var currentShelfNo = this.checkForm.get('shelfNo').value;
-          // if(currentShelfNo==null ){
-          //   this.checkForm.get('shelfNo').setValue(result[0].split(',')[0]);
-          // }
-
           this.checkForm.get('batchCode').setValue(result[2]);
           this.checkForm.get('barcode').setValue(result[3]);
         }
@@ -178,8 +155,17 @@ export class BoxCountComponent implements OnInit {
   qrOperationModels: QrOperationModel[] = [];
 
   async check() {
-    await this.onSubmit(this.checkForm.value);
+    if ((this.qrBarcodeUrl == null || this.qrBarcodeUrl == undefined) && (this.checkForm.value.barcode.includes('http') || this.generalService.isGuid(this.checkForm.value.barcode))) {
+      await this.control(this.checkForm.value);
+      return
+    }
+    if ((this.qrBarcodeUrl == null || this.qrBarcodeUrl == undefined)) {
 
+      this.toasterService.error('Lütfen Bir Qr Kod Giriniz');
+      this.clearQrAndBatchCode();;
+      return;
+    }
+    await this.onSubmit(this.checkForm.value);
   }
   async control(countProductRequestModel: CountProductRequestModel2) {
     if (countProductRequestModel.barcode === 'http://www.dayve.com') {
@@ -272,6 +258,7 @@ export class BoxCountComponent implements OnInit {
           if (qrResponse != null && qrResponse.state === true) {
             this.qrOperationModels.push(qrResponse.qrOperationModel);
           } else if (qrResponse === null) {
+            this.toasterService.error('QR Kod Okunamadı.');
             this.clearQrAndBatchCode();
           }
 
@@ -285,12 +272,9 @@ export class BoxCountComponent implements OnInit {
               countProductRequestModel.barcode = response.description;
             }
 
-            setInterval(() => {
-              this.generalService.beep();
-              this.clearQrAndBatchCode();
-              this.toasterService.success("İşlem Başarılı.Sayfa Yeniden Yükleniyor")
-              location.reload()
-            }, 2000);
+            this.generalService.beep();
+            this.clearQrAndBatchCode();
+            this.state = true;
           }
 
           // EĞER GİRİLEN RAF  RAFLARDA YOKSA SORAR
@@ -336,8 +320,8 @@ export class BoxCountComponent implements OnInit {
       this.list = this.list.filter(
         (o) => !(o.barcode == product.itemCode && o.shelfNo == product.shelfNo)
       );
-      this.calculateTotalQty();
-      await this.getProductOfCount(this.currentOrderNo);
+
+
       this.toasterService.success('Silme İşlemi Başarılı.');
     } else {
       this.toasterService.error('Silme İşlemi Başarısız.');

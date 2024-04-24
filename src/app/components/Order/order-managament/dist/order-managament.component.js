@@ -208,6 +208,8 @@ var OrderManagamentComponent = /** @class */ (function () {
             });
         });
     };
+    // 1, 2 toplanabilir
+    // 1, 1 faturalandırılan
     OrderManagamentComponent.prototype.getOrders = function (status, invoiceStatus) {
         return __awaiter(this, void 0, Promise, function () {
             var response, _a, response, _b;

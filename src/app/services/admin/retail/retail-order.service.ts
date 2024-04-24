@@ -10,6 +10,9 @@ import { OrderBillingRequestModel } from 'src/app/models/model/invoice/orderBill
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
+import { CountProductRequestModel } from 'src/app/models/model/order/countProductRequestModel';
+import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
+import { CollectedProductsOfRetailOrder } from 'src/app/models-2/Count/collectedProductsOfRetailOrder';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +28,7 @@ export class RetailOrderService {
 
   async getInvoiceList(): Promise<CountListModel[]> {
     const data = await this.httpClientService
-      .get<CountListModel>({ controller: 'Order/Retail/GetInvoiceList' }) //Get_InvoicesList
+      .get<CountListModel>({ controller: 'Order/Retail/get-invoice-list' }) //Get_InvoicesList
       .toPromise();
     return data;
   }
@@ -59,7 +62,7 @@ export class RetailOrderService {
       const response = await this.httpClientService
         .post<OrderBillingRequestModel>(
           {
-            controller: 'Order/Retail/CollectAndPack/' + model,
+            controller: 'Order/Retail/billing-order/' + model,
           },
           model
         )
@@ -97,7 +100,7 @@ export class RetailOrderService {
   async getProductOfInvoice(orderNo: string): Promise<CreatePurchaseInvoice[]> {
     const response = await this.httpClientService
       .get<CreatePurchaseInvoice>(
-        { controller: 'Order/Retail/GetProductOfInvoice' }, //Get_ProductOfInvoice
+        { controller: 'Order/Retail/get-product-of-invoice' }, //Get_ProductOfInvoice
         orderNo
       )
       .toPromise();
@@ -119,4 +122,94 @@ export class RetailOrderService {
   }
 
 
+  //
+  async countProductOfOrder(model: CountProductRequestModel): Promise<any> {
+    const response = await this.httpClientService
+      .post<any>({
+        controller: 'Order/Retail/count-product',
+      }, model)
+      .toPromise();
+    return response;
+  }
+
+
+
+  async getProductOfOrder(request: string): Promise<any> {
+    const response = await this.httpClientService
+      .get<ProductOfOrder>({
+        controller: 'Order/Retail/get-products-of-orders/' + request,
+      })
+      .toPromise();
+    return response;
+  }
+
+  //satış siparişleri çekme //exec GET_MSRAFOrderList
+  async getOrders(type: number, invoiceStatus: number): Promise<SaleOrderModel[]> {
+
+    var query: string = `${type}/${invoiceStatus}`
+    const response = await this.httpClientService
+      .get<SaleOrderModel>({
+        controller: 'Order/get-sale-orders',
+      }, query)
+      .toPromise();
+    return response;
+
+  }
+
+  //toplanacak olan ürünleri çeker
+  async getItemsToBeCollected(orderNo: string): Promise<ProductOfOrder[]> {
+    var response = await this.httpClientService
+      .get<ProductOfOrder>({
+        controller: 'Order/Retail/get-order-detail-by-id/' + orderNo,
+      }).toPromise()
+
+
+    return response;
+  }
+
+
+  async addCollectedProductsOfRetailOrder(request: CollectedProductsOfRetailOrder): Promise<any> {
+    const response = await this.httpClientService
+      .post<CollectedProductsOfRetailOrder>({
+        controller: 'Order/Retail/add-collected-products-of-retail-order',
+      }, request)
+      .toPromise();
+    return response;
+  }
+
+  async deleteCollectedProductsOfRetailOrder(request: string): Promise<any> {
+    const response = await this.httpClientService
+      .get<any>({
+        controller: 'Order/Retail/delete-collected-products-of-retail-order',
+      }, request)
+      .toPromise();
+    return response;
+  }
+  async deleteCollectedProductsOfRetailOrderList(request: string): Promise<any> {
+    const response = await this.httpClientService
+      .get<any>({
+        controller: 'Order/Retail/delete-collected-products-of-retail-order-list',
+      }, request)
+      .toPromise();
+    return response;
+  }
+  async getCollectedProductsOfRetailOrder(request: string): Promise<any> {
+    const response = await this.httpClientService
+      .get<any>({
+        controller: 'Order/Retail/get-collected-products-of-retail-order',
+      }, request)
+      .toPromise();
+    return response;
+  }
+
+
+  async getGetCollectedProductsPackages(): Promise<any> {
+    const response = await this.httpClientService
+      .get<any>({
+        controller: 'Order/Retail/get-collected-products-package',
+      })
+      .toPromise();
+    // console.log(response);
+    return response;
+  }
 }

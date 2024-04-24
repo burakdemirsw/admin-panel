@@ -1,0 +1,188 @@
+<main id="main" class="main">
+  <!-- <div class="pagetitle">
+    <h1>Sipariş Ürünlerini Toplama</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+        <li class="breadcrumb-item">Tables</li>
+        <li class="breadcrumb-item active">General</li>
+      </ol>
+    </nav>
+  </div> -->
+
+  <section class="section">
+    <div class="row">
+      <div style="width: 100%">
+        <div class="card" *ngIf="productsToCollect.length > 0">
+          <div class="card-body">
+            <h5 class="card-title">Sipariş Toplama Paneli</h5>
+
+            <form
+              [formGroup]="checkForm"
+              (ngSubmit)="onSubmit(checkForm.value)"
+              class="mt-4"
+            >
+              <div class="row mb-3">
+                <div class="form-group">
+                  <input
+                    pInputText
+                    placeholder="Raf No"
+                    type="text"
+                    id="shelfNo"
+                    class="form-control"
+                    formControlName="shelfNo"
+                    (keydown.enter)="focusNextInput('barcode')"
+                  />
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="form-group">
+                  <input
+                    pInputText
+                    placeholder="Barkod"
+                    type="text"
+                    id="barcode"
+                    class="form-control"
+                    formControlName="barcode"
+                    (keydown.enter)="onSubmit(checkForm.value)"
+                  />
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="form-group">
+                  <input
+                    pInputText
+                    placeholder="Miktar"
+                    type="text"
+                    id="quantity"
+                    class="form-control"
+                    formControlName="quantity"
+                    (keydown.enter)="onSubmit(checkForm.value)"
+                  />
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <button
+                    style="width: 100%"
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="onSubmit(checkForm.value)"
+                  >
+                    Ekle
+                  </button>
+                </div>
+                <div class="col-md-6">
+                  <button
+                    style="width: 100%"
+                    type="button"
+                    class="btn btn-primary"
+                  >
+                    Nebime Yolla
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div div class="card text-center" *ngIf="productsToCollect.length <= 0">
+          <div class="card-body">
+            <h5 class="card-title">TÜM ÜRÜNLER TOPLANMIŞTIR</h5>
+
+            <h1 class="display-1">
+              <i class="fa fa-check" aria-hidden="true"></i>
+            </h1>
+
+            <p
+              style="cursor: pointer"
+              class="card-title"
+              routerLink="/create-cargo/{{ this.orderNo }}"
+            >
+              Siparişi Kargolayabilirsiniz
+            </p>
+          </div>
+        </div>
+
+        <div class="card" *ngIf="productsToCollect.length > 0">
+          <div class="card-body">
+            <h5 class="card-title">Toplanacak Ürünler</h5>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Raf Numarası</th>
+                    <th scope="col">Ürün Kodu</th>
+                    <th scope="col">Miktar</th>
+                    <th scope="col">Renk Açıklaması</th>
+                    <th scope="col">Ürün Boyutu</th>
+                    <th scope="col">Barkod</th>
+                    <!-- <th scope="col">Paket No</th> -->
+                    <th scope="col">Renk Kodu</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let product of productsToCollect">
+                    <td>{{ product.shelfNo }}</td>
+                    <td>{{ product.itemCode }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>{{ product.colorDescription }}</td>
+                    <td>{{ product.itemDim1Code }}</td>
+                    <td>{{ product.barcode }}</td>
+                    <!-- <td>{{ product.packageNo }}</td> -->
+                    <td>{{ product.colorCode }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" *ngIf="collectedProducts.length > 0">
+          <div class="card-body">
+            <h5 class="card-title">Toplanan Ürünler</h5>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Miktar</th>
+                    <th scope="col">Barkod</th>
+                    <th scope="col">Oluşturulma Tarihi</th>
+                    <th scope="col">Raf No</th>
+                    <th scope="col">İşlemler</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let product of collectedProducts">
+                    <td>{{ product.quantity }}</td>
+                    <td>{{ product.barcode }}</td>
+                    <td>{{ product.createdDate }}</td>
+                    <td>{{ product.shelfNo }}</td>
+                    <td>
+                      <button
+                        class="btn btn-danger"
+                        (click)="deleteCollectProductOfOrder(product.id)"
+                      >
+                        Sil
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Yeni kart: Toplanan Ürünler -->
+        <div class="card text-center">
+          <div class="card-body">
+            <h5 class="card-title">Toplanan Ürünler</h5>
+            <h1 class="display-1">{{ collectedProducts.length }}</h1>
+            <p class="card-text">Adet Ürün Toplandı</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

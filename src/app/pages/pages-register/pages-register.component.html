@@ -13,9 +13,10 @@
         <form [formGroup]="registerForm">
           <div class="row">
             <div class="col-md-6">
-              <div class="form-group">
-                <label for="firstName" class="label">Ad*</label>
+              <div class="form-group mb-3">
                 <input
+                  pInputText
+                  placeholder="Ad"
                   type="text"
                   class="form-control"
                   id="firstName"
@@ -23,9 +24,10 @@
                   formControlName="firstName"
                 />
               </div>
-              <div class="form-group">
-                <label for="email" class="label">Email</label>
+              <div class="form-group mb-3">
                 <input
+                  pInputText
+                  placeholder="Email"
                   type="text"
                   class="form-control"
                   id="email"
@@ -33,19 +35,20 @@
                   formControlName="email"
                 />
               </div>
-              <div class="form-group">
-                <label for="password" class="label">Şifre*</label>
+              <div class="form-group mb-3">
                 <input
+                  pInputText
+                  placeholder="Şifre"
                   type="password"
                   class="form-control"
                   id="password"
-                  placeholder="Şifre"
                   formControlName="password"
                 />
               </div>
-              <div class="form-group">
-                <label for="confirmPassword" class="label">Cinsiyet</label>
+              <div class="form-group mb-3">
                 <input
+                  pInputText
+                  placeholder="Cinsiyet"
                   type="text"
                   class="form-control"
                   id="gender"
@@ -53,7 +56,7 @@
                   formControlName="gender"
                 />
               </div>
-              <div class="form-group">
+              <div class="form-group mb-3">
                 <div class="mt-3"></div>
                 <p-dropdown
                   formControlName="roleDescription"
@@ -66,38 +69,38 @@
               </div>
             </div>
             <div class="col-md-6">
-              <div class="form-group">
-                <label for="lastName" class="label">Soyad*</label>
+              <div class="form-group mb-3">
                 <input
+                  pInputText
+                  placeholder="Soyad"
                   type="text"
                   class="form-control"
                   id="lastName"
-                  placeholder="Soyad"
                   formControlName="lastName"
                 />
               </div>
 
-              <div class="form-group">
-                <label for="phoneNumber" class="label">Telefon Numarası</label>
+              <div class="form-group mb-3">
                 <input
+                  pInputText
+                  placeholder="Telefon Numarası"
                   type="text"
                   class="form-control"
                   id="phoneNumber"
-                  placeholder="Telefon Numarası"
                   formControlName="phoneNumber"
                 />
               </div>
-              <div class="form-group">
-                <label for="confirmPassword" class="label">Şifre Tekrar*</label>
+              <div class="form-group mb-3">
                 <input
+                  pInputText
+                  placeholder="Şifre Tekrar*"
                   type="password"
                   class="form-control"
                   id="confirmPassword"
-                  placeholder="Şifre Tekrar"
                   formControlName="confirmPassword"
                 />
               </div>
-              <div class="form-group">
+              <div class="form-group mb-3">
                 <div class="mt-3"></div>
                 <p-dropdown
                   formControlName="salesPersonCode"

@@ -29,7 +29,7 @@ export class InvoiceListComponent implements OnInit, OnChanges {
     private orderService: OrderService
 
   ) { }
-
+  offices: any[] = ["Alış", "Satış"]
   barcode: string = null;
   quantity: string = null;
   ngOnChanges(changes: SimpleChanges): void {

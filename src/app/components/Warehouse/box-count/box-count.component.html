@@ -61,7 +61,7 @@
               </div>
 
               <div class="row mb-3">
-                <div class="col-md-6">
+                <!-- <div class="col-md-6">
                   <div class="form-group">
                     <button
                       type="button"
@@ -72,8 +72,8 @@
                       Kontrol Et
                     </button>
                   </div>
-                </div>
-                <div class="col-md-6">
+                </div> -->
+                <div class="col-md-12">
                   <div class="form-group">
                     <button
                       type="button"
@@ -87,65 +87,6 @@
                 </div>
               </div>
             </form>
-          </div>
-        </div>
-
-        <div class="card" *ngIf="lastCollectedProducts.length > 0">
-          <div class="card-body">
-            <h5 class="card-title">Sayılan Ürünler</h5>
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col" *ngFor="let header of _tableHeaders">
-                      {{ header }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    *ngFor="
-                      let product of lastCollectedProducts
-                        | paginate
-                          : { itemsPerPage: 10, currentPage: currentPage };
-                      let i = index
-                    "
-                  >
-                    <!-- <td>{{ i + 1 }}</td> -->
-                    <td>
-                      <img
-                        src="{{ product.photoUrl }}"
-                        alt="Resim"
-                        width="50"
-                        height="50"
-                        (click)="openImageModal(product.photoUrl)"
-                      />
-                    </td>
-                    <td>{{ product.shelfNo }}</td>
-                    <td>{{ product.itemCode }}</td>
-                    <td>{{ product.quantity }}</td>
-                    <td>{{ product.batchCode }}</td>
-                    <td>{{ product.barcode }}</td>
-                    <td>
-                      <div class="btn-group">
-                        <button
-                          class="btn btn-danger"
-                          type="submit"
-                          (click)="deleteOrderProduct(orderNo, product)"
-                        >
-                          <i class="fa fa-trash"></i>
-                        </button>
-
-                        <!-- Yeni -->
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <pagination-controls
-                (pageChange)="currentPage = $event"
-              ></pagination-controls>
-            </div>
           </div>
         </div>
       </div>

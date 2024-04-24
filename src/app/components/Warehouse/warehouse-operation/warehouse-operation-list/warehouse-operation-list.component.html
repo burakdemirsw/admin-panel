@@ -21,11 +21,12 @@
             [formGroup]="filterForm"
             (ngSubmit)="onSubmit(filterForm.value)"
           >
-            <div class="row">
+            <div class="row mb-3">
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="innerNumber">İç Numara</label>
                   <input
+                    pInputText
+                    placeholder="İç Numara"
                     type="text"
                     id="innerNumber"
                     class="form-control"
@@ -35,8 +36,9 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="endDate">İşlem Bitiş Tarihi:</label>
                   <input
+                    pInputText
+                    placeholder="İşlem Bitiş Tarihi"
                     type="date"
                     id="endDate"
                     class="form-control"
@@ -47,8 +49,9 @@
 
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="startDate">İşlem Başlangıç Tarihi:</label>
                   <input
+                    pInputText
+                    placeholder="İşlem Başlangıç Tarihi"
                     type="date"
                     id="startDate"
                     class="form-control"
@@ -58,7 +61,7 @@
               </div>
             </div>
 
-            <div class="row mt-2">
+            <div class="row">
               <div class="col-md-4">
                 <button class="btn btn-primary">Filtrele</button>
               </div>
@@ -112,7 +115,7 @@
 
         </div>
          -->
-        <div class="btn-group mb-3">
+        <!-- <div class="btn-group mb-3">
           <button
             class="btn btn-primary"
             type="button"
@@ -131,12 +134,12 @@
           >
             Seçilen Ürünleri Topla
           </button>
-        </div>
+        </div> -->
         <div style="overflow-x: auto">
           <table class="table">
             <thead>
               <tr>
-                <th scope="col">Seç</th>
+                <!-- <th scope="col">Seç</th> -->
 
                 <th scope="col">İşlem Tarihi</th>
                 <th scope="col">İç Numara</th>
@@ -156,14 +159,14 @@
                     | paginate : { itemsPerPage: 10, currentPage: currentPage }
                 "
               >
-                <td>
+                <!-- <td>
                   <input
                     class="form-check-input"
                     type="checkbox"
                     value=""
                     (click)="addInnerNumberToList(operation.innerNumber)"
                   />
-                </td>
+                </td> -->
 
                 <td>
                   {{ operation.operationDate | date : "dd.MM.yyyy HH:mm" }}

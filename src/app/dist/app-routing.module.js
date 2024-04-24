@@ -16,7 +16,7 @@ var customer_list_component_1 = require("./components/Customer/customer-list/cus
 var devolopment_list_component_1 = require("./components/Devolopment/devolopment-list/devolopment-list.component");
 var homepage_component_1 = require("./components/Homepage/homepage.component");
 var log_managament_component_1 = require("./components/Log/log-managament/log-managament.component");
-var collect_product_of_order_component_1 = require("./components/Order/collect-product-of-order/collect-product-of-order.component");
+var collect_product_of_order_component_1 = require("./components2/order/collect-product-of-order/collect-product-of-order.component");
 var collected_package_detail_component_1 = require("./components/Order/collected-package-detail/collected-package-detail.component");
 var collected_packages_component_1 = require("./components/Order/collected-packages/collected-packages.component");
 var create_order_component_1 = require("./components/Order/create-order/create-order.component");
@@ -60,6 +60,9 @@ var users_profile_component_1 = require("./pages/users-profile/users-profile.com
 var create_barcode_component_1 = require("./components/Product/create-barcode/create-barcode.component");
 var fast_transfer_list_component_1 = require("./components/Warehouse/fast-transfer/fast-transfer-list/fast-transfer-list.component");
 var retail_invoice_list_component_1 = require("./components2/invoice/retail-invoice-list/retail-invoice-list.component");
+var retail_order_management_component_1 = require("./components2/order/retail-order-management/retail-order-management.component");
+var collected_packages_component_2 = require("./components2/order/collected-packages/collected-packages.component");
+var order_state_component_1 = require("./components/Order/order-state/order-state.component");
 var routes = [
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     {
@@ -289,6 +292,7 @@ var routes = [
         component: devolopment_list_component_1.DevolopmentListComponent,
         canActivate: [auth_guard_1.AuthGuard]
     },
+    { path: 'order-state', component: order_state_component_1.OrderStateComponent },
     { path: 'box-count', component: box_count_component_1.BoxCountComponent, canActivate: [auth_guard_1.AuthGuard] },
     { path: 'search-qr/:id', component: search_qr_component_1.SearchQrComponent },
     { path: 'search-qr', component: search_qr_component_1.SearchQrComponent },
@@ -298,6 +302,9 @@ var routes = [
     { path: 'create-barcode/:operationNo', component: create_barcode_component_1.CreateBarcodeComponent },
     //-------------------------------------------------------------------------
     { path: 'retail-invoice-list', component: retail_invoice_list_component_1.RetailInvoiceListComponent },
+    { path: 'retail-orders-managament/:status/:invoiceStatus', component: retail_order_management_component_1.RetailOrderManagementComponent },
+    { path: 'retail-orders-collected-packages', component: collected_packages_component_2.CollectedPackagesComponent },
+    //-------------------------------------------------------------------------
     { path: '**', component: pages_error404_component_1.PagesError404Component },
 ];
 var AppRoutingModule = /** @class */ (function () {

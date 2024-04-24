@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { int } from '@zxing/library/esm/customTypings';
 import { Observable } from 'rxjs/internal/Observable';
-import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, NebimOrder_2 } from 'src/app/models/model/order/nebimOrder';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
+import { InvocieFilterModel } from 'src/app/models/model/filter/invoiceFilterModel';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
@@ -12,19 +12,20 @@ import { OrderBillingRequestModel } from 'src/app/models/model/invoice/orderBill
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
 import { GetCustomerAddress_CM, GetCustomerList_CM } from 'src/app/models/model/order/getCustomerList_CM';
 import { GetNebimOrders_RM } from 'src/app/models/model/order/getOrder_RM';
+import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, NebimOrder_2 } from 'src/app/models/model/order/nebimOrder';
+import { OrderStatus } from 'src/app/models/model/order/orderStatus';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
+import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
 import { BarcodeAddModel } from 'src/app/models/model/product/barcodeAddModel';
 import { CountConfirmData } from 'src/app/models/model/product/countConfirmModel';
+import { CountListModel } from 'src/app/models/model/product/countListModel';
 import { InventoryItem } from 'src/app/models/model/product/inventoryItemModel';
 import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 import { ClientCustomer } from '../../components/Customer/customer-list/customer-list.component';
 import { AddCustomerAddress_CM, CreateCustomer_CM } from '../../models/model/order/createCustomer_CM';
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
-import { InvocieFilterModel } from 'src/app/models/model/filter/invoiceFilterModel';
-import { CountListModel } from 'src/app/models/model/product/countListModel';
-import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
 
 @Injectable({
   providedIn: 'root',
@@ -37,50 +38,43 @@ export class OrderService {
     private httpClient: HttpClient
   ) { }
 
+
+
   //satış siparişleri çekme //exec GET_MSRAFOrderList
   async getOrders(type: number, invoiceStatus: number): Promise<SaleOrderModel[]> {
-    try {
-      var query: string = `${type}/${invoiceStatus}`
-      const response = this.httpClientService
-        .get<SaleOrderModel>({
-          controller: 'order/get-sale-orders',
-        }, query)
-        .toPromise();
-      return response;
-    } catch (error: any) {
-      // console.log(error.message);
-      return null;
-    }
+
+    var query: string = `${type}/${invoiceStatus}`
+    const response = this.httpClientService
+      .get<SaleOrderModel>({
+        controller: 'order/get-sale-orders',
+      }, query)
+      .toPromise();
+    return response;
+
   }
 
   async getMissingOrders(): Promise<SaleOrderModel[]> {
-    try {
-      const response = this.httpClientService
-        .get<SaleOrderModel>({
-          controller: 'order/get-orders-with-missing-items',
-        })
-        .toPromise();
-      return response;
-    } catch (error: any) {
-      // console.log(error.message);
-      return null;
-    }
+
+    const response = this.httpClientService
+      .get<SaleOrderModel>({
+        controller: 'order/get-orders-with-missing-items',
+      })
+      .toPromise();
+    return response;
+
   }
 
 
 
   async getPurchaseOrdersByFilter(model: OrderFilterModel): Promise<SaleOrderModel[]> {
-    try {
-      const response = this.httpClientService
-        .post<any>({
-          controller: 'Order/GetPurchaseOrdersByFilter',
-        }, model)
-        .toPromise();
-      return response;
-    } catch (error: any) {
-      // console.log(error.message);
-      return null;
-    }
+
+    const response = this.httpClientService
+      .post<any>({
+        controller: 'Order/GetPurchaseOrdersByFilter',
+      }, model)
+      .toPromise();
+    return response;
+
   }
 
   //fatura listesini çeker
@@ -103,35 +97,29 @@ export class OrderService {
 
 
   async getOrdersByFilter(model: OrderFilterModel): Promise<SaleOrderModel[]> {
-    try {
-      const response = this.httpClientService
-        .post<any>({
-          controller: 'Order/GetOrdersByFilter',
-        }, model)
-        .toPromise();
-      return response;
-    } catch (error: any) {
-      // console.log(error.message);
-      return null;
-    }
+
+    const response = this.httpClientService
+      .post<any>({
+        controller: 'Order/GetOrdersByFilter',
+      }, model)
+      .toPromise();
+    return response;
+
   }
 
 
 
   //alış siparişlerini çekme GET_MSRAFSalesOrderDetailBP
   getPurchaseOrders(): Promise<any> {
-    try {
-      const response = this.httpClientService
-        .get<SaleOrderModel>({
-          controller: 'Order/GetPurchaseOrders',
-        })
-        .toPromise();
 
-      return response;
-    } catch (error: any) {
-      // console.log(error.message);
-      return null;
-    }
+    const response = this.httpClientService
+      .get<SaleOrderModel>({
+        controller: 'Order/GetPurchaseOrders',
+      })
+      .toPromise();
+
+    return response;
+
   }
   //sipariş ekleme
   addProductToOrder(model: BarcodeAddModel): boolean {
@@ -162,26 +150,23 @@ export class OrderService {
     orderNo: string,
     orderNoType: string
   ): Observable<ProductOfOrder[]> {
-    try {
-      let endpoint: string = '';
 
-      if (orderNoType === 'BP') {
-        endpoint = 'Order/GetPurchaseOrderSaleDetail/'; //GET_MSRAFSalesOrderDetailBP
-      } else if (orderNoType === 'WT') {
-        endpoint = 'Warehouse/GetWarehouseOperationDetail/'; //Usp_GETTransferOnayla
-      } else if (orderNoType === 'WS') {
-        endpoint = 'Order/GetOrderSaleDetail/'; //GET_MSRAFSalesOrderDetail
-      } else if (orderNoType === 'MIS') {
-        endpoint = 'Order/get-missing-products-of-order/'; //GET_MSRAFOrderListMissing
-      }
+    let endpoint: string = '';
 
-      return this.httpClientService.get<ProductOfOrder>({
-        controller: endpoint + orderNo,
-      });
-    } catch (error: any) {
-      // console.log(error.message);
-      throw error; // Rethrow the error if necessary
+    if (orderNoType === 'BP') {
+      endpoint = 'Order/GetPurchaseOrderSaleDetail/'; //GET_MSRAFSalesOrderDetailBP
+    } else if (orderNoType === 'WT') {
+      endpoint = 'Warehouse/GetWarehouseOperationDetail/'; //Usp_GETTransferOnayla
+    } else if (orderNoType === 'WS') {
+      endpoint = 'Order/GetOrderSaleDetail/'; //GET_MSRAFSalesOrderDetail
+    } else if (orderNoType === 'MIS') {
+      endpoint = 'Order/get-missing-products-of-order/'; //GET_MSRAFOrderListMissing
     }
+
+    return this.httpClientService.get<ProductOfOrder>({
+      controller: endpoint + orderNo,
+    });
+
   }
   //transferi onaylama
   async confirmTransfer(operationNumberList: string[]): Promise<boolean> {
@@ -764,8 +749,27 @@ export class OrderService {
       // console.log(error.message);
       return null;
     }
+  }
 
+  async addOrderStatus(orderStatus: OrderStatus) {
+    const response = this.httpClientService
+      .post<OrderStatus>({
+        controller: 'order/add-order-status',
+      }, orderStatus)
+      .toPromise();
+    return response;
+  }
 
+  async getSaleOrdersWithStatus(type: number, invoiceStatus: number): Promise<any> {
+
+    var query: string = `${type}/${invoiceStatus}`
+    const response = this.httpClientService
+      .get<any>({
+        controller: 'order/get-orders-with-statuses',
+      }, query)
+      .toPromise();
+
+    return response;
   }
 
   //ExecuteSqlRawAsync

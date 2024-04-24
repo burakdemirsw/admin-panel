@@ -1,23 +1,10 @@
 <main id="main" class="main">
-  <div class="pagetitle">
-    <h1>Verilen Siparişler</h1>
-    <nav>
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-        <li class="breadcrumb-item">Tables</li>
-        <li class="breadcrumb-item active">General</li>
-      </ol>
-    </nav>
-  </div>
-
   <section class="section">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Verilen Sipariş Filtreleme</h5>
-        <!-- Filtreleme Alanı (Başlangıç) -->
-        <div class="btn-group mb-3">
+        <div class="btn-group mb-3 mt-4">
           <button
-            class="btn btn-primary"
+            class="btn custom-btn-primary"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#filterCollapse"
@@ -33,11 +20,12 @@
             [formGroup]="filterForm"
             (ngSubmit)="onSubmit(filterForm.value)"
           >
-            <div class="row">
+            <div class="row mb-3">
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="orderNo">Sipariş Numarası</label>
                   <input
+                    pInputText
+                    placeholder="Sipariş Numarası"
                     type="text"
                     id="orderNo"
                     class="form-control"
@@ -47,8 +35,9 @@
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="currAccCode"> Müşteri Kodu</label>
                   <input
+                    pInputText
+                    placeholder=" Müşteri Kodu"
                     type="text"
                     id="currAccCode"
                     class="form-control"
@@ -59,8 +48,9 @@
 
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="customerName">Müşteri Adı</label>
                   <input
+                    pInputText
+                    placeholder=" Müşteri Adı"
                     type="text"
                     id="customerName"
                     class="form-control"
@@ -70,16 +60,11 @@
               </div>
             </div>
             <div class="row">
-              <!-- <div class="col-md-4">
-              <div class="form-group">
-                <label for="sellerCode">Satıcı Kodu</label>
-                <input type="text" id="sellerCode" class="form-control" formControlName="sellerCode" />
-              </div>
-            </div> -->
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="endDate">İşlem Bitiş Tarihi:</label>
                   <input
+                    pInputText
+                    placeholder="İşlem Bitiş Tarihi"
                     type="date"
                     id="endDate"
                     class="form-control"
@@ -90,8 +75,9 @@
 
               <div class="col-md-4">
                 <div class="form-group">
-                  <label for="startDate">İşlem Başlangıç Tarihi:</label>
                   <input
+                    pInputText
+                    placeholder="İşlem Başlangıç Tarihi"
                     type="date"
                     id="startDate"
                     class="form-control"

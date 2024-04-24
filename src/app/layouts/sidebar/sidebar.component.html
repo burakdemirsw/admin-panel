@@ -63,7 +63,51 @@
           "
         >
           <a routerLink="unfinished-orders">
-            <i class="bi bi-circle"></i><span>Panel Siparişleri </span>
+            <i class="bi bi-circle"></i><span>Siparişlerim </span>
+          </a>
+        </li>
+
+        <li
+          *ngIf="
+            this.roleDescription == 'Admin' ||
+            this.roleDescription == 'Salesman'
+          "
+        >
+          <a routerLink="/order-state">
+            <i class="bi bi-circle"></i><span>Sipariş Durumu </span>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <li
+      class="nav-item"
+      *ngIf="
+        this.roleDescription == 'Admin' || this.roleDescription == 'Salesman'
+      "
+    >
+      <a
+        class="nav-link collapsed"
+        data-bs-target="#Orders-nav"
+        data-bs-toggle="collapse"
+      >
+        <i class="fas fa-dolly"></i><span>Perakende İşlemleri</span
+        ><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+
+      <ul
+        id="Orders-nav"
+        class="nav-content collapse"
+        data-bs-parent="#sidebar-nav"
+      >
+        <li>
+          <a routerLink="retail-orders-managament/1/2">
+            <i class="bi bi-circle"></i><span>Alınan Siparişler </span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="retail-orders-collected-packages">
+            <i class="bi bi-circle"></i><span>Paketler </span>
           </a>
         </li>
       </ul>
@@ -146,7 +190,7 @@
         </li> -->
         <li>
           <a routerLink="search-qr">
-            <i class="bi bi-circle"></i><span>Ürün&Qr Sorgulama</span>
+            <i class="bi bi-circle"></i><span>Ürün & Qr Sorgulama</span>
           </a>
         </li>
       </ul>
@@ -191,47 +235,25 @@
       <ul id="User-nav" class="nav-content collapse" data-bs-parent="#User-nav">
         <li>
           <a routerLink="customer-list">
-            <i class="bi bi-circle"></i><span>Müşteri Listesi</span>
+            <i class="bi bi-circle"></i><span>Müşteriler</span>
           </a>
         </li>
-
+        <!--
         <li>
           <a routerLink="add-customer">
             <i class="bi bi-circle"></i><span>Müşteri Ekle</span>
           </a>
-        </li>
+        </li> -->
         <li>
           <a routerLink="user-list">
             <i class="bi bi-circle"></i><span>Kulanıcılar</span>
           </a>
         </li>
-        <li>
+        <!-- <li>
           <a routerLink="register">
             <i class="bi bi-circle"></i><span>Kullanıcı Ekle</span>
           </a>
-        </li>
-      </ul>
-    </li>
-
-    <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
-      <a
-        class="nav-link collapsed"
-        data-bs-target="#Log-nav"
-        data-bs-toggle="collapse"
-      >
-        <i class="fa fa-box"></i><span>Log İşlemleri</span
-        ><i class="bi bi-chevron-down ms-auto"></i>
-      </a>
-      <ul
-        id="Log-nav"
-        class="nav-content collapse"
-        data-bs-parent="#Product-nav"
-      >
-        <li>
-          <a routerLink="log-managament">
-            <i class="bi bi-circle"></i><span>Loglar</span>
-          </a>
-        </li>
+        </li> -->
       </ul>
     </li>
 
@@ -241,7 +263,7 @@
         data-bs-target="#devolopment-nav"
         data-bs-toggle="collapse"
       >
-        <i class="bi bi-question-octagon-fill"></i><span>Geliştirmeler</span
+        <i class="fa-solid fa-gear"></i><span>Ayarlar</span
         ><i class="bi bi-chevron-down ms-auto"></i>
       </a>
       <ul
@@ -254,24 +276,14 @@
             <i class="bi bi-circle"></i><span>İstekler</span>
           </a>
         </li>
-      </ul>
-    </li>
 
-    <li class="nav-item">
-      <a
-        class="nav-link collapsed"
-        data-bs-target="#nebim-nav"
-        data-bs-toggle="collapse"
-      >
-        <i class="fa-solid fa-gear"></i><span>Nebim</span
-        ><i class="bi bi-chevron-down ms-auto"></i>
-      </a>
-      <ul
-        id="nebim-nav"
-        class="nav-content collapse"
-        data-bs-parent="#nebim-nav"
-      >
         <li>
+          <a routerLink="log-managament">
+            <i class="bi bi-circle"></i><span>Loglar</span>
+          </a>
+        </li>
+
+        <!-- <li>
           <a routerLink="nebim-stock-control">
             <i class="bi bi-circle"></i><span>Stok Kontrol</span>
           </a>
@@ -280,77 +292,6 @@
           </a>
           <a routerLink="nebim-product-extract">
             <i class="bi bi-circle"></i><span>Ürün Ekstresi</span>
-          </a>
-        </li>
-      </ul>
-    </li>
-  </ul>
-
-  <ul class="sidebar-nav" id="sidebar-nav" *ngIf="userId == '24'">
-    <li
-      class="nav-item"
-      *ngIf="
-        this.roleDescription == 'Admin' || this.roleDescription == 'Salesman'
-      "
-    >
-      <a
-        class="nav-link collapsed"
-        data-bs-target="#Orders-nav"
-        data-bs-toggle="collapse"
-      >
-        <i class="fas fa-dolly"></i><span>Sipariş İşlemleri</span
-        ><i class="bi bi-chevron-down ms-auto"></i>
-      </a>
-
-      <ul
-        id="Orders-nav"
-        class="nav-content collapse"
-        data-bs-parent="#sidebar-nav"
-      >
-        <!-- <li>
-          <a routerLink="orders-managament/1/2">
-            <i class="bi bi-circle"></i><span>Alınan Siparişler </span>
-          </a>
-        </li>
-        <li *ngIf="this.roleDescription == 'Admin'">
-          <a routerLink="purchase-orders-managament">
-            <i class="bi bi-circle"></i><span>Verilen Siparişler </span>
-          </a>
-        </li> -->
-        <li *ngIf="this.roleDescription == 'Admin'">
-          <a routerLink="retail-invoice-list">
-            <i class="bi bi-circle"></i><span>Faturalar (Alış / Satış)</span>
-          </a>
-        </li>
-        <!-- <li
-          *ngIf="
-            this.roleDescription == 'Admin' ||
-            this.roleDescription == 'Salesman'
-          "
-        >
-          <a (click)="routeNewPage3(true)">
-            <i class="bi bi-circle"></i><span>Sipariş Ver</span>
-          </a>
-        </li>
-        <li *ngIf="this.roleDescription == 'Admin'">
-          <a (click)="routeNewPage3(false)">
-            <i class="bi bi-circle"></i><span>Perakende Satış</span>
-          </a>
-        </li>
-        <li *ngIf="this.roleDescription == 'Admin'">
-          <a routerLink="cargo-list">
-            <i class="bi bi-circle"></i><span>Kargolar</span>
-          </a>
-        </li> -->
-
-        <!-- <li
-          *ngIf="
-            this.roleDescription == 'Admin' ||
-            this.roleDescription == 'Salesman'
-          "
-        >
-          <a routerLink="unfinished-orders">
-            <i class="bi bi-circle"></i><span>Panel Siparişleri </span>
           </a>
         </li> -->
       </ul>

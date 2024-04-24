@@ -17,6 +17,9 @@ var HttpErrorInterceptor = /** @class */ (function () {
     }
     HttpErrorInterceptor.prototype.intercept = function (request, next) {
         var _this = this;
+        if (request.url.includes('get-customer-list-2')) {
+            return next.handle(request);
+        }
         this.spinnerService.show();
         setInterval(function () {
         }, 2000);

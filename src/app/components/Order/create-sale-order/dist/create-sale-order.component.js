@@ -60,6 +60,9 @@ var CreateSaleOrderComponent = /** @class */ (function () {
         this.title = title;
         this.sanitizer = sanitizer;
         this.infoProducts = [];
+        this.offices = ["M", "U"];
+        this.warehouses = ["MD", "UD"];
+        this.currencyList = ['Standart', 'Vergisiz']; //vergi tipi
         this.addedProductCount = 'Sayım Paneli';
         this.newOrderNumber = '';
         this.customerList = [];
@@ -68,7 +71,6 @@ var CreateSaleOrderComponent = /** @class */ (function () {
         this.invoiceProducts2 = [];
         this.activeTab = 1;
         this.warehouseModels = [];
-        this.currencyList = ['Standart', 'Vergisiz']; //vergi tipi
         this.visible = false;
         this.qrCodeDownloadLink = this.sanitizer.bypassSecurityTrustResourceUrl('');
         this.customerList2 = [];
@@ -98,20 +100,14 @@ var CreateSaleOrderComponent = /** @class */ (function () {
                             switch (_a.label) {
                                 case 0:
                                     this.newOrderNumber = 'WSI-' + params['orderNo'];
-                                    return [4 /*yield*/, this.getOfficeCodeList()];
-                                case 1:
-                                    _a.sent(); //ofis kod
                                     return [4 /*yield*/, this.getProductOfInvoice(this.newOrderNumber)];
-                                case 2:
+                                case 1:
                                     _a.sent();
-                                    return [4 /*yield*/, this.getWarehouseList(document.getElementById('officeCode').value)];
-                                case 3:
-                                    _a.sent(); //depo kodu
                                     return [4 /*yield*/, this.getCustomerList()];
-                                case 4:
+                                case 2:
                                     _a.sent(); //müşteriler kodu
                                     return [4 /*yield*/, this.getSalesPersonModels()];
-                                case 5:
+                                case 3:
                                     _a.sent(); //personeller kodu
                                     this.setInput();
                                     return [2 /*return*/];
@@ -142,13 +138,9 @@ var CreateSaleOrderComponent = /** @class */ (function () {
     CreateSaleOrderComponent.prototype.setInput = function () {
         if (this.invoiceProducts2.length > 0) {
             if (this.invoiceProducts2[0].officeCode == 'M') {
-                document.getElementById('officeCode').value =
-                    'M';
                 this.productForm.get('officeCode').setValue('M');
             }
             else {
-                document.getElementById('officeCode').value =
-                    'U';
                 this.productForm.get('officeCode').setValue('U');
             }
             this.productForm
@@ -338,6 +330,7 @@ var CreateSaleOrderComponent = /** @class */ (function () {
         }
     };
     CreateSaleOrderComponent.prototype.formGenerator = function () {
+        var _this = this;
         try {
             this.productForm = this.formBuilder.group({
                 officeCode: [null, forms_1.Validators.required],
@@ -351,6 +344,16 @@ var CreateSaleOrderComponent = /** @class */ (function () {
                 isReturn: { value: true, disabled: true },
                 currency: [null, forms_1.Validators.required],
                 batchCode: [null]
+            });
+            this.productForm.get('officeCode').valueChanges.subscribe(function (value) {
+                if (value === 'M') {
+                    _this.productForm.get('warehouseCode').setValue('MD');
+                }
+            });
+            this.productForm.get('officeCode').valueChanges.subscribe(function (value) {
+                if (value === 'U') {
+                    _this.productForm.get('warehouseCode').setValue('UD');
+                }
             });
         }
         catch (error) {

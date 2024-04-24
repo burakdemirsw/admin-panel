@@ -144,7 +144,7 @@
                       *ngFor="
                         let task of tasks
                           | paginate
-                            : { itemsPerPage: 25, currentPage: currentPage };
+                            : { itemsPerPage: 10, currentPage: currentPage };
                         let i = index
                       "
                     >
@@ -231,7 +231,7 @@
         header="{{ this.selectedTask.id }}-Açıklama Güncelle"
         [(visible)]="visible"
         [modal]="true"
-        [style]="{ width: '50vw' }"
+        [style]="{ width: '80vw' }"
         [draggable]="false"
         [resizable]="false"
       >

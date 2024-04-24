@@ -756,8 +756,8 @@ var CreateOrderComponent = /** @class */ (function () {
             currAccDescription: [null, forms_1.Validators.required],
             mail: [' ', forms_1.Validators.required],
             phoneNumber: [null, forms_1.Validators.required],
-            stampPhotoUrl: [' ', forms_1.Validators.required],
-            bussinesCardPhotoUrl: [' ', forms_1.Validators.required],
+            stampPhotoUrl: [null, forms_1.Validators.required],
+            bussinesCardPhotoUrl: [null, forms_1.Validators.required],
             address_country: [null],
             address_province: [null],
             address_district: [null],
@@ -819,10 +819,26 @@ var CreateOrderComponent = /** @class */ (function () {
         }); });
     };
     CreateOrderComponent.prototype.createGetCustomerForm = function () {
-        this.getCustomerForm = this.formBuilder.group({
-            mail: [null],
-            phone: [null],
-            currAccCode: [null]
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                this.getCustomerForm = this.formBuilder.group({
+                    mail: [null],
+                    phone: [null],
+                    currAccCode: [null]
+                });
+                this.getCustomerForm.get('currAccCode').valueChanges.subscribe(function (value) { return __awaiter(_this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, this.getCustomers(this.getCustomerForm.value)];
+                            case 1:
+                                _a.sent();
+                                return [2 /*return*/];
+                        }
+                    });
+                }); });
+                return [2 /*return*/];
+            });
         });
     };
     CreateOrderComponent.prototype.createCustomerForm_Submit = function (value) {
@@ -943,6 +959,14 @@ var CreateOrderComponent = /** @class */ (function () {
     };
     CreateOrderComponent.prototype.getTotalPrice = function () {
         return this.selectedProducts.reduce(function (acc, product) { return acc + (product.quantity * product.discountedPrice); }, 0);
+        // return this.selectedProducts.reduce((acc, product) => {
+        //   // Ürünün normal fiyatı indirimli fiyatından küçükse, normal fiyatı kullan
+        //   if (product.price < product.discountedPrice) {
+        //     return acc + (product.quantity * product.price);
+        //   }
+        //   // Değilse, indirimli fiyatı kullan
+        //   return acc + (product.quantity * product.discountedPrice);
+        // }, 0);
     };
     CreateOrderComponent.prototype.discount = function (discountRate) {
         if (discountRate > 0 && discountRate <= 100) {

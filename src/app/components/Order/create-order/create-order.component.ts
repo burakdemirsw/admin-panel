@@ -628,8 +628,8 @@ export class CreateOrderComponent implements OnInit {
       currAccDescription: [null, Validators.required],
       mail: [' ', Validators.required],
       phoneNumber: [null, Validators.required],
-      stampPhotoUrl: [' ', Validators.required],
-      bussinesCardPhotoUrl: [' ', Validators.required],
+      stampPhotoUrl: [null, Validators.required],
+      bussinesCardPhotoUrl: [null, Validators.required],
       address_country: [null],
       address_province: [null],
       address_district: [null],
@@ -681,12 +681,16 @@ export class CreateOrderComponent implements OnInit {
 
   }
 
-  createGetCustomerForm() {
+  async createGetCustomerForm() {
     this.getCustomerForm = this.formBuilder.group({
       mail: [null],
       phone: [null],
       currAccCode: [null],
     });
+    this.getCustomerForm.get('currAccCode').valueChanges.subscribe(async (value) => {
+      await this.getCustomers(this.getCustomerForm.value)
+    });
+
   }
   createCustomerForm_Submit(value: any) {
     if (this.selectCurrentAddress.length > 0) {
@@ -778,6 +782,14 @@ export class CreateOrderComponent implements OnInit {
   }
   getTotalPrice() {
     return this.selectedProducts.reduce((acc, product) => acc + (product.quantity * product.discountedPrice), 0);
+    // return this.selectedProducts.reduce((acc, product) => {
+    //   // Ürünün normal fiyatı indirimli fiyatından küçükse, normal fiyatı kullan
+    //   if (product.price < product.discountedPrice) {
+    //     return acc + (product.quantity * product.price);
+    //   }
+    //   // Değilse, indirimli fiyatı kullan
+    //   return acc + (product.quantity * product.discountedPrice);
+    // }, 0);
   }
 
 

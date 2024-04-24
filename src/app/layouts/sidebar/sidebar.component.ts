@@ -7,6 +7,7 @@ import { GeneralService } from 'src/app/services/admin/general.service';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
+
 export class SidebarComponent implements OnInit {
 
   constructor(private router: Router, private generalService: GeneralService) { }

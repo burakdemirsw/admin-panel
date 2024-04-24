@@ -160,6 +160,9 @@ export class OrderManagamentComponent implements OnInit {
     this.setPageDescription();
 
   }
+
+  // 1, 2 toplanabilir
+  // 1, 1 faturalandırılan
   async getOrders(status: number, invoiceStatus: number): Promise<any> {
 
     this.status = status;

@@ -9,6 +9,7 @@ import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperatio
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { CountProductRequestModel2 } from 'src/app/models/model/order/countProductRequestModel2';
 import { OrderBillingListModel } from 'src/app/models/model/order/orderBillingListModel';
+import { OrderStatus } from 'src/app/models/model/order/orderStatus';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { CountedProduct, CountedProductControl } from 'src/app/models/model/product/countedProduct';
 import { ItemBillingModel } from 'src/app/models/model/product/itemBillingModel ';
@@ -19,6 +20,7 @@ import {
 import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
+import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
@@ -79,7 +81,8 @@ export class WarehosueShelfCountComponent implements OnInit {
     private warehouseService: WarehouseService,
     private activatedRoute: ActivatedRoute,
     private title: Title,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private orderService: OrderService
   ) {
     this.title.setTitle('Sayım');
   }
@@ -96,6 +99,7 @@ export class WarehosueShelfCountComponent implements OnInit {
   }
   shelfNumbers: string = 'RAFLAR:';
   async ngOnInit() {
+
     this.formGenerator();
     this.activatedRoute.params.subscribe(async (params) => {
       this.currentOrderNo = params['orderNo'];
@@ -677,4 +681,6 @@ export class WarehosueShelfCountComponent implements OnInit {
     }
 
   }
+
+
 }
