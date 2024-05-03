@@ -126,6 +126,7 @@ export class WarehouseOperationComponent implements OnInit {
 
 
   inventoryItemColums: string[] = [
+    'Id',
     'Fotoğraf',
     'Raf',
     'Ürün Kodu',
@@ -522,6 +523,17 @@ export class WarehouseOperationComponent implements OnInit {
 
           this.warehouseForm.get('batchCode').setValue(result[2]);
           this.warehouseForm.get('barcode').setValue(result[3]);
+          if (result[4] == 'false') {
+
+            if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
+              this.warehouseForm.get('batchCode').setValue(null);
+              this.focusNextInput('batchCode');
+              this.toasterService.error('Parti Giriniz');
+              return null;
+            }
+
+
+          }
         }
 
         return result[1];

@@ -112,15 +112,16 @@ export class ShelfTransferRequestComponent implements OnInit {
     this.formGenerator();
     // this.currentOrderNo = (await this.generalService.generateGUID()).toString();
     this.activatedRoute.params.subscribe(async (params) => {
-      if (params["type"]) {
-        await this.getTransferRequestListModel(params["type"]);
-      }
       if (params['operationNo']) {
         this.currentOrderNo = "REQ-" + params['operationNo'];
 
         await this.getFastTransferModels();
-        // this.toasterService.info('İşlem Numarası: ' + this.currentOrderNo);
+        this.toasterService.info('İşlem Numarası: ' + this.currentOrderNo);
       }
+      if (params["type"]) {
+        await this.getTransferRequestListModel(params["type"]);
+      }
+
     });
 
     this.collectedProducts = [];
@@ -134,8 +135,6 @@ export class ShelfTransferRequestComponent implements OnInit {
 
   goPage(pageType: string) {
     location.href = location.origin + "/shelf-transfer-request/" + this.currentOrderNo.split("REQ-")[1] + "/" + pageType;
-
-
   }
 
   collectedFastTransferModels: FastTransferModel2[] = [];
@@ -724,7 +723,7 @@ export class ShelfTransferRequestComponent implements OnInit {
         (p) =>
           p.barcode == qrModel.barcode &&
           p.batchCode == qrModel.batchCode &&
-          p.shelfNo == qrModel.targetShelfNo
+          p.shelfNo == qrModel.shelfNo
       );
       if (qrOperationModel) {
         // qrOperationModel nesnesini model'e kopyala

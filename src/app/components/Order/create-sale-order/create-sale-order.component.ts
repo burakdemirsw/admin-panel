@@ -48,7 +48,7 @@ export class CreateSaleOrderComponent implements OnInit {
   selectedCustomer: any;
   offices: any[] = ["M", "U"]
   warehouses: any[] = ["MD", "UD"]
-  currencyList: string[] = ['Standart', 'Vergisiz']; //vergi tipi
+  currencyList: any[] = [{ name: 'Vergili', code: '0' }, { name: 'Vergisiz', code: '4' }]; //vergi tipi
 
   async ngOnInit() {
     try {
@@ -419,7 +419,7 @@ export class CreateSaleOrderComponent implements OnInit {
           this.newOrderNumber,
           this.productForm.get('isReturn').value,
           this.productForm.get('salesPersonCode').value.code,
-          this.productForm.get('currency').value
+          this.productForm.get('currency').value.code
         );
       } catch (error: any) { }
 
@@ -461,6 +461,17 @@ export class CreateSaleOrderComponent implements OnInit {
         );
         this.productForm.get('batchCode').setValue(result[2]);
         this.productForm.get('barcode').setValue(result[3]);
+        if (result[4] == 'false') {
+
+          if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
+            this.productForm.get('batchCode').setValue(null);
+            this.focusNextInput('batchCode');
+            this.toasterService.error('Parti Giriniz');
+            return null;
+          }
+
+
+        }
         this.shelfNumbers += result[0];
         return result[1];
       }

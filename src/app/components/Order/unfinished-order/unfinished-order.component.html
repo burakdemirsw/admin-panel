@@ -27,6 +27,7 @@
               <tr>
                 <th scope="col">Müşteri</th>
                 <th scope="col">Sipariş No</th>
+                <th scope="col">Kargo Durumu</th>
                 <th scope="col">Oluşturulma Zamanı</th>
                 <th scope="col">İşlemler</th>
               </tr>
@@ -40,6 +41,7 @@
               >
                 <td>{{ order.customerDescription }}</td>
                 <td>{{ order.orderNo }}</td>
+                <td>{{ order.cargoStatus }}</td>
                 <td>{{ order.createdDate | date : "dd.MM.yyyy HH:mm" }}</td>
 
                 <td>
@@ -58,6 +60,13 @@
                       (click)="deleteClientOrder(order.id)"
                     >
                       <i class="fa fa-trash" aria-hidden="true"></i>
+                    </div>
+                    <div
+                      class="btn btn-success"
+                      data-text="Kargo"
+                      (click)="updateCargoStatus(order)"
+                    >
+                      <i class="fa fa-truck" aria-hidden="true"></i>
                     </div>
                   </div>
                 </td>

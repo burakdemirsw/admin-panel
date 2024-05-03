@@ -337,7 +337,7 @@
                       data-text="Sil"
                       (click)="deleteInvoiceProducts(order.orderNumber)"
                     >
-                      <i class="fas fa-trash"></i>
+                      <i class="fa-solid fa-file-invoice"></i>
                     </div>
                     <!-- <div
                       *ngIf="!_pageDescription"
@@ -361,6 +361,15 @@
                       (click)="showModal(order.orderNumber)"
                     >
                       <i class="fa fa-barcode" aria-hidden="true"></i>
+                    </div>
+
+                    <div
+                      *ngIf="!pageDescription"
+                      class="btn btn-success"
+                      data-text="Sil"
+                      (click)="deleteNebimOrder(order.orderNumber)"
+                    >
+                      <i class="fa-solid fa-trash"></i>
                     </div>
                   </div>
                 </td>

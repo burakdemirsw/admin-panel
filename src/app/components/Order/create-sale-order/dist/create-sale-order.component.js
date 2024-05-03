@@ -62,7 +62,7 @@ var CreateSaleOrderComponent = /** @class */ (function () {
         this.infoProducts = [];
         this.offices = ["M", "U"];
         this.warehouses = ["MD", "UD"];
-        this.currencyList = ['Standart', 'Vergisiz']; //vergi tipi
+        this.currencyList = [{ name: 'Vergili', code: '0' }, { name: 'Vergisiz', code: '4' }]; //vergi tipi
         this.addedProductCount = 'Sayım Paneli';
         this.newOrderNumber = '';
         this.customerList = [];
@@ -490,7 +490,7 @@ var CreateSaleOrderComponent = /** @class */ (function () {
                             this.toasterService.error('Vergi Tipi Alanı Boş');
                             return [2 /*return*/];
                         }
-                        return [4 /*yield*/, this.orderService.createSaleInvoice(this.invoiceProducts2, this.newOrderNumber, this.productForm.get('isReturn').value, this.productForm.get('salesPersonCode').value.code, this.productForm.get('currency').value)];
+                        return [4 /*yield*/, this.orderService.createSaleInvoice(this.invoiceProducts2, this.newOrderNumber, this.productForm.get('isReturn').value, this.productForm.get('salesPersonCode').value.code, this.productForm.get('currency').value.code)];
                     case 2:
                         data = _a.sent();
                         return [3 /*break*/, 4];
@@ -536,6 +536,14 @@ var CreateSaleOrderComponent = /** @class */ (function () {
                         result = _a.sent();
                         this.productForm.get('batchCode').setValue(result[2]);
                         this.productForm.get('barcode').setValue(result[3]);
+                        if (result[4] == 'false') {
+                            if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
+                                this.productForm.get('batchCode').setValue(null);
+                                this.focusNextInput('batchCode');
+                                this.toasterService.error('Parti Giriniz');
+                                return [2 /*return*/, null];
+                            }
+                        }
                         this.shelfNumbers += result[0];
                         return [2 /*return*/, result[1]];
                     case 5: return [3 /*break*/, 7];

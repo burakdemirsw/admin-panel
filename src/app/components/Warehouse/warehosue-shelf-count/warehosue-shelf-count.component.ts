@@ -1,15 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Exception } from '@zxing/library';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { CountProductRequestModel2 } from 'src/app/models/model/order/countProductRequestModel2';
 import { OrderBillingListModel } from 'src/app/models/model/order/orderBillingListModel';
-import { OrderStatus } from 'src/app/models/model/order/orderStatus';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { CountedProduct, CountedProductControl } from 'src/app/models/model/product/countedProduct';
 import { ItemBillingModel } from 'src/app/models/model/product/itemBillingModel ';
@@ -82,7 +81,8 @@ export class WarehosueShelfCountComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private title: Title,
     private sanitizer: DomSanitizer,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private router: Router
   ) {
     this.title.setTitle('Sayım');
   }
@@ -98,6 +98,21 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.batchCode = batchCode;
   }
   shelfNumbers: string = 'RAFLAR:';
+  location = location.href;
+  ngOnDestroy() {
+    if (this.location.includes("warehouse-shelf-count")) {
+      if (!window.confirm("Sayfadan Ayrılıyorsunuz. Emin Misiniz?")) {
+        this.toasterService.error(this.location + " İşlemi İptal Edildi")
+        location.href = this.location;
+        return;
+      } else {
+        return; // İşlemi iptal et
+      }
+    }
+
+
+  }
+
   async ngOnInit() {
 
     this.formGenerator();
@@ -297,6 +312,19 @@ export class WarehosueShelfCountComponent implements OnInit {
         this.checkForm.get('barcode').setValue(result[3]);
 
         this.checkForm.get('batchCode').setValue(result[2].toString());
+
+        if (result[4] == 'false') {
+
+          if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
+            this.checkForm.get('batchCode').setValue(null);
+            this.focusNextInput('batchCode');
+            this.toasterService.error('Parti Giriniz');
+            return null;
+          }
+
+
+        }
+
 
         return result[1];
       }

@@ -78,7 +78,7 @@ var ProductService = /** @class */ (function () {
         });
         return true;
     };
-    //create_order-fastTrasn barkod ile ürün sayma işlemi
+    //create_order - fast_Trasfer - shelf_count
     ProductService.prototype.countProductByBarcode = function (barcode) {
         return __awaiter(this, void 0, Promise, function () {
             var model, shelfNumbers, results, error_1;
@@ -105,6 +105,8 @@ var ProductService = /** @class */ (function () {
                         results.push(model[0].status);
                         results.push(model[0].batchCode);
                         results.push(model[0].barcode);
+                        // results.push(model[0].batchStatus.toString());
+                        results.push(false.toString());
                         return [2 /*return*/, results];
                     case 2:
                         error_1 = _a.sent();
@@ -145,6 +147,7 @@ var ProductService = /** @class */ (function () {
                         results.push(model[0].status);
                         results.push(model[0].batchCode);
                         results.push(model[0].barcode);
+                        results.push(model[0].batchStatus.toString());
                         return [2 /*return*/, results];
                     case 2:
                         error_2 = _a.sent();
@@ -189,6 +192,7 @@ var ProductService = /** @class */ (function () {
             });
         });
     };
+    //depolar arası transfer işlemlerinde barkod ile ürün sayma işlemi
     ProductService.prototype.countProductByBarcode3 = function (barcode) {
         return __awaiter(this, void 0, Promise, function () {
             var qrModel, model, countModel, shelfNumbers, results, error_4;
@@ -217,6 +221,7 @@ var ProductService = /** @class */ (function () {
                                 results.push(model[0].status);
                                 results.push(model[0].batchCode);
                                 results.push(model[0].barcode);
+                                results.push(model[0].batchStatus.toString());
                                 return [2 /*return*/, results];
                             }
                             else {
@@ -230,7 +235,7 @@ var ProductService = /** @class */ (function () {
                     case 2:
                         error_4 = _a.sent();
                         console.error(error_4.message);
-                        return [2 /*return*/, null];
+                        throw new Error('Bir hata oluştu');
                     case 3: return [2 /*return*/];
                 }
             });

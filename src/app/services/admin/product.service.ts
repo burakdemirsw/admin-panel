@@ -64,7 +64,7 @@ export class ProductService {
     return true;
   }
 
-  //create_order-fastTrasn barkod ile ürün sayma işlemi
+  //create_order - fast_Trasfer - shelf_count
   async countProductByBarcode(barcode: string): Promise<string[]> {
     try {
       if (barcode.includes('/')) {
@@ -86,6 +86,9 @@ export class ProductService {
       results.push(model[0].status);
       results.push(model[0].batchCode);
       results.push(model[0].barcode);
+      // results.push(model[0].batchStatus.toString());
+      results.push(false.toString());
+
       return results;
     } catch (error: any) {
       console.error(error.message);
@@ -113,10 +116,12 @@ export class ProductService {
         shelfNumbers += element.description + ',';
       });
       var results: string[] = [];
+
       results.push(shelfNumbers);
       results.push(model[0].status);
       results.push(model[0].batchCode);
       results.push(model[0].barcode);
+      results.push(model[0].batchStatus.toString());
       return results;
     } catch (error: any) {
       console.error(error.message);
@@ -150,6 +155,7 @@ export class ProductService {
     }
   }
 
+  //depolar arası transfer işlemlerinde barkod ile ürün sayma işlemi
   async countProductByBarcode3(barcode: string): Promise<string[]> {
     try {
       var qrModel: QrControlCommandModel = new QrControlCommandModel();
@@ -175,6 +181,7 @@ export class ProductService {
           results.push(model[0].status);
           results.push(model[0].batchCode);
           results.push(model[0].barcode);
+          results.push(model[0].batchStatus.toString());
           return results;
         } else {
           return null;
@@ -184,7 +191,7 @@ export class ProductService {
       }
     } catch (error: any) {
       console.error(error.message);
-      return null;
+      throw new Error('Bir hata oluştu');
     }
   }
 

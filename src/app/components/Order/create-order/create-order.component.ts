@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Dropdown } from 'primeng/dropdown';
 import { Table } from 'primeng/table';
 import { Address_VM } from 'src/app/models/model/order/ViewModel/provinceVM';
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
@@ -26,7 +27,7 @@ import { CustomerAddress_VM, CustomerList_VM, GetCustomerList_CM } from '../../.
 import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, Payment } from '../../../models/model/order/nebimOrder';
 import { OrderService } from '../../../services/admin/order.service';
 import { GoogleDriveService } from '../../../services/common/google-drive.service';
-import { OrderDetail, CreatePackage_MNG_RR, CargoSetting, CreatePackage_MNG_Request, CreateBarcode_MNG_Request, OrderPieceListMNG, CreatePackage_MNG_RM } from '../../cargo/create-cargo/models/models';
+import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from '../../cargo/create-cargo/models/models';
 
 @Component({
   selector: 'app-create-order',
@@ -64,6 +65,7 @@ export class CreateOrderComponent implements OnInit {
 
   async ngOnInit() {
 
+    this.createPaymentForm();
     this.createGetProductForm();
     this.exchangeRate = await this.orderService.getExchangeRates();
     this.generatedCargoNumber = this._generateRandomNumber();
@@ -102,7 +104,7 @@ export class CreateOrderComponent implements OnInit {
   }
 
   //--------------------------------------------------------------------------- CLIENT ORDER
-  stateOptions: any[] = [{ label: 'Standart', value: '0' }, { label: 'Vergisiz', value: '4' }];
+  stateOptions: any[] = [{ label: 'Standart', value: '0' }, { label: 'Vergisiz', value: '4' }, { label: 'Standart Kdv Düş', value: '5' }];
   taxTypeCode: any;
   isCompleted: boolean = false;
   orderNumber: string = "";
@@ -182,7 +184,6 @@ export class CreateOrderComponent implements OnInit {
           });
         }
 
-        //this.toasterService.success("Ürünler Çekildi")
 
       } else {
         this.toasterService.error("Yanıt Yok")
@@ -225,6 +226,7 @@ export class CreateOrderComponent implements OnInit {
       request.orderNo = this.orderNo;
       request.customerDescription = this.selectedCustomers[0]?.currAccDescription || null;
       request.shippingPostalAddressId = this.selectedAddresses[0]?.postalAddressID;
+      request.cargoStatus = this.cargoForm.get('isActive').value == true ? "KARGO VAR" : "KARGO YOK"
       if (this.payment) {
         request.paymentType = this.payment.creditCardTypeCode;
       } else {
@@ -257,7 +259,7 @@ export class CreateOrderComponent implements OnInit {
       request.itemCode = newLine.itemCode;
       request.batchCode = newLine.batchCode;
       request.price = newLine.price;
-      request.quantity = newLine.quantity;
+      request.quantity = newLine.quantity2;
       request.warehouseCode = newLine.warehouseCode;
       request.brandDescription = newLine.brandDescription;
       request.uD_Stock = newLine.uD_Stock;
@@ -561,13 +563,54 @@ export class CreateOrderComponent implements OnInit {
   customers: CustomerList_VM[] = []
   createCustomerForm: FormGroup;
   _activeIndex = 0;
+
+  selectableCustomers: any[] = [];
+
+
+  async getCustomersAutomaticaly(field: string) {
+    if (field.length > 3) {
+      var request: GetCustomerList_CM = new GetCustomerList_CM();
+      request.currAccCode = field;
+      request.mail = null;
+      request.phone = null;
+
+      var response = await this.orderService.getCustomerList_2(request)
+      if (response) {
+        this.selectableCustomers = [];
+        response.forEach(c => {
+          this.selectableCustomers.push({ name: c.currAccDescription, value: c.phone })
+        });
+      }
+    }
+
+
+  }
   async submitAddressForm(formValue: any) {
+
+    var check_request = new GetCustomerAddress_CM();
+    check_request.currAccCode = formValue.currAccCode;
+    check_request.phone = formValue.phoneNumber;
+
+    var check_response = await this.orderService.getCustomerList_2(check_request);
+    if (check_response.length > 0) {
+
+      this.toasterService.error("Bu Müşteri Numarası Zaten Kayıtlı")
+      this.currAccCode = check_response[0].currAccCode;
+      this.getCustomerDialog = true;
+      this.getCustomerForm.get("currAccCode").setValue(check_response[0].currAccCode);
+      await this.getCustomers(this.getCustomerForm.value);
+      if (this.customers.length > 0) {
+        var findedCustomer = this.customers.find(p => p.currAccCode == check_response[0].currAccCode)
+        await this.selectCurrentCustomer(findedCustomer)
+      }
+      return;
+    }
     if (this.createCustomerForm.valid) {
       var request: CreateCustomer_CM = new CreateCustomer_CM();
       request.currAccDescription = formValue.currAccDescription; //++
       request.mail = formValue.mail;
       request.phoneNumber = formValue.phoneNumber;
-      request.firmDescription = formValue.firmDescription;
+      request.firmDescription = formValue.currAccDescription;
       request.stampPhotoUrl = formValue.stampPhotoUrl;
       request.bussinesCardPhotoUrl = formValue.bussinesCardPhotoUrl;
       request.officeCode = 'M'
@@ -586,14 +629,14 @@ export class CreateOrderComponent implements OnInit {
       }
 
 
-      console.log(request)
+      // console.log(request)
 
       if (true) {
         var response = await this.orderService.createCustomer(request);
         if (response.currAccCode) {
           var clientCustomer_request = new ClientCustomer();
           clientCustomer_request.currAccCode = response.currAccCode;
-          clientCustomer_request.description = formValue.currAccDescription
+          clientCustomer_request.description = formValue.currAccDescription.value;
           clientCustomer_request.stampPhotoUrl = formValue.stampPhotoUrl;
           clientCustomer_request.bussinesCardPhotoUrl = formValue.bussinesCardPhotoUrl;
           clientCustomer_request.addedSellerCode = localStorage.getItem('salesPersonCode');
@@ -606,7 +649,7 @@ export class CreateOrderComponent implements OnInit {
             await this.getCustomers(this.getCustomerForm.value);
             if (this.customers.length > 0) {
               await this.selectCurrentCustomer(this.customers[0])
-              // await this.getCustomerAddresses(this.customers[0]);
+              await this.getCustomerAddresses(this.customers[0]);
             }
             this.activeIndex = 2;
           }
@@ -619,6 +662,23 @@ export class CreateOrderComponent implements OnInit {
 
   }
 
+
+
+  @ViewChild('currAccDescription_dropdown') dropdown: Dropdown;
+  @ViewChild('phoneNumber_dropdown') dropdown_2: Dropdown;
+
+  showPanel(type: Number) {
+    if (type == 1) {
+      if (this.dropdown) {
+        this.dropdown.show();
+      }
+    } else {
+      if (this.dropdown_2) {
+        this.dropdown_2.show();
+      }
+    }
+
+  }
   createCustomerFormMethod() {
     this.createCustomerForm = this.formBuilder.group({
 
@@ -628,8 +688,8 @@ export class CreateOrderComponent implements OnInit {
       currAccDescription: [null, Validators.required],
       mail: [' ', Validators.required],
       phoneNumber: [null, Validators.required],
-      stampPhotoUrl: [null, Validators.required],
-      bussinesCardPhotoUrl: [null, Validators.required],
+      stampPhotoUrl: [null],
+      bussinesCardPhotoUrl: [null],
       address_country: [null],
       address_province: [null],
       address_district: [null],
@@ -639,6 +699,48 @@ export class CreateOrderComponent implements OnInit {
       address_postalCode: [' '],
       address_taxOffice: [null]
     });
+
+    this.createCustomerForm.get('currAccDescription').valueChanges.subscribe(async (value) => { //illeri getir
+      if (value != "" || value != null) {
+
+        if (value.name != undefined) {
+          if (value.name.length > 3) {
+            await this.getCustomersAutomaticaly(value.name)
+
+            var findedCustomer = this.selectableCustomers.find(p => p.name == value.name)
+            if (findedCustomer) {
+
+              this.createCustomerForm.get('phoneNumber').setValue(findedCustomer?.value)
+            }
+
+          }
+        }
+        if (value.length > 3) {
+          await this.getCustomersAutomaticaly(value)
+          var findedCustomer = this.selectableCustomers.find(p => p.name = value)
+          if (findedCustomer) {
+
+            this.createCustomerForm.get('phoneNumber').setValue(findedCustomer?.value)
+          }
+
+        }
+
+      }
+
+    });
+
+    // this.createCustomerForm.get('phoneNumber').valueChanges.subscribe(async (value) => { //müşterileri
+
+    //   if (value.length > 3) {
+
+    //     if (value != "" || value != null) {
+    //       await this.getCustomersAutomaticaly(value, false)
+    //     }
+    //   }
+
+
+
+    // });
 
     this.createCustomerForm.get('address_region').valueChanges.subscribe(async (value) => { //illeri getir
       var _value = this.createCustomerForm.get('address_region').value;
@@ -688,7 +790,10 @@ export class CreateOrderComponent implements OnInit {
       currAccCode: [null],
     });
     this.getCustomerForm.get('currAccCode').valueChanges.subscribe(async (value) => {
-      await this.getCustomers(this.getCustomerForm.value)
+      if (value != null && value != "") {
+        await this.getCustomers(this.getCustomerForm.value)
+      }
+
     });
 
   }
@@ -730,11 +835,12 @@ export class CreateOrderComponent implements OnInit {
   addresses: CustomerAddress_VM[] = []
   async getCustomerAddresses(request: GetCustomerAddress_CM) {
     this.addresses = await this.orderService.getCustomerAddress(request)
-    // if (this.addresses.length === 1) {
-    //   this.selectCurrentAddress(this.addresses[0])
-    //   this.selectAddressDialog = false;
-    //   this.activeIndex = 2;
-    // } else {
+    if (this.addresses.length === 1) {
+      this.selectCurrentAddress(this.addresses[0])
+      this.selectAddressDialog = false;
+      this.activeIndex = 2;
+    }
+    //else {
     //   this.selectAddressDialog = true;
     // }
     if (this.addresses.length === 0) {
@@ -755,7 +861,7 @@ export class CreateOrderComponent implements OnInit {
     if (order_response) {
 
       this.selectAddressDialog = false;
-      this.toasterService.success("Adres Eklendi")
+      // this.toasterService.success("Adres Eklendi")
       this.activeIndex = 2;
       this.getCustomerForm.reset();
       this.customers = [];
@@ -781,7 +887,13 @@ export class CreateOrderComponent implements OnInit {
     });
   }
   getTotalPrice() {
-    return this.selectedProducts.reduce((acc, product) => acc + (product.quantity * product.discountedPrice), 0);
+    var number = this.selectedProducts.reduce((acc, product) => acc + (product.quantity * product.discountedPrice), 0);
+    if (number.toString().includes('.')) {
+      return Number(number.toString().split('.')[0])
+    } else {
+      return number
+    }
+
     // return this.selectedProducts.reduce((acc, product) => {
     //   // Ürünün normal fiyatı indirimli fiyatından küçükse, normal fiyatı kullan
     //   if (product.price < product.discountedPrice) {
@@ -803,19 +915,51 @@ export class CreateOrderComponent implements OnInit {
   _discountRate: number;
   getProductsForm: FormGroup;
   products: ProductList_VM[] = [];
-  discount(discountRate: number) {
 
+
+  discount(discountRate: number) {
+    // this.resetDiscount()
     if (discountRate > 0 && discountRate <= 100) {
       this.selectedProducts.forEach(p => {
-        p.discountedPrice = ((100 - discountRate) / 100) * (p.price);
+        p.discountedPrice = ((100 - discountRate) / 100) * (p.discountedPrice);
       });
       this._discountRate = discountRate
       this.toasterService.success("İndirim Uygulandı")
     }
+    var totalPrice = this.getTotalPrice();
+    // this.toasterService.success("Toplam Fiyat : " + totalPrice)
+    // if (totalPrice !== Math.trunc(totalPrice)) {
+    //   const integerPart = Math.trunc(totalPrice);
+    //   const fractionPart = totalPrice - integerPart;
 
+    //   if (fractionPart !== 0) {
+    //     this.cashDiscount(fractionPart);
+    //     // Burada kesirli değerle ilgili ek işlemler yapabilirsiniz
+    //   }
+    // }
   }
 
+  cashDiscount(discountAmount: number) {
+    // this.resetDiscount()
+    var value = discountAmount / this.selectedProducts.length
+    this.selectedProducts.forEach(p => {
+      p.discountedPrice = p.discountedPrice - (value / p.quantity)
+    });
+    this.toasterService.success("İndirim Uygulandı")
+    var totalPrice = this.getTotalPrice();
+    // this.toasterService.success("Toplam Fiyat : " + totalPrice)
 
+    // if (totalPrice !== Math.trunc(totalPrice)) {
+    //   const integerPart = Math.trunc(totalPrice);
+    //   const fractionPart = totalPrice - integerPart;
+
+    //   if (fractionPart !== 0) {
+    //     this.cashDiscount(fractionPart);
+    //     // Burada kesirli değerle ilgili ek işlemler yapabilirsiniz
+    //   }
+    // }
+
+  }
 
   resetDiscount() {
 
@@ -826,16 +970,7 @@ export class CreateOrderComponent implements OnInit {
     this.toasterService.success("İndirim Kaldırıldı")
 
   }
-  cashDiscount(discountAmount: number) {
 
-    var value = discountAmount / this.selectedProducts.length
-    this.selectedProducts.forEach(p => {
-      p.discountedPrice = p.discountedPrice - (value / p.quantity)
-    });
-    this.toasterService.success("İndirim Uygulandı")
-
-
-  }
   createGetProductForm() {
     this.getProductsForm = this.formBuilder.group({
       barcode: [null],
@@ -847,10 +982,6 @@ export class CreateOrderComponent implements OnInit {
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
   async getProducts(request: any, pageType: boolean) {
-
-
-
-
     if (pageType) {
       try {
         var _request = new BarcodeSearch_RM();
@@ -871,12 +1002,13 @@ export class CreateOrderComponent implements OnInit {
             });
             if (totalQty <= 0) {
               this.toasterService.error("STOK HATASI")
+              this.products = [];
               return;
             }
           }
 
           this.getProductsForm.get('barcode').setValue(null);
-          // this.products = []; adil açtırdı
+
 
 
 
@@ -889,9 +1021,14 @@ export class CreateOrderComponent implements OnInit {
 
           if (totalQuantity >= this.products[0].quantity) {
             this.toasterService.error("STOK HATASI")
+            this.products = [];
             return;
           } else {
-            await this.addCurrentProducts(this.products[0]);
+            this.toasterService.success(this.products.length + " Adet Ürün Bulundu")
+            this.products.forEach(async _product => {
+              await this.addCurrentProducts(_product);
+            });
+            this.products = [];
           }
         } else {
           this.toasterService.error("Ürün Bulunamadı")
@@ -928,53 +1065,7 @@ export class CreateOrderComponent implements OnInit {
         }
 
         this.getProductsForm.get('barcode').setValue(result[3]);
-        // this.qrBarcodeUrl = request.barcode;
 
-        // const response = await this.productService.searchProduct3(result[3], result[2], request.shelfNo);
-        // if (response.length == 0) {
-        //   this.toasterService.error("Ürün Sorgusundan Yanıt Alınamadı");
-        //   return;
-        // }
-        // this.products = response;
-        // if (this.products.length > 0) {
-        //   var totalQty = 0;
-        //   this.products.forEach(p => {
-        //     totalQty += p.quantity
-        //   });
-        //   if (totalQty <= 0) {
-        //     this.toasterService.error("STOK HATASI")
-        //     return;
-        //   }
-        //   if (this.products[0].shelfNo != this.getProductsForm.get('shelfNo').value) {
-        //     this.products[0].shelfNo = this.getProductsForm.get('shelfNo').value
-        //     this.toasterService.info("RAF NUMARASI EŞLEŞTRİLDİ")
-        //   }
-
-        //   await this.addCurrentProducts(this.products[0]);
-
-
-        //   var checkForm: any = { shelfNo: this.getProductsForm.value.shelfNo, quantity: this.products[0].itemCode.startsWith('FG') ? 5 : 1, batchCode: this.products[0].batchCode }
-        //   var qrResponse: QrOperationResponseModel =
-        //     await this.productService.qrOperationMethod(
-        //       this.qrBarcodeUrl,
-        //       this.getProductsForm,
-        //       checkForm,
-        //       checkForm.quantity,
-        //       false,
-        //       'WS'
-        //     );
-        //   if (qrResponse != null && qrResponse.state === true) {
-        //     this.qrOperationModels.push(qrResponse.qrOperationModel);
-        //   } else if (qrResponse === null) {
-        //     this.qrBarcodeUrl = null
-        //   }
-
-        //   this.getProductsForm.get('barcode').setValue(null);
-        //   this.getProductsForm.get('shelfNo').setValue(null);
-
-        //   this.products = [];
-
-        // }
         return;
 
 
@@ -1016,6 +1107,7 @@ export class CreateOrderComponent implements OnInit {
             });
             if (totalQty <= 0) {
               this.toasterService.error("STOK HATASI")
+              this.products = [];
               return;
             }
             if (this.products[0].shelfNo != this.getProductsForm.get('shelfNo').value) {
@@ -1031,14 +1123,18 @@ export class CreateOrderComponent implements OnInit {
 
             if (totalQuantity >= this.products[0].quantity) {
               this.toasterService.error("STOK HATASI")
+              this.products = [];
               return;
             } else {
               this.getProductsForm.get('barcode').setValue(null);
               this.getProductsForm.get('shelfNo').setValue(null);
 
-              await this.addCurrentProducts(this.products[0]);
-              this.shelfNumbers = 'RAFLAR:'
+              this.products.forEach(async _product => {
+                await this.addCurrentProducts(_product);
+              });
               this.products = [];
+              this.shelfNumbers = 'RAFLAR:'
+
             }
 
 
@@ -1092,18 +1188,20 @@ export class CreateOrderComponent implements OnInit {
 
 
   }
-  async deleteProduct(product: ProductList_VM) {
-    const isConfirmed = window.confirm("Ürünü silmek istediğinize emin misiniz?");
 
-    if (isConfirmed) {
-      var response = await this.orderService.deleteClientOrderBasketItem(this.id, product.lineId);
-      if (response) {
-        this.toasterService.success("Ürün Silindi")
-        await this.getClientOrder(1);
-      }
-    } else {
-      // Kullanıcı silmeyi iptal ettiğinde yapılacak işlemler buraya yazılabilir.
-      console.log("Ürün silme işlemi iptal edildi.");
+  async deleteAllPRoduct() {
+    if (confirm("Tüm Ürünleri Silmek İstediğinize Emin Misiniz?")) {
+      this.selectedProducts.forEach(async p => {
+        await this.deleteProduct(p);
+      });
+    }
+
+  }
+  async deleteProduct(product: ProductList_VM) {
+    var response = await this.orderService.deleteClientOrderBasketItem(this.id, product.lineId);
+    if (response) {
+      this.toasterService.success("Ürün Silindi")
+      await this.getClientOrder(1);
     }
   }
 
@@ -1128,10 +1226,25 @@ export class CreateOrderComponent implements OnInit {
   @ViewChild('dt1') myTable: Table;
   async onRowEditSave(product: ProductList_VM, index: number) {
     if (product.price > 0) {
+
+      var findedProduct = this.products
+        .find(p => p.itemCode == product.itemCode)
+
+      if (Number(findedProduct.quantity) < product.quantity) {
+        if (!window.confirm("Ürünü Güncellemek İstediğinize Emin Misiniz?")) {
+          this.toasterService.error("Ürün Eklenmedi")
+          return;
+        }
+
+      }
+
       // this.toasterService.success(product.quantity.toString());
       var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price, product.discountedPrice, product.basePrice)
       if (response) {
         this.toasterService.success("Ürün Güncellendi")
+        this.focusNextInput('barcode_product')
+        this.resetDiscount();
+
         this.getClientOrder(1);
       }
       delete this.clonedProducts[product.lineId as string];
@@ -1156,6 +1269,15 @@ export class CreateOrderComponent implements OnInit {
     this.products[index] = this.clonedProducts[product.lineId as string];
     delete this.clonedProducts[product.lineId as string];
   }
+
+
+
+  focusNextInput(nextInputId: string) {
+    const nextInput = document.getElementById(nextInputId) as HTMLInputElement;
+    if (nextInput) {
+      nextInput.focus();
+    }
+  } //general service
 
 
   //----------------------------------------------------
@@ -1202,6 +1324,28 @@ export class CreateOrderComponent implements OnInit {
     return Number(`${prefix}${randomNumber}`);
   }
 
+  paymentForm: FormGroup;
+  async createPaymentForm() {
+    this.paymentForm = this.formBuilder.group({
+      taxTypeCode: [null, Validators.required],
+      paymentType: [null, Validators.required]
+    });
+
+    this.paymentForm.get('taxTypeCode').valueChanges.subscribe((value) => {
+      if (value != null) {
+        // this.toasterService.success(value.label)
+      }
+
+    })
+    this.paymentForm.get('paymentType').valueChanges.subscribe((value) => {
+      if (value != null) {
+
+        this.createPayment(value.id)
+        // this.toasterService.success(value.name)
+      }
+
+    })
+  }
   async createCargoForm() {
     this.cargoForm = this.formBuilder.group({
       address_phoneNumber: [null],
@@ -1646,7 +1790,7 @@ export class CreateOrderComponent implements OnInit {
       return;
     }
 
-    if (!this.taxTypeCode) {
+    if (!this.paymentForm.value.taxTypeCode?.value) {
       this.toasterService.error("Vergi Tipi Seçiniz");
       return;
     }
@@ -1693,7 +1837,7 @@ export class CreateOrderComponent implements OnInit {
         formValue,
         this.selectedProducts,
         this.salesPersonCode,
-        this.taxTypeCode
+        this.paymentForm.value.taxTypeCode.value
       );
 
       var response = await this.orderService.createOrder(request);
@@ -1718,7 +1862,7 @@ export class CreateOrderComponent implements OnInit {
         formValue,
         this.selectedProducts,
         this.salesPersonCode,
-        this.taxTypeCode
+        this.paymentForm.value.taxTypeCode.value
       );
 
       var response = await this.orderService.createOrder(_request);
@@ -1743,7 +1887,7 @@ export class CreateOrderComponent implements OnInit {
         formValue,
         this.selectedProducts,
         this.salesPersonCode,
-        this.taxTypeCode,
+        this.paymentForm.value.taxTypeCode.value,
         this.selectedAddresses[0].postalAddressID
       );
 
@@ -1771,12 +1915,12 @@ export class CreateOrderComponent implements OnInit {
   //---------------------------------------------------- PAYMENTS
 
   paymentMethods = [
-    { id: 1, name: 'PayTr IFRAME', icon: 'fas fa-globe' },
-    { id: 6, name: 'PayTr SMS/MAIL', icon: 'fas fa-envelope' },
-    { id: 5, name: 'POS İle Öde', icon: 'fas fa-credit-card' },
-    { id: 3, name: 'Havale İle Öde', icon: 'fas fa-university' },
-    { id: 2, name: 'Nakit İle Öde', icon: 'fas fa-wallet' },
-    { id: 4, name: 'Cari Ödeme', icon: 'fas fa-file-invoice-dollar' }
+    { id: 1, name: 'PayTr IFRAME' },
+    { id: 6, name: 'PayTr SMS/MAIL' },
+    { id: 5, name: 'POS İle Öde' },
+    { id: 3, name: 'Havale İle Öde' },
+    { id: 2, name: 'Nakit İle Öde' },
+    { id: 4, name: 'Cari Ödeme' }
   ];
 
 

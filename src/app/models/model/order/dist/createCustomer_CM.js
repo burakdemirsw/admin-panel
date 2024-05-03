@@ -5,7 +5,7 @@ var CreateCustomer_CM = /** @class */ (function () {
     function CreateCustomer_CM() {
         this.address = new Address();
         this.mersisNum = "1111111111";
-        this.taxNumber = "1234567891";
+        this.taxNumber = "1111111111";
         this.taxOfficeCode = "";
     }
     return CreateCustomer_CM;

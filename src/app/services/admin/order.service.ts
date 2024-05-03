@@ -588,7 +588,7 @@ export class OrderService {
   }
 
 
-  asyn
+
   async createClientOrder(request: ClientOrder) {
     try {
       var response = await this.httpClientService.post<ClientOrder>({ controller: "order/create-client-order" }, request).toPromise();
@@ -772,5 +772,16 @@ export class OrderService {
     return response;
   }
 
+
+  async deleteNebimOrder(request: string): Promise<any> {
+    try {
+      var response = await this.httpClientService.get<string>({ controller: "order/delete-nebim-order" + "/" + request }).toPromise();
+
+      return response;
+    } catch (error: any) {
+      // console.log(error.message);
+      return null;
+    }
+  }
   //ExecuteSqlRawAsync
 }

@@ -670,6 +670,14 @@ var OrderOperationComponent = /** @class */ (function () {
                         this.shelfNumbers += result[0];
                         this.checkForm.get('barcode').setValue(result[3]);
                         this.checkForm.get('batchCode').setValue(result[2].toString());
+                        if (result[4] == 'false') {
+                            if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
+                                this.checkForm.get('batchCode').setValue(null);
+                                this.focusNextInput('batchCode');
+                                this.toasterService.error('Parti Giriniz');
+                                return [2 /*return*/, null];
+                            }
+                        }
                         return [2 /*return*/, result[1]];
                     case 5: return [3 /*break*/, 7];
                     case 6:
@@ -714,6 +722,9 @@ var OrderOperationComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.setFormValues(productModel.barcode, true)];
                     case 6:
                         number = _e.sent();
+                        if (number == null) {
+                            return [2 /*return*/];
+                        }
                         productModel.barcode = this.checkForm.get('barcode').value;
                         // productModel.batchCode = this.checkForm.get('batchCode').value;
                         (_a = this.checkForm.get('quantity')) === null || _a === void 0 ? void 0 : _a.setValue(Number(number)); //quantity alanı dolduruldu
@@ -727,9 +738,13 @@ var OrderOperationComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.setFormValues(productModel.barcode, true)];
                     case 10:
                         number = _e.sent();
+                        if (number == null) {
+                            return [2 /*return*/];
+                        }
                         productModel.batchCode = this.checkForm.get('batchCode').value;
                         productModel.barcode = this.checkForm.get('barcode').value;
                         (_b = this.checkForm.get('quantity')) === null || _b === void 0 ? void 0 : _b.setValue(Number(number)); //quantity alanı dolduruldu
+                        productModel.quantity = Number(number);
                         _e.label = 11;
                     case 11:
                         if (!(productModel.shelfNo && productModel.barcode && this.checkForm.get("quantity") != null)) return [3 /*break*/, 29];
@@ -853,6 +868,9 @@ var OrderOperationComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.setFormValues(productModel.barcode, true)];
                     case 31:
                         number = _e.sent();
+                        if (number == null) {
+                            return [2 /*return*/];
+                        }
                         (_c = this.checkForm.get('quantity')) === null || _c === void 0 ? void 0 : _c.setValue(Number(number)); //quantity alanı dolduruldu
                         return [3 /*break*/, 33];
                     case 32:
@@ -943,6 +961,9 @@ var OrderOperationComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.setFormValues(productModel.barcode, true)];
                     case 48:
                         number = _e.sent();
+                        if (number == null) {
+                            return [2 /*return*/];
+                        }
                         (_d = this.checkForm.get('quantity')) === null || _d === void 0 ? void 0 : _d.setValue(Number(number)); //quantity alanı dolduruldu
                         return [3 /*break*/, 50];
                     case 49:

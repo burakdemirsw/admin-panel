@@ -432,12 +432,16 @@ var WarehouseService = /** @class */ (function () {
         return __awaiter(this, void 0, Promise, function () {
             var response;
             return __generator(this, function (_a) {
-                response = this.httpClientService
-                    .get({
-                    controller: 'Warehouse/TransferRequestList'
-                }, type)
-                    .toPromise();
-                return [2 /*return*/, response];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({
+                            controller: 'Warehouse/TransferRequestList'
+                        }, type)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
             });
         });
     };

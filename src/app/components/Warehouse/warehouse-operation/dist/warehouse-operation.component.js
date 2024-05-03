@@ -84,6 +84,7 @@ var WarehouseOperationComponent = /** @class */ (function () {
         this.offices = ["M", "U"];
         this.warehouses = ["MD", "UD"];
         this.inventoryItemColums = [
+            'Id',
             'Fotoğraf',
             'Raf',
             'Ürün Kodu',
@@ -560,6 +561,14 @@ var WarehouseOperationComponent = /** @class */ (function () {
                             // }
                             this.warehouseForm.get('batchCode').setValue(result[2]);
                             this.warehouseForm.get('barcode').setValue(result[3]);
+                            if (result[4] == 'false') {
+                                if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
+                                    this.warehouseForm.get('batchCode').setValue(null);
+                                    this.focusNextInput('batchCode');
+                                    this.toasterService.error('Parti Giriniz');
+                                    return [2 /*return*/, null];
+                                }
+                            }
                         }
                         return [2 /*return*/, result[1]];
                     case 3: return [4 /*yield*/, this.productService.countProductByBarcode(barcode)];

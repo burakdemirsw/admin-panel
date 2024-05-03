@@ -263,6 +263,7 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let item of inventoryItems; let i = index">
+                    <td>{{ i + 1 }}</td>
                     <td>
                       <p-image
                         src="{{ item.photoUrl }}"

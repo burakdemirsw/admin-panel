@@ -49,7 +49,7 @@ var library_1 = require("@zxing/library");
 var ClientUrls_1 = require("src/app/models/const/ClientUrls");
 var countProductRequestModel2_1 = require("src/app/models/model/order/countProductRequestModel2");
 var WarehosueShelfCountComponent = /** @class */ (function () {
-    function WarehosueShelfCountComponent(formBuilder, toasterService, httpClient, productService, generalService, warehouseService, activatedRoute, title, sanitizer, orderService) {
+    function WarehosueShelfCountComponent(formBuilder, toasterService, httpClient, productService, generalService, warehouseService, activatedRoute, title, sanitizer, orderService, router) {
         this.formBuilder = formBuilder;
         this.toasterService = toasterService;
         this.httpClient = httpClient;
@@ -60,6 +60,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         this.title = title;
         this.sanitizer = sanitizer;
         this.orderService = orderService;
+        this.router = router;
         this.infoProducts = [];
         this.collectedProducts = [];
         this.process = false;
@@ -95,6 +96,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         this.quantity = null;
         this.batchCode = null;
         this.shelfNumbers = 'RAFLAR:';
+        this.location = location.href;
         this.offices = ["M", "U"];
         this.warehouses = ["MD", "UD"];
         this.shelves = [];
@@ -123,6 +125,18 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         this.barcode = barcode;
         this.quantity = quantity;
         this.batchCode = batchCode;
+    };
+    WarehosueShelfCountComponent.prototype.ngOnDestroy = function () {
+        if (this.location.includes("warehouse-shelf-count")) {
+            if (!window.confirm("Sayfadan Ayrılıyorsunuz. Emin Misiniz?")) {
+                this.toasterService.error(this.location + " İşlemi İptal Edildi");
+                location.href = this.location;
+                return;
+            }
+            else {
+                return; // İşlemi iptal et
+            }
+        }
     };
     WarehosueShelfCountComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -325,6 +339,14 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         this.shelfNumbers += result[0];
                         this.checkForm.get('barcode').setValue(result[3]);
                         this.checkForm.get('batchCode').setValue(result[2].toString());
+                        if (result[4] == 'false') {
+                            if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
+                                this.checkForm.get('batchCode').setValue(null);
+                                this.focusNextInput('batchCode');
+                                this.toasterService.error('Parti Giriniz');
+                                return [2 /*return*/, null];
+                            }
+                        }
                         return [2 /*return*/, result[1]];
                     case 5: return [3 /*break*/, 7];
                     case 6:

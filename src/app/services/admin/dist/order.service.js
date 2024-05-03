@@ -999,6 +999,26 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
+    OrderService.prototype.deleteNebimOrder = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response, error_27;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/delete-nebim-order" + "/" + request }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                    case 2:
+                        error_27 = _a.sent();
+                        // console.log(error.message);
+                        return [2 /*return*/, null];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     OrderService = __decorate([
         core_1.Injectable({
             providedIn: 'root'

@@ -17,7 +17,7 @@ export class CreateCustomer_CM {
   constructor() {
     this.address = new Address();
     this.mersisNum = "1111111111";
-    this.taxNumber = "1234567891";
+    this.taxNumber = "1111111111";
     this.taxOfficeCode = "";
 
   }

@@ -339,6 +339,14 @@ var FastTransferComponent = /** @class */ (function () {
                         this.shelfNumbers += result[0];
                         this.checkForm.get('barcode').setValue(result[3]);
                         this.checkForm.get('batchCode').setValue(result[2].toString());
+                        if (result[4] == 'false') {
+                            if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
+                                this.checkForm.get('batchCode').setValue(null);
+                                this.focusNextInput('batchCode');
+                                this.toasterService.error('Parti Giriniz');
+                                return [2 /*return*/, null];
+                            }
+                        }
                         return [2 /*return*/, result[1]];
                     case 5: return [3 /*break*/, 7];
                     case 6:
@@ -495,7 +503,7 @@ var FastTransferComponent = /** @class */ (function () {
                         qrOperationModel = this.qrOperationModels.find(function (p) {
                             return p.barcode == qrModel.barcode &&
                                 p.batchCode == qrModel.batchCode &&
-                                p.shelfNo == qrModel.targetShelfNo;
+                                p.shelfNo == qrModel.shelfNo;
                         });
                         if (!qrOperationModel) return [3 /*break*/, 3];
                         // qrOperationModel nesnesini model'e kopyala

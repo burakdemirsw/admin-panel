@@ -14,6 +14,13 @@
   animation: blink-animation 2s infinite;
 }
 
+.btn-primary {
+  background-color: #00d335;
+  /* Varsayılan yeşil arka plan */
+  border-color: #00000000 !important;
+  animation: blink-animation 2s infinite;
+}
+
 .null-status {
   background-color: red;
   border-color: #00000000 !important;

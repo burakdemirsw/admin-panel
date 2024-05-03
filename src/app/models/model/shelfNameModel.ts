@@ -3,6 +3,8 @@ export class ProductCountModel {
   description !: string
   batchCode !: string
   barcode: string
+  batchStatus: boolean
+  setStatus: boolean
 }
 
 export class ProductCountModel3 {
@@ -11,5 +13,6 @@ export class ProductCountModel3 {
   public shelfNo?: string;
   public barcode?: string;
   public quantity?: number;
-
+  public batchStatus: boolean
+  public setStatus: boolean
 }

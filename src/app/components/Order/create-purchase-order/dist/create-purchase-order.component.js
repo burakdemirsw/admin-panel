@@ -424,6 +424,14 @@ var CreatePurchaseOrderComponent = /** @class */ (function () {
                         this.shelfNumbers += result[0];
                         this.productForm.get('batchCode').setValue(result[2]);
                         this.productForm.get('barcode').setValue(result[3]);
+                        if (result[4] == 'false') {
+                            if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
+                                this.productForm.get('batchCode').setValue(null);
+                                this.focusNextInput('batchCode');
+                                this.toasterService.error('Parti Giriniz');
+                                return [2 /*return*/, null];
+                            }
+                        }
                         return [2 /*return*/, result[1]];
                     case 5: return [3 /*break*/, 7];
                     case 6:

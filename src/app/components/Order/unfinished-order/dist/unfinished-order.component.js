@@ -103,6 +103,34 @@ var UnfinishedOrderComponent = /** @class */ (function () {
             });
         });
     };
+    UnfinishedOrderComponent.prototype.updateCargoStatus = function (order) {
+        return __awaiter(this, void 0, void 0, function () {
+            var order_response, update_response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.orderService.getClientOrder(order.id)];
+                    case 1:
+                        order_response = _a.sent();
+                        if (!order_response) return [3 /*break*/, 3];
+                        if (order_response.clientOrder.cargoStatus == "KARGO VAR") {
+                            order_response.clientOrder.cargoStatus = "KARGO YOK";
+                        }
+                        else {
+                            order_response.clientOrder.cargoStatus = "KARGO VAR";
+                        }
+                        return [4 /*yield*/, this.orderService.createClientOrder(order_response.clientOrder)];
+                    case 2:
+                        update_response = _a.sent();
+                        if (update_response) {
+                            this.toasterService.success("Kargo Durumu Güncellendi");
+                            this.getOrders(this.currentOrderState);
+                        }
+                        _a.label = 3;
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     UnfinishedOrderComponent = __decorate([
         core_1.Component({
             selector: 'app-unfinished-order',

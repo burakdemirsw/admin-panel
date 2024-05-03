@@ -49,41 +49,46 @@ var OrderStateComponent = /** @class */ (function () {
         this.renderer = renderer;
         this.toasterService = toasterService;
         this.orderService = orderService;
+        this.currentPage = 1;
         this.collectableOrders = [];
         this.collectedOrders = [];
-        this.scrollDownIntervalId = null;
-        this.scrollUpIntervalId = null;
     }
     OrderStateComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var response, _a;
+            var response, _a, _b;
             var _this = this;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0: return [4 /*yield*/, this.orderService.getExchangeRates()];
                     case 1:
-                        response = _b.sent();
+                        response = _c.sent();
                         this.exchangeRates = response;
                         _a = this;
                         return [4 /*yield*/, this.getOrders(1, 2)];
                     case 2:
-                        _a.collectableOrders = _b.sent();
+                        _a.collectableOrders = _c.sent();
+                        _b = this;
+                        return [4 /*yield*/, this.getOrders(1, 1)];
+                    case 3:
+                        _b.collectedOrders = _c.sent();
                         // setInterval başlat ve referansı intervalId'e ata
                         this.intervalId = setInterval(function () { return __awaiter(_this, void 0, void 0, function () {
-                            var _a;
-                            return __generator(this, function (_b) {
-                                switch (_b.label) {
+                            var _a, _b;
+                            return __generator(this, function (_c) {
+                                switch (_c.label) {
                                     case 0:
                                         _a = this;
                                         return [4 /*yield*/, this.getOrders(1, 2)];
                                     case 1:
-                                        _a.collectableOrders = _b.sent();
+                                        _a.collectableOrders = _c.sent();
+                                        _b = this;
+                                        return [4 /*yield*/, this.getOrders(1, 1)];
+                                    case 2:
+                                        _b.collectedOrders = _c.sent();
                                         return [2 /*return*/];
                                 }
                             });
-                        }); }, 30000);
-                        // Yavaş yavaş sayfanın altına kaydır
-                        this.scrollDownSmoothly();
+                        }); }, 10000);
                         return [2 /*return*/];
                 }
             });
@@ -92,43 +97,9 @@ var OrderStateComponent = /** @class */ (function () {
     OrderStateComponent.prototype.showPanel = function () {
         this.panel.toggle(event);
     };
-    OrderStateComponent.prototype.scrollDownSmoothly = function () {
-        var _this = this;
-        var scrollStep = 2; // Sabit kaydırma adımı
-        var scrollPosition = 0; // Şu anki kaydırma konumu
-        this.scrollDownIntervalId = setInterval(function () {
-            if (scrollPosition < document.body.scrollHeight) {
-                window.scrollBy(0, scrollStep); // Sayfayı aşağı kaydır
-                scrollPosition += scrollStep;
-            }
-            else {
-                clearInterval(_this.scrollDownIntervalId);
-                _this.scrollUpSmoothly(); // Ve yukarı kaydırmaya başla
-            }
-        }, 100); // Her 100 milisaniyede bir adım at
-    };
-    OrderStateComponent.prototype.scrollUpSmoothly = function () {
-        var _this = this;
-        var scrollStep = 2; // Sabit kaydırma adımı
-        var scrollPosition = document.body.scrollHeight; // Şu anki kaydırma konumu
-        this.scrollUpIntervalId = setInterval(function () {
-            if (scrollPosition > 0) {
-                window.scrollBy(0, -scrollStep); // Sayfayı yukarı kaydır
-                scrollPosition -= scrollStep;
-            }
-            else {
-                clearInterval(_this.scrollUpIntervalId);
-                _this.scrollDownSmoothly(); // Ve tekrar aşağı kaydırmaya başla
-            }
-        }, 100); // Her 100 milisaniyede bir adım at
-    };
     OrderStateComponent.prototype.ngOnDestroy = function () {
-        // Bileşen yok edildiğinde tüm setInterval'leri durdur
-        if (this.scrollDownIntervalId) {
-            clearInterval(this.scrollDownIntervalId);
-        }
-        if (this.scrollUpIntervalId) {
-            clearInterval(this.scrollUpIntervalId);
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
         }
     };
     OrderStateComponent.prototype.getCollectableOrders = function () {

@@ -47,4 +47,24 @@ export class UnfinishedOrderComponent implements OnInit {
       this.getOrders(this.currentOrderState)
     }
   }
+
+  async updateCargoStatus(order: ClientOrder) {
+    var order_response = await this.orderService.getClientOrder(order.id);
+    if (order_response) {
+
+      if (order_response.clientOrder.cargoStatus == "KARGO VAR") {
+        order_response.clientOrder.cargoStatus = "KARGO YOK"
+      } else {
+        order_response.clientOrder.cargoStatus = "KARGO VAR"
+      }
+
+      var update_response = await this.orderService.createClientOrder(order_response.clientOrder);
+      if (update_response) {
+        this.toasterService.success("Kargo Durumu Güncellendi")
+        this.getOrders(this.currentOrderState)
+
+      }
+    }
+
+  }
 }

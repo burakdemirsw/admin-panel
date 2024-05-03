@@ -591,6 +591,17 @@ export class OrderOperationComponent implements OnInit {
         this.shelfNumbers += result[0];
         this.checkForm.get('barcode').setValue(result[3]);
         this.checkForm.get('batchCode').setValue(result[2].toString());
+        if (result[4] == 'false') {
+
+          if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
+            this.checkForm.get('batchCode').setValue(null);
+            this.focusNextInput('batchCode');
+            this.toasterService.error('Parti Giriniz');
+            return null;
+          }
+
+
+        }
         return result[1];
       }
     } catch (error) {
@@ -633,6 +644,9 @@ export class OrderOperationComponent implements OnInit {
       if (productModel.shelfNo == null || productModel.shelfNo == '') {
         if (productModel.barcode != null) {
           var number = await this.setFormValues(productModel.barcode, true);
+          if (number == null) {
+            return;
+          }
           productModel.barcode = this.checkForm.get('barcode').value;
           // productModel.batchCode = this.checkForm.get('batchCode').value;
           this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
@@ -644,9 +658,13 @@ export class OrderOperationComponent implements OnInit {
       else if (productModel.shelfNo && productModel.barcode && productModel.quantity == null) {
         // this.toasterService.success("Durum Algılandı | Düzenleme Sağlandı...")
         var number = await this.setFormValues(productModel.barcode, true);
+        if (number == null) {
+          return;
+        }
         productModel.batchCode = this.checkForm.get('batchCode').value;
         productModel.barcode = this.checkForm.get('barcode').value;
         this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
+        productModel.quantity = Number(number);
       }
 
       if (productModel.shelfNo && productModel.barcode && this.checkForm.get("quantity") != null) {
@@ -829,6 +847,9 @@ export class OrderOperationComponent implements OnInit {
       if (productModel.shelfNo == null) {
         if (productModel.barcode != null) {
           var number = await this.setFormValues(productModel.barcode, true);
+          if (number == null) {
+            return;
+          }
           this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
 
           //↑↑↑↑↑↑↑↑↑ EĞER QR OKUTULDUYSA ÇEVİRMEN LAZIM  ↑↑↑↑↑↑↑↑↑
@@ -961,6 +982,9 @@ export class OrderOperationComponent implements OnInit {
       if (productModel.shelfNo == null) {
         if (productModel.barcode != null) {
           var number = await this.setFormValues(productModel.barcode, true);
+          if (number == null) {
+            return;
+          }
           this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
 
           //↑↑↑↑↑↑↑↑↑ EĞER QR OKUTULDUYSA ÇEVİRMEN LAZIM  ↑↑↑↑↑↑↑↑↑

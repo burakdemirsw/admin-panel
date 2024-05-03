@@ -47,11 +47,10 @@ var core_1 = require("@angular/core");
 var printerInvoiceRequestModel_1 = require("src/app/models/model/order/printerInvoiceRequestModel");
 var createBarcode_1 = require("../../Product/create-barcode/models/createBarcode");
 var OrderManagamentComponent = /** @class */ (function () {
-    function OrderManagamentComponent(headerService, httpClientService, toasterService, spinnerService, router, orderService, formBuilder, activatedRoute, productService) {
+    function OrderManagamentComponent(headerService, httpClientService, toasterService, router, orderService, formBuilder, activatedRoute, productService) {
         this.headerService = headerService;
         this.httpClientService = httpClientService;
         this.toasterService = toasterService;
-        this.spinnerService = spinnerService;
         this.router = router;
         this.orderService = orderService;
         this.formBuilder = formBuilder;
@@ -91,6 +90,23 @@ var OrderManagamentComponent = /** @class */ (function () {
                         _a.sent();
                         //this.spinnerService.hide();
                         this.setPageDescription();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    OrderManagamentComponent.prototype.deleteNebimOrder = function (request) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.orderService.deleteNebimOrder(request)];
+                    case 1:
+                        response = _a.sent();
+                        if (response) {
+                            this.toasterService.success("İşlem Başarılı");
+                            location.reload();
+                        }
                         return [2 /*return*/];
                 }
             });
@@ -297,6 +313,19 @@ var OrderManagamentComponent = /** @class */ (function () {
     OrderManagamentComponent.prototype.showModal = function (operationNo) {
         this.selectedOrderNo = operationNo;
         this.visible = !this.visible;
+    };
+    OrderManagamentComponent.prototype.deleteOrder = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.orderService.deleteNebimOrder(this.selectedOrderNo)];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     OrderManagamentComponent.prototype.sendBarcodesToNebim = function (isPackage) {
         return __awaiter(this, void 0, void 0, function () {

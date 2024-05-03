@@ -283,6 +283,18 @@ export class FastTransferComponent implements OnInit {
         this.checkForm.get('barcode').setValue(result[3]);
 
         this.checkForm.get('batchCode').setValue(result[2].toString());
+        if (result[4] == 'false') {
+
+          if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
+            this.checkForm.get('batchCode').setValue(null);
+            this.focusNextInput('batchCode');
+            this.toasterService.error('Parti Giriniz');
+            return null;
+          }
+
+
+        }
+
         return result[1];
       }
     } catch (error) {
@@ -464,7 +476,7 @@ export class FastTransferComponent implements OnInit {
         (p) =>
           p.barcode == qrModel.barcode &&
           p.batchCode == qrModel.batchCode &&
-          p.shelfNo == qrModel.targetShelfNo
+          p.shelfNo == qrModel.shelfNo
       );
 
       if (qrOperationModel) {
@@ -476,6 +488,7 @@ export class FastTransferComponent implements OnInit {
         } else {
           model.isReturn = true;
         }
+
         const qrOperationResponse = await this.productService.qrOperation(
           model
         );

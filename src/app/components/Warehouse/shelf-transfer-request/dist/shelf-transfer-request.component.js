@@ -126,15 +126,16 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
-                                if (!params["type"]) return [3 /*break*/, 2];
-                                return [4 /*yield*/, this.getTransferRequestListModel(params["type"])];
-                            case 1:
-                                _a.sent();
-                                _a.label = 2;
-                            case 2:
-                                if (!params['operationNo']) return [3 /*break*/, 4];
+                                if (!params['operationNo']) return [3 /*break*/, 2];
                                 this.currentOrderNo = "REQ-" + params['operationNo'];
                                 return [4 /*yield*/, this.getFastTransferModels()];
+                            case 1:
+                                _a.sent();
+                                this.toasterService.info('İşlem Numarası: ' + this.currentOrderNo);
+                                _a.label = 2;
+                            case 2:
+                                if (!params["type"]) return [3 /*break*/, 4];
+                                return [4 /*yield*/, this.getTransferRequestListModel(params["type"])];
                             case 3:
                                 _a.sent();
                                 _a.label = 4;
@@ -742,7 +743,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         qrOperationModel = this.qrOperationModels.find(function (p) {
                             return p.barcode == qrModel.barcode &&
                                 p.batchCode == qrModel.batchCode &&
-                                p.shelfNo == qrModel.targetShelfNo;
+                                p.shelfNo == qrModel.shelfNo;
                         });
                         if (!qrOperationModel) return [3 /*break*/, 3];
                         // qrOperationModel nesnesini model'e kopyala

@@ -27,7 +27,7 @@ export class OrderManagamentComponent implements OnInit {
     private headerService: HeaderService,
     private httpClientService: HttpClientService,
     private toasterService: ToasterService,
-    private spinnerService: NgxSpinnerService,
+
     private router: Router,
     private orderService: OrderService,
     private formBuilder: FormBuilder,
@@ -69,7 +69,13 @@ export class OrderManagamentComponent implements OnInit {
   }
   productsToCollect: ProductOfOrder[];
 
-
+  async deleteNebimOrder(request: string) {
+    var response = await this.orderService.deleteNebimOrder(request)
+    if (response) {
+      this.toasterService.success("İşlem Başarılı")
+      location.reload();
+    }
+  }
   setPageDescription() {
 
     if (this.status == 1 && this.invoiceStatus == 2) {
@@ -229,6 +235,10 @@ export class OrderManagamentComponent implements OnInit {
   showModal(operationNo: string) {
     this.selectedOrderNo = operationNo;
     this.visible = !this.visible;
+  }
+
+  async deleteOrder() {
+    var response = await this.orderService.deleteNebimOrder(this.selectedOrderNo);
   }
   async sendBarcodesToNebim(isPackage: boolean) {
     var request = new CreateBarcodeFromOrder_RM(isPackage)

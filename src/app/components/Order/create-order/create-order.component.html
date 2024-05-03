@@ -89,7 +89,7 @@
                 pInputText
                 type="search"
                 class="form-control"
-                id="barcode"
+                id="barcode_product"
                 placeholder="Barkod"
                 formControlName="barcode"
               />
@@ -126,7 +126,14 @@
           *ngIf="products.length > 0"
           styleClass="p-datatable-gridlines"
         >
-          <ng-template pTemplate="caption"> Bulunan Ürünler </ng-template>
+          <ng-template pTemplate="caption">
+            Bulunan Ürünler
+            {{
+              this.products.length > 0
+                ? " " + this.products.length + " Adet Ürün Bulundu"
+                : ""
+            }}
+          </ng-template>
 
           <ng-template pTemplate="header">
             <tr>
@@ -181,7 +188,14 @@
           styleClass="p-datatable-gridlines"
           dataKey="lineId"
         >
-          <ng-template pTemplate="caption"> Seçilen Ürünler </ng-template>
+          <ng-template pTemplate="caption">
+            Seçilen Ürünler
+            {{
+              this.products.length > 0
+                ? " " + this.selectedProducts.length + " Adet Ürün Eklendi"
+                : ""
+            }}</ng-template
+          >
 
           <ng-template pTemplate="header" let-editing="editing">
             <tr>
@@ -198,8 +212,13 @@
               <th scope="col">Ürün</th>
 
               <th scope="col" *ngIf="!isCompleted">İşlem</th>
-              <th scope="col">Ekle-Çıkar</th>
-              <th scope="col">Sil</th>
+              <th
+                scope="col"
+                style="cursor: pointer"
+                (click)="deleteAllPRoduct()"
+              >
+                Tümünü Sil
+              </th>
             </tr>
           </ng-template>
           <ng-template
@@ -260,7 +279,24 @@
                   </ng-template>
                 </p-cellEditor>
               </td>
-              <td>{{ product.discountedPrice | currency : "₺" }}</td>
+              <td pInitEditableRow>
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText
+                      style="max-width: 100px"
+                      type="number"
+                      [(ngModel)]="product.discountedPrice"
+                      (keyup.enter)="onRowEditSave(product, ri)"
+                    />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    <span style="font-weight: bold">
+                      {{ product.discountedPrice | currency : "₺" }}</span
+                    >
+                  </ng-template>
+                </p-cellEditor>
+              </td>
 
               <td>
                 {{
@@ -316,26 +352,6 @@
                 <button
                   pButton
                   pRipple
-                  icon="pi pi-minus"
-                  type="button"
-                  class="p-button-rounded p-button-text"
-                  (click)="updateQuantity(-1, product)"
-                  style="margin-right: 5px"
-                ></button>
-                <button
-                  pButton
-                  pRipple
-                  icon="pi pi-plus"
-                  type="button"
-                  class="p-button-rounded p-button-text"
-                  (click)="updateQuantity(1, product)"
-                ></button>
-              </td>
-
-              <td>
-                <button
-                  pButton
-                  pRipple
                   icon="pi pi-trash"
                   type="button"
                   class="p-button-rounded p-button-text p-button-danger"
@@ -348,15 +364,18 @@
         <div class="mb-3"></div>
 
         <form [formGroup]="discountForm" *ngIf="selectedProducts.length > 0">
-          <div class="row" #iskonto>
+          <div class="row">
             <div class="col-md-6">
               <div class="input-group mb-3">
                 <input
                   type="number"
                   class="form-control"
-                  id="name"
+                  id="percentDiscountRate"
                   placeholder="Yüzde İndirim Oranı"
                   formControlName="percentDiscountRate"
+                  (keydown.enter)="
+                    discount(this.discountForm.value.percentDiscountRate)
+                  "
                 />
 
                 <div class="input-group-prepend">
@@ -368,7 +387,7 @@
                     (click)="
                       discount(this.discountForm.value.percentDiscountRate)
                     "
-                    type="submit"
+                    type="button"
                   ></button>
                 </div>
               </div>
@@ -386,9 +405,12 @@
                 <input
                   type="number"
                   class="form-control"
-                  id="name"
+                  id="cashDiscountRate"
                   placeholder="Nakit İndirim Tutarı"
                   formControlName="cashDiscountRate"
+                  (keydown.enter)="
+                    cashDiscount(this.discountForm.value.cashDiscountRate)
+                  "
                 />
 
                 <div class="input-group-append">
@@ -456,6 +478,308 @@
         [rightIcon]="this.currAccCode ? 'pi pi-check' : 'pi pi-times'"
       >
         <p-tabView [activeIndex]="_activeIndex" [scrollable]="true">
+          <p-tabPanel header="Müşteri Oluştur">
+            <form
+              [formGroup]="createCustomerForm"
+              (ngSubmit)="submitAddressForm(createCustomerForm.value)"
+            >
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <p-dropdown
+                    #currAccDescription_dropdown
+                    placeholder="Firma Adı"
+                    formControlName="currAccDescription"
+                    [options]="selectableCustomers"
+                    placeholder="Firma"
+                    [editable]="true"
+                    optionLabel="name"
+                    (click)="showPanel(1)"
+                  ></p-dropdown>
+
+                  <!-- <input
+                    pInputText
+                    placeholder="Firma Adı *"
+                    type="text"
+                    class="form-control"
+                    id="currAccDescription"
+                    placeholder="Firma Adı"
+                    formControlName="currAccDescription"
+                  />-->
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <!-- <label for="exampleInputEmail1"
+                    >Telefon Numarası (ZORUNLUDUR)</label
+                  >  -->
+                  <input
+                    pInputText
+                    placeholder="Telefon Numarası *"
+                    type="text"
+                    class="form-control"
+                    id="phoneNumber"
+                    placeholder="(05XX XXX XX XX)"
+                    formControlName="phoneNumber"
+                  />
+
+                  <!-- <p-dropdown
+                    #phoneNumber_dropdown
+                    placeholder="Telefon Numarası *"
+                    formControlName="phoneNumber"
+                    [options]="selectableCustomers"
+                    [editable]="true"
+                    optionLabel="name"
+                    (click)="showPanel(2)"
+                  ></p-dropdown> -->
+                </div>
+              </div>
+
+              <div class="row">
+                <!-- Dosya Yükleme Bölümü -->
+                <div class="col-md-3">
+                  <div class="input-group mb-3">
+                    <div class="fileUpload">
+                      <input
+                        type="file"
+                        class="upload"
+                        id="inputGroupFile01"
+                        aria-describedby="inputGroupFileAddon01"
+                        (change)="onUpload($event, 'stampPhotoUrl')"
+                      />
+                      <span> <i class="fas fa-camera"></i></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Metin Girişi Bölümü -->
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <!-- <label for="stampPhotoUrl">Kaşe </label> -->
+                    <input
+                      pInputText
+                      placeholder="Kaşe Fotoğraf Yolu"
+                      type="text"
+                      class="form-control"
+                      id="stampPhotoUrl"
+                      formControlName="stampPhotoUrl"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="input-group mb-3">
+                    <div class="fileUpload">
+                      <input
+                        type="file"
+                        class="upload"
+                        id="inputGroupFile01"
+                        aria-describedby="inputGroupFileAddon01"
+                        (change)="onUpload($event, 'bussinesCardPhotoUrl')"
+                      />
+                      <span> <i class="fas fa-camera"></i></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <input
+                    type="text"
+                    pInputText
+                    placeholder="Kartvizit Fotoğraf Yolu"
+                    class="form-control"
+                    id="bussinesCardPhotoUrl"
+                    placeholder="Kartvizit Fotoğraf Yolu"
+                    formControlName="bussinesCardPhotoUrl"
+                  />
+                </div>
+              </div>
+
+              <p>
+                <button
+                  pButton
+                  pRipple
+                  class="p-button-rounded p-button-text"
+                  icon="pi pi-plus"
+                  label="Detaylar"
+                  type="button"
+                  (click)="isCollapsed = !isCollapsed"
+                ></button>
+              </p>
+              <div *ngIf="isCollapsed">
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="exampleInputEmail1">Mail</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="mail"
+                      placeholder="Mail"
+                      formControlName="mail"
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="address_country" class="label">Ülke</label>
+                      <select
+                        class="form-select"
+                        id="address_country"
+                        formControlName="address_country"
+                        class="form-control"
+                      >
+                        <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                        <option
+                          *ngFor="let country of _countries"
+                          value="{{ country.code }}"
+                        >
+                          {{ country.name }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="address_region" class="label">Bölge</label>
+                      <select
+                        class="form-select"
+                        id="address_region"
+                        formControlName="address_region"
+                        class="form-control"
+                      >
+                        <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                        <option
+                          *ngFor="let region of _regions"
+                          value="{{ region.code }}"
+                        >
+                          {{ region.name }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="address_province" class="label">il</label>
+                      <select
+                        class="form-select"
+                        id="address_province"
+                        formControlName="address_province"
+                      >
+                        <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                        <option
+                          *ngFor="let province of _provinces"
+                          value="{{ province.code }}"
+                        >
+                          {{ province.name }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="address_district" class="label"
+                        >Vergi Dairesi</label
+                      >
+                      <select
+                        class="form-select"
+                        id="address_taxOffice"
+                        formControlName="address_taxOffice"
+                      >
+                        <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                        <option
+                          *ngFor="let taxOffice of _taxOffices"
+                          value="{{ taxOffice.code }}"
+                        >
+                          {{ taxOffice.name }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="address_district" class="label">ilçe</label>
+                      <select
+                        class="form-select"
+                        id="address_district"
+                        formControlName="address_district"
+                      >
+                        <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                        <option
+                          *ngFor="let district of _districts"
+                          value="{{ district.code }}"
+                        >
+                          {{ district.name }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="address_description" class="label"
+                        >Adres Tarifi (ZORUNLUDUR)</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="address_description"
+                        name="address_description"
+                        fullWidth
+                        formControlName="address_description"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group mb-3">
+                      <label for="address_postalCode" class="label"
+                        >Posta Kodu</label
+                      >
+                      <input
+                        type="text"
+                        id="address_postalCode"
+                        name="address_postalCode"
+                        fullWidth
+                        formControlName="address_postalCode"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <button
+                      pButton
+                      pRipple
+                      class="p-button-rounded p-button-text"
+                      icon="pi pi-plus"
+                      type="submit"
+                      style="width: 100%"
+                      label="Müşteri Ekle"
+                    ></button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </p-tabPanel>
           <p-tabPanel header="Var Olan Müşteri">
             <form
               [formGroup]="getCustomerForm"
@@ -715,287 +1039,6 @@
                 </div>
               </form>
             </div>
-          </p-tabPanel>
-          <p-tabPanel header="Müşteri Oluştur">
-            <form
-              [formGroup]="createCustomerForm"
-              (ngSubmit)="submitAddressForm(createCustomerForm.value)"
-            >
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <input
-                    pInputText
-                    placeholder="Firma Adı *"
-                    type="text"
-                    class="form-control"
-                    id="currAccDescription"
-                    placeholder="Firma Adı"
-                    formControlName="currAccDescription"
-                  />
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <!-- <label for="exampleInputEmail1"
-                    >Telefon Numarası (ZORUNLUDUR)</label
-                  > -->
-                  <input
-                    pInputText
-                    placeholder="Telefon Numarası *"
-                    type="text"
-                    class="form-control"
-                    id="phoneNumber"
-                    placeholder="(05XX XXX XX XX)"
-                    formControlName="phoneNumber"
-                  />
-                </div>
-              </div>
-
-              <div class="row">
-                <!-- Dosya Yükleme Bölümü -->
-                <div class="col-md-3">
-                  <div class="input-group mb-3">
-                    <div class="fileUpload">
-                      <input
-                        type="file"
-                        class="upload"
-                        id="inputGroupFile01"
-                        aria-describedby="inputGroupFileAddon01"
-                        (change)="onUpload($event, 'stampPhotoUrl')"
-                      />
-                      <span> <i class="fas fa-camera"></i></span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Metin Girişi Bölümü -->
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <!-- <label for="stampPhotoUrl">Kaşe </label> -->
-                    <input
-                      pInputText
-                      placeholder="Kaşe Fotoğraf Yolu *"
-                      type="text"
-                      class="form-control"
-                      id="stampPhotoUrl"
-                      formControlName="stampPhotoUrl"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-3">
-                  <div class="input-group mb-3">
-                    <div class="fileUpload">
-                      <input
-                        type="file"
-                        class="upload"
-                        id="inputGroupFile01"
-                        aria-describedby="inputGroupFileAddon01"
-                        (change)="onUpload($event, 'bussinesCardPhotoUrl')"
-                      />
-                      <span> <i class="fas fa-camera"></i></span>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-3">
-                  <input
-                    type="text"
-                    pInputText
-                    placeholder="Kartvizit Fotoğraf Yolu"
-                    class="form-control"
-                    id="bussinesCardPhotoUrl"
-                    placeholder="Kartvizit Fotoğraf Yolu"
-                    formControlName="bussinesCardPhotoUrl"
-                  />
-                </div>
-              </div>
-
-              <p>
-                <button
-                  pButton
-                  pRipple
-                  class="p-button-rounded p-button-text"
-                  icon="pi pi-plus"
-                  label="Detaylar"
-                  type="button"
-                  (click)="isCollapsed = !isCollapsed"
-                ></button>
-              </p>
-              <div *ngIf="isCollapsed">
-                <div class="row mb-3">
-                  <div class="col-md-6">
-                    <label for="exampleInputEmail1">Mail</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="mail"
-                      placeholder="Mail"
-                      formControlName="mail"
-                    />
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="address_country" class="label">Ülke</label>
-                      <select
-                        class="form-select"
-                        id="address_country"
-                        formControlName="address_country"
-                        class="form-control"
-                      >
-                        <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                        <option
-                          *ngFor="let country of _countries"
-                          value="{{ country.code }}"
-                        >
-                          {{ country.name }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="address_region" class="label">Bölge</label>
-                      <select
-                        class="form-select"
-                        id="address_region"
-                        formControlName="address_region"
-                        class="form-control"
-                      >
-                        <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                        <option
-                          *ngFor="let region of _regions"
-                          value="{{ region.code }}"
-                        >
-                          {{ region.name }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="address_province" class="label">il</label>
-                      <select
-                        class="form-select"
-                        id="address_province"
-                        formControlName="address_province"
-                      >
-                        <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                        <option
-                          *ngFor="let province of _provinces"
-                          value="{{ province.code }}"
-                        >
-                          {{ province.name }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="address_district" class="label"
-                        >Vergi Dairesi</label
-                      >
-                      <select
-                        class="form-select"
-                        id="address_taxOffice"
-                        formControlName="address_taxOffice"
-                      >
-                        <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                        <option
-                          *ngFor="let taxOffice of _taxOffices"
-                          value="{{ taxOffice.code }}"
-                        >
-                          {{ taxOffice.name }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="address_district" class="label">ilçe</label>
-                      <select
-                        class="form-select"
-                        id="address_district"
-                        formControlName="address_district"
-                      >
-                        <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                        <option
-                          *ngFor="let district of _districts"
-                          value="{{ district.code }}"
-                        >
-                          {{ district.name }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="address_description" class="label"
-                        >Adres Tarifi (ZORUNLUDUR)</label
-                      >
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="address_description"
-                        name="address_description"
-                        fullWidth
-                        formControlName="address_description"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group mb-3">
-                      <label for="address_postalCode" class="label"
-                        >Posta Kodu</label
-                      >
-                      <input
-                        type="text"
-                        id="address_postalCode"
-                        name="address_postalCode"
-                        fullWidth
-                        formControlName="address_postalCode"
-                        class="form-control"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <button
-                      pButton
-                      pRipple
-                      class="p-button-rounded p-button-text"
-                      icon="pi pi-plus"
-                      type="submit"
-                      style="width: 100%"
-                      label="Müşteri Ekle"
-                    ></button>
-                  </div>
-                </div>
-              </div>
-            </form>
           </p-tabPanel>
         </p-tabView>
       </p-tabPanel>
@@ -1297,7 +1340,199 @@
       </p-tabPanel>
 
       <p-tabPanel header="Sipariş Önizleme">
-        <div class="card">
+        <!-- Payment Options -->
+        <div class="mb-3"></div>
+        <div #ödemeler>
+          <form [formGroup]="paymentForm">
+            <div
+              *ngIf="
+                this.selectedCustomers.length > 0 &&
+                this.selectedAddresses.length > 0 &&
+                this.cargoForm.valid &&
+                !isCompleted
+              "
+            >
+              <div
+                class="row"
+                #TAXFREE?
+                *ngIf="
+                  this.selectedCustomers.length > 0 &&
+                  this.selectedAddresses.length > 0 &&
+                  this.cargoForm.valid
+                "
+              >
+                <div class="col-md-6">
+                  <!-- <p-selectButton
+                  [options]="stateOptions"
+                  [(ngModel)]="taxTypeCode"
+                  optionLabel="label"
+                  optionValue="value"
+                ></p-selectButton> -->
+                  <p-dropdown
+                    [options]="stateOptions"
+                    optionLabel="label"
+                    placeholder="Vergi Tipi Seçiniz"
+                    formControlName="taxTypeCode"
+                  ></p-dropdown>
+                </div>
+                <div class="col-md-6">
+                  <p-dropdown
+                    [options]="paymentMethods"
+                    optionLabel="name"
+                    placeholder="Ödeme Seçiniz"
+                    formControlName="paymentType"
+                  ></p-dropdown>
+                </div>
+              </div>
+              <div class="mb-3"></div>
+
+              <div class="mb-3"></div>
+              <div #SPRSONAYLA class="row">
+                <div class="col-md-6 mb-3">
+                  <button
+                    (click)="createOrder()"
+                    pButton
+                    pRipple
+                    style="width: 100%"
+                    label="Siparişi Onayla"
+                    class="p-button-success"
+                  ></button>
+                </div>
+
+                <div class="col-md-6">
+                  <button
+                    pButton
+                    pRipple
+                    style="width: 100%"
+                    label="Sipariş İptal"
+                    class="p-button-danger"
+                    (click)="deleteClientOrder()"
+                  ></button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="mb-3"></div>
+
+        <div class="table-wrapper selected-products-table" #ürünler>
+          <p-table
+            [scrollable]="true"
+            [value]="selectedProducts"
+            *ngIf="this.selectedProducts.length > 0"
+            editMode="row"
+            styleClass="p-datatable-gridlines"
+            dataKey="lineId"
+          >
+            <ng-template pTemplate="header" let-editing="editing">
+              <tr>
+                <th scope="col">Resim</th>
+                <th scope="col">Kod</th>
+                <th scope="col">Miktar</th>
+
+                <th scope="col">Birim Fiyat</th>
+
+                <th scope="col">İndirimli Fiyat</th>
+                <th scope="col">Toplam Fiyat</th>
+                <th scope="col">Ürün</th>
+                <!--  <th scope="col">Ekle-Çıkar</th> -->
+                <!-- <th scope="col">Sil</th> -->
+              </tr>
+            </ng-template>
+            <ng-template
+              pTemplate="body"
+              let-product
+              let-editing="editing"
+              let-ri="rowIndex"
+            >
+              <tr [pEditableRow]="product">
+                <td class="image-icon-td">
+                  <p-image
+                    src="{{ product.photoUrl }}"
+                    alt="Image"
+                    width="50"
+                    [preview]="true"
+                  ></p-image>
+                </td>
+
+                <td>{{ product.itemCode }}</td>
+
+                <td>
+                  <p-cellEditor>
+                    <ng-template pTemplate="input">
+                      <input
+                        pInputText
+                        type="number"
+                        style="max-width: 70px"
+                        [(ngModel)]="product.quantity"
+                        (keyup.enter)="onRowEditSave(product, ri)"
+                      />
+                    </ng-template>
+
+                    <ng-template pTemplate="output" style="font-weight: bold">
+                      <span style="font-weight: bold">
+                        {{ product.quantity }}</span
+                      >
+                    </ng-template></p-cellEditor
+                  >
+                </td>
+
+                <td>
+                  <p-cellEditor>
+                    <ng-template pTemplate="input">
+                      <input
+                        pInputText
+                        style="max-width: 70px"
+                        type="number"
+                        [(ngModel)]="product.price"
+                        (keyup.enter)="onRowEditSave(product, ri)"
+                      />
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                      <span style="font-weight: bold">
+                        {{ product.price | currency : "₺" }}</span
+                      >
+                    </ng-template>
+                  </p-cellEditor>
+                </td>
+                <td>{{ product.discountedPrice | currency : "₺" }}</td>
+
+                <td>
+                  {{
+                    product.price > product.discountedPrice
+                      ? (product.discountedPrice * product.quantity
+                        | currency : "₺")
+                      : (product.price * product.quantity | currency : "₺")
+                  }}
+                </td>
+                <td>
+                  {{ product.description.substring(0, 10) }}
+                </td>
+
+                <!--<td>
+                <button
+                  class="btn btn-dark "
+                  (click)="updateQuantity(-1, product)"
+                >
+                  -
+                </button>
+                <button
+                  class="btn btn-dark "
+                  (click)="updateQuantity(1, product)"
+                >
+                  +
+                </button>
+              </td>
+               -->
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+
+        <!-- Create New Order Button -->
+        <div class="mb-3"></div>
+        <!-- <div class="card" #siparişNumarası>
           <div class="card-body text-center">
             <h1 class="mt-3"><i class="fa-regular fa-circle-check"></i></h1>
 
@@ -1305,10 +1540,10 @@
             <h5 class="mb-3">{{ orderNumber }}</h5>
             <h2 class="mb-3">{{ orderNo }}</h2>
           </div>
-        </div>
+        </div> -->
 
         <div class="mb-3"></div>
-        <div class="row" style="display: flex">
+        <div class="row" style="display: flex" #kutular>
           <div class="col-md-4 mb-4">
             <div
               class="card"
@@ -1485,202 +1720,15 @@
                       : "Hayır"
                   }}
                 </p>
+                <p class="card-text">
+                  Sipariş No:
+                  {{ this.orderNo }}
+                  {{ this.orderNumber != null ? "- " + this.orderNumber : "" }}
+                </p>
               </div>
             </div>
           </div>
         </div>
-
-        <div class="mb-3"></div>
-
-        <div class="table-wrapper selected-products-table">
-          <p-table
-            [scrollable]="true"
-            [value]="selectedProducts"
-            *ngIf="this.selectedProducts.length > 0"
-            editMode="row"
-            styleClass="p-datatable-gridlines"
-            dataKey="lineId"
-          >
-            <ng-template pTemplate="header" let-editing="editing">
-              <tr>
-                <th scope="col">Resim</th>
-                <th scope="col">Kod</th>
-                <th scope="col">Miktar</th>
-
-                <th scope="col">Birim Fiyat</th>
-
-                <th scope="col">İndirimli Fiyat</th>
-                <th scope="col">Toplam Fiyat</th>
-                <th scope="col">Ürün</th>
-                <!--  <th scope="col">Ekle-Çıkar</th> -->
-                <!-- <th scope="col">Sil</th> -->
-              </tr>
-            </ng-template>
-            <ng-template
-              pTemplate="body"
-              let-product
-              let-editing="editing"
-              let-ri="rowIndex"
-            >
-              <tr [pEditableRow]="product">
-                <td class="image-icon-td">
-                  <p-image
-                    src="{{ product.photoUrl }}"
-                    alt="Image"
-                    width="50"
-                    [preview]="true"
-                  ></p-image>
-                </td>
-
-                <td>{{ product.itemCode }}</td>
-
-                <td>
-                  <p-cellEditor>
-                    <ng-template pTemplate="input">
-                      <input
-                        pInputText
-                        type="number"
-                        style="max-width: 70px"
-                        [(ngModel)]="product.quantity"
-                        (keyup.enter)="onRowEditSave(product, ri)"
-                      />
-                    </ng-template>
-
-                    <ng-template pTemplate="output" style="font-weight: bold">
-                      <span style="font-weight: bold">
-                        {{ product.quantity }}</span
-                      >
-                    </ng-template></p-cellEditor
-                  >
-                </td>
-
-                <td>
-                  <p-cellEditor>
-                    <ng-template pTemplate="input">
-                      <input
-                        pInputText
-                        style="max-width: 70px"
-                        type="number"
-                        [(ngModel)]="product.price"
-                        (keyup.enter)="onRowEditSave(product, ri)"
-                      />
-                    </ng-template>
-                    <ng-template pTemplate="output">
-                      <span style="font-weight: bold">
-                        {{ product.price | currency : "₺" }}</span
-                      >
-                    </ng-template>
-                  </p-cellEditor>
-                </td>
-                <td>{{ product.discountedPrice | currency : "₺" }}</td>
-
-                <td>
-                  {{
-                    product.price > product.discountedPrice
-                      ? (product.discountedPrice * product.quantity
-                        | currency : "₺")
-                      : (product.price * product.quantity | currency : "₺")
-                  }}
-                </td>
-                <td>
-                  {{ product.description.substring(0, 10) }}
-                </td>
-
-                <!--<td>
-                <button
-                  class="btn btn-dark "
-                  (click)="updateQuantity(-1, product)"
-                >
-                  -
-                </button>
-                <button
-                  class="btn btn-dark "
-                  (click)="updateQuantity(1, product)"
-                >
-                  +
-                </button>
-              </td>
-               -->
-              </tr>
-            </ng-template>
-          </p-table>
-        </div>
-
-        <!-- Payment Options -->
-        <div class="mb-3"></div>
-        <div
-          *ngIf="
-            this.selectedCustomers.length > 0 &&
-            this.selectedAddresses.length > 0 &&
-            this.cargoForm.valid &&
-            !isCompleted
-          "
-        >
-          <div
-            class="row"
-            #TAXFREE?
-            *ngIf="
-              this.selectedCustomers.length > 0 &&
-              this.selectedAddresses.length > 0 &&
-              this.cargoForm.valid
-            "
-          >
-            <div class="col-md-3">
-              <p-selectButton
-                [options]="stateOptions"
-                [(ngModel)]="taxTypeCode"
-                optionLabel="label"
-                optionValue="value"
-              ></p-selectButton>
-            </div>
-          </div>
-          <div class="mb-3"></div>
-          <div class="container-fluid payment-options">
-            <div class="row">
-              <div
-                class="col-md-4 col-lg-2 mb-3"
-                *ngFor="let paymentMethod of paymentMethods"
-              >
-                <button
-                  type="button"
-                  class="btn btn-primary btn-block p-button p-ripple"
-                  (click)="createPayment(paymentMethod.id)"
-                >
-                  <i class="{{ paymentMethod.icon }}"></i>
-                  {{ paymentMethod.name }}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="mb-3"></div>
-          <div #SPRSONAYLA class="row">
-            <div class="col-md-6 mb-3">
-              <button
-                (click)="createOrder()"
-                pButton
-                pRipple
-                style="width: 100%"
-                label="Siparişi Onayla"
-                class="p-button-success"
-              ></button>
-            </div>
-
-            <div class="col-md-6">
-              <button
-                pButton
-                pRipple
-                style="width: 100%"
-                label="Sipariş İptal"
-                class="p-button-danger"
-                (click)="deleteClientOrder()"
-              ></button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Create New Order Button -->
-        <div class="mb-3"></div>
         <button
           (click)="createNewOrder()"
           pButton

@@ -60,7 +60,7 @@ export class NebimOrder {
       var line: Line = new Line();
       line.usedBarcode = p.barcode;
       line.salesPersonCode = salesPersonCode;
-      if (this.taxTypeCode != 4) { //standart ise
+      if (this.taxTypeCode == 0) { //standart ise
         if (exchangeRate != 1) { //dövizli ise
           line.priceVI = null;
           line.price = parseFloat((p.price / exchangeRate).toFixed(1));
@@ -68,7 +68,16 @@ export class NebimOrder {
           line.priceVI = null;
           line.price = parseFloat(p.price.toFixed(1));
         }
-      } else { //vergisiz ise
+      } else if (this.taxTypeCode == 5) {
+        if (exchangeRate != 1) { //dövizli ise
+          line.priceVI = parseFloat((p.price / exchangeRate).toFixed(1));
+          line.price = parseFloat((p.price / exchangeRate).toFixed(1));
+        } else { //dövizli değilse
+          line.priceVI = parseFloat((p.price).toFixed(1));
+          line.price = parseFloat((p.price).toFixed(1));
+        }
+      }
+      else { //vergisiz ise
         if (exchangeRate != 1) { //dövizli ise
           line.priceVI = parseFloat((p.price / exchangeRate).toFixed(1));
           line.price = parseFloat((p.price / exchangeRate).toFixed(1));
@@ -312,7 +321,7 @@ export class ClientOrder {
   orderNumber: string
   createdDate: Date;
   paymentDate: Date
-
+  cargoStatus: string
   constructor() {
     this.createdDate = new Date();
     this.isCompleted = false;

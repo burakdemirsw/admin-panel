@@ -345,7 +345,7 @@ export class WarehouseService {
   }
   async getTransferRequestListModel(type: string): Promise<TransferRequestListModel[]> {
 
-    const response = this.httpClientService
+    const response = await this.httpClientService
       .get<TransferRequestListModel>({
         controller: 'Warehouse/TransferRequestList'
       }, type)
