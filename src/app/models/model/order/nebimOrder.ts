@@ -35,7 +35,7 @@ export class NebimOrder {
   // discounts: Discount[];
   // payments: Payment[];
 
-  constructor(exchangeRate: number, discountPercentage: number, customerDesc: string,
+  constructor(exchangeRate: number, discountPercentage: number, discountPercentage2: number, customerDesc: string,
     currAccCode: string, orderNo: string, formValue: any, selectedProducts: any,
     salesPersonCode: string, taxTypeCode: number) {
     this.modelType = 5;
@@ -63,27 +63,27 @@ export class NebimOrder {
       if (this.taxTypeCode == 0) { //standart ise
         if (exchangeRate != 1) { //dövizli ise
           line.priceVI = null;
-          line.price = parseFloat((p.price / exchangeRate).toFixed(1));
+          line.price = parseFloat((p.price / exchangeRate).toFixed(0));
         } else { //dövizli değilse
           line.priceVI = null;
-          line.price = parseFloat(p.price.toFixed(1));
+          line.price = parseFloat(p.price.toFixed(0));
         }
       } else if (this.taxTypeCode == 5) {
         if (exchangeRate != 1) { //dövizli ise
-          line.priceVI = parseFloat((p.price / exchangeRate).toFixed(1));
-          line.price = parseFloat((p.price / exchangeRate).toFixed(1));
+          line.priceVI = parseFloat((p.price / exchangeRate).toFixed(0));
+          line.price = parseFloat((p.price / exchangeRate).toFixed(0));
         } else { //dövizli değilse
-          line.priceVI = parseFloat((p.price).toFixed(1));
-          line.price = parseFloat((p.price).toFixed(1));
+          line.priceVI = parseFloat((p.price).toFixed(0));
+          line.price = parseFloat((p.price).toFixed(0));
         }
       }
       else { //vergisiz ise
         if (exchangeRate != 1) { //dövizli ise
-          line.priceVI = parseFloat((p.price / exchangeRate).toFixed(1));
-          line.price = parseFloat((p.price / exchangeRate).toFixed(1));
+          line.priceVI = parseFloat((p.price / exchangeRate).toFixed(0));
+          line.price = parseFloat((p.price / exchangeRate).toFixed(0));
         } else { //dövizli değilse
-          line.priceVI = parseFloat((p.price).toFixed(1));
-          line.price = parseFloat((p.price).toFixed(1));
+          line.priceVI = parseFloat((p.price).toFixed(0));
+          line.price = parseFloat((p.price).toFixed(0));
         }
       }
 
@@ -100,8 +100,8 @@ export class NebimOrder {
 
     }
     // this.payments = [];
-    this.discounts.push(new Discount(discountPercentage));
-
+    this.discounts.push(new Discount(discountPercentage, 1, "1"));
+    this.discounts.push(new Discount(discountPercentage2, 2, "2"));
   }
 }
 export class NebimOrder_2 {
@@ -148,7 +148,7 @@ export class NebimOrder_2 {
 
     this.documentNumber = orderNo;
     this.description = customerDesc;
-    this.discounts.push(new Discount(discountPercentage));
+    this.discounts.push(new Discount(discountPercentage, 1, "1"));
     selectedProducts.forEach(p => {
       var line: Line_2 = new Line_2();
       line.usedBarcode = p.barcode;
@@ -191,7 +191,7 @@ export class NebimInvoice {
   discounts: Discount[] = [];
   // payments: Payment[];
 
-  constructor(discountPercentage: number, exchangeRate: number, docCurrencyCode: string, customerDesc: string, currAccCode: string, orderNo: string, formValue: any, selectedProducts: any, salesPersonCode: string, taxTypeCode: number, addressId: string) {
+  constructor(discountPercentage: number, discountPercentage2: number, exchangeRate: number, docCurrencyCode: string, customerDesc: string, currAccCode: string, orderNo: string, formValue: any, selectedProducts: any, salesPersonCode: string, taxTypeCode: number, addressId: string) {
     this.modelType = 7;
     this.invoiceNumber = "";
     this.eMailAddress = "";
@@ -212,8 +212,8 @@ export class NebimInvoice {
     this.invoiceDate = new Date().toUTCString();
     this.officeCode = "M";
     this.warehouseCode = "MD";
-    this.discounts.push(new Discount(discountPercentage));
-
+    this.discounts.push(new Discount(discountPercentage, 1, "1"));
+    this.discounts.push(new Discount(discountPercentage2, 2, "2"));
     // this.documentNumber = orderNo;
     selectedProducts.forEach(p => {
       var line: Line_3 = new Line_3();
@@ -244,15 +244,15 @@ export class Discount {
   discountReasonCode: string;
   isPercentage: boolean;
   constructor(
-
     value: number,
-
+    discountTypeCode: number,
+    discountReasonCode: string,
 
   ) {
-    this.discountTypeCode = 1;
+    this.discountTypeCode = discountTypeCode;
     this.value = value;
     this.isPercentage = true;
-    this.discountReasonCode = "1";
+    this.discountReasonCode = discountReasonCode;
   }
 
 }
@@ -322,6 +322,9 @@ export class ClientOrder {
   createdDate: Date;
   paymentDate: Date
   cargoStatus: string
+  recepientName: string;
+  recepientPhone: string;
+  orderDescription: string;
   constructor() {
     this.createdDate = new Date();
     this.isCompleted = false;
@@ -349,6 +352,7 @@ export class ClientOrderBasketItem {
   updatedDate: Date;
   discountedPrice: number;
   basePrice: number;
+  taxRate: number;
   constructor() {
     this.createdDate = new Date();
   }

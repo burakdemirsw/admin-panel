@@ -20,7 +20,7 @@
         class="nav-content collapse"
         data-bs-parent="#sidebar-nav"
       >
-        <li>
+        <li *ngIf="this.roleDescription == 'Admin'">
           <a routerLink="orders-managament/1/2">
             <i class="bi bi-circle"></i><span>Alınan Siparişler </span>
           </a>

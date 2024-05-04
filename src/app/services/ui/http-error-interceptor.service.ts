@@ -16,12 +16,18 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     if (request.url.includes('get-customer-list-2')) {
       return next.handle(request);
     }
+
+
+
     this.spinnerService.show();
     setInterval(() => {
 
     }, 2000);
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
+
+
+
 
         var er: Error = new Error();
         er.statusCode = error.error.StatusCode;

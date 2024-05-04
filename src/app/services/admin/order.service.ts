@@ -775,9 +775,28 @@ export class OrderService {
 
   async deleteNebimOrder(request: string): Promise<any> {
     try {
-      var response = await this.httpClientService.get<string>({ controller: "order/delete-nebim-order" + "/" + request }).toPromise();
+      if (window.confirm("Siparişi silmek istediğinize emin misiniz?")) {
+        var response = await this.httpClientService.get<string>({ controller: "order/delete-nebim-order" + "/" + request }).toPromise();
 
-      return response;
+        return response;
+      }
+
+    } catch (error: any) {
+      // console.log(error.message);
+      return null;
+    }
+  }
+
+  async sendInvoiceToPrinter(request: string): Promise<any> {
+    try {
+      if (window.confirm("Faturayı yazdırmak istediğinize emin misiniz?")) {
+        var user = localStorage.getItem('name') + " " + localStorage.getItem('surname');;
+        var response = await this.httpClientService.get<string>({ controller: "order/send-invoice-to-printer" + "/" + request + "/" + user }).toPromise();
+
+        return response;
+      }
+
+
     } catch (error: any) {
       // console.log(error.message);
       return null;

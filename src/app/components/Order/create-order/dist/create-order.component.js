@@ -139,6 +139,8 @@ var CreateOrderComponent = /** @class */ (function () {
         this.addresses = [];
         this.selectedSize = '';
         this.products = [];
+        this.currentDiscountRate = 0;
+        this.currentCashdiscountRate = 0;
         this.shelfNumbers = 'RAFLAR:';
         this.qrBarcodeUrl = null;
         this.qrOperationModels = [];
@@ -154,6 +156,7 @@ var CreateOrderComponent = /** @class */ (function () {
         this.desiErrorMessage = '';
         this.kgErrorMessage = '';
         this.showCargo = false;
+        this.showCargo2 = false;
         //----------------------------------------------------
         //---------------------------------------------------- SİPARİŞ
         this.sidebarVisible4 = true;
@@ -190,6 +193,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         this.getAddresses();
                         this.selectOfficeAndWarehosue();
                         this.createCargoForm();
+                        this.createCargoForm_2();
                         this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_a) {
                                 if (params['id']) {
@@ -215,6 +219,8 @@ var CreateOrderComponent = /** @class */ (function () {
                         else {
                             this.salesPersonCode = spc;
                         }
+                        this.paymentForm.get('paymentType').setValue(this.paymentMethods[2]);
+                        this.paymentForm.get('taxTypeCode').setValue(this.stateOptions[1]);
                         return [2 /*return*/];
                 }
             });
@@ -277,6 +283,9 @@ var CreateOrderComponent = /** @class */ (function () {
                         this.payment.amount = this.selectedProducts.reduce(function (total, product) { return total + product.price; }, 0);
                         // this.selectedAddresses = []; burası
                         this.orderNo = order.clientOrder.orderNo;
+                        this.cargoForm_2.get('address_recepient_name').setValue(order.clientOrder.recepientName);
+                        this.cargoForm_2.get('address_phoneNumber').setValue(order.clientOrder.recepientPhone);
+                        this.orderDescription = order.clientOrder.description;
                         if (order.clientOrderBasketItems.length > 0) {
                             this.selectedProducts = [];
                             order.clientOrderBasketItems.reverse();
@@ -345,6 +354,7 @@ var CreateOrderComponent = /** @class */ (function () {
         object.mD_Stock = line.mD_Stock;
         object.basePrice = line.basePrice;
         object.discountedPrice = line.discountedPrice;
+        object.taxRate = line.taxRate;
         return object;
     };
     CreateOrderComponent.prototype.createClientOrder_RM = function () {
@@ -356,6 +366,9 @@ var CreateOrderComponent = /** @class */ (function () {
             request.orderNo = this.orderNo;
             request.customerDescription = ((_a = this.selectedCustomers[0]) === null || _a === void 0 ? void 0 : _a.currAccDescription) || null;
             request.shippingPostalAddressId = (_b = this.selectedAddresses[0]) === null || _b === void 0 ? void 0 : _b.postalAddressID;
+            request.recepientName = this.cargoForm_2.value.address_recepient_name;
+            request.recepientPhone = this.cargoForm_2.value.address_phoneNumber;
+            request.orderDescription = this.orderDescription;
             request.cargoStatus = this.cargoForm.get('isActive').value == true ? "KARGO VAR" : "KARGO YOK";
             if (this.payment) {
                 request.paymentType = this.payment.creditCardTypeCode;
@@ -393,12 +406,32 @@ var CreateOrderComponent = /** @class */ (function () {
             request.mD_Stock = newLine.mD_Stock;
             request.basePrice = newLine.basePrice;
             request.discountedPrice = newLine.discountedPrice;
+            request.taxRate = newLine.taxRate;
             return request;
         }
         catch (error) {
             this.toasterService.error(error.message);
             return null;
         }
+    };
+    CreateOrderComponent.prototype.sendInvoiceToPrinter = function (orderNumber) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.orderService.sendInvoiceToPrinter(orderNumber)];
+                    case 1:
+                        response = _a.sent();
+                        if (response) {
+                            this.toasterService.success("İşlem Başarılı");
+                        }
+                        else {
+                            this.toasterService.error("İşlem Başarısız");
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     CreateOrderComponent.prototype.selectSalesPerson = function () {
         this.activeIndex = 1;
@@ -1061,17 +1094,22 @@ var CreateOrderComponent = /** @class */ (function () {
         else {
             return number;
         }
-        // return this.selectedProducts.reduce((acc, product) => {
-        //   // Ürünün normal fiyatı indirimli fiyatından küçükse, normal fiyatı kullan
-        //   if (product.price < product.discountedPrice) {
-        //     return acc + (product.quantity * product.price);
-        //   }
-        //   // Değilse, indirimli fiyatı kullan
-        //   return acc + (product.quantity * product.discountedPrice);
-        // }, 0);
+    };
+    CreateOrderComponent.prototype.getTotalPriceWithTax = function () {
+        this.selectedProducts.forEach(function (p) {
+            console.log(p.taxRate);
+        });
+        var number = this.selectedProducts.reduce(function (acc, product) { return acc + (product.quantity * product.discountedPrice * (product.taxRate / 100)); }, 0);
+        if (number.toString().includes('.')) {
+            return Number(number.toString().split('.')[0]);
+        }
+        else {
+            return number;
+        }
     };
     CreateOrderComponent.prototype.discount = function (discountRate) {
         // this.resetDiscount()
+        this.currentDiscountRate = discountRate;
         if (discountRate > 0 && discountRate <= 100) {
             this.selectedProducts.forEach(function (p) {
                 p.discountedPrice = ((100 - discountRate) / 100) * (p.discountedPrice);
@@ -1091,7 +1129,12 @@ var CreateOrderComponent = /** @class */ (function () {
         // }
     };
     CreateOrderComponent.prototype.cashDiscount = function (discountAmount) {
-        // this.resetDiscount()
+        // this.resetDiscount();
+        var total = this.selectedProducts.reduce(function (acc, product) { return acc + (product.quantity * product.discountedPrice); }, 0);
+        var integerPart = Math.floor(total);
+        var fraction = total - integerPart;
+        discountAmount = discountAmount + fraction;
+        this.currentCashdiscountRate = discountAmount;
         var value = discountAmount / this.selectedProducts.length;
         this.selectedProducts.forEach(function (p) {
             p.discountedPrice = p.discountedPrice - (value / p.quantity);
@@ -1109,6 +1152,7 @@ var CreateOrderComponent = /** @class */ (function () {
         // }
     };
     CreateOrderComponent.prototype.resetDiscount = function () {
+        this.currentCashdiscountRate = 0;
         this.selectedProducts.forEach(function (p) {
             p.discountedPrice = p.basePrice;
         });
@@ -1124,7 +1168,7 @@ var CreateOrderComponent = /** @class */ (function () {
     };
     CreateOrderComponent.prototype.getProducts = function (request, pageType) {
         return __awaiter(this, void 0, void 0, function () {
-            var _request, response, totalQty, totalQuantity, error_3, result, result, check_response, data, response, totalQty, totalQuantity;
+            var _request, response, totalQuantity, error_3, result, result, check_response, data, response, totalQuantity;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -1144,17 +1188,17 @@ var CreateOrderComponent = /** @class */ (function () {
                         }
                         this.products = response;
                         if (this.products.length > 0) {
-                            if (this.products.length > 0) {
-                                totalQty = 0;
-                                this.products.forEach(function (p) {
-                                    totalQty += p.quantity;
-                                });
-                                if (totalQty <= 0) {
-                                    this.toasterService.error("STOK HATASI");
-                                    this.products = [];
-                                    return [2 /*return*/];
+                            // var totalQty = 0;
+                            // this.products.forEach(p => {
+                            //   totalQty += p.quantity
+                            // });
+                            this.products.forEach(function (p) {
+                                if (p.quantity <= 0) {
+                                    _this.toasterService.error("STOK HATASI");
+                                    _this.products = [];
+                                    return;
                                 }
-                            }
+                            });
                             this.getProductsForm.get('barcode').setValue(null);
                             totalQuantity = 0;
                             this.selectedProducts.forEach(function (product) {
@@ -1228,15 +1272,17 @@ var CreateOrderComponent = /** @class */ (function () {
                         }
                         this.products = response;
                         if (this.products.length > 0) {
-                            totalQty = 0;
+                            // var totalQty = 0;
+                            // this.products.forEach(p => {
+                            //   totalQty += p.quantity
+                            // });
                             this.products.forEach(function (p) {
-                                totalQty += p.quantity;
+                                if (p.quantity <= 0) {
+                                    _this.toasterService.error("STOK HATASI");
+                                    _this.products = [];
+                                    return;
+                                }
                             });
-                            if (totalQty <= 0) {
-                                this.toasterService.error("STOK HATASI");
-                                this.products = [];
-                                return [2 /*return*/];
-                            }
                             if (this.products[0].shelfNo != this.getProductsForm.get('shelfNo').value) {
                                 this.products[0].shelfNo = this.getProductsForm.get('shelfNo').value;
                                 this.toasterService.info("RAF NUMARASI EŞLEŞTRİLDİ");
@@ -1483,18 +1529,29 @@ var CreateOrderComponent = /** @class */ (function () {
             });
         });
     };
+    CreateOrderComponent.prototype.createCargoForm_2 = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.cargoForm_2 = this.formBuilder.group({
+                    address_recepient_name: [null],
+                    address_phoneNumber: [null]
+                });
+                return [2 /*return*/];
+            });
+        });
+    };
     CreateOrderComponent.prototype.createCargoForm = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
                 this.cargoForm = this.formBuilder.group({
+                    address_recepient_name: [null],
                     address_phoneNumber: [null],
                     packagingType: [null],
                     shipmentServiceType: [null],
                     isCOD: [false],
                     kg: [1],
                     desi: [1],
-                    address_recepient_name: [null],
                     isActive: [false],
                     cargoFirm: [null],
                     address_package_count: [1, forms_1.Validators.min(1)],
@@ -1754,10 +1811,16 @@ var CreateOrderComponent = /** @class */ (function () {
             });
         });
     };
+    CreateOrderComponent.prototype.goBack = function () {
+        this.showCargo2 = false;
+    };
     CreateOrderComponent.prototype.showCargoForm = function (state) {
         if (state === false) {
             this.activeIndex = 3;
             this.toasterService.success("Kargo Bilgileri Güncellendi");
+        }
+        else {
+            this.showCargo2 = true;
         }
         this.cargoForm.get('isActive').setValue(state);
     };
@@ -1926,15 +1989,15 @@ var CreateOrderComponent = /** @class */ (function () {
     CreateOrderComponent.prototype.createOrder = function () {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var formValue, exchangeRate, discountPercent, request, response, _request, response, __request, __response;
+            var formValue, exchangeRate, order_request, order_response, request, response, addedOrder, _request, response, __request, __response, addedOrder;
             var _this = this;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        if (!this.cargoForm.valid) {
-                            this.toasterService.error("Kargo Formu Hatalı");
-                            return [2 /*return*/];
-                        }
+                        // if (!this.cargoForm.valid) {
+                        //   this.toasterService.error("Kargo Formu Hatalı");
+                        //   return;
+                        // }
                         if (!this.payment.creditCardTypeCode) {
                             this.toasterService.error("Ödeme Tipi Seçiniz");
                             return [2 /*return*/];
@@ -1970,43 +2033,43 @@ var CreateOrderComponent = /** @class */ (function () {
                             this.toasterService.error("EXCHANGE RATE ERROR");
                             return [2 /*return*/];
                         }
-                        discountPercent = this.calculateDiscountPercent(this.selectedProducts);
-                        if (!this.orderType) return [3 /*break*/, 6];
-                        request = new nebimOrder_1.NebimOrder(exchangeRate, discountPercent, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value);
-                        return [4 /*yield*/, this.orderService.createOrder(request)];
+                        order_request = this.createClientOrder_RM();
+                        return [4 /*yield*/, this.orderService.createClientOrder(order_request)
+                            // var discountPercent: number = this.calculateDiscountPercent(this.selectedProducts);
+                        ]; //son sipariş güncellendi
                     case 1:
-                        response = _b.sent();
-                        if (!(response && response.status === true)) return [3 /*break*/, 5];
-                        this.orderNumber = response.orderNumber;
-                        if (!(this.cargoForm.get('isActive').value === true)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.submitCargo(this.cargoForm.value)];
+                        order_response = _b.sent() //son sipariş güncellendi
+                        ;
+                        if (!this.orderType) return [3 /*break*/, 5];
+                        request = new nebimOrder_1.NebimOrder(exchangeRate, this.currentDiscountRate, this.currentCashdiscountRate, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value);
+                        return [4 /*yield*/, this.orderService.createOrder(request)];
                     case 2:
-                        _b.sent();
-                        return [3 /*break*/, 4];
-                    case 3:
-                        this.toasterService.info('KARGO OLUŞTURULMADI');
-                        _b.label = 4;
-                    case 4:
-                        this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament/1/2");
-                        _b.label = 5;
-                    case 5: return [3 /*break*/, 12];
-                    case 6:
-                        _request = new nebimOrder_1.NebimOrder(exchangeRate, discountPercent, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value);
-                        return [4 /*yield*/, this.orderService.createOrder(_request)];
-                    case 7:
                         response = _b.sent();
-                        if (!(response && response.status === true)) return [3 /*break*/, 10];
+                        if (!(response && response.status === true)) return [3 /*break*/, 4];
                         this.orderNumber = response.orderNumber;
-                        if (!(this.cargoForm.get('isActive').value === true)) return [3 /*break*/, 9];
-                        return [4 /*yield*/, this.submitCargo(this.cargoForm.value)];
-                    case 8:
-                        _b.sent();
-                        return [3 /*break*/, 10];
-                    case 9:
-                        this.toasterService.info('KARGO OLUŞTURULMADI');
-                        _b.label = 10;
-                    case 10:
-                        __request = new nebimOrder_1.NebimInvoice(discountPercent, exchangeRate, this.selectedCustomers[0].docCurrencyCode, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value, this.selectedAddresses[0].postalAddressID);
+                        return [4 /*yield*/, this.orderService.getOrderDetail(this.orderNumber)];
+                    case 3:
+                        addedOrder = _b.sent();
+                        if (addedOrder.orderNumber) {
+                            this.sendInvoiceToPrinter(addedOrder.orderNumber);
+                        }
+                        this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament/1/2");
+                        _b.label = 4;
+                    case 4: return [3 /*break*/, 9];
+                    case 5:
+                        _request = new nebimOrder_1.NebimOrder(exchangeRate, this.currentDiscountRate, this.currentCashdiscountRate, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value);
+                        return [4 /*yield*/, this.orderService.createOrder(_request)];
+                    case 6:
+                        response = _b.sent();
+                        if (response && response.status === true) {
+                            this.orderNumber = response.orderNumber;
+                            // if (this.cargoForm.get('isActive').value === true) {
+                            //   await this.submitCargo(this.cargoForm.value);
+                            // } else {
+                            //   this.toasterService.info('KARGO OLUŞTURULMADI');
+                            // }
+                        }
+                        __request = new nebimOrder_1.NebimInvoice(this.currentDiscountRate, this.currentCashdiscountRate, exchangeRate, this.selectedCustomers[0].docCurrencyCode, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value, this.selectedAddresses[0].postalAddressID);
                         __request.lines.forEach(function (l1) {
                             var fp = response.lines.find(function (p) {
                                 return p.itemCode === l1.itemCode && p.usedBarcode === l1.usedBarcode && p.qty1 === l1.qty1;
@@ -2017,13 +2080,18 @@ var CreateOrderComponent = /** @class */ (function () {
                             }
                         });
                         return [4 /*yield*/, this.orderService.createInvoice(__request)];
-                    case 11:
+                    case 7:
                         __response = _b.sent();
-                        if (__response) {
-                            this.generalService.waitAndNavigate("Sipariş Oluşturuldu & Faturalaştırıdı", "orders-managament/1/1");
+                        if (!__response) return [3 /*break*/, 9];
+                        return [4 /*yield*/, this.orderService.getOrderDetail(this.orderNumber)];
+                    case 8:
+                        addedOrder = _b.sent();
+                        if (addedOrder.orderNumber) {
+                            this.sendInvoiceToPrinter(addedOrder.orderNumber);
                         }
-                        _b.label = 12;
-                    case 12: return [2 /*return*/];
+                        this.generalService.waitAndNavigate("Sipariş Oluşturuldu & Faturalaştırıdı", "orders-managament/1/1");
+                        _b.label = 9;
+                    case 9: return [2 /*return*/];
                 }
             });
         });

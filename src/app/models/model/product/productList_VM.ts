@@ -15,5 +15,6 @@ export class ProductList_VM {
   price: number
   basePrice: number;
   discountedPrice: number;
+  taxRate: number;
 
 }

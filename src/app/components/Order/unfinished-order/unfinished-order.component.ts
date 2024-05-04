@@ -37,10 +37,6 @@ export class UnfinishedOrderComponent implements OnInit {
   }
 
   async deleteClientOrder(id: string) {
-    var windowResponse = window.confirm("Silmek istediğinize emin misiniz?")
-
-    if (!windowResponse)
-      return;
     var response = await this.orderService.deleteClientOrder(id);
     if (response) {
       this.toasterService.success("Sipariş Silindi")

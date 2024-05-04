@@ -73,7 +73,7 @@ export class OrderManagamentComponent implements OnInit {
     var response = await this.orderService.deleteNebimOrder(request)
     if (response) {
       this.toasterService.success("İşlem Başarılı")
-      location.reload();
+      this.getOrders(this.status, this.invoiceStatus)
     }
   }
   setPageDescription() {
@@ -251,6 +251,20 @@ export class OrderManagamentComponent implements OnInit {
     } else {
       this.toasterService.error("İşlem Başarısız")
     }
+  }
+
+  async sendInvoiceToPrinter(orderNumber: string) {
+    var response = await this.orderService.sendInvoiceToPrinter(orderNumber);
+    if (response) {
+      this.toasterService.success("İşlem Başarılı")
+    } else {
+      this.toasterService.error("İşlem Başarısız")
+    }
+  }
+
+  searchedOrder: string = "";
+  goToPage() {
+    location.href = this.searchedOrder;
   }
 
 }

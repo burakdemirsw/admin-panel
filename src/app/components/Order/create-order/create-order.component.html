@@ -1042,23 +1042,12 @@
           </p-tabPanel>
         </p-tabView>
       </p-tabPanel>
-      <!-- <p-tabPanel
-        [disabled]="this.currAccCode === undefined ? true : false"
-        header="Adres Ekle"
-        [rightIcon]="
-          this.selectedAddresses.length > 0 ? 'pi pi-check' : 'pi pi-times'
-        "
-      >
-      </p-tabPanel> -->
 
       <p-tabPanel
         [rightIcon]="this.cargoForm.valid ? 'pi pi-check' : 'pi pi-times'"
         header="Kargo Oluştur"
       >
-        <div
-          class="container mt-5"
-          *ngIf="!this.cargoForm.get('isActive').value"
-        >
+        <div class="container mt-5" *ngIf="!showCargo2">
           <div class="row">
             <div class="col-md-6 mb-3">
               <div
@@ -1084,10 +1073,7 @@
             </div>
           </div>
         </div>
-        <form
-          [formGroup]="cargoForm"
-          *ngIf="this.cargoForm.get('isActive').value"
-        >
+        <form [formGroup]="cargoForm" *ngIf="false">
           <div class="row mb-3">
             <div class="col-md-6">
               <input
@@ -1100,15 +1086,6 @@
                 formControlName="address_recepient_name"
                 class="form-control"
               />
-              <!-- <p style="font-weight: bold">
-                {{
-                  this.cargoForm.get("address_recepient_name")?.value ===
-                    null ||
-                  this.cargoForm.get("address_recepient_name")?.value === ""
-                    ? "Alıcı Adı Yoksa Satış Elemanı Adı ile Gönderim Yapılır"
-                    : ""
-                }}
-              </p> -->
             </div>
           </div>
           <div class="row">
@@ -1289,26 +1266,7 @@
                 flex-direction: column;
                 height: 100%;
               "
-            >
-              <!-- <div class="card-header">ARAS KARGO BARKODU</div>
-              <app-create-aras-cargo-barcode
-                [receiverName]="
-                  this.cargoForm.get('address_recepient_name').value
-                "
-                [customer]="
-                  selectedCustomers?.length > 0 ? selectedCustomers[0] : null
-                "
-                [address]="
-                  selectedAddresses?.length > 0 ? selectedAddresses[0] : null
-                "
-                [referenceId]="
-                  this.generatedCargoNumber == undefined
-                    ? 00
-                    : this.generatedCargoNumber
-                "
-                (dataEvent)="getBase64($event)"
-              ></app-create-aras-cargo-barcode> -->
-            </div>
+            ></div>
           </div>
           <div class="row mb-3">
             <div class="col-md">
@@ -1324,18 +1282,64 @@
               ></button>
             </div>
           </div>
-
-          <!-- <div class="row mb-3">
-            <div class="col-md">
+        </form>
+        <form [formGroup]="cargoForm_2" *ngIf="showCargo2">
+          <div class="row mb-3">
+            <div class="col-md-1">
               <button
                 pButton
                 pRipple
-                label="Kargoya Gönder"
-                (click)="submitCargo(this.cargoForm.value)"
-                class="p-button-success"
+                class="p-button-rounded p-button-text"
+                label="Geri"
+                (click)="goBack()"
+                type="submit"
+                icon="pi pi-arrow-left"
               ></button>
             </div>
-          </div> -->
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <input
+                pInputText
+                placeholder="Klinik Kargo Sorumlusu/ Fatura-Sipariş Açıklaması"
+                type="text"
+                id="address_recepient_name"
+                name="address_recepient_name"
+                fullWidth
+                formControlName="address_recepient_name"
+                class="form-control"
+              />
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6 form-group">
+              <input
+                pInputText
+                placeholder="Alıcı Telefon Numarası"
+                type="text"
+                class="form-control"
+                id="address_phoneNumber"
+                name="address_phoneNumber"
+                placeholder="(05XX XXX XX XX)"
+                fullWidth
+                formControlName="address_phoneNumber"
+              />
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <button
+                *ngIf="this.cargoForm_2.valid"
+                pButton
+                pRipple
+                style="width: 100%"
+                class="p-button-success"
+                label="Önizleme Sayfasına İlerle"
+                (click)="goToPage(3)"
+                type="submit"
+              ></button>
+            </div>
+          </div>
         </form>
       </p-tabPanel>
 
@@ -1347,9 +1351,8 @@
             <div
               *ngIf="
                 this.selectedCustomers.length > 0 &&
-                this.selectedAddresses.length > 0 &&
-                this.cargoForm.valid &&
-                !isCompleted
+                  this.selectedAddresses.length > 0!;
+                isCompleted
               "
             >
               <div
@@ -1357,11 +1360,10 @@
                 #TAXFREE?
                 *ngIf="
                   this.selectedCustomers.length > 0 &&
-                  this.selectedAddresses.length > 0 &&
-                  this.cargoForm.valid
+                  this.selectedAddresses.length > 0
                 "
               >
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
                   <!-- <p-selectButton
                   [options]="stateOptions"
                   [(ngModel)]="taxTypeCode"
@@ -1375,7 +1377,7 @@
                     formControlName="taxTypeCode"
                   ></p-dropdown>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
                   <p-dropdown
                     [options]="paymentMethods"
                     optionLabel="name"
@@ -1384,9 +1386,29 @@
                   ></p-dropdown>
                 </div>
               </div>
-              <div class="mb-3"></div>
-
-              <div class="mb-3"></div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <input
+                    type="text"
+                    pInputText
+                    style="width: 100%"
+                    placeholder="Sipariş Açıklaması"
+                    [(ngModel)]="orderDescription"
+                  />
+                </div>
+                <div class="col-md-3 mb-3">
+                  <h5>
+                    Toplam :
+                    {{ getTotalPrice() }}
+                  </h5>
+                </div>
+                <div class="col-md-3 mb-3">
+                  <h5 *ngIf="this.paymentForm.value.taxTypeCode?.value == '0'">
+                    Kdv :
+                    {{ getTotalPriceWithTax() }}
+                  </h5>
+                </div>
+              </div>
               <div #SPRSONAYLA class="row">
                 <div class="col-md-6 mb-3">
                   <button

@@ -274,7 +274,7 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
     JwtModule.forRoot({
       config: {
         tokenGetter: () => localStorage.getItem('accessToken'),
-        allowedDomains: ['localhost:7178', 'localhost:7180', '212.156.46.206:7180'],
+        allowedDomains: ['localhost:7178', 'localhost:7180', '212.156.46.206:7180', 'www.dayvebkmapi.com', 'www.davyebkm.com'],
       },
     }),
 

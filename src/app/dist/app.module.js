@@ -279,7 +279,7 @@ var AppModule = /** @class */ (function () {
                 angular_jwt_1.JwtModule.forRoot({
                     config: {
                         tokenGetter: function () { return localStorage.getItem('accessToken'); },
-                        allowedDomains: ['localhost:7178', 'localhost:7180', '212.156.46.206:7180']
+                        allowedDomains: ['localhost:7178', 'localhost:7180', '212.156.46.206:7180', 'www.dayvebkmapi.com', 'www.davyebkm.com']
                     }
                 }),
             ],

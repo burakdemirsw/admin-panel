@@ -64,6 +64,7 @@ var OrderManagamentComponent = /** @class */ (function () {
         this.status = 1;
         this.invoiceStatus = 2;
         this.visible = false;
+        this.searchedOrder = "";
     }
     OrderManagamentComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -105,7 +106,7 @@ var OrderManagamentComponent = /** @class */ (function () {
                         response = _a.sent();
                         if (response) {
                             this.toasterService.success("İşlem Başarılı");
-                            location.reload();
+                            this.getOrders(this.status, this.invoiceStatus);
                         }
                         return [2 /*return*/];
                 }
@@ -350,6 +351,28 @@ var OrderManagamentComponent = /** @class */ (function () {
                 }
             });
         });
+    };
+    OrderManagamentComponent.prototype.sendInvoiceToPrinter = function (orderNumber) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.orderService.sendInvoiceToPrinter(orderNumber)];
+                    case 1:
+                        response = _a.sent();
+                        if (response) {
+                            this.toasterService.success("İşlem Başarılı");
+                        }
+                        else {
+                            this.toasterService.error("İşlem Başarısız");
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    OrderManagamentComponent.prototype.goToPage = function () {
+        location.href = this.searchedOrder;
     };
     OrderManagamentComponent = __decorate([
         core_1.Component({

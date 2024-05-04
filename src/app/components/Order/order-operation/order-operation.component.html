@@ -337,7 +337,7 @@
                     *ngFor="
                       let product of productsToCollect
                         | paginate
-                          : { itemsPerPage: 50, currentPage: currentPage };
+                          : { itemsPerPage: 5, currentPage: currentPage };
                       let i = index
                     "
                     [ngClass]="{ 'green-row': product.colorDescription == '1' }"

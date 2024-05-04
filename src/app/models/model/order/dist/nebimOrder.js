@@ -29,7 +29,7 @@ exports.CheckCustomerModel = CheckCustomerModel;
 var NebimOrder = /** @class */ (function () {
     // discounts: Discount[];
     // payments: Payment[];
-    function NebimOrder(exchangeRate, discountPercentage, customerDesc, currAccCode, orderNo, formValue, selectedProducts, salesPersonCode, taxTypeCode) {
+    function NebimOrder(exchangeRate, discountPercentage, discountPercentage2, customerDesc, currAccCode, orderNo, formValue, selectedProducts, salesPersonCode, taxTypeCode) {
         var _this = this;
         this.discounts = [];
         this.modelType = 5;
@@ -56,31 +56,31 @@ var NebimOrder = /** @class */ (function () {
             if (_this.taxTypeCode == 0) { //standart ise
                 if (exchangeRate != 1) { //dövizli ise
                     line.priceVI = null;
-                    line.price = parseFloat((p.price / exchangeRate).toFixed(1));
+                    line.price = parseFloat((p.price / exchangeRate).toFixed(0));
                 }
                 else { //dövizli değilse
                     line.priceVI = null;
-                    line.price = parseFloat(p.price.toFixed(1));
+                    line.price = parseFloat(p.price.toFixed(0));
                 }
             }
             else if (_this.taxTypeCode == 5) {
                 if (exchangeRate != 1) { //dövizli ise
-                    line.priceVI = parseFloat((p.price / exchangeRate).toFixed(1));
-                    line.price = parseFloat((p.price / exchangeRate).toFixed(1));
+                    line.priceVI = parseFloat((p.price / exchangeRate).toFixed(0));
+                    line.price = parseFloat((p.price / exchangeRate).toFixed(0));
                 }
                 else { //dövizli değilse
-                    line.priceVI = parseFloat((p.price).toFixed(1));
-                    line.price = parseFloat((p.price).toFixed(1));
+                    line.priceVI = parseFloat((p.price).toFixed(0));
+                    line.price = parseFloat((p.price).toFixed(0));
                 }
             }
             else { //vergisiz ise
                 if (exchangeRate != 1) { //dövizli ise
-                    line.priceVI = parseFloat((p.price / exchangeRate).toFixed(1));
-                    line.price = parseFloat((p.price / exchangeRate).toFixed(1));
+                    line.priceVI = parseFloat((p.price / exchangeRate).toFixed(0));
+                    line.price = parseFloat((p.price / exchangeRate).toFixed(0));
                 }
                 else { //dövizli değilse
-                    line.priceVI = parseFloat((p.price).toFixed(1));
-                    line.price = parseFloat((p.price).toFixed(1));
+                    line.priceVI = parseFloat((p.price).toFixed(0));
+                    line.price = parseFloat((p.price).toFixed(0));
                 }
             }
             line.qty1 = p.quantity;
@@ -95,7 +95,8 @@ var NebimOrder = /** @class */ (function () {
             payment.amount = this.lines.reduce(function (a, b) { return a + (b.price) * b.qty1; }, 0);
         }
         // this.payments = [];
-        this.discounts.push(new Discount(discountPercentage));
+        this.discounts.push(new Discount(discountPercentage, 1, "1"));
+        this.discounts.push(new Discount(discountPercentage2, 2, "2"));
     }
     return NebimOrder;
 }());
@@ -122,7 +123,7 @@ var NebimOrder_2 = /** @class */ (function () {
         this.warehouseCode = "MD";
         this.documentNumber = orderNo;
         this.description = customerDesc;
-        this.discounts.push(new Discount(discountPercentage));
+        this.discounts.push(new Discount(discountPercentage, 1, "1"));
         selectedProducts.forEach(function (p) {
             var line = new Line_2();
             line.usedBarcode = p.barcode;
@@ -143,7 +144,7 @@ var NebimOrder_2 = /** @class */ (function () {
 exports.NebimOrder_2 = NebimOrder_2;
 var NebimInvoice = /** @class */ (function () {
     // payments: Payment[];
-    function NebimInvoice(discountPercentage, exchangeRate, docCurrencyCode, customerDesc, currAccCode, orderNo, formValue, selectedProducts, salesPersonCode, taxTypeCode, addressId) {
+    function NebimInvoice(discountPercentage, discountPercentage2, exchangeRate, docCurrencyCode, customerDesc, currAccCode, orderNo, formValue, selectedProducts, salesPersonCode, taxTypeCode, addressId) {
         var _this = this;
         this.discounts = [];
         this.modelType = 7;
@@ -166,7 +167,8 @@ var NebimInvoice = /** @class */ (function () {
         this.invoiceDate = new Date().toUTCString();
         this.officeCode = "M";
         this.warehouseCode = "MD";
-        this.discounts.push(new Discount(discountPercentage));
+        this.discounts.push(new Discount(discountPercentage, 1, "1"));
+        this.discounts.push(new Discount(discountPercentage2, 2, "2"));
         // this.documentNumber = orderNo;
         selectedProducts.forEach(function (p) {
             var line = new Line_3();
@@ -193,11 +195,11 @@ var NebimInvoice = /** @class */ (function () {
 }());
 exports.NebimInvoice = NebimInvoice;
 var Discount = /** @class */ (function () {
-    function Discount(value) {
-        this.discountTypeCode = 1;
+    function Discount(value, discountTypeCode, discountReasonCode) {
+        this.discountTypeCode = discountTypeCode;
         this.value = value;
         this.isPercentage = true;
-        this.discountReasonCode = "1";
+        this.discountReasonCode = discountReasonCode;
     }
     return Discount;
 }());
