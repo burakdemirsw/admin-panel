@@ -20,30 +20,6 @@ var header_component_1 = require("./layouts/header/header.component");
 var footer_component_1 = require("./layouts/footer/footer.component");
 var sidebar_component_1 = require("./layouts/sidebar/sidebar.component");
 var dashboard_component_1 = require("./pages/dashboard/dashboard.component");
-var alerts_component_1 = require("./components/Others/pagination/alerts/alerts.component");
-var accordion_component_1 = require("./components/Others/pagination/accordion/accordion.component");
-var badges_component_1 = require("./components/Others/pagination/badges/badges.component");
-var breadcrumbs_component_1 = require("./components/Others/pagination/breadcrumbs/breadcrumbs.component");
-var buttons_component_1 = require("./components/Others/pagination/buttons/buttons.component");
-var cards_component_1 = require("./components/Others/pagination/cards/cards.component");
-var carousel_component_1 = require("./components/Others/pagination/carousel/carousel.component");
-var list_group_component_1 = require("./components/Others/pagination/list-group/list-group.component");
-var modal_component_1 = require("./components/Others/pagination/modal/modal.component");
-var tabs_component_1 = require("./components/Others/pagination/tabs/tabs.component");
-var pagination_component_1 = require("./components/Others/pagination/pagination.component");
-var progress_component_1 = require("./components/Others/pagination/progress/progress.component");
-var spinners_component_1 = require("./components/Others/pagination/spinners/spinners.component");
-var tooltips_component_1 = require("./components/Others/pagination/tooltips/tooltips.component");
-var forms_elements_component_1 = require("./components/Others/pagination/forms-elements/forms-elements.component");
-var forms_layouts_component_1 = require("./components/Others/pagination/forms-layouts/forms-layouts.component");
-var forms_editors_component_1 = require("./components/Others/pagination/forms-editors/forms-editors.component");
-var tables_general_component_1 = require("./components/Others/pagination/tables-general/tables-general.component");
-var tables_data_component_1 = require("./components/Others/pagination/tables-data/tables-data.component");
-var charts_chartjs_component_1 = require("./components/Others/pagination/charts-chartjs/charts-chartjs.component");
-var charts_apexcharts_component_1 = require("./components/Others/pagination/charts-apexcharts/charts-apexcharts.component");
-var icons_bootstrap_component_1 = require("./components/Others/pagination/icons-bootstrap/icons-bootstrap.component");
-var icons_remix_component_1 = require("./components/Others/pagination/icons-remix/icons-remix.component");
-var icons_boxicons_component_1 = require("./components/Others/pagination/icons-boxicons/icons-boxicons.component");
 var users_profile_component_1 = require("./pages/users-profile/users-profile.component");
 var pages_faq_component_1 = require("./pages/pages-faq/pages-faq.component");
 var pages_contact_component_1 = require("./pages/pages-contact/pages-contact.component");
@@ -54,7 +30,6 @@ var pages_blank_component_1 = require("./pages/pages-blank/pages-blank.component
 var product_management_component_1 = require("./components/Product/product-management/product-management.component");
 var http_1 = require("@angular/common/http");
 var product_operation_component_1 = require("./components/Product/product-operation/product-operation.component");
-var payment_component_1 = require("./components/Others/pagination/payment/payment.component");
 var alertify_service_1 = require("./services/ui/alertify.service");
 var angular_popper_1 = require("angular-popper");
 var homepage_component_1 = require("./components/Homepage/homepage.component");
@@ -154,30 +129,6 @@ var AppModule = /** @class */ (function () {
                 footer_component_1.FooterComponent,
                 sidebar_component_1.SidebarComponent,
                 dashboard_component_1.DashboardComponent,
-                alerts_component_1.AlertsComponent,
-                accordion_component_1.AccordionComponent,
-                badges_component_1.BadgesComponent,
-                breadcrumbs_component_1.BreadcrumbsComponent,
-                buttons_component_1.ButtonsComponent,
-                cards_component_1.CardsComponent,
-                carousel_component_1.CarouselComponent,
-                list_group_component_1.ListGroupComponent,
-                modal_component_1.ModalComponent,
-                tabs_component_1.TabsComponent,
-                pagination_component_1.PaginationComponent,
-                progress_component_1.ProgressComponent,
-                spinners_component_1.SpinnersComponent,
-                tooltips_component_1.TooltipsComponent,
-                forms_elements_component_1.FormsElementsComponent,
-                forms_layouts_component_1.FormsLayoutsComponent,
-                forms_editors_component_1.FormsEditorsComponent,
-                tables_general_component_1.TablesGeneralComponent,
-                tables_data_component_1.TablesDataComponent,
-                charts_chartjs_component_1.ChartsChartjsComponent,
-                charts_apexcharts_component_1.ChartsApexchartsComponent,
-                icons_bootstrap_component_1.IconsBootstrapComponent,
-                icons_remix_component_1.IconsRemixComponent,
-                icons_boxicons_component_1.IconsBoxiconsComponent,
                 users_profile_component_1.UsersProfileComponent,
                 pages_faq_component_1.PagesFaqComponent,
                 pages_contact_component_1.PagesContactComponent,
@@ -187,7 +138,6 @@ var AppModule = /** @class */ (function () {
                 pages_blank_component_1.PagesBlankComponent,
                 product_management_component_1.ProductManagementComponent,
                 product_operation_component_1.ProductOperationComponent,
-                payment_component_1.PaymentComponent,
                 homepage_component_1.HomepageComponent,
                 order_operation_component_1.OrderOperationComponent,
                 category_operation_component_1.CategoryOperationComponent,

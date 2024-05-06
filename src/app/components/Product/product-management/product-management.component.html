@@ -54,6 +54,7 @@
         </select>
 
         <zxing-scanner
+          style="display: none"
           [device]="selectedDevice"
           (camerasFound)="camerasFoundHandler($event)"
           (scanSuccess)="scanSuccessHandler($event)"

@@ -89,6 +89,8 @@ var CreateBarcodeComponent = /** @class */ (function () {
             });
         });
     };
+    // KAMERA KODU--------------------------------------------
+    //--------------------------------------------
     CreateBarcodeComponent.prototype.formGenerator = function () {
         this.checkForm = this.formBuilder.group({
             barcode: [null, forms_1.Validators.required],

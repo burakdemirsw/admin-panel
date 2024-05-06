@@ -372,7 +372,12 @@ var OrderManagamentComponent = /** @class */ (function () {
         });
     };
     OrderManagamentComponent.prototype.goToPage = function () {
-        location.href = this.searchedOrder;
+        if (this.searchedOrder.includes("http")) {
+            location.href = this.searchedOrder;
+        }
+        else {
+            location.href = location.origin + "/order-operation/" + this.searchedOrder + "/false/MD";
+        }
     };
     OrderManagamentComponent = __decorate([
         core_1.Component({

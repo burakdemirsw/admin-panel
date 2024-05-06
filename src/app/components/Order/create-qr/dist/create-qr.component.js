@@ -60,6 +60,7 @@ var CreateQrComponent = /** @class */ (function () {
         this.datePipe = datePipe;
         this.warehouseService = warehouseService;
         this.headerService = headerService;
+        this.upPageDescription = null;
         this.barcode = null;
         this.quantity = null;
         this.batchCode = null;
@@ -89,7 +90,7 @@ var CreateQrComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.headerService.updatePageTitle("Kutu Etiketi Oluştur");
+                        this.headerService.updatePageTitle(this.upPageDescription != undefined ? this.upPageDescription : "Kutu Etiketi Oluştur");
                         this.formGenerator();
                         this.focusNextInput('barcode');
                         // Subscribe to the valueChanges observable to detect changes
@@ -445,6 +446,9 @@ var CreateQrComponent = /** @class */ (function () {
             nextInput.focus();
         }
     };
+    __decorate([
+        core_1.Input()
+    ], CreateQrComponent.prototype, "upPageDescription");
     __decorate([
         core_1.Input()
     ], CreateQrComponent.prototype, "barcode");

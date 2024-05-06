@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { CountProductRequestModel } from 'src/app/models/model/order/countProductRequestModel';
 import { OrderBillingListModel } from 'src/app/models/model/order/orderBillingListModel';
@@ -40,7 +40,7 @@ export class FastTransferComponent implements OnInit {
   checkForm: FormGroup;
   activeTab: number = 1;
   pageDescription: string = null;
-  shelfNumbers: string = 'RAFLAR:';
+  shelfNumbers: string;
   currentOrderNo: string;
 
   constructor(
@@ -67,10 +67,10 @@ export class FastTransferComponent implements OnInit {
   modalImageUrl: string;
   formModal: any;
   warehouseModels: WarehouseOfficeModel[] = [];
-  // warehouseModels2: WarehouseOfficeModel[] = [];
+
   shelfNo: string;
   shelfNoList: string[] = [];
-  barcodeValue: string = null; // Değişkeni tanımlayın
+  barcodeValue: string = null;
 
   logger(event: Event) {
     // Seçilen değeri alın
@@ -256,46 +256,39 @@ export class FastTransferComponent implements OnInit {
       //console.log(error.message);
     }
   }
-  async setFormValues(barcode: string, check: boolean): Promise<string> {
-    this.shelfNumbers = 'RAFLAR:';
+  async setFormValues(product: FastTransferModel2): Promise<FastTransferModel2> {
+
     try {
-      if (barcode.includes('http') || this.generalService.isGuid(barcode)) {
+      if (product.barcode.includes('http') || this.generalService.isGuid(product.barcode)) {
         var result: string[] = await this.productService.countProductByBarcode3(
-          barcode
+          product.barcode
         );
-        this.shelfNumbers += result[0];
-        if (check) {
-          var currentShelfNo = this.checkForm.get('shelfNo').value;
-          // if(currentShelfNo==null ){
-          //   this.checkForm.get('shelfNo').setValue(result[0].split(',')[0]);
-          // }
+        this.shelfNumbers = result[0];
+        var updated_product = product;
+        updated_product.barcode = result[3];
+        updated_product.batchCode = result[2];
+        updated_product.quantity = Number(result[1]);
 
-          this.checkForm.get('batchCode').setValue(result[2]);
-          this.checkForm.get('barcode').setValue(result[3]);
-        }
+        this.checkForm.get('batchCode').setValue(result[2]);
+        this.checkForm.get('barcode').setValue(result[3]);
+        this.checkForm.get('quantity').setValue(Number(result[1]));
 
-        return result[1];
+        return updated_product;
       } else {
         var result: string[] = await this.productService.countProductByBarcode(
-          barcode
+          product.barcode
         );
-        this.shelfNumbers += result[0];
+        this.shelfNumbers = result[0];
+        var updated_product = product;
+        updated_product.barcode = result[3];
+        updated_product.batchCode = result[2];
+        updated_product.quantity = Number(result[1]);
+
+        this.checkForm.get('batchCode').setValue(result[2]);
         this.checkForm.get('barcode').setValue(result[3]);
+        this.checkForm.get('quantity').setValue(Number(result[1]));
 
-        this.checkForm.get('batchCode').setValue(result[2].toString());
-        if (result[4] == 'false') {
-
-          if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
-            this.checkForm.get('batchCode').setValue(null);
-            this.focusNextInput('batchCode');
-            this.toasterService.error('Parti Giriniz');
-            return null;
-          }
-
-
-        }
-
-        return result[1];
+        return updated_product;
       }
     } catch (error) {
       this.toasterService.error(error.message);
@@ -307,106 +300,89 @@ export class FastTransferComponent implements OnInit {
   async onSubmit(transferModel: FastTransferModel2): Promise<any> {
 
 
+    // = işareti varsa - yap
     if (transferModel.barcode.includes("=")) {
       transferModel.barcode = transferModel.barcode.replace(/=/g, "-");
 
     }
-
     if (
       transferModel.barcode.includes('http') ||
       this.generalService.isGuid(transferModel.barcode)
     ) {
-      var number = await this.setFormValues(transferModel.barcode, true);
       this.qrBarcodeUrl = transferModel.barcode;
-      this.checkForm.get('quantity')?.setValue(Number(number));
+    }
 
-      //this.onSubmit(this.checkForm.value);
+    if (
+      !this.checkForm.valid
+    ) {
+      var updated_product = await this.setFormValues(transferModel);
+      transferModel.barcode = updated_product.barcode;
+      this.toasterService.success("Form Değerleri Güncellendi")
       return;
     }
-    transferModel.operationId = this.currentOrderNo;
-    var CONSTQTY = await this.getQuantity(transferModel.barcode);
-    if (transferModel.barcode && !transferModel.shelfNo || transferModel.barcode && !transferModel.batchCode) {
-      var number = await this.setFormValues(transferModel.barcode, true);
-      this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
-      this.toasterService.success(
-        'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
-      );
-    } else if (transferModel.shelfNo != null) {
-      if (this.checkForm.valid === true) {
-        var response2: ProductCountModel =
-          await this.warehouseService.countProductRequest(
-            transferModel.barcode,
-            transferModel.shelfNo,
-            transferModel.quantity == null
-              ? Number(CONSTQTY)
-              : transferModel.quantity,
-            null,
-            null,
-            transferModel.batchCode,
-            'Order/CountProductControl',
-            this.orderNo,
-            ''
-          );
-        // barkod doğrulaması yapıldı CountProductControl
 
-        if (response2.status != 'Barcode') {
-          this.toasterService.error('Bu Qr Barkoduna Ait Barkod Bulunamadı');
-          return;
-        } else {
-          transferModel.barcode = response2.description;
+
+
+    if (this.checkForm.valid) {
+      transferModel.operationId = this.currentOrderNo;
+      var qrmodelResponse = await this.productService.qrControl(
+        transferModel.barcode
+      );
+      if (qrmodelResponse.batchCode) {
+        if (transferModel.batchCode == null || transferModel.batchCode === '') {
+          transferModel.batchCode = qrmodelResponse.batchCode;
         }
-        //burada parti ve barkod için istek at
-        var qrmodelResponse = await this.productService.qrControl(
-          transferModel.barcode
+      }
+      const shelves = this.shelfNumbers
+        .split(',')
+        .filter((raflar) => raflar.trim() !== '')
+        .map((raflar) => raflar.toLowerCase());
+
+      if (shelves.includes(transferModel.shelfNo.toLowerCase())) {
+        transferModel.quantity;
+
+        var response = await this.addFastTransferModel(
+          transferModel
         );
-        if (qrmodelResponse.batchCode) {
-          if (transferModel.batchCode == null || transferModel.batchCode === '') {
-            transferModel.batchCode = qrmodelResponse.batchCode;
+
+        //RAFLAR ARASI TRANSFER YAPILDI----------------------------------
+        if (response === true) {
+          //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+          var qrResponse: QrOperationResponseModel =
+            await this.productService.qrOperationMethod(
+              this.qrBarcodeUrl,
+              this.checkForm,
+              transferModel,
+              transferModel.quantity,
+              false,
+              'FT'
+            );
+          if (qrResponse != null && qrResponse.state === true) {
+            this.qrOperationModels.push(qrResponse.qrOperationModel);
+          } else if (qrResponse === null) {
+            this.qrBarcodeUrl = null
           }
 
-          // transferModel.barcode = qrmodelResponse.barcode; //qr basılmadı
+          //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
+          this.generalService.beep();
+        } else {
+          this.toasterService.error('Ekleme Yapılmadı');
         }
-        var newResponse = await this.productService.countProductByBarcode(
-          transferModel.barcode
-        );
 
-        const shelves = newResponse[0]
-          .split(',')
-          .filter((raflar) => raflar.trim() !== '')
-          .map((raflar) => raflar.toLowerCase());
-
-        if (shelves.includes(transferModel.shelfNo.toLowerCase())) {
-          transferModel.quantity =
-            transferModel.quantity != null
-              ? transferModel.quantity
-              : Number(CONSTQTY);
-
+        this.clearForm();
+      } else {
+        if (
+          confirm(
+            'Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?'
+          )
+        ) {
 
           var response = await this.addFastTransferModel(
             transferModel
           );
 
           //RAFLAR ARASI TRANSFER YAPILDI----------------------------------
-          if (response === true) {
-            //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-            var qrResponse: QrOperationResponseModel =
-              await this.productService.qrOperationMethod(
-                this.qrBarcodeUrl,
-                this.checkForm,
-                transferModel,
-                Number(CONSTQTY),
-                false,
-                'FT'
-              );
-            if (qrResponse != null && qrResponse.state === true) {
-              this.qrOperationModels.push(qrResponse.qrOperationModel);
-            } else if (qrResponse === null) {
-              this.qrBarcodeUrl = null
-            }
-
-            //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
-
-
+          if (response == true) {
 
             this.generalService.beep();
           } else {
@@ -414,40 +390,6 @@ export class FastTransferComponent implements OnInit {
           }
 
           this.clearForm();
-        } else {
-          if (
-            confirm(
-              'Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?'
-            )
-          ) {
-            if (!transferModel.quantity) {
-              transferModel.quantity = Number(CONSTQTY);
-            }
-
-            var response = await this.addFastTransferModel(
-              transferModel
-            );
-
-            //RAFLAR ARASI TRANSFER YAPILDI----------------------------------
-            if (response == true) {
-
-              this.generalService.beep();
-            } else {
-              this.toasterService.error('Ekleme Yapılmadı');
-            }
-
-            this.clearForm();
-          }
-        }
-      } else {
-        var number = await this.setFormValues(transferModel.barcode, true);
-        this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
-
-
-        if (this.checkForm.value.targetShelfNo == null || this.checkForm.value.targetShelfNo == '') {
-          // this.generalService.whichRowIsInvalid(this.checkForm);
-          this.toasterService.info("Hedef Raf Numarası Boş Olamaz")
-          this.focusNextInput('targetShelfNo');
         }
       }
     }
@@ -459,9 +401,6 @@ export class FastTransferComponent implements OnInit {
     );
 
     if (confirmDelete) {
-      // var shelfNo = qrModel.shelfNo;
-      // qrModel.shelfNo = qrModel.targetShelfNo;
-      // qrModel.targetShelfNo = shelfNo;
       var response = await this.deleteFastTransferModel(qrModel.id);
       if (response) {
         this.generalService.beep3();
@@ -506,16 +445,6 @@ export class FastTransferComponent implements OnInit {
   }
 
 
-  async getQuantity(barcode: string): Promise<string> {
-    this.shelfNumbers = 'RAFLAR:';
-    //  this.qrBarcodeUrl = null;
-    var result: string[] = await this.productService.countProductByBarcode(
-      barcode
-    );
-
-    // this.shelfNumbers += result[0];
-    return result[1];
-  }
 
   clearShelfNumbers() {
     this.checkForm.get('shelfNo').setValue(null);
@@ -539,18 +468,5 @@ export class FastTransferComponent implements OnInit {
 
     this.calculateTotalQty();
   }
-  // async deleteCountProduct(
-  //   orderNo: string,
-  //   itemCode: string
-  // ): Promise<boolean> {
-  //   const result = await this.productService.deleteProductFromFastTransfer(
-  //     this.currentOrderNo,
-  //     itemCode
-  //   );
-  //   this.collectedProducts =
-  //     await this.warehouseService.getGetAllFastTransferModelById(
-  //       this.currentOrderNo
-  //     );
-  //   return false;
-  // }
+
 }

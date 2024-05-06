@@ -24,7 +24,6 @@ export class FastTransferModel2 {
   shelfNo: string;
   targetShelfNo: string;
   warehouseCode: string;
-  toWarehouseCode: string;
   createdDate: Date;
 }
 export class FastTransferListModel {

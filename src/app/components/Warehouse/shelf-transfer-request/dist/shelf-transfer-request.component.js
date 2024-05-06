@@ -49,7 +49,7 @@ var ClientUrls_1 = require("src/app/models/const/ClientUrls");
 var countProductRequestModel_1 = require("src/app/models/model/order/countProductRequestModel");
 var qrOperationModel_1 = require("src/app/models/model/product/qrOperationModel");
 var ShelfTransferRequestComponent = /** @class */ (function () {
-    function ShelfTransferRequestComponent(formBuilder, toasterService, orderService, router, httpClient, activatedRoute, productService, warehouseService, generalService, httpClientService, title, headerService) {
+    function ShelfTransferRequestComponent(formBuilder, toasterService, orderService, router, httpClient, activatedRoute, productService, warehouseService, generalService, title, headerService) {
         this.formBuilder = formBuilder;
         this.toasterService = toasterService;
         this.orderService = orderService;
@@ -59,7 +59,6 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
         this.productService = productService;
         this.warehouseService = warehouseService;
         this.generalService = generalService;
-        this.httpClientService = httpClientService;
         this.title = title;
         this.headerService = headerService;
         this.lastCollectedProducts = [];
@@ -90,7 +89,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
             'Miktar',
             'Barkod',
             'Çekmece Adedi',
-            'İşlemler'
+            'İşlemler',
         ];
         this._transferProductsColums = [
             'Id',
@@ -101,10 +100,10 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
             'Miktar',
             'Barkod',
             'Çekmece Adedi',
-            'İşlem'
+            'İşlem',
         ];
-        this.offices = ["M", "U"];
-        this.warehouses = ["MD", "UD"];
+        this.offices = ['M', 'U'];
+        this.warehouses = ['MD', 'UD'];
         this.collectedFastTransferModels = [];
         this.productShelvesDialog = false;
         this.productShelves = [];
@@ -127,15 +126,16 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         switch (_a.label) {
                             case 0:
                                 if (!params['operationNo']) return [3 /*break*/, 2];
-                                this.currentOrderNo = "REQ-" + params['operationNo'];
+                                this.currentOrderNo = 'REQ-' + params['operationNo'];
+                                this.currentPageType = params['type'];
                                 return [4 /*yield*/, this.getFastTransferModels()];
                             case 1:
                                 _a.sent();
                                 this.toasterService.info('İşlem Numarası: ' + this.currentOrderNo);
                                 _a.label = 2;
                             case 2:
-                                if (!params["type"]) return [3 /*break*/, 4];
-                                return [4 /*yield*/, this.getTransferRequestListModel(params["type"])];
+                                if (!params['type']) return [3 /*break*/, 4];
+                                return [4 /*yield*/, this.getTransferRequestListModel(params['type'])];
                             case 3:
                                 _a.sent();
                                 _a.label = 4;
@@ -149,7 +149,12 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
         });
     };
     ShelfTransferRequestComponent.prototype.goPage = function (pageType) {
-        location.href = location.origin + "/shelf-transfer-request/" + this.currentOrderNo.split("REQ-")[1] + "/" + pageType;
+        location.href =
+            location.origin +
+                '/shelf-transfer-request/' +
+                this.currentOrderNo.split('REQ-')[1] +
+                '/' +
+                pageType;
     };
     ShelfTransferRequestComponent.prototype.getFastTransferModels = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -176,7 +181,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                     case 1:
                         response = _a.sent();
                         if (response) {
-                            this.toasterService.success("Başarılı");
+                            this.toasterService.success('Başarılı');
                             this.getFastTransferModels();
                             return [2 /*return*/, true];
                         }
@@ -197,13 +202,13 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                     case 1:
                         response = _a.sent();
                         if (!response) return [3 /*break*/, 3];
-                        this.toasterService.success("Başarılı");
+                        this.toasterService.success('Başarılı');
                         return [4 /*yield*/, this.getFastTransferModels()];
                     case 2:
                         _a.sent();
                         return [2 /*return*/, true];
                     case 3:
-                        this.toasterService.error("Başarısız");
+                        this.toasterService.error('Başarısız');
                         return [2 /*return*/, false];
                 }
             });
@@ -230,7 +235,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
     };
     ShelfTransferRequestComponent.prototype.setShelveToForm = function (shelve) {
         this.checkForm.get('shelfNo').setValue(shelve);
-        this.toasterService.success("Raf Yerleştirildi");
+        this.toasterService.success('Raf Yerleştirildi');
         this.productShelvesDialog = false;
     };
     //-------------------
@@ -281,7 +286,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.getTransferRequestListModel(this.selectedButton.toString())];
                     case 1:
                         _a.sent();
-                        this.toasterService.info("Ürün Transfer Edilecek Ürünlerden Silindi");
+                        this.toasterService.info('Ürün Transfer Edilecek Ürünlerden Silindi');
                         this.focusNextInput('barcode');
                         return [2 /*return*/];
                 }
@@ -299,13 +304,13 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         response = _a.sent();
                         this.selectedButton = Number(type);
                         if (type === '0') {
-                            this.toasterService.success("Varsayılan Ürünler Getirildi");
+                            this.toasterService.success('Varsayılan Ürünler Getirildi');
                         }
                         else if (type === '1') {
-                            this.toasterService.success("Raflar Fullendi");
+                            this.toasterService.success('Raflar Fullendi');
                         }
                         else if (type === '2') {
-                            this.toasterService.success("Çanta Ürünleri Getirildi");
+                            this.toasterService.success('Çanta Ürünleri Getirildi');
                         }
                         this.transferProducts = response;
                         if (this.deletedProductList.length > 0) {
@@ -324,8 +329,10 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         //console.log(this.transferProducts);
                         // inventoryItems üzerinde döngü
                         this.transferProducts.forEach(function (inventoryItem, index) {
+                            //transfer edilcek ürünler
                             // Eşleşme arama ve güncelleme
                             _this.collectedProducts.forEach(function (transferItem) {
+                                //toplanan ürünler
                                 // barcode, shelfNo ve itemCode değerlerine göre eşleşme kontrolü
                                 if (inventoryItem.barcode === transferItem.barcode &&
                                     inventoryItem.targetShelf === transferItem.targetShelfNo &&
@@ -409,7 +416,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
             office: [null, forms_1.Validators.required],
             warehouseCode: [null, forms_1.Validators.required],
             shelfNo: [null, forms_1.Validators.required],
-            quantity: [null],
+            quantity: [null, forms_1.Validators.required],
             batchCode: [null],
             targetShelfNo: [null, forms_1.Validators.required]
         });
@@ -472,177 +479,121 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
         }
         this.formModal.show();
     };
-    ShelfTransferRequestComponent.prototype.getSelectedOffice = function (from) {
-        var _a;
-        this.getWarehouseList((_a = this.checkForm.get('office')) === null || _a === void 0 ? void 0 : _a.value, 1);
-    };
     ShelfTransferRequestComponent.prototype.finishTransfer = function (model) {
         this.generalService.waitAndNavigate('Hızlı Transfer İşlemi Başarılı', 'dashboard');
     };
-    ShelfTransferRequestComponent.prototype.getWarehouseList = function (value, from) {
+    ShelfTransferRequestComponent.prototype.setFormValues = function (product) {
         return __awaiter(this, void 0, Promise, function () {
-            var selectElement, response, selectedValue2, error_1;
+            var result, items, finded_product, updatedProduct, result, finded_product, updatedProduct, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        if (!(from === 1)) return [3 /*break*/, 2];
-                        selectElement = document.getElementById('office');
-                        value = selectElement.value == '' ? 'M' : selectElement.value;
-                        return [4 /*yield*/, this.httpClientService
-                                .get({
-                                controller: 'Warehouse/GetWarehouseModel/' + value
-                            })
-                                .toPromise()];
+                        _a.trys.push([0, 5, , 6]);
+                        if (!(product.barcode.includes('http') ||
+                            this.generalService.isGuid(product.barcode))) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.productService.countProductByBarcode3(product.barcode)];
                     case 1:
-                        response = _a.sent();
-                        if (response) {
-                            this.warehouseModels.push(response[0]);
-                            this.checkForm
-                                .get('warehouseCode')
-                                .setValue(response[0].warehouseCode);
-                            selectedValue2 = this.checkForm.get('warehouseCode').value;
-                            // this.toasterService.success('Form Değeri \n' + selectedValue2); //null geliyor
-                            return [2 /*return*/, true];
-                        }
-                        else {
-                            this.toasterService.error('Depo Çekilemedi');
-                            return [2 /*return*/, false];
-                        }
-                        _a.label = 2;
-                    case 2: return [3 /*break*/, 4];
-                    case 3:
-                        error_1 = _a.sent();
-                        return [2 /*return*/, false];
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    ShelfTransferRequestComponent.prototype.setFormValues = function (barcode, check) {
-        return __awaiter(this, void 0, Promise, function () {
-            var result, items, result, error_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        this.shelfNumbers = 'RAFLAR:';
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 6, , 7]);
-                        if (!(barcode.includes('http') || this.generalService.isGuid(barcode))) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.productService.countProductByBarcode3(barcode)];
-                    case 2:
                         result = _a.sent();
-                        if (result[0].includes("CANTA")) {
-                            items = result[0].split(",");
-                            items = items.filter(function (item) { return !item.startsWith("CANTA"); });
+                        if (result[0].includes('CANTA')) {
+                            items = result[0].split(',');
+                            items = items.filter(function (item) { return !item.startsWith('CANTA'); });
                             // Daha sonra, result[0]'ı güncelliyoruz
-                            result[0] = items.join(",");
+                            result[0] = items.join(',');
                         }
-                        this.shelfNumbers += result[0];
-                        if (check) {
-                            this.checkForm.get('shelfNo').setValue(result[0].split(',')[0]);
-                            this.checkForm.get('batchCode').setValue(result[2]);
-                            this.checkForm.get('barcode').setValue(result[3]);
+                        this.shelfNumbers = result[0];
+                        this.checkForm.get('batchCode').setValue(result[2]);
+                        this.checkForm.get('barcode').setValue(result[3]);
+                        this.checkForm.get('quantity').setValue(Number(result[1]));
+                        if (this.currentPageType == '2') { //SADECE CANTADA HEDEF RAF DOLUMU ISTENDI 06.05
+                            finded_product = this.transferProducts.find(function (p) { return p.barcode == result[3]; });
+                            if (finded_product) {
+                                this.checkForm.get('targetShelfNo').setValue(finded_product.targetShelf);
+                                this.checkForm.get('shelfNo').setValue(finded_product.shelfNo);
+                                updatedProduct.shelfNo = finded_product.shelfNo;
+                                updatedProduct.targetShelfNo = finded_product.targetShelf;
+                            }
                         }
-                        return [2 /*return*/, result[1]];
-                    case 3: return [4 /*yield*/, this.productService.countProductByBarcode(barcode)];
-                    case 4:
+                        updatedProduct = product;
+                        updatedProduct.barcode = result[3];
+                        updatedProduct.batchCode = result[2];
+                        updatedProduct.quantity = Number(result[1]);
+                        return [2 /*return*/, updatedProduct];
+                    case 2: return [4 /*yield*/, this.productService.countProductByBarcode(product.barcode)];
+                    case 3:
                         result = _a.sent();
-                        this.shelfNumbers += result[0];
-                        this.checkForm.get('batchCode').setValue(result[2]); //lot yerleştirir
-                        return [2 /*return*/, result[1]];
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
-                        error_2 = _a.sent();
-                        this.toasterService.error(error_2.message);
+                        this.shelfNumbers = result[0];
+                        this.checkForm.get('batchCode').setValue(result[2]);
+                        this.checkForm.get('barcode').setValue(result[3]);
+                        this.checkForm.get('quantity').setValue(Number(result[1]));
+                        if (this.currentPageType == '2') { //SADECE CANTADA HEDEF RAF DOLUMU ISTENDI 06.05
+                            finded_product = this.transferProducts.find(function (p) { return p.barcode == result[3]; });
+                            if (finded_product) {
+                                this.checkForm.get('targetShelfNo').setValue(finded_product.targetShelf);
+                                this.checkForm.get('shelfNo').setValue(finded_product.shelfNo);
+                                updatedProduct.shelfNo = finded_product.shelfNo;
+                                updatedProduct.targetShelfNo = finded_product.targetShelf;
+                            }
+                        }
+                        updatedProduct = product;
+                        updatedProduct.barcode = result[3];
+                        updatedProduct.batchCode = result[2];
+                        updatedProduct.quantity = Number(result[1]);
+                        return [2 /*return*/, updatedProduct];
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        error_1 = _a.sent();
+                        this.toasterService.error(error_1.message);
                         return [2 /*return*/, null];
-                    case 7: return [2 /*return*/];
+                    case 6: return [2 /*return*/];
                 }
             });
         });
     };
     ShelfTransferRequestComponent.prototype.onSubmit = function (transferModel) {
-        var _a, _b, _c;
         return __awaiter(this, void 0, Promise, function () {
-            var number, CONSTQTY, number, response2, qrmodelResponse, newResponse, shelves, response, qrResponse, response, qrResponse, number;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            var updated_product, shelves, response, qrResponse, response, qrResponse;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
-                        if (transferModel.barcode.includes("=")) {
-                            transferModel.barcode = transferModel.barcode.replace(/=/g, "-");
+                        if (transferModel.barcode.includes('=')) {
+                            transferModel.barcode = transferModel.barcode.replace(/=/g, '-');
                         }
-                        if (!(transferModel.barcode.includes('http') || transferModel.barcode.includes('Http') ||
-                            this.generalService.isGuid(transferModel.barcode))) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.setFormValues(transferModel.barcode, true)];
+                        if (transferModel.barcode.includes('http') ||
+                            this.generalService.isGuid(transferModel.barcode)) {
+                            this.qrBarcodeUrl = transferModel.barcode;
+                        }
+                        if (!!this.checkForm.valid) return [3 /*break*/, 5];
+                        return [4 /*yield*/, this.setFormValues(transferModel)];
                     case 1:
-                        number = _d.sent();
-                        this.qrBarcodeUrl = transferModel.barcode;
-                        (_a = this.checkForm.get('quantity')) === null || _a === void 0 ? void 0 : _a.setValue(Number(number));
-                        // this.onSubmit(this.checkForm.value);
-                        return [2 /*return*/];
+                        updated_product = _a.sent();
+                        transferModel = updated_product;
+                        if (!this.checkForm.valid) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.onSubmit(transferModel)];
                     case 2:
-                        transferModel.operationId = this.currentOrderNo;
-                        return [4 /*yield*/, this.getQuantity(transferModel.barcode)];
+                        _a.sent(); //OTOMATIK OLARAK FORMU GÖNDER
+                        return [3 /*break*/, 4];
                     case 3:
-                        CONSTQTY = _d.sent();
-                        if (!(transferModel.shelfNo == null || transferModel.shelfNo.trim() == '')) return [3 /*break*/, 7];
-                        if (!(transferModel.barcode != null ||
-                            transferModel.barcode.trim() == '')) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.setFormValues(transferModel.barcode, true)];
+                        this.generalService.whichRowIsInvalid(this.checkForm);
+                        _a.label = 4;
                     case 4:
-                        number = _d.sent();
-                        (_b = this.checkForm.get('quantity')) === null || _b === void 0 ? void 0 : _b.setValue(Number(number)); //quantity alanı dolduruldu
-                        this.toasterService.success('Raflar Getirildi Ve Miktar Alanı Dolduruldu.');
-                        return [3 /*break*/, 6];
-                    case 5:
-                        this.toasterService.warn('Barkod Alanı Boş.');
+                        this.toasterService.success('Form Değerleri Güncellendi');
                         return [2 /*return*/];
-                    case 6: return [3 /*break*/, 25];
-                    case 7:
-                        if (!(transferModel.shelfNo != null)) return [3 /*break*/, 25];
-                        if (!(this.checkForm.valid === true)) return [3 /*break*/, 23];
-                        return [4 /*yield*/, this.warehouseService.countProductRequest(transferModel.barcode, transferModel.shelfNo, transferModel.quantity == null
-                                ? Number(CONSTQTY)
-                                : transferModel.quantity, null, null, transferModel.batchCode, 'Order/CountProductControl', this.orderNo, '')];
-                    case 8:
-                        response2 = _d.sent();
-                        //sayım yapıldı ve barkod doğrulaması yapıldı CountProductControl
-                        if (response2.status != 'Barcode') {
-                            this.toasterService.error('Bu Qr Barkoduna Ait Barkod Bulunamadı');
-                            return [2 /*return*/];
-                        }
-                        else {
-                            transferModel.barcode = response2.description;
-                        }
-                        return [4 /*yield*/, this.productService.qrControl(transferModel.barcode)];
-                    case 9:
-                        qrmodelResponse = _d.sent();
-                        if (qrmodelResponse.batchCode) {
-                            if (transferModel.batchCode == null || transferModel.batchCode === '') {
-                                transferModel.batchCode = qrmodelResponse.batchCode;
-                            }
-                            // transferModel.barcode = qrmodelResponse.barcode; //qr basılmadı
-                        }
-                        return [4 /*yield*/, this.productService.countProductByBarcode(transferModel.barcode)];
-                    case 10:
-                        newResponse = _d.sent();
-                        shelves = newResponse[0]
+                    case 5:
+                        if (!(this.checkForm.valid === true)) return [3 /*break*/, 17];
+                        transferModel.operationId = this.currentOrderNo;
+                        shelves = this.shelfNumbers
                             .split(',')
                             .filter(function (raflar) { return raflar.trim() !== ''; })
                             .map(function (raflar) { return raflar.toLowerCase(); });
-                        if (!shelves.includes(transferModel.shelfNo.toLowerCase())) return [3 /*break*/, 16];
-                        transferModel.quantity =
-                            transferModel.quantity != null
-                                ? transferModel.quantity
-                                : Number(CONSTQTY);
+                        if (!shelves.includes(transferModel.shelfNo.toLowerCase())) return [3 /*break*/, 11];
+                        transferModel.quantity = transferModel.quantity;
                         return [4 /*yield*/, this.addFastTransferModel(transferModel)];
-                    case 11:
-                        response = _d.sent();
-                        if (!(response == true)) return [3 /*break*/, 14];
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, transferModel, Number(CONSTQTY), false, 'FT')];
-                    case 12:
-                        qrResponse = _d.sent();
+                    case 6:
+                        response = _a.sent();
+                        if (!(response == true)) return [3 /*break*/, 9];
+                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, transferModel, transferModel.quantity, false, 'FT')];
+                    case 7:
+                        qrResponse = _a.sent();
                         if (qrResponse != null && qrResponse.state === true) {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
                         }
@@ -653,73 +604,62 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         this.collectedProducts.push(transferModel);
                         this.collectedProducts.reverse();
                         return [4 /*yield*/, this.getTransferRequestListModel(this.selectedButton.toString())];
-                    case 13:
-                        _d.sent();
-                        this.toasterService.success("Okutma Başarılı");
-                        return [3 /*break*/, 15];
-                    case 14:
+                    case 8:
+                        _a.sent();
+                        this.toasterService.success('Okutma Başarılı');
+                        return [3 /*break*/, 10];
+                    case 9:
                         this.toasterService.error('Ekleme Yapılmadı');
-                        _d.label = 15;
-                    case 15:
+                        _a.label = 10;
+                    case 10:
                         this.generalService.beep();
                         this.clearForm();
                         if (this.selectedButton == 2) {
-                            this.checkForm.get('targetShelfNo').setValue(transferModel.targetShelfNo);
+                            this.checkForm
+                                .get('targetShelfNo')
+                                .setValue(transferModel.targetShelfNo);
                         }
-                        return [3 /*break*/, 22];
-                    case 16:
-                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 22];
-                        if (!transferModel.quantity) {
-                            transferModel.quantity = Number(CONSTQTY);
-                        }
+                        return [3 /*break*/, 17];
+                    case 11:
+                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 17];
                         return [4 /*yield*/, this.addFastTransferModel(transferModel)];
-                    case 17:
-                        response = _d.sent();
-                        if (!(response == true)) return [3 /*break*/, 20];
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, transferModel, Number(CONSTQTY), false, 'FT')];
-                    case 18:
-                        qrResponse = _d.sent();
+                    case 12:
+                        response = _a.sent();
+                        if (!(response == true)) return [3 /*break*/, 15];
+                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, transferModel, transferModel.quantity, false, 'FT')];
+                    case 13:
+                        qrResponse = _a.sent();
                         if (qrResponse != null && qrResponse.state === true) {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
                         }
                         else if (qrResponse === null) {
                             this.clearForm();
-                            console.log(this.selectedButton.toString());
                             if (this.selectedButton == 2) {
-                                this.checkForm.get('targetShelfNo').setValue(transferModel.targetShelfNo);
+                                this.checkForm
+                                    .get('targetShelfNo')
+                                    .setValue(transferModel.targetShelfNo);
                             }
                         }
-                        //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
                         this.collectedProducts.push(transferModel);
                         this.collectedProducts.reverse();
                         return [4 /*yield*/, this.getTransferRequestListModel(this.selectedButton.toString())];
-                    case 19:
-                        _d.sent();
-                        this.toasterService.success("Okutma Başarılı");
+                    case 14:
+                        _a.sent();
+                        this.toasterService.success('Okutma Başarılı');
                         this.generalService.beep();
-                        return [3 /*break*/, 21];
-                    case 20:
+                        return [3 /*break*/, 16];
+                    case 15:
                         this.toasterService.error('Ekleme Yapılmadı');
-                        _d.label = 21;
-                    case 21:
+                        _a.label = 16;
+                    case 16:
                         this.clearForm();
-                        console.log(this.selectedButton.toString());
                         if (this.selectedButton == 2) {
-                            this.checkForm.get('targetShelfNo').setValue(transferModel.targetShelfNo);
+                            this.checkForm
+                                .get('targetShelfNo')
+                                .setValue(transferModel.targetShelfNo);
                         }
-                        _d.label = 22;
-                    case 22: return [3 /*break*/, 25];
-                    case 23: return [4 /*yield*/, this.setFormValues(transferModel.barcode, true)];
-                    case 24:
-                        number = _d.sent();
-                        (_c = this.checkForm.get('quantity')) === null || _c === void 0 ? void 0 : _c.setValue(Number(number)); //quantity alanı dolduruldu
-                        if (this.checkForm.value.targetShelfNo == null || this.checkForm.value.targetShelfNo == '') {
-                            // this.generalService.whichRowIsInvalid(this.checkForm);
-                            this.toasterService.info("Hedef Raf Numarası Boş Olamaz");
-                            this.focusNextInput('targetShelfNo');
-                        }
-                        _d.label = 25;
-                    case 25: return [2 /*return*/];
+                        _a.label = 17;
+                    case 17: return [2 /*return*/];
                 }
             });
         });
@@ -846,7 +786,13 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
         this.checkForm.get('shelfNo').setValue(null);
         this.checkForm.get('batchCode').setValue(null);
         this.checkForm.get('targetShelfNo').setValue(null);
-        this.focusNextInput('shelfNo');
+        if (this.currentPageType == "2") { //sadece çanta için
+            this.checkForm.get('shelfNo').setValue(this.lastCollectedProduct.shelfNo);
+            this.focusNextInput('barcode');
+        }
+        else {
+            this.focusNextInput('shelfNo');
+        }
         this.qrBarcodeUrl = null;
         this.shelfNumbers = 'RAFLAR:';
         this.calculateTotalQty();

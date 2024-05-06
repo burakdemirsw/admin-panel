@@ -27,7 +27,8 @@ export class ProductManagementComponent implements OnInit {
     private toasterService: ToasterService,
     private productService: ProductService,
     private formBuilder: FormBuilder, private sanitizer: DomSanitizer,
-    private headerService: HeaderService
+    private headerService: HeaderService,
+    private generalService: GeneralService
   ) { }
   productForm: FormGroup;
   ngOnInit(): void {
@@ -57,6 +58,10 @@ export class ProductManagementComponent implements OnInit {
   }
   scanSuccessHandler(event: any) {
     console.log('QR Code Data: ', event);
+    this.productForm.get('barcode').setValue(event);
+    this.getProducts(event);
+    this.generalService.beep3();
+    this.toasterService.success("Okutma Başarılı");
   }
 
 

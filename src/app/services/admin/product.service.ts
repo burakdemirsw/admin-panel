@@ -96,7 +96,7 @@ export class ProductService {
     }
   }
 
-  //alış satış ve transfer işlemlerinde barkod ile ürün sayma işlemi
+  //alış satış ve transfer işlemlerinde barkod ile ürün bilgisi getirme işlemi
   async countProductByBarcode4(barcode: string, warehosueCode: string): Promise<string[]> {
     try {
       if (barcode.includes('/')) {
@@ -312,7 +312,7 @@ export class ProductService {
   }
 
 
-  //faturanın ürünlerini getirme
+
   async searchProduct(model: BarcodeSearch_RM): Promise<any> {
     const response = await this.httpClientService
       .post<BarcodeSearch_RM>({ controller: 'Products/SearchProduct2' }, model)
@@ -403,55 +403,33 @@ export class ProductService {
     if (qrBarcodeUrl != null) {
       var qrModel: QrControlCommandModel = new QrControlCommandModel();
       qrModel.qr = qrBarcodeUrl;
-      const model: any = await this.httpClientService
-        .post<QrControlCommandModel>(
-          {
-            controller: 'Order/GetShelvesOfProduct2',
-          },
-          qrModel
-        )
-        .toPromise();
-      if (model) {
-        var countModel: ProductCountModel3 = model;
-        if (countModel) {
-          if (model[0].barcode == form.get('barcode').value) {
 
-            var qrOperationModel: QrOperationModel = new QrOperationModel();
-            qrOperationModel.barcode = form.get('barcode').value;
-            qrOperationModel.batchCode = formValue.batchCode;
-            qrOperationModel.isReturn = isReturn;
-            qrOperationModel.processCode = processCode;
-            qrOperationModel.qrBarcode = qrBarcodeUrl;
-            (qrOperationModel.qty =
-              formValue.quantity === null
-                ? numberParameter
-                : formValue.quantity),
-              (qrOperationModel.shelfNo = formValue.shelfNo);
-            const qrOperationResponse = await this.qrOperation(
-              qrOperationModel
-            );
-            if (qrOperationResponse) {
-              this.generalService.beep2();
-              this.toasterService.success('Qr Operasyonu Başarılı');
-              // this.qrOperationModels.push(qrOperationModel);
+      var qrOperationModel: QrOperationModel = new QrOperationModel();
+      qrOperationModel.barcode = form.get('barcode').value;
+      qrOperationModel.batchCode = formValue.batchCode;
+      qrOperationModel.isReturn = isReturn;
+      qrOperationModel.processCode = processCode;
+      qrOperationModel.qrBarcode = qrBarcodeUrl;
+      (qrOperationModel.qty =
+        formValue.quantity === null
+          ? numberParameter
+          : formValue.quantity),
+        (qrOperationModel.shelfNo = formValue.shelfNo);
+      const qrOperationResponse = await this.qrOperation(
+        qrOperationModel
+      );
+      if (qrOperationResponse) {
+        this.generalService.beep2();
+        this.toasterService.success('Qr Operasyonu Başarılı');
 
-              response.state = true;
-              response.qrOperationModel = qrOperationModel;
-              return response; // İşlem başarılı olduğunda bir değer döndür
-            } else {
-              return null;
-            }
-          } else {
-            this.toasterService.error(
-              'qr içindeki barkod ile gelen barkod eşleşmedi'
-            );
-            //this.clearQrAndBatchCode();
-            return null;
-          }
-        } else {
-          return null;
-        }
+
+        response.state = true;
+        response.qrOperationModel = qrOperationModel;
+        return response;
+      } else {
+        return null;
       }
+
     }
     return null;
   }

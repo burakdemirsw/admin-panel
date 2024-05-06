@@ -264,7 +264,12 @@ export class OrderManagamentComponent implements OnInit {
 
   searchedOrder: string = "";
   goToPage() {
-    location.href = this.searchedOrder;
+    if (this.searchedOrder.includes("http")) {
+      location.href = this.searchedOrder;
+    } else {
+      location.href = location.origin + "/order-operation/" + this.searchedOrder + "/false/MD";
+    }
+
   }
 
 }

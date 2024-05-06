@@ -91,12 +91,12 @@ var SidebarComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.generalService.generateGUID()];
                     case 1:
                         result = _a.sent();
-                        this.router.navigate(["/create-order/quick-order/" + result]);
+                        location.href = location.origin + "/create-order/quick-order/" + result;
                         return [3 /*break*/, 4];
                     case 2: return [4 /*yield*/, this.generalService.generateGUID()];
                     case 3:
                         result = _a.sent();
-                        this.router.navigate(["/create-order/retail-order/" + result]);
+                        location.href = location.origin + "/create-order/retail-order/" + result;
                         _a.label = 4;
                     case 4: return [2 /*return*/];
                 }

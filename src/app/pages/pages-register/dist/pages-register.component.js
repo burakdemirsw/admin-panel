@@ -114,6 +114,10 @@ var PagesRegisterComponent = /** @class */ (function () {
             this.registerForm.get("firstName").setValue(registerModel.firstName);
             this.registerForm.get("lastName").setValue(registerModel.lastName);
             this.registerForm.get("email").setValue(registerModel.email);
+            this.registerForm.get("printerName_1").setValue(registerModel.printerName_1);
+            this.registerForm.get("printerName_2").setValue(registerModel.printerName_2);
+            var findedRole = this.roleDescriptions.find(function (r) { return r.role === registerModel.roleDescription; });
+            this.registerForm.get("roleDescription").setValue(findedRole);
             // this.registerForm.get("password").setValue(registerModel.password);
             // this.registerForm.get("confirmPassword").setValue(registerModel.password);
             this.registerForm.get("phoneNumber").setValue(registerModel.phoneNumber);
@@ -174,7 +178,9 @@ var PagesRegisterComponent = /** @class */ (function () {
             password: [null],
             confirmPassword: [null],
             gender: ["Erkek"],
-            roleDescription: [null]
+            roleDescription: [null],
+            printerName_1: [null],
+            printerName_2: [null]
         });
     };
     PagesRegisterComponent.prototype.submitForm = function () {
@@ -196,7 +202,9 @@ var PagesRegisterComponent = /** @class */ (function () {
                             email: this.registerForm.value.email,
                             phoneNumber: this.registerForm.value.phoneNumber,
                             gender: this.registerForm.value.gender,
-                            roleDescription: this.registerForm.value.roleDescription.role
+                            roleDescription: this.registerForm.value.roleDescription.role,
+                            printerName_1: this.registerForm.value.printerName_1,
+                            printerName_2: this.registerForm.value.printerName_2
                         };
                         return [4 /*yield*/, this.userService.register(model)];
                     case 1:
@@ -226,7 +234,9 @@ var PagesRegisterComponent = /** @class */ (function () {
                             email: this.registerForm.value.email,
                             phoneNumber: this.registerForm.value.phoneNumber,
                             gender: this.registerForm.value.gender,
-                            roleDescription: this.registerForm.value.roleDescription.role
+                            roleDescription: this.registerForm.value.roleDescription.role,
+                            printerName_1: this.registerForm.value.printerName_1,
+                            printerName_2: this.registerForm.value.printerName_2
                         };
                         return [4 /*yield*/, this.userService.update(model)];
                     case 7:

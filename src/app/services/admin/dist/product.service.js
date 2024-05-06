@@ -117,7 +117,7 @@ var ProductService = /** @class */ (function () {
             });
         });
     };
-    //alış satış ve transfer işlemlerinde barkod ile ürün sayma işlemi
+    //alış satış ve transfer işlemlerinde barkod ile ürün bilgisi getirme işlemi
     ProductService.prototype.countProductByBarcode4 = function (barcode, warehosueCode) {
         return __awaiter(this, void 0, Promise, function () {
             var model, shelfNumbers, results, error_2;
@@ -402,7 +402,6 @@ var ProductService = /** @class */ (function () {
             });
         });
     };
-    //faturanın ürünlerini getirme
     ProductService.prototype.searchProduct = function (model) {
         return __awaiter(this, void 0, Promise, function () {
             var response;
@@ -533,25 +532,14 @@ var ProductService = /** @class */ (function () {
     };
     ProductService.prototype.qrOperationMethod = function (qrBarcodeUrl, form, formValue, numberParameter, isReturn, processCode) {
         return __awaiter(this, void 0, Promise, function () {
-            var response, qrModel, model, countModel, qrOperationModel, qrOperationResponse;
+            var response, qrModel, qrOperationModel, qrOperationResponse;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         response = new qrOperationResponseModel_1.QrOperationResponseModel();
-                        if (!(qrBarcodeUrl != null)) return [3 /*break*/, 6];
+                        if (!(qrBarcodeUrl != null)) return [3 /*break*/, 2];
                         qrModel = new qrControlModel_1.QrControlCommandModel();
                         qrModel.qr = qrBarcodeUrl;
-                        return [4 /*yield*/, this.httpClientService
-                                .post({
-                                controller: 'Order/GetShelvesOfProduct2'
-                            }, qrModel)
-                                .toPromise()];
-                    case 1:
-                        model = _a.sent();
-                        if (!model) return [3 /*break*/, 6];
-                        countModel = model;
-                        if (!countModel) return [3 /*break*/, 5];
-                        if (!(model[0].barcode == form.get('barcode').value)) return [3 /*break*/, 3];
                         qrOperationModel = new qrOperationModel_1.QrOperationModel();
                         qrOperationModel.barcode = form.get('barcode').value;
                         qrOperationModel.batchCode = formValue.batchCode;
@@ -564,27 +552,20 @@ var ProductService = /** @class */ (function () {
                                 : formValue.quantity),
                             (qrOperationModel.shelfNo = formValue.shelfNo);
                         return [4 /*yield*/, this.qrOperation(qrOperationModel)];
-                    case 2:
+                    case 1:
                         qrOperationResponse = _a.sent();
                         if (qrOperationResponse) {
                             this.generalService.beep2();
                             this.toasterService.success('Qr Operasyonu Başarılı');
-                            // this.qrOperationModels.push(qrOperationModel);
                             response.state = true;
                             response.qrOperationModel = qrOperationModel;
-                            return [2 /*return*/, response]; // İşlem başarılı olduğunda bir değer döndür
+                            return [2 /*return*/, response];
                         }
                         else {
                             return [2 /*return*/, null];
                         }
-                        return [3 /*break*/, 4];
-                    case 3:
-                        this.toasterService.error('qr içindeki barkod ile gelen barkod eşleşmedi');
-                        //this.clearQrAndBatchCode();
-                        return [2 /*return*/, null];
-                    case 4: return [3 /*break*/, 6];
-                    case 5: return [2 /*return*/, null];
-                    case 6: return [2 /*return*/, null];
+                        _a.label = 2;
+                    case 2: return [2 /*return*/, null];
                 }
             });
         });

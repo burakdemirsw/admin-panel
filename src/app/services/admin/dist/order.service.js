@@ -1023,15 +1023,14 @@ var OrderService = /** @class */ (function () {
     };
     OrderService.prototype.sendInvoiceToPrinter = function (request) {
         return __awaiter(this, void 0, Promise, function () {
-            var user, response, error_28;
+            var userId, response, error_28;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
                         if (!window.confirm("Faturayı yazdırmak istediğinize emin misiniz?")) return [3 /*break*/, 2];
-                        user = localStorage.getItem('name') + " " + localStorage.getItem('surname');
-                        ;
-                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/send-invoice-to-printer" + "/" + request + "/" + user }).toPromise()];
+                        userId = localStorage.getItem('userId');
+                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/send-invoice-to-printer" + "/" + request + "/" + userId }).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];

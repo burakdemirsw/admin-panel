@@ -4,12 +4,10 @@
       <div style="width: 100%">
         <div class="card" *ngIf="_productsToCollect.length > 0">
           <div class="card-body">
-            <!-- <h5 class="card-title">Sıradaki Toplanacak Ürün</h5> -->
             <div class="table-responsive">
               <table class="table" #bilgilendirmeAlanı>
                 <thead>
                   <tr>
-                    <!-- <th scope="col">Seç</th> -->
                     <th scope="col">RAF</th>
                     <th scope="col">KOD</th>
                     <th scope="col">SİPARİŞ</th>
@@ -28,15 +26,6 @@
                     [ngClass]="{ 'green-row': product.colorDescription == '1' }"
                     [ngClass]="{ 'success-row': product.quantity === 0 }"
                   >
-                    <!-- <td>
-                      <input      pInputText
-                        class="form-check-input"
-                        type="checkbox"
-                        id="pi{{ product.packageNo }}"
-                        (change)="addProductToList(product.packageNo)"
-                      />
-                    </td> -->
-
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.itemCode }}</td>
                     <td>{{ product.quantity }}</td>
@@ -55,19 +44,13 @@
                       />
                     </td>
                     <td>{{ product.barcode }}</td>
-                    <!-- <td>{{ product.packageNo }}</td> -->
-                    <!-- <td>{{ product.colorCode }}</td> -->
+
                     <td>
                       <div
                         class="btn-group"
                         role="group"
                         aria-label="Basic example"
                       >
-                        <!-- <button class="btn btn-primary" type="submit" (click)="
-                            deleteOrderProduct(orderNo, product.itemCode)
-                          ">
-                          <i class="fa fa-trash"></i>
-                        </button> -->
                         <button
                           class="btn btn-primary"
                           type="submit"
@@ -81,20 +64,7 @@
                         >
                           <i class="fa fa-angle-down"> </i>
                         </button>
-                        <!-- <button
-                          data-toggle="tooltip"
-                          data-placement="right"
-                          title="Eksik Ürün"
-                          *ngIf="
-                            this.currentOrderNo.includes('WS') &&
-                            !_pageDescription
-                          "
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="addMissingProduct(product)"
-                        >
-                          <i class="fa-solid fa-minus"></i>
-                        </button> -->
+
                         <button
                           data-toggle="tooltip"
                           data-placement="right"
@@ -105,13 +75,6 @@
                         >
                           <i class="fa-solid fa-bars"></i>
                         </button>
-                        <!-- <button
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="change(product.barcode, product.quantity)"
-                        >
-                          <i class="fas fa-print"></i>
-                        </button> -->
                       </div>
                     </td>
                   </tr>
@@ -157,9 +120,7 @@
                   <div class="input-group">
                     <input
                       pInputText
-                      placeholder="{{
-                        shelfNumbers != 'RAFLAR:' ? shelfNumbers : 'Raf No'
-                      }}"
+                      placeholder="{{ shelfNumbers }}"
                       type="text"
                       id="shelfNo"
                       class="form-control"
@@ -370,21 +331,20 @@
                       />
                     </td>
                     <td>{{ product.barcode }}</td>
-                    <!-- <td>{{ product.packageNo }}</td> -->
-                    <!-- <td>{{ product.colorCode }}</td> -->
+
                     <td>
                       <div
                         class="btn-group"
                         role="group"
                         aria-label="Basic example"
                       >
-                        <button
+                        <!-- <button
                           class="btn btn-primary"
                           type="submit"
                           (click)="deleteOrderProduct(orderNo, product)"
                         >
                           <i class="fa fa-trash"></i>
-                        </button>
+                        </button> -->
                         <button
                           class="btn btn-primary"
                           type="submit"

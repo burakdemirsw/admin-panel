@@ -24,6 +24,7 @@ import { ToasterService } from 'src/app/services/ui/toaster.service';
 })
 export class CreateQrComponent implements OnInit, OnChanges {
 
+  @Input() upPageDescription: string = null;
   @Input() barcode: string = null;
   @Input() quantity: number = null;
   @Input() batchCode: string = null;
@@ -65,7 +66,7 @@ export class CreateQrComponent implements OnInit, OnChanges {
   @ViewChild('captureElement') captureElement: ElementRef;
   boxId: string;
   async ngOnInit() {
-    this.headerService.updatePageTitle("Kutu Etiketi Oluştur")
+    this.headerService.updatePageTitle(this.upPageDescription != undefined ? this.upPageDescription : "Kutu Etiketi Oluştur")
     this.formGenerator();
     this.focusNextInput('barcode');
     // Subscribe to the valueChanges observable to detect changes

@@ -11,30 +11,6 @@ import { HeaderComponent } from './layouts/header/header.component';
 import { FooterComponent } from './layouts/footer/footer.component';
 import { SidebarComponent } from './layouts/sidebar/sidebar.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { AlertsComponent } from './components/Others/pagination/alerts/alerts.component';
-import { AccordionComponent } from './components/Others/pagination/accordion/accordion.component';
-import { BadgesComponent } from './components/Others/pagination/badges/badges.component';
-import { BreadcrumbsComponent } from './components/Others/pagination/breadcrumbs/breadcrumbs.component';
-import { ButtonsComponent } from './components/Others/pagination/buttons/buttons.component';
-import { CardsComponent } from './components/Others/pagination/cards/cards.component';
-import { CarouselComponent } from './components/Others/pagination/carousel/carousel.component';
-import { ListGroupComponent } from './components/Others/pagination/list-group/list-group.component';
-import { ModalComponent } from './components/Others/pagination/modal/modal.component';
-import { TabsComponent } from './components/Others/pagination/tabs/tabs.component';
-import { PaginationComponent } from './components/Others/pagination/pagination.component';
-import { ProgressComponent } from './components/Others/pagination/progress/progress.component';
-import { SpinnersComponent } from './components/Others/pagination/spinners/spinners.component';
-import { TooltipsComponent } from './components/Others/pagination/tooltips/tooltips.component';
-import { FormsElementsComponent } from './components/Others/pagination/forms-elements/forms-elements.component';
-import { FormsLayoutsComponent } from './components/Others/pagination/forms-layouts/forms-layouts.component';
-import { FormsEditorsComponent } from './components/Others/pagination/forms-editors/forms-editors.component';
-import { TablesGeneralComponent } from './components/Others/pagination/tables-general/tables-general.component';
-import { TablesDataComponent } from './components/Others/pagination/tables-data/tables-data.component';
-import { ChartsChartjsComponent } from './components/Others/pagination/charts-chartjs/charts-chartjs.component';
-import { ChartsApexchartsComponent } from './components/Others/pagination/charts-apexcharts/charts-apexcharts.component';
-import { IconsBootstrapComponent } from './components/Others/pagination/icons-bootstrap/icons-bootstrap.component';
-import { IconsRemixComponent } from './components/Others/pagination/icons-remix/icons-remix.component';
-import { IconsBoxiconsComponent } from './components/Others/pagination/icons-boxicons/icons-boxicons.component';
 import { UsersProfileComponent } from './pages/users-profile/users-profile.component';
 import { PagesFaqComponent } from './pages/pages-faq/pages-faq.component';
 import { PagesContactComponent } from './pages/pages-contact/pages-contact.component';
@@ -44,10 +20,7 @@ import { PagesError404Component } from './pages/pages-error404/pages-error404.co
 import { PagesBlankComponent } from './pages/pages-blank/pages-blank.component';
 import { ProductManagementComponent } from './components/Product/product-management/product-management.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-
-
 import { ProductOperationComponent } from './components/Product/product-operation/product-operation.component';
-import { PaymentComponent } from './components/Others/pagination/payment/payment.component';
 import { AlertifyService } from './services/ui/alertify.service';
 import { NgxPopper } from 'angular-popper';
 import { HomepageComponent } from './components/Homepage/homepage.component';
@@ -114,7 +87,6 @@ import { CustomerListComponent } from './components/Customer/customer-list/custo
 import { StepsModule } from 'primeng/steps';
 import { SkeletonModule } from 'primeng/skeleton';
 import { SelectButtonModule } from 'primeng/selectbutton';
-
 import { ChartModule } from 'primeng/chart';
 import { CargoDetailComponent } from './components/cargo/cargo-detail/cargo-detail.component';
 import { CargoListComponent } from './components/cargo/cargo-list/cargo-list.component';
@@ -146,30 +118,6 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
     FooterComponent,
     SidebarComponent,
     DashboardComponent,
-    AlertsComponent,
-    AccordionComponent,
-    BadgesComponent,
-    BreadcrumbsComponent,
-    ButtonsComponent,
-    CardsComponent,
-    CarouselComponent,
-    ListGroupComponent,
-    ModalComponent,
-    TabsComponent,
-    PaginationComponent,
-    ProgressComponent,
-    SpinnersComponent,
-    TooltipsComponent,
-    FormsElementsComponent,
-    FormsLayoutsComponent,
-    FormsEditorsComponent,
-    TablesGeneralComponent,
-    TablesDataComponent,
-    ChartsChartjsComponent,
-    ChartsApexchartsComponent,
-    IconsBootstrapComponent,
-    IconsRemixComponent,
-    IconsBoxiconsComponent,
     UsersProfileComponent,
     PagesFaqComponent,
     PagesContactComponent,
@@ -179,7 +127,6 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
     PagesBlankComponent,
     ProductManagementComponent,
     ProductOperationComponent,
-    PaymentComponent,
     HomepageComponent,
     OrderOperationComponent,
     CategoryOperationComponent,
@@ -233,6 +180,7 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
     RetailOrderManagementComponent,
     CollectedPackagesComponent2,
     OrderStateComponent
+
   ],
 
 

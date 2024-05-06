@@ -334,9 +334,7 @@
                   <tr
                     *ngFor="
                       let product of transferProducts
-                        | fastTransfer
-                          : searchText
-                          : ['targetShelf', 'itemCode']
+                        | fastTransfer : searchText : ['targetShelf']
                         | paginate
                           : { itemsPerPage: 10, currentPage: currentPage };
                       let i = index

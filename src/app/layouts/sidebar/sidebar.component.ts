@@ -30,10 +30,11 @@ export class SidebarComponent implements OnInit {
   async routeNewPage3(pageDesc: boolean) {
     if (pageDesc) {
       const result = await this.generalService.generateGUID()
-      this.router.navigate(["/create-order/quick-order/" + result])
+      location.href = location.origin + "/create-order/quick-order/" + result;
     } else {
       const result = await this.generalService.generateGUID()
-      this.router.navigate(["/create-order/retail-order/" + result])
+
+      location.href = location.origin + "/create-order/retail-order/" + result;
     }
 
   }

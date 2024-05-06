@@ -47,8 +47,9 @@ export class CreateBarcodeComponent implements OnInit {
     this.formGenerator();
 
   }
+  // KAMERA KODU--------------------------------------------
 
-
+  //--------------------------------------------
   formGenerator() {
     this.checkForm = this.formBuilder.group({
       barcode: [null, Validators.required],

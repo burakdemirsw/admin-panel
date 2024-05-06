@@ -50,15 +50,17 @@
                     </div>
                   </div>
                   <div class="row mb-3">
-                    <input
-                      pInputText
-                      placeholder="Müşteri Kodu"
-                      type="text"
-                      id="currAccCode2"
-                      class="form-control"
-                      formControlName="currAccCode2"
-                      (keydown.enter)="focusNextInput('currAccCode')"
-                    />
+                    <div class="form-group">
+                      <input
+                        pInputText
+                        placeholder="Müşteri Kodu"
+                        type="text"
+                        class="form-control"
+                        id="currAccCode2"
+                        formControlName="currAccCode2"
+                        (keydown.enter)="focusNextInput('currAccCode')"
+                      />
+                    </div>
                   </div>
                   <div class="row mb-3">
                     <p-dropdown
@@ -90,6 +92,7 @@
                           type="text"
                           id="shelfNo"
                           class="form-control"
+                          style="height: 100%"
                           formControlName="shelfNo"
                           placeholder="{{
                             shelfNumbers != 'RAFLAR:' ? shelfNumbers : 'Raf No'
@@ -98,6 +101,7 @@
                         />
                         <div class="input-group-append">
                           <button
+                            pButton
                             type="button"
                             (click)="clearShelfNumbers()"
                             class="btn btn-primary"
@@ -118,7 +122,7 @@
                       }}</label>
                       <input
                         pInputText
-                        placeholder="Barcode"
+                        placeholder="Barkod"
                         type="text"
                         id="barcode"
                         class="form-control"
@@ -190,7 +194,7 @@
                       >
                         <button
                           type="button"
-                          class="btn btn-warning"
+                          class="btn btn-primary"
                           (click)="showCountPage()"
                           style="width: 100%"
                         >
@@ -198,7 +202,7 @@
                         </button>
                         <button
                           type="button"
-                          class="btn btn-warning"
+                          class="btn btn-primary"
                           (click)="showModal2()"
                         >
                           <i class="fa fa-angle-down" aria-hidden="true"></i>
@@ -284,7 +288,7 @@
 
                     <td>
                       <button
-                        class="btn btn-danger"
+                        class="btn btn-primary"
                         type="submit"
                         (click)="deleteOrderProduct(newOrderNumber, product)"
                       >
@@ -301,7 +305,7 @@
                       </button>
                       <button
                         *ngIf="product.quantity > product.qty"
-                        class="btn btn-danger"
+                        class="btn btn-primary"
                         style="margin-left: 1rem"
                         type="submit"
                       >

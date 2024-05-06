@@ -11,10 +11,11 @@ import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
 import { ItemBillingModel } from 'src/app/models/model/product/itemBillingModel ';
 import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
+import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 import {
-  ProductCountModel
-} from 'src/app/models/model/shelfNameModel';
-import { FastTransferModel, FastTransferModel2 } from 'src/app/models/model/warehouse/fastTransferModel';
+  FastTransferModel,
+  FastTransferModel2,
+} from 'src/app/models/model/warehouse/fastTransferModel';
 import { TransferRequestListModel } from 'src/app/models/model/warehouse/transferRequestListModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
@@ -22,7 +23,6 @@ import { HeaderService } from 'src/app/services/admin/header.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
-import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 declare var window: any;
 @Component({
@@ -42,7 +42,6 @@ export class ShelfTransferRequestComponent implements OnInit {
   currentOrderNo: string;
   selectedFilter: string = '';
 
-
   constructor(
     private formBuilder: FormBuilder,
     private toasterService: ToasterService,
@@ -53,14 +52,10 @@ export class ShelfTransferRequestComponent implements OnInit {
     private productService: ProductService,
     private warehouseService: WarehouseService,
     private generalService: GeneralService,
-    private httpClientService: HttpClientService,
     private title: Title,
     private headerService: HeaderService
-
-  ) {
-
-  }
-  searchText: string = ''
+  ) { }
+  searchText: string = '';
   orderNo: string;
   orderBillingModel: OrderBillingListModel;
   url2: string = ClientUrls.baseUrl + '/Order/CountTransferProductPuschase';
@@ -87,8 +82,7 @@ export class ShelfTransferRequestComponent implements OnInit {
     'Miktar',
     'Barkod',
     'Çekmece Adedi',
-    'İşlemler'
-
+    'İşlemler',
   ];
   _transferProductsColums: string[] = [
     'Id',
@@ -99,13 +93,10 @@ export class ShelfTransferRequestComponent implements OnInit {
     'Miktar',
     'Barkod',
     'Çekmece Adedi',
-    'İşlem'
-
+    'İşlem',
   ];
   currentPageType: string;
   async ngOnInit() {
-
-
     this.title.setTitle('Raf Aktarma İsteği');
     this.headerService.updatePageTitle('Raf Aktarma İsteği');
     //this.spinnerService.show();
@@ -113,33 +104,34 @@ export class ShelfTransferRequestComponent implements OnInit {
     // this.currentOrderNo = (await this.generalService.generateGUID()).toString();
     this.activatedRoute.params.subscribe(async (params) => {
       if (params['operationNo']) {
-        this.currentOrderNo = "REQ-" + params['operationNo'];
-
+        this.currentOrderNo = 'REQ-' + params['operationNo'];
+        this.currentPageType = params['type'];
         await this.getFastTransferModels();
         this.toasterService.info('İşlem Numarası: ' + this.currentOrderNo);
       }
-      if (params["type"]) {
-        await this.getTransferRequestListModel(params["type"]);
+      if (params['type']) {
+        await this.getTransferRequestListModel(params['type']);
       }
-
     });
 
     this.collectedProducts = [];
-    //this.spinnerService.hide();
   }
-
-  offices: any[] = ["M", "U"]
-
-  warehouses: any[] = ["MD", "UD"]
-
-
+  offices: any[] = ['M', 'U'];
+  warehouses: any[] = ['MD', 'UD'];
   goPage(pageType: string) {
-    location.href = location.origin + "/shelf-transfer-request/" + this.currentOrderNo.split("REQ-")[1] + "/" + pageType;
+    location.href =
+      location.origin +
+      '/shelf-transfer-request/' +
+      this.currentOrderNo.split('REQ-')[1] +
+      '/' +
+      pageType;
   }
 
   collectedFastTransferModels: FastTransferModel2[] = [];
   async getFastTransferModels() {
-    var response = await this.warehouseService.getFastTransferModels(this.currentOrderNo);
+    var response = await this.warehouseService.getFastTransferModels(
+      this.currentOrderNo
+    );
     if (response) {
       this.collectedFastTransferModels = response;
     }
@@ -148,7 +140,7 @@ export class ShelfTransferRequestComponent implements OnInit {
   async deleteFastTransferModel(request: string): Promise<boolean> {
     var response = await this.warehouseService.deleteFastTransferModel(request);
     if (response) {
-      this.toasterService.success("Başarılı")
+      this.toasterService.success('Başarılı');
       this.getFastTransferModels();
       return true;
     } else {
@@ -158,38 +150,39 @@ export class ShelfTransferRequestComponent implements OnInit {
   async addFastTransferModel(request: FastTransferModel2): Promise<boolean> {
     var response = await this.warehouseService.addFastTransferModel(request);
     if (response) {
-      this.toasterService.success("Başarılı")
+      this.toasterService.success('Başarılı');
       await this.getFastTransferModels();
       return true;
     } else {
-      this.toasterService.error("Başarısız")
+      this.toasterService.error('Başarısız');
       return false;
     }
-
   }
 
   //-------------------
   async getShelves(barcode: string) {
-    var newResponse = await this.productService.countProductByBarcode(
-      barcode
-    );
+    var newResponse = await this.productService.countProductByBarcode(barcode);
     const shelves = newResponse[0]
       .split(',')
-      .filter((raflar) => raflar.trim() !== '')
-
+      .filter((raflar) => raflar.trim() !== '');
 
     this.productShelves = shelves;
     this.productShelvesDialog = true;
   }
   setShelveToForm(shelve) {
     this.checkForm.get('shelfNo').setValue(shelve);
-    this.toasterService.success("Raf Yerleştirildi");
+    this.toasterService.success('Raf Yerleştirildi');
     this.productShelvesDialog = false;
   }
   productShelvesDialog: boolean = false;
   productShelves: string[] = [];
   //-------------------
-  goDown2(barcode: string, shelfNo: string, itemCode: string, transferQuantity: number) {
+  goDown2(
+    barcode: string,
+    shelfNo: string,
+    itemCode: string,
+    transferQuantity: number
+  ) {
     // packageNo'ya eşleşen ProductOfOrder'ı bulun
     const matchingProduct = this.transferProducts.find(
       (product) =>
@@ -215,7 +208,6 @@ export class ShelfTransferRequestComponent implements OnInit {
     }
   }
 
-
   async onDataChange(type: string) {
     this.transferProducts = [];
     await this.getTransferRequestListModel(type);
@@ -225,47 +217,39 @@ export class ShelfTransferRequestComponent implements OnInit {
   async addDeletedItemList(item: TransferRequestListModel) {
     this.deletedProductList.push(item);
     await this.getTransferRequestListModel(this.selectedButton.toString());
-    this.toasterService.info("Ürün Transfer Edilecek Ürünlerden Silindi")
+    this.toasterService.info('Ürün Transfer Edilecek Ürünlerden Silindi');
     this.focusNextInput('barcode');
   }
 
-
   selectedButton: number = 0;
   async getTransferRequestListModel(type: string) {
-    const response = await this.warehouseService.getTransferRequestListModel(type);
+    const response = await this.warehouseService.getTransferRequestListModel(
+      type
+    );
     this.selectedButton = Number(type);
 
     if (type === '0') {
-      this.toasterService.success("Varsayılan Ürünler Getirildi")
+      this.toasterService.success('Varsayılan Ürünler Getirildi');
     } else if (type === '1') {
-      this.toasterService.success("Raflar Fullendi")
-
+      this.toasterService.success('Raflar Fullendi');
     } else if (type === '2') {
-      this.toasterService.success("Çanta Ürünleri Getirildi")
-
+      this.toasterService.success('Çanta Ürünleri Getirildi');
     }
     this.transferProducts = response;
 
     if (this.deletedProductList.length > 0) {
       this.deletedProductList.forEach((deletedItem) => {
-
         this.transferProducts.forEach((inventoryItem, _index) => {
-
-
-          if (inventoryItem.barcode === deletedItem.barcode &&
+          if (
+            inventoryItem.barcode === deletedItem.barcode &&
             inventoryItem.shelfNo === deletedItem.shelfNo &&
-            inventoryItem.itemCode === deletedItem.itemCode) {
+            inventoryItem.itemCode === deletedItem.itemCode
+          ) {
             this.transferProducts.splice(_index, 1);
           }
-
-
         });
-
       });
     }
-
-
-
 
     // İşlem sonrası çıkarılacak öğelerin indekslerini tutacak dizi
     let itemsToRemoveIndexes: number[] = [];
@@ -273,14 +257,17 @@ export class ShelfTransferRequestComponent implements OnInit {
     //console.log(this.collectedProducts);
     //console.log(this.transferProducts);
     // inventoryItems üzerinde döngü
-    this.transferProducts.forEach((inventoryItem, index) => { //transfer edilcek ürünler
+    this.transferProducts.forEach((inventoryItem, index) => {
+      //transfer edilcek ürünler
       // Eşleşme arama ve güncelleme
-      this.collectedProducts.forEach((transferItem) => { //toplanan ürünler
+      this.collectedProducts.forEach((transferItem) => {
+        //toplanan ürünler
         // barcode, shelfNo ve itemCode değerlerine göre eşleşme kontrolü
-        if (inventoryItem.barcode === transferItem.barcode &&
+        if (
+          inventoryItem.barcode === transferItem.barcode &&
           inventoryItem.targetShelf === transferItem.targetShelfNo &&
-          inventoryItem.shelfNo === transferItem.shelfNo) {
-
+          inventoryItem.shelfNo === transferItem.shelfNo
+        ) {
           // Eşleşen üründen quantity değerini çıkart
           inventoryItem.transferQuantity -= transferItem.quantity;
 
@@ -300,8 +287,7 @@ export class ShelfTransferRequestComponent implements OnInit {
     itemsToRemoveIndexes = [];
     //--------------------------------------------------------
 
-
-    this.collectedProducts
+    this.collectedProducts;
     if (this.transferProducts.length > 0) {
       if (this.lastCollectedProduct == null) {
         //üste atılcak ürün seçildi
@@ -340,6 +326,9 @@ export class ShelfTransferRequestComponent implements OnInit {
         }
       }
     }
+
+
+
   }
   calculateTotalQty() {
     //toplanan ürünler yazısı için
@@ -362,18 +351,18 @@ export class ShelfTransferRequestComponent implements OnInit {
       office: [null, Validators.required],
       warehouseCode: [null, Validators.required],
       shelfNo: [null, Validators.required],
-      quantity: [null],
+      quantity: [null, Validators.required],
       batchCode: [null],
       targetShelfNo: [null, Validators.required],
     });
 
-    this.checkForm.get('office').valueChanges.subscribe(value => {
+    this.checkForm.get('office').valueChanges.subscribe((value) => {
       if (value === 'M') {
         this.checkForm.get('warehouseCode').setValue('MD');
       }
     });
 
-    this.checkForm.get('office').valueChanges.subscribe(value => {
+    this.checkForm.get('office').valueChanges.subscribe((value) => {
       if (value === 'U') {
         this.checkForm.get('warehouseCode').setValue('UD');
       }
@@ -418,79 +407,73 @@ export class ShelfTransferRequestComponent implements OnInit {
     }
     this.formModal.show();
   }
-  getSelectedOffice(from: number) {
-    this.getWarehouseList(this.checkForm.get('office')?.value, 1);
-  }
+
   finishTransfer(model: any) {
     this.generalService.waitAndNavigate(
       'Hızlı Transfer İşlemi Başarılı',
       'dashboard'
     );
   }
-  async getWarehouseList(value: string, from: number): Promise<any> {
-    //bu alanı servise bağla
+
+  async setFormValues(
+    product: FastTransferModel2
+  ): Promise<FastTransferModel2> {
     try {
-      if (from === 1) {
-        const selectElement = document.getElementById(
-          'office'
-        ) as HTMLSelectElement;
-
-        value = selectElement.value == '' ? 'M' : selectElement.value;
-        const response = await this.httpClientService
-          .get<WarehouseOfficeModel>({
-            controller: 'Warehouse/GetWarehouseModel/' + value,
-          })
-          .toPromise();
-
-        if (response) {
-          this.warehouseModels.push(response[0]);
-
-          this.checkForm
-            .get('warehouseCode')
-            .setValue(response[0].warehouseCode);
-          const selectedValue2 = this.checkForm.get('warehouseCode').value;
-
-          // this.toasterService.success('Form Değeri \n' + selectedValue2); //null geliyor
-          return true;
-        } else {
-          this.toasterService.error('Depo Çekilemedi');
-          return false;
-        }
-      }
-    } catch (error: any) {
-      return false;
-      ////console.log(error.message);
-    }
-  }
-  async setFormValues(barcode: string, check: boolean): Promise<string> {
-    this.shelfNumbers = 'RAFLAR:';
-    try {
-      if (barcode.includes('http') || this.generalService.isGuid(barcode)) {
+      if (
+        product.barcode.includes('http') ||
+        this.generalService.isGuid(product.barcode)
+      ) {
         var result: string[] = await this.productService.countProductByBarcode3(
-          barcode
+          product.barcode
         );
-        if (result[0].includes("CANTA")) {
+        if (result[0].includes('CANTA')) {
           // Eğer varsa, virgülle ayrılmış öğeler listesi oluşturup "CANTA" olanı çıkarıyoruz
-          var items = result[0].split(",");
-          items = items.filter(item => !item.startsWith("CANTA"));
+          var items = result[0].split(',');
+          items = items.filter((item) => !item.startsWith('CANTA'));
           // Daha sonra, result[0]'ı güncelliyoruz
-          result[0] = items.join(",");
+          result[0] = items.join(',');
         }
-        this.shelfNumbers += result[0];
-        if (check) {
-          this.checkForm.get('shelfNo').setValue(result[0].split(',')[0]);
-          this.checkForm.get('batchCode').setValue(result[2]);
-          this.checkForm.get('barcode').setValue(result[3]);
-        }
+        this.shelfNumbers = result[0];
+        this.checkForm.get('batchCode').setValue(result[2]);
+        this.checkForm.get('barcode').setValue(result[3]);
+        this.checkForm.get('quantity').setValue(Number(result[1]));
 
-        return result[1];
+        if (this.currentPageType == '2') {//SADECE CANTADA HEDEF RAF DOLUMU ISTENDI 06.05
+          var finded_product = this.transferProducts.find(p => p.barcode == result[3]);
+          if (finded_product) {
+            this.checkForm.get('targetShelfNo').setValue(finded_product.targetShelf);
+            this.checkForm.get('shelfNo').setValue(finded_product.shelfNo);
+            updatedProduct.shelfNo = finded_product.shelfNo;
+            updatedProduct.targetShelfNo = finded_product.targetShelf;
+          }
+        }
+        var updatedProduct: FastTransferModel2 = product;
+        updatedProduct.barcode = result[3];
+        updatedProduct.batchCode = result[2];
+        updatedProduct.quantity = Number(result[1]);
+        return updatedProduct;
       } else {
         var result: string[] = await this.productService.countProductByBarcode(
-          barcode
+          product.barcode
         );
-        this.shelfNumbers += result[0];
-        this.checkForm.get('batchCode').setValue(result[2]); //lot yerleştirir
-        return result[1];
+        this.shelfNumbers = result[0];
+        this.checkForm.get('batchCode').setValue(result[2]);
+        this.checkForm.get('barcode').setValue(result[3]);
+        this.checkForm.get('quantity').setValue(Number(result[1]));
+        if (this.currentPageType == '2') {//SADECE CANTADA HEDEF RAF DOLUMU ISTENDI 06.05
+          var finded_product = this.transferProducts.find(p => p.barcode == result[3]);
+          if (finded_product) {
+            this.checkForm.get('targetShelfNo').setValue(finded_product.targetShelf);
+            this.checkForm.get('shelfNo').setValue(finded_product.shelfNo);
+            updatedProduct.shelfNo = finded_product.shelfNo;
+            updatedProduct.targetShelfNo = finded_product.targetShelf;
+          }
+        }
+        var updatedProduct: FastTransferModel2 = product;
+        updatedProduct.barcode = result[3];
+        updatedProduct.batchCode = result[2];
+        updatedProduct.quantity = Number(result[1]);
+        return updatedProduct;
       }
     } catch (error) {
       this.toasterService.error(error.message);
@@ -500,204 +483,125 @@ export class ShelfTransferRequestComponent implements OnInit {
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
   async onSubmit(transferModel: FastTransferModel2): Promise<any> {
-
-    if (transferModel.barcode.includes("=")) {
-      transferModel.barcode = transferModel.barcode.replace(/=/g, "-");
-
+    if (transferModel.barcode.includes('=')) {
+      transferModel.barcode = transferModel.barcode.replace(/=/g, '-');
     }
-
     if (
-      transferModel.barcode.includes('http') || transferModel.barcode.includes('Http') ||
+      transferModel.barcode.includes('http') ||
       this.generalService.isGuid(transferModel.barcode)
     ) {
-      var number = await this.setFormValues(transferModel.barcode, true);
       this.qrBarcodeUrl = transferModel.barcode;
-      this.checkForm.get('quantity')?.setValue(Number(number));
+    }
 
-      // this.onSubmit(this.checkForm.value);
+    if (!this.checkForm.valid) {
+      var updated_product = await this.setFormValues(transferModel);
+      transferModel = updated_product;
+      if (this.checkForm.valid) {
+        await
+          this.onSubmit(transferModel);//OTOMATIK OLARAK FORMU GÖNDER
+      } else {
+        this.generalService.whichRowIsInvalid(this.checkForm);
+      }
+      this.toasterService.success('Form Değerleri Güncellendi');
       return;
-    } else {
+    }
+
+    if (this.checkForm.valid === true) {
       transferModel.operationId = this.currentOrderNo;
-      var CONSTQTY = await this.getQuantity(transferModel.barcode);
-      if (transferModel.shelfNo == null || transferModel.shelfNo.trim() == '') {
-        if (
-          transferModel.barcode != null ||
-          transferModel.barcode.trim() == ''
-        ) {
-          var number = await this.setFormValues(transferModel.barcode, true);
-          this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
-          this.toasterService.success(
-            'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
+      const shelves = this.shelfNumbers
+        .split(',')
+        .filter((raflar) => raflar.trim() !== '')
+        .map((raflar) => raflar.toLowerCase());
+
+      if (shelves.includes(transferModel.shelfNo.toLowerCase())) {
+        transferModel.quantity = transferModel.quantity;
+
+        var response = await this.addFastTransferModel(transferModel);
+
+        //RAFLAR ARASI TRANSFER YAPILDI----------------------------------
+        if (response == true) {
+          var qrResponse: QrOperationResponseModel =
+            await this.productService.qrOperationMethod(
+              this.qrBarcodeUrl,
+              this.checkForm,
+              transferModel,
+              transferModel.quantity,
+              false,
+              'FT'
+            );
+          if (qrResponse != null && qrResponse.state === true) {
+            this.qrOperationModels.push(qrResponse.qrOperationModel);
+          } else if (qrResponse === null) {
+            this.qrBarcodeUrl = null;
+          }
+          //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
+
+          this.collectedProducts.push(transferModel);
+          this.collectedProducts.reverse();
+          await this.getTransferRequestListModel(
+            this.selectedButton.toString()
           );
+          this.toasterService.success('Okutma Başarılı');
         } else {
-          this.toasterService.warn('Barkod Alanı Boş.');
-          return;
+          this.toasterService.error('Ekleme Yapılmadı');
         }
-      } else if (transferModel.shelfNo != null) {
-        if (this.checkForm.valid === true) {
-          var response2: ProductCountModel =
-            await this.warehouseService.countProductRequest(
-              transferModel.barcode,
-              transferModel.shelfNo,
-              transferModel.quantity == null
-                ? Number(CONSTQTY)
-                : transferModel.quantity,
-              null,
-              null,
-              transferModel.batchCode,
-              'Order/CountProductControl',
-              this.orderNo,
-              ''
-            );
-          //sayım yapıldı ve barkod doğrulaması yapıldı CountProductControl
 
-          if (response2.status != 'Barcode') {
+        this.generalService.beep();
+        this.clearForm();
 
-            this.toasterService.error('Bu Qr Barkoduna Ait Barkod Bulunamadı');
-            return;
-          } else {
-            transferModel.barcode = response2.description;
-          }
-          //burada parti ve barkod için istek at
-          var qrmodelResponse = await this.productService.qrControl(
-            transferModel.barcode
-          );
-          if (qrmodelResponse.batchCode) {
-            if (transferModel.batchCode == null || transferModel.batchCode === '') {
-              transferModel.batchCode = qrmodelResponse.batchCode;
-            }
+        if (this.selectedButton == 2) {
+          this.checkForm
+            .get('targetShelfNo')
+            .setValue(transferModel.targetShelfNo);
+        }
+      } else {
+        if (
+          confirm(
+            'Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?'
+          )
+        ) {
+          var response = await this.addFastTransferModel(transferModel);
 
-            // transferModel.barcode = qrmodelResponse.barcode; //qr basılmadı
-          }
-          var newResponse = await this.productService.countProductByBarcode(
-            transferModel.barcode
-          );
-
-          const shelves = newResponse[0]
-            .split(',')
-            .filter((raflar) => raflar.trim() !== '')
-            .map((raflar) => raflar.toLowerCase());
-
-          if (shelves.includes(transferModel.shelfNo.toLowerCase())) {
-            transferModel.quantity =
-              transferModel.quantity != null
-                ? transferModel.quantity
-                : Number(CONSTQTY);
-
-            var response = await this.addFastTransferModel(
-              transferModel
-            );
-
-            //RAFLAR ARASI TRANSFER YAPILDI----------------------------------
-            if (response == true) {
-              //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-              var qrResponse: QrOperationResponseModel =
-                await this.productService.qrOperationMethod(
-                  this.qrBarcodeUrl,
-                  this.checkForm,
-                  transferModel,
-                  Number(CONSTQTY),
-                  false,
-                  'FT'
-                );
-              if (qrResponse != null && qrResponse.state === true) {
-                this.qrOperationModels.push(qrResponse.qrOperationModel);
-              } else if (qrResponse === null) {
-                this.qrBarcodeUrl = null
-              }
-              //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
-
-              this.collectedProducts.push(transferModel);
-              this.collectedProducts.reverse();
-              await this.getTransferRequestListModel(this.selectedButton.toString());
-              this.toasterService.success("Okutma Başarılı")
-              // setInterval(() => {
-
-              //   location.reload();
-              // }, 2000);
-              //LİSTEYE EKLENDİ
-            } else {
-              this.toasterService.error('Ekleme Yapılmadı');
-            }
-
-            this.generalService.beep();
-            this.clearForm();
-
-            if (this.selectedButton == 2) {
-              this.checkForm.get('targetShelfNo').setValue(transferModel.targetShelfNo);
-            }
-          } else {
-            if (
-              confirm(
-                'Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?'
-              )
-            ) {
-              if (!transferModel.quantity) {
-                transferModel.quantity = Number(CONSTQTY);
-              }
-
-              var response = await this.addFastTransferModel(
-                transferModel
+          //RAFLAR ARASI TRANSFER YAPILDI----------------------------------
+          if (response == true) {
+            //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+            var qrResponse: QrOperationResponseModel =
+              await this.productService.qrOperationMethod(
+                this.qrBarcodeUrl,
+                this.checkForm,
+                transferModel,
+                transferModel.quantity,
+                false,
+                'FT'
               );
-
-              //RAFLAR ARASI TRANSFER YAPILDI----------------------------------
-              if (response == true) {
-
-                //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-                var qrResponse: QrOperationResponseModel =
-                  await this.productService.qrOperationMethod(
-                    this.qrBarcodeUrl,
-                    this.checkForm,
-                    transferModel,
-                    Number(CONSTQTY),
-                    false,
-                    'FT'
-                  );
-                if (qrResponse != null && qrResponse.state === true) {
-                  this.qrOperationModels.push(qrResponse.qrOperationModel);
-                } else if (qrResponse === null) {
-                  this.clearForm();
-                  console.log(this.selectedButton.toString());
-                  if (this.selectedButton == 2) {
-                    this.checkForm.get('targetShelfNo').setValue(transferModel.targetShelfNo);
-                  }
-                }
-
-                //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
-
-                this.collectedProducts.push(transferModel);
-                this.collectedProducts.reverse();
-                await this.getTransferRequestListModel(this.selectedButton.toString());
-
-                this.toasterService.success("Okutma Başarılı")
-                this.generalService.beep();
-                // setInterval(() => {
-
-                //   location.reload();();
-                // }, 2000);
-
-                //LİSTEYE EKLENDİ
-              } else {
-                this.toasterService.error('Ekleme Yapılmadı');
-              }
-
+            if (qrResponse != null && qrResponse.state === true) {
+              this.qrOperationModels.push(qrResponse.qrOperationModel);
+            } else if (qrResponse === null) {
               this.clearForm();
-              console.log(this.selectedButton.toString());
+
               if (this.selectedButton == 2) {
-                this.checkForm.get('targetShelfNo').setValue(transferModel.targetShelfNo);
+                this.checkForm
+                  .get('targetShelfNo')
+                  .setValue(transferModel.targetShelfNo);
               }
             }
-          }
-        } else {
+            this.collectedProducts.push(transferModel);
+            this.collectedProducts.reverse();
+            await this.getTransferRequestListModel(
+              this.selectedButton.toString()
+            );
 
-          var number = await this.setFormValues(transferModel.barcode, true);
-          this.checkForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
-          if (this.checkForm.value.targetShelfNo == null || this.checkForm.value.targetShelfNo == '') {
-            // this.generalService.whichRowIsInvalid(this.checkForm);
-            this.toasterService.info("Hedef Raf Numarası Boş Olamaz")
-            this.focusNextInput('targetShelfNo');
+            this.toasterService.success('Okutma Başarılı');
+            this.generalService.beep();
+          } else {
+            this.toasterService.error('Ekleme Yapılmadı');
           }
-          // this.generalService.whichRowIsInvalid(this.checkForm);
+          this.clearForm();
+          if (this.selectedButton == 2) {
+            this.checkForm
+              .get('targetShelfNo')
+              .setValue(transferModel.targetShelfNo);
+          }
         }
       }
     }
@@ -709,9 +613,6 @@ export class ShelfTransferRequestComponent implements OnInit {
     );
 
     if (confirmDelete) {
-      // var shelfNo = qrModel.shelfNo;
-      // qrModel.shelfNo = qrModel.targetShelfNo;
-      // qrModel.targetShelfNo = shelfNo;
       var response = await this.deleteFastTransferModel(qrModel.id);
       if (response) {
         this.deleteFromList(qrModel);
@@ -814,24 +715,14 @@ export class ShelfTransferRequestComponent implements OnInit {
     this.checkForm.get('shelfNo').setValue(null);
     this.checkForm.get('batchCode').setValue(null);
     this.checkForm.get('targetShelfNo').setValue(null);
-    this.focusNextInput('shelfNo');
+    if (this.currentPageType == "2") {//sadece çanta için
+      this.checkForm.get('shelfNo').setValue(this.lastCollectedProduct.shelfNo);
+      this.focusNextInput('barcode');
+    } else {
+      this.focusNextInput('shelfNo');
+    }
     this.qrBarcodeUrl = null;
     this.shelfNumbers = 'RAFLAR:';
-
     this.calculateTotalQty();
   }
-  // async deleteCountProduct(
-  //   orderNo: string,
-  //   itemCode: string
-  // ): Promise<boolean> {
-  //   const result = await this.productService.deleteProductFromFastTransfer(
-  //     this.currentOrderNo,
-  //     itemCode
-  //   );
-  //   this.collectedProducts =
-  //     await this.warehouseService.getGetAllFastTransferModelById(
-  //       this.currentOrderNo
-  //     );
-  //   return false;
-  // }
 }

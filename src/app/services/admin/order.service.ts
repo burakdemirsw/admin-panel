@@ -790,8 +790,8 @@ export class OrderService {
   async sendInvoiceToPrinter(request: string): Promise<any> {
     try {
       if (window.confirm("Faturayı yazdırmak istediğinize emin misiniz?")) {
-        var user = localStorage.getItem('name') + " " + localStorage.getItem('surname');;
-        var response = await this.httpClientService.get<string>({ controller: "order/send-invoice-to-printer" + "/" + request + "/" + user }).toPromise();
+        var userId = localStorage.getItem('userId')
+        var response = await this.httpClientService.get<string>({ controller: "order/send-invoice-to-printer" + "/" + request + "/" + userId }).toPromise();
 
         return response;
       }

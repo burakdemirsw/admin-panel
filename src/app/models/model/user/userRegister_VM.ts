@@ -8,7 +8,8 @@ export class UserRegister_VM {
   gender: string;
   salesPersonCode: string;
   roleDescription: string;
-
+  printerName_1?: string
+  printerName_2?: string
 }
 export class Token {
   accessToken !: string
@@ -61,6 +62,8 @@ export class UserList_VM {
   phoneNumber?: string;
   salesPersonCode?: string
   roleDescription?: string
+  printerName_1?: string
+  printerName_2?: string
 
 }
 export class PasswordRequest_CM {

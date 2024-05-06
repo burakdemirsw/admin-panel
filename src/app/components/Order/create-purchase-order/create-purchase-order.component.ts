@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
@@ -13,10 +12,10 @@ import {
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
+import { HeaderService } from 'src/app/services/admin/header.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
-import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 declare var window: any;
 
@@ -41,19 +40,25 @@ export class CreatePurchaseOrderComponent implements OnInit {
     private toasterService: ToasterService,
     private orderService: OrderService,
     private productService: ProductService,
-    private spinnerService: NgxSpinnerService,
     private warehouseService: WarehouseService,
     private generalService: GeneralService,
     private activatedRoute: ActivatedRoute,
-    private httpClientService: HttpClientService,
     private title: Title,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private headerService: HeaderService
   ) { }
+
+
+  offices: any[] = ["M", "U"]
+
+  warehouses: any[] = ["MD", "UD"]
+
+
 
   async ngOnInit() {
     try {
       this.title.setTitle('Alış Faturası Oluştur');
-
+      this.headerService.updatePageTitle('Alış Faturası Oluştur');
       //this.spinnerService.show();
 
       this.activatedRoute.params.subscribe(async (params) => {
@@ -62,9 +67,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
       });
       this.formGenerator();
       await this.getOfficeCodeList();
-      await this.getWarehouseList(
-        (document.getElementById('officeCode') as HTMLOptionElement).value
-      );
+
       await this.getCustomerList();
       this.setInput();
       //this.spinnerService.hide();
@@ -97,16 +100,6 @@ export class CreatePurchaseOrderComponent implements OnInit {
       // )
     }
   }
-  createJson(barcode: string, shelfNo: string) {
-    var model: CreatePurchaseInvoice = this.invoiceProducts2.find(
-      (p) => (p.barcode = barcode) && p.shelfNo == shelfNo
-    );
-    const formDataJSON = JSON.stringify(model); // Form verilerini JSON'a dönüştür
-
-    this.qrCodeValue = formDataJSON;
-    // this.toasterService.success(this.qrCodeValue)
-  }
-
   onChangeURL(url: SafeUrl) {
     this.qrCodeDownloadLink = url;
     this.openImageModal(this.qrCodeDownloadLink);
@@ -130,26 +123,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
         this.newOrderNumber
       );
       this.invoiceProducts2 = response;
-      if (this.invoiceProducts2.length > 0) {
-        if (this.invoiceProducts2[0].officeCode == 'M') {
-          (document.getElementById('officeCode') as HTMLOptionElement).value =
-            'M';
-          this.productForm.get('officeCode').setValue('M');
-        } else {
-          (document.getElementById('officeCode') as HTMLOptionElement).value =
-            'U';
-          this.productForm.get('officeCode').setValue('U');
-        }
 
-        this.productForm
-          .get('warehouseCode')
-          .setValue(this.invoiceProducts2[0].warehouseCode);
-        this.productForm
-          .get('currAccCode')
-          .setValue(this.invoiceProducts2[0].currAccCode);
-        // this.toasterService.success(this.productForm.get("officeCode").value+"\n"+   this.productForm.get("warehouseCode").value+"\n"+ this.productForm.get("currAccCode")
-        // )
-      }
       await this.calculateTotalQty();
     } catch (error: any) {
       this.toasterService.warn(error.message);
@@ -169,23 +143,10 @@ export class CreatePurchaseOrderComponent implements OnInit {
     }
   }
 
-  async getWarehouseList(value: string): Promise<void> {
-    this.warehouseModels = await this.warehouseService.getWarehouseList(value);
-    // console.log(this.warehouseModels)
-  }
-
   async getCustomerList(): Promise<void> {
     this.customerList = await this.warehouseService.getCustomerList('1');
   }
-  async getSelectedOffice(): Promise<any> {
-    var office = (document.getElementById('officeCode') as HTMLInputElement)
-      .value;
 
-    await this.getWarehouseList(office);
-    this.productForm
-      .get('warehouseCode')
-      ?.setValue(this.warehouseModels[0].warehouseCode);
-  }
 
   focusNextInput(nextInputId: string) {
     const nextInput = document.getElementById(nextInputId) as HTMLInputElement;
@@ -208,11 +169,25 @@ export class CreatePurchaseOrderComponent implements OnInit {
         barcode: [null, [Validators.required, Validators.min(5)]],
         quantity: [null],
         isReturn: [false, [Validators.required]],
-        batchCode: [''],
+        batchCode: [null, Validators.required],
       });
     } catch (error: any) {
       this.toasterService.error(error.message);
     }
+
+    this.productForm.get('officeCode').valueChanges.subscribe(value => {
+      if (value === 'M') {
+        this.productForm.get('warehouseCode').setValue('MD');
+      }
+    });
+
+    this.productForm.get('officeCode').valueChanges.subscribe(value => {
+      if (value === 'U') {
+        this.productForm.get('warehouseCode').setValue('UD');
+      }
+    });
+
+
   }
 
   clearFormFields() {
@@ -285,43 +260,39 @@ export class CreatePurchaseOrderComponent implements OnInit {
     this.formModal.show();
   }
 
-  async setFormValues(barcode: string, check: boolean): Promise<string> {
-    this.shelfNumbers = 'RAFLAR:';
-    try {
-      if (barcode.includes('http') || this.generalService.isGuid(barcode)) {
-        var result: string[] = await this.productService.countProductByBarcode3(
-          barcode
-        );
-        this.shelfNumbers += result[0];
-        if (check) {
-          var currentShelfNo = this.productForm.get('shelfNo').value;
-          // if(currentShelfNo==null ){
-          //   this.productForm.get('shelfNo').setValue(result[0].split(',')[0]);
-          // }
-          this.productForm.get('batchCode').setValue(result[2]);
-          this.productForm.get('barcode').setValue(result[3]);
-        }
+  async setFormValues(product: CreatePurchaseInvoice): Promise<CreatePurchaseInvoice> {
 
-        return result[1];
-      } else {
-        var result: string[] = await this.productService.countProductByBarcode(
-          barcode
+    try {
+      if (product.barcode.includes('http') || this.generalService.isGuid(product.barcode)) {
+        var result: string[] = await this.productService.countProductByBarcode3(
+          product.barcode
         );
-        this.shelfNumbers += result[0];
+        this.shelfNumbers = result[0];
+        this.productForm.get('quantity').setValue(result[1]);
         this.productForm.get('batchCode').setValue(result[2]);
         this.productForm.get('barcode').setValue(result[3]);
-        if (result[4] == 'false') {
 
-          if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
-            this.productForm.get('batchCode').setValue(null);
-            this.focusNextInput('batchCode');
-            this.toasterService.error('Parti Giriniz');
-            return null;
-          }
+        var updated_product: CreatePurchaseInvoice = product;
+        updated_product.barcode = result[3];
+        updated_product.quantity = Number(result[1]);
+        updated_product.batchCode = result[2];
 
+        return updated_product;
+      } else {
+        var result: string[] = await this.productService.countProductByBarcode(
+          product.barcode
+        );
+        this.shelfNumbers = result[0];
+        this.productForm.get('quantity').setValue(result[1]);
+        this.productForm.get('batchCode').setValue(result[2]);
+        this.productForm.get('barcode').setValue(result[3]);
 
-        }
-        return result[1];
+        var updated_product: CreatePurchaseInvoice = product;
+        updated_product.barcode = result[3];
+        updated_product.quantity = Number(result[1]);
+        updated_product.batchCode = result[2];
+
+        return updated_product;
       }
     } catch (error) {
       this.toasterService.error(error.message);
@@ -333,56 +304,83 @@ export class CreatePurchaseOrderComponent implements OnInit {
   qrOperationModels: QrOperationModel[] = [];
   async onSubmit(model: CreatePurchaseInvoice): Promise<any> {
 
-    if (model.barcode.includes("=")) {
-      model.barcode = model.barcode.replace(/=/g, "-");
+    if (model.barcode.includes('=')) {
+      model.barcode = model.barcode.replace(/=/g, '-');
     }
-
-
     if (
       model.barcode.includes('http') ||
       this.generalService.isGuid(model.barcode)
     ) {
-      var number = await this.setFormValues(model.barcode, true);
-      this.productForm.get('quantity')?.setValue(Number(number));
       this.qrBarcodeUrl = model.barcode;
-      //this.onSubmit(this.productForm.value);
+    }
+
+    if (!this.productForm.valid) {
+      var updated_product: CreatePurchaseInvoice = await this.setFormValues(model);
+      model = updated_product;
+      this.toasterService.success('Form Verileri Güncellendi.');
       return;
     }
 
-    if (model.barcode && !model.shelfNo) {
-      var number = await this.setFormValues(model.barcode, true);
-      this.productForm.get('quantity')?.setValue(Number(number)); //quantity alanı dolduruldu
-      this.focusNextInput('shelfNo');
-      return;
-    } else {
-      if (this.productForm.valid) {
-        var result = await this.productService.countProductByBarcode(
-          model.barcode
-        );
 
-        if (this.shelfNumbers === 'RAFLAR:') {
-          //raflar kontorl için yeniden çekildi
-          this.shelfNumbers += result[0];
-        }
-        if (this.productForm.get('quantity').value === null) {
-          //miktar alanı dolduruldu
-          this.productForm.get('quantity').setValue(result[1]);
-        }
-        const shelves = result[0]
-          .split(',')
-          .filter((raflar) => raflar.trim() !== null);
+    if (this.productForm.valid) {
 
+
+      const shelves = this.shelfNumbers
+        .split(',')
+        .filter((raflar) => raflar.trim() !== null);
+
+      if (
+        shelves.find((S) => S.toLowerCase() == model.shelfNo.toLowerCase())
+      ) {
+        //raf barkod kontolü yapıldı
+
+        var response: ProductCountModel =
+          await this.warehouseService.countProductRequest(
+            //sayım
+            model.barcode,
+            model.shelfNo,
+            model.quantity,
+            model.officeCode,
+            model.warehouseCode,
+            model.batchCode,
+            'Order/CountProduct3',
+            this.newOrderNumber,
+            model.currAccCode
+          );
+        if (response != undefined) {
+
+
+          var qrResponse: QrOperationResponseModel =
+            await this.productService.qrOperationMethod(
+              this.qrBarcodeUrl,
+              this.productForm,
+              model,
+              model.quantity,
+              this.productForm.get('isReturn').value,
+              'BPI'
+            );
+          if (qrResponse != null && qrResponse.state === true) {
+            this.qrOperationModels.push(qrResponse.qrOperationModel);
+          } else {
+            this.qrBarcodeUrl = null
+          }
+          //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
+
+
+        }
+      } else {
         if (
-          shelves.find((S) => S.toLowerCase() == model.shelfNo.toLowerCase())
+          confirm(
+            'Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?'
+          )
         ) {
-          //raf barkod kontolü yapıldı
 
-          var response: ProductCountModel =
+          var requestModel2: ProductCountModel =
             await this.warehouseService.countProductRequest(
               //sayım
               model.barcode,
               model.shelfNo,
-              model.quantity === null ? Number(result[1]) : model.quantity,
+              model.quantity,
               model.officeCode,
               model.warehouseCode,
               model.batchCode,
@@ -390,22 +388,16 @@ export class CreatePurchaseOrderComponent implements OnInit {
               this.newOrderNumber,
               model.currAccCode
             );
-          if (response != undefined) {
-            var data: ProductCountModel = response;
-            if (data.status == 'RAF') {
-              model.shelfNo = response.description;
-            } else {
-              model.barcode = response.description;
-            }
 
-            //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+          if (requestModel2 != undefined) {
+
 
             var qrResponse: QrOperationResponseModel =
               await this.productService.qrOperationMethod(
                 this.qrBarcodeUrl,
                 this.productForm,
                 model,
-                Number(result[1]),
+                model.quantity,
                 this.productForm.get('isReturn').value,
                 'BPI'
               );
@@ -414,82 +406,18 @@ export class CreatePurchaseOrderComponent implements OnInit {
             } else {
               this.qrBarcodeUrl = null
             }
-            //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
 
-
-            this.generalService.beep();
-            model.quantity = Number(Number(result[1]));
           }
         } else {
-          if (
-            confirm(
-              'Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?'
-            )
-          ) {
-
-
-
-
-
-            var requestModel2: ProductCountModel =
-              await this.warehouseService.countProductRequest(
-                //sayım
-                model.barcode,
-                model.shelfNo,
-                model.quantity === null ? Number(result[1]) : model.quantity,
-                model.officeCode,
-                model.warehouseCode,
-                model.batchCode,
-                'Order/CountProduct3',
-                this.newOrderNumber,
-                model.currAccCode
-              );
-
-            if (response != undefined) {
-              var data: ProductCountModel = response;
-              if (data.status == 'RAF') {
-                model.shelfNo = response.description;
-              } else {
-                model.barcode = response.description;
-              }
-
-              //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-
-              var qrResponse: QrOperationResponseModel =
-                await this.productService.qrOperationMethod(
-                  this.qrBarcodeUrl,
-                  this.productForm,
-                  model,
-                  Number(result[1]),
-                  this.productForm.get('isReturn').value,
-                  'BPI'
-                );
-              if (qrResponse != null && qrResponse.state === true) {
-                this.qrOperationModels.push(qrResponse.qrOperationModel);
-              } else {
-                this.qrBarcodeUrl = null
-              }
-
-              //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
-
-
-              this.generalService.beep();
-              model.quantity = Number(Number(result[1]));
-            }
-          } else {
-            return;
-          }
+          this.toasterService.warn('Ekleme İşlemi Yapılmadı!');
+          return;
         }
       }
     }
+
     if (this.productForm.valid == true) {
-      (model.quantity =
-        model.quantity == null ? Number(result[1]) : model.quantity),
-        //this.invoiceProducts.push(model);
-        this.getProductOfInvoice(this.newOrderNumber);
-
+      this.getProductOfInvoice(this.newOrderNumber);
       this.clearFormFields();
-
       this.generalService.beep();
       this.toasterService.success('Ürün Başarılı Şekilde Eklendi.');
     } else {

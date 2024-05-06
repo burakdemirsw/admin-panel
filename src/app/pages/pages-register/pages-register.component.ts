@@ -1,14 +1,13 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
-import { UserRegister_VM, GetUserFilter, UserList_VM } from 'src/app/models/model/user/userRegister_VM';
+import { GetUserFilter, UserList_VM, UserRegister_VM } from 'src/app/models/model/user/userRegister_VM';
+import { HeaderService } from 'src/app/services/admin/header.service';
 import { UserService } from 'src/app/services/admin/user.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
-import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { GeneralService } from '../../services/admin/general.service';
-import { HeaderService } from 'src/app/services/admin/header.service';
 
 @Component({
   selector: 'app-pages-register',
@@ -55,6 +54,10 @@ export class PagesRegisterComponent implements OnInit {
       this.registerForm.get("firstName").setValue(registerModel.firstName);
       this.registerForm.get("lastName").setValue(registerModel.lastName);
       this.registerForm.get("email").setValue(registerModel.email);
+      this.registerForm.get("printerName_1").setValue(registerModel.printerName_1);
+      this.registerForm.get("printerName_2").setValue(registerModel.printerName_2);
+      var findedRole = this.roleDescriptions.find(r => r.role === registerModel.roleDescription)
+      this.registerForm.get("roleDescription").setValue(findedRole);
       // this.registerForm.get("password").setValue(registerModel.password);
       // this.registerForm.get("confirmPassword").setValue(registerModel.password);
 
@@ -111,6 +114,8 @@ export class PagesRegisterComponent implements OnInit {
       confirmPassword: [null],
       gender: ["Erkek"],
       roleDescription: [null],
+      printerName_1: [null],
+      printerName_2: [null]
 
 
     });
@@ -138,7 +143,10 @@ export class PagesRegisterComponent implements OnInit {
             email: this.registerForm.value.email,
             phoneNumber: this.registerForm.value.phoneNumber,
             gender: this.registerForm.value.gender,
-            roleDescription: this.registerForm.value.roleDescription.role
+            roleDescription: this.registerForm.value.roleDescription.role,
+            printerName_1: this.registerForm.value.printerName_1,
+            printerName_2: this.registerForm.value.printerName_2
+
 
 
           };
@@ -174,7 +182,9 @@ export class PagesRegisterComponent implements OnInit {
             email: this.registerForm.value.email,
             phoneNumber: this.registerForm.value.phoneNumber,
             gender: this.registerForm.value.gender,
-            roleDescription: this.registerForm.value.roleDescription.role
+            roleDescription: this.registerForm.value.roleDescription.role,
+            printerName_1: this.registerForm.value.printerName_1,
+            printerName_2: this.registerForm.value.printerName_2
           };
 
           var response = await this.userService.update(model);

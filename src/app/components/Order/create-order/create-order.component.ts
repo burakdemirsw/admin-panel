@@ -28,6 +28,8 @@ import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, Payment }
 import { OrderService } from '../../../services/admin/order.service';
 import { GoogleDriveService } from '../../../services/common/google-drive.service';
 import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from '../../cargo/create-cargo/models/models';
+import { BarcodeFormat } from '@zxing/library';
+import { ZXingScannerComponent } from '@zxing/ngx-scanner';
 
 @Component({
   selector: 'app-create-order',
@@ -35,6 +37,9 @@ import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePa
   styleUrls: ['./create-order.component.css']
 })
 export class CreateOrderComponent implements OnInit {
+  @ViewChild('scanner') scanner: ZXingScannerComponent;
+
+
   [x: string]: any;
   selectedCustomers: CustomerList_VM[] = []
   selectedProducts: ProductList_VM[] = []
@@ -64,7 +69,12 @@ export class CreateOrderComponent implements OnInit {
     private cargoService: CargoService) { }
 
   async ngOnInit() {
-
+    setTimeout(() => {
+      /* we need to force the component to set the enabled formats. Binding doesn't work.
+         Must happen after the scanner component has been initialized
+      */
+      this.scanner.formats = this.allowedFormats;
+    }, 3000);
     this.createPaymentForm();
     this.createGetProductForm();
     this.exchangeRate = await this.orderService.getExchangeRates();
@@ -101,7 +111,54 @@ export class CreateOrderComponent implements OnInit {
       this.salesPersonCode = spc;
     }
     this.paymentForm.get('paymentType').setValue(this.paymentMethods[2])
+
     this.paymentForm.get('taxTypeCode').setValue(this.stateOptions[1])
+  }
+
+
+  //--------------------------------------------------------------------------- KAMERA
+
+
+  allowedFormats = [
+    BarcodeFormat.CODE_39,
+    BarcodeFormat.CODE_93,
+    BarcodeFormat.CODE_128,
+    BarcodeFormat.EAN_8,
+    BarcodeFormat.EAN_13,
+    BarcodeFormat.QR_CODE
+  ];
+
+
+  availableCameras: MediaDeviceInfo[] = [];
+  selectedDevice: MediaDeviceInfo | undefined;
+  enableScanner: boolean = false;
+  cameraOpen: boolean = false;
+
+  enableScannerMethod() {
+    this.enableScanner = !this.enableScanner;
+    this.cameraOpen = !this.cameraOpen;
+
+
+  }
+  camerasFoundHandler(cameras: MediaDeviceInfo[]) {
+    this.availableCameras = cameras;
+    if (cameras.length > 0) {
+      this.selectedDevice = cameras[0]; // Varsayılan olarak ilk kamerayı seç
+    }
+  }
+
+  onCameraSelected(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const deviceId = selectElement.value;
+    this.selectedDevice = this.availableCameras.find(c => c.deviceId === deviceId);
+    this.cameraOpen = true;
+  }
+  scanSuccessHandler(event: any) {
+    this.enableScannerMethod();
+    console.log('QR Code Data: ', event);
+    this.getProductsForm.get('barcode').setValue(event);
+    this.generalService.beep2();
+    this.toasterService.success("Okutma Başarılı:" + event);
   }
 
   //--------------------------------------------------------------------------- CLIENT ORDER
@@ -109,7 +166,7 @@ export class CreateOrderComponent implements OnInit {
   taxTypeCode: any;
   isCompleted: boolean = false;
   orderNumber: string = "";
-  orderDescription: string;
+  orderDescription: string = "burak demir"
   async getClientOrder(state: number) {
     var response = await this.orderService.getClientOrder(this.id);
 
@@ -128,7 +185,7 @@ export class CreateOrderComponent implements OnInit {
 
           }
         } else {
-          this.toasterService.error("Eklenecek Müşteri Bulunamadı")
+          //this.toasterService.error("Eklenecek Müşteri Bulunamadı")
 
         }
 
@@ -139,7 +196,7 @@ export class CreateOrderComponent implements OnInit {
           var findedAddress = response.find((x: { postalAddressID: any; }) => x.postalAddressID === order.clientOrder.shippingPostalAddressId);
           if (findedAddress) {
             this.selectedAddresses.push(findedAddress);
-            // this.toasterService.success("Adres Eklendi")
+
           } else {
             //this.toasterService.error("Eklenecek Adres Bulunamadı")
           }
@@ -152,7 +209,9 @@ export class CreateOrderComponent implements OnInit {
           this.payment.installmentCount = 0;
           this.payment.paymentType = "2";
           this.payment.creditCardTypeCode = order.clientOrder.paymentDescription;
-          this.toasterService.success("Ödeme Eklendi")
+          var finded_payment = this.paymentMethods.find(p => p.name.includes(order.clientOrder.paymentDescription))
+          this.paymentForm.get('paymentType').setValue(finded_payment)
+          // this.toasterService.success("Ödeme Eklendi")
         }
 
         this.payment.amount = this.selectedProducts.reduce((total, product) => total + product.price, 0);
@@ -221,6 +280,9 @@ export class CreateOrderComponent implements OnInit {
     object.taxRate = line.taxRate;
     return object;
   }
+  LOG() {
+    console.log(this.orderDescription);
+  }
   createClientOrder_RM(): ClientOrder {
     try {
 
@@ -234,7 +296,7 @@ export class CreateOrderComponent implements OnInit {
       request.recepientPhone = this.cargoForm_2.value.address_phoneNumber;
       request.orderDescription = this.orderDescription;
       request.cargoStatus = this.cargoForm.get('isActive').value == true ? "KARGO VAR" : "KARGO YOK"
-
+      request.orderDescription = this.paymentForm.get('orderDescription').value
       if (this.payment) {
         request.paymentType = this.payment.creditCardTypeCode;
       } else {
@@ -286,10 +348,9 @@ export class CreateOrderComponent implements OnInit {
 
     var response = await this.orderService.sendInvoiceToPrinter(orderNumber);
     if (response) {
-      this.toasterService.success("İşlem Başarılı")
-    } else {
-      this.toasterService.error("İşlem Başarısız")
+      this.toasterService.success("Yazıcıya Gönderildi")
     }
+
   }
 
   //---------------------------------------------------------------------------
@@ -510,30 +571,6 @@ export class CreateOrderComponent implements OnInit {
     };
     reader.readAsDataURL(file);
   }
-
-  extractText() {
-    if (this.imageData) {
-      this.extractTextFromImage(this.imageData.toString())
-        .then(text => {
-          this.extractedText = text;
-        })
-        .catch(error => {
-          console.error('Error extracting text:', error);
-        });
-    }
-  }
-
-
-  extractTextFromImage(imageData: string): Promise<string> {
-    return Tesseract.recognize(
-      imageData,
-      'eng', // English language
-      { logger: m => console.log(m) } // Optional logger
-    ).then(({ data: { text } }) => {
-      return text;
-    });
-  }
-
   //----------------------------------------------------
   //----------------------------------------------------
 
@@ -612,7 +649,7 @@ export class CreateOrderComponent implements OnInit {
     var check_response = await this.orderService.getCustomerList_2(check_request);
     if (check_response.length > 0) {
 
-      this.toasterService.error("Bu Müşteri Numarası Zaten Kayıtlı")
+      //this.toasterService.error("Bu Müşteri Numarası Zaten Kayıtlı")
       this.currAccCode = check_response[0].currAccCode;
       this.getCustomerDialog = true;
       this.getCustomerForm.get("currAccCode").setValue(check_response[0].currAccCode);
@@ -647,7 +684,7 @@ export class CreateOrderComponent implements OnInit {
       }
 
 
-      // console.log(request)
+
 
       if (true) {
         var response = await this.orderService.createCustomer(request);
@@ -821,12 +858,12 @@ export class CreateOrderComponent implements OnInit {
     } else {
       this.toasterService.error("Adres Bulunamadı");
     }
-    console.log(value)
+
   }
 
   async getCustomers(request: GetCustomerList_CM) {
     this.customers = await this.orderService.getCustomerList_2(request)
-    console.log(this.customers);
+
   }
   async selectCurrentCustomer(request: CustomerList_VM) {
 
@@ -858,16 +895,14 @@ export class CreateOrderComponent implements OnInit {
       this.selectAddressDialog = false;
       this.activeIndex = 2;
     }
-    //else {
-    //   this.selectAddressDialog = true;
-    // }
+
     if (this.addresses.length === 0) {
 
       this._activeIndex = 1;
       this.toasterService.error("Adres Bulunamadı Adres Ekleyiniz")
     }
     this.selectAddressDialog = true;
-    // console.log(this.customers);
+
   }
 
   async selectCurrentAddress(request: CustomerAddress_VM) {
@@ -914,10 +949,6 @@ export class CreateOrderComponent implements OnInit {
   }
   getTotalPriceWithTax() {
 
-    this.selectedProducts.forEach(p => {
-
-      console.log(p.taxRate)
-    });
     var number = this.selectedProducts.reduce((acc, product) => acc + (product.quantity * product.discountedPrice * (product.taxRate / 100)), 0);
     if (number.toString().includes('.')) {
       return Number(number.toString().split('.')[0])
@@ -1011,24 +1042,39 @@ export class CreateOrderComponent implements OnInit {
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
   async getProducts(request: any, pageType: boolean) {
-    if (pageType) {
+    if (pageType) { //HIZLI SATIŞ
       try {
+
+        if (request.barcode.includes('http') || this.generalService.isGuid(request.barcode)) {
+
+          var result: string[] = await this.productService.countProductByBarcode3(
+            request.barcode
+
+          );
+          if (result == null) {
+            this.toasterService.error("Qr Sorgusu Hatalı");
+            return;
+          }
+
+          this.getProductsForm.get('barcode').setValue(result[3]);
+          this.toasterService.success("Form Verileri Güncellendi")
+          return;
+
+
+        }
+
+
         var _request = new BarcodeSearch_RM();
         _request.barcode = request.barcode;
 
         const response = await this.productService.searchProduct(_request);
+
         if (response.length == 0) {
           this.toasterService.error("Ürün Sorgusundan Yanıt Alınamadı");
           return;
         }
         this.products = response;
         if (this.products.length > 0) {
-
-          // var totalQty = 0;
-          // this.products.forEach(p => {
-          //   totalQty += p.quantity
-          // });
-
           this.products.forEach(p => {
             if (p.quantity <= 0) {
               this.toasterService.error("STOK HATASI")
@@ -1053,9 +1099,11 @@ export class CreateOrderComponent implements OnInit {
             return;
           } else {
             this.toasterService.success(this.products.length + " Adet Ürün Bulundu")
-            this.products.forEach(async _product => {
+            for (const _product of this.products) {
               await this.addCurrentProducts(_product);
-            });
+
+            }
+
             this.products = [];
           }
         } else {
@@ -1063,12 +1111,29 @@ export class CreateOrderComponent implements OnInit {
         }
         return response;
       } catch (error: any) {
-        console.log(error.message);
+
         return null;
       }
-    } else {
+    } else {  //PERAKENDE SATIŞ
       if (!request.shelfNo) {
 
+        if (request.barcode.includes('http') || this.generalService.isGuid(request.barcode)) {
+
+          var result: string[] = await this.productService.countProductByBarcode3(
+            request.barcode
+
+          );
+          if (result == null) {
+            this.toasterService.error("Qr Sorgusu Hatalı");
+            return;
+          }
+
+          this.getProductsForm.get('barcode').setValue(result[3]);
+          request.barcode = result[3];
+          this.toasterService.success("Form Verileri Güncellendi")
+
+
+        }
         var result: string[] = await this.productService.countProductByBarcode(
           request.barcode
         );
@@ -1160,9 +1225,10 @@ export class CreateOrderComponent implements OnInit {
               this.getProductsForm.get('barcode').setValue(null);
               this.getProductsForm.get('shelfNo').setValue(null);
 
-              this.products.forEach(async _product => {
+              for (const _product of this.products) {
                 await this.addCurrentProducts(_product);
-              });
+
+              }
               this.products = [];
               this.shelfNumbers = 'RAFLAR:'
 
@@ -1258,7 +1324,7 @@ export class CreateOrderComponent implements OnInit {
   async onRowEditSave(product: ProductList_VM, index: number) {
     if (product.price > 0) {
 
-      var findedProduct = this.products
+      var findedProduct = this.selectedProducts
         .find(p => p.itemCode == product.itemCode)
 
       if (Number(findedProduct.quantity) < product.quantity) {
@@ -1359,7 +1425,8 @@ export class CreateOrderComponent implements OnInit {
   async createPaymentForm() {
     this.paymentForm = this.formBuilder.group({
       taxTypeCode: [null, Validators.required],
-      paymentType: [null, Validators.required]
+      paymentType: [null, Validators.required],
+      orderDescription: [null],
     });
 
     this.paymentForm.get('taxTypeCode').valueChanges.subscribe((value) => {
@@ -1701,7 +1768,7 @@ export class CreateOrderComponent implements OnInit {
     }
     return "MSG-" + result;
   }
-  async createPayment(state: number) {
+  async createPayment(state: number): Promise<boolean> {
     this.activeIndex = 6;
     var payment: Payment = new Payment();
 
@@ -1718,8 +1785,13 @@ export class CreateOrderComponent implements OnInit {
         payment.creditCardTypeCode = "PAYTR IFRAME"
         payment.amount = this.selectedProducts.reduce((total, product) => total + product.price, 0);
         this.payment = payment;
-        this.toasterService.success("Ödeme Onaylandı")
 
+
+        return true;
+
+      }
+      else {
+        return false;
       }
 
     } else if (state === 2) {
@@ -1734,10 +1806,12 @@ export class CreateOrderComponent implements OnInit {
         payment.creditCardTypeCode = "NAKİT"
         payment.amount = this.selectedProducts.reduce((total, product) => total + product.price, 0);
         this.payment = payment;
-        this.toasterService.success("Ödeme Onaylandı")
 
+        return this.true;
       }
-      return null;
+      else {
+        return false;
+      }
     }
     else if (state === 3) {
       //HAVALE İŞLEMLERİ
@@ -1751,9 +1825,12 @@ export class CreateOrderComponent implements OnInit {
         payment.creditCardTypeCode = "HAVALE"
         payment.amount = this.selectedProducts.reduce((total, product) => total + product.price, 0);
         this.payment = payment;
-        this.toasterService.success("Ödeme Onaylandı")
+
+        return this.true;
       }
-      return null;
+      else {
+        return false;
+      }
     }
     else if (state === 4) {
       //HAVALE İŞLEMLERİ
@@ -1767,10 +1844,12 @@ export class CreateOrderComponent implements OnInit {
         payment.creditCardTypeCode = "VADE"
         payment.amount = this.selectedProducts.reduce((total, product) => total + product.price, 0);
         this.payment = payment;
-        this.toasterService.success("Ödeme Onaylandı")
+
 
       }
-      return null;
+      else {
+        return false;
+      }
     }
     else if (state === 5) {
       //HAVALE İŞLEMLERİ
@@ -1784,10 +1863,12 @@ export class CreateOrderComponent implements OnInit {
         payment.creditCardTypeCode = "POS"
         payment.amount = this.selectedProducts.reduce((total, product) => total + product.price, 0);
         this.payment = payment;
-        this.toasterService.success("Ödeme Onaylandı")
 
+
+      } else {
+        return false;
       }
-      return null;
+
     }
     else if (state === 6) {
       //HAVALE İŞLEMLERİ
@@ -1801,14 +1882,17 @@ export class CreateOrderComponent implements OnInit {
         payment.creditCardTypeCode = "PAYTRSMS"
         payment.amount = this.selectedProducts.reduce((total, product) => total + product.price, 0);
         this.payment = payment;
-        this.toasterService.success("Ödeme Onaylandı")
+
       }
-      return null;
+      else {
+        return false;
+      }
     }
     this.payment = payment;
     this.generalService.beep();
 
-    this.toasterService.success("Ödeme Onaylandı")
+    // this.toasterService.success("Ödeme Onaylandı")
+    return true;
   }
 
   calculateDiscountPercent(products: ProductList_VM[]): number {
@@ -1828,8 +1912,18 @@ export class CreateOrderComponent implements OnInit {
     // }
 
     if (!this.payment.creditCardTypeCode) {
-      this.toasterService.error("Ödeme Tipi Seçiniz");
-      return;
+      if (this.paymentForm.get("paymentType").value) {
+
+        var payment_response = await this.createPayment(this.paymentForm.get("paymentType").value.id);
+
+        if (!payment_response) {
+          this.toasterService.error("Ödeme Tipi Seçiniz");
+          return;
+        }
+
+      }
+
+
     }
 
     if (!this.paymentForm.value.taxTypeCode?.value) {
@@ -1853,6 +1947,7 @@ export class CreateOrderComponent implements OnInit {
       this.toasterService.error("Ürün Ekleyiniz");
       return;
     }
+
 
 
     var exchangeRate: number = 0;

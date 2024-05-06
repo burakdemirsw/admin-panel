@@ -86,18 +86,22 @@
             </div>
           </div>
         </div>
-        <div class="card mobile" *ngIf="this.pageStatus != 'Transfer'">
-          <div class="card-body">
+
+        <div class="card custom-card mb-3">
+          <div
+            class="p-4 card-body d-flex justify-content-start"
+            style="overflow-x: auto"
+          >
             <button
               type="button"
-              class="btn btn-primary mt-3"
+              class="btn custom-btn-primary"
               (click)="goPage('0')"
             >
               Standart
             </button>
             <button
               type="button"
-              class="btn btn-primary mt-3"
+              class="btn custom-btn-primary"
               style="margin-right: 1rem"
               (click)="goPage('1')"
             >
@@ -105,6 +109,7 @@
             </button>
           </div>
         </div>
+
         <div class="card mobile">
           <div class="card-body">
             <form
@@ -181,7 +186,7 @@
                   shelfNumbers
                 }}</label> -->
               </div>
-              <!-- Diğer inputlar -->
+
               <div class="row mb-3">
                 <div class="form-group">
                   <label *ngIf="qrBarcodeUrl !== ''" for="qrBarcode">{{
@@ -196,10 +201,9 @@
                     formControlName="barcode"
                     (keydown.enter)="onSubmit(this.warehouseForm.value)"
                   />
-                  <!-- (ngModelChange)="getProductByBarcode($event)"  -->
                 </div>
               </div>
-              <!-- Diğer inputlar -->
+
               <div class="row mb-3">
                 <div class="form-group col">
                   <input

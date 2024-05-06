@@ -117,6 +117,40 @@
                 label="Ürün Bul"
                 type="submit"
               ></button>
+              <button
+                (click)="enableScannerMethod()"
+                pButton
+                pRipple
+                class="p-button-rounded p-button-text"
+                label="{{ enableScanner ? 'Kamerayı Kapat' : 'Kamerayı Aç' }}"
+                icon="pi pi-camera"
+              ></button>
+              <div *ngIf="enableScanner">
+                <label for="cameras">Kamera Seçin:</label>
+                <select id="cameras" (change)="onCameraSelected($event)">
+                  <option
+                    *ngFor="let camera of availableCameras"
+                    [value]="camera.deviceId"
+                  >
+                    {{ camera.label }}
+                  </option>
+                </select>
+
+                <p-dialog
+                  header="Bulunan Adresler"
+                  [(visible)]="cameraOpen"
+                  [style]="{ width: '80vw' }"
+                  [modal]="true"
+                >
+                  <zxing-scanner
+                    #scanner
+                    [device]="selectedDevice"
+                    (camerasFound)="camerasFoundHandler($event)"
+                    (scanSuccess)="scanSuccessHandler($event)"
+                    [formats]="allowedFormats"
+                  ></zxing-scanner>
+                </p-dialog>
+              </div>
             </div>
           </div>
         </form>
@@ -858,8 +892,6 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-address>
                   <tr>
-                    <!-- <td>{{ address.countryDescription }}</td>
-                    <td>{{ address.stateDescription }}</td> -->
                     <td>{{ address.cityDescription }}</td>
                     <td>{{ address.districtDescription }}</td>
                     <td>{{ address.address.substring(0, 20) }}</td>
@@ -887,7 +919,7 @@
                 <tr>
                   <th>Müşteri Kodu</th>
                   <th>Müşteri</th>
-                  <!-- <th>Mail</th> -->
+
                   <th>Telefon</th>
                   <th>İşlemler</th>
                 </tr>
@@ -1392,20 +1424,17 @@
                     type="text"
                     pInputText
                     style="width: 100%"
+                    formControlName="orderDescription"
                     placeholder="Sipariş Açıklaması"
-                    [(ngModel)]="orderDescription"
+                    (change)="LOG()"
                   />
                 </div>
                 <div class="col-md-3 mb-3">
-                  <h5>
-                    Toplam :
-                    {{ getTotalPrice() }}
-                  </h5>
+                  <h5>Toplam(V.H) : ₺{{ getTotalPrice() }}</h5>
                 </div>
                 <div class="col-md-3 mb-3">
                   <h5 *ngIf="this.paymentForm.value.taxTypeCode?.value == '0'">
-                    Kdv :
-                    {{ getTotalPriceWithTax() }}
+                    Kdv : ₺{{ getTotalPriceWithTax() }}
                   </h5>
                 </div>
               </div>

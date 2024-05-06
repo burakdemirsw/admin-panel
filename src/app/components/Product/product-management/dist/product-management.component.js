@@ -47,12 +47,13 @@ var core_1 = require("@angular/core");
 var product_service_1 = require("src/app/services/admin/product.service");
 var forms_1 = require("@angular/forms");
 var ProductManagementComponent = /** @class */ (function () {
-    function ProductManagementComponent(toasterService, productService, formBuilder, sanitizer, headerService) {
+    function ProductManagementComponent(toasterService, productService, formBuilder, sanitizer, headerService, generalService) {
         this.toasterService = toasterService;
         this.productService = productService;
         this.formBuilder = formBuilder;
         this.sanitizer = sanitizer;
         this.headerService = headerService;
+        this.generalService = generalService;
         this.showImage = false; // add this property
         this.view = true;
         this.invoiceProducts2 = [];
@@ -80,6 +81,10 @@ var ProductManagementComponent = /** @class */ (function () {
     };
     ProductManagementComponent.prototype.scanSuccessHandler = function (event) {
         console.log('QR Code Data: ', event);
+        this.productForm.get('barcode').setValue(event);
+        this.getProducts(event);
+        this.generalService.beep3();
+        this.toasterService.success("Okutma Başarılı");
     };
     ProductManagementComponent.prototype.createJson = function (barcode, shelfNo) {
         var model = this.products.find(function (p) { return (p.barcode = barcode) && p.shelfNo == shelfNo; });
