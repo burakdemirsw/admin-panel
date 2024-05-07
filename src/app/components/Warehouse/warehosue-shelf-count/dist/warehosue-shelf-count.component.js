@@ -49,7 +49,7 @@ var library_1 = require("@zxing/library");
 var ClientUrls_1 = require("src/app/models/const/ClientUrls");
 var countProductRequestModel2_1 = require("src/app/models/model/order/countProductRequestModel2");
 var WarehosueShelfCountComponent = /** @class */ (function () {
-    function WarehosueShelfCountComponent(formBuilder, toasterService, httpClient, productService, generalService, warehouseService, activatedRoute, title, sanitizer, orderService, router) {
+    function WarehosueShelfCountComponent(formBuilder, toasterService, httpClient, productService, generalService, warehouseService, activatedRoute, title, sanitizer) {
         this.formBuilder = formBuilder;
         this.toasterService = toasterService;
         this.httpClient = httpClient;
@@ -59,8 +59,6 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         this.activatedRoute = activatedRoute;
         this.title = title;
         this.sanitizer = sanitizer;
-        this.orderService = orderService;
-        this.router = router;
         this.infoProducts = [];
         this.collectedProducts = [];
         this.process = false;

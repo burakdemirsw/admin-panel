@@ -28,8 +28,6 @@ export class CreateBarcodeComponent implements OnInit {
 
   ) { }
 
-
-
   boxId: string;
   async ngOnInit() {
     //sşldfks

@@ -37,7 +37,7 @@ import { ZXingScannerComponent } from '@zxing/ngx-scanner';
   styleUrls: ['./create-order.component.css']
 })
 export class CreateOrderComponent implements OnInit {
-  @ViewChild('scanner') scanner: ZXingScannerComponent;
+
 
 
   [x: string]: any;
@@ -69,12 +69,7 @@ export class CreateOrderComponent implements OnInit {
     private cargoService: CargoService) { }
 
   async ngOnInit() {
-    setTimeout(() => {
-      /* we need to force the component to set the enabled formats. Binding doesn't work.
-         Must happen after the scanner component has been initialized
-      */
-      this.scanner.formats = this.allowedFormats;
-    }, 3000);
+
     this.createPaymentForm();
     this.createGetProductForm();
     this.exchangeRate = await this.orderService.getExchangeRates();
@@ -117,50 +112,12 @@ export class CreateOrderComponent implements OnInit {
 
 
   //--------------------------------------------------------------------------- KAMERA
-
-
-  allowedFormats = [
-    BarcodeFormat.CODE_39,
-    BarcodeFormat.CODE_93,
-    BarcodeFormat.CODE_128,
-    BarcodeFormat.EAN_8,
-    BarcodeFormat.EAN_13,
-    BarcodeFormat.QR_CODE
-  ];
-
-
-  availableCameras: MediaDeviceInfo[] = [];
-  selectedDevice: MediaDeviceInfo | undefined;
-  enableScanner: boolean = false;
-  cameraOpen: boolean = false;
-
-  enableScannerMethod() {
-    this.enableScanner = !this.enableScanner;
-    this.cameraOpen = !this.cameraOpen;
-
-
-  }
-  camerasFoundHandler(cameras: MediaDeviceInfo[]) {
-    this.availableCameras = cameras;
-    if (cameras.length > 0) {
-      this.selectedDevice = cameras[0]; // Varsayılan olarak ilk kamerayı seç
-    }
-  }
-
-  onCameraSelected(event: Event) {
-    const selectElement = event.target as HTMLSelectElement;
-    const deviceId = selectElement.value;
-    this.selectedDevice = this.availableCameras.find(c => c.deviceId === deviceId);
-    this.cameraOpen = true;
-  }
-  scanSuccessHandler(event: any) {
-    this.enableScannerMethod();
-    console.log('QR Code Data: ', event);
-    this.getProductsForm.get('barcode').setValue(event);
+  printValue(ev: any) {
+    this.toasterService.info("Okutma Başarılı :" + ev);
     this.generalService.beep2();
-    this.toasterService.success("Okutma Başarılı:" + event);
+    this.getProductsForm.get('barcode').setValue(ev);
+    this.getProducts(this.getProductsForm.value, this.orderType);
   }
-
   //--------------------------------------------------------------------------- CLIENT ORDER
   stateOptions: any[] = [{ label: 'Standart', value: '0' }, { label: 'Vergisiz', value: '4' }, { label: 'Standart Kdv Düş', value: '5' }];
   taxTypeCode: any;

@@ -81,9 +81,7 @@ export class WarehosueShelfCountComponent implements OnInit {
     private warehouseService: WarehouseService,
     private activatedRoute: ActivatedRoute,
     private title: Title,
-    private sanitizer: DomSanitizer,
-    private orderService: OrderService,
-    private router: Router
+    private sanitizer: DomSanitizer
   ) {
     this.title.setTitle('Sayım');
   }

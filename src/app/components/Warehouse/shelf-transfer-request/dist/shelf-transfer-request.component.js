@@ -484,7 +484,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
     };
     ShelfTransferRequestComponent.prototype.setFormValues = function (product) {
         return __awaiter(this, void 0, Promise, function () {
-            var result, items, finded_product, updatedProduct, result, finded_product, updatedProduct, error_1;
+            var result, items, finded_product, updatedProduct, result, updatedProduct, finded_product, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -521,6 +521,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                     case 2: return [4 /*yield*/, this.productService.countProductByBarcode(product.barcode)];
                     case 3:
                         result = _a.sent();
+                        updatedProduct = product;
                         this.shelfNumbers = result[0];
                         this.checkForm.get('batchCode').setValue(result[2]);
                         this.checkForm.get('barcode').setValue(result[3]);
@@ -534,7 +535,6 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                                 updatedProduct.targetShelfNo = finded_product.targetShelf;
                             }
                         }
-                        updatedProduct = product;
                         updatedProduct.barcode = result[3];
                         updatedProduct.batchCode = result[2];
                         updatedProduct.quantity = Number(result[1]);

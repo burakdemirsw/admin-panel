@@ -104,7 +104,7 @@
           <table class="table">
             <thead>
               <tr>
-                <th scope="col">Seç</th>
+                <!-- <th scope="col">Seç</th> -->
                 <th scope="col">İşlem Tarihi</th>
                 <th scope="col">Toplam Sayılan Ürün Sayısı</th>
                 <!-- <th scope="col">Sipariş Numarası</th> -->
@@ -117,14 +117,14 @@
                     | paginate : { itemsPerPage: 10, currentPage: currentPage }
                 "
               >
-                <td>
+                <!-- <td>
                   <input
                     class="form-check-input"
                     type="checkbox"
                     value=""
                     (click)="addInnerNumberToList(count.orderNo)"
                   />
-                </td>
+                </td> -->
 
                 <td>
                   {{ count.lastUpdateDate | date : "dd.MM.yyyy HH:mm:ss" }}

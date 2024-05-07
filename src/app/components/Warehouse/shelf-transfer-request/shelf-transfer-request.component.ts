@@ -456,6 +456,7 @@ export class ShelfTransferRequestComponent implements OnInit {
         var result: string[] = await this.productService.countProductByBarcode(
           product.barcode
         );
+        var updatedProduct: FastTransferModel2 = product;
         this.shelfNumbers = result[0];
         this.checkForm.get('batchCode').setValue(result[2]);
         this.checkForm.get('barcode').setValue(result[3]);
@@ -469,7 +470,7 @@ export class ShelfTransferRequestComponent implements OnInit {
             updatedProduct.targetShelfNo = finded_product.targetShelf;
           }
         }
-        var updatedProduct: FastTransferModel2 = product;
+
         updatedProduct.barcode = result[3];
         updatedProduct.batchCode = result[2];
         updatedProduct.quantity = Number(result[1]);

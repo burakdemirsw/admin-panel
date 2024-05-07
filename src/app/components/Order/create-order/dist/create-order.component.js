@@ -65,7 +65,6 @@ var createCustomer_CM_1 = require("../../../models/model/order/createCustomer_CM
 var getCustomerList_CM_2 = require("../../../models/model/order/getCustomerList_CM");
 var nebimOrder_1 = require("../../../models/model/order/nebimOrder");
 var models_1 = require("../../cargo/create-cargo/models/models");
-var library_1 = require("@zxing/library");
 var CreateOrderComponent = /** @class */ (function () {
     function CreateOrderComponent(headerService, warehouseService, paymentService, toasterService, activatedRoute, router, httpClientService, generalService, addressService, googleDriveService, productService, formBuilder, orderService, cargoService) {
         this.headerService = headerService;
@@ -90,18 +89,6 @@ var CreateOrderComponent = /** @class */ (function () {
         this.activeIndex = 0;
         this["true"] = true;
         this.isCollapsed = false;
-        //--------------------------------------------------------------------------- KAMERA
-        this.allowedFormats = [
-            library_1.BarcodeFormat.CODE_39,
-            library_1.BarcodeFormat.CODE_93,
-            library_1.BarcodeFormat.CODE_128,
-            library_1.BarcodeFormat.EAN_8,
-            library_1.BarcodeFormat.EAN_13,
-            library_1.BarcodeFormat.QR_CODE
-        ];
-        this.availableCameras = [];
-        this.enableScanner = false;
-        this.cameraOpen = false;
         //--------------------------------------------------------------------------- CLIENT ORDER
         this.stateOptions = [{ label: 'Standart', value: '0' }, { label: 'Vergisiz', value: '4' }, { label: 'Standart Kdv Düş', value: '5' }];
         this.isCompleted = false;
@@ -191,12 +178,6 @@ var CreateOrderComponent = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        setTimeout(function () {
-                            /* we need to force the component to set the enabled formats. Binding doesn't work.
-                               Must happen after the scanner component has been initialized
-                            */
-                            _this.scanner.formats = _this.allowedFormats;
-                        }, 3000);
                         this.createPaymentForm();
                         this.createGetProductForm();
                         _a = this;
@@ -245,28 +226,12 @@ var CreateOrderComponent = /** @class */ (function () {
             });
         });
     };
-    CreateOrderComponent.prototype.enableScannerMethod = function () {
-        this.enableScanner = !this.enableScanner;
-        this.cameraOpen = !this.cameraOpen;
-    };
-    CreateOrderComponent.prototype.camerasFoundHandler = function (cameras) {
-        this.availableCameras = cameras;
-        if (cameras.length > 0) {
-            this.selectedDevice = cameras[0]; // Varsayılan olarak ilk kamerayı seç
-        }
-    };
-    CreateOrderComponent.prototype.onCameraSelected = function (event) {
-        var selectElement = event.target;
-        var deviceId = selectElement.value;
-        this.selectedDevice = this.availableCameras.find(function (c) { return c.deviceId === deviceId; });
-        this.cameraOpen = true;
-    };
-    CreateOrderComponent.prototype.scanSuccessHandler = function (event) {
-        this.enableScannerMethod();
-        console.log('QR Code Data: ', event);
-        this.getProductsForm.get('barcode').setValue(event);
+    //--------------------------------------------------------------------------- KAMERA
+    CreateOrderComponent.prototype.printValue = function (ev) {
+        this.toasterService.info("Okutma Başarılı :" + ev);
         this.generalService.beep2();
-        this.toasterService.success("Okutma Başarılı:" + event);
+        this.getProductsForm.get('barcode').setValue(ev);
+        this.getProducts(this.getProductsForm.value, this.orderType);
     };
     CreateOrderComponent.prototype.getClientOrder = function (state) {
         return __awaiter(this, void 0, void 0, function () {
@@ -2204,9 +2169,6 @@ var CreateOrderComponent = /** @class */ (function () {
             });
         });
     };
-    __decorate([
-        core_1.ViewChild('scanner')
-    ], CreateOrderComponent.prototype, "scanner");
     __decorate([
         core_1.ViewChild('findCustomer', { static: false })
     ], CreateOrderComponent.prototype, "findCustomer");

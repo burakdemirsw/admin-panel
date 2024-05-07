@@ -109,6 +109,7 @@ import { RetailOrderManagementComponent } from './components2/order/retail-order
 import { CollectedPackagesComponent as CollectedPackagesComponent2 } from './components2/order/collected-packages/collected-packages.component';
 import { OrderStateComponent } from './components/Order/order-state/order-state.component';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { ReadBarcodeComponent } from './components/Product/read-barcode/read-barcode.component';
 
 @NgModule({
 
@@ -179,7 +180,8 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
     RetailInvoiceListComponent,
     RetailOrderManagementComponent,
     CollectedPackagesComponent2,
-    OrderStateComponent
+    OrderStateComponent,
+    ReadBarcodeComponent
 
   ],
 

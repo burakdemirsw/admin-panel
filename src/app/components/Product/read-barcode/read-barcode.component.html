@@ -1,0 +1,30 @@
+<button
+  (click)="enableScannerMethod()"
+  pButton
+  pRipple
+  class="p-button-rounded p-button-text"
+  label="{{ enableScanner ? 'Kamerayı Kapat' : 'Kamerayı Aç' }}"
+  icon="pi pi-camera"
+></button>
+
+<p-dialog
+  *ngIf="enableScanner"
+  header="BARKOD OKUT"
+  [(visible)]="enableScanner"
+  [style]="{ width: '80vw' }"
+  [modal]="true"
+>
+  <label for="cameras">Kamera Seçin:</label>
+  <select id="cameras" (change)="onCameraSelected($event)">
+    <option *ngFor="let camera of availableCameras" [value]="camera.deviceId">
+      {{ camera.label }}
+    </option>
+  </select>
+  <zxing-scanner
+    #scanner
+    [device]="selectedDevice"
+    (camerasFound)="camerasFoundHandler($event)"
+    (scanSuccess)="scanSuccessHandler($event)"
+    [formats]="allowedFormats"
+  ></zxing-scanner>
+</p-dialog>
