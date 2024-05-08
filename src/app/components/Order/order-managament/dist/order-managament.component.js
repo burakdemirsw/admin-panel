@@ -371,6 +371,25 @@ var OrderManagamentComponent = /** @class */ (function () {
             });
         });
     };
+    OrderManagamentComponent.prototype.createPdf = function (orderNumber) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.orderService.createPdf(orderNumber)];
+                    case 1:
+                        response = _a.sent();
+                        if (response) {
+                            this.toasterService.success("İşlem Başarılı");
+                        }
+                        else {
+                            this.toasterService.error("İşlem Başarısız");
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     OrderManagamentComponent.prototype.goToPage = function () {
         if (this.searchedOrder.includes("http")) {
             location.href = this.searchedOrder;

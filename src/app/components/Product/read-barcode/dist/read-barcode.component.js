@@ -20,7 +20,8 @@ var ReadBarcodeComponent = /** @class */ (function () {
             library_1.BarcodeFormat.CODE_128,
             library_1.BarcodeFormat.EAN_8,
             library_1.BarcodeFormat.EAN_13,
-            library_1.BarcodeFormat.QR_CODE
+            library_1.BarcodeFormat.QR_CODE,
+            library_1.BarcodeFormat.DATA_MATRIX
         ];
         this.availableCameras = [];
     }

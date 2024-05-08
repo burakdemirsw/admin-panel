@@ -538,7 +538,7 @@ var OrderOperationComponent = /** @class */ (function () {
                             if (this.productsToCollect.length > 0) {
                                 this.addMissingProduct(this.productsToCollect);
                             }
-                            this.router.navigate(['/orders-managament']);
+                            this.router.navigate(['/orders-managament/1/2']);
                         }
                         _a.label = 4;
                     case 4: return [2 /*return*/];
@@ -643,9 +643,9 @@ var OrderOperationComponent = /** @class */ (function () {
             }
         }
     };
-    OrderOperationComponent.prototype.setFormValues = function (barcode, check) {
+    OrderOperationComponent.prototype.setFormValues = function (barcode) {
         return __awaiter(this, void 0, Promise, function () {
-            var result, currentShelfNo, product, result, product, error_1;
+            var result, currentShelfNo, product, result, currentShelfNo, product, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -655,18 +655,17 @@ var OrderOperationComponent = /** @class */ (function () {
                     case 1:
                         result = _a.sent();
                         this.shelfNumbers = result[0];
-                        if (check) {
-                            currentShelfNo = this.checkForm.get('shelfNo').value;
-                            this.checkForm.get('batchCode').setValue(result[2]);
-                            this.checkForm.get('barcode').setValue(result[3]);
-                            this.checkForm.get('quantity').setValue(result[1]);
-                        }
-                        product = new countProduct_1.CountProduct(result[3], null, result[2], Number(result[1]));
+                        currentShelfNo = this.checkForm.get('shelfNo').value;
+                        this.checkForm.get('batchCode').setValue(result[2]);
+                        this.checkForm.get('barcode').setValue(result[3]);
+                        this.checkForm.get('quantity').setValue(result[1]);
+                        product = new countProduct_1.CountProduct(result[3], currentShelfNo, result[2], Number(result[1]));
                         return [2 /*return*/, product];
                     case 2: return [4 /*yield*/, this.productService.countProductByBarcode4(barcode, this.warehouseCode)];
                     case 3:
                         result = _a.sent();
                         this.shelfNumbers = result[0];
+                        currentShelfNo = this.checkForm.get('shelfNo').value;
                         this.checkForm.get('barcode').setValue(result[3]);
                         this.checkForm.get('batchCode').setValue(result[2].toString());
                         this.checkForm.get('quantity').setValue(result[1]);
@@ -678,7 +677,7 @@ var OrderOperationComponent = /** @class */ (function () {
                                 return [2 /*return*/, null];
                             }
                         }
-                        product = new countProduct_1.CountProduct(result[3], null, result[2], Number(result[1]));
+                        product = new countProduct_1.CountProduct(result[3], currentShelfNo, result[2], Number(result[1]));
                         return [2 /*return*/, product];
                     case 4: return [3 /*break*/, 6];
                     case 5:
@@ -700,23 +699,32 @@ var OrderOperationComponent = /** @class */ (function () {
                         if (productModel.barcode.includes("=")) {
                             productModel.barcode = productModel.barcode.replace(/=/g, "-");
                         }
+                        if (productModel.barcode.includes("Http")) {
+                            productModel.barcode = productModel.barcode.replace("Http", "http");
+                        }
                         // http ile başlıyorsa veya guid ise qr işlemi yap
                         if (productModel.barcode.includes('http') ||
                             this.generalService.isGuid(productModel.barcode)) {
                             this.qrBarcodeUrl = productModel.barcode;
                         }
-                        if (!!this.checkForm.valid) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.setFormValues(productModel.barcode, true)];
+                        if (!!this.checkForm.valid) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.setFormValues(productModel.barcode)];
                     case 1:
                         updated_product = _a.sent();
-                        productModel = updated_product; //model güncellendi
+                        productModel = updated_product;
+                        if (!((this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-')) && this.checkForm.valid)) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.onSubmit(productModel)];
+                    case 2:
+                        _a.sent();
+                        _a.label = 3;
+                    case 3:
                         this.toasterService.success("Formu Verileri Dolduruldu.");
                         return [2 /*return*/];
-                    case 2:
-                        if (!(this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-'))) return [3 /*break*/, 17];
-                        if (!this.checkForm.valid) return [3 /*break*/, 16];
+                    case 4:
+                        if (!(this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-'))) return [3 /*break*/, 19];
+                        if (!this.checkForm.valid) return [3 /*break*/, 18];
                         foundModel = this.productsToCollect.find(function (o) { return o.barcode == productModel.barcode; });
-                        if (!true) return [3 /*break*/, 16];
+                        if (!true) return [3 /*break*/, 18];
                         newResponse = this.shelfNumbers;
                         shelves = newResponse
                             .split(',')
@@ -724,18 +732,18 @@ var OrderOperationComponent = /** @class */ (function () {
                             .map(function (raflar) { return raflar.toLowerCase(); });
                         foundProduct = this.productsToCollect.find(function (o) { return o.barcode == productModel.barcode; });
                         if (!(shelves.find(function (s) { return s.toLowerCase() == productModel.shelfNo.toLowerCase(); }) &&
-                            (foundProduct != null || foundProduct != undefined))) return [3 /*break*/, 10];
-                        if (!(foundProduct.quantity - productModel.quantity >= 0)) return [3 /*break*/, 8];
+                            (foundProduct != null || foundProduct != undefined))) return [3 /*break*/, 12];
+                        if (!(foundProduct.quantity - productModel.quantity >= 0)) return [3 /*break*/, 10];
                         lineId = this.productsToCollect.find(function (p) { return p.barcode == productModel.barcode; }).lineId;
                         if (!lineId) {
                             this.toasterService.error("lineId bulunamadı");
                         }
                         return [4 /*yield*/, this.warehouseService.countProductRequest2(this.checkForm.get('barcode').value, productModel.shelfNo, productModel.quantity, null, null, productModel.batchCode, 'Order/CountProduct4', this.orderNo, null, lineId)];
-                    case 3:
+                    case 5:
                         response = _a.sent();
-                        if (!(response && response != null && response != undefined)) return [3 /*break*/, 5];
+                        if (!(response && response != null && response != undefined)) return [3 /*break*/, 7];
                         return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, productModel, productModel.quantity, false, 'WS')];
-                    case 4:
+                    case 6:
                         qrResponse = _a.sent();
                         if (qrResponse != null && qrResponse.state === true) {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
@@ -743,62 +751,62 @@ var OrderOperationComponent = /** @class */ (function () {
                         else if (qrResponse === null) {
                             this.qrBarcodeUrl = null;
                         }
-                        return [3 /*break*/, 6];
-                    case 5:
+                        return [3 /*break*/, 8];
+                    case 7:
                         this.toasterService.error("Sayım Sırasında Hata Alındı");
                         return [2 /*return*/];
-                    case 6: return [4 /*yield*/, this.getAllProducts(this.orderNo, 'WS')];
-                    case 7:
+                    case 8: return [4 /*yield*/, this.getAllProducts(this.orderNo, 'WS')];
+                    case 9:
                         _a.sent();
                         //↑↑↑↑↑↑↑↑↑ TÜM ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
                         this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
                         this.clearBarcodeAndQuantity();
-                        return [3 /*break*/, 9];
-                    case 8:
-                        this.toasterService.warn('Stok Hatası.');
-                        _a.label = 9;
-                    case 9: return [3 /*break*/, 16];
+                        return [3 /*break*/, 11];
                     case 10:
+                        this.toasterService.warn('Stok Hatası.');
+                        _a.label = 11;
+                    case 11: return [3 /*break*/, 18];
+                    case 12:
                         confirmDelete = window.confirm('Raf Numarası Eşleşmedi Yine De Eklemek İstiyor Musunuz?');
-                        if (!confirmDelete) return [3 /*break*/, 15];
+                        if (!confirmDelete) return [3 /*break*/, 17];
                         //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
                         productModel.quantity =
                             productModel.quantity;
-                        if (!(foundProduct.quantity - productModel.quantity >= 0)) return [3 /*break*/, 13];
+                        if (!(foundProduct.quantity - productModel.quantity >= 0)) return [3 /*break*/, 15];
                         lineId = this.productsToCollect.find(function (p) { return p.barcode == productModel.barcode; }).lineId;
                         if (!lineId) {
                             this.toasterService.error("lineId bulunamadı");
                         }
                         return [4 /*yield*/, this.warehouseService.countProductRequest2(this.checkForm.get('barcode').value, productModel.shelfNo, productModel.quantity, null, null, productModel.batchCode, 'Order/CountProduct4', this.orderNo, null, lineId)];
-                    case 11:
+                    case 13:
                         response = _a.sent();
                         //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
                         return [4 /*yield*/, this.getAllProducts(this.orderNo, 'WS')];
-                    case 12:
+                    case 14:
                         //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
                         _a.sent();
                         //↑↑↑↑↑↑↑↑↑ TOPLANAN ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
                         this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
                         this.clearBarcodeAndQuantity();
-                        return [3 /*break*/, 14];
-                    case 13:
-                        this.toasterService.warn('Stok Hatası.');
-                        _a.label = 14;
-                    case 14: return [3 /*break*/, 16];
+                        return [3 /*break*/, 16];
                     case 15:
-                        this.toasterService.error("Eklenmedi");
+                        this.toasterService.warn('Stok Hatası.');
                         _a.label = 16;
-                    case 16: return [3 /*break*/, 40];
+                    case 16: return [3 /*break*/, 18];
                     case 17:
-                        if (!(this.currentOrderNo.split('-')[1] === 'WT' || this.isBPTransferForm === true)) return [3 /*break*/, 29];
-                        if (!this.checkForm.valid) return [3 /*break*/, 28];
+                        this.toasterService.error("Eklenmedi");
+                        _a.label = 18;
+                    case 18: return [3 /*break*/, 42];
+                    case 19:
+                        if (!(this.currentOrderNo.split('-')[1] === 'WT' || this.isBPTransferForm === true)) return [3 /*break*/, 31];
+                        if (!this.checkForm.valid) return [3 /*break*/, 30];
                         if (productModel.barcode && productModel.barcode.charAt(0) === '0') {
                             productModel.barcode = productModel.barcode.substring(1);
                         }
                         foundModel = this.productsToCollect.find(function (o) { return o.barcode == productModel.barcode; });
-                        if (!foundModel) return [3 /*break*/, 27];
+                        if (!foundModel) return [3 /*break*/, 29];
                         foundProduct = foundModel;
-                        if (!(foundProduct.quantity - productModel.quantity >= 0)) return [3 /*break*/, 25];
+                        if (!(foundProduct.quantity - productModel.quantity >= 0)) return [3 /*break*/, 27];
                         model = new warehouseOperationProductModel_1.WarehouseOperationProductModel();
                         model.barcode = productModel.barcode;
                         model.batchCode = productModel.batchCode;
@@ -807,19 +815,19 @@ var OrderOperationComponent = /** @class */ (function () {
                         model.shelfNumber = productModel.shelfNo;
                         model.warehouse = foundModel.itemDim1Code;
                         return [4 /*yield*/, this.warehouseService.transfer(model)];
-                    case 18:
+                    case 20:
                         response_1 = _a.sent();
-                        if (!(response_1 > 0)) return [3 /*break*/, 24];
+                        if (!(response_1 > 0)) return [3 /*break*/, 26];
                         lineId = this.productsToCollect.find(function (p) { return p.barcode == productModel.barcode; }).lineId;
                         if (!lineId) {
                             this.toasterService.error("lineId bulunamadı");
                         }
                         return [4 /*yield*/, this.warehouseService.countProductRequest2(productModel.barcode, productModel.shelfNo, productModel.quantity, null, null, productModel.batchCode == null ? "" : productModel.batchCode, 'Order/CountProduct4', this.orderNo, null, lineId)];
-                    case 19:
+                    case 21:
                         response2 = _a.sent();
-                        if (!(response2 && response2 != null && response2 != undefined)) return [3 /*break*/, 21];
+                        if (!(response2 && response2 != null && response2 != undefined)) return [3 /*break*/, 23];
                         return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, productModel, productModel.quantity, false, 'WT')];
-                    case 20:
+                    case 22:
                         qrResponse = _a.sent();
                         if (qrResponse != null && qrResponse.state === true) {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
@@ -827,30 +835,30 @@ var OrderOperationComponent = /** @class */ (function () {
                         else if (qrResponse === null) {
                             this.qrBarcodeUrl = null;
                         }
-                        return [3 /*break*/, 22];
-                    case 21:
+                        return [3 /*break*/, 24];
+                    case 23:
                         this.toasterService.error("Sayım Sırasında Hata Alındı");
                         return [2 /*return*/];
-                    case 22: return [4 /*yield*/, this.getAllProducts(this.orderNo, 'WT')];
-                    case 23:
+                    case 24: return [4 /*yield*/, this.getAllProducts(this.orderNo, 'WT')];
+                    case 25:
                         _a.sent();
                         //↑↑↑↑↑↑↑↑↑ TOPLANAN ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
                         this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
                         this.clearBarcodeAndQuantity();
-                        _a.label = 24;
-                    case 24: return [3 /*break*/, 26];
-                    case 25:
-                        this.toasterService.warn('Stok Hatası.');
                         _a.label = 26;
                     case 26: return [3 /*break*/, 28];
                     case 27:
-                        this.toasterService.warn('Eşleşen Ürün Bulunamadı');
+                        this.toasterService.warn('Stok Hatası.');
                         _a.label = 28;
-                    case 28: return [3 /*break*/, 40];
+                    case 28: return [3 /*break*/, 30];
                     case 29:
-                        if (!this.checkForm.valid) return [3 /*break*/, 39];
+                        this.toasterService.warn('Eşleşen Ürün Bulunamadı');
+                        _a.label = 30;
+                    case 30: return [3 /*break*/, 42];
+                    case 31:
+                        if (!this.checkForm.valid) return [3 /*break*/, 41];
                         return [4 /*yield*/, this.warehouseService.countProductRequest(productModel.barcode, productModel.shelfNo, productModel.quantity, null, null, productModel.batchCode, 'Order/CountProductControl', this.orderNo, null)];
-                    case 30:
+                    case 32:
                         response = _a.sent();
                         //↑↑↑↑↑↑↑↑↑ BARKOD KONTROL EDİLDİ ↑↑↑↑↑↑↑↑↑
                         if (response != undefined) {
@@ -866,19 +874,19 @@ var OrderOperationComponent = /** @class */ (function () {
                             productModel.barcode = productModel.barcode.substring(1);
                         }
                         foundModel2 = this.productsToCollect.find(function (o) { return (o === null || o === void 0 ? void 0 : o.barcode) === productModel.barcode; });
-                        if (!(foundModel2 != null && foundModel2 != undefined)) return [3 /*break*/, 37];
+                        if (!(foundModel2 != null && foundModel2 != undefined)) return [3 /*break*/, 39];
                         foundProduct = this.productsToCollect.find(function (o) { return o.barcode == productModel.barcode; });
-                        if (!(foundProduct.quantity - productModel.quantity >= 0)) return [3 /*break*/, 36];
+                        if (!(foundProduct.quantity - productModel.quantity >= 0)) return [3 /*break*/, 38];
                         lineId = this.productsToCollect.find(function (p) { return p.barcode == productModel.barcode && p.shelfNo == productModel.shelfNo; }).lineId;
                         if (!lineId) {
                             this.toasterService.error("lineId bulunamadı");
                         }
                         return [4 /*yield*/, this.warehouseService.countProductRequest2(productModel.barcode, productModel.shelfNo, productModel.quantity, null, null, productModel.batchCode, 'Order/CountProduct4', this.orderNo, null, lineId)];
-                    case 31:
+                    case 33:
                         response = _a.sent();
-                        if (!(response && response != null && response != undefined)) return [3 /*break*/, 33];
+                        if (!(response && response != null && response != undefined)) return [3 /*break*/, 35];
                         return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, productModel, productModel.quantity, false, 'BP')];
-                    case 32:
+                    case 34:
                         qrResponse = _a.sent();
                         if (qrResponse != null && qrResponse.state === true) {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
@@ -886,26 +894,26 @@ var OrderOperationComponent = /** @class */ (function () {
                         else if (qrResponse === null) {
                             this.qrBarcodeUrl = null;
                         }
-                        return [3 /*break*/, 34];
-                    case 33:
+                        return [3 /*break*/, 36];
+                    case 35:
                         this.toasterService.error("Sayım Sırasında Hata Alındı");
                         return [2 /*return*/];
-                    case 34: return [4 /*yield*/, this.getAllProducts(this.orderNo, 'BP')];
-                    case 35:
+                    case 36: return [4 /*yield*/, this.getAllProducts(this.orderNo, 'BP')];
+                    case 37:
                         _a.sent();
                         //↑↑↑↑↑↑↑↑↑ TOPLANAN ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
                         this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
                         this.clearBarcodeAndQuantity();
-                        _a.label = 36;
-                    case 36: return [3 /*break*/, 38];
-                    case 37:
-                        this.toasterService.warn('Eşleşen Ürün Bulunamadı');
                         _a.label = 38;
                     case 38: return [3 /*break*/, 40];
                     case 39:
-                        this.toasterService.warn('Formu Doldurunuz');
+                        this.toasterService.warn('Eşleşen Ürün Bulunamadı');
                         _a.label = 40;
-                    case 40: return [2 /*return*/];
+                    case 40: return [3 /*break*/, 42];
+                    case 41:
+                        this.toasterService.warn('Formu Doldurunuz');
+                        _a.label = 42;
+                    case 42: return [2 /*return*/];
                 }
             });
         });

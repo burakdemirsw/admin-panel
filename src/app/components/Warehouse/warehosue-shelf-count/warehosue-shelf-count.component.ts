@@ -355,6 +355,7 @@ export class WarehosueShelfCountComponent implements OnInit {
       countProductRequestModel.barcode.includes('http') ||
       this.generalService.isGuid(countProductRequestModel.barcode)
     ) {
+      countProductRequestModel.barcode = countProductRequestModel.barcode.replace("Http", "http");
       this.qrBarcodeUrl = countProductRequestModel.barcode;
     }
 

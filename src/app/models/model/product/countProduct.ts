@@ -1,9 +1,9 @@
 export class CountProduct { //order-operation
 
-  barcode!: string;
-  shelfNo!: string;
-  batchCode!: string;
-  quantity !: number
+  barcode: string;
+  shelfNo: string;
+  batchCode: string;
+  quantity: number
 
   constructor(barcode: string, shelfNo: string, batchCode: string, quantity: number) {
 

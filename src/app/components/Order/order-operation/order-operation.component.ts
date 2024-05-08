@@ -455,7 +455,7 @@ export class OrderOperationComponent implements OnInit {
           if (this.productsToCollect.length > 0) {
             this.addMissingProduct(this.productsToCollect);
           }
-          this.router.navigate(['/orders-managament']);
+          this.router.navigate(['/orders-managament/1/2']);
         }
       }
 
@@ -567,7 +567,7 @@ export class OrderOperationComponent implements OnInit {
     }
   }
 
-  async setFormValues(barcode: string, check: boolean): Promise<CountProduct> {
+  async setFormValues(barcode: string): Promise<CountProduct> {
 
 
 
@@ -577,21 +577,19 @@ export class OrderOperationComponent implements OnInit {
           barcode
         );
         this.shelfNumbers = result[0];
-        if (check) {
-          var currentShelfNo = this.checkForm.get('shelfNo').value;
+        var currentShelfNo = this.checkForm.get('shelfNo').value;
+        this.checkForm.get('batchCode').setValue(result[2]);
+        this.checkForm.get('barcode').setValue(result[3]);
+        this.checkForm.get('quantity').setValue(result[1]);
 
-          this.checkForm.get('batchCode').setValue(result[2]);
-          this.checkForm.get('barcode').setValue(result[3]);
-          this.checkForm.get('quantity').setValue(result[1]);
-        }
-
-        var product: CountProduct = new CountProduct(result[3], null, result[2], Number(result[1]));
+        var product: CountProduct = new CountProduct(result[3], currentShelfNo, result[2], Number(result[1]));
         return product;
       } else {
         var result: string[] = await this.productService.countProductByBarcode4(
           barcode, this.warehouseCode
         );
         this.shelfNumbers = result[0];
+        var currentShelfNo = this.checkForm.get('shelfNo').value;
         this.checkForm.get('barcode').setValue(result[3]);
         this.checkForm.get('batchCode').setValue(result[2].toString());
         this.checkForm.get('quantity').setValue(result[1]);
@@ -604,7 +602,7 @@ export class OrderOperationComponent implements OnInit {
             return null;
           }
         }
-        var product: CountProduct = new CountProduct(result[3], null, result[2], Number(result[1]));
+        var product: CountProduct = new CountProduct(result[3], currentShelfNo, result[2], Number(result[1]));
         return product;
       }
     } catch (error) {
@@ -623,6 +621,10 @@ export class OrderOperationComponent implements OnInit {
       productModel.barcode = productModel.barcode.replace(/=/g, "-");
 
     }
+    if (productModel.barcode.includes("Http")) {
+      productModel.barcode = productModel.barcode.replace("Http", "http");
+
+    }
 
     // http ile başlıyorsa veya guid ise qr işlemi yap
     if (
@@ -634,8 +636,17 @@ export class OrderOperationComponent implements OnInit {
 
     if (!this.checkForm.valid) {
 
-      var updated_product = await this.setFormValues(productModel.barcode, true);
-      productModel = updated_product; //model güncellendi
+      var updated_product = await this.setFormValues(
+
+        productModel.barcode
+      );
+      productModel = updated_product;
+
+      if ((this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-')) && this.checkForm.valid) {
+        await this.onSubmit(productModel);
+      }
+
+
       this.toasterService.success("Formu Verileri Dolduruldu.")
       return;
     }
@@ -643,6 +654,7 @@ export class OrderOperationComponent implements OnInit {
     //satış faturası alanı------------------------------------------------------------------------ WS
 
     if (this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-')) {
+
 
       if (this.checkForm.valid) {
 

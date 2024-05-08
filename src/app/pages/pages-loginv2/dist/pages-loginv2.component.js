@@ -42,94 +42,93 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.OrderStateComponent = void 0;
+exports.PagesLoginv2Component = void 0;
 var core_1 = require("@angular/core");
-var OrderStateComponent = /** @class */ (function () {
-    function OrderStateComponent(renderer, toasterService, orderService) {
-        this.renderer = renderer;
-        this.toasterService = toasterService;
-        this.orderService = orderService;
-        this.currentPage = 1;
-        this.collectableOrders = [];
-        this.collectedOrders = [];
+var forms_1 = require("@angular/forms");
+var PagesLoginv2Component = /** @class */ (function () {
+    function PagesLoginv2Component(userService, router, formBuilder, alertifyService) {
+        this.userService = userService;
+        this.router = router;
+        this.formBuilder = formBuilder;
+        this.alertifyService = alertifyService;
     }
-    OrderStateComponent.prototype.ngOnInit = function () {
+    PagesLoginv2Component.prototype.ngOnInit = function () {
+        this.emailFormCreator();
+        this.formGenerator();
+    };
+    PagesLoginv2Component.prototype.formGenerator = function () {
+        this.loginForm = this.formBuilder.group({
+            password: [null, forms_1.Validators.required],
+            phoneNumberOrEmail: [null, forms_1.Validators.required]
+        });
+    };
+    PagesLoginv2Component.prototype.onSubmit = function (loginFormValue) {
         return __awaiter(this, void 0, void 0, function () {
-            var response, _a, _b;
-            var _this = this;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0: return [4 /*yield*/, this.orderService.getExchangeRates()];
+            var model, response, error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 4, , 5]);
+                        if (!this.loginForm.valid) return [3 /*break*/, 2];
+                        model = {
+                            password: loginFormValue.password,
+                            phoneNumberOrEmail: loginFormValue.phoneNumberOrEmail
+                        };
+                        return [4 /*yield*/, this.userService.login(model)];
                     case 1:
-                        response = _c.sent();
-                        this.exchangeRates = response;
-                        _a = this;
-                        return [4 /*yield*/, this.getOrders(1, 2)];
+                        response = _a.sent();
+                        if (response) {
+                            location.href = location.origin + "/dashboard";
+                            // this.router.navigate(["/dashboard"])
+                        }
+                        return [3 /*break*/, 3];
                     case 2:
-                        _a.collectableOrders = _c.sent();
-                        _b = this;
-                        return [4 /*yield*/, this.getOrders(1, 1)];
-                    case 3:
-                        _b.collectedOrders = _c.sent();
-                        // setInterval başlat ve referansı intervalId'e ata
-                        this.intervalId = setInterval(function () { return __awaiter(_this, void 0, void 0, function () {
-                            var _a, _b;
-                            return __generator(this, function (_c) {
-                                switch (_c.label) {
-                                    case 0:
-                                        _a = this;
-                                        return [4 /*yield*/, this.getOrders(1, 2)];
-                                    case 1:
-                                        _a.collectableOrders = _c.sent();
-                                        _b = this;
-                                        return [4 /*yield*/, this.getOrders(1, 1)];
-                                    case 2:
-                                        _b.collectedOrders = _c.sent();
-                                        return [2 /*return*/];
-                                }
-                            });
-                        }); }, 40000);
-                        return [2 /*return*/];
+                        console.log('Form Geçerli Değil');
+                        _a.label = 3;
+                    case 3: return [3 /*break*/, 5];
+                    case 4:
+                        error_1 = _a.sent();
+                        this.alertifyService.warning("Hata Alındı: " + error_1.message);
+                        return [3 /*break*/, 5];
+                    case 5: return [2 /*return*/];
                 }
             });
         });
     };
-    OrderStateComponent.prototype.showPanel = function () {
-        this.panel.toggle(event);
+    PagesLoginv2Component.prototype.openDialog = function () {
+        this.visible = !this.visible;
     };
-    OrderStateComponent.prototype.ngOnDestroy = function () {
-        if (this.intervalId) {
-            clearInterval(this.intervalId);
-        }
+    PagesLoginv2Component.prototype.emailFormCreator = function () {
+        this.emailForm = this.formBuilder.group({
+            userEmail: [null]
+        });
     };
-    OrderStateComponent.prototype.getCollectableOrders = function () {
-    };
-    OrderStateComponent.prototype.getOrders = function (status, invoiceStatus) {
-        return __awaiter(this, void 0, Promise, function () {
+    PagesLoginv2Component.prototype.submitEmailForm = function (value) {
+        return __awaiter(this, void 0, void 0, function () {
             var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.status = status;
-                        this.invoiceStatus = invoiceStatus;
-                        return [4 /*yield*/, this.orderService.getSaleOrdersWithStatus(status, invoiceStatus)];
+                        if (!this.emailForm.valid) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.userService.sendPasswordResetEmail(value.userEmail)];
                     case 1:
                         response = _a.sent();
-                        return [2 /*return*/, response];
+                        if (response) {
+                            this.alertifyService.success("Mail Gönderildi: " + "Mail Kutunuzu Kontrol Ediniz...");
+                        }
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
                 }
             });
         });
     };
-    __decorate([
-        core_1.ViewChild('panel')
-    ], OrderStateComponent.prototype, "panel");
-    OrderStateComponent = __decorate([
+    PagesLoginv2Component = __decorate([
         core_1.Component({
-            selector: 'app-order-state',
-            templateUrl: './order-state.component.html',
-            styleUrls: ['./order-state.component.css']
+            selector: 'app-pages-loginv2',
+            templateUrl: './pages-loginv2.component.html',
+            styleUrls: ['./pages-loginv2.component.css']
         })
-    ], OrderStateComponent);
-    return OrderStateComponent;
+    ], PagesLoginv2Component);
+    return PagesLoginv2Component;
 }());
-exports.OrderStateComponent = OrderStateComponent;
+exports.PagesLoginv2Component = PagesLoginv2Component;

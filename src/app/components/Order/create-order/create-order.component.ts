@@ -253,7 +253,8 @@ export class CreateOrderComponent implements OnInit {
       request.recepientPhone = this.cargoForm_2.value.address_phoneNumber;
       request.orderDescription = this.orderDescription;
       request.cargoStatus = this.cargoForm.get('isActive').value == true ? "KARGO VAR" : "KARGO YOK"
-      request.orderDescription = this.paymentForm.get('orderDescription').value
+      request.orderDescription = this.paymentForm.get('orderDescription').value;
+      request.paymentDescription = this.payment.creditCardTypeCode;
       if (this.payment) {
         request.paymentType = this.payment.creditCardTypeCode;
       } else {
@@ -847,7 +848,7 @@ export class CreateOrderComponent implements OnInit {
   addresses: CustomerAddress_VM[] = []
   async getCustomerAddresses(request: GetCustomerAddress_CM) {
     this.addresses = await this.orderService.getCustomerAddress(request)
-    if (this.addresses.length === 1) {
+    if (this.addresses.length > 0) {
       this.selectCurrentAddress(this.addresses[0])
       this.selectAddressDialog = false;
       this.activeIndex = 2;
@@ -1014,6 +1015,8 @@ export class CreateOrderComponent implements OnInit {
           }
 
           this.getProductsForm.get('barcode').setValue(result[3]);
+          request.barcode = result[3];
+          this.getProducts(request, this.orderType);
           this.toasterService.success("Form Verileri Güncellendi")
           return;
 
@@ -1028,6 +1031,7 @@ export class CreateOrderComponent implements OnInit {
 
         if (response.length == 0) {
           this.toasterService.error("Ürün Sorgusundan Yanıt Alınamadı");
+          this.getProductsForm.get('barcode').setValue(null);
           return;
         }
         this.products = response;
@@ -1036,12 +1040,13 @@ export class CreateOrderComponent implements OnInit {
             if (p.quantity <= 0) {
               this.toasterService.error("STOK HATASI")
               this.products = [];
+              this.getProductsForm.get('barcode').setValue(null);
               return;
             }
           });
 
 
-          this.getProductsForm.get('barcode').setValue(null);
+
 
           var totalQuantity = 0;
           this.selectedProducts.forEach(product => {
@@ -1053,6 +1058,8 @@ export class CreateOrderComponent implements OnInit {
           if (totalQuantity >= this.products[0].quantity) {
             this.toasterService.error("STOK HATASI")
             this.products = [];
+            this.getProductsForm.get('barcode').setValue(null);
+
             return;
           } else {
             this.toasterService.success(this.products.length + " Adet Ürün Bulundu")
@@ -1060,12 +1067,13 @@ export class CreateOrderComponent implements OnInit {
               await this.addCurrentProducts(_product);
 
             }
-
+            this.getProductsForm.get('barcode').setValue(null);
             this.products = [];
           }
         } else {
           this.toasterService.error("Ürün Bulunamadı")
         }
+        this.getProductsForm.get('barcode').setValue(null);
         return response;
       } catch (error: any) {
 
@@ -1082,6 +1090,7 @@ export class CreateOrderComponent implements OnInit {
           );
           if (result == null) {
             this.toasterService.error("Qr Sorgusu Hatalı");
+            this.getProductsForm.get('barcode').setValue(null);
             return;
           }
 
@@ -1098,6 +1107,7 @@ export class CreateOrderComponent implements OnInit {
 
         this.generalService.focusNextInput('shelfNo')
         this.toasterService.error("Raf Numarası Giriniz");
+
         return;
       }
 
@@ -1115,6 +1125,7 @@ export class CreateOrderComponent implements OnInit {
         }
 
         this.getProductsForm.get('barcode').setValue(result[3]);
+        this.getProductsForm.get('barcode').setValue(null);
 
         return;
 
@@ -1147,18 +1158,17 @@ export class CreateOrderComponent implements OnInit {
           const response = await this.productService.searchProduct3(check_response.description, check_response.batchCode, this.getProductsForm.value.shelfNo);
           if (response.length == 0) {
             this.toasterService.error("Ürün Sorgusundan Yanıt Alınamadı");
+            this.getProductsForm.get('barcode').setValue(null);
             return;
           }
           this.products = response;
           if (this.products.length > 0) {
-            // var totalQty = 0;
-            // this.products.forEach(p => {
-            //   totalQty += p.quantity
-            // });
+
             this.products.forEach(p => {
               if (p.quantity <= 0) {
                 this.toasterService.error("STOK HATASI")
                 this.products = [];
+                this.getProductsForm.get('barcode').setValue(null);
                 return;
               }
             });
@@ -1177,6 +1187,7 @@ export class CreateOrderComponent implements OnInit {
             if (totalQuantity >= this.products[0].quantity) {
               this.toasterService.error("STOK HATASI")
               this.products = [];
+              this.getProductsForm.get('barcode').setValue(null);
               return;
             } else {
               this.getProductsForm.get('barcode').setValue(null);
@@ -1186,6 +1197,7 @@ export class CreateOrderComponent implements OnInit {
                 await this.addCurrentProducts(_product);
 
               }
+              this.getProductsForm.get('barcode').setValue(null);
               this.products = [];
               this.shelfNumbers = 'RAFLAR:'
 

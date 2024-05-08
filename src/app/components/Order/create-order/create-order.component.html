@@ -209,6 +209,8 @@
               <th scope="col">Birim Fiyat</th>
               <th scope="col">İndirimli Fiyatı</th>
               <th scope="col">Toplam Fiyat</th>
+              <th scope="col">Dolar Fiyatı</th>
+              <th scope="col">Euro Fiyatı</th>
 
               <th scope="col">Ürün</th>
 
@@ -261,24 +263,8 @@
                   </ng-template></p-cellEditor
                 >
               </td>
-
-              <td pInitEditableRow>
-                <p-cellEditor>
-                  <ng-template pTemplate="input">
-                    <input
-                      pInputText
-                      style="max-width: 100px"
-                      type="number"
-                      [(ngModel)]="product.price"
-                      (keyup.enter)="onRowEditSave(product, ri)"
-                    />
-                  </ng-template>
-                  <ng-template pTemplate="output">
-                    <span style="font-weight: bold">
-                      {{ product.price | currency : "₺" }}</span
-                    >
-                  </ng-template>
-                </p-cellEditor>
+              <td>
+                {{ product.price | currency : "₺" }}
               </td>
               <td pInitEditableRow>
                 <p-cellEditor>
@@ -305,6 +291,17 @@
                     ? (product.discountedPrice * product.quantity
                       | currency : "₺")
                     : (product.price * product.quantity | currency : "₺")
+                }}
+              </td>
+              <td>
+                ${{
+                  (product.discountedPrice / this.exchangeRate.eur).toFixed(2)
+                }}
+              </td>
+
+              <td>
+                £{{
+                  (product.discountedPrice / this.exchangeRate.eur).toFixed(2)
                 }}
               </td>
 

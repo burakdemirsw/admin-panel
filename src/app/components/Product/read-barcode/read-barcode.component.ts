@@ -27,7 +27,8 @@ export class ReadBarcodeComponent implements OnInit {
     BarcodeFormat.CODE_128,
     BarcodeFormat.EAN_8,
     BarcodeFormat.EAN_13,
-    BarcodeFormat.QR_CODE
+    BarcodeFormat.QR_CODE,
+    BarcodeFormat.DATA_MATRIX
   ];
   availableCameras: MediaDeviceInfo[] = [];
   selectedDevice: MediaDeviceInfo | undefined;

@@ -383,6 +383,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         // http ile başlıyorsa veya guid ise qr işlemi yap
                         if (countProductRequestModel.barcode.includes('http') ||
                             this.generalService.isGuid(countProductRequestModel.barcode)) {
+                            countProductRequestModel.barcode = countProductRequestModel.barcode.replace("Http", "http");
                             this.qrBarcodeUrl = countProductRequestModel.barcode;
                         }
                         if (!!this.checkForm.valid) return [3 /*break*/, 2];

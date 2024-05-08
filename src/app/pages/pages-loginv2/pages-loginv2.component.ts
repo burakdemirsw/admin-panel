@@ -49,14 +49,15 @@ export class PagesLoginv2Component implements OnInit {
 
         var response = await this.userService.login(model);
         if (response) {
-          this.router.navigate(["/dashboard"])
+          location.href = location.origin + "/dashboard"
+          // this.router.navigate(["/dashboard"])
         }
       } else {
         console.log('Form Geçerli Değil');
       }
     } catch (error) {
       this.alertifyService.warning("Hata Alındı: " + error.message);
-      console.log("Hata Alındı 15.01:" + error.message);
+
     }
 
   }

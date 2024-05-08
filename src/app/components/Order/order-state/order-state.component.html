@@ -15,11 +15,10 @@
                 <table class="table table-sm table-striped">
                   <thead>
                     <tr>
-                      <th scope="col" style="font-weight: bold">
-                        Sipariş Numarası
-                      </th>
-                      <th scope="col">Satış Sorumlusu</th>
+                      <th scope="col" style="font-weight: bold">Sipariş No.</th>
                       <th scope="col">Müşteri</th>
+                      <th scope="col">Satış Sorumlusu</th>
+
                       <th scope="col">Depo Sorumlusu</th>
                       <th scope="col">Durum</th>
                     </tr>
@@ -41,7 +40,9 @@
                         }}
                       </td>
                       <td>
-                        {{ order.description?.toUpperCase().substring(0, 10) }}
+                        {{
+                          order.salespersonCode?.toUpperCase().substring(0, 10)
+                        }}
                       </td>
                       <td>
                         {{
@@ -82,12 +83,10 @@
                   <thead>
                     <tr>
                       <!-- <th scope="col">Sipariş Tarihi</th> -->
-                      <th scope="col" style="font-weight: bold">
-                        Sipariş Numarası
-                      </th>
+                      <th scope="col" style="font-weight: bold">Sipariş No.</th>
+                      <th scope="col">Müşteri</th>
                       <th scope="col">Satış Sorumlusu</th>
 
-                      <th scope="col">Müşteri</th>
                       <th scope="col">Depo Sorumlusu</th>
                       <th scope="col">Durum</th>
                     </tr>
@@ -110,7 +109,9 @@
                         }}
                       </td>
                       <td>
-                        {{ order.description?.toUpperCase().substring(0, 10) }}
+                        {{
+                          order.salespersonCode?.toUpperCase().substring(0, 10)
+                        }}
                       </td>
                       <td>
                         {{

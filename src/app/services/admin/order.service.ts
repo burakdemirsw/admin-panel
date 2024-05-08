@@ -802,5 +802,24 @@ export class OrderService {
       return null;
     }
   }
+
+  async createPdf(request: string): Promise<any> {
+    try {
+      var userId = localStorage.getItem('userId')
+
+      this.httpClient.get(ClientUrls.baseUrl + '/order/get-recepie-pdf/' + request + "/" + userId, { responseType: 'arraybuffer' })
+        .subscribe((data: ArrayBuffer) => {
+          const file = new Blob([data], { type: 'application/pdf' });
+          const fileURL = URL.createObjectURL(file);
+          window.open(fileURL, '_blank');
+
+        });
+
+      return true;
+    } catch (error: any) {
+      // console.log(error.message);
+      return null;
+    }
+  }
   //ExecuteSqlRawAsync
 }

@@ -106,7 +106,7 @@ var ProductService = /** @class */ (function () {
                         results.push(model[0].batchCode);
                         results.push(model[0].barcode);
                         // results.push(model[0].batchStatus.toString());
-                        results.push(false.toString());
+                        results.push(model[0].batchStatus.toString());
                         return [2 /*return*/, results];
                     case 2:
                         error_1 = _a.sent();

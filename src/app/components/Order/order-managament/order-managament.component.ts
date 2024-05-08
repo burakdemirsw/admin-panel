@@ -262,6 +262,15 @@ export class OrderManagamentComponent implements OnInit {
     }
   }
 
+  async createPdf(orderNumber: string) {
+    var response = await this.orderService.createPdf(orderNumber);
+    if (response) {
+      this.toasterService.success("İşlem Başarılı")
+    } else {
+      this.toasterService.error("İşlem Başarısız")
+    }
+  }
+
   searchedOrder: string = "";
   goToPage() {
     if (this.searchedOrder.includes("http")) {

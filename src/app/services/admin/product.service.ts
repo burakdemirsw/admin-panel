@@ -87,7 +87,7 @@ export class ProductService {
       results.push(model[0].batchCode);
       results.push(model[0].barcode);
       // results.push(model[0].batchStatus.toString());
-      results.push(false.toString());
+      results.push(model[0].batchStatus.toString());
 
       return results;
     } catch (error: any) {

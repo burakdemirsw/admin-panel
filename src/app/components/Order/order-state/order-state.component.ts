@@ -32,7 +32,7 @@ export class OrderStateComponent implements OnInit {
     this.intervalId = setInterval(async () => {
       this.collectableOrders = await this.getOrders(1, 2);
       this.collectedOrders = await this.getOrders(1, 1);
-    }, 10000);
+    }, 40000);
 
     // Yavaş yavaş sayfanın altına kaydır
     // this.scrollDownSmoothly();

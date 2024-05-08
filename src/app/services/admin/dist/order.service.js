@@ -1044,6 +1044,28 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
+    OrderService.prototype.createPdf = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var userId;
+            return __generator(this, function (_a) {
+                try {
+                    userId = localStorage.getItem('userId');
+                    this.httpClient.get(ClientUrls_1.ClientUrls.baseUrl + '/order/get-recepie-pdf/' + request + "/" + userId, { responseType: 'arraybuffer' })
+                        .subscribe(function (data) {
+                        var file = new Blob([data], { type: 'application/pdf' });
+                        var fileURL = URL.createObjectURL(file);
+                        window.open(fileURL, '_blank');
+                    });
+                    return [2 /*return*/, true];
+                }
+                catch (error) {
+                    // console.log(error.message);
+                    return [2 /*return*/, null];
+                }
+                return [2 /*return*/];
+            });
+        });
+    };
     OrderService = __decorate([
         core_1.Injectable({
             providedIn: 'root'
