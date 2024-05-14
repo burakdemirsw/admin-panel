@@ -25,10 +25,6 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     }, 2000);
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-
-
-
-
         var er: Error = new Error();
         er.statusCode = error.error.StatusCode;
         er.message = error.error.Message;
@@ -39,7 +35,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
           // console.error(` ${er.status + "-" + error.statusText}: ${error.error}`);
         } else if (error.status >= 500) {
 
-          this.toasterService.warn(`Sunucu Hatası: ${error.message}`);
+          //  this.toasterService.warn(`Sunucu Hatası: ${error.message}`);
         }
         // this.toasterService.warn(`Sunucu Hatası: ${error.message}`);
         return throwError(error);

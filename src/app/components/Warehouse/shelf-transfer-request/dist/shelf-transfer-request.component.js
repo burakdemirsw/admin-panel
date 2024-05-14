@@ -109,6 +109,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
         this.productShelves = [];
         this.deletedProductList = [];
         this.selectedButton = 0;
+        this.baglist = ['2', '4', '5', '6', '7', '8', '0'];
         this.qrBarcodeUrl = null;
         this.qrOperationModels = [];
     }
@@ -504,7 +505,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         this.checkForm.get('batchCode').setValue(result[2]);
                         this.checkForm.get('barcode').setValue(result[3]);
                         this.checkForm.get('quantity').setValue(Number(result[1]));
-                        if (this.currentPageType == '2') { //SADECE CANTADA HEDEF RAF DOLUMU ISTENDI 06.05
+                        if (this.baglist.includes(this.currentPageType)) { //SADECE CANTADA HEDEF RAF DOLUMU ISTENDI 06.05
                             finded_product = this.transferProducts.find(function (p) { return p.barcode == result[3]; });
                             if (finded_product) {
                                 this.checkForm.get('targetShelfNo').setValue(finded_product.targetShelf);
@@ -526,7 +527,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         this.checkForm.get('batchCode').setValue(result[2]);
                         this.checkForm.get('barcode').setValue(result[3]);
                         this.checkForm.get('quantity').setValue(Number(result[1]));
-                        if (this.currentPageType == '2') { //SADECE CANTADA HEDEF RAF DOLUMU ISTENDI 06.05
+                        if (this.baglist.includes(this.currentPageType)) { //SADECE CANTADA HEDEF RAF DOLUMU ISTENDI 06.05
                             finded_product = this.transferProducts.find(function (p) { return p.barcode == result[3]; });
                             if (finded_product) {
                                 this.checkForm.get('targetShelfNo').setValue(finded_product.targetShelf);
@@ -614,7 +615,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                     case 10:
                         this.generalService.beep();
                         this.clearForm();
-                        if (this.selectedButton == 2) {
+                        if (this.baglist.includes(this.currentPageType)) {
                             this.checkForm
                                 .get('targetShelfNo')
                                 .setValue(transferModel.targetShelfNo);
@@ -634,7 +635,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         }
                         else if (qrResponse === null) {
                             this.clearForm();
-                            if (this.selectedButton == 2) {
+                            if (this.baglist.includes(this.currentPageType)) {
                                 this.checkForm
                                     .get('targetShelfNo')
                                     .setValue(transferModel.targetShelfNo);
@@ -653,7 +654,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         _a.label = 16;
                     case 16:
                         this.clearForm();
-                        if (this.selectedButton == 2) {
+                        if (this.baglist.includes(this.currentPageType)) {
                             this.checkForm
                                 .get('targetShelfNo')
                                 .setValue(transferModel.targetShelfNo);

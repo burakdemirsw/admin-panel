@@ -45,7 +45,7 @@
             <i class="bi bi-circle"></i><span>Sipariş Ver</span>
           </a>
         </li>
-        <li *ngIf="this.roleDescription == 'Admin'">
+        <li>
           <a (click)="routeNewPage3(false)">
             <i class="bi bi-circle"></i><span>Perakende Satış</span>
           </a>
@@ -88,7 +88,7 @@
     >
       <a
         class="nav-link collapsed"
-        data-bs-target="#Orders-nav"
+        data-bs-target="#Orders_2-nav"
         data-bs-toggle="collapse"
       >
         <i class="fas fa-dolly"></i><span>Perakende İşlemleri</span
@@ -96,9 +96,9 @@
       </a>
 
       <ul
-        id="Orders-nav"
+        id="Orders_2-nav"
         class="nav-content collapse"
-        data-bs-parent="#sidebar-nav"
+        data-bs-parent="#Orders_2-nav"
       >
         <li>
           <a routerLink="retail-orders-managament/1/2">
@@ -169,7 +169,7 @@
         </li>
       </ul>
     </li>
-    <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
+    <li class="nav-item">
       <a
         class="nav-link collapsed"
         data-bs-target="#Product-nav"

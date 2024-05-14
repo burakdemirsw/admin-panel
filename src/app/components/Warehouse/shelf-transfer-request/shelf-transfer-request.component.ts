@@ -415,6 +415,7 @@ export class ShelfTransferRequestComponent implements OnInit {
     );
   }
 
+  baglist: string[] = ['2', '4', '5', '6', '7', '8', '0'];
   async setFormValues(
     product: FastTransferModel2
   ): Promise<FastTransferModel2> {
@@ -438,7 +439,7 @@ export class ShelfTransferRequestComponent implements OnInit {
         this.checkForm.get('barcode').setValue(result[3]);
         this.checkForm.get('quantity').setValue(Number(result[1]));
 
-        if (this.currentPageType == '2') {//SADECE CANTADA HEDEF RAF DOLUMU ISTENDI 06.05
+        if (this.baglist.includes(this.currentPageType)) {//SADECE CANTADA HEDEF RAF DOLUMU ISTENDI 06.05
           var finded_product = this.transferProducts.find(p => p.barcode == result[3]);
           if (finded_product) {
             this.checkForm.get('targetShelfNo').setValue(finded_product.targetShelf);
@@ -461,7 +462,7 @@ export class ShelfTransferRequestComponent implements OnInit {
         this.checkForm.get('batchCode').setValue(result[2]);
         this.checkForm.get('barcode').setValue(result[3]);
         this.checkForm.get('quantity').setValue(Number(result[1]));
-        if (this.currentPageType == '2') {//SADECE CANTADA HEDEF RAF DOLUMU ISTENDI 06.05
+        if (this.baglist.includes(this.currentPageType)) {//SADECE CANTADA HEDEF RAF DOLUMU ISTENDI 06.05
           var finded_product = this.transferProducts.find(p => p.barcode == result[3]);
           if (finded_product) {
             this.checkForm.get('targetShelfNo').setValue(finded_product.targetShelf);
@@ -550,7 +551,7 @@ export class ShelfTransferRequestComponent implements OnInit {
         this.generalService.beep();
         this.clearForm();
 
-        if (this.selectedButton == 2) {
+        if (this.baglist.includes(this.currentPageType)) {
           this.checkForm
             .get('targetShelfNo')
             .setValue(transferModel.targetShelfNo);
@@ -580,7 +581,7 @@ export class ShelfTransferRequestComponent implements OnInit {
             } else if (qrResponse === null) {
               this.clearForm();
 
-              if (this.selectedButton == 2) {
+              if (this.baglist.includes(this.currentPageType)) {
                 this.checkForm
                   .get('targetShelfNo')
                   .setValue(transferModel.targetShelfNo);
@@ -598,7 +599,7 @@ export class ShelfTransferRequestComponent implements OnInit {
             this.toasterService.error('Ekleme Yapılmadı');
           }
           this.clearForm();
-          if (this.selectedButton == 2) {
+          if (this.baglist.includes(this.currentPageType)) {
             this.checkForm
               .get('targetShelfNo')
               .setValue(transferModel.targetShelfNo);

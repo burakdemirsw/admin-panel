@@ -1027,19 +1027,17 @@ var OrderService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        if (!window.confirm("Faturayı yazdırmak istediğinize emin misiniz?")) return [3 /*break*/, 2];
+                        _a.trys.push([0, 2, , 3]);
                         userId = localStorage.getItem('userId');
                         return [4 /*yield*/, this.httpClientService.get({ controller: "order/send-invoice-to-printer" + "/" + request + "/" + userId }).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];
-                    case 2: return [3 /*break*/, 4];
-                    case 3:
+                    case 2:
                         error_28 = _a.sent();
                         // console.log(error.message);
                         return [2 /*return*/, null];
-                    case 4: return [2 /*return*/];
+                    case 3: return [2 /*return*/];
                 }
             });
         });

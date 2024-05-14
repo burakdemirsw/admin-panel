@@ -857,14 +857,17 @@ var CreateOrderComponent = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         if (!(value != "" || value != null)) return [3 /*break*/, 4];
-                        if (!(value.name != undefined)) return [3 /*break*/, 2];
-                        if (!(value.name.length > 3)) return [3 /*break*/, 2];
+                        if (!(value.name != undefined && value.name.length > 3)) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.getCustomersAutomaticaly(value.name)];
                     case 1:
                         _a.sent();
                         findedCustomer = this.selectableCustomers.find(function (p) { return p.name == value.name; });
-                        if (findedCustomer) {
+                        if (findedCustomer && !this.generalService.isNullOrEmpty(findedCustomer.value)) {
                             this.createCustomerForm.get('phoneNumber').setValue(findedCustomer === null || findedCustomer === void 0 ? void 0 : findedCustomer.value);
+                            this.submitAddressForm(this.createCustomerForm.value);
+                        }
+                        else {
+                            this.toasterService.info("Müşteri Bulunamadı");
                         }
                         _a.label = 2;
                     case 2:
@@ -881,13 +884,6 @@ var CreateOrderComponent = /** @class */ (function () {
                 }
             });
         }); });
-        // this.createCustomerForm.get('phoneNumber').valueChanges.subscribe(async (value) => { //müşterileri
-        //   if (value.length > 3) {
-        //     if (value != "" || value != null) {
-        //       await this.getCustomersAutomaticaly(value, false)
-        //     }
-        //   }
-        // });
         this.createCustomerForm.get('address_region').valueChanges.subscribe(function (value) { return __awaiter(_this, void 0, void 0, function () {
             var _value, response;
             var _this = this;
@@ -1063,6 +1059,10 @@ var CreateOrderComponent = /** @class */ (function () {
         this.selectedAddresses = [];
         this.toasterService.success("Adres Silindi");
     };
+    CreateOrderComponent.prototype.resetProductForm = function () {
+        this.getProductsForm.reset();
+        this.toasterService.success("Form Sıfırlandı");
+    };
     CreateOrderComponent.prototype.createDiscountForm = function () {
         this.discountForm = this.formBuilder.group({
             cashDiscountRate: [null, forms_1.Validators.required],
@@ -1133,6 +1133,7 @@ var CreateOrderComponent = /** @class */ (function () {
     };
     CreateOrderComponent.prototype.resetDiscount = function () {
         this.currentCashdiscountRate = 0;
+        this.currentDiscountRate = 0;
         this.selectedProducts.forEach(function (p) {
             p.discountedPrice = p.basePrice;
         });
@@ -1251,7 +1252,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         result = _d.sent();
                         this.shelfNumbers += result[0];
                         this.generalService.focusNextInput('shelfNo');
-                        this.toasterService.error("Raf Numarası Giriniz");
+                        this.toasterService.info("Raf Numarası Giriniz");
                         return [2 /*return*/];
                     case 19:
                         if (!(request.barcode.includes('http') || this.generalService.isGuid(request.barcode))) return [3 /*break*/, 21];
@@ -1322,6 +1323,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         _b++;
                         return [3 /*break*/, 25];
                     case 28:
+                        this.focusNextInput('barcode_product');
                         this.getProductsForm.get('barcode').setValue(null);
                         this.products = [];
                         this.shelfNumbers = 'RAFLAR:';
@@ -2010,21 +2012,21 @@ var CreateOrderComponent = /** @class */ (function () {
     CreateOrderComponent.prototype.createOrder = function () {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var payment_response, formValue, exchangeRate, order_request, order_response, request, response, addedOrder, _request, response, __request, __response, addedOrder;
+            var payment_response, formValue, exchangeRate, order_request, order_response, totalPrice, discountedPrice, _i, _b, _product, after_discountPrice, dif, request, response, addedOrder, _request, response, __request, __response, addedOrder;
             var _this = this;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
                         if (!!this.payment.creditCardTypeCode) return [3 /*break*/, 2];
                         if (!this.paymentForm.get("paymentType").value) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.createPayment(this.paymentForm.get("paymentType").value.id)];
                     case 1:
-                        payment_response = _b.sent();
+                        payment_response = _c.sent();
                         if (!payment_response) {
                             this.toasterService.error("Ödeme Tipi Seçiniz");
                             return [2 /*return*/];
                         }
-                        _b.label = 2;
+                        _c.label = 2;
                     case 2:
                         if (!((_a = this.paymentForm.value.taxTypeCode) === null || _a === void 0 ? void 0 : _a.value)) {
                             this.toasterService.error("Vergi Tipi Seçiniz");
@@ -2059,32 +2061,45 @@ var CreateOrderComponent = /** @class */ (function () {
                         }
                         order_request = this.createClientOrder_RM();
                         return [4 /*yield*/, this.orderService.createClientOrder(order_request)
-                            // var discountPercent: number = this.calculateDiscountPercent(this.selectedProducts);
+                            //---------------------------------------------------- DISCOUNT CALCULATION
                         ]; //son sipariş güncellendi
                     case 3:
-                        order_response = _b.sent() //son sipariş güncellendi
+                        order_response = _c.sent() //son sipariş güncellendi
                         ;
+                        totalPrice = 0;
+                        discountedPrice = 0;
+                        for (_i = 0, _b = this.selectedProducts; _i < _b.length; _i++) {
+                            _product = _b[_i];
+                            totalPrice += _product.price * _product.quantity;
+                            discountedPrice += _product.discountedPrice * _product.quantity;
+                        }
+                        after_discountPrice = totalPrice - (totalPrice * this.currentDiscountRate / 100) - this.currentCashdiscountRate;
+                        dif = 0;
+                        if (discountedPrice < after_discountPrice) {
+                            dif = after_discountPrice - discountedPrice;
+                            this.currentCashdiscountRate += dif;
+                        }
                         if (!this.orderType) return [3 /*break*/, 7];
                         request = new nebimOrder_1.NebimOrder(exchangeRate, this.currentDiscountRate, this.currentCashdiscountRate, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value);
                         return [4 /*yield*/, this.orderService.createOrder(request)];
                     case 4:
-                        response = _b.sent();
+                        response = _c.sent();
                         if (!(response && response.status === true)) return [3 /*break*/, 6];
                         this.orderNumber = response.orderNumber;
                         return [4 /*yield*/, this.orderService.getOrderDetail(this.orderNumber)];
                     case 5:
-                        addedOrder = _b.sent();
+                        addedOrder = _c.sent();
                         if (addedOrder.orderNumber) {
                             this.sendInvoiceToPrinter(addedOrder.orderNumber);
                         }
                         this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament/1/2");
-                        _b.label = 6;
+                        _c.label = 6;
                     case 6: return [3 /*break*/, 11];
                     case 7:
                         _request = new nebimOrder_1.NebimOrder(exchangeRate, this.currentDiscountRate, this.currentCashdiscountRate, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value);
                         return [4 /*yield*/, this.orderService.createOrder(_request)];
                     case 8:
-                        response = _b.sent();
+                        response = _c.sent();
                         if (response && response.status === true) {
                             this.orderNumber = response.orderNumber;
                             // if (this.cargoForm.get('isActive').value === true) {
@@ -2105,16 +2120,16 @@ var CreateOrderComponent = /** @class */ (function () {
                         });
                         return [4 /*yield*/, this.orderService.createInvoice(__request)];
                     case 9:
-                        __response = _b.sent();
+                        __response = _c.sent();
                         if (!__response) return [3 /*break*/, 11];
                         return [4 /*yield*/, this.orderService.getOrderDetail(this.orderNumber)];
                     case 10:
-                        addedOrder = _b.sent();
+                        addedOrder = _c.sent();
                         if (addedOrder.orderNumber) {
                             this.sendInvoiceToPrinter(addedOrder.orderNumber);
                         }
                         this.generalService.waitAndNavigate("Sipariş Oluşturuldu & Faturalaştırıdı", "orders-managament/1/1");
-                        _b.label = 11;
+                        _c.label = 11;
                     case 11: return [2 /*return*/];
                 }
             });

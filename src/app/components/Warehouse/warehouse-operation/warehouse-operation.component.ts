@@ -464,6 +464,9 @@ export class WarehouseOperationComponent implements OnInit {
         );
         this.shelfNumbers = result[0];
 
+        this.warehouseForm.get('barcode').setValue(result[3]);
+        this.warehouseForm.get('batchCode').setValue(result[2].toString());
+        this.warehouseForm.get('quantity').setValue(result[1]);
         var updated_product: CountProduct2 = product;
         updated_product.quantity = Number(result[1]);
         updated_product.batchCode = result[2];

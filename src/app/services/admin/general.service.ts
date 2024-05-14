@@ -22,6 +22,11 @@ export class GeneralService {
       nextInput.focus();
     }
   }
+
+  isNullOrEmpty(value: string | null | undefined): boolean {
+    return value === null || value === undefined || value.trim() === '';
+  }
+
   beep() {
     const audio = new Audio('assets/music/qrSound.mp3');
     audio.play();

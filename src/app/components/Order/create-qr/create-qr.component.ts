@@ -132,7 +132,7 @@ export class CreateQrComponent implements OnInit, OnChanges {
         qr.barcode = m.barcode;
         qr.description = formValue.itemDesc;
         qr.warehouseCode = this.products[0].warehouseCode;
-        qr.photoUrl = ClientUrls.baseUrl2 + qr.uniqueId;
+        qr.photoUrl = "http://212.156.46.206:7676/photo/" + formValue.itemCode + "/" + formValue.itemCode + ".jpg";
         qr.shelfNo = formValue.shelfNo;
         qr.itemCode = formValue.itemCode;
         qr.batchCode = formValue.batchCode;
@@ -206,7 +206,7 @@ export class CreateQrComponent implements OnInit, OnChanges {
           qr.barcode = m.barcode;
           qr.description = formValue.itemDesc;
           qr.warehouseCode = this.products[0].warehouseCode;
-          qr.photoUrl = ClientUrls.baseUrl2 + qr.uniqueId;
+          qr.photoUrl = "http://212.156.46.206:7676/photo/" + formValue.itemCode + "/" + formValue.itemCode + ".jpg";
           qr.shelfNo = formValue.shelfNo;
           qr.itemCode = formValue.itemCode;
           qr.batchCode = formValue.batchCode;

@@ -532,6 +532,9 @@ var WarehouseOperationComponent = /** @class */ (function () {
                     case 1:
                         result = _a.sent();
                         this.shelfNumbers = result[0];
+                        this.warehouseForm.get('barcode').setValue(result[3]);
+                        this.warehouseForm.get('batchCode').setValue(result[2].toString());
+                        this.warehouseForm.get('quantity').setValue(result[1]);
                         updated_product = product;
                         updated_product.quantity = Number(result[1]);
                         updated_product.batchCode = result[2];

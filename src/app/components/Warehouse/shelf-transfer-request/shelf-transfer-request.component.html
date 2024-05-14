@@ -83,44 +83,107 @@
 
         <div class="card">
           <div class="card-body">
-            <div class="btn-group mt-3" role="group" aria-label="Basic example">
-              <button
-                type="button"
-                [ngClass]="
-                  selectedButton === 0 ? 'btn btn-success' : 'btn btn-dark'
-                "
-                (click)="goPage('0')"
+            <div
+              class="p-4 card-body d-flex justify-content-start"
+              style="overflow-x: auto"
+            >
+              <div
+                class="btn-group mt-3"
+                role="group"
+                aria-label="Basic example"
               >
-                Varsayılan
-              </button>
-              <button
-                type="button"
-                [ngClass]="
-                  selectedButton === 1 ? 'btn btn-success' : 'btn btn-dark'
-                "
-                (click)="goPage('1')"
-              >
-                Rafları Fulle
-              </button>
-              <button
-                type="button"
-                [ngClass]="
-                  selectedButton === 2 ? 'btn btn-success' : 'btn btn-dark'
-                "
-                (click)="goPage('2')"
-              >
-                Çanta
-              </button>
+                <button
+                  type="button"
+                  [ngClass]="
+                    selectedButton === 0 ? 'btn btn-success' : 'btn btn-dark'
+                  "
+                  (click)="goPage('0')"
+                >
+                  Varsayılan
+                </button>
+                <button
+                  type="button"
+                  [ngClass]="
+                    selectedButton === 1 ? 'btn btn-success' : 'btn btn-dark'
+                  "
+                  (click)="goPage('1')"
+                >
+                  Rafları Fulle
+                </button>
+                <button
+                  type="button"
+                  [ngClass]="
+                    selectedButton === 2 ? 'btn btn-success' : 'btn btn-dark'
+                  "
+                  (click)="goPage('2')"
+                >
+                  Çanta
+                </button>
+                <button
+                  type="button"
+                  [ngClass]="
+                    selectedButton === 3 ? 'btn btn-success' : 'btn btn-dark'
+                  "
+                  (click)="goPage('3')"
+                >
+                  Çantadan Rafa
+                </button>
 
-              <button
-                type="button"
-                [ngClass]="
-                  selectedButton === 3 ? 'btn btn-success' : 'btn btn-dark'
-                "
-                (click)="goPage('3')"
-              >
-                Çantadan Rafa
-              </button>
+                <button
+                  type="button"
+                  [ngClass]="
+                    selectedButton === 4 ? 'btn btn-success' : 'btn btn-dark'
+                  "
+                  (click)="goPage('4')"
+                >
+                  Çanta 1_A
+                </button>
+                <button
+                  type="button"
+                  [ngClass]="
+                    selectedButton === 5 ? 'btn btn-success' : 'btn btn-dark'
+                  "
+                  (click)="goPage('5')"
+                >
+                  Çanta 1_Z
+                </button>
+                <button
+                  type="button"
+                  [ngClass]="
+                    selectedButton === 6 ? 'btn btn-success' : 'btn btn-dark'
+                  "
+                  (click)="goPage('6')"
+                >
+                  Çanta 2_A
+                </button>
+                <button
+                  type="button"
+                  [ngClass]="
+                    selectedButton === 7 ? 'btn btn-success' : 'btn btn-dark'
+                  "
+                  (click)="goPage('7')"
+                >
+                  Çanta 2_Z
+                </button>
+                <button
+                  type="button"
+                  [ngClass]="
+                    selectedButton === 8 ? 'btn btn-success' : 'btn btn-dark'
+                  "
+                  (click)="goPage('8')"
+                >
+                  Çanta 3_A
+                </button>
+                <button
+                  type="button"
+                  [ngClass]="
+                    selectedButton === 9 ? 'btn btn-success' : 'btn btn-dark'
+                  "
+                  (click)="goPage('9')"
+                >
+                  Çanta 3_Z
+                </button>
+              </div>
             </div>
           </div>
         </div>

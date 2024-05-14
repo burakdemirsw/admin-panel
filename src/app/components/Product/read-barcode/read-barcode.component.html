@@ -3,7 +3,6 @@
   pButton
   pRipple
   class="p-button-rounded p-button-text"
-  label="{{ enableScanner ? 'Kamerayı Kapat' : 'Kamerayı Aç' }}"
   icon="pi pi-camera"
 ></button>
 
@@ -23,6 +22,7 @@
   <zxing-scanner
     #scanner
     [device]="selectedDevice"
+    [autofocus]="autofocus"
     (camerasFound)="camerasFoundHandler($event)"
     (scanSuccess)="scanSuccessHandler($event)"
     [formats]="allowedFormats"

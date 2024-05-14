@@ -13,6 +13,7 @@ var ReadBarcodeComponent = /** @class */ (function () {
     function ReadBarcodeComponent(toasterService) {
         this.toasterService = toasterService;
         this.enableScanner = false;
+        this.autofocus = true;
         this.value = new core_1.EventEmitter();
         this.allowedFormats = [
             library_1.BarcodeFormat.CODE_39,

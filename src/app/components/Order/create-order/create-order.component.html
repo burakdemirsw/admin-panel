@@ -118,6 +118,15 @@
                 type="submit"
               ></button>
               <app-read-barcode (value)="printValue($event)"></app-read-barcode>
+              <button
+                pButton
+                pRipple
+                class="p-button-rounded p-button-text"
+                (onClick)="resetProductForm()"
+                icon="pi pi-trash"
+                label="Formu Sil"
+                type="reset"
+              ></button>
             </div>
           </div>
         </form>
@@ -214,7 +223,7 @@
 
               <th scope="col">Ürün</th>
 
-              <th scope="col" *ngIf="!isCompleted">İşlem</th>
+              <th scope="col">İşlem</th>
               <th
                 scope="col"
                 style="cursor: pointer"
@@ -309,7 +318,7 @@
                 {{ product.description.substring(0, 10) }}
               </td>
 
-              <td *ngIf="!isCompleted">
+              <td>
                 <div
                   class="flex align-items-center justify-content-center gap-2"
                 >
@@ -475,310 +484,280 @@
         header="Müşteri Bul"
         [rightIcon]="this.currAccCode ? 'pi pi-check' : 'pi pi-times'"
       >
-        <p-tabView [activeIndex]="_activeIndex" [scrollable]="true">
-          <p-tabPanel header="Müşteri Oluştur">
-            <form
-              [formGroup]="createCustomerForm"
-              (ngSubmit)="submitAddressForm(createCustomerForm.value)"
-            >
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <p-dropdown
-                    #currAccDescription_dropdown
-                    placeholder="Firma Adı"
-                    formControlName="currAccDescription"
-                    [options]="selectableCustomers"
-                    placeholder="Firma"
-                    [editable]="true"
-                    optionLabel="name"
-                    (click)="showPanel(1)"
-                  ></p-dropdown>
+        <form
+          [formGroup]="createCustomerForm"
+          (ngSubmit)="submitAddressForm(createCustomerForm.value)"
+        >
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <p-dropdown
+                #currAccDescription_dropdown
+                placeholder="Firma Adı"
+                formControlName="currAccDescription"
+                [options]="selectableCustomers"
+                placeholder="Firma"
+                [editable]="true"
+                optionLabel="name"
+                (click)="showPanel(1)"
+              ></p-dropdown>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <input
+                pInputText
+                placeholder="Telefon Numarası *"
+                type="text"
+                class="form-control"
+                id="phoneNumber"
+                placeholder="(05XX XXX XX XX)"
+                formControlName="phoneNumber"
+              />
+            </div>
+          </div>
 
-                  <!-- <input
-                    pInputText
-                    placeholder="Firma Adı *"
-                    type="text"
-                    class="form-control"
-                    id="currAccDescription"
-                    placeholder="Firma Adı"
-                    formControlName="currAccDescription"
-                  />-->
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <!-- <label for="exampleInputEmail1"
-                    >Telefon Numarası (ZORUNLUDUR)</label
-                  >  -->
-                  <input
-                    pInputText
-                    placeholder="Telefon Numarası *"
-                    type="text"
-                    class="form-control"
-                    id="phoneNumber"
-                    placeholder="(05XX XXX XX XX)"
-                    formControlName="phoneNumber"
-                  />
-
-                  <!-- <p-dropdown
-                    #phoneNumber_dropdown
-                    placeholder="Telefon Numarası *"
-                    formControlName="phoneNumber"
-                    [options]="selectableCustomers"
-                    [editable]="true"
-                    optionLabel="name"
-                    (click)="showPanel(2)"
-                  ></p-dropdown> -->
-                </div>
-              </div>
-
-              <div class="row">
-                <!-- Dosya Yükleme Bölümü -->
-                <div class="col-md-3">
-                  <div class="input-group mb-3">
-                    <div class="fileUpload">
-                      <input
-                        type="file"
-                        class="upload"
-                        id="inputGroupFile01"
-                        aria-describedby="inputGroupFileAddon01"
-                        (change)="onUpload($event, 'stampPhotoUrl')"
-                      />
-                      <span> <i class="fas fa-camera"></i></span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Metin Girişi Bölümü -->
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <!-- <label for="stampPhotoUrl">Kaşe </label> -->
+          <p>
+            <button
+              pButton
+              pRipple
+              class="p-button-rounded p-button-text"
+              icon="pi pi-plus"
+              label="Detaylar"
+              type="button"
+              (click)="isCollapsed = !isCollapsed"
+            ></button>
+          </p>
+          <div *ngIf="isCollapsed">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="input-group mb-3">
+                  <div class="fileUpload">
                     <input
-                      pInputText
-                      placeholder="Kaşe Fotoğraf Yolu"
-                      type="text"
-                      class="form-control"
-                      id="stampPhotoUrl"
-                      formControlName="stampPhotoUrl"
+                      type="file"
+                      class="upload"
+                      id="inputGroupFile01"
+                      aria-describedby="inputGroupFileAddon01"
+                      (change)="onUpload($event, 'stampPhotoUrl')"
                     />
+                    <span> <i class="fas fa-camera"></i></span>
                   </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-3">
-                  <div class="input-group mb-3">
-                    <div class="fileUpload">
-                      <input
-                        type="file"
-                        class="upload"
-                        id="inputGroupFile01"
-                        aria-describedby="inputGroupFileAddon01"
-                        (change)="onUpload($event, 'bussinesCardPhotoUrl')"
-                      />
-                      <span> <i class="fas fa-camera"></i></span>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-3">
-                  <input
-                    type="text"
-                    pInputText
-                    placeholder="Kartvizit Fotoğraf Yolu"
-                    class="form-control"
-                    id="bussinesCardPhotoUrl"
-                    placeholder="Kartvizit Fotoğraf Yolu"
-                    formControlName="bussinesCardPhotoUrl"
-                  />
                 </div>
               </div>
 
-              <p>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <input
+                    pInputText
+                    placeholder="Kaşe Fotoğraf Yolu"
+                    type="text"
+                    class="form-control"
+                    id="stampPhotoUrl"
+                    formControlName="stampPhotoUrl"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="input-group mb-3">
+                  <div class="fileUpload">
+                    <input
+                      type="file"
+                      class="upload"
+                      id="inputGroupFile01"
+                      aria-describedby="inputGroupFileAddon01"
+                      (change)="onUpload($event, 'bussinesCardPhotoUrl')"
+                    />
+                    <span> <i class="fas fa-camera"></i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <input
+                  type="text"
+                  pInputText
+                  placeholder="Kartvizit Fotoğraf Yolu"
+                  class="form-control"
+                  id="bussinesCardPhotoUrl"
+                  placeholder="Kartvizit Fotoğraf Yolu"
+                  formControlName="bussinesCardPhotoUrl"
+                />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="exampleInputEmail1">Mail</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="mail"
+                  placeholder="Mail"
+                  formControlName="mail"
+                />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="address_country" class="label">Ülke</label>
+                  <select
+                    class="form-select"
+                    id="address_country"
+                    formControlName="address_country"
+                    class="form-control"
+                  >
+                    <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                    <option
+                      *ngFor="let country of _countries"
+                      value="{{ country.code }}"
+                    >
+                      {{ country.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="address_region" class="label">Bölge</label>
+                  <select
+                    class="form-select"
+                    id="address_region"
+                    formControlName="address_region"
+                    class="form-control"
+                  >
+                    <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                    <option
+                      *ngFor="let region of _regions"
+                      value="{{ region.code }}"
+                    >
+                      {{ region.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="address_province" class="label">il</label>
+                  <select
+                    class="form-select"
+                    id="address_province"
+                    formControlName="address_province"
+                  >
+                    <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                    <option
+                      *ngFor="let province of _provinces"
+                      value="{{ province.code }}"
+                    >
+                      {{ province.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="address_district" class="label"
+                    >Vergi Dairesi</label
+                  >
+                  <select
+                    class="form-select"
+                    id="address_taxOffice"
+                    formControlName="address_taxOffice"
+                  >
+                    <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                    <option
+                      *ngFor="let taxOffice of _taxOffices"
+                      value="{{ taxOffice.code }}"
+                    >
+                      {{ taxOffice.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="address_district" class="label">ilçe</label>
+                  <select
+                    class="form-select"
+                    id="address_district"
+                    formControlName="address_district"
+                  >
+                    <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                    <option
+                      *ngFor="let district of _districts"
+                      value="{{ district.code }}"
+                    >
+                      {{ district.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="address_description" class="label"
+                    >Adres Tarifi (ZORUNLUDUR)</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="address_description"
+                    name="address_description"
+                    fullWidth
+                    formControlName="address_description"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="address_postalCode" class="label"
+                    >Posta Kodu</label
+                  >
+                  <input
+                    type="text"
+                    id="address_postalCode"
+                    name="address_postalCode"
+                    fullWidth
+                    formControlName="address_postalCode"
+                    class="form-control"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
                 <button
                   pButton
                   pRipple
                   class="p-button-rounded p-button-text"
                   icon="pi pi-plus"
-                  label="Detaylar"
-                  type="button"
-                  (click)="isCollapsed = !isCollapsed"
+                  type="submit"
+                  style="width: 100%"
+                  label="Müşteri Ekle"
                 ></button>
-              </p>
-              <div *ngIf="isCollapsed">
-                <div class="row mb-3">
-                  <div class="col-md-6">
-                    <label for="exampleInputEmail1">Mail</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="mail"
-                      placeholder="Mail"
-                      formControlName="mail"
-                    />
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="address_country" class="label">Ülke</label>
-                      <select
-                        class="form-select"
-                        id="address_country"
-                        formControlName="address_country"
-                        class="form-control"
-                      >
-                        <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                        <option
-                          *ngFor="let country of _countries"
-                          value="{{ country.code }}"
-                        >
-                          {{ country.name }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="address_region" class="label">Bölge</label>
-                      <select
-                        class="form-select"
-                        id="address_region"
-                        formControlName="address_region"
-                        class="form-control"
-                      >
-                        <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                        <option
-                          *ngFor="let region of _regions"
-                          value="{{ region.code }}"
-                        >
-                          {{ region.name }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="address_province" class="label">il</label>
-                      <select
-                        class="form-select"
-                        id="address_province"
-                        formControlName="address_province"
-                      >
-                        <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                        <option
-                          *ngFor="let province of _provinces"
-                          value="{{ province.code }}"
-                        >
-                          {{ province.name }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="address_district" class="label"
-                        >Vergi Dairesi</label
-                      >
-                      <select
-                        class="form-select"
-                        id="address_taxOffice"
-                        formControlName="address_taxOffice"
-                      >
-                        <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                        <option
-                          *ngFor="let taxOffice of _taxOffices"
-                          value="{{ taxOffice.code }}"
-                        >
-                          {{ taxOffice.name }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="address_district" class="label">ilçe</label>
-                      <select
-                        class="form-select"
-                        id="address_district"
-                        formControlName="address_district"
-                      >
-                        <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                        <option
-                          *ngFor="let district of _districts"
-                          value="{{ district.code }}"
-                        >
-                          {{ district.name }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="address_description" class="label"
-                        >Adres Tarifi (ZORUNLUDUR)</label
-                      >
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="address_description"
-                        name="address_description"
-                        fullWidth
-                        formControlName="address_description"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group mb-3">
-                      <label for="address_postalCode" class="label"
-                        >Posta Kodu</label
-                      >
-                      <input
-                        type="text"
-                        id="address_postalCode"
-                        name="address_postalCode"
-                        fullWidth
-                        formControlName="address_postalCode"
-                        class="form-control"
-                      />
-                    </div>
-                  </div>
-                </div>
               </div>
-
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <button
-                      pButton
-                      pRipple
-                      class="p-button-rounded p-button-text"
-                      icon="pi pi-plus"
-                      type="submit"
-                      style="width: 100%"
-                      label="Müşteri Ekle"
-                    ></button>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </p-tabPanel>
-          <p-tabPanel header="Var Olan Müşteri">
+            </div>
+          </div>
+        </form>
+        <!--  <p-tabPanel header="Var Olan Müşteri">
             <form
               [formGroup]="getCustomerForm"
               class="customer-form"
@@ -797,41 +776,6 @@
                   formControlName="currAccCode"
                 />
               </div>
-
-              <!-- <div class="input-group mb-3">
-                <span class="input-group-text"
-                  ><i class="bi bi-envelope-fill"></i
-                ></span>
-                <input
-                  type="search"
-                  class="form-control"
-                  id="mail"
-                  placeholder="Mail"
-                  formControlName="mail"
-                />
-              </div>
-              <div class="input-group mb-3">
-                <span class="input-group-text"
-                  ><i class="bi bi-telephone-fill"></i
-                ></span>
-                <input
-                  type="search"
-                  class="form-control"
-                  id="phone"
-                  placeholder="Telefon Numarası"
-                  formControlName="phone"
-                />
-              </div> -->
-              <!--
-              <button
-                pButton
-                pRipple
-                style="width: 100%"
-                class="p-button-rounded p-button-text"
-                icon="pi pi-search"
-                type="submit"
-                label=" Müşteri Ara"
-              ></button> -->
             </form>
 
             <p-dialog
@@ -840,14 +784,8 @@
               [style]="{ width: '80vw' }"
             >
               <p-table [scrollable]="true" [value]="addresses">
-                <!-- <ng-template pTemplate="caption">
-                  Bulunan Adresler
-                </ng-template> -->
-
                 <ng-template pTemplate="header">
                   <tr>
-                    <!-- <th>Ülke</th>
-                    <th>Bölge</th> -->
                     <th>İl</th>
                     <th>İlçe</th>
                     <th>Adres</th>
@@ -896,7 +834,6 @@
                   <td (click)="selectCurrentCustomer(customer)">
                     {{ customer.currAccDescription }}
                   </td>
-                  <!-- <td>{{ customer.mail }}</td> -->
                   <td (click)="selectCurrentCustomer(customer)">
                     {{ customer.phone }}
                   </td>
@@ -988,9 +925,6 @@
 
                 <div class="row">
                   <div class="col-md-6 form-group mb-3">
-                    <!-- <label for="address_description" class="label"
-                      >Adres Tarifi (ZORUNLUDUR)</label
-                    > -->
                     <input
                       pInputText
                       placeholder="Adres Tarifi *"
@@ -1006,9 +940,6 @@
 
                 <div class="row">
                   <div class="col-md-6 form-group mb-3">
-                    <!-- <label for="address_postalCode" class="label"
-                      >Posta Kodu</label
-                    > -->
                     <input
                       pInputText
                       placeholder="Posta Kodu *"
@@ -1035,8 +966,7 @@
                 </div>
               </form>
             </div>
-          </p-tabPanel>
-        </p-tabView>
+          </p-tabPanel> -->
       </p-tabPanel>
 
       <p-tabPanel

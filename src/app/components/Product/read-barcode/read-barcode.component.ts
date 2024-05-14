@@ -12,7 +12,7 @@ export class ReadBarcodeComponent implements OnInit {
   @ViewChild('scanner') scanner: ZXingScannerComponent;
   constructor(private toasterService: ToasterService) { }
   enableScanner: boolean = false;
-
+  autofocus: boolean = true;
   @Output() value = new EventEmitter<any>();
 
   ngOnInit(): void {

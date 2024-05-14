@@ -34,7 +34,7 @@ var HttpErrorInterceptor = /** @class */ (function () {
                 // console.error(` ${er.status + "-" + error.statusText}: ${error.error}`);
             }
             else if (error.status >= 500) {
-                _this.toasterService.warn("Sunucu Hatas\u0131: " + error.message);
+                //  this.toasterService.warn(`Sunucu Hatası: ${error.message}`);
             }
             // this.toasterService.warn(`Sunucu Hatası: ${error.message}`);
             return rxjs_1.throwError(error);

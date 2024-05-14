@@ -530,7 +530,7 @@ export class OrderService {
 
   async getCustomerList_2(request: GetCustomerList_CM): Promise<any> {
     try {
-      var response = await this.httpClientService.post<GetCustomerList_CM>({ controller: "order/get-customer-list-2" }, request).toPromise();
+      var response = await this.httpClientService.post<GetCustomerList_CM>({ controller:  "order/get-customer-list-2" }, request).toPromise();
 
       return response;
     } catch (error: any) {
@@ -789,13 +789,13 @@ export class OrderService {
 
   async sendInvoiceToPrinter(request: string): Promise<any> {
     try {
-      if (window.confirm("Faturayı yazdırmak istediğinize emin misiniz?")) {
-        var userId = localStorage.getItem('userId')
-        var response = await this.httpClientService.get<string>({ controller: "order/send-invoice-to-printer" + "/" + request + "/" + userId }).toPromise();
+      // if (window.confirm("Faturayı yazdırmak istediğinize emin misiniz?")) {
 
-        return response;
-      }
+      // }
+      var userId = localStorage.getItem('userId')
+      var response = await this.httpClientService.get<string>({ controller: "order/send-invoice-to-printer" + "/" + request + "/" + userId }).toPromise();
 
+      return response;
 
     } catch (error: any) {
       // console.log(error.message);

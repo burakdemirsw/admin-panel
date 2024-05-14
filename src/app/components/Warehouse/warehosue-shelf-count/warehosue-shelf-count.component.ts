@@ -367,9 +367,9 @@ export class WarehosueShelfCountComponent implements OnInit {
         countProductRequestModel
       );
       countProductRequestModel = updated_product;
-      if (this.checkForm.valid) {
-        this.onSubmit(countProductRequestModel);
-      }
+      // if (this.checkForm.valid) {
+      //   this.onSubmit(countProductRequestModel);
+      // }
       this.toasterService.success("Form Verileri Güncellendi")
       return;
     }
