@@ -10,4 +10,4 @@ var ClientUrls;
     ClientUrls["baseUrl2"] = "http://212.156.46.206:4201/search-qr/";
 })(ClientUrls = exports.ClientUrls || (exports.ClientUrls = {}));
 //bu alan sadece master da gözükecek 2
-// Path: src/app/models/const/ClientUrls.ts
+// Path: src/app/models/const/ClientUrls.ts 222
