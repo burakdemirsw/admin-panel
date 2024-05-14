@@ -21,8 +21,6 @@ var HttpErrorInterceptor = /** @class */ (function () {
             return next.handle(request);
         }
         this.spinnerService.show();
-        setInterval(function () {
-        }, 2000);
         return next.handle(request).pipe(operators_1.catchError(function (error) {
             var er = new Error();
             er.statusCode = error.error.StatusCode;
@@ -30,11 +28,12 @@ var HttpErrorInterceptor = /** @class */ (function () {
             er.title = error.error.Title;
             er.innerException = error.error.InnerException;
             if (er.statusCode >= 400 && er.statusCode <= 500 || er.statusCode === 0) {
-                _this.toasterService.warn(" " + (er.title + "-" + er.message));
-                // console.error(` ${er.status + "-" + error.statusText}: ${error.error}`);
+                //this.toasterService.warn(` ${er.title + "-" + er.message}`);
+                console.error(" " + (er.title + "-" + er.message));
             }
             else if (error.status >= 500) {
                 //  this.toasterService.warn(`Sunucu Hatası: ${error.message}`);
+                console.error("Sunucu Hatas\u0131: " + error.message);
             }
             // this.toasterService.warn(`Sunucu Hatası: ${error.message}`);
             return rxjs_1.throwError(error);

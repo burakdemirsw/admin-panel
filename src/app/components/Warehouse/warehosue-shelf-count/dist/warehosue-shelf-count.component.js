@@ -95,8 +95,8 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         this.batchCode = null;
         this.shelfNumbers = 'RAFLAR:';
         this.location = location.href;
-        this.offices = ["M", "U"];
-        this.warehouses = ["MD", "UD"];
+        this.offices = ["M", "M01"];
+        this.warehouses = ["1-0-1", "1-0-2", "1-0-3"];
         this.shelves = [];
         this.shelves2 = [];
         this.orderBillingList = [];
@@ -233,7 +233,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
             shelfNo: [null, forms_1.Validators.required],
             quantity: [null, forms_1.Validators.required],
             office: [null, forms_1.Validators.required],
-            batchCode: [null, forms_1.Validators.required],
+            batchCode: [null],
             warehouseCode: [null, forms_1.Validators.required],
             isShelfBased: [false],
             isShelfBased2: [false]
@@ -391,9 +391,6 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                     case 1:
                         updated_product = _a.sent();
                         countProductRequestModel = updated_product;
-                        // if (this.checkForm.valid) {
-                        //   this.onSubmit(countProductRequestModel);
-                        // }
                         this.toasterService.success("Form Verileri Güncellendi");
                         return [2 /*return*/];
                     case 2:

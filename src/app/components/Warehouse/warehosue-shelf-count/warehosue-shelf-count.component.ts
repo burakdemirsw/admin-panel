@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Exception } from '@zxing/library';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
@@ -20,7 +20,6 @@ import {
 import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
-import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
@@ -125,8 +124,8 @@ export class WarehosueShelfCountComponent implements OnInit {
       }
     });
   }
-  offices: any[] = ["M", "U"]
-  warehouses: any[] = ["MD", "UD"]
+  offices: any[] = ["M", "M01"]
+  warehouses: any[] = ["1-0-1", "1-0-2", "1-0-3"]
 
   shelves: AvailableShelf[] = [];
   shelves2: AvailableShelf[] = [];
@@ -207,7 +206,7 @@ export class WarehosueShelfCountComponent implements OnInit {
       shelfNo: [null, Validators.required],
       quantity: [null, Validators.required],
       office: [null, Validators.required],
-      batchCode: [null, Validators.required],
+      batchCode: [null],
       warehouseCode: [null, Validators.required],
       isShelfBased: [false],
       isShelfBased2: [false]
@@ -349,7 +348,6 @@ export class WarehosueShelfCountComponent implements OnInit {
       countProductRequestModel.barcode = countProductRequestModel.barcode.replace(/=/g, '-');
     }
 
-
     // http ile başlıyorsa veya guid ise qr işlemi yap
     if (
       countProductRequestModel.barcode.includes('http') ||
@@ -367,9 +365,7 @@ export class WarehosueShelfCountComponent implements OnInit {
         countProductRequestModel
       );
       countProductRequestModel = updated_product;
-      // if (this.checkForm.valid) {
-      //   this.onSubmit(countProductRequestModel);
-      // }
+
       this.toasterService.success("Form Verileri Güncellendi")
       return;
     }

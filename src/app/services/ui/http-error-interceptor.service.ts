@@ -20,9 +20,6 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
 
     this.spinnerService.show();
-    setInterval(() => {
-
-    }, 2000);
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         var er: Error = new Error();
@@ -31,11 +28,12 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         er.title = error.error.Title;
         er.innerException = error.error.InnerException;
         if (er.statusCode >= 400 && er.statusCode <= 500 || er.statusCode === 0) {
-          this.toasterService.warn(` ${er.title + "-" + er.message}`);
-          // console.error(` ${er.status + "-" + error.statusText}: ${error.error}`);
+          //this.toasterService.warn(` ${er.title + "-" + er.message}`);
+          console.error(` ${er.title + "-" + er.message}`);
         } else if (error.status >= 500) {
 
           //  this.toasterService.warn(`Sunucu Hatası: ${error.message}`);
+          console.error(`Sunucu Hatası: ${error.message}`);
         }
         // this.toasterService.warn(`Sunucu Hatası: ${error.message}`);
         return throwError(error);
