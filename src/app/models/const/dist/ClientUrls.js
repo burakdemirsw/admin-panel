@@ -7,21 +7,3 @@ var ClientUrls;
     ClientUrls["baseUrl2"] = "http://212.156.46.206:4201/search-qr/";
 })(ClientUrls = exports.ClientUrls || (exports.ClientUrls = {}));
 //POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR

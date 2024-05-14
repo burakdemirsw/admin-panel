@@ -5,21 +5,3 @@ export enum ClientUrls {
 
 
 //POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
-//POLAR
