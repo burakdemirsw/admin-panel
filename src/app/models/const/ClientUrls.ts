@@ -7,3 +7,4 @@ export enum ClientUrls {
 }
 
 
+//bu alan sadece polarstarda gözükmeli
