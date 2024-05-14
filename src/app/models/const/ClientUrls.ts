@@ -7,3 +7,5 @@ export enum ClientUrls {
 }
 
 
+//bu alan sadece master da gözükecek 2
+// Path: src/app/models/const/ClientUrls.ts
