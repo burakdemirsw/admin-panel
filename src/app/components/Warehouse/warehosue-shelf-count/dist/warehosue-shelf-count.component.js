@@ -254,7 +254,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         requestModel = new countProductRequestModel2_1.CountProductRequestModel2();
                         requestModel.barcode = barcode;
                         requestModel.shelfNo = shelfNo;
-                        requestModel.quantity = quantity == null ? 1 : quantity;
+                        requestModel.quantity = quantity;
                         requestModel.office = office;
                         requestModel.warehouseCode = warehouseCode;
                         requestModel.batchCode = batchCode;
@@ -317,7 +317,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
     };
     WarehosueShelfCountComponent.prototype.onSubmit = function (countProductRequestModel) {
         return __awaiter(this, void 0, Promise, function () {
-            var updated_product, shelves, response, response, data, error_2;
+            var updated_product, response, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -330,22 +330,18 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                     case 1:
                         updated_product = _a.sent();
                         if (updated_product) {
+                            if (this.checkForm.valid) {
+                                this.onSubmit(updated_product);
+                            }
                             countProductRequestModel = updated_product;
                             this.toasterService.success("Form Verileri Güncellendi");
                         }
                         return [2 /*return*/];
                     case 2:
-                        if (!this.checkForm.valid) return [3 /*break*/, 13];
+                        if (!this.checkForm.valid) return [3 /*break*/, 7];
                         _a.label = 3;
                     case 3:
-                        _a.trys.push([3, 12, , 13]);
-                        shelves = this.shelfNumbers
-                            .split(',')
-                            .filter(function (raflar) { return raflar.trim() !== ''; })
-                            .map(function (raflar) { return raflar.toLowerCase(); });
-                        if (!this.state) return [3 /*break*/, 11];
-                        this.state = false;
-                        if (!shelves.includes(countProductRequestModel.shelfNo.toLowerCase())) return [3 /*break*/, 6];
+                        _a.trys.push([3, 6, , 7]);
                         return [4 /*yield*/, this.warehouseService.countProductRequest(countProductRequestModel.barcode, countProductRequestModel.shelfNo, countProductRequestModel.quantity, countProductRequestModel.office, countProductRequestModel.warehouseCode, countProductRequestModel.batchCode, 'Order/CountProduct3', this.currentOrderNo, '')];
                     case 4:
                         response = _a.sent();
@@ -356,39 +352,13 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         _a.sent(); //this.list.push(countProductRequestModel);
                         this.clearQrAndBatchCode();
                         this.state = true;
-                        return [3 /*break*/, 11];
+                        return [3 /*break*/, 7];
                     case 6:
-                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 10];
-                        return [4 /*yield*/, this.warehouseService.countProductRequest(countProductRequestModel.barcode, countProductRequestModel.shelfNo, countProductRequestModel.quantity, countProductRequestModel.office, countProductRequestModel.warehouseCode, countProductRequestModel.batchCode, 'Order/CountProduct3', this.currentOrderNo, '')];
-                    case 7:
-                        response = _a.sent();
-                        if (!(response != undefined)) return [3 /*break*/, 9];
-                        data = response;
-                        if (data.status == 'RAF') {
-                            countProductRequestModel.shelfNo = response.description;
-                        }
-                        else {
-                            countProductRequestModel.barcode = response.description;
-                        }
-                        this.generalService.beep();
-                        return [4 /*yield*/, this.getProductOfCount(this.currentOrderNo)];
-                    case 8:
-                        _a.sent(); //this.list.push(countProductRequestModel);
-                        this.clearQrAndBatchCode();
-                        this.state = true;
-                        _a.label = 9;
-                    case 9: return [3 /*break*/, 11];
-                    case 10:
-                        this.toasterService.success('Raflar Getirildi Ve Miktar Alanı Dolduruldu.');
-                        this.state = true;
-                        _a.label = 11;
-                    case 11: return [3 /*break*/, 13];
-                    case 12:
                         error_2 = _a.sent();
                         this.toasterService.error(error_2.message);
                         this.state = true;
-                        return [3 /*break*/, 13];
-                    case 13: return [2 /*return*/];
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
                 }
             });
         });

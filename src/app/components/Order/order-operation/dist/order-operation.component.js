@@ -80,7 +80,7 @@ var OrderOperationComponent = /** @class */ (function () {
         this.currentPage = 1;
         this.currentPage2 = 1;
         this.tableHeaders = [
-            'Raf', 'Stok Kodu', 'Sipariş', 'Sayılan', 'Ud Raf', 'Ud Stok', 'Md Stok', 'Fotoğraf', 'Barkod', 'Değiştir'
+            'Raf', 'Stok Kodu', 'Sipariş', 'Sayılan', 'Renk', 'Beden', 'Stok', 'Fotoğraf', 'Barkod', 'İşlemler'
         ];
         this.invoiceTypes = [
             { name: 'Standart', key: 0 },

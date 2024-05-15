@@ -56,7 +56,7 @@ export class OrderOperationComponent implements OnInit {
   currentOrderNo: string;
   toWarehouseCode: string;
   tableHeaders: string[] = [
-    'Raf', 'Stok Kodu', 'Sipariş', 'Sayılan', 'Ud Raf', 'Ud Stok', 'Md Stok', 'Fotoğraf', 'Barkod', 'Değiştir'
+    'Raf', 'Stok Kodu', 'Sipariş', 'Sayılan', 'Renk', 'Beden', 'Stok', 'Fotoğraf', 'Barkod', 'İşlemler'
   ];
   invoiceTypes: any[] = [
     { name: 'Standart', key: 0 },

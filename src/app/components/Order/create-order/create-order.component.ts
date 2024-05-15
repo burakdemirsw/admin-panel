@@ -604,7 +604,7 @@ export class CreateOrderComponent implements OnInit {
     var check_response = await this.orderService.getCustomerList_2(check_request);
     if (check_response.length > 0) {
 
-      //this.toasterService.error("Bu Müşteri Numarası Zaten Kayıtlı")
+      //this.toasterService.error("Bu Müşteri Numarası Zaten Kayıtlı")  asdasasdsa
       this.currAccCode = check_response[0].currAccCode;
       this.getCustomerDialog = true;
       this.getCustomerForm.get("currAccCode").setValue(check_response[0].currAccCode);

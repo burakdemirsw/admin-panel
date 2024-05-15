@@ -244,7 +244,7 @@ export class WarehosueShelfCountComponent implements OnInit {
       new CountProductRequestModel2();
     requestModel.barcode = barcode;
     requestModel.shelfNo = shelfNo;
-    requestModel.quantity = quantity == null ? 1 : quantity;
+    requestModel.quantity = quantity;
     requestModel.office = office;
     requestModel.warehouseCode = warehouseCode;
     requestModel.batchCode = batchCode;
@@ -314,6 +314,9 @@ export class WarehosueShelfCountComponent implements OnInit {
         countProductRequestModel
       );
       if (updated_product) {
+        if (this.checkForm.valid) {
+          this.onSubmit(updated_product);
+        }
         countProductRequestModel = updated_product;
         this.toasterService.success("Form Verileri Güncellendi")
       }
@@ -325,81 +328,28 @@ export class WarehosueShelfCountComponent implements OnInit {
     if (this.checkForm.valid) {
       try {
 
-        const shelves = this.shelfNumbers
-          .split(',')
-          .filter((raflar) => raflar.trim() !== '')
-          .map((raflar) => raflar.toLowerCase());
-        if (this.state) {
-          this.state = false;
+        var response: ProductCountModel =
+          await this.warehouseService.countProductRequest(
+            countProductRequestModel.barcode,
+            countProductRequestModel.shelfNo,
+            countProductRequestModel.quantity,
+            countProductRequestModel.office,
+            countProductRequestModel.warehouseCode,
+            countProductRequestModel.batchCode,
+            'Order/CountProduct3',
+            this.currentOrderNo,
+            ''
+          );
 
-          // EĞER GİRİLEN RAF  RAFLARDA VARSA DİREKT SAYAR
-          if (
-            shelves.includes(countProductRequestModel.shelfNo.toLowerCase())
-          ) {
-            var response: ProductCountModel =
-              await this.warehouseService.countProductRequest(
-                countProductRequestModel.barcode,
-                countProductRequestModel.shelfNo,
-                countProductRequestModel.quantity,
-                countProductRequestModel.office,
-                countProductRequestModel.warehouseCode,
-                countProductRequestModel.batchCode,
-                'Order/CountProduct3',
-                this.currentOrderNo,
-                ''
-              );
+        // SAYIM YAPILDI -------------------------------------------
+        this.generalService.beep();
+        await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
+        this.clearQrAndBatchCode();
+        this.state = true;
 
-            // SAYIM YAPILDI -------------------------------------------
-            this.generalService.beep();
-            await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
-            this.clearQrAndBatchCode();
-            this.state = true;
-          }
-          // EĞER GİRİLEN RAF  RAFLARDA YOKSA SORAR
-          else {
-            if (
-              confirm(
-                'Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?'
-              )
-            ) {
-              var response: ProductCountModel =
-                await this.warehouseService.countProductRequest(
-                  countProductRequestModel.barcode,
-                  countProductRequestModel.shelfNo,
-                  countProductRequestModel.quantity,
-                  countProductRequestModel.office,
-                  countProductRequestModel.warehouseCode,
-                  countProductRequestModel.batchCode,
-                  'Order/CountProduct3',
-                  this.currentOrderNo,
-                  ''
-                );
-              // SAYIM YAPILDI -------------------------------------------
+        // EĞER GİRİLEN RAF  RAFLARDA YOKSA SORAR
 
-              if (response != undefined) {
 
-                var data: ProductCountModel = response;
-                if (data.status == 'RAF') {
-                  countProductRequestModel.shelfNo = response.description;
-                } else {
-                  countProductRequestModel.barcode = response.description;
-                }
-                this.generalService.beep();
-
-                await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
-
-                this.clearQrAndBatchCode();
-                this.state = true;
-              }
-            } else {
-
-              this.toasterService.success(
-                'Raflar Getirildi Ve Miktar Alanı Dolduruldu.'
-              );
-              this.state = true;
-            }
-          }
-        }
       } catch (error: any) {
         this.toasterService.error(error.message);
         this.state = true;
