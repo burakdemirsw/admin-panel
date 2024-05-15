@@ -4,8 +4,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Exception } from '@zxing/library';
-import { ClientUrls } from 'src/app/models/const/ClientUrls';
-import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { CountProductRequestModel2 } from 'src/app/models/model/order/countProductRequestModel2';
 import { OrderBillingListModel } from 'src/app/models/model/order/orderBillingListModel';
@@ -13,7 +11,6 @@ import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { CountProduct3 } from 'src/app/models/model/product/countProduct';
 import { CountedProduct, CountedProductControl } from 'src/app/models/model/product/countedProduct';
 import { ItemBillingModel } from 'src/app/models/model/product/itemBillingModel ';
-import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
 import {
   ProductCountModel,
 } from 'src/app/models/model/shelfNameModel';
@@ -262,49 +259,26 @@ export class WarehosueShelfCountComponent implements OnInit {
   async setFormValues(product: CountProduct3): Promise<CountProduct3> {
 
     try {
-      var state = this.generalService.isGuid(product.barcode);
-      if (product.barcode.includes('http') || state) {
-        var result: string[] = await this.productService.countProductByBarcode3(
-          product.barcode
-        );
-        if (result) {
-          this.shelfNumbers = result[0];
-          this.checkForm.get('batchCode').setValue(result[2]);
-          this.checkForm.get('barcode').setValue(result[3]);
-          this.checkForm.get('quantity').setValue(Number(result[1]));
 
-          var updated_product: CountProduct3 = product;
-          updated_product.quantity = Number(result[1]);
-          updated_product.batchCode = result[2];
-          updated_product.barcode = result[3];
-          return updated_product;
-        } else {
-          throw new Exception('setFormValues error');
-        }
-
-      } else {
-        var result: string[] = await this.productService.countProductByBarcode(
-          product.barcode
-        );
+      var result: string[] = await this.productService.countProductByBarcode(
+        product.barcode
+      );
+      if (result) {
         this.shelfNumbers = result[0];
         this.checkForm.get('batchCode').setValue(result[2]);
         this.checkForm.get('barcode').setValue(result[3]);
         this.checkForm.get('quantity').setValue(Number(result[1]));
-        if (result[4] == 'false') {
 
-          if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
-            this.checkForm.get('batchCode').setValue(null);
-            this.focusNextInput('batchCode');
-            this.toasterService.error('Parti Giriniz');
-            return null;
-          }
-        }
         var updated_product: CountProduct3 = product;
         updated_product.quantity = Number(result[1]);
         updated_product.batchCode = result[2];
         updated_product.barcode = result[3];
         return updated_product;
+      } else {
+
+        throw new Exception('Ürün Doğrulaması Başarısız');
       }
+
     } catch (error) {
       this.toasterService.error(error.message);
       return null;
@@ -319,7 +293,7 @@ export class WarehosueShelfCountComponent implements OnInit {
     return result[1];
   }
   state: boolean = true;
-  qrBarcodeUrl: string = null;
+
 
   async onSubmit(
     countProductRequestModel: CountProduct3
@@ -330,14 +304,7 @@ export class WarehosueShelfCountComponent implements OnInit {
       countProductRequestModel.barcode = countProductRequestModel.barcode.replace(/=/g, '-');
     }
 
-    // http ile başlıyorsa veya guid ise qr işlemi yap
-    if (
-      countProductRequestModel.barcode.includes('http') ||
-      this.generalService.isGuid(countProductRequestModel.barcode)
-    ) {
-      countProductRequestModel.barcode = countProductRequestModel.barcode.replace("Http", "http");
-      this.qrBarcodeUrl = countProductRequestModel.barcode;
-    }
+
 
     if (
       !this.checkForm.valid
@@ -346,16 +313,16 @@ export class WarehosueShelfCountComponent implements OnInit {
 
         countProductRequestModel
       );
-      countProductRequestModel = updated_product;
+      if (updated_product) {
+        countProductRequestModel = updated_product;
+        this.toasterService.success("Form Verileri Güncellendi")
+      }
 
-      this.toasterService.success("Form Verileri Güncellendi")
       return;
     }
 
 
     if (this.checkForm.valid) {
-      const url = ClientUrls.baseUrl + '/Order/CountProduct3';
-
       try {
 
         const shelves = this.shelfNumbers
@@ -449,7 +416,7 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.checkForm.get('barcode').setValue(null);
     this.focusNextInput('shelfNo');
     this.shelfNumbers = 'Raf No';
-    this.qrBarcodeUrl = null;
+
     this.checkForm.get('quantity').setValue(null);
     this.checkForm.get('batchCode').setValue(null);
   }
@@ -459,7 +426,7 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.checkForm.get('quantity').setValue(null);
     this.focusNextInput('countPageBarcode');
     this.shelfNumbers = 'Raf No';
-    this.qrBarcodeUrl = null;
+
     this.calculateTotalQty();
   }
 

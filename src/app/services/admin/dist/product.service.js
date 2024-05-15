@@ -96,18 +96,24 @@ var ProductService = /** @class */ (function () {
                                 .toPromise()];
                     case 1:
                         model = _a.sent();
-                        shelfNumbers = '';
-                        model.forEach(function (element) {
-                            shelfNumbers += element.description + ',';
-                        });
-                        results = [];
-                        results.push(shelfNumbers);
-                        results.push(model[0].status);
-                        results.push(model[0].batchCode);
-                        results.push(model[0].barcode);
-                        // results.push(model[0].batchStatus.toString());
-                        results.push(model[0].batchStatus.toString());
-                        return [2 /*return*/, results];
+                        if (model) {
+                            shelfNumbers = '';
+                            model.forEach(function (element) {
+                                shelfNumbers += element.description + ',';
+                            });
+                            results = [];
+                            results.push(shelfNumbers);
+                            results.push(model[0].status);
+                            results.push(model[0].batchCode);
+                            results.push(model[0].barcode);
+                            // results.push(model[0].batchStatus.toString());
+                            results.push(model[0].batchStatus.toString());
+                            return [2 /*return*/, results];
+                        }
+                        else {
+                            return [2 /*return*/, null];
+                        }
+                        return [3 /*break*/, 3];
                     case 2:
                         error_1 = _a.sent();
                         console.error(error_1.message);

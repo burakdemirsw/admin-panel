@@ -300,7 +300,7 @@ var routes = [
     { path: 'nebim-stock-control', component: nebim_stock_control_component_1.NebimStockControlComponent },
     { path: 'nebim-product-extract', component: nebim_product_extract_component_1.NebimProductExtractComponent },
     { path: 'create-barcode/:operationNo', component: create_barcode_component_1.CreateBarcodeComponent },
-    //-------------------------------------------------------------------------
+    //------------------------------------------------------------------------- PERAKENDE
     { path: 'retail-invoice-list', component: retail_invoice_list_component_1.RetailInvoiceListComponent },
     { path: 'retail-orders-managament/:status/:invoiceStatus', component: retail_order_management_component_1.RetailOrderManagementComponent },
     { path: 'retail-orders-collected-packages', component: collected_packages_component_2.CollectedPackagesComponent },

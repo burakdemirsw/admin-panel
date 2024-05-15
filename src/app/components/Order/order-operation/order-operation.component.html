@@ -8,16 +8,9 @@
               <table class="table" #bilgilendirmeAlanı>
                 <thead>
                   <tr>
-                    <th scope="col">RAF</th>
-                    <th scope="col">KOD</th>
-                    <th scope="col">SİPARİŞ</th>
-                    <th scope="col">SAYILAN</th>
-                    <th scope="col">UD RAF</th>
-                    <th scope="col">UD STOK</th>
-                    <th scope="col">MD STOK</th>
-                    <th scope="col">Fotoğraf</th>
-                    <th scope="col">Barkod</th>
-                    <th scope="col">Değiştir</th>
+                    <th scope="col" *ngFor="let header of tableHeaders">
+                      {{ header }}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -272,25 +265,9 @@
               <table class="table">
                 <thead>
                   <tr>
-                    <!-- <th scope="col">Seç</th> -->
-                    <th scope="col">RAF</th>
-                    <th scope="col">KOD</th>
-                    <th scope="col">SİPARİŞ</th>
-                    <th scope="col">SAYILAN</th>
-                    <th scope="col">UD RAF</th>
-                    <th scope="col">UD STOK</th>
-                    <th scope="col">MD STOK</th>
-                    <th scope="col">TOPLAM STOK</th>
-
-                    <th scope="col">Fotoğraf</th>
-                    <th scope="col">Barkod</th>
-
-                    <!-- <th scope="col">Paket No</th> -->
-                    <!-- <th scope="col">Renk Kodu</th> -->
-
-                    <th scope="col">Sil</th>
-
-                    <!-- <th scope="col">LineId</th> -->
+                    <th scope="col" *ngFor="let header of tableHeaders">
+                      {{ header }}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -304,22 +281,12 @@
                     [ngClass]="{ 'green-row': product.colorDescription == '1' }"
                     [ngClass]="{ 'success-row': product.quantity === 0 }"
                   >
-                    <!-- <td>
-                      <input      pInputText
-                        class="form-check-input"
-                        type="checkbox"
-                        id="pi{{ product.packageNo }}"
-                        (change)="addProductToList(product.packageNo)"
-                      />
-                    </td> -->
-
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.itemCode }}</td>
                     <td>{{ product.quantity }}</td>
                     <td>{{ product.description }}</td>
                     <td>{{ product.colorDescription }}</td>
                     <td>{{ product.itemDim1Code }}</td>
-                    <td>{{ product.currentQty }}</td>
                     <td>{{ +product.itemDim1Code + +product.currentQty }}</td>
                     <td>
                       <img

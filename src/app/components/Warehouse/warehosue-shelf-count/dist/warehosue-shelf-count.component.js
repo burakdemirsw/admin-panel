@@ -46,7 +46,6 @@ exports.WarehosueShelfCountComponent = void 0;
 var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
 var library_1 = require("@zxing/library");
-var ClientUrls_1 = require("src/app/models/const/ClientUrls");
 var countProductRequestModel2_1 = require("src/app/models/model/order/countProductRequestModel2");
 var WarehosueShelfCountComponent = /** @class */ (function () {
     //#endregion
@@ -116,7 +115,6 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         ];
         this.lastCollectedProducts = [];
         this.state = true;
-        this.qrBarcodeUrl = null;
         this.title.setTitle('Sayım');
     }
     WarehosueShelfCountComponent.prototype.change = function (barcode, quantity, batchCode) {
@@ -272,14 +270,12 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
     };
     WarehosueShelfCountComponent.prototype.setFormValues = function (product) {
         return __awaiter(this, void 0, Promise, function () {
-            var state, result, updated_product, result, updated_product, error_1;
+            var result, updated_product, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 5, , 6]);
-                        state = this.generalService.isGuid(product.barcode);
-                        if (!(product.barcode.includes('http') || state)) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.productService.countProductByBarcode3(product.barcode)];
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.productService.countProductByBarcode(product.barcode)];
                     case 1:
                         result = _a.sent();
                         if (result) {
@@ -294,35 +290,14 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                             return [2 /*return*/, updated_product];
                         }
                         else {
-                            throw new library_1.Exception('setFormValues error');
+                            throw new library_1.Exception('Ürün Doğrulaması Başarısız');
                         }
-                        return [3 /*break*/, 4];
-                    case 2: return [4 /*yield*/, this.productService.countProductByBarcode(product.barcode)];
-                    case 3:
-                        result = _a.sent();
-                        this.shelfNumbers = result[0];
-                        this.checkForm.get('batchCode').setValue(result[2]);
-                        this.checkForm.get('barcode').setValue(result[3]);
-                        this.checkForm.get('quantity').setValue(Number(result[1]));
-                        if (result[4] == 'false') {
-                            if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
-                                this.checkForm.get('batchCode').setValue(null);
-                                this.focusNextInput('batchCode');
-                                this.toasterService.error('Parti Giriniz');
-                                return [2 /*return*/, null];
-                            }
-                        }
-                        updated_product = product;
-                        updated_product.quantity = Number(result[1]);
-                        updated_product.batchCode = result[2];
-                        updated_product.barcode = result[3];
-                        return [2 /*return*/, updated_product];
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
+                        return [3 /*break*/, 3];
+                    case 2:
                         error_1 = _a.sent();
                         this.toasterService.error(error_1.message);
                         return [2 /*return*/, null];
-                    case 6: return [2 /*return*/];
+                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -342,7 +317,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
     };
     WarehosueShelfCountComponent.prototype.onSubmit = function (countProductRequestModel) {
         return __awaiter(this, void 0, Promise, function () {
-            var updated_product, url, shelves, response, response, data, error_2;
+            var updated_product, shelves, response, response, data, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -350,22 +325,17 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         if (countProductRequestModel.barcode.includes('=')) {
                             countProductRequestModel.barcode = countProductRequestModel.barcode.replace(/=/g, '-');
                         }
-                        // http ile başlıyorsa veya guid ise qr işlemi yap
-                        if (countProductRequestModel.barcode.includes('http') ||
-                            this.generalService.isGuid(countProductRequestModel.barcode)) {
-                            countProductRequestModel.barcode = countProductRequestModel.barcode.replace("Http", "http");
-                            this.qrBarcodeUrl = countProductRequestModel.barcode;
-                        }
                         if (!!this.checkForm.valid) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.setFormValues(countProductRequestModel)];
                     case 1:
                         updated_product = _a.sent();
-                        countProductRequestModel = updated_product;
-                        this.toasterService.success("Form Verileri Güncellendi");
+                        if (updated_product) {
+                            countProductRequestModel = updated_product;
+                            this.toasterService.success("Form Verileri Güncellendi");
+                        }
                         return [2 /*return*/];
                     case 2:
                         if (!this.checkForm.valid) return [3 /*break*/, 13];
-                        url = ClientUrls_1.ClientUrls.baseUrl + '/Order/CountProduct3';
                         _a.label = 3;
                     case 3:
                         _a.trys.push([3, 12, , 13]);
@@ -440,7 +410,6 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         this.checkForm.get('barcode').setValue(null);
         this.focusNextInput('shelfNo');
         this.shelfNumbers = 'Raf No';
-        this.qrBarcodeUrl = null;
         this.checkForm.get('quantity').setValue(null);
         this.checkForm.get('batchCode').setValue(null);
     };
@@ -450,7 +419,6 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         this.checkForm.get('quantity').setValue(null);
         this.focusNextInput('countPageBarcode');
         this.shelfNumbers = 'Raf No';
-        this.qrBarcodeUrl = null;
         this.calculateTotalQty();
     };
     WarehosueShelfCountComponent.prototype.completeCountFromService = function (orderNo) {

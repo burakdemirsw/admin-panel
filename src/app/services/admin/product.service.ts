@@ -77,19 +77,24 @@ export class ProductService {
         })
         .toPromise();
 
-      var shelfNumbers: string = '';
-      model.forEach((element) => {
-        shelfNumbers += element.description + ',';
-      });
-      var results: string[] = [];
-      results.push(shelfNumbers);
-      results.push(model[0].status);
-      results.push(model[0].batchCode);
-      results.push(model[0].barcode);
-      // results.push(model[0].batchStatus.toString());
-      results.push(model[0].batchStatus.toString());
+      if (model) {
+        var shelfNumbers: string = '';
+        model.forEach((element) => {
+          shelfNumbers += element.description + ',';
+        });
+        var results: string[] = [];
+        results.push(shelfNumbers);
+        results.push(model[0].status);
+        results.push(model[0].batchCode);
+        results.push(model[0].barcode);
+        // results.push(model[0].batchStatus.toString());
+        results.push(model[0].batchStatus.toString());
 
-      return results;
+        return results;
+      } else {
+        return null;
+      }
+
     } catch (error: any) {
       console.error(error.message);
       return null;

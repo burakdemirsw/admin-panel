@@ -14,11 +14,12 @@ import { OrderService } from '../../../services/admin/order.service';
 
 import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
 import { BrowserMultiFormatReader } from '@zxing/library';
-import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
+import { OrderStatus } from 'src/app/models/model/order/orderStatus';
 import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
 import { CountConfirmData } from 'src/app/models/model/product/countConfirmModel';
+import { CountProduct } from 'src/app/models/model/product/countProduct';
 import {
   QrOperationModel
 } from 'src/app/models/model/product/qrOperationModel';
@@ -29,8 +30,6 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
-import { OrderStatus } from 'src/app/models/model/order/orderStatus';
-import { CountProduct } from 'src/app/models/model/product/countProduct';
 
 declare var window: any;
 
@@ -56,13 +55,9 @@ export class OrderOperationComponent implements OnInit {
   currentPage2: number = 1;
   currentOrderNo: string;
   toWarehouseCode: string;
-  private codeReader: BrowserMultiFormatReader;
-  _visible: boolean;
-  _visible2: boolean;
-  showDialog() {
-    this._visible = true;
-  }
-
+  tableHeaders: string[] = [
+    'Raf', 'Stok Kodu', 'Sipariş', 'Sayılan', 'Ud Raf', 'Ud Stok', 'Md Stok', 'Fotoğraf', 'Barkod', 'Değiştir'
+  ];
   invoiceTypes: any[] = [
     { name: 'Standart', key: 0 },
     { name: 'Vergisiz', key: 4 },
@@ -70,6 +65,13 @@ export class OrderOperationComponent implements OnInit {
   ];
   _pageDescription: boolean = false;
   selectedInvoiceType: any;
+  private codeReader: BrowserMultiFormatReader;
+  _visible: boolean;
+  _visible2: boolean;
+  showDialog() {
+    this._visible = true;
+  }
+
   constructor(
     private headerService: HeaderService,
     private toasterService: ToasterService,
@@ -86,10 +88,40 @@ export class OrderOperationComponent implements OnInit {
   ) {
     this.codeReader = new BrowserMultiFormatReader();
   }
+  //#region  params
   isBPTransferForm: boolean = false;
   isInvoice: boolean = false;
   customerName: string;
   warehouseCode: string; //depokodu
+  orderBillingList: OrderBillingListModel[] = [];
+  itemBillingModels: ItemBillingModel[] = [];
+  confirmedProductPackageNoList: string[] = [];
+  modalImageUrl: string;
+  formModal: any;
+  currentProductModel: any;
+  qrBarcodeUrl: string = null;
+  qrOperationModels: QrOperationModel[] = [];
+  urr: string = "https://lh3.googleusercontent.com/d/1H2pjyH0zqSbZMgw5pn1zU0DlbrgDlL5K";
+  shelfNo: string;
+  shelfNoList: string[] = [];
+  barcodeValue: string = null; // Değişkeni tanımlayın
+  productShelvesDialog: boolean = false;
+  productShelves: string[] = [];
+  barcodeDialog: boolean = false;
+  barcode: string = null;
+  quantity: number = null;
+  orderNo: string;
+  orderBillingModel: OrderBillingListModel;
+  invoicesOfCustomer: InvoiceOfCustomer_VM[] = [];
+  selectedInvoice: InvoiceOfCustomer_VM;
+  qrCodeValue: string = '';
+  qrCodeDownloadLink: any = this.sanitizer.bypassSecurityTrustResourceUrl('');
+  visible2: boolean = false;
+  visible: boolean = false;
+  totalCount: number = 0;
+  addedProductCount: string = '';
+  lastCollectedProduct: ProductOfOrder = null;
+  //#endregion
   async ngOnInit() {
 
     //this.spinnerService.show();
@@ -100,15 +132,13 @@ export class OrderOperationComponent implements OnInit {
       var orderNumber: string = params['orderNumber'];
       if (params['isInvoice']) {
         this.isInvoice = params['isInvoice'] === "true" ? true : false;
-        // this.toasterService.success(this.isInvoice.toString())
+
       }
       if (params['warehouseCode']) {
         this.warehouseCode = (params['warehouseCode']);
-        // this.toasterService.success(this.warehouseCode)
+
       }
-      // if (orderNumber.includes('MIS')) {
-      //   orderNumber = orderNumber.split('MIS-')[0]
-      // }
+
       if (orderNumber.startsWith("W-")) {
         var orderNumberType = "WT";
         this.isBPTransferForm = true;
@@ -119,8 +149,6 @@ export class OrderOperationComponent implements OnInit {
         this.currentOrderNo = params['orderNumber'];
         this.orderNo = orderNumber;
       }
-
-
       //  await this.getCollectedOrderProducts(this.orderNo) //toplanan ürünler çekildi
       if (orderNumberType === 'BP') {
         await this.getAllProducts(params['orderNumber'], 'BP'); //toplanan ve toplanacak ürünleri çeker
@@ -141,16 +169,18 @@ export class OrderOperationComponent implements OnInit {
         orderNumberType = "MIS"
         await this.getAllProducts(params['orderNumber'], 'MIS'); //toplanan ve toplanacak ürünleri çeker
       }
+      else if (orderNumber.includes("R")) {
+        orderNumberType = "R"
+        await this.getAllProducts(params['orderNumber'], 'R'); //toplanan ve toplanacak ürünleri çeker
+      }
       if (location.href.includes("MIS")) {
         this._pageDescription = true
 
       }
-
-      //this.spinnerService.hide();
       this.setPageDescription(orderNumberType);
     });
   }
-  //selam ben burak
+
   async addOrderStatus() {
     var request = new OrderStatus();
     request.id = await this.generalService.generateGUID();
@@ -178,10 +208,6 @@ export class OrderOperationComponent implements OnInit {
 
       missingProducts.push(_product);
     });
-
-
-
-    // var response = await this.httpClientService.post<ProductOfOrder>({ controller: "order/destroy-item" }, _product).toPromise();
     var response = await this.orderService.addMissingProduct(missingProducts);
     if (response) {
       await this.getAllProducts(this.currentOrderNo, 'WS')
@@ -218,8 +244,7 @@ export class OrderOperationComponent implements OnInit {
     this.calculateTotalQty();
     return response;
   }
-  visible: boolean = false;
-  totalCount: number = 0;
+
   calculateTotalQty() {
     //toplanan ürünler yazısı için
     let totalQty = 0;
@@ -236,7 +261,8 @@ export class OrderOperationComponent implements OnInit {
       this.visible = true;
     }
   }
-  visible2: boolean = false;
+
+
   showModal2() {
     if (this.visible2) {
       this.visible2 = false;
@@ -247,8 +273,6 @@ export class OrderOperationComponent implements OnInit {
 
   //-----------------------------------------------------FATURA SEÇME İŞLEMLERİ
 
-  invoicesOfCustomer: InvoiceOfCustomer_VM[] = [];
-  selectedInvoice: InvoiceOfCustomer_VM;
   async showDialog2() {
     this._visible2 = true;
     this.invoicesOfCustomer = [];
@@ -262,11 +286,6 @@ export class OrderOperationComponent implements OnInit {
     this._visible2 = false;
   }
   //-----------------------------------------------------
-
-
-  qrCodeValue: string = '';
-  qrCodeDownloadLink: any = this.sanitizer.bypassSecurityTrustResourceUrl('');
-
   createJson(barcode: string, shelfNo: string, itemCode: string) {
     var model: CollectedProduct = this.lastCollectedProducts.find(
       (p) =>
@@ -277,17 +296,11 @@ export class OrderOperationComponent implements OnInit {
     this.qrCodeValue = formDataJSON;
     // this.toasterService.success(this.qrCodeValue)
   }
-
   onChangeURL(url: SafeUrl) {
     this.qrCodeDownloadLink = url;
     this.openImageModal(this.qrCodeDownloadLink);
     this.qrCodeValue = '';
   }
-
-  orderNo: string;
-  orderBillingModel: OrderBillingListModel;
-  // url2: string = ClientUrls.baseUrl + '/Order/CountTransferProductPuschase';
-
   setPageDescription(orderNumberType: string) {
     if (orderNumberType === 'BP') {
       this.title.setTitle('Alınan Sipariş Faturalaştır');
@@ -308,8 +321,6 @@ export class OrderOperationComponent implements OnInit {
     this.headerService.updatePageTitle(this.pageDescription);
 
   }
-  addedProductCount: string = '';
-  lastCollectedProduct: ProductOfOrder = null;
   async getAllProducts(orderNo: string, orderNoType: string): Promise<any> {
     if (orderNo.startsWith("W-")) {
       orderNo = orderNo.split("W-")[1]
@@ -401,8 +412,6 @@ export class OrderOperationComponent implements OnInit {
       nextInput.focus();
     }
   } //general service
-  orderBillingList: OrderBillingListModel[] = [];
-  itemBillingModels: ItemBillingModel[] = [];
 
   deleteRow(index: number) {
     this.itemBillingModels.splice(index, 1); // İlgili satırı listeden sil
@@ -536,8 +545,6 @@ export class OrderOperationComponent implements OnInit {
 
     return response;
   }
-  modalImageUrl: string;
-  formModal: any;
   openImageModal(imageUrl: string) {
     this.modalImageUrl = imageUrl;
     if (!this.formModal) {
@@ -547,7 +554,7 @@ export class OrderOperationComponent implements OnInit {
     }
     this.formModal.show();
   }
-  currentProductModel: any;
+
   setFirstItem() {
     if (this.currentProductModel != null) {
       const barcodeToFind = this.currentProductModel.barcode;
@@ -569,69 +576,38 @@ export class OrderOperationComponent implements OnInit {
 
   async setFormValues(barcode: string): Promise<CountProduct> {
 
-
-
     try {
-      if (barcode.includes('http') || this.generalService.isGuid(barcode)) {
-        var result: string[] = await this.productService.countProductByBarcode3(
-          barcode
-        );
-        this.shelfNumbers = result[0];
-        var currentShelfNo = this.checkForm.get('shelfNo').value;
-        this.checkForm.get('batchCode').setValue(result[2]);
-        this.checkForm.get('barcode').setValue(result[3]);
-        this.checkForm.get('quantity').setValue(result[1]);
+      var result: string[] = await this.productService.countProductByBarcode(
+        barcode
+      );
+      this.shelfNumbers = result[0];
+      var currentShelfNo = this.checkForm.get('shelfNo').value;
+      this.checkForm.get('barcode').setValue(result[3]);
+      this.checkForm.get('batchCode').setValue(result[2].toString());
+      this.checkForm.get('quantity').setValue(result[1]);
+      if (result[4] == 'false') {
 
-        var product: CountProduct = new CountProduct(result[3], currentShelfNo, result[2], Number(result[1]));
-        return product;
-      } else {
-        var result: string[] = await this.productService.countProductByBarcode4(
-          barcode, this.warehouseCode
-        );
-        this.shelfNumbers = result[0];
-        var currentShelfNo = this.checkForm.get('shelfNo').value;
-        this.checkForm.get('barcode').setValue(result[3]);
-        this.checkForm.get('batchCode').setValue(result[2].toString());
-        this.checkForm.get('quantity').setValue(result[1]);
-        if (result[4] == 'false') {
-
-          if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
-            this.checkForm.get('batchCode').setValue(null);
-            this.focusNextInput('batchCode');
-            this.toasterService.error('Parti Giriniz');
-            return null;
-          }
+        if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
+          this.checkForm.get('batchCode').setValue(null);
+          this.focusNextInput('batchCode');
+          this.toasterService.error('Parti Giriniz');
+          return null;
         }
-        var product: CountProduct = new CountProduct(result[3], currentShelfNo, result[2], Number(result[1]));
-        return product;
       }
+      var product: CountProduct = new CountProduct(result[3], currentShelfNo, result[2], Number(result[1]));
+      return product;
     } catch (error) {
       this.toasterService.error(error.message);
       return null;
     }
   }
 
-
-  qrBarcodeUrl: string = null;
-  qrOperationModels: QrOperationModel[] = [];
   async onSubmit(productModel: CountProduct): Promise<any> {
 
     // = işareti varsa - yap
     if (productModel.barcode.includes("=")) {
       productModel.barcode = productModel.barcode.replace(/=/g, "-");
 
-    }
-    if (productModel.barcode.includes("Http")) {
-      productModel.barcode = productModel.barcode.replace("Http", "http");
-
-    }
-
-    // http ile başlıyorsa veya guid ise qr işlemi yap
-    if (
-      productModel.barcode.includes('http') ||
-      this.generalService.isGuid(productModel.barcode)
-    ) {
-      this.qrBarcodeUrl = productModel.barcode;
     }
 
     if (!this.checkForm.valid) {
@@ -708,22 +684,7 @@ export class OrderOperationComponent implements OnInit {
               //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
               if (response && response != null && response != undefined) {
 
-                var qrResponse: QrOperationResponseModel =
-                  await this.productService.qrOperationMethod(
-                    this.qrBarcodeUrl,
-                    this.checkForm,
-                    productModel,
-                    productModel.quantity,
-                    false,
-                    'WS'
-                  );
-                if (qrResponse != null && qrResponse.state === true) {
-                  this.qrOperationModels.push(qrResponse.qrOperationModel);
-                } else if (qrResponse === null) {
-                  this.qrBarcodeUrl = null
-                }
 
-                //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
               } else {
                 this.toasterService.error("Sayım Sırasında Hata Alındı")
                 return;
@@ -838,30 +799,7 @@ export class OrderOperationComponent implements OnInit {
                 lineId
               );
               //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
-              if (response2 && response2 != null && response2 != undefined) {
 
-                //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-                var qrResponse: QrOperationResponseModel =
-                  await this.productService.qrOperationMethod(
-                    this.qrBarcodeUrl,
-                    this.checkForm,
-                    productModel,
-                    productModel.quantity,
-                    false,
-                    'WT'
-                  );
-                if (qrResponse != null && qrResponse.state === true) {
-                  this.qrOperationModels.push(qrResponse.qrOperationModel);
-                } else if (qrResponse === null) {
-                  this.qrBarcodeUrl = null
-                }
-
-                //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
-              } else {
-                this.toasterService.error("Sayım Sırasında Hata Alındı")
-
-                return;
-              }
 
               await this.getAllProducts(this.orderNo, 'WT');
               //↑↑↑↑↑↑↑↑↑ TOPLANAN ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
@@ -939,27 +877,6 @@ export class OrderOperationComponent implements OnInit {
               lineId
             );
             //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
-            if (response && response != null && response != undefined) {
-              var qrResponse: QrOperationResponseModel =
-                await this.productService.qrOperationMethod(
-                  this.qrBarcodeUrl,
-                  this.checkForm,
-                  productModel,
-                  productModel.quantity,
-                  false,
-                  'BP'
-                );
-              if (qrResponse != null && qrResponse.state === true) {
-                this.qrOperationModels.push(qrResponse.qrOperationModel);
-              } else if (qrResponse === null) {
-                this.qrBarcodeUrl = null
-              }
-
-            } else {
-              this.toasterService.error("Sayım Sırasında Hata Alındı")
-
-              return;
-            }
 
 
             await this.getAllProducts(this.orderNo, 'BP');
@@ -978,7 +895,6 @@ export class OrderOperationComponent implements OnInit {
     }
 
   }
-  confirmedProductPackageNoList: string[] = [];
 
   addProductToList(packageNo: string) {
     var isChecked = (
@@ -999,7 +915,7 @@ export class OrderOperationComponent implements OnInit {
       }
     }
   }
-  urr: string = "https://lh3.googleusercontent.com/d/1H2pjyH0zqSbZMgw5pn1zU0DlbrgDlL5K";
+
   async addAllSelectedProductsToList(): Promise<any> {
     if (this.confirmedProductPackageNoList.length === 0) {
       this.toasterService.warn('Seçilen Ürün Bulunamadı.');
@@ -1037,12 +953,7 @@ export class OrderOperationComponent implements OnInit {
       return;
     }
   }
-  shelfNo: string;
-  shelfNoList: string[] = [];
-  barcodeValue: string = null; // Değişkeni tanımlayın
 
-  productShelvesDialog: boolean = false;
-  productShelves: string[] = [];
   async getShelves(barcode: string) {
     var newResponse = await this.productService.countProductByBarcode4(
       barcode, this.warehouseCode
@@ -1060,9 +971,6 @@ export class OrderOperationComponent implements OnInit {
     this.toasterService.success("Raf Yerleştirildi");
     this.productShelvesDialog = false;
   }
-
-
-
   clearShelfNumbers() {
     // this.checkForm.get('shelfNo').setValue(null);
     this.checkForm.get('shelfNo').setValue(null);
@@ -1148,54 +1056,7 @@ export class OrderOperationComponent implements OnInit {
         }
 
       }
-      var model: QrOperationModel = new QrOperationModel();
-      var qrOperationModel: QrOperationModel = new QrOperationModel();
-      ////console.log(this.qrOperationModels);
-      qrOperationModel = this.qrOperationModels.find(
-        (p) =>
-          p.barcode == product.barcode &&
-          p.batchCode == product.batchCode &&
-          p.shelfNo == product.shelfNo
-      );
 
-      var matchingData = this.qrOperationModels.filter(
-        (p) =>
-          p.barcode == product.barcode &&
-          p.batchCode == product.batchCode &&
-          p.shelfNo == product.shelfNo
-      );
-      const totalQuantity = 0;
-
-      if (qrOperationModel) {
-        if (matchingData) {
-          const totalQuantity = matchingData.reduce(
-            (acc, curr) => acc + curr.qty,
-            0
-          );
-          qrOperationModel.qty = totalQuantity;
-        }
-
-        // qrOperationModel nesnesini model'e kopyala
-        model = Object.assign({}, qrOperationModel);
-
-        if (qrOperationModel.isReturn) {
-          model.isReturn = false;
-        } else {
-          model.isReturn = true;
-        }
-        const qrOperationResponse = await this.productService.qrOperation(
-          model
-        );
-        if (qrOperationResponse) {
-          ////console.log(this.qrOperationModels);
-          this.generalService.beep3();
-          this.toasterService.success('Qr Operasyonu Geri Alındı');
-        } else {
-          this.toasterService.error('Qr Operaasyonu Geri Alınamadı');
-        }
-      } else {
-        this.toasterService.error('Qr Operaasyonu Geri Alınamadı');
-      }
 
       return response;
     } else {
@@ -1252,9 +1113,7 @@ export class OrderOperationComponent implements OnInit {
     }
   }
   //--------------
-  barcodeDialog: boolean = false;
-  barcode: string = null;
-  quantity: number = null;
+
   change(barcode: string, quantity: number) {
     this.barcodeDialog = !this.barcodeDialog;
     this.barcode = barcode;

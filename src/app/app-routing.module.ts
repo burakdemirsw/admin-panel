@@ -299,7 +299,7 @@ const routes: Routes = [
   { path: 'create-barcode/:operationNo', component: CreateBarcodeComponent },
 
 
-  //-------------------------------------------------------------------------
+  //------------------------------------------------------------------------- PERAKENDE
   { path: 'retail-invoice-list', component: RetailInvoiceListComponent },
   { path: 'retail-orders-managament/:status/:invoiceStatus', component: RetailOrderManagementComponent },
   { path: 'retail-orders-collected-packages', component: CollectedPackagesComponent2 },

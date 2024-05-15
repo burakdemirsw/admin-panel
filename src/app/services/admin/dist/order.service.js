@@ -180,7 +180,7 @@ var OrderService = /** @class */ (function () {
         else if (orderNoType === 'WT') {
             endpoint = 'Warehouse/GetWarehouseOperationDetail/'; //Usp_GETTransferOnayla
         }
-        else if (orderNoType === 'WS') {
+        else if (orderNoType === 'WS' || orderNoType === 'R') {
             endpoint = 'Order/GetOrderSaleDetail/'; //GET_MSRAFSalesOrderDetail
         }
         else if (orderNoType === 'MIS') {
