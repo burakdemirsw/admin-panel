@@ -362,7 +362,8 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.productService.countProductByBarcode(barcode)];
+                    case 0: return [4 /*yield*/, this.productService.countProductByBarcode(//
+                        barcode)];
                     case 1:
                         result = _a.sent();
                         return [2 /*return*/, result[1]];

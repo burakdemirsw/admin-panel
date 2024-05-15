@@ -480,7 +480,6 @@
       </p-tabPanel>
 
       <p-tabPanel
-        *ngIf="!isCompleted"
         header="Müşteri Bul"
         [rightIcon]="this.currAccCode ? 'pi pi-check' : 'pi pi-times'"
       >
@@ -757,218 +756,217 @@
             </div>
           </div>
         </form>
-        <!--  <p-tabPanel header="Var Olan Müşteri">
-            <form
-              [formGroup]="getCustomerForm"
-              class="customer-form"
-              (ngSubmit)="getCustomers(this.getCustomerForm.value)"
-            >
-              <div class="input-group mb-3">
-                <span class="input-group-text"
-                  ><i class="bi bi-card-checklist"></i
-                ></span>
-                <input
-                  pInputText
-                  type="search"
-                  class="form-control"
-                  id="currAccCode"
-                  placeholder="Müşteri Kodu / Adı"
-                  formControlName="currAccCode"
-                />
-              </div>
-            </form>
+      </p-tabPanel>
+      <!--  <p-tabPanel header="Var Olan Müşteri">
+        <form
+          [formGroup]="getCustomerForm"
+          class="customer-form"
+          (ngSubmit)="getCustomers(this.getCustomerForm.value)"
+        >
+          <div class="input-group mb-3">
+            <span class="input-group-text"
+              ><i class="bi bi-card-checklist"></i
+            ></span>
+            <input
+              pInputText
+              type="search"
+              class="form-control"
+              id="currAccCode"
+              placeholder="Müşteri Kodu / Adı"
+              formControlName="currAccCode"
+            />
+          </div>
+        </form>
 
-            <p-dialog
-              header="Bulunan Adresler"
-              [(visible)]="selectAddressDialog"
-              [style]="{ width: '80vw' }"
-            >
-              <p-table [scrollable]="true" [value]="addresses">
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th>İl</th>
-                    <th>İlçe</th>
-                    <th>Adres</th>
-                    <th>İşlemler</th>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-address>
-                  <tr>
-                    <td>{{ address.cityDescription }}</td>
-                    <td>{{ address.districtDescription }}</td>
-                    <td>{{ address.address.substring(0, 20) }}</td>
-                    <td>
-                      <button
-                        pButton
-                        pRipple
-                        class="p-button-rounded p-button-text"
-                        icon="pi pi-plus"
-                        (click)="selectCurrentAddress(address)"
-                        type="submit"
-                      ></button>
-                    </td>
-                  </tr>
-                </ng-template>
-              </p-table>
-            </p-dialog>
-            <div class="mb-3"></div>
-            <p-table
-              [scrollable]="true"
-              [value]="customers"
-              *ngIf="customers.length > 0"
-            >
-              <ng-template pTemplate="header">
-                <tr>
-                  <th>Müşteri Kodu</th>
-                  <th>Müşteri</th>
-
-                  <th>Telefon</th>
-                  <th>İşlemler</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-customer>
-                <tr>
-                  <td (click)="selectCurrentCustomer(customer)">
-                    {{ customer.currAccCode }}
-                  </td>
-                  <td (click)="selectCurrentCustomer(customer)">
-                    {{ customer.currAccDescription }}
-                  </td>
-                  <td (click)="selectCurrentCustomer(customer)">
-                    {{ customer.phone }}
-                  </td>
-                  <td>
-                    <button
-                      pButton
-                      pRipple
-                      class="p-button-rounded p-button-text"
-                      icon="pi pi-plus"
-                      (click)="selectCurrentCustomer(customer)"
-                    ></button>
-                  </td>
-                </tr>
-              </ng-template>
-            </p-table>
-          </p-tabPanel>
-          <p-tabPanel header="Adres Ekle">
-            <div *ngIf="this.selectedCustomers.length > 0">
-              <form
-                [formGroup]="_createCustomerForm"
-                (ngSubmit)="_submitAddressForm(_createCustomerForm.value)"
-              >
-                <div class="row">
-                  <div class="col-md-6 form-group mb-3">
-                    <p-dropdown
-                      [filter]="true"
-                      filterBy="name"
-                      id="address_country"
-                      formControlName="address_country"
-                      [options]="_countries"
-                      optionLabel="name"
-                      placeholder="Ülke Seçiniz"
-                    ></p-dropdown>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6 form-group mb-3">
-                    <p-dropdown
-                      [filter]="true"
-                      filterBy="name"
-                      id="address_region"
-                      formControlName="address_region"
-                      [options]="_regions"
-                      optionLabel="name"
-                      placeholder="Bölge Seçiniz"
-                    ></p-dropdown>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6 form-group mb-3">
-                    <p-dropdown
-                      [filter]="true"
-                      filterBy="name"
-                      id="address_province"
-                      formControlName="address_province"
-                      [options]="_provinces"
-                      optionLabel="name"
-                      placeholder="İl Seçiniz"
-                    ></p-dropdown>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6 form-group mb-3">
-                    <p-dropdown
-                      [filter]="true"
-                      filterBy="name"
-                      id="address_taxOffice"
-                      formControlName="address_taxOffice"
-                      [options]="_taxOffices"
-                      optionLabel="name"
-                      placeholder="Vergi Dairesi Seçiniz"
-                    ></p-dropdown>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6 form-group mb-3">
-                    <p-dropdown
-                      [filter]="true"
-                      filterBy="name"
-                      id="address_district"
-                      formControlName="address_district"
-                      [options]="_districts"
-                      optionLabel="name"
-                      placeholder="İlçe Seçiniz"
-                    ></p-dropdown>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6 form-group mb-3">
-                    <input
-                      pInputText
-                      placeholder="Adres Tarifi *"
-                      type="text"
-                      class="form-control"
-                      id="address_description"
-                      name="address_description"
-                      fullWidth
-                      formControlName="address_description"
-                    />
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6 form-group mb-3">
-                    <input
-                      pInputText
-                      placeholder="Posta Kodu *"
-                      type="text"
-                      id="address_postalCode"
-                      name="address_postalCode"
-                      fullWidth
-                      formControlName="address_postalCode"
-                      class="form-control"
-                    />
-                  </div>
-                </div>
-
-                <div class="col-md-6 form-group mb-3">
+        <p-dialog
+          header="Bulunan Adresler"
+          [(visible)]="selectAddressDialog"
+          [style]="{ width: '80vw' }"
+        >
+          <p-table [scrollable]="true" [value]="addresses">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>İl</th>
+                <th>İlçe</th>
+                <th>Adres</th>
+                <th>İşlemler</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-address>
+              <tr>
+                <td>{{ address.cityDescription }}</td>
+                <td>{{ address.districtDescription }}</td>
+                <td>{{ address.address.substring(0, 20) }}</td>
+                <td>
                   <button
                     pButton
                     pRipple
-                    class="p-button-success"
-                    style="width: 100%"
-                    label="Etiket Çıkart"
+                    class="p-button-rounded p-button-text"
+                    icon="pi pi-plus"
+                    (click)="selectCurrentAddress(address)"
                     type="submit"
-                    label="Kaydet"
                   ></button>
-                </div>
-              </form>
-            </div>
-          </p-tabPanel> -->
-      </p-tabPanel>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-dialog>
+        <div class="mb-3"></div>
+        <p-table
+          [scrollable]="true"
+          [value]="customers"
+          *ngIf="customers.length > 0"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Müşteri Kodu</th>
+              <th>Müşteri</th>
 
+              <th>Telefon</th>
+              <th>İşlemler</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-customer>
+            <tr>
+              <td (click)="selectCurrentCustomer(customer)">
+                {{ customer.currAccCode }}
+              </td>
+              <td (click)="selectCurrentCustomer(customer)">
+                {{ customer.currAccDescription }}
+              </td>
+              <td (click)="selectCurrentCustomer(customer)">
+                {{ customer.phone }}
+              </td>
+              <td>
+                <button
+                  pButton
+                  pRipple
+                  class="p-button-rounded p-button-text"
+                  icon="pi pi-plus"
+                  (click)="selectCurrentCustomer(customer)"
+                ></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-tabPanel>
+      <p-tabPanel header="Adres Ekle">
+        <div *ngIf="this.selectedCustomers.length > 0">
+          <form
+            [formGroup]="_createCustomerForm"
+            (ngSubmit)="_submitAddressForm(_createCustomerForm.value)"
+          >
+            <div class="row">
+              <div class="col-md-6 form-group mb-3">
+                <p-dropdown
+                  [filter]="true"
+                  filterBy="name"
+                  id="address_country"
+                  formControlName="address_country"
+                  [options]="_countries"
+                  optionLabel="name"
+                  placeholder="Ülke Seçiniz"
+                ></p-dropdown>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 form-group mb-3">
+                <p-dropdown
+                  [filter]="true"
+                  filterBy="name"
+                  id="address_region"
+                  formControlName="address_region"
+                  [options]="_regions"
+                  optionLabel="name"
+                  placeholder="Bölge Seçiniz"
+                ></p-dropdown>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 form-group mb-3">
+                <p-dropdown
+                  [filter]="true"
+                  filterBy="name"
+                  id="address_province"
+                  formControlName="address_province"
+                  [options]="_provinces"
+                  optionLabel="name"
+                  placeholder="İl Seçiniz"
+                ></p-dropdown>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 form-group mb-3">
+                <p-dropdown
+                  [filter]="true"
+                  filterBy="name"
+                  id="address_taxOffice"
+                  formControlName="address_taxOffice"
+                  [options]="_taxOffices"
+                  optionLabel="name"
+                  placeholder="Vergi Dairesi Seçiniz"
+                ></p-dropdown>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 form-group mb-3">
+                <p-dropdown
+                  [filter]="true"
+                  filterBy="name"
+                  id="address_district"
+                  formControlName="address_district"
+                  [options]="_districts"
+                  optionLabel="name"
+                  placeholder="İlçe Seçiniz"
+                ></p-dropdown>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 form-group mb-3">
+                <input
+                  pInputText
+                  placeholder="Adres Tarifi *"
+                  type="text"
+                  class="form-control"
+                  id="address_description"
+                  name="address_description"
+                  fullWidth
+                  formControlName="address_description"
+                />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 form-group mb-3">
+                <input
+                  pInputText
+                  placeholder="Posta Kodu *"
+                  type="text"
+                  id="address_postalCode"
+                  name="address_postalCode"
+                  fullWidth
+                  formControlName="address_postalCode"
+                  class="form-control"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-6 form-group mb-3">
+              <button
+                pButton
+                pRipple
+                class="p-button-success"
+                style="width: 100%"
+                label="Etiket Çıkart"
+                type="submit"
+                label="Kaydet"
+              ></button>
+            </div>
+          </form>
+        </div>
+      </p-tabPanel>-->
       <p-tabPanel
         [rightIcon]="this.cargoForm.valid ? 'pi pi-check' : 'pi pi-times'"
         header="Kargo Oluştur"
@@ -1270,15 +1268,13 @@
       </p-tabPanel>
 
       <p-tabPanel header="Sipariş Önizleme">
-        <!-- Payment Options -->
         <div class="mb-3"></div>
         <div #ödemeler>
           <form [formGroup]="paymentForm">
             <div
               *ngIf="
                 this.selectedCustomers.length > 0 &&
-                  this.selectedAddresses.length > 0!;
-                isCompleted
+                this.selectedAddresses.length > 0
               "
             >
               <div
@@ -1290,12 +1286,6 @@
                 "
               >
                 <div class="col-md-6 mb-3">
-                  <!-- <p-selectButton
-                  [options]="stateOptions"
-                  [(ngModel)]="taxTypeCode"
-                  optionLabel="label"
-                  optionValue="value"
-                ></p-selectButton> -->
                   <p-dropdown
                     [options]="stateOptions"
                     optionLabel="label"
@@ -1517,7 +1507,6 @@
                   Para Birimi: {{ selectedCustomers[0].docCurrencyCode }}
                 </p>
                 <button
-                  *ngIf="!isCompleted"
                   class="btn btn-danger"
                   (click)="deleteCurrentCustomer()"
                 >
@@ -1582,11 +1571,7 @@
                   Alıcı Adı:
                   {{ this.cargoForm.get("address_recepient_name").value }}
                 </p>
-                <button
-                  class="btn btn-danger"
-                  (click)="deleteCurrentAddress()"
-                  *ngIf="!isCompleted"
-                >
+                <button class="btn btn-danger" (click)="deleteCurrentAddress()">
                   Adresi Sil
                 </button>
               </div>

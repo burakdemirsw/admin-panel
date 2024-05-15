@@ -180,6 +180,7 @@ var CreateOrderComponent = /** @class */ (function () {
                     case 0:
                         this.createPaymentForm();
                         this.createGetProductForm();
+                        this.createCustomerFormMethod();
                         _a = this;
                         return [4 /*yield*/, this.orderService.getExchangeRates()];
                     case 1:
@@ -187,7 +188,6 @@ var CreateOrderComponent = /** @class */ (function () {
                         this.generatedCargoNumber = this._generateRandomNumber();
                         this.createDiscountForm();
                         this.createGetCustomerForm();
-                        this.createCustomerFormMethod();
                         this.createOfficeWarehouseForm();
                         this._createCustomerFormMethod();
                         this.getAddresses();

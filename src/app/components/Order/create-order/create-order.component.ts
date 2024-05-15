@@ -27,7 +27,6 @@ import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, Payment }
 import { OrderService } from '../../../services/admin/order.service';
 import { GoogleDriveService } from '../../../services/common/google-drive.service';
 import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from '../../cargo/create-cargo/models/models';
-import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-create-order',
@@ -70,11 +69,11 @@ export class CreateOrderComponent implements OnInit {
 
     this.createPaymentForm();
     this.createGetProductForm();
+    this.createCustomerFormMethod();
     this.exchangeRate = await this.orderService.getExchangeRates();
     this.generatedCargoNumber = this._generateRandomNumber();
     this.createDiscountForm();
     this.createGetCustomerForm();
-    this.createCustomerFormMethod();
     this.createOfficeWarehouseForm();
     this._createCustomerFormMethod();
     this.getAddresses();
@@ -715,7 +714,7 @@ export class CreateOrderComponent implements OnInit {
     this.createCustomerForm.get('currAccDescription').valueChanges.subscribe(async (value) => {
       if (value != "" || value != null) {
 
-        if (value.name != undefined && value.name.length > 3) { //asdasd12321
+        if (value.name != undefined && value.name.length > 3) {
           await this.getCustomersAutomaticaly(value.name)
 
           var findedCustomer = this.selectableCustomers.find(p => p.name == value.name && p.currAccCode == value.currAccCode)
