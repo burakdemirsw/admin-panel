@@ -109,7 +109,7 @@ export class PagesRegisterComponent implements OnInit {
       lastName: [null, Validators.required],
       email: [{ value: null, disabled: false }, [Validators.required, Validators.email]],
       phoneNumber: [null, Validators.required],
-      salesPersonCode: [null, Validators.required],
+      salesPersonCode: [null],
       password: [null],
       confirmPassword: [null],
       gender: ["Erkek"],
@@ -139,7 +139,7 @@ export class PagesRegisterComponent implements OnInit {
             firstName: this.registerForm.value.firstName,
             lastName: this.registerForm.value.lastName,
             password: this.registerForm.value.password,
-            salesPersonCode: this.registerForm.value.salesPersonCode.code,
+            salesPersonCode: this.registerForm.value.salesPersonCode?.code,
             email: this.registerForm.value.email,
             phoneNumber: this.registerForm.value.phoneNumber,
             gender: this.registerForm.value.gender,
@@ -158,7 +158,7 @@ export class PagesRegisterComponent implements OnInit {
             this.generalService.waitAndNavigate("İşlem Başaılı: " + "Kullanıcı Sisteme Eklendi", "user-list")
 
           }
-          //console.log("Model:", model);
+
         } else {
           this.alertifyService.error("Şifreler Uyuşmuyor");
         }
@@ -178,7 +178,7 @@ export class PagesRegisterComponent implements OnInit {
             firstName: this.registerForm.value.firstName,
             lastName: this.registerForm.value.lastName,
             password: this.registerForm.value.password,
-            salesPersonCode: this.registerForm.value.salesPersonCode.code,
+            salesPersonCode: this.registerForm.value.salesPersonCode?.code,
             email: this.registerForm.value.email,
             phoneNumber: this.registerForm.value.phoneNumber,
             gender: this.registerForm.value.gender,
@@ -189,19 +189,15 @@ export class PagesRegisterComponent implements OnInit {
 
           var response = await this.userService.update(model);
           if (response == true) {
-            // this.router.navigate(['/login']);
+
             this.generalService.waitAndNavigate("İşlem Başaılı: " + "Kullanıcı Güncellendi", "user-list")
-
-
-
           }
-          //console.log("Model:", model);
+
         } else {
           this.alertifyService.error("Şifreler Uyuşmuyor");
         }
       } else {
-        //console.log("Form Geçerli Değil");
-        //console.log(this.registerForm.value);
+
       }
     }
 

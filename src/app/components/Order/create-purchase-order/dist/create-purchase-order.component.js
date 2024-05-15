@@ -84,7 +84,7 @@ var CreatePurchaseOrderComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, , 4]);
+                        _a.trys.push([0, 2, , 3]);
                         this.title.setTitle('Alış Faturası Oluştur');
                         this.headerService.updatePageTitle('Alış Faturası Oluştur');
                         //this.spinnerService.show();
@@ -101,19 +101,16 @@ var CreatePurchaseOrderComponent = /** @class */ (function () {
                             });
                         }); });
                         this.formGenerator();
-                        return [4 /*yield*/, this.getOfficeCodeList()];
+                        return [4 /*yield*/, this.getCustomerList()];
                     case 1:
                         _a.sent();
-                        return [4 /*yield*/, this.getCustomerList()];
-                    case 2:
-                        _a.sent();
                         this.setInput();
-                        return [3 /*break*/, 4];
-                    case 3:
+                        return [3 /*break*/, 3];
+                    case 2:
                         error_1 = _a.sent();
                         this.toasterService.error(error_1.message);
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/];
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -178,32 +175,6 @@ var CreatePurchaseOrderComponent = /** @class */ (function () {
                         this.toasterService.warn(error_2.message);
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    CreatePurchaseOrderComponent.prototype.getOfficeCodeList = function () {
-        var _a;
-        return __awaiter(this, void 0, Promise, function () {
-            var _b, error_3;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0:
-                        _c.trys.push([0, 2, , 3]);
-                        _b = this;
-                        return [4 /*yield*/, this.warehouseService.getOfficeCodeList()];
-                    case 1:
-                        _b.officeModels = _c.sent();
-                        // Eğer veri geldiyse ve dizi boş değilse ilk ofisi seçin
-                        if (this.officeModels && this.officeModels.length > 0) {
-                            (_a = this.productForm.get('officeCode')) === null || _a === void 0 ? void 0 : _a.setValue(this.officeModels[0]);
-                        }
-                        return [3 /*break*/, 3];
-                    case 2:
-                        error_3 = _c.sent();
-                        this.toasterService.warn(error_3.message);
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -279,7 +250,7 @@ var CreatePurchaseOrderComponent = /** @class */ (function () {
     };
     CreatePurchaseOrderComponent.prototype.createPurchaseInvoice = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var confirmation, error_4;
+            var confirmation, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -294,7 +265,7 @@ var CreatePurchaseOrderComponent = /** @class */ (function () {
                         _a.sent();
                         return [3 /*break*/, 4];
                     case 3:
-                        error_4 = _a.sent();
+                        error_3 = _a.sent();
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/];
                 }
@@ -346,7 +317,7 @@ var CreatePurchaseOrderComponent = /** @class */ (function () {
     };
     CreatePurchaseOrderComponent.prototype.setFormValues = function (product) {
         return __awaiter(this, void 0, Promise, function () {
-            var result, updated_product, result, updated_product, error_5;
+            var result, updated_product, result, updated_product, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -378,8 +349,8 @@ var CreatePurchaseOrderComponent = /** @class */ (function () {
                         return [2 /*return*/, updated_product];
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_5 = _a.sent();
-                        this.toasterService.error(error_5.message);
+                        error_4 = _a.sent();
+                        this.toasterService.error(error_4.message);
                         return [2 /*return*/, null];
                     case 6: return [2 /*return*/];
                 }

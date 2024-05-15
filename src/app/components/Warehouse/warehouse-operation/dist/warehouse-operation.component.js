@@ -50,12 +50,11 @@ var barcodeModel_1 = require("src/app/models/model/product/barcodeModel");
 var qrOperationModel_1 = require("src/app/models/model/product/qrOperationModel");
 var warehouseModel_1 = require("src/app/models/model/warehouse/warehouseModel");
 var WarehouseOperationComponent = /** @class */ (function () {
-    function WarehouseOperationComponent(httpClientService, formBuilder, toasterService, activatedRoute, router, generalService, productService, warehouseService, httpClient, orderService, headerService) {
+    function WarehouseOperationComponent(httpClientService, formBuilder, toasterService, activatedRoute, generalService, productService, warehouseService, httpClient, orderService, headerService) {
         this.httpClientService = httpClientService;
         this.formBuilder = formBuilder;
         this.toasterService = toasterService;
         this.activatedRoute = activatedRoute;
-        this.router = router;
         this.generalService = generalService;
         this.productService = productService;
         this.warehouseService = warehouseService;
@@ -69,6 +68,21 @@ var WarehouseOperationComponent = /** @class */ (function () {
         this.currentBarcode = null;
         this.stockStatus = false;
         this.warehousePackageDetails = [];
+        this.wrongItemList = [];
+        this._inventoryItems = [];
+        this.inventoryItems = []; //transfer Edilecek ürünler
+        this.warehouseTransferForms = []; //eklenen ürünler
+        this.lastCollectedProduct = null;
+        this.deletedProductList = [];
+        this.barcode = null;
+        this.blockedCount = false;
+        this.blockedCountReason = '';
+        this.qrBarcodeUrl = null;
+        this.qrOperationModels = [];
+        this.shelfNumbers = 'Raf No';
+        this.productShelvesDialog = false;
+        this.productShelves = [];
+        //#region Params
         this.warehouseModels = [];
         this.warehouseModels2 = [];
         this.barcodeModel = new barcodeModel_1.BarcodeModel();
@@ -80,7 +94,6 @@ var WarehouseOperationComponent = /** @class */ (function () {
         this.visible = false;
         this._barcode = null;
         this.quantity = null;
-        this.pageStatus = '';
         this.offices = ['M', 'U'];
         this.warehouses = ['MD', 'UD'];
         this.inventoryItemColums = [
@@ -105,28 +118,10 @@ var WarehouseOperationComponent = /** @class */ (function () {
             'Barkod',
             'İşlemler',
         ];
-        this._inventoryItems = [];
-        this.inventoryItems = []; //transfer Edilecek ürünler
-        this.warehouseTransferForms = []; //eklenen ürünler
-        this.lastCollectedProduct = null;
-        this.deletedProductList = [];
-        this.wrongItemList = [];
-        this.barcode = null;
-        this.blockedCount = false;
-        this.blockedCountReason = '';
-        this.qrBarcodeUrl = null;
-        this.qrOperationModels = [];
+        this.pageStatus = '';
         this.warehosueModel = new warehouseModel_1.WarehouseModel();
-        this.shelfNumbers = 'Raf No';
-        //--------------------------------------------------------------------
-        this.productShelvesDialog = false;
-        this.productShelves = [];
     } // Add this line
-    WarehouseOperationComponent.prototype.change = function (barcode, quantity) {
-        this.visible = !this.visible;
-        this._barcode = barcode;
-        this.quantity = quantity;
-    };
+    //#endregion
     WarehouseOperationComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
@@ -154,7 +149,6 @@ var WarehouseOperationComponent = /** @class */ (function () {
                     this.toasterService.info('xxx');
                 }
                 this.formGenerator();
-                //this.spinnerService.show();
                 this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
                     return __generator(this, function (_a) {
                         switch (_a.label) {
@@ -180,6 +174,11 @@ var WarehouseOperationComponent = /** @class */ (function () {
                 return [2 /*return*/];
             });
         });
+    };
+    WarehouseOperationComponent.prototype.change = function (barcode, quantity) {
+        this.visible = !this.visible;
+        this._barcode = barcode;
+        this.quantity = quantity;
     };
     WarehouseOperationComponent.prototype.goDown2 = function (barcode, shelfNo, itemCode, transferQty) {
         // packageNo'ya eşleşen ProductOfOrder'ı bulun
@@ -377,7 +376,6 @@ var WarehouseOperationComponent = /** @class */ (function () {
         this.formModal.show();
     };
     WarehouseOperationComponent.prototype.formGenerator = function () {
-        var _this = this;
         try {
             this.warehouseForm = this.formBuilder.group({
                 id: [null],
@@ -391,76 +389,18 @@ var WarehouseOperationComponent = /** @class */ (function () {
                 warehouseTo: [null, forms_1.Validators.required],
                 orderNo: [null, forms_1.Validators.required]
             });
-            this.warehouseForm.valueChanges.subscribe(function () {
-                var office = _this.warehouseForm.get('office').value;
-                var officeTo = _this.warehouseForm.get('officeTo').value;
-                if (office === officeTo && office !== null) {
-                    // this.toasterService.error("Ofisler Farklı Olmalıdır")
-                    _this.warehouseForm.get('office').setValue(null);
-                    _this.warehouseForm.get('officeTo').setValue(null);
-                }
-            });
-            this.warehouseForm.get('office').valueChanges.subscribe(function (value) {
-                if (value === 'M') {
-                    _this.warehouseForm.get('warehouse').setValue('MD');
-                }
-            });
-            this.warehouseForm.get('office').valueChanges.subscribe(function (value) {
-                if (value === 'U') {
-                    _this.warehouseForm.get('warehouse').setValue('UD');
-                }
-            });
-            this.warehouseForm.get('officeTo').valueChanges.subscribe(function (value) {
-                if (value === 'M') {
-                    _this.warehouseForm.get('warehouseTo').setValue('MD');
-                }
-            });
-            this.warehouseForm.get('officeTo').valueChanges.subscribe(function (value) {
-                if (value === 'U') {
-                    _this.warehouseForm.get('warehouseTo').setValue('UD');
-                }
-            });
         }
         catch (error) {
             console.error(error);
             // Handle the error as needed.
         }
     };
-    WarehouseOperationComponent.prototype.getOfficeCodeList = function () {
-        return __awaiter(this, void 0, Promise, function () {
-            var response, error_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService
-                                .get({
-                                controller: 'Warehouse/GetOfficeModel'
-                            })
-                                .toPromise()];
-                    case 1:
-                        response = _a.sent();
-                        this.officeModels = response;
-                        return [3 /*break*/, 3];
-                    case 2:
-                        error_1 = _a.sent();
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
     WarehouseOperationComponent.prototype.onModelChanged = function (value) {
         this.getShelfByQrDetail(value);
     };
-    WarehouseOperationComponent.prototype.controlItemStock = function () {
-        var barcodeList = [];
-        this.warehouseTransferForms.forEach(function (t) { });
-        return true;
-    };
     WarehouseOperationComponent.prototype.transferToNebim = function (currentOrderNo) {
         return __awaiter(this, void 0, void 0, function () {
-            var userConfirmed, data, error_2;
+            var userConfirmed, data, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -486,7 +426,7 @@ var WarehouseOperationComponent = /** @class */ (function () {
                         }
                         return [3 /*break*/, 4];
                     case 3:
-                        error_2 = _a.sent();
+                        error_1 = _a.sent();
                         return [3 /*break*/, 4];
                     case 4: return [3 /*break*/, 6];
                     case 5:
@@ -522,7 +462,7 @@ var WarehouseOperationComponent = /** @class */ (function () {
     };
     WarehouseOperationComponent.prototype.setFormValues = function (product) {
         return __awaiter(this, void 0, Promise, function () {
-            var result, updated_product, result, updated_product, error_3;
+            var result, updated_product, result, updated_product, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -562,8 +502,8 @@ var WarehouseOperationComponent = /** @class */ (function () {
                         return [2 /*return*/, updated_product];
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_3 = _a.sent();
-                        this.toasterService.error(error_3.message);
+                        error_2 = _a.sent();
+                        this.toasterService.error(error_2.message);
                         return [2 /*return*/, null];
                     case 6: return [2 /*return*/];
                 }
@@ -763,16 +703,6 @@ var WarehouseOperationComponent = /** @class */ (function () {
     WarehouseOperationComponent.prototype.deleteRow = function (index) {
         this.warehouseTransferForms.splice(index, 1); // İlgili satırı listeden sil
     };
-    WarehouseOperationComponent.prototype.clearAllList = function () {
-        var _this = this;
-        this.warehousePackageDetails.splice(0); // Tüm elemanları sil
-        this.warehouseForm.reset();
-        //this.spinnerService.show();
-        setTimeout(function () {
-            //this.spinnerService.hide();
-            _this.toasterService.success('NEBIME BAŞARIYLA AKTARILDI!');
-        }, 2000);
-    };
     WarehouseOperationComponent.prototype.focusNextInput2 = function () {
         this.onSubmit(this.warehouseForm.value);
     };
@@ -884,6 +814,7 @@ var WarehouseOperationComponent = /** @class */ (function () {
     WarehouseOperationComponent.prototype.updateItemStock = function () {
         location.reload();
     };
+    //--------------------------------------------------------------------
     WarehouseOperationComponent.prototype.getShelves = function (barcode) {
         return __awaiter(this, void 0, void 0, function () {
             var newResponse, shelves;

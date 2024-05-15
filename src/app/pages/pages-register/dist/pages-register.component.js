@@ -174,7 +174,7 @@ var PagesRegisterComponent = /** @class */ (function () {
             lastName: [null, forms_1.Validators.required],
             email: [{ value: null, disabled: false }, [forms_1.Validators.required, forms_1.Validators.email]],
             phoneNumber: [null, forms_1.Validators.required],
-            salesPersonCode: [null, forms_1.Validators.required],
+            salesPersonCode: [null],
             password: [null],
             confirmPassword: [null],
             gender: ["Erkek"],
@@ -184,10 +184,11 @@ var PagesRegisterComponent = /** @class */ (function () {
         });
     };
     PagesRegisterComponent.prototype.submitForm = function () {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function () {
             var model, response, model, response;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
                         if (!!this.isUpdate) return [3 /*break*/, 6];
                         if (!this.registerForm.valid) return [3 /*break*/, 4];
@@ -198,7 +199,7 @@ var PagesRegisterComponent = /** @class */ (function () {
                             firstName: this.registerForm.value.firstName,
                             lastName: this.registerForm.value.lastName,
                             password: this.registerForm.value.password,
-                            salesPersonCode: this.registerForm.value.salesPersonCode.code,
+                            salesPersonCode: (_a = this.registerForm.value.salesPersonCode) === null || _a === void 0 ? void 0 : _a.code,
                             email: this.registerForm.value.email,
                             phoneNumber: this.registerForm.value.phoneNumber,
                             gender: this.registerForm.value.gender,
@@ -208,18 +209,18 @@ var PagesRegisterComponent = /** @class */ (function () {
                         };
                         return [4 /*yield*/, this.userService.register(model)];
                     case 1:
-                        response = _a.sent();
+                        response = _c.sent();
                         if (response == true) {
                             this.generalService.waitAndNavigate("İşlem Başaılı: " + "Kullanıcı Sisteme Eklendi", "user-list");
                         }
                         return [3 /*break*/, 3];
                     case 2:
                         this.alertifyService.error("Şifreler Uyuşmuyor");
-                        _a.label = 3;
+                        _c.label = 3;
                     case 3: return [3 /*break*/, 5];
                     case 4:
                         this.generalService.whichRowIsInvalid(this.registerForm);
-                        _a.label = 5;
+                        _c.label = 5;
                     case 5: return [3 /*break*/, 10];
                     case 6:
                         if (!this.registerForm.valid) return [3 /*break*/, 10];
@@ -230,7 +231,7 @@ var PagesRegisterComponent = /** @class */ (function () {
                             firstName: this.registerForm.value.firstName,
                             lastName: this.registerForm.value.lastName,
                             password: this.registerForm.value.password,
-                            salesPersonCode: this.registerForm.value.salesPersonCode.code,
+                            salesPersonCode: (_b = this.registerForm.value.salesPersonCode) === null || _b === void 0 ? void 0 : _b.code,
                             email: this.registerForm.value.email,
                             phoneNumber: this.registerForm.value.phoneNumber,
                             gender: this.registerForm.value.gender,
@@ -240,15 +241,14 @@ var PagesRegisterComponent = /** @class */ (function () {
                         };
                         return [4 /*yield*/, this.userService.update(model)];
                     case 7:
-                        response = _a.sent();
+                        response = _c.sent();
                         if (response == true) {
-                            // this.router.navigate(['/login']);
                             this.generalService.waitAndNavigate("İşlem Başaılı: " + "Kullanıcı Güncellendi", "user-list");
                         }
                         return [3 /*break*/, 9];
                     case 8:
                         this.alertifyService.error("Şifreler Uyuşmuyor");
-                        _a.label = 9;
+                        _c.label = 9;
                     case 9: return [3 /*break*/, 10];
                     case 10: return [2 /*return*/];
                 }

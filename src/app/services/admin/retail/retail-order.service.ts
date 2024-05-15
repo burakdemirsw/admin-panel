@@ -149,7 +149,7 @@ export class RetailOrderService {
     var query: string = `${type}/${invoiceStatus}`
     const response = await this.httpClientService
       .get<SaleOrderModel>({
-        controller: 'Order/get-sale-orders',
+        controller: 'Order/Retail/get-sale-orders',
       }, query)
       .toPromise();
     return response;

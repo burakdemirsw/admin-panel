@@ -26,9 +26,7 @@ export class RetailOrderManagementComponent implements OnInit {
   currentPage: number = 1;
   constructor(
     private headerService: HeaderService,
-    private httpClientService: HttpClientService,
     private toasterService: ToasterService,
-    private spinnerService: NgxSpinnerService,
     private router: Router,
     private orderService: RetailOrderService,
     private formBuilder: FormBuilder,
@@ -40,8 +38,6 @@ export class RetailOrderManagementComponent implements OnInit {
   pageDescription: boolean = false;
   _pageDescription: boolean = false;
   pageDescriptionLine: string = "Alınan Siparişler"
-
-
   status = 1;
   invoiceStatus = 2
   async ngOnInit() {

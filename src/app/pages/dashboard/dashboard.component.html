@@ -1,6 +1,6 @@
 <main id="main" class="main">
   <section class="section dashboard">
-    <div *ngIf="this.userId != 5">
+    <div *ngIf="this.roleDescription != 'Admin'">
       <div class="container">
         <div class="error-container p-4">
           <h4 class="mb-4">YETKİSİZ ERİŞİM</h4>
@@ -18,7 +18,7 @@
       </div>
     </div>
 
-    <div *ngIf="this.userId === 5">
+    <div *ngIf="this.roleDescription === 'Admin'">
       <div class="row">
         <div class="col-lg-12">
           <!-- <img

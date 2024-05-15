@@ -117,34 +117,14 @@ export class WarehouseService {
 
     return response;
   }
-  //ofisleri çeker
-  async getOfficeCodeList(): Promise<OfficeModel[]> {
+
+
+  //depo ve ofis listesini çeker
+  async getWarehouseAndOffices(): Promise<WarehouseOfficeModel[]> {
     try {
-      const data = await this.httpClientService
-        .get<OfficeModel>({
-          controller: 'Warehouse/GetOfficeModel',
-        })
-        .toPromise();
-
-      return data;
-    } catch (error: any) {
-      console.log(error.message);
-      return null;
-    }
-  }
-
-  //depo listesini çeker
-  async getWarehouseList(value: string): Promise<WarehouseOfficeModel[]> {
-    try {
-      const selectElement = document.getElementById(
-        'officeCode'
-      ) as HTMLSelectElement;
-
-      value = selectElement.value == '' ? 'M' : selectElement.value;
-
       const data = await this.httpClientService
         .get<WarehouseOfficeModel>({
-          controller: 'Warehouse/GetWarehouseModel/' + value,
+          controller: 'Warehouse/get-office-and-warehouses',
         })
         .toPromise();
       return data;

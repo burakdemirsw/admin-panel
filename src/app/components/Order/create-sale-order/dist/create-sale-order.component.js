@@ -189,48 +189,6 @@ var CreateSaleOrderComponent = /** @class */ (function () {
             });
         });
     };
-    CreateSaleOrderComponent.prototype.getOfficeCodeList = function () {
-        var _a;
-        return __awaiter(this, void 0, Promise, function () {
-            var _b, error_2;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0:
-                        _c.trys.push([0, 2, , 3]);
-                        _b = this;
-                        return [4 /*yield*/, this.warehouseService.getOfficeCodeList()];
-                    case 1:
-                        _b.officeModels = _c.sent();
-                        // Eğer veri geldiyse ve dizi boş değilse ilk ofisi seçin
-                        if (this.officeModels && this.officeModels.length > 0) {
-                            (_a = this.productForm.get('officeCode')) === null || _a === void 0 ? void 0 : _a.setValue(this.officeModels[0]);
-                        }
-                        return [3 /*break*/, 3];
-                    case 2:
-                        error_2 = _c.sent();
-                        this.toasterService.warn(error_2.message);
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    CreateSaleOrderComponent.prototype.getWarehouseList = function (value) {
-        return __awaiter(this, void 0, Promise, function () {
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _a = this;
-                        return [4 /*yield*/, this.warehouseService.getWarehouseList(value)];
-                    case 1:
-                        _a.warehouseModels = _b.sent();
-                        console.log(this.warehouseModels);
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
     CreateSaleOrderComponent.prototype.getCustomerList = function () {
         return __awaiter(this, void 0, Promise, function () {
             var _a;
@@ -253,7 +211,7 @@ var CreateSaleOrderComponent = /** @class */ (function () {
     };
     CreateSaleOrderComponent.prototype.getSalesPersonModels = function () {
         return __awaiter(this, void 0, Promise, function () {
-            var _a, error_3, error_4;
+            var _a, error_2, error_3;
             var _this = this;
             return __generator(this, function (_b) {
                 switch (_b.label) {
@@ -272,34 +230,15 @@ var CreateSaleOrderComponent = /** @class */ (function () {
                         });
                         return [3 /*break*/, 4];
                     case 3:
-                        error_3 = _b.sent();
-                        this.toasterService.error(error_3.message);
+                        error_2 = _b.sent();
+                        this.toasterService.error(error_2.message);
                         return [2 /*return*/, null];
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_4 = _b.sent();
-                        this.toasterService.error(error_4.message);
+                        error_3 = _b.sent();
+                        this.toasterService.error(error_3.message);
                         return [3 /*break*/, 6];
                     case 6: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    CreateSaleOrderComponent.prototype.getSelectedOffice = function () {
-        var _a;
-        return __awaiter(this, void 0, Promise, function () {
-            var office;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        office = document.getElementById('officeCode')
-                            .value;
-                        return [4 /*yield*/, this.getWarehouseList(office)];
-                    case 1:
-                        _b.sent();
-                        (_a = this.productForm
-                            .get('warehouseCode')) === null || _a === void 0 ? void 0 : _a.setValue(this.warehouseModels[0].warehouseCode);
-                        return [2 /*return*/];
                 }
             });
         });
@@ -465,7 +404,7 @@ var CreateSaleOrderComponent = /** @class */ (function () {
     };
     CreateSaleOrderComponent.prototype.createSaleInvoice = function () {
         return __awaiter(this, void 0, Promise, function () {
-            var confirmation, data, error_5;
+            var confirmation, data, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -489,7 +428,7 @@ var CreateSaleOrderComponent = /** @class */ (function () {
                         data = _a.sent();
                         return [3 /*break*/, 4];
                     case 3:
-                        error_5 = _a.sent();
+                        error_4 = _a.sent();
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/];
                 }
@@ -503,7 +442,7 @@ var CreateSaleOrderComponent = /** @class */ (function () {
     };
     CreateSaleOrderComponent.prototype.setFormValues = function (model) {
         return __awaiter(this, void 0, Promise, function () {
-            var result, updated_product, result, updated_product, error_6;
+            var result, updated_product, result, updated_product, error_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -535,8 +474,8 @@ var CreateSaleOrderComponent = /** @class */ (function () {
                         return [2 /*return*/, updated_product];
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_6 = _a.sent();
-                        this.toasterService.error(error_6.message);
+                        error_5 = _a.sent();
+                        this.toasterService.error(error_5.message);
                         return [2 /*return*/, null];
                     case 6: return [2 /*return*/];
                 }

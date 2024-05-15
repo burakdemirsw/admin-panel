@@ -49,7 +49,8 @@ var library_1 = require("@zxing/library");
 var ClientUrls_1 = require("src/app/models/const/ClientUrls");
 var countProductRequestModel2_1 = require("src/app/models/model/order/countProductRequestModel2");
 var WarehosueShelfCountComponent = /** @class */ (function () {
-    function WarehosueShelfCountComponent(formBuilder, toasterService, httpClient, productService, generalService, warehouseService, activatedRoute, title, sanitizer) {
+    //#endregion
+    function WarehosueShelfCountComponent(formBuilder, toasterService, httpClient, productService, generalService, warehouseService, activatedRoute, title, sanitizer, router) {
         this.formBuilder = formBuilder;
         this.toasterService = toasterService;
         this.httpClient = httpClient;
@@ -59,11 +60,36 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         this.activatedRoute = activatedRoute;
         this.title = title;
         this.sanitizer = sanitizer;
+        this.router = router;
+        //#region params
         this.infoProducts = [];
         this.collectedProducts = [];
         this.process = false;
         this.activeTab = 1;
         this.qrCodeDownloadLink = this.sanitizer.bypassSecurityTrustResourceUrl('');
+        this.visible = false;
+        this._visible = false;
+        this.barcode = null;
+        this.quantity = null;
+        this.batchCode = null;
+        this.orderBillingList = [];
+        this.itemBillingModels = [];
+        this.orderNo = '';
+        this.warehouseModels = [];
+        this.currentQrCode = '';
+        this.shelfNumbers = 'RAFLAR:';
+        this.location = location.href;
+        this.offices = [];
+        this.warehouses = [];
+        this.shelves = [];
+        this.shelves2 = [];
+        this.list = [];
+        this.totalCount = 0;
+        this.currentPage = 1;
+        this.isFirstBarcode = false;
+        this.barcodeList = [];
+        this.countedProductControl = [];
+        this.controlMessage = "";
         this.tableHeaders = [
             'Fotoğraf',
             'Raf',
@@ -88,34 +114,9 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
             'Ürün Kodu',
             'Durum',
         ];
-        this.visible = false;
-        this._visible = false;
-        this.barcode = null;
-        this.quantity = null;
-        this.batchCode = null;
-        this.shelfNumbers = 'RAFLAR:';
-        this.location = location.href;
-        this.offices = ["M", "M01"];
-        this.warehouses = ["1-0-1", "1-0-2", "1-0-3"];
-        this.shelves = [];
-        this.shelves2 = [];
-        this.orderBillingList = [];
-        this.itemBillingModels = [];
-        this.orderNo = '';
-        this.warehouseModels = [];
-        this.warehouseModels2 = [];
-        this.currentQrCode = '';
-        this.list = [];
-        this.totalCount = 0;
-        this.currentPage = 1;
         this.lastCollectedProducts = [];
         this.state = true;
         this.qrBarcodeUrl = null;
-        this.qrOperationModels = [];
-        this.isFirstBarcode = false;
-        this.barcodeList = [];
-        this.countedProductControl = [];
-        this.controlMessage = "";
         this.title.setTitle('Sayım');
     }
     WarehosueShelfCountComponent.prototype.change = function (barcode, quantity, batchCode) {
@@ -124,41 +125,45 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         this.quantity = quantity;
         this.batchCode = batchCode;
     };
-    WarehosueShelfCountComponent.prototype.ngOnDestroy = function () {
-        if (this.location.includes("warehouse-shelf-count")) {
-            if (!window.confirm("Sayfadan Ayrılıyorsunuz. Emin Misiniz?")) {
-                this.toasterService.error(this.location + " İşlemi İptal Edildi");
-                location.href = this.location;
-                return;
-            }
-            else {
-                return; // İşlemi iptal et
-            }
-        }
-    };
     WarehosueShelfCountComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
+                this.getWarehouseAndOffices();
                 this.formGenerator();
                 this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
                                 this.currentOrderNo = params['orderNo'];
-                                if (!this.currentOrderNo) return [3 /*break*/, 3];
+                                if (!this.currentOrderNo) return [3 /*break*/, 2];
                                 return [4 /*yield*/, this.getProductOfCount(this.currentOrderNo)];
                             case 1:
                                 _a.sent();
-                                return [4 /*yield*/, this.getAvailableShelves()];
-                            case 2:
-                                _a.sent();
-                                return [3 /*break*/, 3];
-                            case 3: return [2 /*return*/];
+                                return [3 /*break*/, 2];
+                            case 2: return [2 /*return*/];
                         }
                     });
                 }); });
                 return [2 /*return*/];
+            });
+        });
+    };
+    WarehosueShelfCountComponent.prototype.getWarehouseAndOffices = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var response, i;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.warehouseService.getWarehouseAndOffices()];
+                    case 1:
+                        response = _a.sent();
+                        this.warehouseModels = response;
+                        for (i = 0; i < this.warehouseModels.length; i++) {
+                            this.offices.push(this.warehouseModels[i].officeCode);
+                            this.warehouses.push(this.warehouseModels[i].warehouseCode);
+                        }
+                        return [2 /*return*/];
+                }
             });
         });
     };
@@ -171,22 +176,6 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         var formDataJSON = JSON.stringify(model); // Form verilerini JSON'a dönüştür
         this.qrCodeValue = formDataJSON;
         // this.toasterService.success(this.qrCodeValue)
-    };
-    WarehosueShelfCountComponent.prototype.getAvailableShelves = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _a = this;
-                        return [4 /*yield*/, this.warehouseService.getAvailableShelves()];
-                    case 1:
-                        _a.shelves = _b.sent();
-                        this.shelves2.push(this.shelves[0]);
-                        return [2 /*return*/];
-                }
-            });
-        });
     };
     WarehosueShelfCountComponent.prototype.goDown2 = function (desc) {
         // packageNo'ya eşleşen ProductOfOrder'ı bulun
@@ -223,34 +212,19 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
             nextInput.focus();
         }
     };
-    WarehosueShelfCountComponent.prototype.deleteRow = function (index) {
-        this.itemBillingModels.splice(index, 1); // İlgili satırı listeden sil
-    };
     WarehosueShelfCountComponent.prototype.formGenerator = function () {
-        var _this = this;
         this.checkForm = this.formBuilder.group({
             barcode: [null, forms_1.Validators.required],
             shelfNo: [null, forms_1.Validators.required],
             quantity: [null, forms_1.Validators.required],
             office: [null, forms_1.Validators.required],
-            batchCode: [null],
             warehouseCode: [null, forms_1.Validators.required],
+            batchCode: [null],
             isShelfBased: [false],
             isShelfBased2: [false]
         });
-        this.checkForm.get('office').valueChanges.subscribe(function (value) {
-            if (value === 'M') {
-                _this.checkForm.get('warehouseCode').setValue('MD');
-            }
-        });
-        this.checkForm.get('office').valueChanges.subscribe(function (value) {
-            if (value === 'U') {
-                _this.checkForm.get('warehouseCode').setValue('UD');
-            }
-        });
     };
     WarehosueShelfCountComponent.prototype.calculateTotalQty = function () {
-        //toplanan ürünler yazısı için
         var totalQty = 0;
         this.lastCollectedProducts.forEach(function (item) {
             totalQty += item.quantity;
@@ -267,10 +241,6 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.warehouseService.getProductOfCount(orderNo)];
                     case 1:
                         _a.lastCollectedProducts = _b.sent();
-                        // if (this.lastCollectedProducts.length >= 200) {
-                        //   this.toasterService.error("SATIR SAYISI 200'E ULAŞTI");
-                        //   this.blocked = true;
-                        // }
                         this.calculateTotalQty();
                         return [2 /*return*/];
                 }
@@ -372,7 +342,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
     };
     WarehosueShelfCountComponent.prototype.onSubmit = function (countProductRequestModel) {
         return __awaiter(this, void 0, Promise, function () {
-            var updated_product, url, shelves, response, qrResponse, response, qrResponse, data, error_2;
+            var updated_product, url, shelves, response, response, data, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -394,55 +364,35 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         this.toasterService.success("Form Verileri Güncellendi");
                         return [2 /*return*/];
                     case 2:
-                        if (!this.checkForm.valid) return [3 /*break*/, 16];
+                        if (!this.checkForm.valid) return [3 /*break*/, 13];
                         url = ClientUrls_1.ClientUrls.baseUrl + '/Order/CountProduct3';
                         _a.label = 3;
                     case 3:
-                        _a.trys.push([3, 15, , 16]);
+                        _a.trys.push([3, 12, , 13]);
                         shelves = this.shelfNumbers
                             .split(',')
                             .filter(function (raflar) { return raflar.trim() !== ''; })
                             .map(function (raflar) { return raflar.toLowerCase(); });
-                        if (!this.state) return [3 /*break*/, 14];
+                        if (!this.state) return [3 /*break*/, 11];
                         this.state = false;
-                        if (!shelves.includes(countProductRequestModel.shelfNo.toLowerCase())) return [3 /*break*/, 8];
+                        if (!shelves.includes(countProductRequestModel.shelfNo.toLowerCase())) return [3 /*break*/, 6];
                         return [4 /*yield*/, this.warehouseService.countProductRequest(countProductRequestModel.barcode, countProductRequestModel.shelfNo, countProductRequestModel.quantity, countProductRequestModel.office, countProductRequestModel.warehouseCode, countProductRequestModel.batchCode, 'Order/CountProduct3', this.currentOrderNo, '')];
                     case 4:
                         response = _a.sent();
-                        if (!(response != undefined)) return [3 /*break*/, 7];
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, countProductRequestModel, countProductRequestModel.quantity, false, 'CO')];
-                    case 5:
-                        qrResponse = _a.sent();
-                        if (qrResponse != null && qrResponse.state === true) {
-                            this.qrOperationModels.push(qrResponse.qrOperationModel);
-                        }
-                        else if (qrResponse === null) {
-                            this.qrBarcodeUrl = null;
-                        }
-                        // QR İŞLEMLERİ YAPILDI -------------------------------------------
+                        // SAYIM YAPILDI -------------------------------------------
                         this.generalService.beep();
                         return [4 /*yield*/, this.getProductOfCount(this.currentOrderNo)];
-                    case 6:
+                    case 5:
                         _a.sent(); //this.list.push(countProductRequestModel);
                         this.clearQrAndBatchCode();
                         this.state = true;
-                        _a.label = 7;
-                    case 7: return [3 /*break*/, 14];
-                    case 8:
-                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 13];
+                        return [3 /*break*/, 11];
+                    case 6:
+                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 10];
                         return [4 /*yield*/, this.warehouseService.countProductRequest(countProductRequestModel.barcode, countProductRequestModel.shelfNo, countProductRequestModel.quantity, countProductRequestModel.office, countProductRequestModel.warehouseCode, countProductRequestModel.batchCode, 'Order/CountProduct3', this.currentOrderNo, '')];
-                    case 9:
+                    case 7:
                         response = _a.sent();
-                        if (!(response != undefined)) return [3 /*break*/, 12];
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, countProductRequestModel, countProductRequestModel.quantity, false, 'CO')];
-                    case 10:
-                        qrResponse = _a.sent();
-                        if (qrResponse != null && qrResponse.state === true) {
-                            this.qrOperationModels.push(qrResponse.qrOperationModel);
-                        }
-                        else if (qrResponse === null) {
-                            this.qrBarcodeUrl = null;
-                        }
+                        if (!(response != undefined)) return [3 /*break*/, 9];
                         data = response;
                         if (data.status == 'RAF') {
                             countProductRequestModel.shelfNo = response.description;
@@ -452,23 +402,23 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         }
                         this.generalService.beep();
                         return [4 /*yield*/, this.getProductOfCount(this.currentOrderNo)];
-                    case 11:
+                    case 8:
                         _a.sent(); //this.list.push(countProductRequestModel);
                         this.clearQrAndBatchCode();
                         this.state = true;
-                        _a.label = 12;
-                    case 12: return [3 /*break*/, 14];
-                    case 13:
+                        _a.label = 9;
+                    case 9: return [3 /*break*/, 11];
+                    case 10:
                         this.toasterService.success('Raflar Getirildi Ve Miktar Alanı Dolduruldu.');
                         this.state = true;
-                        _a.label = 14;
-                    case 14: return [3 /*break*/, 16];
-                    case 15:
+                        _a.label = 11;
+                    case 11: return [3 /*break*/, 13];
+                    case 12:
                         error_2 = _a.sent();
                         this.toasterService.error(error_2.message);
                         this.state = true;
-                        return [3 /*break*/, 16];
-                    case 16: return [2 /*return*/];
+                        return [3 /*break*/, 13];
+                    case 13: return [2 /*return*/];
                 }
             });
         });
@@ -509,7 +459,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 6, , 8]);
+                        _a.trys.push([0, 2, , 3]);
                         userConfirmed = window.confirm('İşlemi tamamlamadan önce sayımı eşitlemek istiyor musunuz?');
                         if (!userConfirmed) {
                             // Kullanıcı işlemi onaylamadıysa işlemi iptal et
@@ -532,33 +482,21 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                                 isShelfBased.value.toString() + '/' + isShelfBased2.value.toString())];
                     case 1:
                         response = _a.sent();
-                        if (!(response === true)) return [3 /*break*/, 3];
-                        //this.spinnerService.hide();
-                        return [4 /*yield*/, this.getControlledProducts()];
+                        if (response === true) {
+                            this.toasterService.success("İşlem Başarılı");
+                            this.router.navigate(['/warehouse-shelf-count-list']);
+                            return [2 /*return*/, true];
+                        }
+                        else {
+                            this.toasterService.error('İşlem Başarısız');
+                            return [2 /*return*/, false];
+                        }
+                        return [3 /*break*/, 3];
                     case 2:
-                        //this.spinnerService.hide();
-                        _a.sent();
-                        //this.router.navigate(['/warehouse-shelf-count-list']);
-                        return [2 /*return*/, true];
-                    case 3: 
-                    //this.spinnerService.hide();
-                    return [4 /*yield*/, this.getControlledProducts()];
-                    case 4:
-                        //this.spinnerService.hide();
-                        _a.sent();
-                        // this.toasterService.error('İşlem Başarısız');
-                        return [2 /*return*/, false];
-                    case 5: return [3 /*break*/, 8];
-                    case 6:
                         error_3 = _a.sent();
-                        //this.spinnerService.hide();
-                        return [4 /*yield*/, this.getControlledProducts()];
-                    case 7:
-                        //this.spinnerService.hide();
-                        _a.sent();
-                        // this.toasterService.error('İşlem Başarısız');
+                        this.toasterService.error('İşlem Başarısız');
                         return [2 /*return*/, false];
-                    case 8: return [2 /*return*/];
+                    case 3: return [2 /*return*/];
                 }
             });
         });

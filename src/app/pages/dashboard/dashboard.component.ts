@@ -16,11 +16,11 @@ export class DashboardComponent implements OnInit {
 
   options: any;
   raportData: Raport_CR;
-  userId: number;
+  roleDescription: string;
   async ngOnInit() {
     this.headerService.updatePageTitle("Anasayfa")
-    this.userId = Number(localStorage.getItem('userId'))
-    if (this.userId === 5) {
+    this.roleDescription = localStorage.getItem('roleDescription');
+    if (this.roleDescription === "Admin") {
       await this.saleCountRaport();
     }
 

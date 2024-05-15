@@ -120,8 +120,8 @@ var WarehouseService = /** @class */ (function () {
             });
         });
     };
-    //ofisleri çeker
-    WarehouseService.prototype.getOfficeCodeList = function () {
+    //depo ve ofis listesini çeker
+    WarehouseService.prototype.getWarehouseAndOffices = function () {
         return __awaiter(this, void 0, Promise, function () {
             var data, error_1;
             return __generator(this, function (_a) {
@@ -130,7 +130,7 @@ var WarehouseService = /** @class */ (function () {
                         _a.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, this.httpClientService
                                 .get({
-                                controller: 'Warehouse/GetOfficeModel'
+                                controller: 'Warehouse/get-office-and-warehouses'
                             })
                                 .toPromise()];
                     case 1:
@@ -145,37 +145,10 @@ var WarehouseService = /** @class */ (function () {
             });
         });
     };
-    //depo listesini çeker
-    WarehouseService.prototype.getWarehouseList = function (value) {
-        return __awaiter(this, void 0, Promise, function () {
-            var selectElement, data, error_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        selectElement = document.getElementById('officeCode');
-                        value = selectElement.value == '' ? 'M' : selectElement.value;
-                        return [4 /*yield*/, this.httpClientService
-                                .get({
-                                controller: 'Warehouse/GetWarehouseModel/' + value
-                            })
-                                .toPromise()];
-                    case 1:
-                        data = _a.sent();
-                        return [2 /*return*/, data];
-                    case 2:
-                        error_2 = _a.sent();
-                        console.log(error_2.message);
-                        return [2 /*return*/, null];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
     //müşteri listesini çeker
     WarehouseService.prototype.getCustomerList = function (customerType) {
         return __awaiter(this, void 0, Promise, function () {
-            var data, error_3;
+            var data, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -189,8 +162,8 @@ var WarehouseService = /** @class */ (function () {
                         data = _a.sent();
                         return [2 /*return*/, data];
                     case 2:
-                        error_3 = _a.sent();
-                        console.log(error_3.message);
+                        error_2 = _a.sent();
+                        console.log(error_2.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -406,7 +379,7 @@ var WarehouseService = /** @class */ (function () {
     };
     WarehouseService.prototype.deleteCountFromId = function (id) {
         return __awaiter(this, void 0, Promise, function () {
-            var result, error_4;
+            var result, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -420,8 +393,8 @@ var WarehouseService = /** @class */ (function () {
                         result = _a.sent();
                         return [2 /*return*/, result];
                     case 2:
-                        error_4 = _a.sent();
-                        console.log(error_4.message);
+                        error_3 = _a.sent();
+                        console.log(error_3.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }

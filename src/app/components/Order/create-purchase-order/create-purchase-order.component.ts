@@ -66,7 +66,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
         await this.getProductOfInvoice(this.newOrderNumber);
       });
       this.formGenerator();
-      await this.getOfficeCodeList();
+
 
       await this.getCustomerList();
       this.setInput();
@@ -130,18 +130,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
     }
   }
 
-  async getOfficeCodeList(): Promise<void> {
-    try {
-      this.officeModels = await this.warehouseService.getOfficeCodeList();
 
-      // Eğer veri geldiyse ve dizi boş değilse ilk ofisi seçin
-      if (this.officeModels && this.officeModels.length > 0) {
-        this.productForm.get('officeCode')?.setValue(this.officeModels[0]);
-      }
-    } catch (error: any) {
-      this.toasterService.warn(error.message);
-    }
-  }
 
   async getCustomerList(): Promise<void> {
     this.customerList = await this.warehouseService.getCustomerList('1');

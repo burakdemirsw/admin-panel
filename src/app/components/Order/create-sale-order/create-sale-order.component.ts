@@ -154,23 +154,9 @@ export class CreateSaleOrderComponent implements OnInit {
     }
   }
 
-  async getOfficeCodeList(): Promise<void> {
-    try {
-      this.officeModels = await this.warehouseService.getOfficeCodeList();
 
-      // Eğer veri geldiyse ve dizi boş değilse ilk ofisi seçin
-      if (this.officeModels && this.officeModels.length > 0) {
-        this.productForm.get('officeCode')?.setValue(this.officeModels[0]);
-      }
-    } catch (error: any) {
-      this.toasterService.warn(error.message);
-    }
-  }
 
-  async getWarehouseList(value: string): Promise<void> {
-    this.warehouseModels = await this.warehouseService.getWarehouseList(value);
-    console.log(this.warehouseModels);
-  }
+
   customerList2: any[] = [];
   async getCustomerList(): Promise<void> {
     this.customerList = await this.warehouseService.getCustomerList('3');
@@ -203,15 +189,7 @@ export class CreateSaleOrderComponent implements OnInit {
     }
   }
 
-  async getSelectedOffice(): Promise<any> {
-    var office = (document.getElementById('officeCode') as HTMLInputElement)
-      .value;
 
-    await this.getWarehouseList(office);
-    this.productForm
-      .get('warehouseCode')
-      ?.setValue(this.warehouseModels[0].warehouseCode);
-  }
 
   clearShelfNumbers() {
     this.productForm.get('shelfNo').setValue(null);

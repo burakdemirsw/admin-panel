@@ -46,11 +46,9 @@ exports.RetailOrderManagementComponent = void 0;
 var core_1 = require("@angular/core");
 var createBarcode_1 = require("src/app/components/Product/create-barcode/models/createBarcode");
 var RetailOrderManagementComponent = /** @class */ (function () {
-    function RetailOrderManagementComponent(headerService, httpClientService, toasterService, spinnerService, router, orderService, formBuilder, activatedRoute, productService) {
+    function RetailOrderManagementComponent(headerService, toasterService, router, orderService, formBuilder, activatedRoute, productService) {
         this.headerService = headerService;
-        this.httpClientService = httpClientService;
         this.toasterService = toasterService;
-        this.spinnerService = spinnerService;
         this.router = router;
         this.orderService = orderService;
         this.formBuilder = formBuilder;

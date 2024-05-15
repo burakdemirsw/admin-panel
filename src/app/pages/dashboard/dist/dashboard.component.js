@@ -56,8 +56,8 @@ var DashboardComponent = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         this.headerService.updatePageTitle("Anasayfa");
-                        this.userId = Number(localStorage.getItem('userId'));
-                        if (!(this.userId === 5)) return [3 /*break*/, 2];
+                        this.roleDescription = localStorage.getItem('roleDescription');
+                        if (!(this.roleDescription === "Admin")) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.saleCountRaport()];
                     case 1:
                         _a.sent();

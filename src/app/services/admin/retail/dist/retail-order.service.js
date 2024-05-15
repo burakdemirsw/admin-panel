@@ -208,7 +208,7 @@ var RetailOrderService = /** @class */ (function () {
                         query = type + "/" + invoiceStatus;
                         return [4 /*yield*/, this.httpClientService
                                 .get({
-                                controller: 'Order/get-sale-orders'
+                                controller: 'Order/Retail/get-sale-orders'
                             }, query)
                                 .toPromise()];
                     case 1:

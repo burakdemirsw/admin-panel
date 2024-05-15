@@ -6,7 +6,7 @@
           <div class="card text-center card-hover">
             <div class="card-body">
               <h5 class="card-title">Yapılacak Görev Sayısı</h5>
-              <h1>{{ this.raport.unfinishedCount }}</h1>
+              <h1>{{ this.raport?.unfinishedCount }}</h1>
             </div>
           </div>
         </div>
@@ -14,7 +14,7 @@
           <div class="card text-center card-hover">
             <div class="card-body">
               <h5 class="card-title">Kontrol Edilen Görev Sayısı</h5>
-              <h1>{{ this.raport.dailyLooked }}</h1>
+              <h1>{{ this.raport?.dailyLooked }}</h1>
             </div>
           </div>
         </div>
@@ -24,7 +24,7 @@
           <div class="card text-center card-hover">
             <div class="card-body">
               <h5 class="card-title">Bugün Oluşturulan Görev Sayısı</h5>
-              <h1>{{ this.raport.dailyCreatedCount }}</h1>
+              <h1>{{ this.raport?.dailyCreatedCount }}</h1>
             </div>
           </div>
         </div>
@@ -32,7 +32,7 @@
           <div class="card text-center card-hover">
             <div class="card-body">
               <h5 class="card-title">Bu Hafta Tamamlanan Görev Sayısı</h5>
-              <h1>{{ this.raport.weeklyCompletedCount }}</h1>
+              <h1>{{ this.raport?.weeklyCompletedCount }}</h1>
             </div>
           </div>
         </div>
