@@ -492,7 +492,7 @@ var OrderOperationComponent = /** @class */ (function () {
             barcode: [null, forms_1.Validators.required],
             shelfNo: [null, forms_1.Validators.required],
             quantity: [null, forms_1.Validators.required],
-            batchCode: [null, forms_1.Validators.required]
+            batchCode: [null]
         });
     };
     OrderOperationComponent.prototype.confirmTransfer = function (operationNumberList) {
@@ -630,21 +630,6 @@ var OrderOperationComponent = /** @class */ (function () {
         }
         this.formModal.show();
     };
-    OrderOperationComponent.prototype.setFirstItem = function () {
-        if (this.currentProductModel != null) {
-            var barcodeToFind_1 = this.currentProductModel.barcode;
-            var shelfNoToFind_1 = this.currentProductModel.shelfNo;
-            // Find the index of the item in lastCollectedProducts
-            var index = this.productsToCollect.findIndex(function (item) {
-                return item.barcode === barcodeToFind_1 && item.shelfNo === shelfNoToFind_1;
-            });
-            // If the item is found, move it to the beginning of the array
-            if (index !== -1) {
-                var foundItem = this.productsToCollect.splice(index, 1)[0];
-                this.productsToCollect.unshift(foundItem);
-            }
-        }
-    };
     OrderOperationComponent.prototype.setFormValues = function (barcode) {
         return __awaiter(this, void 0, Promise, function () {
             var result, currentShelfNo, product, error_1;
@@ -660,14 +645,6 @@ var OrderOperationComponent = /** @class */ (function () {
                         this.checkForm.get('barcode').setValue(result[3]);
                         this.checkForm.get('batchCode').setValue(result[2].toString());
                         this.checkForm.get('quantity').setValue(result[1]);
-                        if (result[4] == 'false') {
-                            if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
-                                this.checkForm.get('batchCode').setValue(null);
-                                this.focusNextInput('batchCode');
-                                this.toasterService.error('Parti Giriniz');
-                                return [2 /*return*/, null];
-                            }
-                        }
                         product = new countProduct_1.CountProduct(result[3], currentShelfNo, result[2], Number(result[1]));
                         return [2 /*return*/, product];
                     case 2:
@@ -703,7 +680,7 @@ var OrderOperationComponent = /** @class */ (function () {
                         this.toasterService.success("Formu Verileri Dolduruldu.");
                         return [2 /*return*/];
                     case 4:
-                        if (!(this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-'))) return [3 /*break*/, 16];
+                        if (!(this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-') || this.currentOrderNo.includes('R-'))) return [3 /*break*/, 16];
                         if (!this.checkForm.valid) return [3 /*break*/, 15];
                         foundModel = this.productsToCollect.find(function (o) { return o.barcode == productModel.barcode; });
                         if (!true) return [3 /*break*/, 15];

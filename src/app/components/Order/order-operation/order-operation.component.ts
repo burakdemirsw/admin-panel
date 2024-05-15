@@ -422,7 +422,7 @@ export class OrderOperationComponent implements OnInit {
       barcode: [null, Validators.required],
       shelfNo: [null, Validators.required],
       quantity: [null, Validators.required],
-      batchCode: [null, Validators.required],
+      batchCode: [null],
       // invoiceType: [null]
     });
 
@@ -555,24 +555,7 @@ export class OrderOperationComponent implements OnInit {
     this.formModal.show();
   }
 
-  setFirstItem() {
-    if (this.currentProductModel != null) {
-      const barcodeToFind = this.currentProductModel.barcode;
-      const shelfNoToFind = this.currentProductModel.shelfNo;
 
-      // Find the index of the item in lastCollectedProducts
-      const index = this.productsToCollect.findIndex(
-        (item) =>
-          item.barcode === barcodeToFind && item.shelfNo === shelfNoToFind
-      );
-
-      // If the item is found, move it to the beginning of the array
-      if (index !== -1) {
-        const foundItem = this.productsToCollect.splice(index, 1)[0];
-        this.productsToCollect.unshift(foundItem);
-      }
-    }
-  }
 
   async setFormValues(barcode: string): Promise<CountProduct> {
 
@@ -585,15 +568,7 @@ export class OrderOperationComponent implements OnInit {
       this.checkForm.get('barcode').setValue(result[3]);
       this.checkForm.get('batchCode').setValue(result[2].toString());
       this.checkForm.get('quantity').setValue(result[1]);
-      if (result[4] == 'false') {
 
-        if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
-          this.checkForm.get('batchCode').setValue(null);
-          this.focusNextInput('batchCode');
-          this.toasterService.error('Parti Giriniz');
-          return null;
-        }
-      }
       var product: CountProduct = new CountProduct(result[3], currentShelfNo, result[2], Number(result[1]));
       return product;
     } catch (error) {
@@ -629,7 +604,7 @@ export class OrderOperationComponent implements OnInit {
 
     //satış faturası alanı------------------------------------------------------------------------ WS
 
-    if (this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-')) {
+    if (this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-') || this.currentOrderNo.includes('R-')) {
 
 
       if (this.checkForm.valid) {
