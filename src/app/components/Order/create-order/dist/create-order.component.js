@@ -718,7 +718,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         if (response) {
                             this.selectableCustomers = [];
                             response.forEach(function (c) {
-                                _this.selectableCustomers.push({ name: c.currAccDescription, value: c.phone });
+                                _this.selectableCustomers.push({ name: c.currAccDescription, value: c.phone, currAccCode: c.currAccCode });
                             });
                         }
                         _a.label = 2;
@@ -729,33 +729,32 @@ var CreateOrderComponent = /** @class */ (function () {
     };
     CreateOrderComponent.prototype.submitAddressForm = function (formValue) {
         return __awaiter(this, void 0, void 0, function () {
-            var check_request, check_response, findedCustomer, request, response, clientCustomer_request, clientCustomer_response;
+            var check_request, check_response, _findedCustomer, request, response, clientCustomer_request, clientCustomer_response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         check_request = new getCustomerList_CM_1.GetCustomerAddress_CM();
-                        check_request.currAccCode = formValue.currAccCode;
-                        check_request.phone = formValue.phoneNumber;
+                        check_request.currAccCode = formValue.currAccDescription.currAccCode;
                         return [4 /*yield*/, this.orderService.getCustomerList_2(check_request)];
                     case 1:
                         check_response = _a.sent();
-                        if (!(check_response.length > 0)) return [3 /*break*/, 5];
-                        //this.toasterService.error("Bu Müşteri Numarası Zaten Kayıtlı")
-                        this.currAccCode = check_response[0].currAccCode;
+                        if (!(check_response.length > 0)) return [3 /*break*/, 4];
+                        _findedCustomer = check_response.find(function (c) { return c.currAccCode == formValue.currAccDescription.currAccCode; });
+                        if (!_findedCustomer) return [3 /*break*/, 3];
+                        this.currAccCode = _findedCustomer.currAccCode;
                         this.getCustomerDialog = true;
                         this.getCustomerForm.get("currAccCode").setValue(check_response[0].currAccCode);
-                        return [4 /*yield*/, this.getCustomers(this.getCustomerForm.value)];
+                        // await this.getCustomers(this.getCustomerForm.value);
+                        return [4 /*yield*/, this.selectCurrentCustomer(_findedCustomer)];
                     case 2:
+                        // await this.getCustomers(this.getCustomerForm.value);
                         _a.sent();
-                        if (!(this.customers.length > 0)) return [3 /*break*/, 4];
-                        findedCustomer = this.customers.find(function (p) { return p.currAccCode == check_response[0].currAccCode; });
-                        return [4 /*yield*/, this.selectCurrentCustomer(findedCustomer)];
-                    case 3:
-                        _a.sent();
-                        _a.label = 4;
-                    case 4: return [2 /*return*/];
-                    case 5:
-                        if (!this.createCustomerForm.valid) return [3 /*break*/, 13];
+                        _a.label = 3;
+                    case 3: 
+                    //this.toasterService.error("Bu Müşteri Numarası Zaten Kayıtlı")
+                    return [2 /*return*/];
+                    case 4:
+                        if (!this.createCustomerForm.valid) return [3 /*break*/, 12];
                         request = new createCustomer_CM_1.CreateCustomer_CM();
                         request.currAccDescription = formValue.currAccDescription; //++
                         request.mail = formValue.mail;
@@ -777,11 +776,11 @@ var CreateOrderComponent = /** @class */ (function () {
                             request.address.description = formValue.address_description;
                             request.address.postalCode = formValue.address_postalCode;
                         }
-                        if (!true) return [3 /*break*/, 12];
+                        if (!true) return [3 /*break*/, 11];
                         return [4 /*yield*/, this.orderService.createCustomer(request)];
-                    case 6:
+                    case 5:
                         response = _a.sent();
-                        if (!response.currAccCode) return [3 /*break*/, 12];
+                        if (!response.currAccCode) return [3 /*break*/, 11];
                         clientCustomer_request = new createCustomer_CM_1.ClientCustomer();
                         clientCustomer_request.currAccCode = response.currAccCode;
                         clientCustomer_request.description = formValue.currAccDescription.value;
@@ -789,32 +788,32 @@ var CreateOrderComponent = /** @class */ (function () {
                         clientCustomer_request.bussinesCardPhotoUrl = formValue.bussinesCardPhotoUrl;
                         clientCustomer_request.addedSellerCode = localStorage.getItem('salesPersonCode');
                         return [4 /*yield*/, this.orderService.editClientCustomer(clientCustomer_request)];
-                    case 7:
+                    case 6:
                         clientCustomer_response = _a.sent();
-                        if (!clientCustomer_response) return [3 /*break*/, 12];
+                        if (!clientCustomer_response) return [3 /*break*/, 11];
                         this.toasterService.success(this.currAccCode);
                         this.currAccCode = response.currAccCode;
                         this.getCustomerDialog = true;
                         this.getCustomerForm.get("currAccCode").setValue(this.currAccCode);
                         return [4 /*yield*/, this.getCustomers(this.getCustomerForm.value)];
+                    case 7:
+                        _a.sent();
+                        if (!(this.customers.length > 0)) return [3 /*break*/, 10];
+                        return [4 /*yield*/, this.selectCurrentCustomer(this.customers[0])];
                     case 8:
                         _a.sent();
-                        if (!(this.customers.length > 0)) return [3 /*break*/, 11];
-                        return [4 /*yield*/, this.selectCurrentCustomer(this.customers[0])];
+                        return [4 /*yield*/, this.getCustomerAddresses(this.customers[0])];
                     case 9:
                         _a.sent();
-                        return [4 /*yield*/, this.getCustomerAddresses(this.customers[0])];
+                        _a.label = 10;
                     case 10:
-                        _a.sent();
-                        _a.label = 11;
-                    case 11:
                         this.activeIndex = 2;
-                        _a.label = 12;
-                    case 12: return [3 /*break*/, 14];
-                    case 13:
+                        _a.label = 11;
+                    case 11: return [3 /*break*/, 13];
+                    case 12:
                         this.generalService.whichRowIsInvalid(this.createCustomerForm);
-                        _a.label = 14;
-                    case 14: return [2 /*return*/];
+                        _a.label = 13;
+                    case 13: return [2 /*return*/];
                 }
             });
         });
@@ -861,13 +860,13 @@ var CreateOrderComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.getCustomersAutomaticaly(value.name)];
                     case 1:
                         _a.sent();
-                        findedCustomer = this.selectableCustomers.find(function (p) { return p.name == value.name; });
+                        findedCustomer = this.selectableCustomers.find(function (p) { return p.name == value.name && p.currAccCode == value.currAccCode; });
                         if (findedCustomer && !this.generalService.isNullOrEmpty(findedCustomer.value)) {
                             this.createCustomerForm.get('phoneNumber').setValue(findedCustomer === null || findedCustomer === void 0 ? void 0 : findedCustomer.value);
                             this.submitAddressForm(this.createCustomerForm.value);
                         }
                         else {
-                            this.toasterService.info("Müşteri Bulunamadı");
+                            this.createCustomerForm.get('phoneNumber').setValue(null);
                         }
                         _a.label = 2;
                     case 2:
@@ -875,9 +874,13 @@ var CreateOrderComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.getCustomersAutomaticaly(value)];
                     case 3:
                         _a.sent();
-                        findedCustomer = this.selectableCustomers.find(function (p) { return p.name = value; });
-                        if (findedCustomer) {
+                        findedCustomer = this.selectableCustomers.find(function (p) { return p.name == value.name && p.currAccCode == value.currAccCode; });
+                        if (findedCustomer && !this.generalService.isNullOrEmpty(findedCustomer.value)) {
                             this.createCustomerForm.get('phoneNumber').setValue(findedCustomer === null || findedCustomer === void 0 ? void 0 : findedCustomer.value);
+                            this.submitAddressForm(this.createCustomerForm.value);
+                        }
+                        else {
+                            this.createCustomerForm.get('phoneNumber').setValue(null);
                         }
                         _a.label = 4;
                     case 4: return [2 /*return*/];

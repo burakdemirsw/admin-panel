@@ -27,6 +27,7 @@ import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, Payment }
 import { OrderService } from '../../../services/admin/order.service';
 import { GoogleDriveService } from '../../../services/common/google-drive.service';
 import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from '../../cargo/create-cargo/models/models';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-create-order',
@@ -588,7 +589,7 @@ export class CreateOrderComponent implements OnInit {
       if (response) {
         this.selectableCustomers = [];
         response.forEach(c => {
-          this.selectableCustomers.push({ name: c.currAccDescription, value: c.phone })
+          this.selectableCustomers.push({ name: c.currAccDescription, value: c.phone, currAccCode: c.currAccCode })
         });
       }
     }
@@ -598,21 +599,22 @@ export class CreateOrderComponent implements OnInit {
   async submitAddressForm(formValue: any) {
 
     var check_request = new GetCustomerAddress_CM();
-    check_request.currAccCode = formValue.currAccCode;
-    check_request.phone = formValue.phoneNumber;
+    check_request.currAccCode = formValue.currAccDescription.currAccCode;
+    // check_request.phone = formValue.phoneNumber;
 
     var check_response = await this.orderService.getCustomerList_2(check_request);
     if (check_response.length > 0) {
-
-      //this.toasterService.error("Bu Müşteri Numarası Zaten Kayıtlı")
-      this.currAccCode = check_response[0].currAccCode;
-      this.getCustomerDialog = true;
-      this.getCustomerForm.get("currAccCode").setValue(check_response[0].currAccCode);
-      await this.getCustomers(this.getCustomerForm.value);
-      if (this.customers.length > 0) {
-        var findedCustomer = this.customers.find(p => p.currAccCode == check_response[0].currAccCode)
-        await this.selectCurrentCustomer(findedCustomer)
+      var _findedCustomer = check_response.find(c => c.currAccCode == formValue.currAccDescription.currAccCode);
+      if (_findedCustomer) {
+        this.currAccCode = _findedCustomer.currAccCode;
+        this.getCustomerDialog = true;
+        this.getCustomerForm.get("currAccCode").setValue(check_response[0].currAccCode);
+        // await this.getCustomers(this.getCustomerForm.value);
+        await this.selectCurrentCustomer(_findedCustomer)
       }
+      //this.toasterService.error("Bu Müşteri Numarası Zaten Kayıtlı")
+
+
       return;
     }
     if (this.createCustomerForm.valid) {
@@ -713,24 +715,29 @@ export class CreateOrderComponent implements OnInit {
     this.createCustomerForm.get('currAccDescription').valueChanges.subscribe(async (value) => {
       if (value != "" || value != null) {
 
-        if (value.name != undefined && value.name.length > 3) {
+        if (value.name != undefined && value.name.length > 3) { //asdasd12321
           await this.getCustomersAutomaticaly(value.name)
 
-          var findedCustomer = this.selectableCustomers.find(p => p.name == value.name)
+          var findedCustomer = this.selectableCustomers.find(p => p.name == value.name && p.currAccCode == value.currAccCode)
           if (findedCustomer && !this.generalService.isNullOrEmpty(findedCustomer.value)) {
 
             this.createCustomerForm.get('phoneNumber').setValue(findedCustomer?.value)
             this.submitAddressForm(this.createCustomerForm.value)
           } else {
-            this.toasterService.info("Müşteri Bulunamadı")
+
+            this.createCustomerForm.get('phoneNumber').setValue(null)
           }
         }
         if (value.length > 3) {
           await this.getCustomersAutomaticaly(value)
-          var findedCustomer = this.selectableCustomers.find(p => p.name = value)
-          if (findedCustomer) {
+          var findedCustomer = this.selectableCustomers.find(p => p.name == value.name && p.currAccCode == value.currAccCode)
+          if (findedCustomer && !this.generalService.isNullOrEmpty(findedCustomer.value)) {
 
             this.createCustomerForm.get('phoneNumber').setValue(findedCustomer?.value)
+            this.submitAddressForm(this.createCustomerForm.value)
+          } else {
+
+            this.createCustomerForm.get('phoneNumber').setValue(null)
           }
 
         }
