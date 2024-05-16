@@ -345,8 +345,9 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.warehouseService.countProductRequest2(countProductRequestModel.barcode, countProductRequestModel.shelfNo, countProductRequestModel.quantity, countProductRequestModel.office, countProductRequestModel.warehouseCode, countProductRequestModel.batchCode, 'Order/CountProduct', this.currentOrderNo, null, null)];
                     case 4:
                         response = _a.sent();
-                        // SAYIM YAPILDI -------------------------------------------
-                        this.generalService.beep();
+                        if (response)
+                            // SAYIM YAPILDI -------------------------------------------
+                            this.generalService.beep();
                         return [4 /*yield*/, this.getProductOfCount(this.currentOrderNo)];
                     case 5:
                         _a.sent(); //this.list.push(countProductRequestModel);
