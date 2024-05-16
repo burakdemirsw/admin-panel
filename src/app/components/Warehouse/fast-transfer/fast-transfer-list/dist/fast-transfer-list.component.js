@@ -46,7 +46,7 @@ exports.FastTransferListComponent = void 0;
 var core_1 = require("@angular/core");
 var createBarcode_1 = require("src/app/components/Product/create-barcode/models/createBarcode");
 var FastTransferListComponent = /** @class */ (function () {
-    function FastTransferListComponent(spinnerService, router, headerService, warehosueService, generalService, productService, toasterService) {
+    function FastTransferListComponent(spinnerService, router, headerService, warehosueService, generalService, productService, toasterService, activatedRoute) {
         this.spinnerService = spinnerService;
         this.router = router;
         this.headerService = headerService;
@@ -54,23 +54,55 @@ var FastTransferListComponent = /** @class */ (function () {
         this.generalService = generalService;
         this.productService = productService;
         this.toasterService = toasterService;
+        this.activatedRoute = activatedRoute;
         this.currentPage = 1;
         this.fastTransferListModels = [];
         this.visible = false;
     }
     FastTransferListComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                this.spinnerService.show();
+                this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                if (!params["type"]) return [3 /*break*/, 2];
+                                this.pageType = params["type"];
+                                if (params["type"] == 'true') {
+                                    this.headerService.updatePageTitle("Hızlı Transfer İstekleri");
+                                }
+                                else {
+                                    this.headerService.updatePageTitle("Hızlı Transferler");
+                                }
+                                return [4 /*yield*/, this.getFastTransferList(params["type"])];
+                            case 1:
+                                _a.sent();
+                                _a.label = 2;
+                            case 2: return [2 /*return*/];
+                        }
+                    });
+                }); });
+                this.spinnerService.hide();
+                return [2 /*return*/];
+            });
+        });
+    };
+    FastTransferListComponent.prototype.goPage = function (pageType) {
+        return __awaiter(this, void 0, void 0, function () {
+            var uuid;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        this.headerService.updatePageTitle("Hızlı Transferler");
-                        this.spinnerService.show();
-                        // this.formGenerator()
-                        return [4 /*yield*/, this.getFastTransferList()];
+                    case 0: return [4 /*yield*/, this.generalService.generateGUID()];
                     case 1:
-                        // this.formGenerator()
-                        _a.sent();
-                        this.spinnerService.hide();
+                        uuid = _a.sent();
+                        location.href =
+                            location.origin +
+                                '/shelf-transfer-request/' +
+                                uuid +
+                                '/' +
+                                pageType;
                         return [2 /*return*/];
                 }
             });
@@ -149,12 +181,12 @@ var FastTransferListComponent = /** @class */ (function () {
         });
     };
     //toplanan ürünler sayfasına akatarır fakat önce ilgili siparişin içeriğinden paketNo'değerini çeker.
-    FastTransferListComponent.prototype.getFastTransferList = function () {
+    FastTransferListComponent.prototype.getFastTransferList = function (type) {
         return __awaiter(this, void 0, Promise, function () {
             var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.warehosueService.getFastTransferListModels()];
+                    case 0: return [4 /*yield*/, this.warehosueService.getFastTransferListModels(type == 'true' ? true : false)];
                     case 1:
                         response = _a.sent();
                         this.fastTransferListModels = response;

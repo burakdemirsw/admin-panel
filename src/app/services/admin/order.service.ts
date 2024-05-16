@@ -430,17 +430,6 @@ export class OrderService {
     }
   }
 
-
-  async createOrder2(order: NebimOrder_2): Promise<any> {
-    try {
-      var response = await this.httpClientService.post<NebimOrder>({ controller: "order/create-order-2" }, order).toPromise();
-
-      return response;
-    } catch (error: any) {
-      // console.log(error.message);
-      return null;
-    }
-  }
   async createInvoice(request: NebimInvoice): Promise<any> {
     try {
       var response = await this.httpClientService.post<NebimInvoice>({ controller: "order/create-sale-invoice" }, request).toPromise();
@@ -530,7 +519,7 @@ export class OrderService {
 
   async getCustomerList_2(request: GetCustomerList_CM): Promise<any> {
     try {
-      var response = await this.httpClientService.post<GetCustomerList_CM>({ controller:  "order/get-customer-list-2" }, request).toPromise();
+      var response = await this.httpClientService.post<GetCustomerList_CM>({ controller: "order/get-customer-list-2" }, request).toPromise();
 
       return response;
     } catch (error: any) {

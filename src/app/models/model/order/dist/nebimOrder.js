@@ -29,9 +29,10 @@ exports.CheckCustomerModel = CheckCustomerModel;
 var NebimOrder = /** @class */ (function () {
     // discounts: Discount[];
     // payments: Payment[];
-    function NebimOrder(exchangeRate, discountPercentage, discountPercentage2, customerDesc, currAccCode, orderNo, formValue, selectedProducts, salesPersonCode, taxTypeCode) {
+    function NebimOrder(orderNumber, exchangeRate, discountPercentage, discountPercentage2, customerDesc, currAccCode, orderNo, formValue, selectedProducts, salesPersonCode, taxTypeCode) {
         var _this = this;
         this.discounts = [];
+        this.orderNumber = orderNumber;
         this.modelType = 5;
         this.posTerminalID = 1;
         this.shipmentMethodCode = 2;

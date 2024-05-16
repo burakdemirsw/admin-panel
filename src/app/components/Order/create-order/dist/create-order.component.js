@@ -733,12 +733,16 @@ var CreateOrderComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        if (formValue.phoneNumber == "05" || formValue.phoneNumber.length != 11) {
+                            this.toasterService.error("Geçersiz Telefon Numarası");
+                            return [2 /*return*/];
+                        }
                         check_request = new getCustomerList_CM_1.GetCustomerAddress_CM();
                         check_request.currAccCode = formValue.currAccDescription.currAccCode;
                         return [4 /*yield*/, this.orderService.getCustomerList_2(check_request)];
                     case 1:
                         check_response = _a.sent();
-                        if (!(check_response.length > 0)) return [3 /*break*/, 4];
+                        if (!(check_response.length > 0 && check_request.currAccCode != undefined)) return [3 /*break*/, 4];
                         _findedCustomer = check_response.find(function (c) { return c.currAccCode == formValue.currAccDescription.currAccCode; });
                         if (!_findedCustomer) return [3 /*break*/, 3];
                         this.currAccCode = _findedCustomer.currAccCode;
@@ -838,7 +842,7 @@ var CreateOrderComponent = /** @class */ (function () {
             salesPersonCode: [null],
             currAccDescription: [null, forms_1.Validators.required],
             mail: [' ', forms_1.Validators.required],
-            phoneNumber: [null, forms_1.Validators.required],
+            phoneNumber: ['05', forms_1.Validators.required],
             stampPhotoUrl: [null],
             bussinesCardPhotoUrl: [null],
             address_country: [null],
@@ -850,6 +854,14 @@ var CreateOrderComponent = /** @class */ (function () {
             address_postalCode: [' '],
             address_taxOffice: [null]
         });
+        this.createCustomerForm.get('phoneNumber').valueChanges.subscribe(function (value) { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                if (this.generalService.isNullOrEmpty(value)) {
+                    this.createCustomerForm.get('phoneNumber').setValue('05');
+                }
+                return [2 /*return*/];
+            });
+        }); });
         this.createCustomerForm.get('currAccDescription').valueChanges.subscribe(function (value) { return __awaiter(_this, void 0, void 0, function () {
             var findedCustomer, findedCustomer;
             return __generator(this, function (_a) {
@@ -2015,7 +2027,7 @@ var CreateOrderComponent = /** @class */ (function () {
     CreateOrderComponent.prototype.createOrder = function () {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var payment_response, formValue, exchangeRate, order_request, order_response, totalPrice, discountedPrice, _i, _b, _product, after_discountPrice, dif, request, response, addedOrder, _request, response, __request, __response, addedOrder;
+            var payment_response, formValue, exchangeRate, order_request, order_response, totalPrice, discountedPrice, _i, _b, _product, after_discountPrice, dif, batchSize, totalProducts, batchStart, batchEnd, productBatch, _request, response, error_4, addedOrder, batchSize, totalProducts, batchStart, batchEnd, productBatch, _request, response, error_5, __request, __response, addedOrder;
             var _this = this;
             return __generator(this, function (_c) {
                 switch (_c.label) {
@@ -2082,27 +2094,71 @@ var CreateOrderComponent = /** @class */ (function () {
                             dif = after_discountPrice - discountedPrice;
                             this.currentCashdiscountRate += dif;
                         }
-                        if (!this.orderType) return [3 /*break*/, 7];
-                        request = new nebimOrder_1.NebimOrder(exchangeRate, this.currentDiscountRate, this.currentCashdiscountRate, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value);
-                        return [4 /*yield*/, this.orderService.createOrder(request)];
+                        if (!this.orderType) return [3 /*break*/, 12];
+                        batchSize = 50;
+                        totalProducts = this.selectedProducts.length;
+                        batchStart = 0;
+                        _c.label = 4;
                     case 4:
+                        if (!(batchStart < totalProducts)) return [3 /*break*/, 9];
+                        batchEnd = Math.min(batchStart + batchSize, totalProducts);
+                        productBatch = this.selectedProducts.slice(batchStart, batchEnd);
+                        _request = new nebimOrder_1.NebimOrder((this.orderNumber != undefined || this.orderNumber != null) ? this.orderNumber : null, exchangeRate, this.currentDiscountRate, this.currentCashdiscountRate, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, // Ensure this variable supports being split if necessary
+                        productBatch, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value);
+                        _c.label = 5;
+                    case 5:
+                        _c.trys.push([5, 7, , 8]);
+                        return [4 /*yield*/, this.orderService.createOrder(_request)];
+                    case 6:
                         response = _c.sent();
-                        if (!(response && response.status === true)) return [3 /*break*/, 6];
+                        this.orderNumber = response.orderNumber;
+                        return [3 /*break*/, 8];
+                    case 7:
+                        error_4 = _c.sent();
+                        return [3 /*break*/, 9];
+                    case 8:
+                        // Update the start index for the next batch
+                        batchStart += batchSize;
+                        return [3 /*break*/, 4];
+                    case 9:
+                        if (!(response && response.status === true)) return [3 /*break*/, 11];
                         this.orderNumber = response.orderNumber;
                         return [4 /*yield*/, this.orderService.getOrderDetail(this.orderNumber)];
-                    case 5:
+                    case 10:
                         addedOrder = _c.sent();
                         if (addedOrder.orderNumber) {
                             this.sendInvoiceToPrinter(addedOrder.orderNumber);
                         }
                         this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament/1/2");
-                        _c.label = 6;
-                    case 6: return [3 /*break*/, 11];
-                    case 7:
-                        _request = new nebimOrder_1.NebimOrder(exchangeRate, this.currentDiscountRate, this.currentCashdiscountRate, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value);
+                        _c.label = 11;
+                    case 11: return [3 /*break*/, 21];
+                    case 12:
+                        batchSize = 50;
+                        totalProducts = this.selectedProducts.length;
+                        batchStart = 0;
+                        _c.label = 13;
+                    case 13:
+                        if (!(batchStart < totalProducts)) return [3 /*break*/, 18];
+                        batchEnd = Math.min(batchStart + batchSize, totalProducts);
+                        productBatch = this.selectedProducts.slice(batchStart, batchEnd);
+                        _request = new nebimOrder_1.NebimOrder((this.orderNumber != undefined || this.orderNumber != null) ? this.orderNumber : null, exchangeRate, this.currentDiscountRate, this.currentCashdiscountRate, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, // Ensure this variable supports being split if necessary
+                        productBatch, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value);
+                        _c.label = 14;
+                    case 14:
+                        _c.trys.push([14, 16, , 17]);
                         return [4 /*yield*/, this.orderService.createOrder(_request)];
-                    case 8:
+                    case 15:
                         response = _c.sent();
+                        this.orderNumber = response.orderNumber;
+                        return [3 /*break*/, 17];
+                    case 16:
+                        error_5 = _c.sent();
+                        return [3 /*break*/, 18];
+                    case 17:
+                        // Update the start index for the next batch
+                        batchStart += batchSize;
+                        return [3 /*break*/, 13];
+                    case 18:
                         if (response && response.status === true) {
                             this.orderNumber = response.orderNumber;
                             // if (this.cargoForm.get('isActive').value === true) {
@@ -2122,18 +2178,18 @@ var CreateOrderComponent = /** @class */ (function () {
                             }
                         });
                         return [4 /*yield*/, this.orderService.createInvoice(__request)];
-                    case 9:
+                    case 19:
                         __response = _c.sent();
-                        if (!__response) return [3 /*break*/, 11];
+                        if (!__response) return [3 /*break*/, 21];
                         return [4 /*yield*/, this.orderService.getOrderDetail(this.orderNumber)];
-                    case 10:
+                    case 20:
                         addedOrder = _c.sent();
                         if (addedOrder.orderNumber) {
                             this.sendInvoiceToPrinter(addedOrder.orderNumber);
                         }
                         this.generalService.waitAndNavigate("Sipariş Oluşturuldu & Faturalaştırıdı", "orders-managament/1/1");
-                        _c.label = 11;
-                    case 11: return [2 /*return*/];
+                        _c.label = 21;
+                    case 21: return [2 /*return*/];
                 }
             });
         });

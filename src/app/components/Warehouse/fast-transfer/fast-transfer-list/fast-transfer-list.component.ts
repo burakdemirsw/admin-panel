@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CreateBarcodeFromOrder_RM } from 'src/app/components/Product/create-barcode/models/createBarcode';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { FastTransferListModel } from 'src/app/models/model/warehouse/fastTransferModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
-import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
@@ -25,24 +24,44 @@ export class FastTransferListComponent implements OnInit {
     private spinnerService: NgxSpinnerService,
     private router: Router, private headerService: HeaderService,
     private warehosueService: WarehouseService, private generalService: GeneralService,
-    private productService: ProductService, private toasterService: ToasterService
+    private productService: ProductService, private toasterService: ToasterService,
+    private activatedRoute: ActivatedRoute
 
   ) { }
   filterForm: FormGroup;
   fastTransferListModels: FastTransferListModel[] = []
+  pageType: string;
   async ngOnInit() {
-    this.headerService.updatePageTitle("Hızlı Transferler")
+
     this.spinnerService.show();
-    // this.formGenerator()
+    this.activatedRoute.params.subscribe(async (params) => {
+      if (params["type"]) {
+        this.pageType = params["type"];
+        if (params["type"] == 'true') {
+          this.headerService.updatePageTitle("Hızlı Transfer İstekleri")
 
-    await this.getFastTransferList();
+        } else {
+          this.headerService.updatePageTitle("Hızlı Transferler")
+
+        }
+
+        await this.getFastTransferList(params["type"]);
+
+      }
+    })
+
     this.spinnerService.hide();
-
-
+  }
+  async goPage(pageType: string) {
+    var uuid = await this.generalService.generateGUID()
+    location.href =
+      location.origin +
+      '/shelf-transfer-request/' +
+      uuid +
+      '/' +
+      pageType;
   }
   productsToCollect: ProductOfOrder[];
-
-
 
   // formGenerator() {
   //   this.filterForm = this.formBuilder.group({
@@ -100,8 +119,8 @@ export class FastTransferListComponent implements OnInit {
   }
   //toplanan ürünler sayfasına akatarır fakat önce ilgili siparişin içeriğinden paketNo'değerini çeker.
 
-  async getFastTransferList(): Promise<any> {
-    var response = await this.warehosueService.getFastTransferListModels();
+  async getFastTransferList(type: string): Promise<any> {
+    var response = await this.warehosueService.getFastTransferListModels(type == 'true' ? true : false);
     this.fastTransferListModels = response;
 
 

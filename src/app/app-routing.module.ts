@@ -212,7 +212,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'fast-transfer-list',
+    path: 'fast-transfer-list/:type',
     component: FastTransferListComponent,
     canActivate: [AuthGuard],
   },

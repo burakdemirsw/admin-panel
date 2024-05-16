@@ -290,10 +290,13 @@ export class WarehosueShelfCountComponent implements OnInit {
           this.shelfNumbers = result[0];
           this.checkForm.get('batchCode').setValue(result[2]);
           this.checkForm.get('barcode').setValue(result[3]);
-          this.checkForm.get('quantity').setValue(Number(result[1]));
+          if (this.generalService.isNullOrEmpty(product.quantity?.toString())) {
+            this.checkForm.get('quantity').setValue(Number(result[1]));
+          }
+
 
           var updated_product: CountProduct3 = product;
-          updated_product.quantity = Number(result[1]);
+          updated_product.quantity = this.checkForm.get('quantity').value;
           updated_product.batchCode = result[2];
           updated_product.barcode = result[3];
           return updated_product;
@@ -308,7 +311,10 @@ export class WarehosueShelfCountComponent implements OnInit {
         this.shelfNumbers = result[0];
         this.checkForm.get('batchCode').setValue(result[2]);
         this.checkForm.get('barcode').setValue(result[3]);
-        this.checkForm.get('quantity').setValue(Number(result[1]));
+        if (this.generalService.isNullOrEmpty(product.quantity?.toString())) {
+          this.checkForm.get('quantity').setValue(Number(result[1]));
+        }
+
         if (result[4] == 'false') {
 
           if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
@@ -319,7 +325,9 @@ export class WarehosueShelfCountComponent implements OnInit {
           }
         }
         var updated_product: CountProduct3 = product;
-        updated_product.quantity = Number(result[1]);
+
+
+        updated_product.quantity = this.checkForm.get('quantity').value;
         updated_product.batchCode = result[2];
         updated_product.barcode = result[3];
         return updated_product;
@@ -348,8 +356,6 @@ export class WarehosueShelfCountComponent implements OnInit {
     if (countProductRequestModel.barcode.includes('=')) {
       countProductRequestModel.barcode = countProductRequestModel.barcode.replace(/=/g, '-');
     }
-
-
     // http ile başlıyorsa veya guid ise qr işlemi yap
     if (
       countProductRequestModel.barcode.includes('http') ||
@@ -367,9 +373,9 @@ export class WarehosueShelfCountComponent implements OnInit {
         countProductRequestModel
       );
       countProductRequestModel = updated_product;
-      // if (this.checkForm.valid) {
-      //   this.onSubmit(countProductRequestModel);
-      // }
+      if (this.checkForm.valid) {
+        this.onSubmit(countProductRequestModel);
+      }
       this.toasterService.success("Form Verileri Güncellendi")
       return;
     }

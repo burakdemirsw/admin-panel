@@ -301,24 +301,27 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         });
     };
     WarehosueShelfCountComponent.prototype.setFormValues = function (product) {
+        var _a, _b;
         return __awaiter(this, void 0, Promise, function () {
             var state, result, updated_product, result, updated_product, error_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
-                        _a.trys.push([0, 5, , 6]);
+                        _c.trys.push([0, 5, , 6]);
                         state = this.generalService.isGuid(product.barcode);
                         if (!(product.barcode.includes('http') || state)) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.productService.countProductByBarcode3(product.barcode)];
                     case 1:
-                        result = _a.sent();
+                        result = _c.sent();
                         if (result) {
                             this.shelfNumbers = result[0];
                             this.checkForm.get('batchCode').setValue(result[2]);
                             this.checkForm.get('barcode').setValue(result[3]);
-                            this.checkForm.get('quantity').setValue(Number(result[1]));
+                            if (this.generalService.isNullOrEmpty((_a = product.quantity) === null || _a === void 0 ? void 0 : _a.toString())) {
+                                this.checkForm.get('quantity').setValue(Number(result[1]));
+                            }
                             updated_product = product;
-                            updated_product.quantity = Number(result[1]);
+                            updated_product.quantity = this.checkForm.get('quantity').value;
                             updated_product.batchCode = result[2];
                             updated_product.barcode = result[3];
                             return [2 /*return*/, updated_product];
@@ -329,11 +332,13 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         return [3 /*break*/, 4];
                     case 2: return [4 /*yield*/, this.productService.countProductByBarcode(product.barcode)];
                     case 3:
-                        result = _a.sent();
+                        result = _c.sent();
                         this.shelfNumbers = result[0];
                         this.checkForm.get('batchCode').setValue(result[2]);
                         this.checkForm.get('barcode').setValue(result[3]);
-                        this.checkForm.get('quantity').setValue(Number(result[1]));
+                        if (this.generalService.isNullOrEmpty((_b = product.quantity) === null || _b === void 0 ? void 0 : _b.toString())) {
+                            this.checkForm.get('quantity').setValue(Number(result[1]));
+                        }
                         if (result[4] == 'false') {
                             if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
                                 this.checkForm.get('batchCode').setValue(null);
@@ -343,13 +348,13 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                             }
                         }
                         updated_product = product;
-                        updated_product.quantity = Number(result[1]);
+                        updated_product.quantity = this.checkForm.get('quantity').value;
                         updated_product.batchCode = result[2];
                         updated_product.barcode = result[3];
                         return [2 /*return*/, updated_product];
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_1 = _a.sent();
+                        error_1 = _c.sent();
                         this.toasterService.error(error_1.message);
                         return [2 /*return*/, null];
                     case 6: return [2 /*return*/];
@@ -392,9 +397,9 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                     case 1:
                         updated_product = _a.sent();
                         countProductRequestModel = updated_product;
-                        // if (this.checkForm.valid) {
-                        //   this.onSubmit(countProductRequestModel);
-                        // }
+                        if (this.checkForm.valid) {
+                            this.onSubmit(countProductRequestModel);
+                        }
                         this.toasterService.success("Form Verileri Güncellendi");
                         return [2 /*return*/];
                     case 2:

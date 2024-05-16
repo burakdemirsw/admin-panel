@@ -12,6 +12,7 @@ export class CheckCustomerModel {
 }
 
 export class NebimOrder {
+  orderNumber: string
   modelType: number;
   customerCode: string;
   internalDescription: string;
@@ -29,15 +30,16 @@ export class NebimOrder {
   isCreditSale: boolean;
   DeliveryCompanyCode: string;
   exchangeRate: number
-  // ordersViaInternetInfo: OrdersViaInternetInfo;
+
   lines: Line[];
   discounts: Discount[] = [];
   // discounts: Discount[];
   // payments: Payment[];
 
-  constructor(exchangeRate: number, discountPercentage: number, discountPercentage2: number, customerDesc: string,
+  constructor(orderNumber: string, exchangeRate: number, discountPercentage: number, discountPercentage2: number, customerDesc: string,
     currAccCode: string, orderNo: string, formValue: any, selectedProducts: any,
     salesPersonCode: string, taxTypeCode: number) {
+    this.orderNumber = orderNumber;
     this.modelType = 5;
     this.posTerminalID = 1;
     this.shipmentMethodCode = 2;

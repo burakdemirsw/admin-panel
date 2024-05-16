@@ -49,6 +49,7 @@ export class PagesLoginv2Component implements OnInit {
 
         var response = await this.userService.login(model);
         if (response) {
+
           location.href = location.origin + "/dashboard"
           // this.router.navigate(["/dashboard"])
         }

@@ -597,12 +597,16 @@ export class CreateOrderComponent implements OnInit {
   }
   async submitAddressForm(formValue: any) {
 
+    if (formValue.phoneNumber == "05" || formValue.phoneNumber.length != 11) {
+      this.toasterService.error("Geçersiz Telefon Numarası");
+      return;
+    }
     var check_request = new GetCustomerAddress_CM();
     check_request.currAccCode = formValue.currAccDescription.currAccCode;
     // check_request.phone = formValue.phoneNumber;
 
     var check_response = await this.orderService.getCustomerList_2(check_request);
-    if (check_response.length > 0) {
+    if (check_response.length > 0 && check_request.currAccCode != undefined) {
       var _findedCustomer = check_response.find(c => c.currAccCode == formValue.currAccDescription.currAccCode);
       if (_findedCustomer) {
         this.currAccCode = _findedCustomer.currAccCode;
@@ -698,7 +702,7 @@ export class CreateOrderComponent implements OnInit {
       salesPersonCode: [null],
       currAccDescription: [null, Validators.required],
       mail: [' ', Validators.required],
-      phoneNumber: [null, Validators.required],
+      phoneNumber: ['05', Validators.required],
       stampPhotoUrl: [null],
       bussinesCardPhotoUrl: [null],
       address_country: [null],
@@ -709,6 +713,13 @@ export class CreateOrderComponent implements OnInit {
       address_description: [null],
       address_postalCode: [' '],
       address_taxOffice: [null]
+    });
+
+    this.createCustomerForm.get('phoneNumber').valueChanges.subscribe(async (value) => { //illeri getir
+      if (this.generalService.isNullOrEmpty(value)) {
+        this.createCustomerForm.get('phoneNumber').setValue('05')
+      }
+
     });
 
     this.createCustomerForm.get('currAccDescription').valueChanges.subscribe(async (value) => {
@@ -1945,20 +1956,45 @@ export class CreateOrderComponent implements OnInit {
     //----------------------------------------------------
     // var discountPercent: number = this.calculateDiscountPercent(this.selectedProducts);
     if (this.orderType) {
-      var request: NebimOrder = new NebimOrder(
-        exchangeRate,
-        this.currentDiscountRate,
-        this.currentCashdiscountRate,
-        this.cargoForm.get("address_recepient_name").value,
-        this.currAccCode,
-        this.orderNo,
-        formValue,
-        this.selectedProducts,
-        this.salesPersonCode,
-        this.paymentForm.value.taxTypeCode.value
-      );
+      const batchSize = 50;
+      const totalProducts = this.selectedProducts.length;
+      let batchStart = 0;
 
-      var response = await this.orderService.createOrder(request);
+      while (batchStart < totalProducts) {
+        // Determine the end of the current batch
+        let batchEnd = Math.min(batchStart + batchSize, totalProducts);
+
+        // Create a batch of products
+        let productBatch = this.selectedProducts.slice(batchStart, batchEnd);
+
+        // Create a new NebimOrder object for the current batch
+        var _request = new NebimOrder(
+          (this.orderNumber != undefined || this.orderNumber != null) ? this.orderNumber : null,
+          exchangeRate,
+          this.currentDiscountRate,
+          this.currentCashdiscountRate,
+          this.cargoForm.get("address_recepient_name").value,
+          this.currAccCode,
+          this.orderNo,
+          formValue,  // Ensure this variable supports being split if necessary
+          productBatch,
+          this.salesPersonCode,
+          this.paymentForm.value.taxTypeCode.value
+        );
+
+        // Call the service to create an order for the batch
+        try {
+          var response = await this.orderService.createOrder(_request);
+          this.orderNumber = response.orderNumber;
+
+        } catch (error) {
+
+          break;
+        }
+
+        // Update the start index for the next batch
+        batchStart += batchSize;
+      }
       if (response && response.status === true) {
         this.orderNumber = response.orderNumber;
 
@@ -1978,20 +2014,45 @@ export class CreateOrderComponent implements OnInit {
     } else {
 
 
-      var _request: NebimOrder = new NebimOrder(
-        exchangeRate,
-        this.currentDiscountRate,
-        this.currentCashdiscountRate,
-        this.cargoForm.get("address_recepient_name").value,
-        this.currAccCode,
-        this.orderNo,
-        formValue,
-        this.selectedProducts,
-        this.salesPersonCode,
-        this.paymentForm.value.taxTypeCode.value
-      );
+      const batchSize = 50;
+      const totalProducts = this.selectedProducts.length;
+      let batchStart = 0;
 
-      var response = await this.orderService.createOrder(_request);
+      while (batchStart < totalProducts) {
+        // Determine the end of the current batch
+        let batchEnd = Math.min(batchStart + batchSize, totalProducts);
+
+        // Create a batch of products
+        let productBatch = this.selectedProducts.slice(batchStart, batchEnd);
+
+        // Create a new NebimOrder object for the current batch
+        var _request = new NebimOrder(
+          (this.orderNumber != undefined || this.orderNumber != null) ? this.orderNumber : null,
+          exchangeRate,
+          this.currentDiscountRate,
+          this.currentCashdiscountRate,
+          this.cargoForm.get("address_recepient_name").value,
+          this.currAccCode,
+          this.orderNo,
+          formValue,  // Ensure this variable supports being split if necessary
+          productBatch,
+          this.salesPersonCode,
+          this.paymentForm.value.taxTypeCode.value
+        );
+
+        // Call the service to create an order for the batch
+        try {
+          var response = await this.orderService.createOrder(_request);
+          this.orderNumber = response.orderNumber;
+
+        } catch (error) {
+
+          break;
+        }
+
+        // Update the start index for the next batch
+        batchStart += batchSize;
+      }
       if (response && response.status === true) {
         this.orderNumber = response.orderNumber;
 

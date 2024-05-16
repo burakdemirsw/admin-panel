@@ -395,10 +395,10 @@ export class WarehouseService {
   }
 
   // Get fast transfer list models
-  async getFastTransferListModels(): Promise<FastTransferListModel[]> {
+  async getFastTransferListModels(type: boolean): Promise<FastTransferListModel[]> {
     const response = await this.httpClientService
       .get<FastTransferListModel>({
-        controller: 'Warehouse/get-fast-transfer-list',
+        controller: 'Warehouse/get-fast-transfer-list/' + type.toString(),
       })
       .toPromise();
     return response;

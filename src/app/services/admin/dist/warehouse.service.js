@@ -509,14 +509,14 @@ var WarehouseService = /** @class */ (function () {
         });
     };
     // Get fast transfer list models
-    WarehouseService.prototype.getFastTransferListModels = function () {
+    WarehouseService.prototype.getFastTransferListModels = function (type) {
         return __awaiter(this, void 0, Promise, function () {
             var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.httpClientService
                             .get({
-                            controller: 'Warehouse/get-fast-transfer-list'
+                            controller: 'Warehouse/get-fast-transfer-list/' + type.toString()
                         })
                             .toPromise()];
                     case 1:

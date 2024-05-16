@@ -15,9 +15,87 @@
         <button
           type="button"
           class="btn custom-btn-primary"
-          (click)="routeNewPage5()"
+          routerLink="/fast-transfer-list/true"
         >
           <i class="fas fa-plus"></i> Raflar Aktarma İsteği
+        </button>
+      </div>
+    </div>
+    <div class="card custom-card mb-3" *ngIf="pageType == 'true'">
+      <div
+        class="card-body d-flex justify-content-start mt-3"
+        style="overflow-x: auto"
+      >
+        <button
+          type="button"
+          class="btn custom-btn-primary"
+          (click)="goPage('0')"
+        >
+          Varsayılan
+        </button>
+        <button
+          type="button"
+          class="btn custom-btn-primary"
+          (click)="goPage('1')"
+        >
+          Rafları Fulle
+        </button>
+        <button
+          type="button"
+          class="btn custom-btn-primary"
+          (click)="goPage('2')"
+        >
+          Çanta
+        </button>
+        <button
+          type="button"
+          class="btn custom-btn-primary"
+          (click)="goPage('3')"
+        >
+          Çantadan Rafa
+        </button>
+
+        <button
+          type="button"
+          class="btn custom-btn-primary"
+          (click)="goPage('4')"
+        >
+          Çanta 1_A
+        </button>
+        <button
+          type="button"
+          class="btn custom-btn-primary"
+          (click)="goPage('5')"
+        >
+          Çanta 1_Z
+        </button>
+        <button
+          type="button"
+          class="btn custom-btn-primary"
+          (click)="goPage('6')"
+        >
+          Çanta 2_A
+        </button>
+        <button
+          type="button"
+          class="btn custom-btn-primary"
+          (click)="goPage('7')"
+        >
+          Çanta 2_Z
+        </button>
+        <button
+          type="button"
+          class="btn custom-btn-primary"
+          (click)="goPage('8')"
+        >
+          Çanta 3_A
+        </button>
+        <button
+          type="button"
+          class="btn custom-btn-primary"
+          (click)="goPage('9')"
+        >
+          Çanta 3_Z
         </button>
       </div>
     </div>
