@@ -1,3 +1,10 @@
  ::ng-deep .p-dropdown {
    width: 100% !important;
  }
+
+ @media (max-width: 767px) {
+   .mobile-spacing {
+     margin-bottom: 15px;
+     /* Add space below each dropdown */
+   }
+ }

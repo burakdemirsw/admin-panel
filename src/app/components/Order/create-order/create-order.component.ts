@@ -227,8 +227,7 @@ export class CreateOrderComponent implements OnInit {
     object.quantity = line.quantity;
     object.warehouseCode = line.warehouseCode;
     object.brandDescription = line.brandDescription;
-    object.uD_Stock = line.uD_Stock;
-    object.mD_Stock = line.mD_Stock;
+
     object.basePrice = line.basePrice;
     object.discountedPrice = line.discountedPrice;
     object.taxRate = line.taxRate;
@@ -284,11 +283,10 @@ export class CreateOrderComponent implements OnInit {
       request.itemCode = newLine.itemCode;
       request.batchCode = newLine.batchCode;
       request.price = newLine.price;
-      request.quantity = newLine.quantity2;
+
       request.warehouseCode = newLine.warehouseCode;
       request.brandDescription = newLine.brandDescription;
-      request.uD_Stock = newLine.uD_Stock;
-      request.mD_Stock = newLine.mD_Stock;
+
       request.basePrice = newLine.basePrice;
       request.discountedPrice = newLine.discountedPrice;
       request.taxRate = newLine.taxRate;

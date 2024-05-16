@@ -104,15 +104,12 @@
                 <th scope="col">Ürün Kodu</th>
                 <th scope="col">Ürün Adı</th>
                 <th scope="col">Raf No</th>
-                <th scope="col">MD Stok</th>
-                <th scope="col">UD Stok</th>
+
                 <th scope="col">Toplam Stok</th>
 
                 <th scope="col">Barkod</th>
-                <th scope="col">Parti</th>
-                <th scope="col">Satış Fiyatı</th>
 
-                <th scope="col">İşlemler</th>
+                <th scope="col">Satış Fiyatı</th>
               </tr>
             </thead>
             <tbody>
@@ -129,32 +126,16 @@
                 <td>{{ product.itemCode }}</td>
                 <td>{{ product.description.substring(0, 15) }}</td>
                 <td>{{ product.shelfNo }}</td>
-                <td>{{ product.mD_Stock }}</td>
-                <td>{{ product.uD_Stock }}</td>
 
                 <td>{{ product.quantity }}</td>
                 <td>{{ product.barcode }}</td>
-                <td>{{ product.batchCode }}</td>
-                <td>{{ product.price }}</td>
 
-                <td>
-                  <!-- Yeni -->
-                  <button
-                    class="btn btn-primary"
-                    type="submit"
-                    (click)="createJson(product.barcode, product.shelfNo)"
-                  >
-                    <i class="fas fa-print"></i>
-                  </button>
-                </td>
+                <td>{{ product.price }}</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
-    <!-- <qrcode style="display: none" (qrCodeURL)="onChangeURL($event)" [qrdata]="qrCodeValue" [width]="256"
-      [errorCorrectionLevel]="'M'"></qrcode> -->
-    <!-- <app-image-modal [imageUrl]="modalImageUrl" [title]="'Ürün Detay'"></app-image-modal>  -->
   </section>
 </main>
