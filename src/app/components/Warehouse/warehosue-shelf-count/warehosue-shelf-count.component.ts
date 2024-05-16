@@ -342,8 +342,9 @@ export class WarehosueShelfCountComponent implements OnInit {
             null
           );
 
-        // SAYIM YAPILDI -------------------------------------------
-        this.generalService.beep();
+        if (response)
+          // SAYIM YAPILDI -------------------------------------------
+          this.generalService.beep();
         await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
         this.clearQrAndBatchCode();
         this.state = true;

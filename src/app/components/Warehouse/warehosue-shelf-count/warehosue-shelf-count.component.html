@@ -281,7 +281,7 @@
                           <i class="fa fa-trash"></i>
                         </button>
 
-                        <button
+                        <!-- <button
                           class="btn btn-primary"
                           type="submit"
                           (click)="
@@ -293,7 +293,7 @@
                           "
                         >
                           <i class="fa fa-print"></i>
-                        </button>
+                        </button> -->
                       </div>
                     </td>
                   </tr>
@@ -318,20 +318,20 @@
     </div>
 
     <!-- Yeni -->
-    <qrcode
+    <!-- <qrcode
       style="display: none"
       (qrCodeURL)="onChangeURL($event)"
       [qrdata]="qrCodeValue"
       [width]="256"
       [errorCorrectionLevel]="'M'"
-    ></qrcode>
+    ></qrcode> -->
 
     <app-image-modal
       [imageUrl]="modalImageUrl"
       [title]="'Ürün Detay'"
     ></app-image-modal>
 
-    <p-dialog header="Header" [(visible)]="visible" [style]="{ width: '100vw' }"
+    <!-- <p-dialog header="Header" [(visible)]="visible" [style]="{ width: '100vw' }"
       >a
       <app-create-qr
         upPageDescription="Sayım"
@@ -339,7 +339,7 @@
         [quantity]="quantity"
         [batchCode]="batchCode"
       ></app-create-qr>
-    </p-dialog>
+    </p-dialog> -->
 
     <p-dialog
       header="Kontrol"
