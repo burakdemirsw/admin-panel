@@ -237,6 +237,9 @@ var OrderService = /** @class */ (function () {
                         else if (orderNo.includes('WT')) {
                             return [2 /*return*/, false];
                         }
+                        else if (orderNo.includes('R')) {
+                            model.invoiceModel = 5;
+                        }
                         else {
                             return [2 /*return*/, false];
                         }
@@ -250,7 +253,7 @@ var OrderService = /** @class */ (function () {
                         if (response) {
                             if (Boolean(response) == true) {
                                 this.toasterService.success('İşlem Başarılı');
-                                if (orderNo.includes('WS')) {
+                                if (orderNo.includes('WS') || orderNo.includes('R')) {
                                     return [2 /*return*/, true];
                                 }
                                 else if (orderNo.includes('BP')) {
@@ -263,14 +266,12 @@ var OrderService = /** @class */ (function () {
                             }
                             else {
                                 this.toasterService.error('İşlem Başarısız');
-                                location.reload();
                                 return [2 /*return*/, false];
                             }
                         }
                         return [3 /*break*/, 3];
                     case 2:
                         error_1 = _a.sent();
-                        // console.log(error.message);
                         return [2 /*return*/, false];
                     case 3: return [2 /*return*/, false];
                 }

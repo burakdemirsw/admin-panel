@@ -68,7 +68,7 @@ var WarehouseService = /** @class */ (function () {
                         requestModel.batchCode = batchCode;
                         requestModel.office = office;
                         requestModel.warehouseCode = warehouseCode;
-                        requestModel.quantity = qty.toString() == '' ? 1 : qty;
+                        requestModel.quantity;
                         requestModel.currAccCode = currAccCode;
                         requestModel.isReturn = false;
                         requestModel.salesPersonCode = '';
@@ -101,7 +101,7 @@ var WarehouseService = /** @class */ (function () {
                         requestModel.batchCode = batchCode;
                         requestModel.office = office;
                         requestModel.warehouseCode = warehouseCode;
-                        requestModel.quantity = qty.toString() == '' ? 1 : qty;
+                        requestModel.quantity = qty;
                         requestModel.currAccCode = currAccCode;
                         requestModel.isReturn = false;
                         requestModel.salesPersonCode = '';

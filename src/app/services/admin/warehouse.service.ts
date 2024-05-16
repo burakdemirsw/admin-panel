@@ -42,7 +42,6 @@ export class WarehouseService {
     office: string,
     warehouseCode: string,
     batchCode: string,
-
     url: string,
     orderNo: string,
     currAccCode: string
@@ -58,7 +57,7 @@ export class WarehouseService {
     requestModel.batchCode = batchCode;
     requestModel.office = office;
     requestModel.warehouseCode = warehouseCode;
-    requestModel.quantity = qty.toString() == '' ? 1 : qty;
+    requestModel.quantity;
     requestModel.currAccCode = currAccCode;
     requestModel.isReturn = false;
     requestModel.salesPersonCode = '';
@@ -82,7 +81,6 @@ export class WarehouseService {
     office: string,
     warehouseCode: string,
     batchCode: string,
-
     url: string,
     orderNo: string,
     currAccCode: string,
@@ -99,7 +97,7 @@ export class WarehouseService {
     requestModel.batchCode = batchCode;
     requestModel.office = office;
     requestModel.warehouseCode = warehouseCode;
-    requestModel.quantity = qty.toString() == '' ? 1 : qty;
+    requestModel.quantity = qty;
     requestModel.currAccCode = currAccCode;
     requestModel.isReturn = false;
     requestModel.salesPersonCode = '';

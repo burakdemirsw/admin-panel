@@ -493,31 +493,6 @@
     ></app-image-modal>
 
     <p-dialog
-      header="Onay Formu"
-      [(visible)]="_visible"
-      [style]="{ width: '50vw' }"
-    >
-      <div class="card flex justify-content-center">
-        <div *ngFor="let invoice of invoiceTypes" class="field-checkbox mb-3">
-          <p-radioButton
-            [inputId]="invoice.key"
-            [value]="invoice"
-            [(ngModel)]="selectedInvoiceType"
-          ></p-radioButton>
-          <label [for]="invoice.key" class="ml-2">{{ invoice.name }}</label>
-        </div>
-
-        <button
-          class="btn btn-primary mt-3"
-          type="submit"
-          (click)="collectAndPack_WS(this.collectedProducts)"
-        >
-          Toplananları Faturalaştır
-        </button>
-      </div>
-    </p-dialog>
-
-    <p-dialog
       header="Fatura Bul"
       [(visible)]="_visible2"
       [style]="{ width: '50vw' }"

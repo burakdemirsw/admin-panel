@@ -329,16 +329,17 @@ export class WarehosueShelfCountComponent implements OnInit {
       try {
 
         var response: ProductCountModel =
-          await this.warehouseService.countProductRequest(
+          await this.warehouseService.countProductRequest2(
             countProductRequestModel.barcode,
             countProductRequestModel.shelfNo,
             countProductRequestModel.quantity,
             countProductRequestModel.office,
             countProductRequestModel.warehouseCode,
             countProductRequestModel.batchCode,
-            'Order/CountProduct3',
+            'Order/CountProduct',
             this.currentOrderNo,
-            ''
+            null,
+            null
           );
 
         // SAYIM YAPILDI -------------------------------------------

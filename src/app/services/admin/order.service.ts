@@ -208,7 +208,10 @@ export class OrderService {
 
       } else if (orderNo.includes('WT')) {
         return false;
-      } else {
+      } else if (orderNo.includes('R')) {
+        model.invoiceModel = 5;
+      }
+      else {
         return false;
       }
 
@@ -225,7 +228,7 @@ export class OrderService {
         if (Boolean(response) == true) {
           this.toasterService.success('İşlem Başarılı');
 
-          if (orderNo.includes('WS')) {
+          if (orderNo.includes('WS') || orderNo.includes('R')) {
             return true;
           } else if (orderNo.includes('BP')) {
             this.router.navigate(['/purchase-orders-managament']);
@@ -237,12 +240,11 @@ export class OrderService {
 
         } else {
           this.toasterService.error('İşlem Başarısız');
-          location.reload();
+
           return false;
         }
       }
     } catch (error: any) {
-      // console.log(error.message);
       return false;
     }
     return false;
