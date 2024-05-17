@@ -597,27 +597,16 @@ export class CreateOrderComponent implements OnInit {
   }
   async submitAddressForm(formValue: any) {
 
-    if (formValue.phoneNumber == "05" || formValue.phoneNumber.length != 11) {
-      this.toasterService.error("Geçersiz Telefon Numarası");
-      return;
-    }
     var check_request = new GetCustomerAddress_CM();
     check_request.currAccCode = formValue.currAccDescription.currAccCode;
-    // check_request.phone = formValue.phoneNumber;
 
     var check_response = await this.orderService.getCustomerList_2(check_request);
     if (check_response.length > 0 && check_request.currAccCode != undefined) {
       var _findedCustomer = check_response.find(c => c.currAccCode == formValue.currAccDescription.currAccCode);
       if (_findedCustomer) {
-        this.currAccCode = _findedCustomer.currAccCode;
-        this.getCustomerDialog = true;
         this.getCustomerForm.get("currAccCode").setValue(check_response[0].currAccCode);
-        // await this.getCustomers(this.getCustomerForm.value);
         await this.selectCurrentCustomer(_findedCustomer)
       }
-      //this.toasterService.error("Bu Müşteri Numarası Zaten Kayıtlı")
-
-
       return;
     }
     if (this.createCustomerForm.valid) {
@@ -719,7 +708,6 @@ export class CreateOrderComponent implements OnInit {
       if (this.generalService.isNullOrEmpty(value)) {
         this.createCustomerForm.get('phoneNumber').setValue('05')
       }
-
     });
 
     this.createCustomerForm.get('currAccDescription').valueChanges.subscribe(async (value) => {
@@ -831,14 +819,10 @@ export class CreateOrderComponent implements OnInit {
     this.currAccCode = request.currAccCode
     this.openDialog("getCustomerDialog");
     this.toasterService.success("Müşteri Seçildi")
-
     this.generalService.beep();
     var _request: GetCustomerAddress_CM = new GetCustomerAddress_CM();
     _request.currAccCode = request.currAccCode;
     this.getCustomerAddresses(_request);
-
-
-
   }
   deleteCurrentCustomer() {
     this.selectedCustomers = [];
@@ -1429,8 +1413,8 @@ export class CreateOrderComponent implements OnInit {
     this.cargoForm = this.formBuilder.group({
       address_recepient_name: [null],
       address_phoneNumber: [null],
-      packagingType: [null], //select
-      shipmentServiceType: [null], //select
+      packagingType: [null],
+      shipmentServiceType: [null],
       isCOD: [false],
       kg: [1],
       desi: [1],
@@ -1955,6 +1939,7 @@ export class CreateOrderComponent implements OnInit {
     }
     //----------------------------------------------------
     // var discountPercent: number = this.calculateDiscountPercent(this.selectedProducts);
+    var addedOrderNumber = null;
     if (this.orderType) {
       const batchSize = 50;
       const totalProducts = this.selectedProducts.length;
@@ -1969,7 +1954,7 @@ export class CreateOrderComponent implements OnInit {
 
         // Create a new NebimOrder object for the current batch
         var _request = new NebimOrder(
-          (this.orderNumber != undefined || this.orderNumber != null) ? this.orderNumber : null,
+          (addedOrderNumber != undefined || addedOrderNumber != null) ? addedOrderNumber : null,
           exchangeRate,
           this.currentDiscountRate,
           this.currentCashdiscountRate,
@@ -1985,7 +1970,7 @@ export class CreateOrderComponent implements OnInit {
         // Call the service to create an order for the batch
         try {
           var response = await this.orderService.createOrder(_request);
-          this.orderNumber = response.orderNumber;
+          addedOrderNumber = response.orderNumber;
 
         } catch (error) {
 
@@ -1996,7 +1981,7 @@ export class CreateOrderComponent implements OnInit {
         batchStart += batchSize;
       }
       if (response && response.status === true) {
-        this.orderNumber = response.orderNumber;
+        addedOrderNumber = response.orderNumber;
 
         // if (this.cargoForm.get('isActive').value === true) {
         //   await this.submitCargo(this.cargoForm.value);
@@ -2005,10 +1990,10 @@ export class CreateOrderComponent implements OnInit {
         // }
 
         var addedOrder: OrderDetail = await this.orderService.getOrderDetail(this.orderNumber);
-        if (addedOrder.orderNumber) {
-          this.sendInvoiceToPrinter(addedOrder.orderNumber);
+        // if (addedOrder.orderNumber) {
+        //   this.sendInvoiceToPrinter(addedOrder.orderNumber);
 
-        }
+        // }
         this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament/1/2");
       }
     } else {
@@ -2027,7 +2012,7 @@ export class CreateOrderComponent implements OnInit {
 
         // Create a new NebimOrder object for the current batch
         var _request = new NebimOrder(
-          (this.orderNumber != undefined || this.orderNumber != null) ? this.orderNumber : null,
+          (addedOrderNumber != undefined || addedOrderNumber != null) ? addedOrderNumber : null,
           exchangeRate,
           this.currentDiscountRate,
           this.currentCashdiscountRate,
@@ -2043,7 +2028,7 @@ export class CreateOrderComponent implements OnInit {
         // Call the service to create an order for the batch
         try {
           var response = await this.orderService.createOrder(_request);
-          this.orderNumber = response.orderNumber;
+          addedOrderNumber = response.orderNumber;
 
         } catch (error) {
 
@@ -2054,7 +2039,7 @@ export class CreateOrderComponent implements OnInit {
         batchStart += batchSize;
       }
       if (response && response.status === true) {
-        this.orderNumber = response.orderNumber;
+        addedOrderNumber = response.orderNumber;
 
         // if (this.cargoForm.get('isActive').value === true) {
         //   await this.submitCargo(this.cargoForm.value);
@@ -2094,10 +2079,10 @@ export class CreateOrderComponent implements OnInit {
       var __response = await this.orderService.createInvoice(__request);
       if (__response) {
         var addedOrder: OrderDetail = await this.orderService.getOrderDetail(this.orderNumber);
-        if (addedOrder.orderNumber) {
-          this.sendInvoiceToPrinter(addedOrder.orderNumber);
+        // if (addedOrder.orderNumber) {
+        //   this.sendInvoiceToPrinter(addedOrder.orderNumber);
 
-        }
+        // }
 
         this.generalService.waitAndNavigate("Sipariş Oluşturuldu & Faturalaştırıdı", "orders-managament/1/1");
       }
