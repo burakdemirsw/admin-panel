@@ -35,7 +35,7 @@ export class SearchQrComponent implements OnInit {
   currentId: string = null
   qrForm: FormGroup;
   async ngOnInit() {
-    this.headerService.updatePageTitle("Ürün & Qr Sorgulama")
+    this.headerService.updatePageTitle("Ürün Sorgulama")
     this.activatedRoute.params.subscribe(async (params) => {
       this.currentId = params['id']
       if (this.currentId != null) {

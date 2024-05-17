@@ -71,7 +71,7 @@ var SearchQrComponent = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
-                this.headerService.updatePageTitle("Ürün & Qr Sorgulama");
+                this.headerService.updatePageTitle("Ürün Sorgulama");
                 this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
                     return __generator(this, function (_a) {
                         switch (_a.label) {

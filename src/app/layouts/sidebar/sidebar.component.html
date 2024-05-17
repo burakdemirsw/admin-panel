@@ -25,7 +25,7 @@
             <i class="bi bi-circle"></i><span>Alınan Siparişler </span>
           </a>
         </li>
-        <li *ngIf="this.roleDescription == 'Admin'">
+        <!-- <li *ngIf="this.roleDescription == 'Admin'">
           <a routerLink="purchase-orders-managament">
             <i class="bi bi-circle"></i><span>Verilen Siparişler </span>
           </a>
@@ -76,7 +76,7 @@
           <a routerLink="/order-state">
             <i class="bi bi-circle"></i><span>Sipariş Durumu </span>
           </a>
-        </li>
+        </li> -->
       </ul>
     </li>
 
@@ -88,17 +88,17 @@
     >
       <a
         class="nav-link collapsed"
-        data-bs-target="#Orders_2-nav"
+        data-bs-target="#Retail-nav"
         data-bs-toggle="collapse"
       >
-        <i class="fas fa-dolly"></i><span>Perakende Sipariş</span
+        <i class="fa-solid fa-bag-shopping"></i><span>Perakende Sipariş</span
         ><i class="bi bi-chevron-down ms-auto"></i>
       </a>
 
       <ul
-        id="Orders_2-nav"
+        id="Retail-nav"
         class="nav-content collapse"
-        data-bs-parent="#Orders_2-nav"
+        data-bs-parent="#Retail-nav"
       >
         <li>
           <a routerLink="retail-orders-managament/1/2">
@@ -157,11 +157,11 @@
             <i class="bi bi-circle"></i><span>Havuzda Kalan Transfer</span>
           </a>
         </li>
-        <li>
+        <!-- <li>
           <a routerLink="box-count">
             <i class="bi bi-circle"></i><span>Kutu Sayımı</span>
           </a>
-        </li>
+        </li> -->
         <li>
           <a routerLink="warehouse-shelf-count-list">
             <i class="bi bi-circle"></i><span>Sayımlar</span>
@@ -190,12 +190,12 @@
         </li> -->
         <li>
           <a routerLink="search-qr">
-            <i class="bi bi-circle"></i><span>Ürün & Qr Sorgulama</span>
+            <i class="bi bi-circle"></i><span>Ürün Sorgulama</span>
           </a>
         </li>
       </ul>
     </li>
-    <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
+    <!-- <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
       <a
         class="nav-link collapsed"
         data-bs-target="#Barcode-nav"
@@ -221,7 +221,7 @@
           </a>
         </li>
       </ul>
-    </li>
+    </li> -->
 
     <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
       <a

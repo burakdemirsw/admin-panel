@@ -115,7 +115,7 @@
                 <button class="btn btn-primary">Filtrele</button>
               </div>
             </div>
-            <div class="card custom-card mt-3">
+            <!-- <div class="card custom-card mt-3">
               <div class="card-body">
                 <button
                   type="button"
@@ -142,14 +142,14 @@
                   Siparişler
                 </button>
               </div>
-            </div>
+            </div> -->
           </form>
         </div>
         <!-- Filtreleme Alanı (Bitiş) -->
       </div>
     </div>
 
-    <div class="card custom-card mb-3">
+    <!-- <div class="card custom-card mb-3">
       <div
         class="p-4 card-body d-flex justify-content-start"
         style="overflow-x: auto"
@@ -176,7 +176,7 @@
           <i class="fas fa-exclamation-triangle"></i> Eksik Ürünlü Siparişler
         </button>
       </div>
-    </div>
+    </div> -->
 
     <div class="card">
       <div class="p-4 card-body">
@@ -343,14 +343,14 @@
                         class="fa fa-print"
                       ></i>
                     </div> -->
-                    <div
+                    <!-- <div
                       *ngIf="!pageDescription"
                       class="btn btn-success"
                       data-text="Sil"
                       (click)="deleteInvoiceProducts(order.orderNumber)"
                     >
                       <i class="fa-solid fa-file-invoice"></i>
-                    </div>
+                    </div> -->
                     <!-- <div
                       *ngIf="!_pageDescription"
                       class="btn btn-success"
@@ -360,7 +360,7 @@
                       <i class="fas fa-arrow-right"></i>
                     </div> -->
 
-                    <div
+                    <!-- <div
                       class="btn btn-success"
                       data-text="Kargo"
                       routerLink="/create-cargo/{{ order.orderNumber }}"
@@ -396,7 +396,7 @@
                       (click)="createPdf(order.orderNumber)"
                     >
                       <i class="fa-solid fa-file"></i>
-                    </div>
+                    </div> -->
                   </div>
                 </td>
               </tr>

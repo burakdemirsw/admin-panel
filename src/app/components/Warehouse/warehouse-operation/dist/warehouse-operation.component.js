@@ -689,7 +689,7 @@ var WarehouseOperationComponent = /** @class */ (function () {
             });
         }
         catch (error) {
-            // console.log(error.message);
+            // console.log(error.message); sadasd
         }
     };
     WarehouseOperationComponent.prototype.clearShelfNumbers = function () {
