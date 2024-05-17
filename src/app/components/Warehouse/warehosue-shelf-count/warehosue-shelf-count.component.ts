@@ -56,7 +56,7 @@ export class WarehosueShelfCountComponent implements OnInit {
   shelfNumbers: string = 'RAFLAR:';
   location = location.href;
   offices: string[] = []
-  warehouses: string[] = []
+  warehouses: any[] = []
   shelves: AvailableShelf[] = [];
   shelves2: AvailableShelf[] = [];
   list: CountProductRequestModel2[] = [];
@@ -139,8 +139,15 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.warehouseModels = response;
 
     for (let i = 0; i < this.warehouseModels.length; i++) {
-      this.offices.push(this.warehouseModels[i].officeCode);
-      this.warehouses.push(this.warehouseModels[i].warehouseCode);
+      if (!this.offices.includes(this.warehouseModels[i].officeCode)) {
+        this.offices.push(this.warehouseModels[i].officeCode);
+
+      }
+
+      var warehouseModel: any = {};
+      warehouseModel.code = this.warehouseModels[i].warehouseCode;
+      warehouseModel.name = this.warehouseModels[i].warehouseDescription;
+      this.warehouses.push(warehouseModel);
     }
   }
   createJson(barcode: string, shelfNo: string, batchCode: string) {
@@ -334,7 +341,7 @@ export class WarehosueShelfCountComponent implements OnInit {
             countProductRequestModel.shelfNo,
             countProductRequestModel.quantity,
             countProductRequestModel.office,
-            countProductRequestModel.warehouseCode,
+            countProductRequestModel.warehouseCode.code,
             countProductRequestModel.batchCode,
             'Order/CountProduct',
             this.currentOrderNo,

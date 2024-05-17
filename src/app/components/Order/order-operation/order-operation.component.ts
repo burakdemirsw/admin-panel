@@ -18,7 +18,6 @@ import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurcha
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
 import { OrderStatus } from 'src/app/models/model/order/orderStatus';
 import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
-import { CountConfirmData } from 'src/app/models/model/product/countConfirmModel';
 import { CountProduct } from 'src/app/models/model/product/countProduct';
 import {
   QrOperationModel

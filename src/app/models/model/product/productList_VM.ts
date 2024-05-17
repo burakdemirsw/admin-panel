@@ -13,5 +13,7 @@ export class ProductList_VM {
   basePrice: number;
   discountedPrice: number;
   taxRate: number;
+  colorCode: string;
+  itemDim1Code: string;
 
 }

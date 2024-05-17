@@ -94,7 +94,6 @@
     <div class="card" *ngIf="_products.length > 0">
       <div class="card-body">
         <h5 class="card-title">Ürünler</h5>
-
         <div class="table-responsive">
           <table class="table table-bordered table-striped">
             <thead>
@@ -102,8 +101,9 @@
                 <th scope="col">Id</th>
                 <th scope="col">Resim</th>
                 <th scope="col">Ürün Kodu</th>
-
                 <th scope="col">Ürün Adı</th>
+                <th scope="col">Renk</th>
+                <th scope="col">Beden</th>
                 <th scope="col">Raf No</th>
                 <th scope="col">Toplam Stok</th>
                 <th scope="col">Barkod</th>
@@ -123,11 +123,11 @@
                 </td>
                 <td>{{ product.itemCode }}</td>
                 <td>{{ product.description.substring(0, 15) }}</td>
+                <td>{{ product.colorCode }}</td>
+                <td>{{ product.itemDim1Code }}</td>
                 <td>{{ product.shelfNo }}</td>
-
                 <td>{{ product.quantity }}</td>
                 <td>{{ product.barcode }}</td>
-
                 <td>{{ product.price }}</td>
               </tr>
             </tbody>

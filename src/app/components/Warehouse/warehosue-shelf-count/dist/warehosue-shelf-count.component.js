@@ -149,7 +149,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
     };
     WarehosueShelfCountComponent.prototype.getWarehouseAndOffices = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var response, i;
+            var response, i, warehouseModel;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.warehouseService.getWarehouseAndOffices()];
@@ -157,8 +157,13 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         response = _a.sent();
                         this.warehouseModels = response;
                         for (i = 0; i < this.warehouseModels.length; i++) {
-                            this.offices.push(this.warehouseModels[i].officeCode);
-                            this.warehouses.push(this.warehouseModels[i].warehouseCode);
+                            if (!this.offices.includes(this.warehouseModels[i].officeCode)) {
+                                this.offices.push(this.warehouseModels[i].officeCode);
+                            }
+                            warehouseModel = {};
+                            warehouseModel.code = this.warehouseModels[i].warehouseCode;
+                            warehouseModel.name = this.warehouseModels[i].warehouseDescription;
+                            this.warehouses.push(warehouseModel);
                         }
                         return [2 /*return*/];
                 }
@@ -342,7 +347,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         _a.label = 3;
                     case 3:
                         _a.trys.push([3, 6, , 7]);
-                        return [4 /*yield*/, this.warehouseService.countProductRequest2(countProductRequestModel.barcode, countProductRequestModel.shelfNo, countProductRequestModel.quantity, countProductRequestModel.office, countProductRequestModel.warehouseCode, countProductRequestModel.batchCode, 'Order/CountProduct', this.currentOrderNo, null, null)];
+                        return [4 /*yield*/, this.warehouseService.countProductRequest2(countProductRequestModel.barcode, countProductRequestModel.shelfNo, countProductRequestModel.quantity, countProductRequestModel.office, countProductRequestModel.warehouseCode.code, countProductRequestModel.batchCode, 'Order/CountProduct', this.currentOrderNo, null, null)];
                     case 4:
                         response = _a.sent();
                         if (response)

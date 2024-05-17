@@ -39,7 +39,7 @@ export class CountProduct2 extends CountProduct {  //warehouse-operation
 export class CountProduct3 extends CountProduct {  //warehouse-shelf-count
 
   office: string;
-  warehouseCode: string;
+  warehouseCode: any;
   isShelfBased: boolean;
   isShelfBased2: boolean;
 
