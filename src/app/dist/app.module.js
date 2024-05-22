@@ -13,7 +13,6 @@ var forms_1 = require("@angular/forms");
 var forms_2 = require("@angular/forms");
 var ngx_spinner_1 = require("ngx-spinner");
 var animations_1 = require("@angular/platform-browser/animations");
-var sidebar_1 = require("primeng/sidebar");
 var app_routing_module_1 = require("./app-routing.module");
 var app_component_1 = require("./app.component");
 var header_component_1 = require("./layouts/header/header.component");
@@ -118,6 +117,8 @@ var retail_order_management_component_1 = require("./components2/order/retail-or
 var collected_packages_component_2 = require("./components2/order/collected-packages/collected-packages.component");
 var order_state_component_1 = require("./components/Order/order-state/order-state.component");
 var overlaypanel_1 = require("primeng/overlaypanel");
+var read_barcode_component_1 = require("./components/Product/read-barcode/read-barcode.component");
+var sidebar_1 = require("primeng/sidebar");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -190,7 +191,8 @@ var AppModule = /** @class */ (function () {
                 retail_invoice_list_component_1.RetailInvoiceListComponent,
                 retail_order_management_component_1.RetailOrderManagementComponent,
                 collected_packages_component_2.CollectedPackagesComponent,
-                order_state_component_1.OrderStateComponent
+                order_state_component_1.OrderStateComponent,
+                read_barcode_component_1.ReadBarcodeComponent
             ],
             imports: [
                 toolbar_1.ToolbarModule,
