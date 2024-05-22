@@ -2017,7 +2017,7 @@ var CreateOrderComponent = /** @class */ (function () {
     CreateOrderComponent.prototype.createOrder = function () {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var payment_response, formValue, exchangeRate, order_request, order_response, totalPrice, discountedPrice, _i, _b, _product, after_discountPrice, dif, addedOrderNumber, batchSize, totalProducts, batchStart, batchEnd, productBatch, _request, response, error_4, addedOrder, batchSize, totalProducts, batchStart, batchEnd, productBatch, _request, response, error_5, __request, __response, addedOrder;
+            var payment_response, formValue, exchangeRate, order_request, order_response, totalPrice, discountedPrice, _i, _b, _product, after_discountPrice, dif, addedOrderNumber, batchSize, totalProducts, batchStart, batchEnd, productBatch, _request, response, addedOrder, batchSize, totalProducts, batchStart, batchEnd, productBatch, _request, response, __request, __response, addedOrder;
             var _this = this;
             return __generator(this, function (_c) {
                 switch (_c.label) {
@@ -2091,30 +2091,31 @@ var CreateOrderComponent = /** @class */ (function () {
                         batchStart = 0;
                         _c.label = 4;
                     case 4:
-                        if (!(batchStart < totalProducts)) return [3 /*break*/, 9];
+                        if (!(batchStart < totalProducts)) return [3 /*break*/, 6];
                         batchEnd = Math.min(batchStart + batchSize, totalProducts);
                         productBatch = this.selectedProducts.slice(batchStart, batchEnd);
                         _request = new nebimOrder_1.NebimOrder((addedOrderNumber != undefined || addedOrderNumber != null) ? addedOrderNumber : null, exchangeRate, this.currentDiscountRate, this.currentCashdiscountRate, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, // Ensure this variable supports being split if necessary
                         productBatch, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value);
-                        _c.label = 5;
-                    case 5:
-                        _c.trys.push([5, 7, , 8]);
                         return [4 /*yield*/, this.orderService.createOrder(_request)];
-                    case 6:
+                    case 5:
                         response = _c.sent();
+                        this.orderNumber = response.orderNumber;
                         addedOrderNumber = response.orderNumber;
-                        return [3 /*break*/, 8];
-                    case 7:
-                        error_4 = _c.sent();
-                        return [3 /*break*/, 9];
-                    case 8:
                         // Update the start index for the next batch
                         batchStart += batchSize;
                         return [3 /*break*/, 4];
-                    case 9:
+                    case 6:
                         if (!(response && response.status === true)) return [3 /*break*/, 11];
                         addedOrderNumber = response.orderNumber;
-                        return [4 /*yield*/, this.orderService.getOrderDetail(this.orderNumber)];
+                        if (!(this.cargoForm.get('isActive').value === true)) return [3 /*break*/, 8];
+                        return [4 /*yield*/, this.submitCargo(this.cargoForm.value)];
+                    case 7:
+                        _c.sent();
+                        return [3 /*break*/, 9];
+                    case 8:
+                        this.toasterService.info('KARGO OLUŞTURULMADI');
+                        _c.label = 9;
+                    case 9: return [4 /*yield*/, this.orderService.getOrderDetail(this.orderNumber)];
                     case 10:
                         addedOrder = _c.sent();
                         // if (addedOrder.orderNumber) {
@@ -2129,35 +2130,31 @@ var CreateOrderComponent = /** @class */ (function () {
                         batchStart = 0;
                         _c.label = 13;
                     case 13:
-                        if (!(batchStart < totalProducts)) return [3 /*break*/, 18];
+                        if (!(batchStart < totalProducts)) return [3 /*break*/, 15];
                         batchEnd = Math.min(batchStart + batchSize, totalProducts);
                         productBatch = this.selectedProducts.slice(batchStart, batchEnd);
                         _request = new nebimOrder_1.NebimOrder((addedOrderNumber != undefined || addedOrderNumber != null) ? addedOrderNumber : null, exchangeRate, this.currentDiscountRate, this.currentCashdiscountRate, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, // Ensure this variable supports being split if necessary
                         productBatch, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value);
-                        _c.label = 14;
-                    case 14:
-                        _c.trys.push([14, 16, , 17]);
                         return [4 /*yield*/, this.orderService.createOrder(_request)];
-                    case 15:
+                    case 14:
                         response = _c.sent();
                         addedOrderNumber = response.orderNumber;
-                        return [3 /*break*/, 17];
-                    case 16:
-                        error_5 = _c.sent();
-                        return [3 /*break*/, 18];
-                    case 17:
+                        this.orderNumber = response.orderNumber;
                         // Update the start index for the next batch
                         batchStart += batchSize;
                         return [3 /*break*/, 13];
+                    case 15:
+                        if (!(response && response.status === true)) return [3 /*break*/, 18];
+                        addedOrderNumber = response.orderNumber;
+                        if (!(this.cargoForm.get('isActive').value === true)) return [3 /*break*/, 17];
+                        return [4 /*yield*/, this.submitCargo(this.cargoForm.value)];
+                    case 16:
+                        _c.sent();
+                        return [3 /*break*/, 18];
+                    case 17:
+                        this.toasterService.info('KARGO OLUŞTURULMADI');
+                        _c.label = 18;
                     case 18:
-                        if (response && response.status === true) {
-                            addedOrderNumber = response.orderNumber;
-                            // if (this.cargoForm.get('isActive').value === true) {
-                            //   await this.submitCargo(this.cargoForm.value);
-                            // } else {
-                            //   this.toasterService.info('KARGO OLUŞTURULMADI');
-                            // }
-                        }
                         __request = new nebimOrder_1.NebimInvoice(this.currentDiscountRate, this.currentCashdiscountRate, exchangeRate, this.selectedCustomers[0].docCurrencyCode, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value, this.selectedAddresses[0].postalAddressID);
                         __request.lines.forEach(function (l1) {
                             var fp = response.lines.find(function (p) {

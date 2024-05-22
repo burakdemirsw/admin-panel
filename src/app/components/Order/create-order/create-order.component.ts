@@ -1968,14 +1968,11 @@ export class CreateOrderComponent implements OnInit {
         );
 
         // Call the service to create an order for the batch
-        try {
-          var response = await this.orderService.createOrder(_request);
-          addedOrderNumber = response.orderNumber;
 
-        } catch (error) {
+        var response = await this.orderService.createOrder(_request);
+        this.orderNumber = response.orderNumber;
+        addedOrderNumber = response.orderNumber;
 
-          break;
-        }
 
         // Update the start index for the next batch
         batchStart += batchSize;
@@ -1983,11 +1980,11 @@ export class CreateOrderComponent implements OnInit {
       if (response && response.status === true) {
         addedOrderNumber = response.orderNumber;
 
-        // if (this.cargoForm.get('isActive').value === true) {
-        //   await this.submitCargo(this.cargoForm.value);
-        // } else {
-        //   this.toasterService.info('KARGO OLUŞTURULMADI');
-        // }
+        if (this.cargoForm.get('isActive').value === true) {
+          await this.submitCargo(this.cargoForm.value);
+        } else {
+          this.toasterService.info('KARGO OLUŞTURULMADI');
+        }
 
         var addedOrder: OrderDetail = await this.orderService.getOrderDetail(this.orderNumber);
         // if (addedOrder.orderNumber) {
@@ -2026,14 +2023,11 @@ export class CreateOrderComponent implements OnInit {
         );
 
         // Call the service to create an order for the batch
-        try {
-          var response = await this.orderService.createOrder(_request);
-          addedOrderNumber = response.orderNumber;
 
-        } catch (error) {
+        var response = await this.orderService.createOrder(_request);
+        addedOrderNumber = response.orderNumber;
+        this.orderNumber = response.orderNumber;
 
-          break;
-        }
 
         // Update the start index for the next batch
         batchStart += batchSize;
@@ -2041,11 +2035,11 @@ export class CreateOrderComponent implements OnInit {
       if (response && response.status === true) {
         addedOrderNumber = response.orderNumber;
 
-        // if (this.cargoForm.get('isActive').value === true) {
-        //   await this.submitCargo(this.cargoForm.value);
-        // } else {
-        //   this.toasterService.info('KARGO OLUŞTURULMADI');
-        // }
+        if (this.cargoForm.get('isActive').value === true) {
+          await this.submitCargo(this.cargoForm.value);
+        } else {
+          this.toasterService.info('KARGO OLUŞTURULMADI');
+        }
       }
 
 
