@@ -334,7 +334,7 @@ export class WarehosueShelfCountComponent implements OnInit {
 
     if (this.checkForm.valid) {
       try {
-
+        //lkjdlşkjas
         var response: ProductCountModel =
           await this.warehouseService.countProductRequest2(
             countProductRequestModel.barcode,
