@@ -107,6 +107,7 @@
                 <!-- <th scope="col">Seç</th> -->
                 <th scope="col">İşlem Tarihi</th>
                 <th scope="col">Toplam Sayılan Ürün Sayısı</th>
+                <th scope="col">Kullanıcı</th>
                 <!-- <th scope="col">Sipariş Numarası</th> -->
               </tr>
             </thead>
@@ -130,6 +131,8 @@
                   {{ count.lastUpdateDate | date : "dd.MM.yyyy HH:mm:ss" }}
                 </td>
                 <td>{{ count.totalProduct }}</td>
+                <td>{{ count.user }}</td>
+
                 <!-- <td>{{ count.orderNo }}</td> -->
 
                 <td>

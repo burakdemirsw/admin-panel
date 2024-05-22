@@ -158,7 +158,7 @@ var OrderOperationComponent = /** @class */ (function () {
                                         return [3 /*break*/, 13];
                                     case 2:
                                         if (!(orderNumberType === 'WS')) return [3 /*break*/, 6];
-                                        return [4 /*yield*/, this.addOrderStatus()];
+                                        return [4 /*yield*/, this.addOperationStatus()];
                                     case 3:
                                         _a.sent();
                                         return [4 /*yield*/, this.orderService.getOrderDetail(params['orderNumber'])];
@@ -208,7 +208,7 @@ var OrderOperationComponent = /** @class */ (function () {
         });
     };
     //selam ben burak
-    OrderOperationComponent.prototype.addOrderStatus = function () {
+    OrderOperationComponent.prototype.addOperationStatus = function () {
         return __awaiter(this, void 0, void 0, function () {
             var request, _a, response;
             return __generator(this, function (_b) {

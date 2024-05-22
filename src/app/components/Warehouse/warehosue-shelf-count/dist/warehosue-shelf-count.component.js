@@ -48,8 +48,9 @@ var forms_1 = require("@angular/forms");
 var library_1 = require("@zxing/library");
 var ClientUrls_1 = require("src/app/models/const/ClientUrls");
 var countProductRequestModel2_1 = require("src/app/models/model/order/countProductRequestModel2");
+var orderStatus_1 = require("src/app/models/model/order/orderStatus");
 var WarehosueShelfCountComponent = /** @class */ (function () {
-    function WarehosueShelfCountComponent(formBuilder, toasterService, httpClient, productService, generalService, warehouseService, activatedRoute, title, sanitizer) {
+    function WarehosueShelfCountComponent(formBuilder, toasterService, httpClient, productService, generalService, warehouseService, activatedRoute, title, sanitizer, orderService) {
         this.formBuilder = formBuilder;
         this.toasterService = toasterService;
         this.httpClient = httpClient;
@@ -59,6 +60,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         this.activatedRoute = activatedRoute;
         this.title = title;
         this.sanitizer = sanitizer;
+        this.orderService = orderService;
         this.infoProducts = [];
         this.collectedProducts = [];
         this.process = false;
@@ -146,19 +148,51 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         switch (_a.label) {
                             case 0:
                                 this.currentOrderNo = params['orderNo'];
-                                if (!this.currentOrderNo) return [3 /*break*/, 3];
+                                if (!this.currentOrderNo) return [3 /*break*/, 4];
                                 return [4 /*yield*/, this.getProductOfCount(this.currentOrderNo)];
                             case 1:
                                 _a.sent();
                                 return [4 /*yield*/, this.getAvailableShelves()];
                             case 2:
                                 _a.sent();
-                                return [3 /*break*/, 3];
-                            case 3: return [2 /*return*/];
+                                return [4 /*yield*/, this.addOperationStatus()];
+                            case 3:
+                                _a.sent();
+                                return [3 /*break*/, 4];
+                            case 4: return [2 /*return*/];
                         }
                     });
                 }); });
                 return [2 /*return*/];
+            });
+        });
+    };
+    WarehosueShelfCountComponent.prototype.addOperationStatus = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var request, _a, response;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        request = new orderStatus_1.OrderStatus();
+                        _a = request;
+                        return [4 /*yield*/, this.generalService.generateGUID()];
+                    case 1:
+                        _a.id = _b.sent();
+                        request.orderNo = this.currentOrderNo;
+                        request.status = 'Toplanıyor';
+                        request.warehousePerson = localStorage.getItem('name') + ' ' + localStorage.getItem('surname');
+                        request.createdDate = new Date();
+                        return [4 /*yield*/, this.orderService.addOrderStatus(request)];
+                    case 2:
+                        response = _b.sent();
+                        if (response) {
+                            this.toasterService.success('Durum Güncellendi');
+                        }
+                        else {
+                            this.toasterService.error('Durum Güncellenemedi');
+                        }
+                        return [2 /*return*/];
+                }
             });
         });
     };
@@ -271,11 +305,24 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         //   this.toasterService.error("SATIR SAYISI 200'E ULAŞTI");
                         //   this.blocked = true;
                         // }
+                        if (this.lastCollectedProducts.length > 0) {
+                            this.setOfficeAndWarehouse(this.lastCollectedProducts[0].warehouseCode);
+                        }
                         this.calculateTotalQty();
                         return [2 /*return*/];
                 }
             });
         });
+    };
+    WarehosueShelfCountComponent.prototype.setOfficeAndWarehouse = function (warehouseCode) {
+        if (warehouseCode === 'MD') {
+            this.checkForm.get('office').setValue('M');
+            this.checkForm.get('warehouseCode').setValue('MD');
+        }
+        else {
+            this.checkForm.get('office').setValue('U');
+            this.checkForm.get('warehouseCode').setValue('UD');
+        }
     };
     WarehosueShelfCountComponent.prototype.countProductRequest = function (barcode, shelfNo, quantity, office, warehouseCode, batchCode, url) {
         return __awaiter(this, void 0, Promise, function () {

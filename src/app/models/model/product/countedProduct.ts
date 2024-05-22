@@ -3,9 +3,10 @@ export class CountedProduct {
   barcode!: string;
   shelfNo!: string;
   batchCode!: string;
-  quantity !: number
-  photoUrl !: string
-  itemCode !: string
+  quantity !: number;
+  photoUrl !: string;
+  itemCode !: string;
+  warehouseCode !: string; //yeni eklendi
 
 }
 export class CountedProductControl {

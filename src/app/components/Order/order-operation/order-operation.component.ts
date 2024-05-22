@@ -125,7 +125,7 @@ export class OrderOperationComponent implements OnInit {
       if (orderNumberType === 'BP') {
         await this.getAllProducts(params['orderNumber'], 'BP'); //toplanan ve toplanacak ürünleri çeker
       } else if (orderNumberType === 'WS') {
-        await this.addOrderStatus();
+        await this.addOperationStatus();
         var response = await this.orderService.getOrderDetail(params['orderNumber']);
         this.customerName = response.description;
         await this.getAllProducts(params['orderNumber'], 'WS'); //toplanan ve toplanacak ürünleri çeker
@@ -151,7 +151,7 @@ export class OrderOperationComponent implements OnInit {
     });
   }
   //selam ben burak
-  async addOrderStatus() {
+  async addOperationStatus() {
     var request = new OrderStatus();
     request.id = await this.generalService.generateGUID();
     request.orderNo = this.currentOrderNo;

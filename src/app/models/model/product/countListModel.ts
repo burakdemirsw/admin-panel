@@ -5,4 +5,5 @@ export class CountListModel {
   isReturn?: boolean;
   salesPersonCode?: string;
   taxTypeCode?: string;
+  user?: string;
 }

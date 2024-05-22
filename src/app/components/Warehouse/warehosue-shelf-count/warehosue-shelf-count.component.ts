@@ -9,6 +9,7 @@ import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperatio
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { CountProductRequestModel2 } from 'src/app/models/model/order/countProductRequestModel2';
 import { OrderBillingListModel } from 'src/app/models/model/order/orderBillingListModel';
+import { OrderStatus } from 'src/app/models/model/order/orderStatus';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { CountProduct3 } from 'src/app/models/model/product/countProduct';
 import { CountedProduct, CountedProductControl } from 'src/app/models/model/product/countedProduct';
@@ -67,9 +68,7 @@ export class WarehosueShelfCountComponent implements OnInit {
   ];
 
   _tableHeaders2: string[] = [
-
     'Ürün Kodu',
-
     'Durum',
   ];
   constructor(
@@ -81,7 +80,8 @@ export class WarehosueShelfCountComponent implements OnInit {
     private warehouseService: WarehouseService,
     private activatedRoute: ActivatedRoute,
     private title: Title,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private orderService: OrderService,
   ) {
     this.title.setTitle('Sayım');
   }
@@ -108,11 +108,10 @@ export class WarehosueShelfCountComponent implements OnInit {
         return; // İşlemi iptal et
       }
     }
-
-
   }
 
   async ngOnInit() {
+
 
     this.formGenerator();
     this.activatedRoute.params.subscribe(async (params) => {
@@ -120,6 +119,7 @@ export class WarehosueShelfCountComponent implements OnInit {
       if (this.currentOrderNo) {
         await this.getProductOfCount(this.currentOrderNo);
         await this.getAvailableShelves();
+        await this.addOperationStatus();
       } else {
         // this.toasterService.error('Sipariş No Çekilemedi/Hatalı Ürün Yok');
       }
@@ -130,6 +130,23 @@ export class WarehosueShelfCountComponent implements OnInit {
 
   shelves: AvailableShelf[] = [];
   shelves2: AvailableShelf[] = [];
+
+  async addOperationStatus() {
+    var request = new OrderStatus();
+    request.id = await this.generalService.generateGUID();
+    request.orderNo = this.currentOrderNo;
+    request.status = 'Toplanıyor';
+    request.warehousePerson = localStorage.getItem('name') + ' ' + localStorage.getItem('surname');
+    request.createdDate = new Date();
+    const response = await this.orderService.addOrderStatus(request);
+    if (response) {
+      this.toasterService.success('Durum Güncellendi');
+    } else {
+      this.toasterService.error('Durum Güncellenemedi');
+    }
+  }
+
+
   createJson(barcode: string, shelfNo: string, batchCode: string) {
     var model: CountedProduct = this.lastCollectedProducts.find(
       (p) =>
@@ -249,9 +266,21 @@ export class WarehosueShelfCountComponent implements OnInit {
     //   this.toasterService.error("SATIR SAYISI 200'E ULAŞTI");
     //   this.blocked = true;
     // }
+    if (this.lastCollectedProducts.length > 0) {
+      this.setOfficeAndWarehouse(this.lastCollectedProducts[0].warehouseCode);
+    }
     this.calculateTotalQty();
   }
 
+  setOfficeAndWarehouse(warehouseCode: string) {
+    if (warehouseCode === 'MD') {
+      this.checkForm.get('office').setValue('M');
+      this.checkForm.get('warehouseCode').setValue('MD');
+    } else {
+      this.checkForm.get('office').setValue('U');
+      this.checkForm.get('warehouseCode').setValue('UD');
+    }
+  }
   async countProductRequest(
     barcode: string,
     shelfNo: string,
