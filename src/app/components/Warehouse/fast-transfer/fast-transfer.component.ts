@@ -180,11 +180,7 @@ export class FastTransferComponent implements OnInit {
     }
   }
 
-  collectAndPack(list: ProductOfOrder[]) {
-    this.orderService.collectAndPack(list, this.currentOrderNo);
 
-    return null;
-  }
   async countProductRequest(
     barcode: string,
     shelfNo: string,

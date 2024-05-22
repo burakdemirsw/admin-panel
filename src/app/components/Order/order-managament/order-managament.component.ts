@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
 import { PrinterInvoiceRequestModel } from 'src/app/models/model/order/printerInvoiceRequestModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';

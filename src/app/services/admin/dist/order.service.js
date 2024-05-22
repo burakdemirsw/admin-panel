@@ -215,7 +215,7 @@ var OrderService = /** @class */ (function () {
         });
     };
     //faturalaştırma ve yazdırma
-    OrderService.prototype.collectAndPack = function (list, orderNo, taxedOrTaxtFree, invoiceOfCustomer) {
+    OrderService.prototype.collectAndPack = function (userType, list, orderNo, taxedOrTaxtFree, invoiceOfCustomer) {
         return __awaiter(this, void 0, Promise, function () {
             var model, response, error_1;
             return __generator(this, function (_a) {
@@ -223,6 +223,7 @@ var OrderService = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         model = new orderBillingRequestModel_1.OrderBillingRequestModel();
+                        model.userType = userType;
                         model.orderNo = orderNo;
                         model.invoiceType = false;
                         model.taxedOrTaxtFree = taxedOrTaxtFree;

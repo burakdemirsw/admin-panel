@@ -14,4 +14,5 @@ export class ProductOfOrder {
   currentQty: number
   description: string
   lineId: string
+  itemDescription: string
 }

@@ -19,14 +19,6 @@
                     [ngClass]="{ 'green-row': product.colorDescription == '1' }"
                     [ngClass]="{ 'success-row': product.quantity === 0 }"
                   >
-                    <td>{{ product.shelfNo }}</td>
-                    <td>{{ product.itemCode }}</td>
-                    <td>{{ product.quantity }}</td>
-                    <td>{{ product.countedQty }}</td>
-                    <td>{{ product.colorDescription }}</td>
-                    <td>{{ product.itemDim1Code }}</td>
-                    <td>{{ product.currentQty }}</td>
-
                     <td>
                       <img
                         src="{{ product.photoUrl }}"
@@ -36,7 +28,15 @@
                         (click)="openImageModal(product.photoUrl)"
                       />
                     </td>
+                    <td>{{ product.shelfNo }}</td>
+                    <td>{{ product.itemCode }}</td>
                     <td>{{ product.barcode }}</td>
+                    <td>{{ product.itemDescription }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>{{ product.countedQty }}</td>
+                    <td>{{ product.colorDescription }}</td>
+                    <td>{{ product.itemDim1Code }}</td>
+                    <td>{{ product.currentQty }}</td>
 
                     <td>
                       <div
@@ -281,13 +281,6 @@
                     [ngClass]="{ 'green-row': product.colorDescription == '1' }"
                     [ngClass]="{ 'success-row': product.quantity === 0 }"
                   >
-                    <td>{{ product.shelfNo }}</td>
-                    <td>{{ product.itemCode }}</td>
-                    <td>{{ product.quantity }}</td>
-                    <td>{{ product.description }}</td>
-                    <td>{{ product.colorDescription }}</td>
-                    <td>{{ product.itemDim1Code }}</td>
-                    <td>{{ product.currentQty }}</td>
                     <td>
                       <img
                         src="{{ product.photoUrl }}"
@@ -297,7 +290,15 @@
                         (click)="openImageModal(product.photoUrl)"
                       />
                     </td>
+                    <td>{{ product.shelfNo }}</td>
+                    <td>{{ product.itemCode }}</td>
+                    <td>{{ product.itemDescription }}</td>
                     <td>{{ product.barcode }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>{{ product.description }}</td>
+                    <td>{{ product.colorDescription }}</td>
+                    <td>{{ product.itemDim1Code }}</td>
+                    <td>{{ product.currentQty }}</td>
 
                     <td>
                       <div
@@ -320,7 +321,7 @@
                           <i class="fa fa-angle-down"> </i>
                         </button>
 
-                        <button
+                        <!-- <button
                           data-toggle="tooltip"
                           data-placement="right"
                           title="Eksik Ürün"
@@ -333,7 +334,7 @@
                           (click)="addMissingProduct([product])"
                         >
                           <i class="fa-solid fa-minus"></i>
-                        </button>
+                        </button> -->
                         <!-- <button
                           data-toggle="tooltip"
                           data-placement="right"
@@ -479,13 +480,13 @@
       </div>
     </div>
     <!-- Yeni -->
-    <qrcode
+    <!-- <qrcode
       style="display: none"
       (qrCodeURL)="onChangeURL($event)"
       [qrdata]="qrCodeValue"
       [width]="256"
       [errorCorrectionLevel]="'M'"
-    ></qrcode>
+    ></qrcode> -->
 
     <app-image-modal
       [imageUrl]="modalImageUrl"
@@ -554,12 +555,12 @@
         ></app-warehosue-shelf-count>
       </p>
     </p-dialog>
-    <p-dialog
+    <!-- <p-dialog
       header="Header"
       [(visible)]="barcodeDialog"
       [style]="{ width: '100vw' }"
     >
       <app-create-qr [barcode]="barcode" [quantity]="quantity"></app-create-qr>
-    </p-dialog>
+    </p-dialog> -->
   </section>
 </main>

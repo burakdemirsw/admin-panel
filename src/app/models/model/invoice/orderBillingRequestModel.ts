@@ -1,3 +1,4 @@
+import { OrderBillingListModel } from '../order/orderBillingListModel';
 export class OrderBillingRequestModel {
   orderNo!: string;
   invoiceType!: boolean;
@@ -7,4 +8,7 @@ export class OrderBillingRequestModel {
   taxedOrTaxtFree!: number;
   eInvoiceNumber!: string
   invoiceDate !: Date
+  userType !: number;
+
+
 }

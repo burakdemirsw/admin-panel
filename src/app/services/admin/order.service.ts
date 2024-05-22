@@ -187,13 +187,16 @@ export class OrderService {
   }
   //faturalaştırma ve yazdırma
   async collectAndPack(
+    userType: number,
     list: ProductOfOrder[],
     orderNo: string,
     taxedOrTaxtFree?: int,
-    invoiceOfCustomer?: InvoiceOfCustomer_VM
+    invoiceOfCustomer?: InvoiceOfCustomer_VM,
+
   ): Promise<boolean> {
     try {
       const model: OrderBillingRequestModel = new OrderBillingRequestModel();
+      model.userType = userType;
       model.orderNo = orderNo;
       model.invoiceType = false;
       model.taxedOrTaxtFree = taxedOrTaxtFree;

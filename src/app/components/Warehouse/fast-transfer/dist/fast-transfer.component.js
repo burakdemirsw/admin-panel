@@ -229,10 +229,6 @@ var FastTransferComponent = /** @class */ (function () {
             });
         });
     };
-    FastTransferComponent.prototype.collectAndPack = function (list) {
-        this.orderService.collectAndPack(list, this.currentOrderNo);
-        return null;
-    };
     FastTransferComponent.prototype.countProductRequest = function (barcode, shelfNo, qty, orderNo, url) {
         return __awaiter(this, void 0, Promise, function () {
             var requestModel, response;

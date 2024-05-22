@@ -110,6 +110,7 @@ import { CollectedPackagesComponent as CollectedPackagesComponent2 } from './com
 import { OrderStateComponent } from './components/Order/order-state/order-state.component';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ReadBarcodeComponent } from './components/Product/read-barcode/read-barcode.component';
+import { IdeasoftComponent } from './components2/marketplace/ideasoft/ideasoft.component';
 
 @NgModule({
 
@@ -181,7 +182,8 @@ import { ReadBarcodeComponent } from './components/Product/read-barcode/read-bar
     RetailOrderManagementComponent,
     CollectedPackagesComponent2,
     OrderStateComponent,
-    ReadBarcodeComponent
+    ReadBarcodeComponent,
+    IdeasoftComponent
 
   ],
 

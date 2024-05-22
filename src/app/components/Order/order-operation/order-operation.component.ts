@@ -55,7 +55,7 @@ export class OrderOperationComponent implements OnInit {
   currentOrderNo: string;
   toWarehouseCode: string;
   tableHeaders: string[] = [
-    'Raf', 'Stok Kodu', 'Sipariş', 'Sayılan', 'Renk', 'Beden', 'Stok', 'Fotoğraf', 'Barkod', 'İşlemler'
+    'Fotoğraf', 'Raf', 'Stok Kodu', 'Ürün', 'Sipariş', 'Sayılan', 'Renk', 'Beden', 'Stok', 'Barkod', 'İşlemler'
   ];
   invoiceTypes: any[] = [
     { name: 'Standart', key: 0 },
@@ -120,6 +120,7 @@ export class OrderOperationComponent implements OnInit {
   totalCount: number = 0;
   addedProductCount: string = '';
   lastCollectedProduct: ProductOfOrder = null;
+  userType: number;
   //#endregion
   async ngOnInit() {
 
@@ -148,15 +149,19 @@ export class OrderOperationComponent implements OnInit {
         this.currentOrderNo = params['orderNumber'];
         this.orderNo = orderNumber;
       }
-      //  await this.getCollectedOrderProducts(this.orderNo) //toplanan ürünler çekildi
+
+
       if (orderNumberType === 'BP') {
+        this.userType = 0; //Perakende
         await this.getAllProducts(params['orderNumber'], 'BP'); //toplanan ve toplanacak ürünleri çeker
       } else if (orderNumberType === 'WS') {
+        this.userType = 1; //Toptan
         await this.addOrderStatus();
         var response = await this.orderService.getOrderDetail(params['orderNumber']);
         this.customerName = response.description;
         await this.getAllProducts(params['orderNumber'], 'WS'); //toplanan ve toplanacak ürünleri çeker
       } else if (orderNumberType === 'WT' || orderNumber.startsWith("W-")) {
+        this.userType = 0; //Perakende
         if (orderNumber.startsWith("W-")) {
           this.currentOrderNo = params['orderNumber'].split('W-')[1]
           await this.getAllProducts(params['orderNumber'].split('W-')[1], 'WT'); //toplanan ve toplanacak ürünleri çeker
@@ -165,18 +170,23 @@ export class OrderOperationComponent implements OnInit {
         }
 
       } else if (orderNumber.includes("MIS")) {
+        this.userType = 0; //Perakende
         orderNumberType = "MIS"
         await this.getAllProducts(params['orderNumber'], 'MIS'); //toplanan ve toplanacak ürünleri çeker
       }
       else if (orderNumber.includes("R")) {
+        this.userType = 0; //Perakende
         orderNumberType = "R"
         await this.getAllProducts(params['orderNumber'], 'R'); //toplanan ve toplanacak ürünleri çeker
       }
       if (location.href.includes("MIS")) {
+
         this._pageDescription = true
 
       }
       this.setPageDescription(orderNumberType);
+
+      console.log(orderNumberType, this.userType);
     });
   }
 
@@ -441,7 +451,7 @@ export class OrderOperationComponent implements OnInit {
 
   async collectAndPack_WS(products: ProductOfOrder[]) {
 
-    var _response = await this.orderService.collectAndPack(products, this.currentOrderNo, 0);
+    var _response = await this.orderService.collectAndPack(this.userType, products, this.currentOrderNo, 0);
     if (_response) {
       this.router.navigate(['/orders-managament/1/2']);
     }
@@ -530,6 +540,14 @@ export class OrderOperationComponent implements OnInit {
   }
 
 
+  async setShelves(barcode: string) {
+
+    var result: string[] = await this.productService.countProductByBarcode(
+      barcode
+    );
+    this.shelfNumbers = result[0];
+  }
+
 
   async setFormValues(barcode: string): Promise<CountProduct> {
 
@@ -601,6 +619,10 @@ export class OrderOperationComponent implements OnInit {
 
       if (this.checkForm.valid) {
 
+        if (this.generalService.isNullOrEmpty(this.shelfNumbers)) {
+          await this.getShelves(productModel.barcode);
+        }
+
         var foundModel = this.productsToCollect.find(
           (o) => o.barcode == productModel.barcode
         );
@@ -671,7 +693,6 @@ export class OrderOperationComponent implements OnInit {
 
             if (confirmDelete) {
 
-              //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
               productModel.quantity =
                 productModel.quantity;
 
@@ -910,7 +931,7 @@ export class OrderOperationComponent implements OnInit {
 
     }
     if (this.currentOrderNo.includes('WT')) {
-
+      this.shelfNumbers = null;
       this.focusNextInput('shelfNo');
     } else {
       this.focusNextInput('barcode');

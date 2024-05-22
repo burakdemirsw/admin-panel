@@ -54,6 +54,7 @@ import { RetailInvoiceListComponent } from './components2/invoice/retail-invoice
 import { RetailOrderManagementComponent } from './components2/order/retail-order-management/retail-order-management.component';
 import { CollectedPackagesComponent as CollectedPackagesComponent2 } from './components2/order/collected-packages/collected-packages.component';
 import { OrderStateComponent } from './components/Order/order-state/order-state.component';
+import { IdeasoftComponent } from './components2/marketplace/ideasoft/ideasoft.component';
 
 
 const routes: Routes = [
@@ -300,6 +301,8 @@ const routes: Routes = [
 
 
   //------------------------------------------------------------------------- PERAKENDE
+  { path: 'ideasoft/auth', component: IdeasoftComponent, pathMatch: 'prefix', runGuardsAndResolvers: 'always' },
+
   { path: 'retail-invoice-list', component: RetailInvoiceListComponent },
   { path: 'retail-orders-managament/:status/:invoiceStatus', component: RetailOrderManagementComponent },
   { path: 'retail-orders-collected-packages', component: CollectedPackagesComponent2 },

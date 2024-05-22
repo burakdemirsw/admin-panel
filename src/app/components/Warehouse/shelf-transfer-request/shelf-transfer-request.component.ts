@@ -7,7 +7,6 @@ import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
 import { CountProductRequestModel } from 'src/app/models/model/order/countProductRequestModel';
 import { OrderBillingListModel } from 'src/app/models/model/order/orderBillingListModel';
-import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
 import { ItemBillingModel } from 'src/app/models/model/product/itemBillingModel ';
 import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
@@ -375,11 +374,7 @@ export class ShelfTransferRequestComponent implements OnInit {
     }
   }
 
-  collectAndPack(list: ProductOfOrder[]) {
-    this.orderService.collectAndPack(list, this.currentOrderNo);
 
-    return null;
-  }
   async countProductRequest(
     barcode: string,
     shelfNo: string,

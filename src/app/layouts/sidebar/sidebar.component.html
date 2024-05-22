@@ -25,6 +25,7 @@
             <i class="bi bi-circle"></i><span>Alınan Siparişler </span>
           </a>
         </li>
+
         <!-- <li *ngIf="this.roleDescription == 'Admin'">
           <a routerLink="purchase-orders-managament">
             <i class="bi bi-circle"></i><span>Verilen Siparişler </span>
@@ -50,11 +51,7 @@
             <i class="bi bi-circle"></i><span>Perakende Satış</span>
           </a>
         </li>
-        <li *ngIf="this.roleDescription == 'Admin'">
-          <a routerLink="cargo-list">
-            <i class="bi bi-circle"></i><span>Kargolar</span>
-          </a>
-        </li>
+
 
         <li
           *ngIf="
@@ -103,6 +100,11 @@
         <li>
           <a routerLink="retail-orders-managament/1/2">
             <i class="bi bi-circle"></i><span>Alınan Siparişler </span>
+          </a>
+        </li>
+        <li *ngIf="this.roleDescription == 'Admin'">
+          <a routerLink="cargo-list">
+            <i class="bi bi-circle"></i><span>Kargolar</span>
           </a>
         </li>
         <li>

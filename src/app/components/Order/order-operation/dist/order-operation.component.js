@@ -80,7 +80,7 @@ var OrderOperationComponent = /** @class */ (function () {
         this.currentPage = 1;
         this.currentPage2 = 1;
         this.tableHeaders = [
-            'Raf', 'Stok Kodu', 'Sipariş', 'Sayılan', 'Renk', 'Beden', 'Stok', 'Fotoğraf', 'Barkod', 'İşlemler'
+            'Fotoğraf', 'Raf', 'Stok Kodu', 'Ürün', 'Sipariş', 'Sayılan', 'Renk', 'Beden', 'Stok', 'Barkod', 'İşlemler'
         ];
         this.invoiceTypes = [
             { name: 'Standart', key: 0 },
@@ -148,12 +148,14 @@ var OrderOperationComponent = /** @class */ (function () {
                                             this.orderNo = orderNumber;
                                         }
                                         if (!(orderNumberType === 'BP')) return [3 /*break*/, 2];
+                                        this.userType = 0; //Perakende
                                         return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'BP')];
                                     case 1:
                                         _a.sent(); //toplanan ve toplanacak ürünleri çeker
                                         return [3 /*break*/, 15];
                                     case 2:
                                         if (!(orderNumberType === 'WS')) return [3 /*break*/, 6];
+                                        this.userType = 1; //Toptan
                                         return [4 /*yield*/, this.addOrderStatus()];
                                     case 3:
                                         _a.sent();
@@ -167,6 +169,7 @@ var OrderOperationComponent = /** @class */ (function () {
                                         return [3 /*break*/, 15];
                                     case 6:
                                         if (!(orderNumberType === 'WT' || orderNumber.startsWith("W-"))) return [3 /*break*/, 11];
+                                        this.userType = 0; //Perakende
                                         if (!orderNumber.startsWith("W-")) return [3 /*break*/, 8];
                                         this.currentOrderNo = params['orderNumber'].split('W-')[1];
                                         return [4 /*yield*/, this.getAllProducts(params['orderNumber'].split('W-')[1], 'WT')];
@@ -180,6 +183,7 @@ var OrderOperationComponent = /** @class */ (function () {
                                     case 10: return [3 /*break*/, 15];
                                     case 11:
                                         if (!orderNumber.includes("MIS")) return [3 /*break*/, 13];
+                                        this.userType = 0; //Perakende
                                         orderNumberType = "MIS";
                                         return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'MIS')];
                                     case 12:
@@ -187,6 +191,7 @@ var OrderOperationComponent = /** @class */ (function () {
                                         return [3 /*break*/, 15];
                                     case 13:
                                         if (!orderNumber.includes("R")) return [3 /*break*/, 15];
+                                        this.userType = 0; //Perakende
                                         orderNumberType = "R";
                                         return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'R')];
                                     case 14:
@@ -197,6 +202,7 @@ var OrderOperationComponent = /** @class */ (function () {
                                             this._pageDescription = true;
                                         }
                                         this.setPageDescription(orderNumberType);
+                                        console.log(orderNumberType, this.userType);
                                         return [2 /*return*/];
                                 }
                             });
@@ -517,7 +523,7 @@ var OrderOperationComponent = /** @class */ (function () {
             var _response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.orderService.collectAndPack(products, this.currentOrderNo, 0)];
+                    case 0: return [4 /*yield*/, this.orderService.collectAndPack(this.userType, products, this.currentOrderNo, 0)];
                     case 1:
                         _response = _a.sent();
                         if (_response) {
@@ -607,6 +613,20 @@ var OrderOperationComponent = /** @class */ (function () {
         }
         this.formModal.show();
     };
+    OrderOperationComponent.prototype.setShelves = function (barcode) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.productService.countProductByBarcode(barcode)];
+                    case 1:
+                        result = _a.sent();
+                        this.shelfNumbers = result[0];
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     OrderOperationComponent.prototype.setFormValues = function (barcode) {
         return __awaiter(this, void 0, Promise, function () {
             var result, currentShelfNo, product, error_1;
@@ -665,10 +685,16 @@ var OrderOperationComponent = /** @class */ (function () {
                     // this.toasterService.success("Formu Verileri Dolduruldu.")
                     return [2 /*return*/];
                     case 5:
-                        if (!(this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-') || this.currentOrderNo.includes('R-'))) return [3 /*break*/, 17];
-                        if (!this.checkForm.valid) return [3 /*break*/, 16];
+                        if (!(this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-') || this.currentOrderNo.includes('R-'))) return [3 /*break*/, 19];
+                        if (!this.checkForm.valid) return [3 /*break*/, 18];
+                        if (!this.generalService.isNullOrEmpty(this.shelfNumbers)) return [3 /*break*/, 7];
+                        return [4 /*yield*/, this.getShelves(productModel.barcode)];
+                    case 6:
+                        _a.sent();
+                        _a.label = 7;
+                    case 7:
                         foundModel = this.productsToCollect.find(function (o) { return o.barcode == productModel.barcode; });
-                        if (!true) return [3 /*break*/, 16];
+                        if (!true) return [3 /*break*/, 18];
                         newResponse = this.shelfNumbers;
                         shelves = newResponse
                             .split(',')
@@ -676,14 +702,14 @@ var OrderOperationComponent = /** @class */ (function () {
                             .map(function (raflar) { return raflar.toLowerCase(); });
                         foundProduct = this.productsToCollect.find(function (o) { return o.barcode == productModel.barcode; });
                         if (!(shelves.find(function (s) { return s.toLowerCase() == productModel.shelfNo.toLowerCase(); }) &&
-                            (foundProduct != null || foundProduct != undefined))) return [3 /*break*/, 10];
-                        if (!(foundProduct.quantity - productModel.quantity >= 0)) return [3 /*break*/, 8];
+                            (foundProduct != null || foundProduct != undefined))) return [3 /*break*/, 12];
+                        if (!(foundProduct.quantity - productModel.quantity >= 0)) return [3 /*break*/, 10];
                         lineId = this.productsToCollect.find(function (p) { return p.barcode == productModel.barcode; }).lineId;
                         if (!lineId) {
                             this.toasterService.error("lineId bulunamadı");
                         }
                         return [4 /*yield*/, this.warehouseService.countProductRequest2(productModel.barcode, productModel.shelfNo, productModel.quantity, null, null, productModel.batchCode, 'Order/CountProduct', this.orderNo, null, lineId)];
-                    case 6:
+                    case 8:
                         response = _a.sent();
                         //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
                         if (response.status.includes('Error')) {
@@ -691,29 +717,28 @@ var OrderOperationComponent = /** @class */ (function () {
                             return [2 /*return*/];
                         }
                         return [4 /*yield*/, this.getAllProducts(this.orderNo, 'WS')];
-                    case 7:
+                    case 9:
                         _a.sent();
                         //↑↑↑↑↑↑↑↑↑ TÜM ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
                         this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
                         this.clearBarcodeAndQuantity();
-                        return [3 /*break*/, 9];
-                    case 8:
-                        this.toasterService.warn('Stok Hatası.');
-                        _a.label = 9;
-                    case 9: return [3 /*break*/, 16];
+                        return [3 /*break*/, 11];
                     case 10:
+                        this.toasterService.warn('Stok Hatası.');
+                        _a.label = 11;
+                    case 11: return [3 /*break*/, 18];
+                    case 12:
                         confirmDelete = window.confirm('Raf Numarası Eşleşmedi Yine De Eklemek İstiyor Musunuz?');
-                        if (!confirmDelete) return [3 /*break*/, 15];
-                        //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
+                        if (!confirmDelete) return [3 /*break*/, 17];
                         productModel.quantity =
                             productModel.quantity;
-                        if (!(foundProduct.quantity - productModel.quantity >= 0)) return [3 /*break*/, 13];
+                        if (!(foundProduct.quantity - productModel.quantity >= 0)) return [3 /*break*/, 15];
                         lineId = this.productsToCollect.find(function (p) { return p.barcode == productModel.barcode; }).lineId;
                         if (!lineId) {
                             this.toasterService.error("lineId bulunamadı");
                         }
                         return [4 /*yield*/, this.warehouseService.countProductRequest2(this.checkForm.get('barcode').value, productModel.shelfNo, productModel.quantity, null, null, productModel.batchCode, 'Order/CountProduct', this.orderNo, null, lineId)];
-                    case 11:
+                    case 13:
                         response = _a.sent();
                         //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
                         if (response.status.includes('Error')) {
@@ -721,30 +746,30 @@ var OrderOperationComponent = /** @class */ (function () {
                             return [2 /*return*/];
                         }
                         return [4 /*yield*/, this.getAllProducts(this.orderNo, 'WS')];
-                    case 12:
+                    case 14:
                         _a.sent();
                         //↑↑↑↑↑↑↑↑↑ TOPLANAN ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
                         this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
                         this.clearBarcodeAndQuantity();
-                        return [3 /*break*/, 14];
-                    case 13:
-                        this.toasterService.warn('Stok Hatası.');
-                        _a.label = 14;
-                    case 14: return [3 /*break*/, 16];
+                        return [3 /*break*/, 16];
                     case 15:
-                        this.toasterService.error("Eklenmedi");
+                        this.toasterService.warn('Stok Hatası.');
                         _a.label = 16;
-                    case 16: return [3 /*break*/, 34];
+                    case 16: return [3 /*break*/, 18];
                     case 17:
-                        if (!(this.currentOrderNo.split('-')[1] === 'WT' || this.isBPTransferForm === true)) return [3 /*break*/, 26];
-                        if (!this.checkForm.valid) return [3 /*break*/, 25];
+                        this.toasterService.error("Eklenmedi");
+                        _a.label = 18;
+                    case 18: return [3 /*break*/, 36];
+                    case 19:
+                        if (!(this.currentOrderNo.split('-')[1] === 'WT' || this.isBPTransferForm === true)) return [3 /*break*/, 28];
+                        if (!this.checkForm.valid) return [3 /*break*/, 27];
                         if (productModel.barcode && productModel.barcode.charAt(0) === '0') {
                             productModel.barcode = productModel.barcode.substring(1);
                         }
                         foundModel = this.productsToCollect.find(function (o) { return o.barcode == productModel.barcode; });
-                        if (!foundModel) return [3 /*break*/, 24];
+                        if (!foundModel) return [3 /*break*/, 26];
                         foundProduct = foundModel;
-                        if (!(foundProduct.quantity - productModel.quantity >= 0)) return [3 /*break*/, 22];
+                        if (!(foundProduct.quantity - productModel.quantity >= 0)) return [3 /*break*/, 24];
                         model = new warehouseOperationProductModel_1.WarehouseOperationProductModel();
                         model.barcode = productModel.barcode;
                         model.batchCode = productModel.batchCode;
@@ -753,38 +778,38 @@ var OrderOperationComponent = /** @class */ (function () {
                         model.shelfNumber = productModel.shelfNo;
                         model.warehouse = foundModel.itemDim1Code;
                         return [4 /*yield*/, this.warehouseService.transfer(model)];
-                    case 18:
+                    case 20:
                         response_1 = _a.sent();
-                        if (!(response_1 > 0)) return [3 /*break*/, 21];
+                        if (!(response_1 > 0)) return [3 /*break*/, 23];
                         lineId = this.productsToCollect.find(function (p) { return p.barcode == productModel.barcode; }).lineId;
                         if (!lineId) {
                             this.toasterService.error("lineId bulunamadı");
                         }
                         return [4 /*yield*/, this.warehouseService.countProductRequest2(productModel.barcode, productModel.shelfNo, productModel.quantity, null, null, productModel.batchCode == null ? "" : productModel.batchCode, 'Order/CountProduct4', this.orderNo, null, lineId)];
-                    case 19:
+                    case 21:
                         response2 = _a.sent();
                         //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
                         return [4 /*yield*/, this.getAllProducts(this.orderNo, 'WT')];
-                    case 20:
+                    case 22:
                         //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
                         _a.sent();
                         //↑↑↑↑↑↑↑↑↑ TOPLANAN ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
                         this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
                         this.clearBarcodeAndQuantity();
-                        _a.label = 21;
-                    case 21: return [3 /*break*/, 23];
-                    case 22:
-                        this.toasterService.warn('Stok Hatası.');
                         _a.label = 23;
                     case 23: return [3 /*break*/, 25];
                     case 24:
-                        this.toasterService.warn('Eşleşen Ürün Bulunamadı');
+                        this.toasterService.warn('Stok Hatası.');
                         _a.label = 25;
-                    case 25: return [3 /*break*/, 34];
+                    case 25: return [3 /*break*/, 27];
                     case 26:
-                        if (!this.checkForm.valid) return [3 /*break*/, 33];
+                        this.toasterService.warn('Eşleşen Ürün Bulunamadı');
+                        _a.label = 27;
+                    case 27: return [3 /*break*/, 36];
+                    case 28:
+                        if (!this.checkForm.valid) return [3 /*break*/, 35];
                         return [4 /*yield*/, this.warehouseService.countProductRequest(productModel.barcode, productModel.shelfNo, productModel.quantity, null, null, productModel.batchCode, 'Order/CountProductControl', this.orderNo, null)];
-                    case 27:
+                    case 29:
                         response = _a.sent();
                         //↑↑↑↑↑↑↑↑↑ BARKOD KONTROL EDİLDİ ↑↑↑↑↑↑↑↑↑
                         if (response != undefined) {
@@ -800,34 +825,34 @@ var OrderOperationComponent = /** @class */ (function () {
                             productModel.barcode = productModel.barcode.substring(1);
                         }
                         foundModel2 = this.productsToCollect.find(function (o) { return (o === null || o === void 0 ? void 0 : o.barcode) === productModel.barcode; });
-                        if (!(foundModel2 != null && foundModel2 != undefined)) return [3 /*break*/, 31];
+                        if (!(foundModel2 != null && foundModel2 != undefined)) return [3 /*break*/, 33];
                         foundProduct = this.productsToCollect.find(function (o) { return o.barcode == productModel.barcode; });
-                        if (!(foundProduct.quantity - productModel.quantity >= 0)) return [3 /*break*/, 30];
+                        if (!(foundProduct.quantity - productModel.quantity >= 0)) return [3 /*break*/, 32];
                         lineId = this.productsToCollect.find(function (p) { return p.barcode == productModel.barcode && p.shelfNo == productModel.shelfNo; }).lineId;
                         if (!lineId) {
                             this.toasterService.error("lineId bulunamadı");
                         }
                         return [4 /*yield*/, this.warehouseService.countProductRequest2(productModel.barcode, productModel.shelfNo, productModel.quantity, null, null, productModel.batchCode, 'Order/CountProduct4', this.orderNo, null, lineId)];
-                    case 28:
+                    case 30:
                         response = _a.sent();
                         //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
                         return [4 /*yield*/, this.getAllProducts(this.orderNo, 'BP')];
-                    case 29:
+                    case 31:
                         //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
                         _a.sent();
                         //↑↑↑↑↑↑↑↑↑ TOPLANAN ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
                         this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
                         this.clearBarcodeAndQuantity();
-                        _a.label = 30;
-                    case 30: return [3 /*break*/, 32];
-                    case 31:
-                        this.toasterService.warn('Eşleşen Ürün Bulunamadı');
                         _a.label = 32;
                     case 32: return [3 /*break*/, 34];
                     case 33:
-                        this.toasterService.warn('Formu Doldurunuz');
+                        this.toasterService.warn('Eşleşen Ürün Bulunamadı');
                         _a.label = 34;
-                    case 34: return [2 /*return*/];
+                    case 34: return [3 /*break*/, 36];
+                    case 35:
+                        this.toasterService.warn('Formu Doldurunuz');
+                        _a.label = 36;
+                    case 36: return [2 /*return*/];
                 }
             });
         });
@@ -877,6 +902,7 @@ var OrderOperationComponent = /** @class */ (function () {
             this.checkForm.get('batchCode').setValue(null);
         }
         if (this.currentOrderNo.includes('WT')) {
+            this.shelfNumbers = null;
             this.focusNextInput('shelfNo');
         }
         else {
