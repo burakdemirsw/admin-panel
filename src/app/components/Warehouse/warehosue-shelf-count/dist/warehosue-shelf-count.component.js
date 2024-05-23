@@ -49,6 +49,7 @@ var library_1 = require("@zxing/library");
 var ClientUrls_1 = require("src/app/models/const/ClientUrls");
 var countProductRequestModel2_1 = require("src/app/models/model/order/countProductRequestModel2");
 var orderStatus_1 = require("src/app/models/model/order/orderStatus");
+var ztmsg_CountedProduct_1 = require("src/app/models/model/warehouse/ztmsg_CountedProduct");
 var WarehosueShelfCountComponent = /** @class */ (function () {
     function WarehosueShelfCountComponent(formBuilder, toasterService, httpClient, productService, generalService, warehouseService, activatedRoute, title, sanitizer, orderService) {
         this.formBuilder = formBuilder;
@@ -62,6 +63,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         this.sanitizer = sanitizer;
         this.orderService = orderService;
         this.infoProducts = [];
+        this.photoUrl = ClientUrls_1.ClientUrls.photoUrl;
         this.collectedProducts = [];
         this.process = false;
         this.activeTab = 1;
@@ -137,6 +139,9 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                 return; // İşlemi iptal et
             }
         }
+    };
+    WarehosueShelfCountComponent.prototype.getProductPhoto = function (itemCode) {
+        return ClientUrls_1.ClientUrls.photoUrl + itemCode + ".jpg";
     };
     WarehosueShelfCountComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -298,13 +303,9 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                 switch (_b.label) {
                     case 0:
                         _a = this;
-                        return [4 /*yield*/, this.warehouseService.getProductOfCount(orderNo)];
+                        return [4 /*yield*/, this.warehouseService.getCountsOfOperation(orderNo)];
                     case 1:
                         _a.lastCollectedProducts = _b.sent();
-                        // if (this.lastCollectedProducts.length >= 200) {
-                        //   this.toasterService.error("SATIR SAYISI 200'E ULAŞTI");
-                        //   this.blocked = true;
-                        // }
                         if (this.lastCollectedProducts.length > 0) {
                             this.setOfficeAndWarehouse(this.lastCollectedProducts[0].warehouseCode);
                         }
@@ -386,7 +387,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         if (this.generalService.isNullOrEmpty((_b = product.quantity) === null || _b === void 0 ? void 0 : _b.toString())) {
                             this.checkForm.get('quantity').setValue(Number(result[1]));
                         }
-                        if (result[4] == 'false') {
+                        if (result[4] == 'false' && product.barcode.length > 13) {
                             if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
                                 this.checkForm.get('batchCode').setValue(null);
                                 this.focusNextInput('batchCode');
@@ -425,7 +426,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
     };
     WarehosueShelfCountComponent.prototype.onSubmit = function (countProductRequestModel) {
         return __awaiter(this, void 0, Promise, function () {
-            var updated_product, url, shelves, response, qrResponse, response, qrResponse, data, error_2;
+            var updated_product, url, shelves, request, _response, qrResponse, response, qrResponse, data, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -462,10 +463,20 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         if (!this.state) return [3 /*break*/, 14];
                         this.state = false;
                         if (!shelves.includes(countProductRequestModel.shelfNo.toLowerCase())) return [3 /*break*/, 8];
-                        return [4 /*yield*/, this.warehouseService.countProductRequest(countProductRequestModel.barcode, countProductRequestModel.shelfNo, countProductRequestModel.quantity, countProductRequestModel.office, countProductRequestModel.warehouseCode, countProductRequestModel.batchCode, 'Order/CountProduct3', this.currentOrderNo, '')];
+                        request = new ztmsg_CountedProduct_1.ZTMSG_CountedProduct();
+                        request.barcode = countProductRequestModel.barcode;
+                        request.shelfNo = countProductRequestModel.shelfNo;
+                        request.quantity = countProductRequestModel.quantity;
+                        request.officeCode = countProductRequestModel.office;
+                        request.warehouseCode = countProductRequestModel.warehouseCode;
+                        request.batchCode = countProductRequestModel.batchCode;
+                        request.operationNumber = this.currentOrderNo;
+                        request.isCompleted = false;
+                        request.operationType = this.checkForm.get("isShelfBased").value == true ? this.checkForm.get("isShelfBased").value : this.checkForm.get("isShelfBased2").value;
+                        return [4 /*yield*/, this.warehouseService.addCount(request)];
                     case 4:
-                        response = _a.sent();
-                        if (!(response != undefined)) return [3 /*break*/, 7];
+                        _response = _a.sent();
+                        if (!(_response != undefined)) return [3 /*break*/, 7];
                         return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, countProductRequestModel, countProductRequestModel.quantity, false, 'CO')];
                     case 5:
                         qrResponse = _a.sent();
@@ -649,7 +660,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                     case 0:
                         confirmDelete = window.confirm('Bu hareketi silmek istediğinizden emin misiniz?');
                         if (!confirmDelete) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.productService.deleteOrderProduct(this.currentOrderNo, product.itemCode, product.id)];
+                        return [4 /*yield*/, this.warehouseService.deleteCount(product)];
                     case 1:
                         response = _a.sent();
                         if (!response) return [3 /*break*/, 3];

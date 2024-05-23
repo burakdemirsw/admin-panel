@@ -175,17 +175,6 @@
           </div>
         </div>
 
-        <!-- Yeni kart: Toplanan Ürünler -->
-        <div class="card text-center" *ngIf="totalCount > 0">
-          <div class="card-body">
-            <h5 class="card-title">Toplanan Ürünler</h5>
-            <h1 class="display-1">{{ totalCount }}</h1>
-            <!--eklenen ürün miktarı yazcak! -->
-
-            <p class="card-text">Adet Ürün Toplandı</p>
-          </div>
-        </div>
-
         <div class="card" *ngIf="collectedFastTransferModels.length > 0">
           <div class="card-body">
             <h5 class="card-title">Toplanan Ürünler</h5>
@@ -245,6 +234,14 @@
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+
+        <div class="card text-center">
+          <div class="card-body">
+            <h5 class="card-title">Toplanan Ürünler</h5>
+            <h1 class="display-1">{{ totalCount }}</h1>
+            <p class="card-text">Adet Ürün Toplandı</p>
           </div>
         </div>
       </div>

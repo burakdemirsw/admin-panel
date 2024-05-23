@@ -29,4 +29,6 @@ export class FastTransferModel2 {
 export class FastTransferListModel {
   operationId: string;
   createdDate !: Date;
+  totalCount !: number;
+  user !: string;
 }

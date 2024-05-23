@@ -668,7 +668,9 @@ var OrderOperationComponent = /** @class */ (function () {
                         currentShelfNo = this.checkForm.get('shelfNo').value;
                         this.checkForm.get('barcode').setValue(result[3]);
                         this.checkForm.get('batchCode').setValue(result[2].toString());
-                        this.checkForm.get('quantity').setValue(result[1]);
+                        if (this.checkForm.get('quantity').value == null || this.checkForm.get('quantity').value == 1) {
+                            this.checkForm.get('quantity').setValue(result[1]);
+                        }
                         if (result[4] == 'false') {
                             if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
                                 this.checkForm.get('batchCode').setValue(null);
@@ -677,7 +679,13 @@ var OrderOperationComponent = /** @class */ (function () {
                                 return [2 /*return*/, null];
                             }
                         }
-                        product = new countProduct_1.CountProduct(result[3], currentShelfNo, result[2], Number(result[1]));
+                        product = new countProduct_1.CountProduct(result[3], currentShelfNo, result[2], null);
+                        if (this.checkForm.get('quantity').value == null || this.checkForm.get('quantity').value == 1) {
+                            product.quantity = Number(result[1]);
+                        }
+                        else {
+                            product.quantity = this.checkForm.get('quantity').value;
+                        }
                         return [2 /*return*/, product];
                     case 4: return [3 /*break*/, 6];
                     case 5:
@@ -712,6 +720,7 @@ var OrderOperationComponent = /** @class */ (function () {
                     case 1:
                         updated_product = _a.sent();
                         productModel = updated_product;
+                        if (!(this.checkForm.get('quantity').value == null || this.checkForm.get('quantity').value == 1)) return [3 /*break*/, 3];
                         if (!((this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-')) && this.checkForm.valid)) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.onSubmit(productModel)];
                     case 2:

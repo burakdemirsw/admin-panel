@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Exception } from '@zxing/library';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
@@ -12,7 +12,7 @@ import { OrderBillingListModel } from 'src/app/models/model/order/orderBillingLi
 import { OrderStatus } from 'src/app/models/model/order/orderStatus';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { CountProduct3 } from 'src/app/models/model/product/countProduct';
-import { CountedProduct, CountedProductControl } from 'src/app/models/model/product/countedProduct';
+import { CountedProductControl } from 'src/app/models/model/product/countedProduct';
 import { ItemBillingModel } from 'src/app/models/model/product/itemBillingModel ';
 import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
 import {
@@ -20,13 +20,13 @@ import {
 } from 'src/app/models/model/shelfNameModel';
 import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
+import { ZTMSG_CountedProduct } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 declare var window: any;
-
 @Component({
   selector: 'app-warehosue-shelf-count',
   templateUrl: './warehosue-shelf-count.component.html',
@@ -34,6 +34,7 @@ declare var window: any;
 })
 export class WarehosueShelfCountComponent implements OnInit {
   @Input() infoProducts: CreatePurchaseInvoice[] = [];
+  photoUrl: string = ClientUrls.photoUrl;
   [x: string]: any;
   productsToCollect: ProductOfOrder[];
   collectedProducts: ProductOfOrder[] = [];
@@ -109,7 +110,9 @@ export class WarehosueShelfCountComponent implements OnInit {
       }
     }
   }
-
+  getProductPhoto(itemCode: string) {
+    return ClientUrls.photoUrl + itemCode + ".jpg";
+  }
   async ngOnInit() {
 
 
@@ -148,7 +151,7 @@ export class WarehosueShelfCountComponent implements OnInit {
 
 
   createJson(barcode: string, shelfNo: string, batchCode: string) {
-    var model: CountedProduct = this.lastCollectedProducts.find(
+    var model: ZTMSG_CountedProduct = this.lastCollectedProducts.find(
       (p) =>
         (p.barcode = barcode) &&
         p.shelfNo == shelfNo &&
@@ -257,15 +260,12 @@ export class WarehosueShelfCountComponent implements OnInit {
     });
     this.totalCount = totalQty;
   }
-  lastCollectedProducts: CountedProduct[] = [];
+  lastCollectedProducts: ZTMSG_CountedProduct[] = [];
   async getProductOfCount(orderNo: string): Promise<any> {
-    this.lastCollectedProducts = await this.warehouseService.getProductOfCount(
+    this.lastCollectedProducts = await this.warehouseService.getCountsOfOperation(
       orderNo
     );
-    // if (this.lastCollectedProducts.length >= 200) {
-    //   this.toasterService.error("SATIR SAYISI 200'E ULAŞTI");
-    //   this.blocked = true;
-    // }
+
     if (this.lastCollectedProducts.length > 0) {
       this.setOfficeAndWarehouse(this.lastCollectedProducts[0].warehouseCode);
     }
@@ -344,7 +344,7 @@ export class WarehosueShelfCountComponent implements OnInit {
           this.checkForm.get('quantity').setValue(Number(result[1]));
         }
 
-        if (result[4] == 'false') {
+        if (result[4] == 'false' && product.barcode.length > 13) {
 
           if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
             this.checkForm.get('batchCode').setValue(null);
@@ -426,21 +426,34 @@ export class WarehosueShelfCountComponent implements OnInit {
           if (
             shelves.includes(countProductRequestModel.shelfNo.toLowerCase())
           ) {
-            var response: ProductCountModel =
-              await this.warehouseService.countProductRequest(
-                countProductRequestModel.barcode,
-                countProductRequestModel.shelfNo,
-                countProductRequestModel.quantity,
-                countProductRequestModel.office,
-                countProductRequestModel.warehouseCode,
-                countProductRequestModel.batchCode,
-                'Order/CountProduct3',
-                this.currentOrderNo,
-                ''
-              );
+
+            var request: ZTMSG_CountedProduct = new ZTMSG_CountedProduct();
+            request.barcode = countProductRequestModel.barcode;
+            request.shelfNo = countProductRequestModel.shelfNo;
+            request.quantity = countProductRequestModel.quantity;
+            request.officeCode = countProductRequestModel.office;
+            request.warehouseCode = countProductRequestModel.warehouseCode;
+            request.batchCode = countProductRequestModel.batchCode;
+            request.operationNumber = this.currentOrderNo;
+            request.isCompleted = false;
+            request.operationType = this.checkForm.get("isShelfBased").value == true ? this.checkForm.get("isShelfBased").value : this.checkForm.get("isShelfBased2").value
+
+            var _response = await this.warehouseService.addCount(request);
+            // var _response: ProductCountModel =
+            //   await this.warehouseService.countProductRequest(
+            //     countProductRequestModel.barcode,
+            //     countProductRequestModel.shelfNo,
+            //     countProductRequestModel.quantity,
+            //     countProductRequestModel.office,
+            //     countProductRequestModel.warehouseCode,
+            //     countProductRequestModel.batchCode,
+            //     'Order/CountProduct3',
+            //     this.currentOrderNo,
+            //     ''
+            //   );
 
             // SAYIM YAPILDI -------------------------------------------
-            if (response != undefined) {
+            if (_response != undefined) {
 
               var qrResponse: QrOperationResponseModel =
                 await this.productService.qrOperationMethod(
@@ -635,10 +648,8 @@ export class WarehosueShelfCountComponent implements OnInit {
     );
 
     if (confirmDelete) {
-      const response: boolean = await this.productService.deleteOrderProduct(
-        this.currentOrderNo,
-        product.itemCode, product.id
-
+      const response: boolean = await this.warehouseService.deleteCount(
+        product
       );
       if (response) {
         this.list = this.list.filter(

@@ -48,6 +48,7 @@ var forms_1 = require("@angular/forms");
 var ClientUrls_1 = require("src/app/models/const/ClientUrls");
 var countProductRequestModel_1 = require("src/app/models/model/order/countProductRequestModel");
 var qrOperationModel_1 = require("src/app/models/model/product/qrOperationModel");
+var orderStatus_1 = require("src/app/models/model/order/orderStatus");
 var FastTransferComponent = /** @class */ (function () {
     function FastTransferComponent(formBuilder, toasterService, orderService, router, httpClient, productService, warehouseService, generalService, httpClientService, title, headerService, activatedRoute) {
         this.formBuilder = formBuilder;
@@ -109,6 +110,7 @@ var FastTransferComponent = /** @class */ (function () {
                             case 1:
                                 // this.toasterService.info('İşlem Numarası: ' + this.currentOrderNo);
                                 _a.sent();
+                                this.addOperationStatus();
                                 _a.label = 2;
                             case 2: return [2 /*return*/];
                         }
@@ -116,6 +118,35 @@ var FastTransferComponent = /** @class */ (function () {
                 }); });
                 this.collectedProducts = [];
                 return [2 /*return*/];
+            });
+        });
+    };
+    FastTransferComponent.prototype.addOperationStatus = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var request, _a, response;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        request = new orderStatus_1.OrderStatus();
+                        _a = request;
+                        return [4 /*yield*/, this.generalService.generateGUID()];
+                    case 1:
+                        _a.id = _b.sent();
+                        request.orderNo = this.currentOrderNo;
+                        request.status = 'Raf Transfer İsteği';
+                        request.warehousePerson = localStorage.getItem('name') + ' ' + localStorage.getItem('surname');
+                        request.createdDate = new Date();
+                        return [4 /*yield*/, this.orderService.addOrderStatus(request)];
+                    case 2:
+                        response = _b.sent();
+                        if (response) {
+                            this.toasterService.success('Durum Güncellendi');
+                        }
+                        else {
+                            this.toasterService.error('Durum Güncellenemedi');
+                        }
+                        return [2 /*return*/];
+                }
             });
         });
     };
@@ -129,6 +160,7 @@ var FastTransferComponent = /** @class */ (function () {
                         response = _a.sent();
                         if (response) {
                             this.collectedFastTransferModels = response;
+                            this.calculateTotalQty();
                         }
                         return [2 /*return*/];
                 }

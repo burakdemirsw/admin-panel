@@ -261,12 +261,24 @@
                   >
                     <!-- <td>{{ i + 1 }}</td> -->
                     <td>
-                      <img
-                        src="{{ product.photoUrl }}"
+                      <!-- <img
+                        src="{{ photoUrl + product.itemCode + '.jpg' }}"
                         alt="Resim"
                         width="50"
                         height="50"
-                        (click)="openImageModal(product.photoUrl)"
+                        (click)="
+                          openImageModal(photoUrl + product.itemCode + '.jpg')
+                        "
+                      /> -->
+
+                      <p-image
+                        src="{{ photoUrl + product.itemCode + '.jpg' }}"
+                        previewImageSrc="{{
+                          photoUrl + product.itemCode + '.jpg'
+                        }}"
+                        alt="Image"
+                        width="30"
+                        [preview]="true"
                       />
                     </td>
                     <td>{{ product.shelfNo }}</td>

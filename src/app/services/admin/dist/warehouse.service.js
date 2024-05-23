@@ -46,12 +46,66 @@ exports.WarehouseService = void 0;
 var core_1 = require("@angular/core");
 var countProductRequestModel2_1 = require("src/app/models/model/order/countProductRequestModel2");
 var WarehouseService = /** @class */ (function () {
-    function WarehouseService(toasterService, httpClientService, router, generalService) {
-        this.toasterService = toasterService;
+    function WarehouseService(httpClientService) {
         this.httpClientService = httpClientService;
-        this.router = router;
-        this.generalService = generalService;
     }
+    WarehouseService.prototype.deleteCount = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.get({
+                            controller: "Warehouse/delete-count/" + request.id.toString()
+                        }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    WarehouseService.prototype.addCount = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (request.barcode.includes('/')) {
+                            request.barcode = request.barcode.replace(/\//g, '-');
+                        }
+                        return [4 /*yield*/, this.httpClientService.post({
+                                controller: "Warehouse/add-count"
+                            }, request)
+                                .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        if (response == true) {
+                            return [2 /*return*/, response];
+                        }
+                        else {
+                            return [2 /*return*/, false];
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    WarehouseService.prototype.getCountsOfOperation = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.get({
+                            controller: "Warehouse/get-counts-of-operation/" + request
+                        })
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
     //ürün sayım 1
     WarehouseService.prototype.countProductRequest = function (barcode, shelfNo, qty, office, warehouseCode, batchCode, url, orderNo, currAccCode) {
         return __awaiter(this, void 0, Promise, function () {

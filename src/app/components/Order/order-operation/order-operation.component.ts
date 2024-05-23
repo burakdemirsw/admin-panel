@@ -592,7 +592,10 @@ export class OrderOperationComponent implements OnInit {
         var currentShelfNo = this.checkForm.get('shelfNo').value;
         this.checkForm.get('barcode').setValue(result[3]);
         this.checkForm.get('batchCode').setValue(result[2].toString());
-        this.checkForm.get('quantity').setValue(result[1]);
+        if (this.checkForm.get('quantity').value == null || this.checkForm.get('quantity').value == 1) {
+          this.checkForm.get('quantity').setValue(result[1]);
+        }
+
         if (result[4] == 'false') {
 
           if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
@@ -602,7 +605,12 @@ export class OrderOperationComponent implements OnInit {
             return null;
           }
         }
-        var product: CountProduct = new CountProduct(result[3], currentShelfNo, result[2], Number(result[1]));
+        var product: CountProduct = new CountProduct(result[3], currentShelfNo, result[2], null);
+        if (this.checkForm.get('quantity').value == null || this.checkForm.get('quantity').value == 1) {
+          product.quantity = Number(result[1]);
+        } else {
+          product.quantity = this.checkForm.get('quantity').value;
+        }
         return product;
       }
     } catch (error) {
@@ -642,10 +650,14 @@ export class OrderOperationComponent implements OnInit {
       );
       productModel = updated_product;
 
-      if ((this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-')) && this.checkForm.valid) {
-        await this.onSubmit(productModel);
-      }
 
+      if (this.checkForm.get('quantity').value == null || this.checkForm.get('quantity').value == 1) {
+
+
+        if ((this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-')) && this.checkForm.valid) {
+          await this.onSubmit(productModel);
+        }
+      }
 
       this.toasterService.success("Formu Verileri Dolduruldu.")
       return;
@@ -801,11 +813,7 @@ export class OrderOperationComponent implements OnInit {
 
         //↑↑↑↑↑↑↑↑↑ EŞLEŞEN ÜRÜN BULUNDU ↑↑↑↑↑↑↑↑↑
         if (foundModel) {
-
-
           const foundProduct = foundModel;
-
-
           if (foundProduct.quantity - productModel.quantity >= 0) {
             var model: WarehouseOperationProductModel =
               new WarehouseOperationProductModel();

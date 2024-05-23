@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
 import { CountListFilterModel } from 'src/app/models/model/filter/countListFilterModel';
-import { InvocieFilterModel } from 'src/app/models/model/filter/invoiceFilterModel';
 import { WarehouseOperationListFilterModel } from 'src/app/models/model/filter/warehouseOperationListFilterModel';
 import { WarehouseTransferListFilterModel } from 'src/app/models/model/filter/warehouseTransferListFilterModel';
 import { CountProductRequestModel2, CountProductRequestModel3 } from 'src/app/models/model/order/countProductRequestModel2';
@@ -19,20 +17,66 @@ import { TransferRequestListModel } from 'src/app/models/model/warehouse/transfe
 import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/warehouseOperationProductModel';
+import { ZTMSG_CountedProduct } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { HttpClientService } from '../http-client.service';
-import { ToasterService } from '../ui/toaster.service';
-import { GeneralService } from './general.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WarehouseService {
   constructor(
-    private toasterService: ToasterService,
     private httpClientService: HttpClientService,
-    private router: Router,
-    private generalService: GeneralService
+
   ) { }
+
+  async deleteCount(
+    request: ZTMSG_CountedProduct
+  ): Promise<any> {
+
+    var response = await this.httpClientService.get<any>(
+      {
+        controller: "Warehouse/delete-count/" + request.id.toString()
+      },
+    ).toPromise();
+
+    return response;
+  }
+
+  async addCount(
+    request: ZTMSG_CountedProduct
+  ): Promise<boolean> {
+    if (request.barcode.includes('/')) {
+      request.barcode = request.barcode.replace(/\//g, '-');
+    }
+
+    var response = await this.httpClientService.post<ZTMSG_CountedProduct | any>(
+      {
+        controller: "Warehouse/add-count",
+      },
+      request
+    )
+      .toPromise();
+
+    if (response == true) {
+      return response;
+    } else {
+      return false;
+    }
+
+  }
+  async getCountsOfOperation(
+    request: string
+  ): Promise<ZTMSG_CountedProduct[]> {
+    var response = await this.httpClientService.get<ZTMSG_CountedProduct | any>(
+      {
+        controller: "Warehouse/get-counts-of-operation/" + request,
+      },
+
+    )
+      .toPromise();
+
+    return response;
+  }
 
   //ürün sayım 1
   async countProductRequest(

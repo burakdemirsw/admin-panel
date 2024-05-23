@@ -7,6 +7,7 @@ import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
 import { CountProductRequestModel } from 'src/app/models/model/order/countProductRequestModel';
 import { OrderBillingListModel } from 'src/app/models/model/order/orderBillingListModel';
+import { OrderStatus } from 'src/app/models/model/order/orderStatus';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
 import { ItemBillingModel } from 'src/app/models/model/product/itemBillingModel ';
@@ -108,6 +109,7 @@ export class ShelfTransferRequestComponent implements OnInit {
         this.currentPageType = params['type'];
         await this.getFastTransferModels();
         this.toasterService.info('İşlem Numarası: ' + this.currentOrderNo);
+        this.addOperationStatus();
       }
       if (params['type']) {
         await this.getTransferRequestListModel(params['type']);
@@ -118,6 +120,23 @@ export class ShelfTransferRequestComponent implements OnInit {
   }
   offices: any[] = ['M', 'U'];
   warehouses: any[] = ['MD', 'UD'];
+
+  async addOperationStatus() {
+    var request = new OrderStatus();
+    request.id = await this.generalService.generateGUID();
+    request.orderNo = this.currentOrderNo;
+    request.status = 'Raf Transfer İsteği';
+    request.warehousePerson = localStorage.getItem('name') + ' ' + localStorage.getItem('surname');
+    request.createdDate = new Date();
+    const response = await this.orderService.addOrderStatus(request);
+    if (response) {
+      this.toasterService.success('Durum Güncellendi');
+    } else {
+      this.toasterService.error('Durum Güncellenemedi');
+    }
+  }
+
+
   goPage(pageType: string) {
     location.href =
       location.origin +
@@ -134,6 +153,7 @@ export class ShelfTransferRequestComponent implements OnInit {
     );
     if (response) {
       this.collectedFastTransferModels = response;
+      this.calculateTotalQty();
     }
   }
 
@@ -333,7 +353,7 @@ export class ShelfTransferRequestComponent implements OnInit {
   calculateTotalQty() {
     //toplanan ürünler yazısı için
     let totalQty = 0;
-    this.collectedProducts.forEach((item) => {
+    this.collectedFastTransferModels.forEach((item) => {
       totalQty += item.quantity;
     });
     this.totalCount = totalQty;

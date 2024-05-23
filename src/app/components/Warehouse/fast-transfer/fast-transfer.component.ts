@@ -24,6 +24,7 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { HeaderService } from '../../../services/admin/header.service';
+import { OrderStatus } from 'src/app/models/model/order/orderStatus';
 
 declare var window: any;
 
@@ -96,6 +97,7 @@ export class FastTransferComponent implements OnInit {
         this.currentOrderNo = params['operationNo'];
         // this.toasterService.info('İşlem Numarası: ' + this.currentOrderNo);
         await this.getFastTransferModels();
+        this.addOperationStatus();
       }
 
     });
@@ -103,11 +105,28 @@ export class FastTransferComponent implements OnInit {
     //this.spinnerService.hide();
   }
 
+  async addOperationStatus() {
+    var request = new OrderStatus();
+    request.id = await this.generalService.generateGUID();
+    request.orderNo = this.currentOrderNo;
+    request.status = 'Raf Transfer İsteği';
+    request.warehousePerson = localStorage.getItem('name') + ' ' + localStorage.getItem('surname');
+    request.createdDate = new Date();
+    const response = await this.orderService.addOrderStatus(request);
+    if (response) {
+      this.toasterService.success('Durum Güncellendi');
+    } else {
+      this.toasterService.error('Durum Güncellenemedi');
+    }
+  }
+
+
   collectedFastTransferModels: FastTransferModel2[] = [];
   async getFastTransferModels() {
     var response = await this.warehouseService.getFastTransferModels(this.currentOrderNo);
     if (response) {
       this.collectedFastTransferModels = response;
+      this.calculateTotalQty();
     }
   }
 

@@ -47,6 +47,7 @@ var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
 var ClientUrls_1 = require("src/app/models/const/ClientUrls");
 var countProductRequestModel_1 = require("src/app/models/model/order/countProductRequestModel");
+var orderStatus_1 = require("src/app/models/model/order/orderStatus");
 var qrOperationModel_1 = require("src/app/models/model/product/qrOperationModel");
 var ShelfTransferRequestComponent = /** @class */ (function () {
     function ShelfTransferRequestComponent(formBuilder, toasterService, orderService, router, httpClient, activatedRoute, productService, warehouseService, generalService, title, headerService) {
@@ -133,6 +134,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                             case 1:
                                 _a.sent();
                                 this.toasterService.info('İşlem Numarası: ' + this.currentOrderNo);
+                                this.addOperationStatus();
                                 _a.label = 2;
                             case 2:
                                 if (!params['type']) return [3 /*break*/, 4];
@@ -146,6 +148,35 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                 }); });
                 this.collectedProducts = [];
                 return [2 /*return*/];
+            });
+        });
+    };
+    ShelfTransferRequestComponent.prototype.addOperationStatus = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var request, _a, response;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        request = new orderStatus_1.OrderStatus();
+                        _a = request;
+                        return [4 /*yield*/, this.generalService.generateGUID()];
+                    case 1:
+                        _a.id = _b.sent();
+                        request.orderNo = this.currentOrderNo;
+                        request.status = 'Raf Transfer İsteği';
+                        request.warehousePerson = localStorage.getItem('name') + ' ' + localStorage.getItem('surname');
+                        request.createdDate = new Date();
+                        return [4 /*yield*/, this.orderService.addOrderStatus(request)];
+                    case 2:
+                        response = _b.sent();
+                        if (response) {
+                            this.toasterService.success('Durum Güncellendi');
+                        }
+                        else {
+                            this.toasterService.error('Durum Güncellenemedi');
+                        }
+                        return [2 /*return*/];
+                }
             });
         });
     };
@@ -167,6 +198,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         response = _a.sent();
                         if (response) {
                             this.collectedFastTransferModels = response;
+                            this.calculateTotalQty();
                         }
                         return [2 /*return*/];
                 }
@@ -399,7 +431,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
     ShelfTransferRequestComponent.prototype.calculateTotalQty = function () {
         //toplanan ürünler yazısı için
         var totalQty = 0;
-        this.collectedProducts.forEach(function (item) {
+        this.collectedFastTransferModels.forEach(function (item) {
             totalQty += item.quantity;
         });
         this.totalCount = totalQty;
