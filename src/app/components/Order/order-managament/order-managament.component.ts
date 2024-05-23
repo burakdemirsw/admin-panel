@@ -261,8 +261,8 @@ export class OrderManagamentComponent implements OnInit {
     }
   }
 
-  async createPdf(orderNumber: string) {
-    var response = await this.orderService.createPdf(orderNumber);
+  async createMarketplaceCargoBarcode(orderNumber: string) {
+    var response = await this.orderService.createMarketplaceCargoBarcode(orderNumber);
     if (response) {
       this.toasterService.success("İşlem Başarılı")
     } else {
