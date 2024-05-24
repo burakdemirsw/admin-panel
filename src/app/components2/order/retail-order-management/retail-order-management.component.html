@@ -1,4 +1,3 @@
-<p>retail-order-management works!</p>
 <main id="main" class="main">
   <section class="section">
     <div class="card" *ngIf="!pageDescription">
@@ -196,6 +195,7 @@
           <table class="table">
             <thead>
               <tr>
+                <th scope="col">Pazaryeri</th>
                 <th scope="col">Sipariş Tarihi</th>
                 <th scope="col">Sipariş Numarası</th>
                 <th scope="col">Müşteri Kodu</th>
@@ -223,6 +223,9 @@
                     | paginate : { itemsPerPage: 50, currentPage: currentPage }
                 "
               >
+                <td>
+                  {{ order.description.includes("B") ? "Beymen" : "İdeasoft" }}
+                </td>
                 <td>{{ order.orderDate | date : "dd.MM.yyyy HH:mm" }}</td>
                 <td>{{ order.orderNumber }}</td>
                 <td>{{ order.currAccCode }}</td>
@@ -342,19 +345,20 @@
                     </div> -->
 
                     <div
+                      *ngIf="!order.description.includes('B')"
                       class="btn btn-success"
                       data-text="Kargo"
                       routerLink="/create-cargo/{{ order.orderNumber }}"
                     >
                       <i class="fa fa-truck" aria-hidden="true"></i>
                     </div>
-                    <!-- <div
+                    <div
+                      *ngIf="order.description.includes('B')"
                       class="btn btn-success"
-                      data-text="Barkod Etiketi Oluştur"
-                      (click)="showModal(order.orderNumber)"
+                      (click)="createMarketplaceCargoBarcode(order.orderNumber)"
                     >
                       <i class="fa fa-barcode" aria-hidden="true"></i>
-                    </div> -->
+                    </div>
                   </div>
                 </td>
               </tr>

@@ -162,7 +162,7 @@ export class RetailOrderManagementComponent implements OnInit {
     } else {
       const response =
         this.saleOrderModels = await this.orderService.getOrders(status, invoiceStatus)
-
+      console.log(this.saleOrderModels)
     }
     this.filterOrdersByRole();
     this.setPageDescription();
@@ -193,6 +193,16 @@ export class RetailOrderManagementComponent implements OnInit {
     request.from = "order-operation";
     request.products = null;
     var response = await this.productService.sendBarcodesToNebim(request);
+    if (response) {
+      this.toasterService.success("İşlem Başarılı")
+    } else {
+      this.toasterService.error("İşlem Başarısız")
+    }
+  }
+
+
+  async createMarketplaceCargoBarcode(orderNumber: string) {
+    var response = await this.orderService.createMarketplaceCargoBarcode(orderNumber);
     if (response) {
       this.toasterService.success("İşlem Başarılı")
     } else {

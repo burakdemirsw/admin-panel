@@ -938,8 +938,7 @@ export class OrderOperationComponent implements OnInit {
 
     }
     this.checkForm.get('barcode').setValue(null);
-    this.shelfNumbers = 'Raf No'
-    this.qrBarcodeUrl = null;
+    this.shelfNumbers = null;
     this.checkForm.get('batchCode').setValue(null);
     this.checkForm.get('quantity').setValue(null);
     this.generalService.beep();

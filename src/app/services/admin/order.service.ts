@@ -835,8 +835,35 @@ export class OrderService {
         .subscribe((data: ArrayBuffer) => {
           const file = new Blob([data], { type: 'application/pdf' });
           const fileURL = URL.createObjectURL(file);
-          window.open(fileURL, '_blank');
 
+          // Create a temporary link element
+          const downloadLink = document.createElement('a');
+          downloadLink.href = fileURL;
+          downloadLink.download = "marketplace-order-cargo-barcode.pdf";  // Set the filename for the download
+          document.body.appendChild(downloadLink); // Append to body
+          downloadLink.click();  // Trigger the download
+          document.body.removeChild(downloadLink); // Remove the link after triggering the download
+          URL.revokeObjectURL(fileURL); // Clean up the URL object
+        });
+
+
+      this.httpClient.get(ClientUrls.baseUrl + '/order/get-marketplace-order-cargo-barcode/' + request, { responseType: 'arraybuffer' })
+        .subscribe((data: ArrayBuffer) => {
+          const file = new Blob([data], { type: 'application/pdf' });
+          const fileURL = URL.createObjectURL(file);
+
+          // Create an iframe element
+          const iframe = document.createElement('iframe');
+          iframe.style.display = 'none';  // Hide the iframe
+          iframe.src = fileURL;
+
+          // Append the iframe to the body
+          document.body.appendChild(iframe);
+
+          // Wait until the iframe is loaded, then call print
+          iframe.onload = () => {
+            iframe.contentWindow?.print();
+          };
         });
 
       return true;
@@ -845,5 +872,6 @@ export class OrderService {
       return null;
     }
   }
+
   //ExecuteSqlRawAsync
 }

@@ -1,3 +1,4 @@
+
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
@@ -76,7 +77,7 @@ import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ReferrerPolicyDirective } from './referrer-policy.directive';
 import { TestComponent } from './components/Order/invoice-list/test/test.component';
-import { TableModule } from 'primeng/table';
+import { Table, TableHeaderCheckbox, TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { PagesLoginv2Component } from './pages/pages-loginv2/pages-loginv2.component';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -111,6 +112,8 @@ import { OrderStateComponent } from './components/Order/order-state/order-state.
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ReadBarcodeComponent } from './components/Product/read-barcode/read-barcode.component';
 import { IdeasoftComponent } from './components2/marketplace/ideasoft/ideasoft.component';
+import { CheckboxModule } from 'primeng/checkbox';
+import { MarketplaceInvoicesComponent } from './components/Order/marketplace-invoices/marketplace-invoices.component';
 
 @NgModule({
 
@@ -183,7 +186,9 @@ import { IdeasoftComponent } from './components2/marketplace/ideasoft/ideasoft.c
     CollectedPackagesComponent2,
     OrderStateComponent,
     ReadBarcodeComponent,
-    IdeasoftComponent
+    IdeasoftComponent,
+    MarketplaceInvoicesComponent
+
 
   ],
 
@@ -221,7 +226,7 @@ import { IdeasoftComponent } from './components2/marketplace/ideasoft/ideasoft.c
     ChartModule,
     SelectButtonModule,
     SidebarModule,
-    OverlayPanelModule,
+    OverlayPanelModule, CheckboxModule,
     FileUploadModule, TableModule, InputTextModule, MessagesModule, FieldsetModule, EditorModule,
     JwtModule.forRoot({
       config: {

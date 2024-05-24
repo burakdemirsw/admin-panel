@@ -2,10 +2,102 @@
   <section class="section">
     <div class="card">
       <div class="card-body">
-        <div class="card-title">
-          <h4>Fatura Listesi</h4>
-        </div>
+        <h5 class="card-title">Pazaryeri Faturaları</h5>
+        <p-table
+          [value]="products"
+          [(selection)]="selectedProducts"
+          dataKey="code"
+          [tableStyle]="{ 'min-width': '50rem' }"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Quantity</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-product>
+            <tr>
+              <td>
+                <p-tableCheckbox [value]="product" />
+              </td>
+              <td>{{ product.code }}</td>
+              <td>{{ product.name }}</td>
+              <td>{{ product.category }}</td>
+              <td>{{ product.quantity }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
       </div>
     </div>
+
+    <!-- <p-table
+      [value]="products"
+      dataKey="id"
+      [tableStyle]="{ 'min-width': '50rem' }"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 25%">Code</th>
+          <th style="width: 25%">Name</th>
+          <th style="width: 25%">Inventory Status</th>
+          <th style="width: 25%">Price</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-product let-editing="editing">
+        <tr>
+          <td [pEditableColumn]="product.code" pEditableColumnField="code">
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="product.code" />
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{ product.code }}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td [pEditableColumn]="product.name" pEditableColumnField="name">
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input
+                  pInputText
+                  type="text"
+                  [(ngModel)]="product.name"
+                  required
+                />
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{ product.name }}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td
+            [pEditableColumn]="product.inventoryStatus"
+            pEditableColumnField="inventoryStatus"
+          >
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input pInputText [(ngModel)]="product.inventoryStatus" />
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{ product.inventoryStatus }}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td [pEditableColumn]="product.price" pEditableColumnField="price">
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="product.price" />
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{ product.price | currency : "USD" }}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table> -->
   </section>
 </main>
