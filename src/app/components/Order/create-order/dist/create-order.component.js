@@ -2118,9 +2118,9 @@ var CreateOrderComponent = /** @class */ (function () {
                     case 9: return [4 /*yield*/, this.orderService.getOrderDetail(this.orderNumber)];
                     case 10:
                         addedOrder = _c.sent();
-                        // if (addedOrder.orderNumber) {
-                        //   this.sendInvoiceToPrinter(addedOrder.orderNumber);
-                        // }
+                        if (addedOrder.orderNumber) {
+                            this.sendInvoiceToPrinter(addedOrder.orderNumber);
+                        }
                         this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament/1/2");
                         _c.label = 11;
                     case 11: return [3 /*break*/, 21];
@@ -2172,9 +2172,9 @@ var CreateOrderComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.orderService.getOrderDetail(this.orderNumber)];
                     case 20:
                         addedOrder = _c.sent();
-                        // if (addedOrder.orderNumber) {
-                        //   this.sendInvoiceToPrinter(addedOrder.orderNumber);
-                        // }
+                        if (addedOrder.orderNumber) {
+                            this.sendInvoiceToPrinter(addedOrder.orderNumber);
+                        }
                         this.generalService.waitAndNavigate("Sipariş Oluşturuldu & Faturalaştırıdı", "orders-managament/1/1");
                         _c.label = 21;
                     case 21: return [2 /*return*/];

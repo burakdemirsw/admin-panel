@@ -1987,10 +1987,10 @@ export class CreateOrderComponent implements OnInit {
         }
 
         var addedOrder: OrderDetail = await this.orderService.getOrderDetail(this.orderNumber);
-        // if (addedOrder.orderNumber) {
-        //   this.sendInvoiceToPrinter(addedOrder.orderNumber);
+        if (addedOrder.orderNumber) {
+          this.sendInvoiceToPrinter(addedOrder.orderNumber);
 
-        // }
+        }
         this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament/1/2");
       }
     } else {
@@ -2073,10 +2073,10 @@ export class CreateOrderComponent implements OnInit {
       var __response = await this.orderService.createInvoice(__request);
       if (__response) {
         var addedOrder: OrderDetail = await this.orderService.getOrderDetail(this.orderNumber);
-        // if (addedOrder.orderNumber) {
-        //   this.sendInvoiceToPrinter(addedOrder.orderNumber);
+        if (addedOrder.orderNumber) {
+          this.sendInvoiceToPrinter(addedOrder.orderNumber);
 
-        // }
+        }
 
         this.generalService.waitAndNavigate("Sipariş Oluşturuldu & Faturalaştırıdı", "orders-managament/1/1");
       }
