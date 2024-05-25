@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { ActivatedRoute, Router } from '@angular/router';
+import { borderRightStyle } from 'html2canvas/dist/types/css/property-descriptors/border-style';
 import { CreateBarcodeFromOrder_RM } from 'src/app/components/Product/create-barcode/models/createBarcode';
+import { ClientUrls } from 'src/app/models/const/ClientUrls';
+import { ZTMSG_CreateCargoBarcode_CM } from 'src/app/models/model/cargo/ZTMSG_CreateCargoBarcode_CM';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
-import { PrinterInvoiceRequestModel } from 'src/app/models/model/order/printerInvoiceRequestModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
+import { CargoService } from 'src/app/services/admin/cargo.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
-import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { RetailOrderService } from 'src/app/services/admin/retail/retail-order.service';
-import { HttpClientService } from 'src/app/services/http-client.service';
+import { ExportCsvService } from 'src/app/services/export-csv.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 @Component({
@@ -21,9 +22,7 @@ import { ToasterService } from 'src/app/services/ui/toaster.service';
 })
 export class RetailOrderManagementComponent implements OnInit {
 
-  numberOfList: number[] = [1, 10, 20, 50, 100,]
-  saleOrderModels: SaleOrderModel[]
-  currentPage: number = 1;
+
   constructor(
     private headerService: HeaderService,
     private toasterService: ToasterService,
@@ -31,15 +30,61 @@ export class RetailOrderManagementComponent implements OnInit {
     private orderService: RetailOrderService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private productService: ProductService
+    private productService: ProductService,
+    private exportCsvService: ExportCsvService,
+    private cargoService: CargoService
+
 
   ) { }
+  //#region  params
+  cargoFirms = ClientUrls.cargoFirms;
+  numberOfList: number[] = [1, 10, 20, 50, 100,]
+  saleOrderModels: SaleOrderModel[]
+  selectedOrders: SaleOrderModel[]
+  currentPage: number = 1;
   filterForm: FormGroup;
   pageDescription: boolean = false;
   _pageDescription: boolean = false;
   pageDescriptionLine: string = "Alınan Siparişler"
   status = 1;
   invoiceStatus = 2
+  first = 5;
+  productsToCollect: ProductOfOrder[];
+  visible2: boolean = false;
+  cargoSelectVisible: boolean = false;
+  filterMode = 'lenient';
+  columns = [
+    "Sipariş Tarihi",
+    "Sipariş Numarası",
+    "Müşteri Kodu",
+    "Müşteri Adı",
+    "Satıcı Kodu",
+    "Açıklama",
+    "Miktar",
+    "Tutar",
+    "Toplanan Miktar",
+    "Toplanalabilir Miktar",
+    "Depo",
+    "Kargo",
+    "Fatura",
+    "İşlemler"
+  ];
+  //#endregion
+
+
+  getCargoImage(name: string): string {
+    switch (name) {
+      case 'MNG':
+        return 'https://upload.wikimedia.org/wikipedia/tr/5/52/MNG_Kargo.png';
+      case 'Aras':
+        return 'https://seeklogo.com/images/A/aras-kargo-arac-kaplama-logo-73DA342AF5-seeklogo.com.png';
+      case 'Yurtiçi':
+        return 'https://logoeps.com/wp-content/uploads/2013/06/yurtici-kargo-vector-logo-200x200.png';
+      default:
+        return '';
+    }
+  }
+
   async ngOnInit() {
     //this.spinnerService.show();
 
@@ -64,7 +109,7 @@ export class RetailOrderManagementComponent implements OnInit {
     this.setPageDescription();
 
   }
-  productsToCollect: ProductOfOrder[];
+
 
 
   setPageDescription() {
@@ -107,8 +152,12 @@ export class RetailOrderManagementComponent implements OnInit {
     this.toasterService.warn('Bu özellik şu anda kullanılamıyor.')
 
   }
-
-
+  exportCsv() {
+    this.exportCsvService.exportToCsv(this.selectedOrders, 'my-orders', this.columns);
+  }
+  getSelectedOrders() {
+    console.log(this.selectedOrders)
+  }
 
   //toplanan ürünler sayfasına akatarır fakat önce ilgili siparişin içeriğinden paketNo'değerini çeker.
   async routeToCPP(number: string) {
@@ -202,13 +251,58 @@ export class RetailOrderManagementComponent implements OnInit {
 
 
   async createMarketplaceCargoBarcode(orderNumber: string) {
-    var response = await this.orderService.createMarketplaceCargoBarcode(orderNumber);
-    if (response) {
-      this.toasterService.success("İşlem Başarılı")
-    } else {
-      this.toasterService.error("İşlem Başarısız")
+    if (!orderNumber.includes('B')) {
+      if (confirm('Bu sipariş Beymen siparişi değil. Yine de yazdırmak istiyor musunuz?') == false) {
+        return;
+      } else {
+        var response = await this.orderService.createMarketplaceCargoBarcode(orderNumber);
+        if (response) {
+          this.toasterService.success("İşlem Başarılı")
+        } else {
+          this.toasterService.error("İşlem Başarısız")
+        }
+      }
     }
+
   }
 
-  visible2: boolean = false;
+
+  selectCargo(cargo: any) {
+    this.createCargoBulk(this.selectedOrders, cargo.id)
+  }
+
+
+  async createCargoBulk(request: SaleOrderModel[], cargoFirmId: number) {
+
+    if (cargoFirmId == 2) {
+      this.toasterService.warn('Bu kargo firması ile işlem yapamazsınız.')
+      return;
+    }
+    if (this.selectedOrders.length > 0) {
+      if (window.confirm("Seçili Siparişleri Kargoya Göndermek İstediğinize Emin Misiniz?")) {
+
+        var request = this.selectedOrders.filter(x => x.isShipped == false);
+        var _request: ZTMSG_CreateCargoBarcode_CM[] = [];
+        for (let i = 0; i < request.length; i++) {
+          var __request = new ZTMSG_CreateCargoBarcode_CM();
+          __request.orderNumber = request[i].orderNumber;
+          __request.cargoFirmId = cargoFirmId;
+          _request.push(__request);
+        }
+        var response = await this.cargoService.createCargoBulk(_request);
+        if (response) {
+          this.getOrders(this.status, this.invoiceStatus)
+          this.toasterService.success("İşlem Başarılı")
+        } else {
+          this.toasterService.error("İşlem Başarısız")
+        }
+
+      }
+    } else {
+      this.toasterService.warn('Lütfen En Az Bir Sipariş Seçiniz.')
+    }
+
+
+  }
+
 }

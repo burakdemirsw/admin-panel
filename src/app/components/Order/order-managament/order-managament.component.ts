@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
@@ -11,6 +11,10 @@ import { ProductService } from 'src/app/services/admin/product.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { CreateBarcodeFromOrder_RM } from '../../Product/create-barcode/models/createBarcode';
+import { Table } from 'primeng/table';
+import { ExportCsvService } from 'src/app/services/export-csv.service';
+import { ZTMSG_CreateCargoBarcode_CM } from 'src/app/models/model/cargo/ZTMSG_CreateCargoBarcode_CM';
+import { CargoService } from 'src/app/services/admin/cargo.service';
 
 @Component({
   selector: 'app-order-managament',
@@ -21,6 +25,7 @@ export class OrderManagamentComponent implements OnInit {
 
   numberOfList: number[] = [1, 10, 20, 50, 100]
   saleOrderModels: SaleOrderModel[]
+  selectedOrders: SaleOrderModel[] = [];
   currentPage: number = 1;
   constructor(
     private headerService: HeaderService,
@@ -31,7 +36,9 @@ export class OrderManagamentComponent implements OnInit {
     private orderService: OrderService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private productService: ProductService
+    private productService: ProductService,
+    private exportCsvService: ExportCsvService,
+    private cargoService: CargoService
 
   ) { }
   filterForm: FormGroup;
@@ -39,9 +46,25 @@ export class OrderManagamentComponent implements OnInit {
   _pageDescription: boolean = false;
   pageDescriptionLine: string = "Alınan Siparişler"
 
-
+  columns = [
+    "Sipariş Tarihi",
+    "Sipariş Numarası",
+    "Müşteri Kodu",
+    "Müşteri Adı",
+    "Satıcı Kodu",
+    "Açıklama",
+    "Miktar",
+    "Tutar",
+    "Toplanan Miktar",
+    "Toplanalabilir Miktar",
+    "Depo",
+    "Kargo",
+    "Fatura",
+    "İşlemler"
+  ];
   status = 1;
   invoiceStatus = 2
+
   async ngOnInit() {
     //this.spinnerService.show();
 
@@ -67,7 +90,9 @@ export class OrderManagamentComponent implements OnInit {
 
   }
   productsToCollect: ProductOfOrder[];
-
+  exportCsv() {
+    this.exportCsvService.exportToCsv(this.selectedOrders, 'my-orders', this.columns);
+  }
   async deleteNebimOrder(request: string) {
     var response = await this.orderService.deleteNebimOrder(request)
     if (response) {
@@ -261,14 +286,6 @@ export class OrderManagamentComponent implements OnInit {
     }
   }
 
-  async createMarketplaceCargoBarcode(orderNumber: string) {
-    var response = await this.orderService.createMarketplaceCargoBarcode(orderNumber);
-    if (response) {
-      this.toasterService.success("İşlem Başarılı")
-    } else {
-      this.toasterService.error("İşlem Başarısız")
-    }
-  }
 
   searchedOrder: string = "";
   goToPage() {
@@ -277,6 +294,50 @@ export class OrderManagamentComponent implements OnInit {
     } else {
       location.href = location.origin + "/order-operation/" + this.searchedOrder + "/false/MD";
     }
+
+  }
+
+  async createMarketplaceCargoBarcode(orderNumber: string) {
+    if (!orderNumber.includes('B')) {
+      if (confirm('Bu sipariş Beymen siparişi değil. Yine de yazdırmak istiyor musunuz?') == false) {
+        return;
+      } else {
+        var response = await this.orderService.createMarketplaceCargoBarcode(orderNumber);
+        if (response) {
+          this.toasterService.success("İşlem Başarılı")
+        } else {
+          this.toasterService.error("İşlem Başarısız")
+        }
+      }
+    }
+
+  }
+
+  async createCargoBulk(request: SaleOrderModel[]) {
+    if (this.selectedOrders.length > 0) {
+      if (window.confirm("Seçili Siparişleri Kargoya Göndermek İstediğinize Emin Misiniz?")) {
+
+        var request = this.selectedOrders.filter(x => x.isShipped == false);
+        var _request: ZTMSG_CreateCargoBarcode_CM[] = [];
+        for (let i = 0; i < request.length; i++) {
+          var __request = new ZTMSG_CreateCargoBarcode_CM();
+          __request.orderNumber = request[i].orderNumber;
+          __request.cargoFirmId = 1;
+          _request.push(__request);
+        }
+        var response = await this.cargoService.createCargoBulk(_request);
+        if (response) {
+          this.getOrders(this.status, this.invoiceStatus)
+          this.toasterService.success("İşlem Başarılı")
+        } else {
+          this.toasterService.error("İşlem Başarısız")
+        }
+
+      }
+    } else {
+      this.toasterService.warn('Lütfen En Az Bir Sipariş Seçiniz.')
+    }
+
 
   }
 

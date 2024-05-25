@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 import { CreatePackage_MNG_RM, CargoBarcode_VM } from 'src/app/components/cargo/create-cargo/models/models';
+import { ZTMSG_CreateCargoBarcode_CM, ZTMSG_CreateCargoBarcode_RM } from 'src/app/models/model/cargo/ZTMSG_CreateCargoBarcode_CM';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,7 @@ export class CargoService {
         console.log(error.message);
         return null;
       }
-    } else {
+    } else if (firmId === 2) {
       try {
         var response = await this.httpClientService.post<any>({ controller: "cargos/create-aras-cargo" }, request).toPromise();
         return response;
@@ -35,6 +36,18 @@ export class CargoService {
         return null;
       }
     }
+    else if (firmId === 3) {
+      try {
+        var response = await this.httpClientService.post<any>({ controller: "cargos/create-aras-cargo" }, request).toPromise();
+        return response;
+      } catch (error: any) {
+        console.log(error.message);
+        return null;
+      }
+    } else {
+      return;
+    }
+
 
   }
 
@@ -128,5 +141,19 @@ export class CargoService {
     }
   }
 
+
+  async createCargoBulk(request: ZTMSG_CreateCargoBarcode_CM[]): Promise<ZTMSG_CreateCargoBarcode_RM<any>[]> {
+    try {
+      var response = await this.httpClientService.post<any>({ controller: "cargos/create-cargo-bulk" }, request).toPromise();
+      var list: ZTMSG_CreateCargoBarcode_RM<any>[] = response;
+
+      var responseText = request.length + " adet kargodan " + list.filter(x => x.Status === true).length + " adet kargo başarıyla oluşturuldu.";
+      this.toasterService.info(responseText);
+      return list;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
   //PrintBarcodeFromBase64
 }

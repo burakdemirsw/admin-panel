@@ -114,6 +114,7 @@ import { ReadBarcodeComponent } from './components/Product/read-barcode/read-bar
 import { IdeasoftComponent } from './components2/marketplace/ideasoft/ideasoft.component';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MarketplaceInvoicesComponent } from './components/Order/marketplace-invoices/marketplace-invoices.component';
+import { ExportCsvService } from './services/export-csv.service';
 
 @NgModule({
 
@@ -238,7 +239,7 @@ import { MarketplaceInvoicesComponent } from './components/Order/marketplace-inv
   ],
 
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [MessageService, DatePipe, AlertifyService, NgModule, NgxPopper, DatePipe, NgxSpinnerModule, {
+  providers: [MessageService, DatePipe, AlertifyService, NgModule, NgxPopper, DatePipe, NgxSpinnerModule, ExportCsvService, {
     provide: HTTP_INTERCEPTORS,
     useClass: HttpErrorInterceptor,
     multi: true

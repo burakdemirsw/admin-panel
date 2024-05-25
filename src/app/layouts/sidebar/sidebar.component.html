@@ -102,11 +102,7 @@
             <i class="bi bi-circle"></i><span>Alınan Siparişler </span>
           </a>
         </li>
-        <li *ngIf="this.roleDescription == 'Admin'">
-          <a routerLink="cargo-list">
-            <i class="bi bi-circle"></i><span>Kargolar</span>
-          </a>
-        </li>
+
         <li>
           <a routerLink="retail-orders-collected-packages">
             <i class="bi bi-circle"></i><span>Paketler </span>
@@ -119,7 +115,32 @@
         </li> -->
       </ul>
     </li>
-
+    <li class="nav-item">
+      <a
+        class="nav-link collapsed"
+        data-bs-target="#Cargo-nav"
+        data-bs-toggle="collapse"
+      >
+        <i class="fa fa-truck"></i><span>Kargo</span
+        ><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul
+        id="Cargo-nav"
+        class="nav-content collapse"
+        data-bs-parent="#Cargo-nav"
+      >
+        <!-- <li>
+          <a routerLink="product-managament">
+            <i class="bi bi-circle"></i><span>Ürün Sorgulama</span>
+          </a>
+        </li> -->
+        <li *ngIf="this.roleDescription == 'Admin'">
+          <a routerLink="cargo-list">
+            <i class="bi bi-circle"></i><span>Kargolar</span>
+          </a>
+        </li>
+      </ul>
+    </li>
     <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
       <a
         class="nav-link collapsed"

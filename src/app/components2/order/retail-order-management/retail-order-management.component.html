@@ -131,243 +131,293 @@
       </div>
     </div>
 
-    <!-- <div class="card custom-card mb-3">
-      <div
-        class="card-body d-flex justify-content-start mt-3"
-        style="overflow-x: auto"
-      >
-        <button
-          type="button"
-          class="btn custom-btn-primary"
-          (click)="getOrders(1, 2)"
-        >
-          <i class="fas fa-check"></i> Toplanabilir Siparişler
-        </button>
-        <button
-          type="button"
-          class="btn custom-btn-primary"
-          (click)="getOrders(0, 2)"
-        >
-          <i class="fas fa-times-circle"></i> Toplanamaz Siparişler
-        </button>
-        <button
-          type="button"
-          class="btn custom-btn-primary"
-          (click)="getMissingOrders()"
-        >
-          <i class="fas fa-exclamation-triangle"></i> Eksik Ürünlü Siparişler
-        </button>
-      </div>
-    </div> -->
-    <div class="card mb-3">
-      <div class="card-body">
-        <div class="row mt-4 mb-3">
-          <!-- <button type="button" class="btn btn-dark">Ürün Paketle</button> -->
-          <!-- <div class="col-md-2">
-            <select
-              id="numberOfList"
-              class="form-control"
-              formControlName="numberOfList"
-              style=""
-            >
-              <option *ngFor="let number of numberOfList" [value]="number">
-                {{ number }}
-              </option>
-            </select>
-          </div> -->
-          <div class="col-md-2">
-            <button
-              type="button"
-              class="btn btn-primary ml-3"
-              (click)="visible2 = true"
-            >
-              Ürün Topla
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Ürünler</h5>
+      <div class="card-body p-4">
+        <p-table
+          #dt2
+          [value]="saleOrderModels"
+          [(selection)]="selectedOrders"
+          dataKey="orderNumber"
+          columnResizeMode="expand"
+          [resizableColumns]="true"
+          [paginator]="true"
+          [first]="first"
+          [rowsPerPageOptions]="[5, 10, 20]"
+          [rows]="50"
+          [tableStyle]="{ 'min-width': '50rem' }"
+        >
+          <ng-template pTemplate="caption">
+            <div
+              class="p-4 card-body d-flex justify-content-start"
+              style="overflow-x: auto"
+            >
+              <div style="text-align: left">
+                <p-button
+                  icon="pi pi-external-link"
+                  label="Excel"
+                  (click)="exportCsv()"
+                />
+              </div>
 
-        <div style="overflow-x: auto">
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Pazaryeri</th>
-                <th scope="col">Sipariş Tarihi</th>
-                <th scope="col">Sipariş Numarası</th>
-                <th scope="col">Müşteri Kodu</th>
-                <th scope="col">Müşteri Adı</th>
-                <th scope="col">Satıcı Kodu</th>
-                <th scope="col">Açıklama</th>
+              <div style="text-align: left">
+                <p-button
+                  icon="pi pi-truck"
+                  label="Kargola"
+                  (click)="cargoSelectVisible = true"
+                />
+              </div>
+              <div style="text-align: left">
+                <p-button
+                  icon="pi pi-plus"
+                  label="Topla"
+                  (click)="visible2 = true"
+                />
+              </div>
+            </div>
+          </ng-template>
 
-                <th scope="col">Miktar</th>
-                <th scope="col">Tutar</th>
-                <th scope="col">Toplanan Miktar</th>
-                <th scope="col">Toplanalabilir Miktar</th>
-                <!-- <th scope="col">Durum</th> -->
-                <th scope="col">Depo</th>
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Seç</th>
 
-                <th scope="col">Kargo</th>
-                <th scope="col">Fatura</th>
-                <!-- <th scope="col">Sip. Top. Tut.</th> -->
-                <th scope="col">İşlemler</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                *ngFor="
-                  let order of saleOrderModels
-                    | paginate : { itemsPerPage: 50, currentPage: currentPage }
-                "
-              >
-                <td>
-                  {{ order.description.includes("B") ? "Beymen" : "İdeasoft" }}
-                </td>
-                <td>{{ order.orderDate | date : "dd.MM.yyyy HH:mm" }}</td>
-                <td>{{ order.orderNumber }}</td>
-                <td>{{ order.currAccCode }}</td>
-                <td>{{ order.currAccDescription }}</td>
-                <td>{{ order.salespersonCode }}</td>
-                <td>{{ order.description }}</td>
+              <th pSortableColumn="orderDate" style="width: 10%">
+                Sipariş Tarihi
+                <p-sortIcon field="orderDate"></p-sortIcon>
+              </th>
+              <th pSortableColumn="orderNumber" style="width: 10%">
+                Sipariş Numarası
+                <p-sortIcon field="orderNumber"></p-sortIcon>
+              </th>
+              <th pSortableColumn="currAccCode" style="width: 10%">
+                Müşteri Kodu
+                <p-sortIcon field="currAccCode"></p-sortIcon>
+              </th>
+              <th pSortableColumn="currAccDescription" style="width: 10%">
+                Müşteri Adı
+                <p-sortIcon field="currAccDescription"></p-sortIcon>
+              </th>
+              <th pSortableColumn="salespersonCode" style="width: 10%">
+                Satıcı Kodu
+                <p-sortIcon field="salespersonCode"></p-sortIcon>
+              </th>
+              <th pSortableColumn="description" style="width: 10%">
+                Açıklama
+                <p-sortIcon field="description"></p-sortIcon>
+              </th>
+              <th pSortableColumn="qty1" style="width: 10%">
+                Miktar
+                <p-sortIcon field="qty1"></p-sortIcon>
+              </th>
+              <th pSortableColumn="price" style="width: 10%">
+                Tutar
+                <p-sortIcon field="price"></p-sortIcon>
+              </th>
+              <th pSortableColumn="collectedQty" style="width: 10%">
+                Toplanan Miktar
+                <p-sortIcon field="collectedQty"></p-sortIcon>
+              </th>
+              <th pSortableColumn="remainingQty" style="width: 10%">
+                Toplanalabilir Miktar
+                <p-sortIcon field="remainingQty"></p-sortIcon>
+              </th>
+              <th pSortableColumn="warehouseCode" style="width: 10%">
+                Depo
+                <p-sortIcon field="warehouseCode"></p-sortIcon>
+              </th>
+              <th>Kargo</th>
+              <th>Fatura</th>
+              <th>İşlemler</th>
+            </tr>
+            <tr>
+              <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
+              <th>
+                <p-columnFilter
+                  type="date"
+                  field="orderDate"
+                  [showClearButton]="false"
+                ></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter
+                  type="text"
+                  field="orderNumber"
+                  [showClearButton]="false"
+                ></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter
+                  type="text"
+                  field="currAccCode"
+                  [showClearButton]="false"
+                ></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter
+                  type="text"
+                  field="currAccDescription"
+                  [showClearButton]="false"
+                ></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter
+                  type="text"
+                  field="salespersonCode"
+                  [showClearButton]="false"
+                ></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter
+                  type="text"
+                  field="description"
+                  [showClearButton]="false"
+                ></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter
+                  type="numeric"
+                  field="qty1"
+                  [showClearButton]="false"
+                ></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter
+                  type="numeric"
+                  field="price"
+                  [showClearButton]="false"
+                ></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter
+                  type="numeric"
+                  field="collectedQty"
+                  [showClearButton]="false"
+                ></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter
+                  type="numeric"
+                  field="remainingQty"
+                  [showClearButton]="false"
+                ></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter
+                  type="text"
+                  field="warehouseCode"
+                  [showClearButton]="false"
+                ></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter
+                  type="boolean"
+                  field="isShipped"
+                  [showClearButton]="false"
+                ></p-columnFilter>
+              </th>
+              <th></th>
+              <th></th>
+            </tr>
+          </ng-template>
 
-                <td>{{ order.qty1 }}</td>
-                <td>{{ order.price.toString() | currency : "₺" }}</td>
-                <td>{{ order.collectedQty }}</td>
-                <td>{{ order.remainingQty }}</td>
-                <!-- <td>
-                  <button
-                    class="btn"
-                    [ngClass]="{
-                      'btn-success': order.status === 1,
-                      'btn-danger': order.status === 2
-                    }"
+          <ng-template pTemplate="body" let-order>
+            <tr>
+              <td>
+                <p-tableCheckbox [value]="order" />
+              </td>
+              <td>{{ order.orderDate | date : "MM.dd HH:mm" }}</td>
+              <td>{{ order.orderNumber }}</td>
+              <td>{{ order.currAccCode }}</td>
+              <td>{{ order.currAccDescription }}</td>
+              <td>{{ order.salespersonCode }}</td>
+              <td>{{ order.description }}</td>
+              <td>{{ order.qty1 }}</td>
+              <td>{{ order.price.toString() | currency : "₺" }}</td>
+              <td>{{ order.collectedQty }}</td>
+              <td>{{ order.remainingQty }}</td>
+              <td>{{ order.warehouseCode }}</td>
+              <td>
+                <button
+                  class="btn"
+                  [ngClass]="{
+                    'btn-success': order.isShipped,
+                    'btn-danger': !order.isShipped
+                  }"
+                >
+                  <i
+                    *ngIf="order.isShipped"
+                    class="fa fa-check"
+                    aria-hidden="true"
+                  ></i>
+                  <i
+                    *ngIf="!order.isShipped"
+                    class="fa-solid fa-ban"
+                    aria-hidden="true"
+                  ></i>
+                </button>
+              </td>
+              <td>
+                <button
+                  class="btn"
+                  [ngClass]="{
+                    'btn-success': order.invoiceStatus === 1,
+                    'btn-danger': order.invoiceStatus !== 1
+                  }"
+                >
+                  <i
+                    *ngIf="order.invoiceStatus === 1"
+                    class="fa fa-check"
+                    aria-hidden="true"
+                  ></i>
+                  <i
+                    *ngIf="order.invoiceStatus !== 1"
+                    class="fa-solid fa-ban"
+                    aria-hidden="true"
+                  ></i>
+                  <i
+                    *ngIf="order.invoiceStatus === 3"
+                    class="fa fa-exclamation-triangle"
+                    aria-hidden="true"
+                  ></i>
+                </button>
+              </td>
+              <td>
+                <div class="btn-group">
+                  <div
+                    *ngIf="!pageDescription"
+                    class="btn btn-success"
+                    data-text="Varyasyonlar"
+                    [routerLink]="
+                      order.invoiceStatus === 1
+                        ? '/order-operation/' +
+                          order.orderNumber +
+                          '/true/' +
+                          order.warehouseCode
+                        : '/order-operation/' +
+                          order.orderNumber +
+                          '/false/' +
+                          order.warehouseCode
+                    "
                   >
-                    {{ order.status === 2 ? "Toplanamaz" : "Toplanabilir" }}
-                  </button>
-                </td> -->
-                <td>{{ order.warehouseCode }}</td>
-
-                <td>
-                  <button
-                    class="btn"
-                    [ngClass]="{
-                      'btn-success': order.isShipped === true,
-                      'btn-danger': order.isShipped === false
-                    }"
-                  >
-                    <i
-                      *ngIf="order.isShipped"
-                      class="fa fa-check"
-                      aria-hidden="true"
-                    ></i>
-                    <i
-                      *ngIf="!order.isShipped"
-                      class="fa-solid fa-ban"
-                      aria-hidden="true"
-                    ></i>
-                  </button>
-                </td>
-                <td>
-                  <button
-                    class="btn"
-                    [ngClass]="{
-                      'btn-success': order.invoiceStatus === 1,
-                      'btn-danger':
-                        order.invoiceStatus === 2 || order.invoiceStatus === 3
-                    }"
-                  >
-                    <i
-                      *ngIf="order.invoiceStatus === 1"
-                      class="fa fa-check"
-                      aria-hidden="true"
-                    ></i>
-                    <i
-                      *ngIf="order.invoiceStatus === 2"
-                      class="fa-solid fa-ban"
-                      aria-hidden="true"
-                    ></i>
-                    <i
-                      *ngIf="order.invoiceStatus === 3"
-                      class="fa fa-exclamation-triangle"
-                      aria-hidden="true"
-                    ></i>
-                  </button>
-                </td>
-
-                <!-- <td>{{ order.price }}</td> -->
-                <td>
-                  <div class="btn-group">
-                    <div
-                      *ngIf="!pageDescription"
-                      class="btn btn-success"
-                      data-text="Varyasyonlar"
-                      [routerLink]="
-                        order.invoiceStatus === 1
-                          ? '/order-operation/' +
-                            order.orderNumber +
-                            '/true' +
-                            '/' +
-                            order.warehouseCode
-                          : '/order-operation/' +
-                            order.orderNumber +
-                            '/false' +
-                            '/' +
-                            order.warehouseCode
-                      "
-                    >
-                      <i class="fas fa-sliders-h"></i>
-                    </div>
-                    <!-- <div
-                      class="btn btn-dark"
-                      data-text="Fatura Yazdır"
-                      *ngIf="!pageDescription"
-                    >
-                      <i
-                        (click)="
-                          printPicture(
-                            'https://marketplace.canva.com/EAFEOwL2BQo/2/0/1131w/canva-white-simple-invoice-S_aHY7Zi14A.jpg'
-                          )
-                        "
-                        class="fa fa-print"
-                      ></i>
-                    </div> -->
-
-                    <!-- <div
-                      *ngIf="!_pageDescription"
-                      class="btn btn-success"
-                      data-text="Eksik Ürünler"
-                      (click)="routeNewPage3(order.orderNumber)"
-                    >
-                      <i class="fas fa-arrow-right"></i>
-                    </div> -->
-
-                    <div
-                      *ngIf="!order.description.includes('B')"
-                      class="btn btn-success"
-                      data-text="Kargo"
-                      routerLink="/create-cargo/{{ order.orderNumber }}"
-                    >
-                      <i class="fa fa-truck" aria-hidden="true"></i>
-                    </div>
-                    <div
-                      *ngIf="order.description.includes('B')"
-                      class="btn btn-success"
-                      (click)="createMarketplaceCargoBarcode(order.orderNumber)"
-                    >
-                      <i class="fa fa-barcode" aria-hidden="true"></i>
-                    </div>
+                    <i class="fas fa-sliders-h"></i>
                   </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <pagination-controls
-            (pageChange)="currentPage = $event"
-          ></pagination-controls>
-        </div>
+                  <div
+                    class="btn btn-success"
+                    data-text="Kargo"
+                    [routerLink]="'/create-cargo/' + order.orderNumber"
+                  >
+                    <i class="fa fa-truck" aria-hidden="true"></i>
+                  </div>
+                  <div
+                    class="btn btn-success"
+                    (click)="createMarketplaceCargoBarcode(order.orderNumber)"
+                  >
+                    <i class="fa-solid fa-barcode"></i>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
       </div>
     </div>
 
@@ -396,6 +446,41 @@
               </div>
             </div>
           </ng-container>
+        </div>
+      </div>
+    </p-dialog>
+    <p-dialog
+      header="Kargo Seç"
+      [(visible)]="cargoSelectVisible"
+      [modal]="true"
+      [style]="{ 'max-width': '800px' }"
+      [draggable]="false"
+      [resizable]="false"
+    >
+      <div class="container mt-3">
+        <div class="row">
+          <div
+            class="col-lg-4 col-md-6 col-sm-6 col-12 mb-3"
+            *ngFor="let cargo of cargoFirms"
+          >
+            <div
+              class="card h-100"
+              style="cursor: pointer"
+              (click)="selectCargo(cargo)"
+            >
+              <img
+                class="card-img-top"
+                [src]="getCargoImage(cargo.name)"
+                alt="{{ cargo.name }} Image"
+                style="object-fit: cover"
+              />
+              <div
+                class="card-body d-flex align-items-center justify-content-center"
+              >
+                <h5 class="card-title m-0">{{ cargo.name }}</h5>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </p-dialog>

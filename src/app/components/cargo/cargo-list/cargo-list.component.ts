@@ -96,12 +96,15 @@ export class CargoListComponent implements OnInit {
         iframe.onload = () => {
           iframe.contentWindow?.print();
         };
-      }
+        this.toasterService.success("BARKOD YAZDIRILDI");
+
+        this.getCargos(this.cargoState);
+      } else
+        this.toasterService.error("BARKOD YAZDIRILAMADI");
 
 
-      this.toasterService.success("BARKOD YAZDIRILDI");
 
-      this.getCargos(this.cargoState);
+
     }
   }
 
