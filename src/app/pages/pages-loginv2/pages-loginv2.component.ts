@@ -49,18 +49,23 @@ export class PagesLoginv2Component implements OnInit {
 
         var response = await this.userService.login(model);
         if (response) {
-          location.href = location.origin + "/dashboard"
-          // this.router.navigate(["/dashboard"])
+          const returnUrl = this.getReturnUrl(); // Get return URL from params
+          location.href = returnUrl ? decodeURIComponent(returnUrl) : location.origin + "/dashboard";
+          // this.router.navigate([returnUrl || "/dashboard"]); // If using Angular router
         }
       } else {
         console.log('Form Geçerli Değil');
       }
     } catch (error) {
       this.alertifyService.warning("Hata Alındı: " + error.message);
-
     }
-
   }
+
+  getReturnUrl(): string | null {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('returnUrl');
+  }
+
   visible: boolean;
   openDialog() {
     this.visible = !this.visible
