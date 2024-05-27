@@ -232,3 +232,23 @@ export class NebimOrder_RM {
   status: boolean;
 
 }
+export class BulkDeleteShipment_CM {
+  cargoFirmId: number;
+  referenceId: string;
+
+  constructor(cargoFirmId: number, referenceId: string) {
+    this.cargoFirmId = cargoFirmId;
+    this.referenceId = referenceId;
+  }
+}
+
+export class BulkDeleteShipment_RM extends BulkDeleteShipment_CM {
+  status: boolean;
+  errMessage: string;
+
+  constructor(cargoFirmId: number, referenceId: string, status: boolean, errMessage: string) {
+    super(cargoFirmId, referenceId);
+    this.status = status;
+    this.errMessage = errMessage;
+  }
+}

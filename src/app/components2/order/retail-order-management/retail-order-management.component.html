@@ -151,26 +151,27 @@
               class="p-4 card-body d-flex justify-content-start"
               style="overflow-x: auto"
             >
-              <div style="text-align: left">
-                <p-button
-                  icon="pi pi-external-link"
-                  label="Excel"
-                  (click)="exportCsv()"
-                />
-              </div>
+              <p-splitButton label="İşlemler" [model]="items" appendTo="body" />
 
-              <div style="text-align: left">
-                <p-button
-                  icon="pi pi-truck"
-                  label="Kargola"
-                  (click)="cargoSelectVisible = true"
-                />
-              </div>
               <div style="text-align: left">
                 <p-button
                   icon="pi pi-plus"
                   label="Topla"
                   (click)="visible2 = true"
+                />
+              </div>
+              <div style="text-align: left">
+                <p-button
+                  icon="pi pi-plus"
+                  label="Faturalaştırılan Siparişler"
+                  (click)="getOrders(1, 1)"
+                />
+              </div>
+              <div style="text-align: left">
+                <p-button
+                  icon="pi pi-plus"
+                  label="Faturalaştırılmayan Siparişler"
+                  (click)="getOrders(1, 2)"
                 />
               </div>
             </div>
@@ -196,10 +197,7 @@
                 Müşteri Adı
                 <p-sortIcon field="currAccDescription"></p-sortIcon>
               </th>
-              <th pSortableColumn="salespersonCode" style="width: 10%">
-                Satıcı Kodu
-                <p-sortIcon field="salespersonCode"></p-sortIcon>
-              </th>
+
               <th pSortableColumn="description" style="width: 10%">
                 Açıklama
                 <p-sortIcon field="description"></p-sortIcon>
@@ -220,10 +218,7 @@
                 Toplanalabilir Miktar
                 <p-sortIcon field="remainingQty"></p-sortIcon>
               </th>
-              <th pSortableColumn="warehouseCode" style="width: 10%">
-                Depo
-                <p-sortIcon field="warehouseCode"></p-sortIcon>
-              </th>
+
               <th>Kargo</th>
               <th>Fatura</th>
               <th>İşlemler</th>
@@ -258,13 +253,7 @@
                   [showClearButton]="false"
                 ></p-columnFilter>
               </th>
-              <th>
-                <p-columnFilter
-                  type="text"
-                  field="salespersonCode"
-                  [showClearButton]="false"
-                ></p-columnFilter>
-              </th>
+
               <th>
                 <p-columnFilter
                   type="text"
@@ -300,13 +289,7 @@
                   [showClearButton]="false"
                 ></p-columnFilter>
               </th>
-              <th>
-                <p-columnFilter
-                  type="text"
-                  field="warehouseCode"
-                  [showClearButton]="false"
-                ></p-columnFilter>
-              </th>
+
               <th>
                 <p-columnFilter
                   type="boolean"
@@ -328,13 +311,13 @@
               <td>{{ order.orderNumber }}</td>
               <td>{{ order.currAccCode }}</td>
               <td>{{ order.currAccDescription }}</td>
-              <td>{{ order.salespersonCode }}</td>
+
               <td>{{ order.description }}</td>
               <td>{{ order.qty1 }}</td>
               <td>{{ order.price.toString() | currency : "₺" }}</td>
               <td>{{ order.collectedQty }}</td>
               <td>{{ order.remainingQty }}</td>
-              <td>{{ order.warehouseCode }}</td>
+
               <td>
                 <button
                   class="btn"
@@ -409,7 +392,7 @@
                   </div>
                   <div
                     class="btn btn-success"
-                    (click)="createMarketplaceCargoBarcode(order.orderNumber)"
+                    (click)="createMarketplaceCargoBarcode(order)"
                   >
                     <i class="fa-solid fa-barcode"></i>
                   </div>

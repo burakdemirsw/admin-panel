@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { borderRightStyle } from 'html2canvas/dist/types/css/property-descriptors/border-style';
+import { MenuItem } from 'primeng/api';
 import { CreateBarcodeFromOrder_RM } from 'src/app/components/Product/create-barcode/models/createBarcode';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { ZTMSG_CreateCargoBarcode_CM } from 'src/app/models/model/cargo/ZTMSG_CreateCargoBarcode_CM';
@@ -39,8 +40,8 @@ export class RetailOrderManagementComponent implements OnInit {
   //#region  params
   cargoFirms = ClientUrls.cargoFirms;
   numberOfList: number[] = [1, 10, 20, 50, 100,]
-  saleOrderModels: SaleOrderModel[]
-  selectedOrders: SaleOrderModel[]
+  saleOrderModels: SaleOrderModel[] = []
+  selectedOrders: SaleOrderModel[] = []
   currentPage: number = 1;
   filterForm: FormGroup;
   pageDescription: boolean = false;
@@ -69,21 +70,23 @@ export class RetailOrderManagementComponent implements OnInit {
     "Fatura",
     "İşlemler"
   ];
+  items: MenuItem[] = [
+    {
+      label: 'Kargola',
+      command: () => {
+        this.cargoSelectVisible = true;
+      }
+    },
+    {
+      label: 'Excel\'e Aktar',
+      command: () => {
+        this.exportCsv();
+      }
+    }
+  ];
   //#endregion
 
 
-  getCargoImage(name: string): string {
-    switch (name) {
-      case 'MNG':
-        return 'https://upload.wikimedia.org/wikipedia/tr/5/52/MNG_Kargo.png';
-      case 'Aras':
-        return 'https://seeklogo.com/images/A/aras-kargo-arac-kaplama-logo-73DA342AF5-seeklogo.com.png';
-      case 'Yurtiçi':
-        return 'https://logoeps.com/wp-content/uploads/2013/06/yurtici-kargo-vector-logo-200x200.png';
-      default:
-        return '';
-    }
-  }
 
   async ngOnInit() {
     //this.spinnerService.show();
@@ -107,10 +110,30 @@ export class RetailOrderManagementComponent implements OnInit {
     await this.getOrders(this.status, this.invoiceStatus);
     //this.spinnerService.hide();
     this.setPageDescription();
+    //this.setOperations();
 
   }
 
 
+  setOperations() {
+    this.items = [
+      {
+        label: 'Kargola',
+        command: () => {
+          this.cargoSelectVisible = true;
+        }
+      },
+      {
+        label: 'Excel\'e Aktar',
+        command: () => {
+          this.exportCsv();
+        }
+      },
+      { label: 'Angular Website', url: 'http://angular.io' },
+      { separator: true },
+      { label: 'Upload', routerLink: ['/fileupload'] }
+    ];
+  }
 
   setPageDescription() {
 
@@ -153,7 +176,12 @@ export class RetailOrderManagementComponent implements OnInit {
 
   }
   exportCsv() {
-    this.exportCsvService.exportToCsv(this.selectedOrders, 'my-orders', this.columns);
+    if (this.selectedOrders.length > 0) {
+
+      this.exportCsvService.exportToCsv(this.selectedOrders, 'my-orders', this.columns);
+    } else {
+      this.toasterService.warn('Lütfen En Az Bir Sipariş Seçiniz.')
+    }
   }
   getSelectedOrders() {
     console.log(this.selectedOrders)
@@ -250,12 +278,12 @@ export class RetailOrderManagementComponent implements OnInit {
   }
 
 
-  async createMarketplaceCargoBarcode(orderNumber: string) {
-    if (!orderNumber.includes('B')) {
+  async createMarketplaceCargoBarcode(order: SaleOrderModel) {
+    if (!order.description.includes('B')) {
       if (confirm('Bu sipariş Beymen siparişi değil. Yine de yazdırmak istiyor musunuz?') == false) {
         return;
       } else {
-        var response = await this.orderService.createMarketplaceCargoBarcode(orderNumber);
+        var response = await this.orderService.createMarketplaceCargoBarcode(order.orderNumber);
         if (response) {
           this.toasterService.success("İşlem Başarılı")
         } else {
@@ -263,10 +291,29 @@ export class RetailOrderManagementComponent implements OnInit {
         }
       }
     }
+    else {
+      var response = await this.orderService.createMarketplaceCargoBarcode(order.orderNumber);
+      if (response) {
+        this.toasterService.success("İşlem Başarılı")
+      } else {
+        this.toasterService.error("İşlem Başarısız")
+      }
+    }
 
   }
 
-
+  getCargoImage(name: string): string {
+    switch (name) {
+      case 'MNG':
+        return '../../../../assets/img/cargo/mnglogo.png';
+      case 'Aras':
+        return '../../../../assets/img/cargo/araslogo.png';
+      case 'Yurtiçi':
+        return '../../../../assets/img/cargo/yurticilogo.png';
+      default:
+        return '';
+    }
+  }
   selectCargo(cargo: any) {
     this.createCargoBulk(this.selectedOrders, cargo.id)
   }

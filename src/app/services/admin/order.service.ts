@@ -44,7 +44,7 @@ export class OrderService {
   async getOrders(type: number, invoiceStatus: number): Promise<SaleOrderModel[]> {
 
     var query: string = `${type}/${invoiceStatus}`
-    const response = this.httpClientService
+    const response = await this.httpClientService
       .get<SaleOrderModel>({
         controller: 'order/get-sale-orders',
       }, query)

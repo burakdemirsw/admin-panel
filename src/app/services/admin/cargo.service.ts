@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
-import { CreatePackage_MNG_RM, CargoBarcode_VM } from 'src/app/components/cargo/create-cargo/models/models';
+import { CreatePackage_MNG_RM, CargoBarcode_VM, BulkDeleteShipment_CM, BulkDeleteShipment_RM } from 'src/app/components/cargo/create-cargo/models/models';
 import { ZTMSG_CreateCargoBarcode_CM, ZTMSG_CreateCargoBarcode_RM } from 'src/app/models/model/cargo/ZTMSG_CreateCargoBarcode_CM';
 
 @Injectable({
@@ -105,14 +105,14 @@ export class CargoService {
         ShipmentId: cargo.shipmentId,
       }
       try {
-        var response = await this.httpClientService.post<any>({ controller: "cargos/delete-shipped-cargo" }, request).toPromise();
+        var response = await this.httpClientService.post<any>({ controller: "cargos/delete-mng-order" }, request).toPromise();
 
         return response;
       } catch (error: any) {
         console.log(error.message);
         return null;
       }
-    } else {
+    } else if (cargoFirmId === 2) {
       var request = {
         ReferenceId: cargo.referenceId,
         ShipmentId: cargo.shipmentId,
@@ -125,6 +125,30 @@ export class CargoService {
         console.log(error.message);
         return null;
       }
+    } else if (cargoFirmId === 3) {
+      var request = {
+        ReferenceId: cargo.referenceId,
+        ShipmentId: cargo.shipmentId,
+      }
+      try {
+        var __response = await this.httpClientService.get<any>({ controller: "cargos/delete-yurtici-order" }, cargo.referenceId).toPromise();
+
+        return __response;
+      } catch (error: any) {
+        console.log(error.message);
+        return null;
+      }
+    }
+
+  }
+  async deleteCargoBulk(request: BulkDeleteShipment_CM[]): Promise<BulkDeleteShipment_RM[]> {
+    try {
+      var response = await this.httpClientService.post<any>({ controller: "cargos/delete-shipment-bulk" }, request).toPromise();
+      var _response: BulkDeleteShipment_RM[] = response;
+      return _response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
     }
 
   }

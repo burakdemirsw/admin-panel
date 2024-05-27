@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { CargoService } from 'src/app/services/admin/cargo.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
-import { CargoBarcode_VM, GetPackageStatus_MNG_Response } from '../create-cargo/models/models';
+import { BulkDeleteShipment_CM, BulkDeleteShipment_RM, CargoBarcode_VM, GetPackageStatus_MNG_Response } from '../create-cargo/models/models';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-cargo-list',
@@ -14,7 +15,24 @@ export class CargoListComponent implements OnInit {
   constructor(private headerService: HeaderService, private toasterService: ToasterService, private cargoService: CargoService) { }
   currentPage = 1;
   cargos: CargoBarcode_VM[] = [];
+  selectedCargos: CargoBarcode_VM[] = [];
+
   visible: boolean = false;
+  items: MenuItem[] = [
+    {
+      label: 'Yazdır',
+      command: () => {
+
+      }
+    },
+    {
+      label: 'Sil',
+      command: () => {
+        this.deleteCargoBulk(this.selectedCargos)
+      }
+    },
+
+  ];
   cargoState: boolean = false;
   ngOnInit(): void {
     this.headerService.updatePageTitle("Kargolar");
@@ -37,6 +55,27 @@ export class CargoListComponent implements OnInit {
       if (response) {
         this.toasterService.success("Gönderi Silindi")
         this.getCargos(this.cargoState);
+      } else {
+        this.toasterService.warn("Gönderi Silinemedi")
+      }
+    }
+
+
+
+  }
+
+  async deleteCargoBulk(cargo: CargoBarcode_VM[]) {
+    var windowResponse = window.confirm("Gönderiyi silmek istediğinize emin misiniz?")
+    if (windowResponse) {
+      var request: BulkDeleteShipment_CM[] = [];
+      cargo.forEach(element => {
+        request.push({ referenceId: element.referenceId, cargoFirmId: element.cargoFirmId })
+      });
+      var response: BulkDeleteShipment_RM[] = await this.cargoService.deleteCargoBulk(request)
+      if (response) {
+        this.toasterService.info(response.length + " Adet Gönderiden " + response.filter(x => x.status === true).length + " Gönderi Silindi")
+        this.getCargos(this.cargoState);
+
       } else {
         this.toasterService.warn("Gönderi Silinemedi")
       }
@@ -76,8 +115,6 @@ export class CargoListComponent implements OnInit {
         downloadLink.click();  // Trigger the download
         document.body.removeChild(downloadLink); // Remove the link after triggering the download
         URL.revokeObjectURL(fileURL); // Clean up the URL object
-
-
 
 
 

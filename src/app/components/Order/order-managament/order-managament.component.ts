@@ -15,6 +15,8 @@ import { Table } from 'primeng/table';
 import { ExportCsvService } from 'src/app/services/export-csv.service';
 import { ZTMSG_CreateCargoBarcode_CM } from 'src/app/models/model/cargo/ZTMSG_CreateCargoBarcode_CM';
 import { CargoService } from 'src/app/services/admin/cargo.service';
+import { MenuItem } from 'primeng/api';
+import { ClientUrls } from 'src/app/models/const/ClientUrls';
 
 @Component({
   selector: 'app-order-managament',
@@ -22,7 +24,7 @@ import { CargoService } from 'src/app/services/admin/cargo.service';
   styleUrls: ['./order-managament.component.css']
 })
 export class OrderManagamentComponent implements OnInit {
-
+  cargoFirms = ClientUrls.cargoFirms;
   numberOfList: number[] = [1, 10, 20, 50, 100]
   saleOrderModels: SaleOrderModel[]
   selectedOrders: SaleOrderModel[] = [];
@@ -45,7 +47,6 @@ export class OrderManagamentComponent implements OnInit {
   pageDescription: boolean = false;
   _pageDescription: boolean = false;
   pageDescriptionLine: string = "Alınan Siparişler"
-
   columns = [
     "Sipariş Tarihi",
     "Sipariş Numarası",
@@ -64,7 +65,21 @@ export class OrderManagamentComponent implements OnInit {
   ];
   status = 1;
   invoiceStatus = 2
-
+  cargoSelectVisible: boolean = false;
+  items: MenuItem[] = [
+    {
+      label: 'Kargola',
+      command: () => {
+        this.cargoSelectVisible = true;
+      }
+    },
+    {
+      label: 'Excel\'e Aktar',
+      command: () => {
+        this.exportCsv();
+      }
+    }
+  ];
   async ngOnInit() {
     //this.spinnerService.show();
 
@@ -313,7 +328,30 @@ export class OrderManagamentComponent implements OnInit {
 
   }
 
-  async createCargoBulk(request: SaleOrderModel[]) {
+
+  selectCargo(cargo: any) {
+    this.createCargoBulk(this.selectedOrders, cargo.id)
+  }
+
+
+  getCargoImage(name: string): string {
+    switch (name) {
+      case 'MNG':
+        return '../../../../assets/img/cargo/mnglogo.png';
+      case 'Aras':
+        return '../../../../assets/img/cargo/araslogo.png';
+      case 'Yurtiçi':
+        return '../../../../assets/img/cargo/yurticilogo.png';
+      default:
+        return '';
+    }
+  }
+  async createCargoBulk(request: SaleOrderModel[], cargoFirmId: number) {
+
+    if (cargoFirmId == 2) {
+      this.toasterService.warn('Bu kargo firması ile işlem yapamazsınız.')
+      return;
+    }
     if (this.selectedOrders.length > 0) {
       if (window.confirm("Seçili Siparişleri Kargoya Göndermek İstediğinize Emin Misiniz?")) {
 
@@ -322,7 +360,7 @@ export class OrderManagamentComponent implements OnInit {
         for (let i = 0; i < request.length; i++) {
           var __request = new ZTMSG_CreateCargoBarcode_CM();
           __request.orderNumber = request[i].orderNumber;
-          __request.cargoFirmId = 1;
+          __request.cargoFirmId = cargoFirmId;
           _request.push(__request);
         }
         var response = await this.cargoService.createCargoBulk(_request);

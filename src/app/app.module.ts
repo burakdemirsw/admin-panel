@@ -115,6 +115,7 @@ import { IdeasoftComponent } from './components2/marketplace/ideasoft/ideasoft.c
 import { CheckboxModule } from 'primeng/checkbox';
 import { MarketplaceInvoicesComponent } from './components/Order/marketplace-invoices/marketplace-invoices.component';
 import { ExportCsvService } from './services/export-csv.service';
+import { SplitButtonModule } from 'primeng/splitbutton';
 
 @NgModule({
 
@@ -228,7 +229,7 @@ import { ExportCsvService } from './services/export-csv.service';
     SelectButtonModule,
     SidebarModule,
     OverlayPanelModule, CheckboxModule,
-    FileUploadModule, TableModule, InputTextModule, MessagesModule, FieldsetModule, EditorModule,
+    FileUploadModule, TableModule, InputTextModule, MessagesModule, FieldsetModule, EditorModule, SplitButtonModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => localStorage.getItem('accessToken'),

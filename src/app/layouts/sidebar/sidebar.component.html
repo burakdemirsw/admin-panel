@@ -251,7 +251,7 @@
       </ul>
     </li> -->
 
-    <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
+    <!-- <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
       <a
         class="nav-link collapsed"
         data-bs-target="#User-nav"
@@ -261,29 +261,25 @@
         ><i class="bi bi-chevron-down ms-auto"></i>
       </a>
       <ul id="User-nav" class="nav-content collapse" data-bs-parent="#User-nav">
-        <li>
+       <li>
           <a routerLink="customer-list">
             <i class="bi bi-circle"></i><span>Müşteriler</span>
           </a>
         </li>
-        <!--
+
         <li>
           <a routerLink="add-customer">
             <i class="bi bi-circle"></i><span>Müşteri Ekle</span>
           </a>
-        </li> -->
-        <li>
-          <a routerLink="user-list">
-            <i class="bi bi-circle"></i><span>Kulanıcılar</span>
-          </a>
         </li>
-        <!-- <li>
+
+       <li>
           <a routerLink="register">
             <i class="bi bi-circle"></i><span>Kullanıcı Ekle</span>
           </a>
-        </li> -->
+        </li>
       </ul>
-    </li>
+    </li> -->
 
     <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
       <a
@@ -299,6 +295,11 @@
         class="nav-content collapse"
         data-bs-parent="#devolopment-nav"
       >
+        <li>
+          <a routerLink="user-list">
+            <i class="bi bi-circle"></i><span>Kulanıcılar</span>
+          </a>
+        </li>
         <li>
           <a routerLink="devolopment-list">
             <i class="bi bi-circle"></i><span>İstekler</span>
