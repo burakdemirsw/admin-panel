@@ -64,7 +64,7 @@ var PagesLoginv2Component = /** @class */ (function () {
     };
     PagesLoginv2Component.prototype.onSubmit = function (loginFormValue) {
         return __awaiter(this, void 0, void 0, function () {
-            var model, response, error_1;
+            var model, response, returnUrl, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -78,8 +78,9 @@ var PagesLoginv2Component = /** @class */ (function () {
                     case 1:
                         response = _a.sent();
                         if (response) {
-                            location.href = location.origin + "/dashboard";
-                            // this.router.navigate(["/dashboard"])
+                            returnUrl = this.getReturnUrl();
+                            location.href = returnUrl ? decodeURIComponent(returnUrl) : location.origin + "/dashboard";
+                            // this.router.navigate([returnUrl || "/dashboard"]); // If using Angular router
                         }
                         return [3 /*break*/, 3];
                     case 2:
@@ -94,6 +95,10 @@ var PagesLoginv2Component = /** @class */ (function () {
                 }
             });
         });
+    };
+    PagesLoginv2Component.prototype.getReturnUrl = function () {
+        var urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('returnUrl');
     };
     PagesLoginv2Component.prototype.openDialog = function () {
         this.visible = !this.visible;
