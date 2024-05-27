@@ -5,6 +5,7 @@ import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 import { CreatePackage_MNG_RM, CargoBarcode_VM, BulkDeleteShipment_CM, BulkDeleteShipment_RM } from 'src/app/components/cargo/create-cargo/models/models';
 import { ZTMSG_CreateCargoBarcode_CM, ZTMSG_CreateCargoBarcode_RM } from 'src/app/models/model/cargo/ZTMSG_CreateCargoBarcode_CM';
+import { ClientUrls } from 'src/app/models/const/ClientUrls';
 
 @Injectable({
   providedIn: 'root'
@@ -171,7 +172,7 @@ export class CargoService {
       var response = await this.httpClientService.post<any>({ controller: "cargos/create-cargo-bulk" }, request).toPromise();
       var list: ZTMSG_CreateCargoBarcode_RM<any>[] = response;
 
-      var responseText = request.length + " adet kargodan " + list.filter(x => x.Status === true).length + " adet kargo başarıyla oluşturuldu.";
+      var responseText = request.length + " adet kargodan " + list.filter(x => x.status === true).length + " adet kargo başarıyla oluşturuldu.";
       this.toasterService.info(responseText);
       return list;
     } catch (error: any) {
@@ -179,5 +180,96 @@ export class CargoService {
       return null;
     }
   }
+  async createMarketplaceCargoBarcode(request: string[]): Promise<any> {
+    try {
+      var userId = localStorage.getItem('userId')
+
+      // this.httpClient.get(ClientUrls.baseUrl + '/cargos/get-marketplace-order-cargo-barcode/' + request[0], { responseType: 'arraybuffer' })
+      //   .subscribe((data: ArrayBuffer) => {
+      //     const file = new Blob([data], { type: 'application/pdf' });
+      //     const fileURL = URL.createObjectURL(file);
+
+      //     // Create a temporary link element
+      //     const downloadLink = document.createElement('a');
+      //     downloadLink.href = fileURL;
+      //     downloadLink.download = "marketplace-order-cargo-barcode.pdf";  // Set the filename for the download
+      //     document.body.appendChild(downloadLink); // Append to body
+      //     downloadLink.click();  // Trigger the download
+      //     document.body.removeChild(downloadLink); // Remove the link after triggering the download
+      //     URL.revokeObjectURL(fileURL); // Clean up the URL object
+      //   });
+
+
+      this.httpClient.get(ClientUrls.baseUrl + '/cargos/get-marketplace-order-cargo-barcode/' + request[0], { responseType: 'arraybuffer' })
+        .subscribe((data: ArrayBuffer) => {
+          const file = new Blob([data], { type: 'application/pdf' });
+          const fileURL = URL.createObjectURL(file);
+
+          // Create an iframe element
+          const iframe = document.createElement('iframe');
+          iframe.style.display = 'none';  // Hide the iframe
+          iframe.src = fileURL;
+
+          // Append the iframe to the body
+          document.body.appendChild(iframe);
+
+          // Wait until the iframe is loaded, then call print
+          iframe.onload = () => {
+            iframe.contentWindow?.print();
+          };
+        });
+
+      return true;
+    } catch (error: any) {
+      // console.log(error.message);
+      return null;
+    }
+  }
+
+
+  async createYurticiBarcode(request: string[]) {
+    try {
+      var data = await this.httpClientService.post<any>({ controller: "cargos/create-yk-barcode", responseType: 'arraybuffer' }, request).toPromise();
+
+
+      const file = new Blob([data], { type: 'application/pdf' });
+      const fileURL = URL.createObjectURL(file);
+
+      // Create a temporary link element
+      const downloadLink = document.createElement('a');
+      downloadLink.href = fileURL;
+      downloadLink.download = "marketplace-order-cargo-barcode.pdf";  // Set the filename for the download
+      document.body.appendChild(downloadLink); // Append to body
+      downloadLink.click();  // Trigger the download
+      document.body.removeChild(downloadLink); // Remove the link after triggering the download
+      URL.revokeObjectURL(fileURL); // Clean up the URL object
+
+
+
+
+      const _file = new Blob([data], { type: 'application/pdf' });
+      const _fileURL = URL.createObjectURL(file);
+
+      // Create an iframe element
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';  // Hide the iframe
+      iframe.src = _fileURL;
+
+      // Append the iframe to the body
+      document.body.appendChild(iframe);
+
+      // Wait until the iframe is loaded, then call print
+      iframe.onload = () => {
+        iframe.contentWindow?.print();
+      };
+
+
+
+    } catch (error: any) {
+
+      return null;
+    }
+  }
+
   //PrintBarcodeFromBase64
 }

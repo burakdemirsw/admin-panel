@@ -312,21 +312,6 @@ export class OrderManagamentComponent implements OnInit {
 
   }
 
-  async createMarketplaceCargoBarcode(orderNumber: string) {
-    if (!orderNumber.includes('B')) {
-      if (confirm('Bu sipariş Beymen siparişi değil. Yine de yazdırmak istiyor musunuz?') == false) {
-        return;
-      } else {
-        var response = await this.orderService.createMarketplaceCargoBarcode(orderNumber);
-        if (response) {
-          this.toasterService.success("İşlem Başarılı")
-        } else {
-          this.toasterService.error("İşlem Başarısız")
-        }
-      }
-    }
-
-  }
 
 
   selectCargo(cargo: any) {

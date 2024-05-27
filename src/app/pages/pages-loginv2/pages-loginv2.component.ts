@@ -65,7 +65,6 @@ export class PagesLoginv2Component implements OnInit {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('returnUrl');
   }
-
   visible: boolean;
   openDialog() {
     this.visible = !this.visible

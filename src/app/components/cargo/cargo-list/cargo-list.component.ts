@@ -4,6 +4,8 @@ import { CargoService } from 'src/app/services/admin/cargo.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { BulkDeleteShipment_CM, BulkDeleteShipment_RM, CargoBarcode_VM, GetPackageStatus_MNG_Response } from '../create-cargo/models/models';
 import { MenuItem } from 'primeng/api';
+import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
+import { MarketplaceService } from 'src/app/services/admin/marketplace.service';
 
 @Component({
   selector: 'app-cargo-list',
@@ -12,7 +14,9 @@ import { MenuItem } from 'primeng/api';
 })
 export class CargoListComponent implements OnInit {
 
-  constructor(private headerService: HeaderService, private toasterService: ToasterService, private cargoService: CargoService) { }
+  constructor(private headerService: HeaderService, private toasterService: ToasterService, private cargoService: CargoService,
+    private marketplaceService: MarketplaceService
+  ) { }
   currentPage = 1;
   cargos: CargoBarcode_VM[] = [];
   selectedCargos: CargoBarcode_VM[] = [];
@@ -22,7 +26,7 @@ export class CargoListComponent implements OnInit {
     {
       label: 'Yazdır',
       command: () => {
-
+        this.createYurticiBarcode()
       }
     },
     {
@@ -144,6 +148,43 @@ export class CargoListComponent implements OnInit {
 
     }
   }
+  async createYurticiBarcode() {
+    if (this.selectedCargos.length > 0) {
+      this.selectedCargos = this.selectedCargos.filter(x => x.cargoFirmId === 3);
+      var request: string[] = [];
+      this.selectedCargos.forEach(element => {
+        request.push(element.referenceId)
+      });
+      var response = await this.cargoService.createYurticiBarcode(request);
+      if (response) {
+        this.toasterService.success("BARKOD YAZDIRILDI");
+        this.getCargos(this.cargoState);
+      } else {
+        this.toasterService.error("BARKOD YAZDIRILAMADI");
+      }
+    }
+  }
+
+  async createMarketplaceCargoBarcode(orders: CargoBarcode_VM[]) {
+
+    var orderNoList: string[] = [];
+    for (const element of orders) {
+      // if (!element.description.includes('B')) {
+      //   this.toasterService.warn('Sadece Beymen Siparişleri Seçilebilir.');
+      //   return;
+      // }
+      orderNoList.push(element.orderNo);
+    }
+
+    var response = await this.cargoService.createMarketplaceCargoBarcode(orderNoList);
+    if (response) {
+      this.toasterService.success("İşlem Başarılı");
+    } else {
+      this.toasterService.error("İşlem Başarısız");
+    }
+
+
+
+  }
 
 }
-

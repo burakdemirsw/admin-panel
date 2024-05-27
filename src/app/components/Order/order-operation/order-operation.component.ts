@@ -198,11 +198,11 @@ export class OrderOperationComponent implements OnInit {
     request.warehousePerson = localStorage.getItem('name') + ' ' + localStorage.getItem('surname');
     request.createdDate = new Date();
     const response = await this.orderService.addOrderStatus(request);
-    if (response) {
-      this.toasterService.success('Durum Güncellendi');
-    } else {
-      this.toasterService.error('Durum Güncellenemedi');
-    }
+    // if (response) {
+    //   this.toasterService.success('Durum Güncellendi');
+    // } else {
+    //   this.toasterService.error('Durum Güncellenemedi');
+    // }
   }
 
   //-----------------------------------------------------EKSIK URUNLER İŞLEMLERİ
@@ -893,13 +893,16 @@ export class OrderOperationComponent implements OnInit {
     var newResponse = await this.productService.countProductByBarcode4(
       barcode, this.warehouseCode
     );
-    const shelves = newResponse[0]
-      .split(',')
-      .filter((raflar) => raflar.trim() !== '')
+    if (newResponse != null) {
+      const shelves = newResponse[0]
+        .split(',')
+        .filter((raflar) => raflar.trim() !== '')
 
 
-    this.productShelves = shelves;
-    this.productShelvesDialog = true;
+      this.productShelves = shelves;
+      this.productShelvesDialog = true;
+    }
+
   }
   setShelveToForm(shelve) {
     this.checkForm.get('shelfNo').setValue(shelve);

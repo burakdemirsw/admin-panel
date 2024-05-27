@@ -40,6 +40,7 @@
     "ngx-print": "^1.5.1",
     "ngx-scanner-qrcode": "^1.3.0",
     "ngx-spinner": "^15.0.1",
+    "pdf-lib": "^1.17.1",
     "pdfjs": "^2.5.3",
     "pdfjs-dist": "^4.2.67",
     "primeicons": "^6.0.1",

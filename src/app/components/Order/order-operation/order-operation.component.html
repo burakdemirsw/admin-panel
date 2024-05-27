@@ -20,18 +20,18 @@
                     [ngClass]="{ 'success-row': product.quantity === 0 }"
                   >
                     <td>
-                      <img
+                      <p-image
                         src="{{ product.photoUrl }}"
-                        alt="Resim"
-                        width="50"
-                        height="50"
-                        (click)="openImageModal(product.photoUrl)"
+                        previewImageSrc="{{ product.photoUrl }}"
+                        alt="Image"
+                        width="30"
+                        [preview]="true"
                       />
                     </td>
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.itemCode }}</td>
+                    <td>{{ product.itemDescription.substring(0, 30) }}</td>
                     <td>{{ product.barcode }}</td>
-                    <td>{{ product.itemDescription }}</td>
                     <td>{{ product.quantity }}</td>
                     <td>{{ product.countedQty }}</td>
                     <td>{{ product.colorDescription }}</td>
@@ -282,17 +282,17 @@
                     [ngClass]="{ 'success-row': product.quantity === 0 }"
                   >
                     <td>
-                      <img
+                      <p-image
                         src="{{ product.photoUrl }}"
-                        alt="Resim"
-                        width="50"
-                        height="50"
-                        (click)="openImageModal(product.photoUrl)"
+                        previewImageSrc="{{ product.photoUrl }}"
+                        alt="Image"
+                        width="30"
+                        [preview]="true"
                       />
                     </td>
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.itemCode }}</td>
-                    <td>{{ product.itemDescription }}</td>
+                    <td>{{ product.itemDescription.substring(0, 30) }}</td>
                     <td>{{ product.barcode }}</td>
                     <td>{{ product.quantity }}</td>
                     <td>{{ product.countedQty }}</td>
@@ -379,8 +379,8 @@
                     <th scope="col">Ürün Kodu</th>
                     <th scope="col">Rafa Giren Miktar</th>
                     <th scope="col">Barkod</th>
-                    <th scope="col">Parti Kodu</th>
-                    <th scope="col">Durum</th>
+
+                    <!-- <th scope="col">Durum</th> -->
 
                     <th scope="col">İşlemler</th>
                   </tr>
@@ -394,20 +394,20 @@
                     </td>
 
                     <td>
-                      <img
+                      <p-image
                         src="{{ product.photoUrl }}"
-                        alt="Resim"
-                        width="50"
-                        height="50"
-                        (click)="openImageModal(product.photoUrl)"
+                        previewImageSrc="{{ product.photoUrl }}"
+                        alt="Image"
+                        width="30"
+                        [preview]="true"
                       />
                     </td>
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.itemCode }}</td>
                     <td>{{ product.quantity }}</td>
                     <td>{{ product.barcode }}</td>
-                    <td>{{ product.batchCode }}</td>
-                    <td>
+
+                    <!-- <td>
                       <span
                         [ngClass]="
                           product.availableQty >= product.quantity
@@ -421,7 +421,7 @@
                             : "Başarısız"
                         }}
                       </span>
-                    </td>
+                    </td> -->
                     <td>
                       <div class="btn-group">
                         <button
@@ -488,10 +488,10 @@
       [errorCorrectionLevel]="'M'"
     ></qrcode> -->
 
-    <app-image-modal
+    <!-- <app-image-modal
       [imageUrl]="modalImageUrl"
       [title]="'Ürün Detay'"
-    ></app-image-modal>
+    ></app-image-modal> -->
 
     <p-dialog
       header="Fatura Bul"
@@ -555,12 +555,5 @@
         ></app-warehosue-shelf-count>
       </p>
     </p-dialog>
-    <!-- <p-dialog
-      header="Header"
-      [(visible)]="barcodeDialog"
-      [style]="{ width: '100vw' }"
-    >
-      <app-create-qr [barcode]="barcode" [quantity]="quantity"></app-create-qr>
-    </p-dialog> -->
   </section>
 </main>

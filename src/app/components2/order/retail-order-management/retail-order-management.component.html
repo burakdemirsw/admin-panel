@@ -169,7 +169,7 @@
               </div>
               <div style="text-align: left">
                 <p-button
-                  icon="pi pi-plus"
+                  icon="pi pi-minus"
                   label="Faturalaştırılmayan Siparişler"
                   (click)="getOrders(1, 2)"
                 />
@@ -392,7 +392,7 @@
                   </div>
                   <div
                     class="btn btn-success"
-                    (click)="createMarketplaceCargoBarcode(order)"
+                    (click)="createMarketplaceCargoBarcode([order])"
                   >
                     <i class="fa-solid fa-barcode"></i>
                   </div>

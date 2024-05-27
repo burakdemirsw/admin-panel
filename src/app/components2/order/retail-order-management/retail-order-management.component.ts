@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { borderRightStyle } from 'html2canvas/dist/types/css/property-descriptors/border-style';
 import { MenuItem } from 'primeng/api';
 import { CreateBarcodeFromOrder_RM } from 'src/app/components/Product/create-barcode/models/createBarcode';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
@@ -11,6 +10,7 @@ import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
 import { CargoService } from 'src/app/services/admin/cargo.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
+import { MarketplaceService } from 'src/app/services/admin/marketplace.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { RetailOrderService } from 'src/app/services/admin/retail/retail-order.service';
 import { ExportCsvService } from 'src/app/services/export-csv.service';
@@ -33,7 +33,8 @@ export class RetailOrderManagementComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private productService: ProductService,
     private exportCsvService: ExportCsvService,
-    private cargoService: CargoService
+    private cargoService: CargoService,
+    private marketplaceService: MarketplaceService
 
 
   ) { }
@@ -81,6 +82,12 @@ export class RetailOrderManagementComponent implements OnInit {
       label: 'Excel\'e Aktar',
       command: () => {
         this.exportCsv();
+      }
+    }, {
+      label: 'Toplu A4 Yazdır',
+      command: () => {
+
+        this.createMarketplaceCargoBarcode(this.selectedOrders);
       }
     }
   ];
@@ -277,30 +284,28 @@ export class RetailOrderManagementComponent implements OnInit {
     }
   }
 
+  async createMarketplaceCargoBarcode(orders: SaleOrderModel[]) {
 
-  async createMarketplaceCargoBarcode(order: SaleOrderModel) {
-    if (!order.description.includes('B')) {
-      if (confirm('Bu sipariş Beymen siparişi değil. Yine de yazdırmak istiyor musunuz?') == false) {
+    var orderNoList: string[] = [];
+    for (const element of orders) {
+      if (!element.description.includes('B')) {
+        this.toasterService.warn('Sadece Beymen Siparişleri Seçilebilir.');
         return;
-      } else {
-        var response = await this.orderService.createMarketplaceCargoBarcode(order.orderNumber);
-        if (response) {
-          this.toasterService.success("İşlem Başarılı")
-        } else {
-          this.toasterService.error("İşlem Başarısız")
-        }
       }
+      orderNoList.push(element.orderNumber);
     }
-    else {
-      var response = await this.orderService.createMarketplaceCargoBarcode(order.orderNumber);
-      if (response) {
-        this.toasterService.success("İşlem Başarılı")
-      } else {
-        this.toasterService.error("İşlem Başarısız")
-      }
+
+    var response = await this.cargoService.createMarketplaceCargoBarcode(orderNoList);
+    if (response) {
+      this.toasterService.success("İşlem Başarılı");
+
+
+    } else {
+      this.toasterService.error("İşlem Başarısız");
     }
 
   }
+
 
   getCargoImage(name: string): string {
     switch (name) {
@@ -314,8 +319,19 @@ export class RetailOrderManagementComponent implements OnInit {
         return '';
     }
   }
-  selectCargo(cargo: any) {
+  async selectCargo(cargo: any) {
     this.createCargoBulk(this.selectedOrders, cargo.id)
+
+    var orderIdList: string[] = [];
+    this.selectedOrders.forEach(element => {
+      orderIdList.push(element.description);
+    });
+    if (window.confirm("Sipariş Durumları Değiştirilsin Mi? (KARGOYA VERİLDİ)")) {
+      await this.marketplaceService.updateIdeasoftOrderStatus(orderIdList)
+
+    }
+    this.cargoSelectVisible = false;
+
   }
 
 
