@@ -1,22 +1,22 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MenuItem } from 'primeng/api';
+import { ClientUrls } from 'src/app/models/const/ClientUrls';
+import { ZTMSG_CreateCargoBarcode_CM } from 'src/app/models/model/cargo/ZTMSG_CreateCargoBarcode_CM';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
 import { PrinterInvoiceRequestModel } from 'src/app/models/model/order/printerInvoiceRequestModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
+import { CargoService } from 'src/app/services/admin/cargo.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
+import { ExportCsvService } from 'src/app/services/export-csv.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { CreateBarcodeFromOrder_RM } from '../../Product/create-barcode/models/createBarcode';
-import { Table } from 'primeng/table';
-import { ExportCsvService } from 'src/app/services/export-csv.service';
-import { ZTMSG_CreateCargoBarcode_CM } from 'src/app/models/model/cargo/ZTMSG_CreateCargoBarcode_CM';
-import { CargoService } from 'src/app/services/admin/cargo.service';
-import { MenuItem } from 'primeng/api';
-import { ClientUrls } from 'src/app/models/const/ClientUrls';
+import { MarketplaceService } from 'src/app/services/admin/marketplace.service';
 
 @Component({
   selector: 'app-order-managament',
@@ -40,7 +40,8 @@ export class OrderManagamentComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private productService: ProductService,
     private exportCsvService: ExportCsvService,
-    private cargoService: CargoService
+    private cargoService: CargoService,
+    private marketplaceService: MarketplaceService
 
   ) { }
   filterForm: FormGroup;
@@ -84,7 +85,13 @@ export class OrderManagamentComponent implements OnInit {
       command: () => {
         this.getWayBillReport();
       }
-    }
+    },
+    {
+      label: 'Sipariş Durumunu Güncelle',
+      command: () => {
+        this.updateOrderStatus();
+      }
+    },
   ];
   async ngOnInit() {
     //this.spinnerService.show();
@@ -329,11 +336,20 @@ export class OrderManagamentComponent implements OnInit {
   }
 
 
-
-  selectCargo(cargo: any) {
+  async selectCargo(cargo: any) {
     this.createCargoBulk(this.selectedOrders, cargo.id)
+
+
+    await this.updateOrderStatus();
+    this.cargoSelectVisible = false;
+
   }
 
+  async updateOrderStatus() {
+    if (window.confirm("Sipariş Durumları Değiştirilsin Mi? (KARGOYA VERİLDİ)")) {
+      await this.marketplaceService.updateIdeasoftOrderStatus(this.selectedOrders)
+    }
+  }
 
   getCargoImage(name: string): string {
     switch (name) {

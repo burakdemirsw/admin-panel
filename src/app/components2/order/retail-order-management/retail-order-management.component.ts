@@ -87,6 +87,12 @@ export class RetailOrderManagementComponent implements OnInit {
       }
     },
     {
+      label: 'Sipariş Durumunu Güncelle',
+      command: () => {
+        this.updateOrderStatus();
+      }
+    },
+    {
       label: 'İrsaliye Çıktısı Al',
       command: () => {
         this.getWayBillReport();
@@ -324,18 +330,17 @@ export class RetailOrderManagementComponent implements OnInit {
   async selectCargo(cargo: any) {
     this.createCargoBulk(this.selectedOrders, cargo.id)
 
-    var orderIdList: string[] = [];
-    this.selectedOrders.forEach(element => {
-      orderIdList.push(element.description);
-    });
-    if (window.confirm("Sipariş Durumları Değiştirilsin Mi? (KARGOYA VERİLDİ)")) {
-      await this.marketplaceService.updateIdeasoftOrderStatus(orderIdList)
 
-    }
+    await this.updateOrderStatus();
     this.cargoSelectVisible = false;
 
   }
 
+  async updateOrderStatus() {
+    if (window.confirm("Sipariş Durumları Değiştirilsin Mi? (KARGOYA VERİLDİ)")) {
+      await this.marketplaceService.updateIdeasoftOrderStatus(this.selectedOrders)
+    }
+  }
 
   async createCargoBulk(request: SaleOrderModel[], cargoFirmId: number) {
 
