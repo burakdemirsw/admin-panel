@@ -816,8 +816,14 @@ export class OrderService {
         .subscribe((data: ArrayBuffer) => {
           const file = new Blob([data], { type: 'application/pdf' });
           const fileURL = URL.createObjectURL(file);
-          window.open(fileURL, '_blank');
 
+          // Open the PDF in a new tab/window
+          const newWindow = window.open(fileURL);
+
+          // Wait for a brief moment before printing (optional)
+          setTimeout(() => {
+            newWindow?.print();
+          }, 1000);
         });
 
       return true;

@@ -205,18 +205,13 @@ export class CargoService {
           const file = new Blob([data], { type: 'application/pdf' });
           const fileURL = URL.createObjectURL(file);
 
-          // Create an iframe element
-          const iframe = document.createElement('iframe');
-          iframe.style.display = 'none';  // Hide the iframe
-          iframe.src = fileURL;
+          // Open the PDF in a new tab/window
+          const newWindow = window.open(fileURL);
 
-          // Append the iframe to the body
-          document.body.appendChild(iframe);
-
-          // Wait until the iframe is loaded, then call print
-          iframe.onload = () => {
-            iframe.contentWindow?.print();
-          };
+          // Wait for a brief moment before printing (optional)
+          setTimeout(() => {
+            newWindow?.print();
+          }, 1000);
         });
 
       return true;
@@ -235,34 +230,13 @@ export class CargoService {
       const file = new Blob([data], { type: 'application/pdf' });
       const fileURL = URL.createObjectURL(file);
 
-      // Create a temporary link element
-      const downloadLink = document.createElement('a');
-      downloadLink.href = fileURL;
-      downloadLink.download = "marketplace-order-cargo-barcode.pdf";  // Set the filename for the download
-      document.body.appendChild(downloadLink); // Append to body
-      downloadLink.click();  // Trigger the download
-      document.body.removeChild(downloadLink); // Remove the link after triggering the download
-      URL.revokeObjectURL(fileURL); // Clean up the URL object
+      // Open the PDF in a new tab/window
+      const newWindow = window.open(fileURL);
 
-
-
-
-      const _file = new Blob([data], { type: 'application/pdf' });
-      const _fileURL = URL.createObjectURL(file);
-
-      // Create an iframe element
-      const iframe = document.createElement('iframe');
-      iframe.style.display = 'none';  // Hide the iframe
-      iframe.src = _fileURL;
-
-      // Append the iframe to the body
-      document.body.appendChild(iframe);
-
-      // Wait until the iframe is loaded, then call print
-      iframe.onload = () => {
-        iframe.contentWindow?.print();
-      };
-
+      // Wait for a brief moment before printing (optional)
+      setTimeout(() => {
+        newWindow?.print();
+      }, 1000);
 
 
     } catch (error: any) {
