@@ -200,7 +200,7 @@ export class CargoService {
       //   });
 
 
-      this.httpClient.get(ClientUrls.baseUrl + '/cargos/get-marketplace-order-cargo-barcode/' + request[0], { responseType: 'arraybuffer' })
+      this.httpClient.post(ClientUrls.baseUrl + '/cargos/get-marketplace-order-cargo-barcode', request, { responseType: 'arraybuffer' })
         .subscribe((data: ArrayBuffer) => {
           const file = new Blob([data], { type: 'application/pdf' });
           const fileURL = URL.createObjectURL(file);

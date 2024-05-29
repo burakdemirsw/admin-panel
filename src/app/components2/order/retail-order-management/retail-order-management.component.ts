@@ -11,6 +11,7 @@ import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
 import { CargoService } from 'src/app/services/admin/cargo.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { MarketplaceService } from 'src/app/services/admin/marketplace.service';
+import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { RetailOrderService } from 'src/app/services/admin/retail/retail-order.service';
 import { ExportCsvService } from 'src/app/services/export-csv.service';
@@ -34,7 +35,8 @@ export class RetailOrderManagementComponent implements OnInit {
     private productService: ProductService,
     private exportCsvService: ExportCsvService,
     private cargoService: CargoService,
-    private marketplaceService: MarketplaceService
+    private marketplaceService: MarketplaceService,
+    private _orderService: OrderService
 
 
   ) { }
@@ -83,11 +85,11 @@ export class RetailOrderManagementComponent implements OnInit {
       command: () => {
         this.exportCsv();
       }
-    }, {
-      label: 'Toplu A4 Yazdır',
+    },
+    {
+      label: 'İrsaliye Çıktısı Al',
       command: () => {
-
-        this.createMarketplaceCargoBarcode(this.selectedOrders);
+        this.getWayBillReport();
       }
     }
   ];
@@ -367,5 +369,13 @@ export class RetailOrderManagementComponent implements OnInit {
 
 
   }
-
+  async getWayBillReport() {
+    var orderNumberList = this.selectedOrders.map(x => x.orderNumber) as string[];
+    var response = await this._orderService.getWayBillReport(orderNumberList)
+    if (response) {
+      this.toasterService.success("İşlem Başarılı")
+    } else {
+      this.toasterService.error("İşlem Başarısız")
+    }
+  }
 }

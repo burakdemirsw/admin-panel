@@ -826,6 +826,30 @@ export class OrderService {
       return null;
     }
   }
+  async getWayBillReport(request: string[]): Promise<any> {
+    try {
+      var userId = localStorage.getItem('userId')
+
+      this.httpClient.post(ClientUrls.baseUrl + '/order/get-waybill-report', request, { responseType: 'arraybuffer' })
+        .subscribe((data: ArrayBuffer) => {
+          const file = new Blob([data], { type: 'application/pdf' });
+          const fileURL = URL.createObjectURL(file);
+
+          // Open the PDF in a new tab/window
+          const newWindow = window.open(fileURL);
+
+          // Wait for a brief moment before printing (optional)
+          setTimeout(() => {
+            newWindow?.print();
+          }, 1000);
+        });
+
+      return true;
+    } catch (error: any) {
+      // console.log(error.message);
+      return null;
+    }
+  }
 
 
   //ExecuteSqlRawAsync

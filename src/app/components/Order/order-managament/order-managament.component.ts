@@ -78,6 +78,12 @@ export class OrderManagamentComponent implements OnInit {
       command: () => {
         this.exportCsv();
       }
+    },
+    {
+      label: 'İrsaliye Çıktısı Al',
+      command: () => {
+        this.getWayBillReport();
+      }
     }
   ];
   async ngOnInit() {
@@ -113,6 +119,16 @@ export class OrderManagamentComponent implements OnInit {
     if (response) {
       this.toasterService.success("İşlem Başarılı")
       this.getOrders(this.status, this.invoiceStatus)
+    }
+  }
+
+  async getWayBillReport() {
+    var orderNumberList = this.selectedOrders.map(x => x.orderNumber) as string[];
+    var response = await this.orderService.getWayBillReport(orderNumberList)
+    if (response) {
+      this.toasterService.success("İşlem Başarılı")
+    } else {
+      this.toasterService.error("İşlem Başarısız")
     }
   }
   setPageDescription() {

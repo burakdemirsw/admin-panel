@@ -24,9 +24,15 @@ export class CargoListComponent implements OnInit {
   visible: boolean = false;
   items: MenuItem[] = [
     {
-      label: 'Yazdır',
+      label: 'Yazdır (ZPL)',
       command: () => {
         this.createYurticiBarcode()
+      }
+    },
+    {
+      label: 'Yazdır (A4)',
+      command: () => {
+        this.createMarketplaceCargoBarcode()
       }
     },
     {
@@ -34,7 +40,7 @@ export class CargoListComponent implements OnInit {
       command: () => {
         this.deleteCargoBulk(this.selectedCargos)
       }
-    },
+    }
 
   ];
   cargoState: boolean = false;
@@ -165,16 +171,10 @@ export class CargoListComponent implements OnInit {
     }
   }
 
-  async createMarketplaceCargoBarcode(orders: CargoBarcode_VM[]) {
+  async createMarketplaceCargoBarcode() {
 
-    var orderNoList: string[] = [];
-    for (const element of orders) {
-      // if (!element.description.includes('B')) {
-      //   this.toasterService.warn('Sadece Beymen Siparişleri Seçilebilir.');
-      //   return;
-      // }
-      orderNoList.push(element.orderNo);
-    }
+    var orderNoList: string[] = this.selectedCargos.map(x => x.orderNo);
+
 
     var response = await this.cargoService.createMarketplaceCargoBarcode(orderNoList);
     if (response) {
