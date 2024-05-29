@@ -32,4 +32,8 @@ th {
   /* Örnek bir genişlik */
 }
 
+ul {
+  padding-left: 0px !important
+}
+
 /* Diğer kolonlar için de benzer şekilde sınıflar tanımlayabilirsiniz */

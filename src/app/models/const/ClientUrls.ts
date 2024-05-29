@@ -7,3 +7,4 @@ export enum ClientUrls {
   photoUrl = "http://212.156.46.206:7676/photo/web1/"
 }
 
+

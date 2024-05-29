@@ -21,62 +21,100 @@
 
     <div class="card">
       <div class="card-body">
-        <div style="overflow-x: auto">
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Müşteri</th>
-                <th scope="col">Sipariş No</th>
-                <th scope="col">Kargo Durumu</th>
-                <th scope="col">Oluşturulma Zamanı</th>
-                <th scope="col">İşlemler</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                *ngFor="
-                  let order of orders
-                    | paginate : { itemsPerPage: 20, currentPage: currentPage }
-                "
-              >
-                <td>{{ order.customerDescription }}</td>
-                <td>{{ order.orderNo }}</td>
-                <td>{{ order.cargoStatus }}</td>
-                <td>{{ order.createdDate | date : "dd.MM.yyyy HH:mm" }}</td>
-
-                <td>
-                  <div class="btn-group">
-                    <div
-                      class="btn btn-success"
-                      data-text="Kargo"
-                      routerLink="/create-order/quick-order/{{ order.id }}"
-                    >
-                      <i class="fa fa-bars" aria-hidden="true"></i>
-                    </div>
-
-                    <div
-                      class="btn btn-success"
-                      data-text="Kargo"
-                      (click)="deleteClientOrder(order.id)"
-                    >
-                      <i class="fa fa-trash" aria-hidden="true"></i>
-                    </div>
-                    <div
-                      class="btn btn-success"
-                      data-text="Kargo"
-                      (click)="updateCargoStatus(order)"
-                    >
-                      <i class="fa fa-truck" aria-hidden="true"></i>
-                    </div>
+        <p-table
+          [value]="orders"
+          dataKey="id"
+          [rows]="20"
+          [paginator]="true"
+          [rowsPerPageOptions]="[10, 20, 50]"
+          [globalFilterFields]="[
+            'customerDescription',
+            'orderNo',
+            'cargoStatus'
+          ]"
+          [tableStyle]="{ 'min-width': '75rem' }"
+          styleClass="p-datatable-striped"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 20%">Müşteri</th>
+              <th style="width: 20%">Sipariş No</th>
+              <th style="width: 20%">Kargo Durumu</th>
+              <th style="width: 20%">Oluşturulma Zamanı</th>
+              <th style="width: 20%">İşlemler</th>
+            </tr>
+            <tr>
+              <th>
+                <p-columnFilter
+                  type="text"
+                  field="customerDescription"
+                  placeholder="Müşteriye göre ara"
+                  ariaLabel="Müşteri filtresi"
+                />
+              </th>
+              <th>
+                <p-columnFilter
+                  type="text"
+                  field="orderNo"
+                  placeholder="Sipariş No'ya göre ara"
+                  ariaLabel="Sipariş No filtresi"
+                />
+              </th>
+              <th>
+                <p-columnFilter
+                  type="text"
+                  field="cargoStatus"
+                  placeholder="Kargo Durumuna göre ara"
+                  ariaLabel="Kargo Durumu filtresi"
+                />
+              </th>
+              <th>
+                <!-- Filtre yok -->
+              </th>
+              <th>
+                <!-- Filtre yok -->
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-order>
+            <tr>
+              <td>{{ order.customerDescription }}</td>
+              <td>{{ order.orderNo }}</td>
+              <td>{{ order.cargoStatus }}</td>
+              <td>{{ order.createdDate | date : "dd.MM.yyyy HH:mm" }}</td>
+              <td>
+                <div class="btn-group">
+                  <div
+                    class="btn btn-success"
+                    data-text="Kargo"
+                    routerLink="/create-order/quick-order/{{ order.id }}"
+                  >
+                    <i class="fa fa-bars" aria-hidden="true"></i>
                   </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <pagination-controls
-            (pageChange)="currentPage = $event"
-          ></pagination-controls>
-        </div>
+                  <div
+                    class="btn btn-success"
+                    data-text="Kargo"
+                    (click)="deleteClientOrder(order.id)"
+                  >
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                  </div>
+                  <div
+                    class="btn btn-success"
+                    data-text="Kargo"
+                    (click)="updateCargoStatus(order)"
+                  >
+                    <i class="fa fa-truck" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="5">Herhangi bir sipariş bulunamadı.</td>
+            </tr>
+          </ng-template>
+        </p-table>
       </div>
     </div>
   </section>

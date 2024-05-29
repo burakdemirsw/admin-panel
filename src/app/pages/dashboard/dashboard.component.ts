@@ -2,7 +2,6 @@ import { Component, ElementRef, OnInit } from '@angular/core';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { Raport_CR } from '../../models/model/raport/raport_CR';
 import { HeaderService } from '../../services/admin/header.service';
-import { style } from '@angular/animations';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,9 +16,11 @@ export class DashboardComponent implements OnInit {
   options: any;
   raportData: Raport_CR;
   userId: number;
+  userName: string
   async ngOnInit() {
     this.headerService.updatePageTitle("Anasayfa")
     this.userId = Number(localStorage.getItem('userId'))
+    this.userName = localStorage.getItem('name')
     if (this.userId === 5) {
       await this.saleCountRaport();
     }

@@ -55,6 +55,7 @@ export class ClientCustomer {
   createdDate: Date
   addedSellerCode: string
   updatedDate: Date
+  cargoAddressPhotoUrl: string;
   constructor() {
     this.createdDate = new Date();
     this.updatedDate = new Date();

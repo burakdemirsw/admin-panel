@@ -234,7 +234,6 @@ var CreateSaleOrderComponent = /** @class */ (function () {
     CreateSaleOrderComponent.prototype.getCustomerList = function () {
         return __awaiter(this, void 0, Promise, function () {
             var _a;
-            var _this = this;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -242,10 +241,10 @@ var CreateSaleOrderComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.warehouseService.getCustomerList('3')];
                     case 1:
                         _a.customerList = _b.sent();
-                        this.customerList.forEach(function (c) {
-                            var color = { name: c.currAccDescription, code: c.currAccCode };
-                            _this.customerList2.push(color);
-                        });
+                        this.customerList2 = this.customerList.map(function (c) { return ({
+                            name: c.currAccDescription,
+                            code: c.currAccCode
+                        }); });
                         return [2 /*return*/];
                 }
             });
@@ -253,34 +252,25 @@ var CreateSaleOrderComponent = /** @class */ (function () {
     };
     CreateSaleOrderComponent.prototype.getSalesPersonModels = function () {
         return __awaiter(this, void 0, Promise, function () {
-            var _a, error_3, error_4;
-            var _this = this;
+            var _a, error_3;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        _b.trys.push([0, 5, , 6]);
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 3, , 4]);
+                        _b.trys.push([0, 2, , 3]);
                         _a = this;
                         return [4 /*yield*/, this.orderService.getSalesPersonModels()];
-                    case 2:
+                    case 1:
                         _a.salesPersonModels = _b.sent();
-                        this.salesPersonModels.forEach(function (c) {
-                            var color = { name: c.firstLastName, code: c.salespersonCode };
-                            _this.salesPersonModelList.push(color);
-                        });
-                        return [3 /*break*/, 4];
-                    case 3:
+                        this.salesPersonModelList = this.salesPersonModels.map(function (c) { return ({
+                            name: c.firstLastName,
+                            code: c.salespersonCode
+                        }); });
+                        return [3 /*break*/, 3];
+                    case 2:
                         error_3 = _b.sent();
                         this.toasterService.error(error_3.message);
                         return [2 /*return*/, null];
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
-                        error_4 = _b.sent();
-                        this.toasterService.error(error_4.message);
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
+                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -332,7 +322,7 @@ var CreateSaleOrderComponent = /** @class */ (function () {
                 warehouseCode: [null, forms_1.Validators.required],
                 currAccCode: [null],
                 currAccCode2: [null],
-                salesPersonCode: [null, forms_1.Validators.required],
+                salesPersonCode: [null],
                 shelfNo: [null, [forms_1.Validators.required, forms_1.Validators.maxLength(10)]],
                 barcode: [null, [forms_1.Validators.required, forms_1.Validators.minLength(5)]],
                 quantity: [null, forms_1.Validators.required],
@@ -465,7 +455,7 @@ var CreateSaleOrderComponent = /** @class */ (function () {
     };
     CreateSaleOrderComponent.prototype.createSaleInvoice = function () {
         return __awaiter(this, void 0, Promise, function () {
-            var confirmation, data, error_5;
+            var confirmation, data, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -489,7 +479,7 @@ var CreateSaleOrderComponent = /** @class */ (function () {
                         data = _a.sent();
                         return [3 /*break*/, 4];
                     case 3:
-                        error_5 = _a.sent();
+                        error_4 = _a.sent();
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/];
                 }
@@ -503,7 +493,7 @@ var CreateSaleOrderComponent = /** @class */ (function () {
     };
     CreateSaleOrderComponent.prototype.setFormValues = function (model) {
         return __awaiter(this, void 0, Promise, function () {
-            var result, updated_product, result, updated_product, error_6;
+            var result, updated_product, result, updated_product, error_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -535,8 +525,8 @@ var CreateSaleOrderComponent = /** @class */ (function () {
                         return [2 /*return*/, updated_product];
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_6 = _a.sent();
-                        this.toasterService.error(error_6.message);
+                        error_5 = _a.sent();
+                        this.toasterService.error(error_5.message);
                         return [2 /*return*/, null];
                     case 6: return [2 /*return*/];
                 }

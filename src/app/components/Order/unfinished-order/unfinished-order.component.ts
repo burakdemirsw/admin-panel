@@ -20,6 +20,7 @@ export class UnfinishedOrderComponent implements OnInit {
   ngOnInit(): void {
     this.getOrders(this.currentOrderState);
 
+
   }
 
   async getOrders(isCompleted: boolean) {

@@ -25,6 +25,7 @@
                 <th scope="col">Müşteri Kodu</th>
                 <th scope="col">Kaşe</th>
                 <th scope="col">Kartvizit</th>
+                <th scope="col">Kargo Adresi</th>
               </tr>
             </thead>
             <tbody>
@@ -43,6 +44,15 @@
                 <td>
                   <p-image
                     src="{{ customer.bussinesCardPhotoUrl }}"
+                    alt="Image"
+                    width="70"
+                    [preview]="true"
+                    appendTo="body"
+                  ></p-image>
+                </td>
+                <td>
+                  <p-image
+                    src="{{ customer.cargoAddressPhotoUrl }}"
                     alt="Image"
                     width="70"
                     [preview]="true"

@@ -19,6 +19,7 @@ import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOf
 import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/warehouseOperationProductModel';
 import { ZTMSG_CountedProduct } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { HttpClientService } from '../http-client.service';
+import { CompleteCountOperation_CM } from 'src/app/models/model/warehouse/completeCount_CM';
 
 @Injectable({
   providedIn: 'root',
@@ -448,4 +449,13 @@ export class WarehouseService {
     return response;
   }
   //---------------------------------------------------------------------------
+
+  async completeCountOperation(request: CompleteCountOperation_CM): Promise<boolean> {
+
+    const response = await this.httpClientService
+      .post<any>({ controller: 'Warehouse/complete-count-operation' }, request)
+      .toPromise();
+    return response;
+
+  }
 }

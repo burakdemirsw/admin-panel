@@ -15,6 +15,7 @@ export class NebimOrder {
   orderNumber: string
   modelType: number;
   customerCode: string;
+  subCurrAccID: string;
   internalDescription: string;
   orderDate: string;
   officeCode: string;
@@ -38,7 +39,7 @@ export class NebimOrder {
 
   constructor(orderNumber: string, exchangeRate: number, discountPercentage: number, discountPercentage2: number, customerDesc: string,
     currAccCode: string, orderNo: string, formValue: any, selectedProducts: any,
-    salesPersonCode: string, taxTypeCode: number) {
+    salesPersonCode: string, taxTypeCode: number, subCurrAccId: string) {
     this.orderNumber = orderNumber;
     this.modelType = 5;
     this.posTerminalID = 1;
@@ -56,6 +57,7 @@ export class NebimOrder {
     this.orderDate = new Date().toUTCString();
     this.officeCode = "M";
     this.warehouseCode = "MD";
+    this.subCurrAccID = subCurrAccId;
 
     this.documentNumber = orderNo;
     selectedProducts.forEach(p => {
@@ -170,6 +172,7 @@ export class NebimOrder_2 {
 export class NebimInvoice {
   modelType: number;
   customerCode: string;
+  subCurrAccID: string;
   internalDescription: string;
   invoiceDate: string;
   officeCode: string;
@@ -193,7 +196,10 @@ export class NebimInvoice {
   discounts: Discount[] = [];
   // payments: Payment[];
 
-  constructor(discountPercentage: number, discountPercentage2: number, exchangeRate: number, docCurrencyCode: string, customerDesc: string, currAccCode: string, orderNo: string, formValue: any, selectedProducts: any, salesPersonCode: string, taxTypeCode: number, addressId: string) {
+  constructor(discountPercentage: number, discountPercentage2: number,
+    exchangeRate: number, docCurrencyCode: string, customerDesc: string,
+    currAccCode: string, orderNo: string, formValue: any, selectedProducts: any,
+    salesPersonCode: string, taxTypeCode: number, addressId: string, subCurrAccID: string) {
     this.modelType = 7;
     this.invoiceNumber = "";
     this.eMailAddress = "";
@@ -209,6 +215,7 @@ export class NebimInvoice {
     this.taxTypeCode = taxTypeCode;
     this.lines = [];
     this.customerCode = currAccCode;
+    this.subCurrAccID = subCurrAccID;
     this.internalDescription = orderNo;
     this.description = customerDesc;
     this.invoiceDate = new Date().toUTCString();
@@ -327,6 +334,7 @@ export class ClientOrder {
   recepientName: string;
   recepientPhone: string;
   orderDescription: string;
+  subCurrAccId: string;
   constructor() {
     this.createdDate = new Date();
     this.isCompleted = false;

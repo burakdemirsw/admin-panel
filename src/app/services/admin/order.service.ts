@@ -26,6 +26,7 @@ import { ClientCustomer } from '../../components/Customer/customer-list/customer
 import { AddCustomerAddress_CM, CreateCustomer_CM } from '../../models/model/order/createCustomer_CM';
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
+import { SubCustomerList_VM } from 'src/app/models/model/customer/subCustomerList_VM';
 
 @Injectable({
   providedIn: 'root',
@@ -520,6 +521,28 @@ export class OrderService {
   async getCustomerList_2(request: GetCustomerList_CM): Promise<any> {
     try {
       var response = await this.httpClientService.post<GetCustomerList_CM>({ controller: "order/get-customer-list-2" }, request).toPromise();
+
+      return response;
+    } catch (error: any) {
+      // console.log(error.message);
+      return null;
+    }
+  }
+
+  async getSubCustomerList(request: SubCustomerList_VM): Promise<any> {
+    try {
+      var response = await this.httpClientService.post<GetCustomerList_CM>({ controller: "order/get-sub-customer-list" }, request).toPromise();
+
+      return response;
+    } catch (error: any) {
+      // console.log(error.message);
+      return null;
+    }
+  }
+
+  async addSubCustomer(request: SubCustomerList_VM): Promise<any> {
+    try {
+      var response = await this.httpClientService.post<GetCustomerList_CM>({ controller: "order/add-sub-customer" }, request).toPromise();
 
       return response;
     } catch (error: any) {

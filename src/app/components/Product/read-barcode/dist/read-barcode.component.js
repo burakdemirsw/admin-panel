@@ -27,10 +27,6 @@ var ReadBarcodeComponent = /** @class */ (function () {
         this.availableCameras = [];
     }
     ReadBarcodeComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        setTimeout(function () {
-            _this.scanner.formats = _this.allowedFormats;
-        }, 100);
     };
     ReadBarcodeComponent.prototype.enableScannerMethod = function () {
         this.enableScanner = !this.enableScanner;

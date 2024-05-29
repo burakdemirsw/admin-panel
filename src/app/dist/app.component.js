@@ -43,7 +43,6 @@ var AppComponent = /** @class */ (function () {
         var s = document.createElement("script");
         s.type = "text/javascript";
         s.src = "../assets/js/main.js";
-        console.clear();
     };
     AppComponent.prototype.onClick = function (event) {
         var sidebar = document.getElementById('sidebar');

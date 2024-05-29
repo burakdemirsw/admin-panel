@@ -27,6 +27,7 @@ import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, Payment }
 import { OrderService } from '../../../services/admin/order.service';
 import { GoogleDriveService } from '../../../services/common/google-drive.service';
 import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from '../../cargo/create-cargo/models/models';
+import { SubCustomerList_VM } from 'src/app/models/model/customer/subCustomerList_VM';
 
 @Component({
   selector: 'app-create-order',
@@ -42,6 +43,7 @@ export class CreateOrderComponent implements OnInit {
   selectedProducts: ProductList_VM[] = []
   selectedAddresses: CustomerAddress_VM[] = []
   selectedOfficeAndWarehosue: any[] = [];
+  selectedSubCustomers: SubCustomerList_VM[] = [];
   currAccCode: string;
   salesPersonCode: string;
   payment: Payment = new Payment();
@@ -66,7 +68,10 @@ export class CreateOrderComponent implements OnInit {
     private cargoService: CargoService) { }
 
   async ngOnInit() {
-
+    this.setCustomer();
+    this.createCargoForm();
+    this.createCargoForm_2()
+    this.createsubCustomerForm();
     this.createPaymentForm();
     this.createGetProductForm();
     this.createCustomerFormMethod();
@@ -78,8 +83,7 @@ export class CreateOrderComponent implements OnInit {
     this._createCustomerFormMethod();
     this.getAddresses();
     this.selectOfficeAndWarehosue();
-    this.createCargoForm();
-    this.createCargoForm_2()
+
     this.activatedRoute.params.subscribe(async (params) => {
       if (params['id']) {
         this.id = params['id']
@@ -105,10 +109,13 @@ export class CreateOrderComponent implements OnInit {
     this.paymentForm.get('paymentType').setValue(this.paymentMethods[2])
 
     this.paymentForm.get('taxTypeCode').setValue(this.stateOptions[1])
+
+
   }
 
 
   //--------------------------------------------------------------------------- KAMERA
+
   printValue(ev: any) {
     this.toasterService.info("Okutma Başarılı :" + ev);
     this.generalService.beep2();
@@ -136,7 +143,7 @@ export class CreateOrderComponent implements OnInit {
           var customerResponse = await await this.orderService.getCustomerList_2(customer_request)
           if (customerResponse) {
             this.selectedCustomers.push(customerResponse[0]);
-
+            console.log("Müşteri Eklendi")
           }
         } else {
           //this.toasterService.error("Eklenecek Müşteri Bulunamadı")
@@ -165,12 +172,29 @@ export class CreateOrderComponent implements OnInit {
           this.payment.creditCardTypeCode = order.clientOrder.paymentDescription;
           var finded_payment = this.paymentMethods.find(p => p.name.includes(order.clientOrder.paymentDescription))
           this.paymentForm.get('paymentType').setValue(finded_payment)
-          // this.toasterService.success("Ödeme Eklendi")
+          console.log("Ödeme Eklendi")
         }
+
+        //ALT MÜŞTERİ EKLENDİ
+
+        this.createCustomerForm.value.sc_Mode = true;
+        var scRequest = new SubCustomerList_VM();
+        scRequest.subCurrAccId = order.clientOrder.subCurrAccId;
+        var scResponse = await this.orderService.getSubCustomerList(scRequest);
+        if (scResponse) {
+          this.createCustomerForm.value.sc_Mode = true;
+          this.createCustomerForm.value.sc_Description = scResponse[0]?.companyName;
+          this.selectedSubCustomers.push(scResponse[0]);
+          console.log("Alt Müşteri Eklendi")
+        }
+
+
 
         this.payment.amount = this.selectedProducts.reduce((total, product) => total + product.price, 0);
         // this.selectedAddresses = []; burası
         this.orderNo = order.clientOrder.orderNo;
+
+
         this.cargoForm_2.get('address_recepient_name').setValue(order.clientOrder.recepientName);
         this.cargoForm_2.get('address_phoneNumber').setValue(order.clientOrder.recepientPhone);
         this.orderDescription = order.clientOrder.description;
@@ -183,7 +207,7 @@ export class CreateOrderComponent implements OnInit {
           });
         }
 
-        //this.toasterService.success("Sipariş Çekildi")
+
 
       } else {
         this.orderNo = this.generateRandomNumber();
@@ -198,6 +222,8 @@ export class CreateOrderComponent implements OnInit {
             var object = this.convertLineToObject(basketItem);
             this.selectedProducts.push(object);
           });
+
+          console.log("Ürünler Eklendi")
         }
 
 
@@ -252,6 +278,7 @@ export class CreateOrderComponent implements OnInit {
       request.cargoStatus = this.cargoForm.get('isActive').value == true ? "KARGO VAR" : "KARGO YOK"
       request.orderDescription = this.paymentForm.get('orderDescription').value;
       request.paymentDescription = this.payment.creditCardTypeCode;
+      request.subCurrAccId = this.selectedSubCustomers[0]?.subCurrAccId;
       if (this.payment) {
         request.paymentType = this.payment.creditCardTypeCode;
       } else {
@@ -387,8 +414,8 @@ export class CreateOrderComponent implements OnInit {
       address_district: [null],
       address_region: [null],
       address_description: [null],
-
-
+      address_taxOffice: [null],
+      address_postalCode: [' ']
     });
 
     this._createCustomerForm.get('address_region').valueChanges.subscribe(async (value) => { //illeri getir
@@ -483,6 +510,12 @@ export class CreateOrderComponent implements OnInit {
       this.createCustomerForm.get("stampPhotoUrl").setValue(response.url);
 
     }
+    if (to === "cargoAddressPhotoUrl") {
+
+      this.createCustomerForm.get("cargoAddressPhotoUrl").setValue(response.url);
+
+    }
+
 
   }
 
@@ -554,12 +587,18 @@ export class CreateOrderComponent implements OnInit {
   getCustomerDialog: boolean = false;
   findProductDialog: boolean = false;
   selectAddressDialog: boolean = false;
+  subCustomerDialog: boolean = false;
+  addSubCustomerDialog: boolean = false;
+
   openDialog(dialogName: string) {
     if (dialogName === "getCustomerDialog") {
       this.getCustomerDialog = !this.getCustomerDialog
     }
     if (dialogName === "findProductDialog") {
       this.findProductDialog = !this.findProductDialog
+    }
+    if (dialogName === "addSubCustomerDialog") {
+      this.addSubCustomerDialog = !this.addSubCustomerDialog
     }
   }
   goToPage(index: number) {
@@ -573,10 +612,24 @@ export class CreateOrderComponent implements OnInit {
   customers: CustomerList_VM[] = []
   createCustomerForm: FormGroup;
   _activeIndex = 0;
-
   selectableCustomers: any[] = [];
+  selectableSubCustomers: any[] = [];
+  subCustomers: SubCustomerList_VM[] = [];
 
 
+  async setCustomer() {
+    var salesPersonCode = localStorage.getItem('salesPersonCode');
+    var request: GetCustomerList_CM = new GetCustomerList_CM();
+    request.currAccCode = salesPersonCode;
+    var response = await this.orderService.getCustomerList_2(request)
+    if (response) {
+      var findedCustomer = response.find(c => c.currAccCode == salesPersonCode);
+
+      this.selectableCustomers.push({ name: findedCustomer.currAccDescription, value: findedCustomer.phone, currAccCode: findedCustomer.currAccCode })
+      this.createCustomerForm.get('currAccDescription').setValue(findedCustomer.currAccDescription);
+      this.selectCurrentCustomer(findedCustomer);
+    }
+  }
   async getCustomersAutomaticaly(field: string) {
     if (field.length > 3) {
       var request: GetCustomerList_CM = new GetCustomerList_CM();
@@ -639,6 +692,7 @@ export class CreateOrderComponent implements OnInit {
         var response = await this.orderService.createCustomer(request);
         if (response.currAccCode) {
           var clientCustomer_request = new ClientCustomer();
+          clientCustomer_request.cargoAddressPhotoUrl = formValue.cargoAddressPhotoUrl;
           clientCustomer_request.currAccCode = response.currAccCode;
           clientCustomer_request.description = formValue.currAccDescription.value;
           clientCustomer_request.stampPhotoUrl = formValue.stampPhotoUrl;
@@ -655,7 +709,7 @@ export class CreateOrderComponent implements OnInit {
               await this.selectCurrentCustomer(this.customers[0])
               await this.getCustomerAddresses(this.customers[0]);
             }
-            this.activeIndex = 2;
+            // this.activeIndex = 2;
           }
 
         }
@@ -683,9 +737,19 @@ export class CreateOrderComponent implements OnInit {
     }
 
   }
+  addSubCustomerForm: FormGroup;
+  createsubCustomerForm() {
+    this.addSubCustomerForm = this.formBuilder.group({
+      currAccCode: [null],
+      subCurrAccDesc: [null],
+      mail: [null],
+      phone: [null]
+
+    });
+
+  }
   createCustomerFormMethod() {
     this.createCustomerForm = this.formBuilder.group({
-
       office: [null],
       warehouse: [null],
       salesPersonCode: [null],
@@ -701,8 +765,23 @@ export class CreateOrderComponent implements OnInit {
       taxNumber: [null],
       address_description: [null],
       address_postalCode: [' '],
-      address_taxOffice: [null]
+      address_taxOffice: [null],
+      sc_Description: [null],
+      sc_mode: [false],
+      cargoAddressPhotoUrl: [null],
     });
+
+
+    // var customerResponse = await await this.orderService.getCustomerList_2(customer_request)
+    // if (customerResponse) {
+    //   this.selectedCustomers.push(customerResponse[0]);
+    //   console.log("Müşteri Eklendi")
+    // }
+    // this.createCustomerForm.get('sc_mode').valueChanges.subscribe(async (value) => { //illeri getir
+    //   if (value==true) {
+    //     this.
+    //   }
+    // });
 
     this.createCustomerForm.get('phoneNumber').valueChanges.subscribe(async (value) => { //illeri getir
       if (this.generalService.isNullOrEmpty(value)) {
@@ -829,6 +908,62 @@ export class CreateOrderComponent implements OnInit {
     this.toasterService.success("Müşteri Silindi")
     this.deleteCurrentAddress();
   }
+
+
+  async getSubCustomers() {
+
+    var request: SubCustomerList_VM = new SubCustomerList_VM();
+    request.currAccCode = this.createCustomerForm.value.sc_Description;
+    var response = await this.orderService.getSubCustomerList(request);
+    if (response) {
+      this.subCustomers = response;
+      this.subCustomerDialog = true;
+    }
+
+  }
+
+
+  async selectCurrentSubCustomer(request: SubCustomerList_VM) {
+
+    this.selectedSubCustomers = [];
+    this.selectedSubCustomers.push(request);
+    var order_request = this.createClientOrder_RM()
+    var order_response = await this.orderService.createClientOrder(order_request)
+    if (order_response) {
+      this.subCustomerDialog = false;
+      this.activeIndex = 2;
+      this.generalService.beep()
+    }
+
+
+  }
+
+  async addSubCustomer() {
+
+    if (this.selectedCustomers.length === 0) {
+      this.toasterService.error("Müşteri Seçiniz");
+      return;
+    } else {
+      var request: SubCustomerList_VM = new SubCustomerList_VM();
+      request.currAccCode = this.selectedCustomers[0].currAccCode;
+      request.companyName = this.addSubCustomerForm.value.subCurrAccDesc;
+      request.mail = this.addSubCustomerForm.value.mail;
+      request.phone = this.addSubCustomerForm.value.phone;
+      var response = await this.orderService.addSubCustomer(request);
+      if (response) {
+        this.toasterService.success("Alt Müşteri Eklendi")
+        this.selectableSubCustomers.push({ name: response[0].companyName, value: response[0].subCurrAccId })
+        this.createCustomerForm.get('sc_Description').setValue(response[0].companyName)
+        this.selectCurrentSubCustomer(response[0])
+        this.openDialog("addSubCustomerDialog")
+      } else {
+        this.toasterService.error("Alt Müşteri Eklenemedi")
+      }
+    }
+
+
+
+  }
   //----------------------------------------------------ADDRESS
   addresses: CustomerAddress_VM[] = []
   async getCustomerAddresses(request: GetCustomerAddress_CM) {
@@ -836,7 +971,20 @@ export class CreateOrderComponent implements OnInit {
     if (this.addresses.length > 0) {
       this.selectCurrentAddress(this.addresses[0])
       this.selectAddressDialog = false;
-      this.activeIndex = 2;
+
+      //alt müşteri sorgusu atılcak
+
+      var subCustomer_request = new SubCustomerList_VM();
+      subCustomer_request.currAccCode = this.selectedCustomers[0].currAccCode;
+      var subCustomer_response = await this.orderService.getSubCustomerList(subCustomer_request)
+      if (subCustomer_response) {
+
+        subCustomer_response.forEach(c => {
+          this.selectableSubCustomers.push({ name: c.companyName, value: c.subCurrAccId })
+        });
+
+      }
+      // this.activeIndex = 2;
     }
 
     if (this.addresses.length === 0) {
@@ -858,7 +1006,7 @@ export class CreateOrderComponent implements OnInit {
 
       this.selectAddressDialog = false;
       // this.toasterService.success("Adres Eklendi")
-      this.activeIndex = 2;
+      // this.activeIndex = 2;
       this.getCustomerForm.reset();
       this.customers = [];
       this.generalService.beep()
@@ -1262,7 +1410,7 @@ export class CreateOrderComponent implements OnInit {
 
   clonedProducts: { [s: string]: ProductList_VM } = {};
   onRowEditInit(product: ProductList_VM) {
-    this.clonedProducts[product.lineId as string] = { ...product };
+    // this.clonedProducts[product.lineId as string] = { ...product };
   }
 
 
@@ -1290,7 +1438,6 @@ export class CreateOrderComponent implements OnInit {
           this.toasterService.error("Ürün Eklenmedi")
           return;
         }
-
       }
 
       // this.toasterService.success(product.quantity.toString());
@@ -1299,12 +1446,9 @@ export class CreateOrderComponent implements OnInit {
         this.toasterService.success("Ürün Güncellendi")
         this.focusNextInput('barcode_product')
         this.resetDiscount();
-
         this.getClientOrder(1);
       }
       delete this.clonedProducts[product.lineId as string];
-
-    } else {
 
     }
     this.cancelRowEdit(product, 0);
@@ -1409,6 +1553,7 @@ export class CreateOrderComponent implements OnInit {
       address_phoneNumber: [null]
     })
   }
+
   async createCargoForm() {
     this.cargoForm = this.formBuilder.group({
       address_recepient_name: [null],
@@ -1423,6 +1568,8 @@ export class CreateOrderComponent implements OnInit {
       address_package_count: [1, Validators.min(1)],
       cargoPrice: [null]
     })
+
+
     this.cargoForm.get('cargoFirm').valueChanges.subscribe((value) => {
       if (value != null) {
         this.cargoForm.get('isActive').setValue(true);
@@ -1964,7 +2111,8 @@ export class CreateOrderComponent implements OnInit {
           formValue,  // Ensure this variable supports being split if necessary
           productBatch,
           this.salesPersonCode,
-          this.paymentForm.value.taxTypeCode.value
+          this.paymentForm.value.taxTypeCode.value,
+          this.selectedSubCustomers[0]?.subCurrAccId
         );
 
         // Call the service to create an order for the batch
@@ -2019,7 +2167,8 @@ export class CreateOrderComponent implements OnInit {
           formValue,  // Ensure this variable supports being split if necessary
           productBatch,
           this.salesPersonCode,
-          this.paymentForm.value.taxTypeCode.value
+          this.paymentForm.value.taxTypeCode.value,
+          this.selectedSubCustomers[0]?.subCurrAccId
         );
 
         // Call the service to create an order for the batch
@@ -2055,7 +2204,8 @@ export class CreateOrderComponent implements OnInit {
         this.selectedProducts,
         this.salesPersonCode,
         this.paymentForm.value.taxTypeCode.value,
-        this.selectedAddresses[0].postalAddressID
+        this.selectedAddresses[0].postalAddressID,
+        this.selectedSubCustomers[0]?.subCurrAccId
       );
 
       __request.lines.forEach(l1 => {

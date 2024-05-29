@@ -3,17 +3,26 @@
     <div *ngIf="this.userId != 5">
       <div class="container">
         <div class="error-container p-4" style="text-align: center">
-          <h1 class="mb-4">DAVYE</h1>
+          <h1 class="mb-4">Hoşgeldin {{ userName }}</h1>
           <!-- <p>
-            Bu alanı kullanma yetkiniz bulunmamaktadır. Site yöneticinize durumu
-            bildirebilirsiniz.
-          </p>
-          <hr />
-          <p>
-            Eğer site yöneticisiyseniz ayarlar > yetki yönetimi içerisinden
-            yetkilerinizde düzenlemeler yapabilirsiniz. Bir hata olduğunu
-            düşünüyorsanız lütfen sistem yöneticinize başvurunuz.
+            Üzgünüz, bu sayfaya erişim yetkiniz bulunmuyor. Ancak aşağıdaki
+            seçeneklere göz atabilirsiniz:
           </p> -->
+          <hr />
+          <ul class="list-unstyled">
+            <li>
+              <a routerLink="/unfinished-orders">Siparişlerim Ekranı</a> - Henüz
+              tamamlanmamış siparişlerinizi kontrol edebilirsiniz.
+            </li>
+            <li>
+              <a routerLink="/search-qr">Ürün Sorgulama</a> - Ürünlerinizi QR
+              koduyla sorgulayabilirsiniz.
+            </li>
+          </ul>
+          <p>
+            Eğer bir hata olduğunu düşünüyorsanız lütfen sistem yöneticinize
+            başvurunuz.
+          </p>
         </div>
       </div>
     </div>

@@ -16,9 +16,8 @@ export class ReadBarcodeComponent implements OnInit {
   @Output() value = new EventEmitter<any>();
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.scanner.formats = this.allowedFormats;
-    }, 100);
+
+
 
   }
   allowedFormats = [

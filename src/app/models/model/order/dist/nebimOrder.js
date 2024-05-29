@@ -29,7 +29,7 @@ exports.CheckCustomerModel = CheckCustomerModel;
 var NebimOrder = /** @class */ (function () {
     // discounts: Discount[];
     // payments: Payment[];
-    function NebimOrder(orderNumber, exchangeRate, discountPercentage, discountPercentage2, customerDesc, currAccCode, orderNo, formValue, selectedProducts, salesPersonCode, taxTypeCode) {
+    function NebimOrder(orderNumber, exchangeRate, discountPercentage, discountPercentage2, customerDesc, currAccCode, orderNo, formValue, selectedProducts, salesPersonCode, taxTypeCode, subCurrAccId) {
         var _this = this;
         this.discounts = [];
         this.orderNumber = orderNumber;
@@ -49,6 +49,7 @@ var NebimOrder = /** @class */ (function () {
         this.orderDate = new Date().toUTCString();
         this.officeCode = "M";
         this.warehouseCode = "MD";
+        this.subCurrAccID = subCurrAccId;
         this.documentNumber = orderNo;
         selectedProducts.forEach(function (p) {
             var line = new Line();
@@ -145,7 +146,7 @@ var NebimOrder_2 = /** @class */ (function () {
 exports.NebimOrder_2 = NebimOrder_2;
 var NebimInvoice = /** @class */ (function () {
     // payments: Payment[];
-    function NebimInvoice(discountPercentage, discountPercentage2, exchangeRate, docCurrencyCode, customerDesc, currAccCode, orderNo, formValue, selectedProducts, salesPersonCode, taxTypeCode, addressId) {
+    function NebimInvoice(discountPercentage, discountPercentage2, exchangeRate, docCurrencyCode, customerDesc, currAccCode, orderNo, formValue, selectedProducts, salesPersonCode, taxTypeCode, addressId, subCurrAccID) {
         var _this = this;
         this.discounts = [];
         this.modelType = 7;
@@ -163,6 +164,7 @@ var NebimInvoice = /** @class */ (function () {
         this.taxTypeCode = taxTypeCode;
         this.lines = [];
         this.customerCode = currAccCode;
+        this.subCurrAccID = subCurrAccID;
         this.internalDescription = orderNo;
         this.description = customerDesc;
         this.invoiceDate = new Date().toUTCString();

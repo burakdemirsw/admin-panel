@@ -580,6 +580,22 @@ var WarehouseService = /** @class */ (function () {
             });
         });
     };
+    //---------------------------------------------------------------------------
+    WarehouseService.prototype.completeCountOperation = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .post({ controller: 'Warehouse/complete-count-operation' }, request)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
     WarehouseService = __decorate([
         core_1.Injectable({
             providedIn: 'root'

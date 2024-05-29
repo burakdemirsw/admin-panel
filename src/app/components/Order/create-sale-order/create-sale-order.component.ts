@@ -174,10 +174,11 @@ export class CreateSaleOrderComponent implements OnInit {
   customerList2: any[] = [];
   async getCustomerList(): Promise<void> {
     this.customerList = await this.warehouseService.getCustomerList('3');
-    this.customerList.forEach((c) => {
-      var color: any = { name: c.currAccDescription, code: c.currAccCode };
-      this.customerList2.push(color);
-    });
+
+    this.customerList2 = this.customerList.map(c => ({
+      name: c.currAccDescription,
+      code: c.currAccCode
+    }));
   }
 
   salesPersonModels: SalesPersonModel[] = [];
@@ -185,21 +186,15 @@ export class CreateSaleOrderComponent implements OnInit {
   selectedPerson: any;
   async getSalesPersonModels(): Promise<any> {
     try {
-      try {
-        this.salesPersonModels = await this.orderService.getSalesPersonModels();
-
-        this.salesPersonModels.forEach((c) => {
-          var color: any = { name: c.firstLastName, code: c.salespersonCode };
-          this.salesPersonModelList.push(color);
-        });
-
-        //this.toasterService.success("Başarıyla "+this.salesPersonModels.length+" Adet Çekildi")
-      } catch (error: any) {
-        this.toasterService.error(error.message);
-        return null;
-      }
+      this.salesPersonModels = await this.orderService.getSalesPersonModels();
+      this.salesPersonModelList = this.salesPersonModels.map(c => ({
+        name: c.firstLastName,
+        code: c.salespersonCode
+      }));
+      //this.toasterService.success("Başarıyla "+this.salesPersonModels.length+" Adet Çekildi")
     } catch (error: any) {
       this.toasterService.error(error.message);
+      return null;
     }
   }
 
@@ -242,7 +237,7 @@ export class CreateSaleOrderComponent implements OnInit {
         warehouseCode: [null, Validators.required],
         currAccCode: [null],
         currAccCode2: [null],
-        salesPersonCode: [null, Validators.required],
+        salesPersonCode: [null],
         shelfNo: [null, [Validators.required, Validators.maxLength(10)]],
         barcode: [null, [Validators.required, Validators.minLength(5)]],
         quantity: [null, Validators.required],
@@ -250,6 +245,7 @@ export class CreateSaleOrderComponent implements OnInit {
         currency: [null, Validators.required],
         batchCode: [null, Validators.required],
       });
+
 
       this.productForm.get('officeCode').valueChanges.subscribe(value => {
         if (value === 'M') {

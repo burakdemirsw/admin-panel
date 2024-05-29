@@ -19,6 +19,7 @@ import {
   ProductCountModel,
 } from 'src/app/models/model/shelfNameModel';
 import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
+import { CompleteCountOperation_CM } from 'src/app/models/model/warehouse/completeCount_CM';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { ZTMSG_CountedProduct } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { GeneralService } from 'src/app/services/admin/general.service';
@@ -230,7 +231,7 @@ export class WarehosueShelfCountComponent implements OnInit {
       batchCode: [null, Validators.required],
       warehouseCode: [null, Validators.required],
       isShelfBased: [false],
-      isShelfBased2: [false]
+      isShelfBased2: [true]
     });
 
 
@@ -244,6 +245,13 @@ export class WarehosueShelfCountComponent implements OnInit {
       if (value === 'U') {
         this.checkForm.get('warehouseCode').setValue('UD');
       }
+    });
+    this.checkForm.get('isShelfBased').valueChanges.subscribe(value => {
+      this.checkForm.get('isShelfBased2').setValue(!value);
+    });
+
+    this.checkForm.get('isShelfBased2').valueChanges.subscribe(value => {
+      this.checkForm.get('isShelfBased').setValue(!value);
     });
 
   }
@@ -268,12 +276,14 @@ export class WarehosueShelfCountComponent implements OnInit {
 
     if (this.lastCollectedProducts.length > 0) {
       this.setOfficeAndWarehouse(this.lastCollectedProducts[0].warehouseCode);
+
+
     }
     this.calculateTotalQty();
   }
 
   setOfficeAndWarehouse(warehouseCode: string) {
-    if (warehouseCode === 'MD') {
+    if (warehouseCode == 'MD') {
       this.checkForm.get('office').setValue('M');
       this.checkForm.get('warehouseCode').setValue('MD');
     } else {
@@ -415,6 +425,14 @@ export class WarehosueShelfCountComponent implements OnInit {
 
       try {
 
+        if (this.generalService.isNullOrEmpty(this.shelfNumbers)) {
+
+          var result: string[] = await this.productService.countProductByBarcode(
+            countProductRequestModel.barcode
+          );
+
+          this.shelfNumbers = result[0]
+        }
         const shelves = this.shelfNumbers
           .split(',')
           .filter((raflar) => raflar.trim() !== '')
@@ -485,22 +503,23 @@ export class WarehosueShelfCountComponent implements OnInit {
             ) {
 
 
-              var response: ProductCountModel =
-                await this.warehouseService.countProductRequest(
-                  countProductRequestModel.barcode,
-                  countProductRequestModel.shelfNo,
-                  countProductRequestModel.quantity,
-                  countProductRequestModel.office,
-                  countProductRequestModel.warehouseCode,
-                  countProductRequestModel.batchCode,
-                  'Order/CountProduct3',
-                  this.currentOrderNo,
-                  ''
-                );
+
+              var request: ZTMSG_CountedProduct = new ZTMSG_CountedProduct();
+              request.barcode = countProductRequestModel.barcode;
+              request.shelfNo = countProductRequestModel.shelfNo;
+              request.quantity = countProductRequestModel.quantity;
+              request.officeCode = countProductRequestModel.office;
+              request.warehouseCode = countProductRequestModel.warehouseCode;
+              request.batchCode = countProductRequestModel.batchCode;
+              request.operationNumber = this.currentOrderNo;
+              request.isCompleted = false;
+              request.operationType = this.checkForm.get("isShelfBased").value == true ? this.checkForm.get("isShelfBased").value : this.checkForm.get("isShelfBased2").value
+
+              var _response = await this.warehouseService.addCount(request);
               // SAYIM YAPILDI -------------------------------------------
 
 
-              if (response != undefined) {
+              if (_response != undefined) {
 
                 var qrResponse: QrOperationResponseModel =
                   await this.productService.qrOperationMethod(
@@ -518,12 +537,7 @@ export class WarehosueShelfCountComponent implements OnInit {
                 }
                 // QR İŞLEMLERİ YAPILDI -------------------------------------------
 
-                var data: ProductCountModel = response;
-                if (data.status == 'RAF') {
-                  countProductRequestModel.shelfNo = response.description;
-                } else {
-                  countProductRequestModel.barcode = response.description;
-                }
+
                 this.generalService.beep();
 
                 await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
@@ -568,7 +582,7 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.checkForm.get('batchCode').setValue(null);
     this.checkForm.get('quantity').setValue(null);
     this.focusNextInput('countPageBarcode');
-    this.shelfNumbers = 'Raf No';
+    this.shelfNumbers = null
     this.qrBarcodeUrl = null;
     this.calculateTotalQty();
   }
@@ -577,14 +591,14 @@ export class WarehosueShelfCountComponent implements OnInit {
   async completeCountFromService(orderNo: string): Promise<boolean> {
     try {
       // İşlem öncesi kullanıcıya onay iletilisi göster
-      const userConfirmed = window.confirm(
-        'İşlemi tamamlamadan önce sayımı eşitlemek istiyor musunuz?'
-      );
+      // const userConfirmed = window.confirm(
+      //   'İşlemi tamamlamadan önce sayımı eşitlemek istiyor musunuz?'
+      // );
 
-      if (!userConfirmed) {
-        // Kullanıcı işlemi onaylamadıysa işlemi iptal et
-        return false;
-      }
+      // if (!userConfirmed) {
+      //   // Kullanıcı işlemi onaylamadıysa işlemi iptal et
+      //   return false;
+      // }
 
       var isShelfBased = this.checkForm.get("isShelfBased");
       var isShelfBased2 = this.checkForm.get("isShelfBased2");
@@ -603,11 +617,17 @@ export class WarehosueShelfCountComponent implements OnInit {
 
       }
       //this.spinnerService.show();
-      const response = await this.productService.completeCount(
-        this.currentOrderNo +
-        '/' +
-        isShelfBased.value.toString() + '/' + isShelfBased2.value.toString()
-      );
+      // const response = await this.productService.completeCount(
+      //   this.currentOrderNo +
+      //   '/' +
+      //   isShelfBased.value.toString() + '/' + isShelfBased2.value.toString()
+      // );
+
+      var request: CompleteCountOperation_CM
+      request = new CompleteCountOperation_CM();
+      request.countType = isShelfBased.value === true ? 0 : 1; //0-> raf bazında dayım | 1-> ürün bazında ürün sayım
+      request.operationNo = this.currentOrderNo;
+      const response = await this.warehouseService.completeCountOperation(request)
 
       if (response === true) {
         //this.spinnerService.hide();
