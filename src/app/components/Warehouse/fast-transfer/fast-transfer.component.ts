@@ -275,6 +275,33 @@ export class FastTransferComponent implements OnInit {
       //console.log(error.message);
     }
   }
+
+  async setCheckBarcode(product: FastTransferModel2): Promise<FastTransferModel2> {
+    try {
+      if (product.barcode.includes('http') || this.generalService.isGuid(product.barcode)) {
+        var result: string[] = await this.productService.countProductByBarcode3(
+          product.barcode
+        );
+
+        var updated_product = product;
+        updated_product.barcode = result[3];
+        this.checkForm.get('barcode').setValue(result[3]);
+        return updated_product;
+      } else {
+        var result: string[] = await this.productService.countProductByBarcode(
+          product.barcode
+        );
+
+        var updated_product = product;
+        updated_product.barcode = result[3];
+        this.checkForm.get('barcode').setValue(result[3]);
+        return updated_product;
+      }
+    } catch (error) {
+      this.toasterService.error(error.message);
+      return null;
+    }
+  }
   async setFormValues(product: FastTransferModel2): Promise<FastTransferModel2> {
 
     try {
@@ -343,6 +370,9 @@ export class FastTransferComponent implements OnInit {
 
 
     if (this.checkForm.valid) {
+      //yinede barkod doğrulaması yap
+      transferModel = await this.setCheckBarcode(transferModel);
+
       transferModel.operationId = this.currentOrderNo;
       var qrmodelResponse = await this.productService.qrControl(
         transferModel.barcode

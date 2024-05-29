@@ -340,9 +340,41 @@ var FastTransferComponent = /** @class */ (function () {
             });
         });
     };
-    FastTransferComponent.prototype.setFormValues = function (product) {
+    FastTransferComponent.prototype.setCheckBarcode = function (product) {
         return __awaiter(this, void 0, Promise, function () {
             var result, updated_product, result, updated_product, error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 5, , 6]);
+                        if (!(product.barcode.includes('http') || this.generalService.isGuid(product.barcode))) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.productService.countProductByBarcode3(product.barcode)];
+                    case 1:
+                        result = _a.sent();
+                        updated_product = product;
+                        updated_product.barcode = result[3];
+                        this.checkForm.get('barcode').setValue(result[3]);
+                        return [2 /*return*/, updated_product];
+                    case 2: return [4 /*yield*/, this.productService.countProductByBarcode(product.barcode)];
+                    case 3:
+                        result = _a.sent();
+                        updated_product = product;
+                        updated_product.barcode = result[3];
+                        this.checkForm.get('barcode').setValue(result[3]);
+                        return [2 /*return*/, updated_product];
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        error_2 = _a.sent();
+                        this.toasterService.error(error_2.message);
+                        return [2 /*return*/, null];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    FastTransferComponent.prototype.setFormValues = function (product) {
+        return __awaiter(this, void 0, Promise, function () {
+            var result, updated_product, result, updated_product, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -374,8 +406,8 @@ var FastTransferComponent = /** @class */ (function () {
                         return [2 /*return*/, updated_product];
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_2 = _a.sent();
-                        this.toasterService.error(error_2.message);
+                        error_3 = _a.sent();
+                        this.toasterService.error(error_3.message);
                         return [2 /*return*/, null];
                     case 6: return [2 /*return*/];
                 }
@@ -404,10 +436,14 @@ var FastTransferComponent = /** @class */ (function () {
                         this.toasterService.success("Form Değerleri Güncellendi");
                         return [2 /*return*/];
                     case 2:
-                        if (!this.checkForm.valid) return [3 /*break*/, 10];
+                        if (!this.checkForm.valid) return [3 /*break*/, 11];
+                        return [4 /*yield*/, this.setCheckBarcode(transferModel)];
+                    case 3:
+                        //yinede barkod doğrulaması yap
+                        transferModel = _a.sent();
                         transferModel.operationId = this.currentOrderNo;
                         return [4 /*yield*/, this.productService.qrControl(transferModel.barcode)];
-                    case 3:
+                    case 4:
                         qrmodelResponse = _a.sent();
                         if (qrmodelResponse.batchCode) {
                             if (transferModel.batchCode == null || transferModel.batchCode === '') {
@@ -418,14 +454,14 @@ var FastTransferComponent = /** @class */ (function () {
                             .split(',')
                             .filter(function (raflar) { return raflar.trim() !== ''; })
                             .map(function (raflar) { return raflar.toLowerCase(); });
-                        if (!shelves.includes(transferModel.shelfNo.toLowerCase())) return [3 /*break*/, 8];
+                        if (!shelves.includes(transferModel.shelfNo.toLowerCase())) return [3 /*break*/, 9];
                         transferModel.quantity;
                         return [4 /*yield*/, this.addFastTransferModel(transferModel)];
-                    case 4:
-                        response = _a.sent();
-                        if (!(response === true)) return [3 /*break*/, 6];
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, transferModel, transferModel.quantity, false, 'FT')];
                     case 5:
+                        response = _a.sent();
+                        if (!(response === true)) return [3 /*break*/, 7];
+                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, transferModel, transferModel.quantity, false, 'FT')];
+                    case 6:
                         qrResponse = _a.sent();
                         if (qrResponse != null && qrResponse.state === true) {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
@@ -435,17 +471,17 @@ var FastTransferComponent = /** @class */ (function () {
                         }
                         //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
                         this.generalService.beep();
-                        return [3 /*break*/, 7];
-                    case 6:
-                        this.toasterService.error('Ekleme Yapılmadı');
-                        _a.label = 7;
+                        return [3 /*break*/, 8];
                     case 7:
-                        this.clearForm();
-                        return [3 /*break*/, 10];
+                        this.toasterService.error('Ekleme Yapılmadı');
+                        _a.label = 8;
                     case 8:
-                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 10];
-                        return [4 /*yield*/, this.addFastTransferModel(transferModel)];
+                        this.clearForm();
+                        return [3 /*break*/, 11];
                     case 9:
+                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 11];
+                        return [4 /*yield*/, this.addFastTransferModel(transferModel)];
+                    case 10:
                         response = _a.sent();
                         //RAFLAR ARASI TRANSFER YAPILDI----------------------------------
                         if (response == true) {
@@ -455,8 +491,8 @@ var FastTransferComponent = /** @class */ (function () {
                             this.toasterService.error('Ekleme Yapılmadı');
                         }
                         this.clearForm();
-                        _a.label = 10;
-                    case 10: return [2 /*return*/];
+                        _a.label = 11;
+                    case 11: return [2 /*return*/];
                 }
             });
         });

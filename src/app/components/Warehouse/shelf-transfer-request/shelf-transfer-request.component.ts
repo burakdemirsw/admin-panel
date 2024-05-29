@@ -436,6 +436,34 @@ export class ShelfTransferRequestComponent implements OnInit {
   }
 
   baglist: string[] = ['2', '4', '5', '6', '7', '8', '0'];
+
+  async setCheckBarcode(product: FastTransferModel2): Promise<FastTransferModel2> {
+    try {
+      if (product.barcode.includes('http') || this.generalService.isGuid(product.barcode)) {
+        var result: string[] = await this.productService.countProductByBarcode3(
+          product.barcode
+        );
+
+        var updated_product = product;
+        updated_product.barcode = result[3];
+        this.checkForm.get('barcode').setValue(result[3]);
+        return updated_product;
+      } else {
+        var result: string[] = await this.productService.countProductByBarcode(
+          product.barcode
+        );
+
+        var updated_product = product;
+        updated_product.barcode = result[3];
+        this.checkForm.get('barcode').setValue(result[3]);
+        return updated_product;
+      }
+    } catch (error) {
+      this.toasterService.error(error.message);
+      return null;
+    }
+  }
+
   async setFormValues(
     product: FastTransferModel2
   ): Promise<FastTransferModel2> {
@@ -529,6 +557,7 @@ export class ShelfTransferRequestComponent implements OnInit {
     }
 
     if (this.checkForm.valid === true) {
+      transferModel = await this.setCheckBarcode(transferModel);
       transferModel.operationId = this.currentOrderNo;
       const shelves = this.shelfNumbers
         .split(',')
