@@ -193,7 +193,7 @@ export class RetailOrderManagementComponent implements OnInit {
   exportCsv() {
     if (this.selectedOrders.length > 0) {
 
-      this.exportCsvService.exportToCsv(this.selectedOrders, 'my-orders', this.columns);
+      this.exportCsvService.exportToCsv(this.selectedOrders, 'my-orders');
     } else {
       this.toasterService.warn('Lütfen En Az Bir Sipariş Seçiniz.')
     }

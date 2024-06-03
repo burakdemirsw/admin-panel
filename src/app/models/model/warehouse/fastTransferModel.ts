@@ -23,7 +23,7 @@ export class FastTransferModel2 {
   operationId: string;
   shelfNo: string;
   targetShelfNo: string;
-  warehouseCode: string;
+  warehouseCode: any;
   createdDate: Date;
 }
 export class FastTransferListModel {

@@ -24,13 +24,19 @@ export class CargoListComponent implements OnInit {
   visible: boolean = false;
   items: MenuItem[] = [
     {
-      label: 'Yazdır (ZPL)',
+      label: 'Yazdır (ZPL) | MNG',
+      command: () => {
+        this.createBarcode()
+      }
+    },
+    {
+      label: 'Yazdır (ZPL) | YK',
       command: () => {
         this.createYurticiBarcode()
       }
     },
     {
-      label: 'Yazdır (A4)',
+      label: 'Yazdır (A4) | YK',
       command: () => {
         this.createMarketplaceCargoBarcode()
       }
@@ -107,10 +113,11 @@ export class CargoListComponent implements OnInit {
   }
 
 
-  async createBarcode(referenceId: string) {
+  async createBarcode() {
 
-    if (window.confirm("Barkod yazdırmak istediğinize emin misiniz?")) {
-      var data = await this.cargoService.createBarcode(referenceId);
+    var referenceIdList: string[] = this.selectedCargos.filter(x => x.cargoFirmId === 1).map(x => x.referenceId);
+    if (window.confirm("Barkodları yazdırmak istediğinize emin misiniz?")) {
+      var data = await this.cargoService.createBarcode(referenceIdList);
       if (data) {
 
 

@@ -18,9 +18,9 @@ export class MarketplaceService {
   async updateIdeasoftOrderStatus(orders: SaleOrderModel[]) {
 
     //orderlar içinde ordernumber değeri R ile başlıyorsa retailOrderIds dizisine ekle
-    var retailOrderIds: string[] = orders.filter(order => order.orderNumber.startsWith('R')).map(order => order.description);
+    var retailOrderIds: string[] = orders.filter(order => order.orderNumber.includes('R')).map(order => order.description);
     //orderlar içinde ordernumber değeri R ile başlamıyorsa wholesaleOrderIds dizisine ekle
-    var wholesaleOrderIds: string[] = orders.filter(order => !order.orderNumber.startsWith('R')).map(order => order.description);
+    var wholesaleOrderIds: string[] = orders.filter(order => !order.orderNumber.includes('R')).map(order => order.description);
 
     if (retailOrderIds.length > 0) {
       const response = this.httpClientService
@@ -28,7 +28,9 @@ export class MarketplaceService {
           controller: 'marketplaces/update-ideasoft-order-status-r',
         }, retailOrderIds)
         .toPromise();
-
+      if (response) {
+        this.toasterService.success("Toptan Sipariş durumları güncellendi.");
+      }
     }
 
     if (wholesaleOrderIds.length > 0) {
@@ -37,7 +39,9 @@ export class MarketplaceService {
           controller: 'marketplaces/update-ideasoft-order-status-w',
         }, wholesaleOrderIds)
         .toPromise();
-
+      if (response) {
+        this.toasterService.success("Perakende Sipariş durumları güncellendi.");
+      }
     }
     return true;
 

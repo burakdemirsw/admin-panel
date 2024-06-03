@@ -119,7 +119,7 @@ export class OrderManagamentComponent implements OnInit {
   }
   productsToCollect: ProductOfOrder[];
   exportCsv() {
-    this.exportCsvService.exportToCsv(this.selectedOrders, 'my-orders', this.columns);
+    this.exportCsvService.exportToCsv(this.selectedOrders, 'my-orders');
   }
   async deleteNebimOrder(request: string) {
     var response = await this.orderService.deleteNebimOrder(request)
@@ -303,6 +303,7 @@ export class OrderManagamentComponent implements OnInit {
     var response = await this.orderService.deleteNebimOrder(this.selectedOrderNo);
   }
   async sendBarcodesToNebim(isPackage: boolean) {
+
     var request = new CreateBarcodeFromOrder_RM(isPackage)
     request.operationNo = this.selectedOrderNo;
     request.from = "order-operation";

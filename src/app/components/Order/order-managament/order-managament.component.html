@@ -238,14 +238,16 @@
             >
               <p-splitButton label="İşlemler" [model]="items" appendTo="body" />
 
-              <div style="text-align: left">
+              <div style="text-align: right">
+                <!-- Burada text-align sağa ayarlandı -->
                 <p-button
                   icon="pi pi-plus"
                   label="Faturalaştırılan Siparişler"
                   (click)="getOrders(1, 1)"
                 />
               </div>
-              <div style="text-align: left">
+              <div style="text-align: right">
+                <!-- Burada text-align sağa ayarlandı -->
                 <p-button
                   icon="pi pi-plus"
                   label="Faturalaştırılmayan Siparişler"
@@ -253,24 +255,30 @@
                 />
               </div>
             </div>
+            <h5 *ngIf="selectedOrders.length > 0" style="text-align: left">
+              {{ selectedOrders.length }}/{{ saleOrderModels.length }} Adet
+              Sipariş Seçildi
+            </h5>
           </ng-template>
+
           <ng-template pTemplate="header">
             <tr>
               <th>Seç</th>
 
-              <th pSortableColumn="orderDate" style="width: 10%">
+              <th pSortableColumn="orderDate">
                 Sipariş Tarihi
                 <p-sortIcon field="orderDate"></p-sortIcon>
               </th>
-              <th pSortableColumn="orderNumber" style="width: 10%">
+              <th pSortableColumn="orderNumber">
                 Sipariş Numarası
                 <p-sortIcon field="orderNumber"></p-sortIcon>
               </th>
-              <th pSortableColumn="currAccCode" style="width: 10%">
+              <!-- <th pSortableColumn="currAccCode" style="width: 10%">
                 Müşteri Kodu
                 <p-sortIcon field="currAccCode"></p-sortIcon>
-              </th>
-              <th pSortableColumn="currAccDescription" style="width: 10%">
+              </th> -->
+
+              <th pSortableColumn="currAccDescription">
                 Müşteri Adı
                 <p-sortIcon field="currAccDescription"></p-sortIcon>
               </th>
@@ -278,26 +286,26 @@
                 Satıcı Kodu
                 <p-sortIcon field="salespersonCode"></p-sortIcon>
               </th> -->
-              <th pSortableColumn="description" style="width: 10%">
+              <th pSortableColumn="description">
                 Açıklama
                 <p-sortIcon field="description"></p-sortIcon>
               </th>
-              <th pSortableColumn="qty1" style="width: 10%">
+              <th pSortableColumn="qty1">
                 Miktar
                 <p-sortIcon field="qty1"></p-sortIcon>
               </th>
-              <th pSortableColumn="price" style="width: 10%">
+              <th pSortableColumn="price">
                 Tutar
                 <p-sortIcon field="price"></p-sortIcon>
               </th>
-              <th pSortableColumn="collectedQty" style="width: 10%">
+              <!-- <th pSortableColumn="collectedQty" style="width: 10%">
                 Toplanan Miktar
                 <p-sortIcon field="collectedQty"></p-sortIcon>
-              </th>
-              <th pSortableColumn="remainingQty" style="width: 10%">
+              </th> -->
+              <!-- <th pSortableColumn="remainingQty" style="width: 10%">
                 Toplanalabilir Miktar
                 <p-sortIcon field="remainingQty"></p-sortIcon>
-              </th>
+              </th> -->
               <!-- <th pSortableColumn="warehouseCode" style="width: 10%">
                 Depo
                 <p-sortIcon field="warehouseCode"></p-sortIcon>
@@ -322,13 +330,13 @@
                   [showClearButton]="false"
                 ></p-columnFilter>
               </th>
-              <th>
+              <!-- <th>
                 <p-columnFilter
                   type="text"
                   field="currAccCode"
                   [showClearButton]="false"
                 ></p-columnFilter>
-              </th>
+              </th> -->
               <th>
                 <p-columnFilter
                   type="text"
@@ -364,7 +372,7 @@
                   [showClearButton]="false"
                 ></p-columnFilter>
               </th>
-              <th>
+              <!-- <th>
                 <p-columnFilter
                   type="numeric"
                   field="collectedQty"
@@ -377,7 +385,7 @@
                   field="remainingQty"
                   [showClearButton]="false"
                 ></p-columnFilter>
-              </th>
+              </th> -->
               <!-- <th>
                 <p-columnFilter
                   type="text"
@@ -404,14 +412,14 @@
               </td>
               <td>{{ order.orderDate | date : "MM.dd HH:mm" }}</td>
               <td>{{ order.orderNumber }}</td>
-              <td>{{ order.currAccCode }}</td>
+              <!-- <td>{{ order.currAccCode }}</td> -->
               <td>{{ order.currAccDescription }}</td>
               <!-- <td>{{ order.salespersonCode }}</td> -->
               <td>{{ order.description }}</td>
               <td>{{ order.qty1 }}</td>
               <td>{{ order.price.toString() | currency : "₺" }}</td>
-              <td>{{ order.collectedQty }}</td>
-              <td>{{ order.remainingQty }}</td>
+              <!-- <td>{{ order.collectedQty }}</td>
+              <td>{{ order.remainingQty }}</td> -->
               <!-- <td>{{ order.warehouseCode }}</td> -->
               <td>
                 <button

@@ -116,6 +116,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { MarketplaceInvoicesComponent } from './components/Order/marketplace-invoices/marketplace-invoices.component';
 import { ExportCsvService } from './services/export-csv.service';
 import { SplitButtonModule } from 'primeng/splitbutton';
+import { SearchShelfComponent } from './components/Product/search-shelf/search-shelf.component';
 
 @NgModule({
 
@@ -189,8 +190,8 @@ import { SplitButtonModule } from 'primeng/splitbutton';
     OrderStateComponent,
     ReadBarcodeComponent,
     IdeasoftComponent,
-    MarketplaceInvoicesComponent
-
+    MarketplaceInvoicesComponent,
+    SearchShelfComponent
 
   ],
 

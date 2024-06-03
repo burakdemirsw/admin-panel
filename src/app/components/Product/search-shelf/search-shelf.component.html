@@ -1,0 +1,133 @@
+<main id="main" class="main">
+  <section class="section">
+    <div class="card">
+      <div class="card-body">
+        <form
+          [formGroup]="qrForm"
+          (ngSubmit)="onSubmit(qrForm.value)"
+          class="mt-4"
+        >
+          <div class="form-row">
+            <div class="form-group col-md-12 mb-3">
+              <div class="input-group">
+                <input
+                  pInputText
+                  placeholder="Barkod"
+                  type="search"
+                  id="barcode"
+                  class="form-control"
+                  formControlName="barcode"
+                />
+                <div class="input-group-append">
+                  <button
+                    class="btn btn-primary"
+                    type="submit"
+                    style="height: 100%"
+                  >
+                    Sorgula
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card" *ngIf="qrCodes.length > 0">
+      <div class="card-body">
+        <h5 class="card-title">Ürünler</h5>
+
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Resim</th>
+                <th scope="col">Ürün Kodu</th>
+                <th scope="col">Raf No</th>
+                <th scope="col">Depo</th>
+
+                <th scope="col">Miktar</th>
+                <th scope="col">Barkod</th>
+                <th scope="col">Parti</th>
+                <th scope="col">Satış Fiyatı</th>
+                <th scope="col">Ürün Adı</th>
+                <th scope="col">Yazıdır</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let qr of qrCodes; let i = index">
+                <td>{{ qr.id }}</td>
+                <td class="image-icon-td">
+                  <p-image
+                    src="data:image/jpeg;base64,{{ qr.barcodeBase64 }}"
+                    alt="Image"
+                    width="50"
+                    [preview]="true"
+                  ></p-image>
+                </td>
+                <td>{{ qr.itemCode }}</td>
+                <td>{{ qr.shelfNo }}</td>
+                <td>{{ qr.warehouseCode }}</td>
+
+                <td>{{ qr.quantity }}</td>
+                <td>{{ qr.barcode }}</td>
+                <td>{{ qr.batchCode }}</td>
+                <td>{{ qr.price }}</td>
+                <td>{{ qr.description }}</td>
+                <td>
+
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card" *ngIf="_products.length > 0">
+      <div class="card-body">
+        <h5 class="card-title">Ürünler</h5>
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Resim</th>
+                <th scope="col">Ürün Kodu</th>
+                <th scope="col">Ürün Adı</th>
+                <th scope="col">Renk</th>
+                <th scope="col">Beden</th>
+                <th scope="col">Raf No</th>
+                <th scope="col">Toplam Stok</th>
+                <th scope="col">Barkod</th>
+                <th scope="col">Satış Fiyatı</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of _products; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td class="image-icon-td">
+                  <p-image
+                    src="{{ product.photoUrl }}"
+                    alt="Image"
+                    width="30"
+                    [preview]="true"
+                  ></p-image>
+                </td>
+                <td>{{ product.itemCode }}</td>
+                <td>{{ product.description }}</td>
+                <td>{{ product.colorCode }}</td>
+                <td>{{ product.itemDim1Code }}</td>
+                <td>{{ product.shelfNo }}</td>
+                <td>{{ product.quantity }}</td>
+                <td>{{ product.barcode }}</td>
+                <td>{{ product.price }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

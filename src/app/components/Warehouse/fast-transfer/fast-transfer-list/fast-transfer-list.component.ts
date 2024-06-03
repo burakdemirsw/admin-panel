@@ -31,6 +31,8 @@ export class FastTransferListComponent implements OnInit {
   filterForm: FormGroup;
   fastTransferListModels: FastTransferListModel[] = []
   async ngOnInit() {
+
+
     this.headerService.updatePageTitle("Hızlı Transferler")
     this.spinnerService.show();
     // this.formGenerator()

@@ -1,24 +1,19 @@
 import { Injectable } from '@angular/core';
-import { AngularCsv } from 'angular-csv-ext/dist/Angular-csv';
-
-
+import * as XLSX from 'xlsx';
 @Injectable({
   providedIn: 'root'
 })
 export class ExportCsvService {
 
-  exportToCsv(data: any[], filename: string, headers: string[]) {
-    const options = {
-      fieldSeparator: ',',
-      quoteStrings: '"',
-      decimalseparator: '.',
-      showLabels: true,
-      showTitle: false,
-      title: '',
-      useBom: true,
-      noDownload: false,
-      headers: headers
-    };
-    new AngularCsv(data, filename, options);
+  exportToCsv(data: any[], filename: string) {
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, filename);
+
+    // Dosya adı ve seçenekler
+    XLSX.writeFile(wb, filename + '.xlsx');
   }
+
+
 }
+

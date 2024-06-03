@@ -279,7 +279,7 @@ export class CreateCargoComponent implements OnInit {
 
 
   async printBarcode() {
-    var response = await this.cargoService.createBarcode(this.cargoResponse.request.order.referenceId);
+    var response = await this.cargoService.createBarcode([this.cargoResponse.request.order.referenceId]);
     if (response) {
       this.toasterService.success("BARKOD YAZDIRILDI");
 

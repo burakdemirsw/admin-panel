@@ -67,26 +67,17 @@ export class FastTransferComponent implements OnInit {
   modalImageUrl: string;
   formModal: any;
   warehouseModels: WarehouseOfficeModel[] = [];
-
+  offices: any[] = []
+  warehouses: any[] = []
   shelfNo: string;
   shelfNoList: string[] = [];
   barcodeValue: string = null;
 
-  logger(event: Event) {
-    // Seçilen değeri alın
-    const selectedValue = (event.target as HTMLSelectElement).value;
-    const selectedValue2 = this.checkForm.get('warehouseCode').value;
 
-    // Değeri console'a yazdırın
-    this.toasterService.success(
-      'Seçilen Değer:\n' +
-      selectedValue +
-      '\n\n Form Değeri \n:' +
-      selectedValue2
-    );
-  }
+
 
   async ngOnInit() {
+    this.getWarehouseAndOffices();
     this.title.setTitle('Raflar Arası Transfer');
     this.headerService.updatePageTitle('Raflar Arası Transfer');
     this.formGenerator();
@@ -101,6 +92,28 @@ export class FastTransferComponent implements OnInit {
     });
     this.collectedProducts = [];
     //this.spinnerService.hide();
+  }
+
+  async getWarehouseAndOffices() {
+    var response = await this.warehouseService.getWarehouseAndOffices();
+    this.warehouseModels = response;
+
+    const officeSet = new Set();
+    const warehouseSet = new Set();
+
+    this.warehouseModels.forEach(model => {
+      officeSet.add(model.officeCode);
+      warehouseSet.add(model.warehouseCode);
+    });
+
+    this.offices = Array.from(officeSet);
+    this.warehouses = Array.from(warehouseSet).map(code => {
+      const model = this.warehouseModels.find(warehouse => warehouse.warehouseCode === code);
+      return {
+        code: model.warehouseCode,
+        name: model.warehouseDescription
+      };
+    });
   }
 
   collectedFastTransferModels: FastTransferModel2[] = [];
@@ -148,8 +161,7 @@ export class FastTransferComponent implements OnInit {
       nextInput.focus();
     }
   }
-  offices: any[] = ["M", "U"]
-  warehouses: any[] = ["MD", "UD"]
+
   formGenerator() {
     this.checkForm = this.formBuilder.group({
       barcode: [null, Validators.required],
@@ -255,37 +267,20 @@ export class FastTransferComponent implements OnInit {
   async setFormValues(product: FastTransferModel2): Promise<FastTransferModel2> {
 
     try {
-      if (product.barcode.includes('http') || this.generalService.isGuid(product.barcode)) {
-        var result: string[] = await this.productService.countProductByBarcode3(
-          product.barcode
-        );
-        this.shelfNumbers = result[0];
-        var updated_product = product;
-        updated_product.barcode = result[3];
-        updated_product.batchCode = result[2];
-        updated_product.quantity = Number(result[1]);
+      var result: string[] = await this.productService.countProductByBarcode(
+        product.barcode
+      );
+      this.shelfNumbers = result[0];
+      var updated_product = product;
+      updated_product.barcode = result[3];
+      updated_product.batchCode = result[2];
+      updated_product.quantity = Number(result[1]);
 
-        this.checkForm.get('batchCode').setValue(result[2]);
-        this.checkForm.get('barcode').setValue(result[3]);
-        this.checkForm.get('quantity').setValue(Number(result[1]));
+      this.checkForm.get('batchCode').setValue(result[2]);
+      this.checkForm.get('barcode').setValue(result[3]);
+      this.checkForm.get('quantity').setValue(Number(result[1]));
 
-        return updated_product;
-      } else {
-        var result: string[] = await this.productService.countProductByBarcode(
-          product.barcode
-        );
-        this.shelfNumbers = result[0];
-        var updated_product = product;
-        updated_product.barcode = result[3];
-        updated_product.batchCode = result[2];
-        updated_product.quantity = Number(result[1]);
-
-        this.checkForm.get('batchCode').setValue(result[2]);
-        this.checkForm.get('barcode').setValue(result[3]);
-        this.checkForm.get('quantity').setValue(Number(result[1]));
-
-        return updated_product;
-      }
+      return updated_product;
     } catch (error) {
       this.toasterService.error(error.message);
       return null;
@@ -294,20 +289,12 @@ export class FastTransferComponent implements OnInit {
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
   async onSubmit(transferModel: FastTransferModel2): Promise<any> {
-
-
-    // = işareti varsa - yap
-    if (transferModel.barcode.includes("=")) {
-      transferModel.barcode = transferModel.barcode.replace(/=/g, "-");
+    if (!transferModel.warehouseCode.code) {
+      this.toasterService.error("Depo Giriniz")
+    } else {
+      transferModel.warehouseCode = transferModel.warehouseCode.code;
 
     }
-    if (
-      transferModel.barcode.includes('http') ||
-      this.generalService.isGuid(transferModel.barcode)
-    ) {
-      this.qrBarcodeUrl = transferModel.barcode;
-    }
-
     if (
       !this.checkForm.valid
     ) {
@@ -317,18 +304,10 @@ export class FastTransferComponent implements OnInit {
       return;
     }
 
-
-
     if (this.checkForm.valid) {
       transferModel.operationId = this.currentOrderNo;
-      var qrmodelResponse = await this.productService.qrControl(
-        transferModel.barcode
-      );
-      if (qrmodelResponse.batchCode) {
-        if (transferModel.batchCode == null || transferModel.batchCode === '') {
-          transferModel.batchCode = qrmodelResponse.batchCode;
-        }
-      }
+
+
       const shelves = this.shelfNumbers
         .split(',')
         .filter((raflar) => raflar.trim() !== '')
@@ -343,23 +322,7 @@ export class FastTransferComponent implements OnInit {
 
         //RAFLAR ARASI TRANSFER YAPILDI----------------------------------
         if (response === true) {
-          //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-          var qrResponse: QrOperationResponseModel =
-            await this.productService.qrOperationMethod(
-              this.qrBarcodeUrl,
-              this.checkForm,
-              transferModel,
-              transferModel.quantity,
-              false,
-              'FT'
-            );
-          if (qrResponse != null && qrResponse.state === true) {
-            this.qrOperationModels.push(qrResponse.qrOperationModel);
-          } else if (qrResponse === null) {
-            this.qrBarcodeUrl = null
-          }
 
-          //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
           this.generalService.beep();
         } else {
           this.toasterService.error('Ekleme Yapılmadı');
@@ -403,39 +366,6 @@ export class FastTransferComponent implements OnInit {
 
       } else {
         return;
-      }
-      var model: QrOperationModel = new QrOperationModel();
-      var qrOperationModel: QrOperationModel = new QrOperationModel();
-
-      qrOperationModel = this.qrOperationModels.find(
-        (p) =>
-          p.barcode == qrModel.barcode &&
-          p.batchCode == qrModel.batchCode &&
-          p.shelfNo == qrModel.shelfNo
-      );
-
-      if (qrOperationModel) {
-        // qrOperationModel nesnesini model'e kopyala
-        model = Object.assign({}, qrOperationModel);
-
-        if (qrOperationModel.isReturn) {
-          model.isReturn = false;
-        } else {
-          model.isReturn = true;
-        }
-
-        const qrOperationResponse = await this.productService.qrOperation(
-          model
-        );
-        if (qrOperationResponse) {
-          // console.log(this.qrOperationModels);
-          this.generalService.beep3();
-          this.toasterService.success('Qr Operasyonu Geri Alındı');
-        } else {
-          this.toasterService.error('Qr Operasyonu Geri Alınamadı');
-        }
-      } else {
-        this.toasterService.error('Qr Operasyonu Geri Alınamadı');
       }
     }
   }

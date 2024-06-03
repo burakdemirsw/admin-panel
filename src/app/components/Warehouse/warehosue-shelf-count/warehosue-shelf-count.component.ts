@@ -55,7 +55,7 @@ export class WarehosueShelfCountComponent implements OnInit {
   orderBillingModel: OrderBillingListModel;
   shelfNumbers: string = 'RAFLAR:';
   location = location.href;
-  offices: string[] = []
+  offices: any[] = []
   warehouses: any[] = []
   shelves: AvailableShelf[] = [];
   shelves2: AvailableShelf[] = [];
@@ -138,18 +138,24 @@ export class WarehosueShelfCountComponent implements OnInit {
     var response = await this.warehouseService.getWarehouseAndOffices();
     this.warehouseModels = response;
 
-    for (let i = 0; i < this.warehouseModels.length; i++) {
-      if (!this.offices.includes(this.warehouseModels[i].officeCode)) {
-        this.offices.push(this.warehouseModels[i].officeCode);
+    const officeSet = new Set();
+    const warehouseSet = new Set();
 
-      }
+    this.warehouseModels.forEach(model => {
+      officeSet.add(model.officeCode);
+      warehouseSet.add(model.warehouseCode);
+    });
 
-      var warehouseModel: any = {};
-      warehouseModel.code = this.warehouseModels[i].warehouseCode;
-      warehouseModel.name = this.warehouseModels[i].warehouseDescription;
-      this.warehouses.push(warehouseModel);
-    }
+    this.offices = Array.from(officeSet);
+    this.warehouses = Array.from(warehouseSet).map(code => {
+      const model = this.warehouseModels.find(warehouse => warehouse.warehouseCode === code);
+      return {
+        code: model.warehouseCode,
+        name: model.warehouseDescription
+      };
+    });
   }
+
   createJson(barcode: string, shelfNo: string, batchCode: string) {
     var model: CountedProduct = this.lastCollectedProducts.find(
       (p) =>

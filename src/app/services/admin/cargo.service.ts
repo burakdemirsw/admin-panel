@@ -52,9 +52,9 @@ export class CargoService {
 
   }
 
-  async createBarcode(request: string): Promise<any> {
+  async createBarcode(request: string[]): Promise<any> {
     try {
-      var response = await this.httpClientService.get<any>({ controller: "cargos/create-barcode", responseType: 'arraybuffer' }, request).toPromise();
+      var response = await this.httpClientService.post<any>({ controller: "cargos/create-barcode", responseType: 'arraybuffer' }, request).toPromise();
 
       return response;
     } catch (error: any) {
