@@ -58,7 +58,12 @@ var GeneralService = /** @class */ (function () {
         }
     };
     GeneralService.prototype.isNullOrEmpty = function (value) {
-        return value === null || value === undefined || value.trim() === '';
+        if (typeof value === 'object') {
+            return value === null || value === undefined;
+        }
+        else {
+            return value === null || value === undefined || value.trim() === '';
+        }
     };
     GeneralService.prototype.beep = function () {
         var audio = new Audio('assets/music/qrSound.mp3');

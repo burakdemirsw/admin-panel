@@ -118,8 +118,6 @@ var CreateOrderComponent = /** @class */ (function () {
         //---------------------------------------------------- TEXT OKUMA
         this.extractedText = null;
         this.imageData = null;
-        //----------------------------------------------------
-        //---------------------------------------------------- Dialog değişkenleri ve metodları
         this.getCustomerDialog = false;
         this.findProductDialog = false;
         this.selectAddressDialog = false;
@@ -218,10 +216,20 @@ var CreateOrderComponent = /** @class */ (function () {
                         }
                         this.paymentForm.get('paymentType').setValue(this.paymentMethods[2]);
                         this.paymentForm.get('taxTypeCode').setValue(this.stateOptions[1]);
+                        this.console();
                         return [2 /*return*/];
                 }
             });
         });
+    };
+    CreateOrderComponent.prototype.console = function () {
+        console.clear();
+        console.log('payment:', this.payment);
+        console.log('selectedCustomers:', this.selectedCustomers);
+        console.log('selectedProducts:', this.selectedProducts);
+        console.log('selectedAddresses:', this.selectedAddresses);
+        console.log('selectedOfficeAndWarehosue:', this.selectedOfficeAndWarehosue);
+        console.log('selectedSubCustomers:', this.selectedSubCustomers);
     };
     //--------------------------------------------------------------------------- KAMERA
     CreateOrderComponent.prototype.printValue = function (ev) {
@@ -240,8 +248,8 @@ var CreateOrderComponent = /** @class */ (function () {
                     case 0: return [4 /*yield*/, this.orderService.getClientOrder(this.id)];
                     case 1:
                         response = _b.sent();
-                        if (!(state === 0)) return [3 /*break*/, 9];
-                        if (!response.clientOrder) return [3 /*break*/, 7];
+                        if (!(state === 0)) return [3 /*break*/, 10];
+                        if (!response.clientOrder) return [3 /*break*/, 8];
                         order = response;
                         this.isCompleted = order.clientOrder.isCompleted;
                         this.currAccCode = order.clientOrder.customerCode;
@@ -286,17 +294,19 @@ var CreateOrderComponent = /** @class */ (function () {
                         }
                         //ALT MÜŞTERİ EKLENDİ
                         this.createCustomerForm.value.sc_Mode = true;
+                        if (!!this.generalService.isNullOrEmpty(order.clientOrder.subCurrAccId)) return [3 /*break*/, 7];
                         scRequest = new subCustomerList_VM_1.SubCustomerList_VM();
                         scRequest.subCurrAccId = order.clientOrder.subCurrAccId;
                         return [4 /*yield*/, this.orderService.getSubCustomerList(scRequest)];
                     case 6:
                         scResponse = _b.sent();
                         if (scResponse) {
-                            this.createCustomerForm.value.sc_Mode = true;
                             this.createCustomerForm.value.sc_Description = (_a = scResponse[0]) === null || _a === void 0 ? void 0 : _a.companyName;
                             this.selectedSubCustomers.push(scResponse[0]);
                             console.log("Alt Müşteri Eklendi");
                         }
+                        return [3 /*break*/, 7];
+                    case 7:
                         this.payment.amount = this.selectedProducts.reduce(function (total, product) { return total + product.price; }, 0);
                         // this.selectedAddresses = []; burası
                         this.orderNo = order.clientOrder.orderNo;
@@ -311,13 +321,13 @@ var CreateOrderComponent = /** @class */ (function () {
                                 _this.selectedProducts.push(object);
                             });
                         }
-                        return [3 /*break*/, 8];
-                    case 7:
+                        return [3 /*break*/, 9];
+                    case 8:
                         this.orderNo = this.generateRandomNumber();
                         this.toasterService.success("Yeni Sipariş : " + this.orderNo);
-                        _b.label = 8;
-                    case 8: return [3 /*break*/, 10];
-                    case 9:
+                        _b.label = 9;
+                    case 9: return [3 /*break*/, 11];
+                    case 10:
                         if (response.clientOrder) {
                             order = response;
                             this.selectedProducts = [];
@@ -332,8 +342,8 @@ var CreateOrderComponent = /** @class */ (function () {
                         else {
                             this.toasterService.error("Yanıt Yok");
                         }
-                        _b.label = 10;
-                    case 10: return [2 /*return*/];
+                        _b.label = 11;
+                    case 11: return [2 /*return*/];
                 }
             });
         });
@@ -379,7 +389,7 @@ var CreateOrderComponent = /** @class */ (function () {
         console.log(this.orderDescription);
     };
     CreateOrderComponent.prototype.createClientOrder_RM = function () {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         try {
             var request = new nebimOrder_1.ClientOrder();
             request.customerCode = this.currAccCode;
@@ -394,6 +404,7 @@ var CreateOrderComponent = /** @class */ (function () {
             request.orderDescription = this.paymentForm.get('orderDescription').value;
             request.paymentDescription = this.payment.creditCardTypeCode;
             request.subCurrAccId = (_c = this.selectedSubCustomers[0]) === null || _c === void 0 ? void 0 : _c.subCurrAccId;
+            request.subCustomerDescription = (_d = this.selectedSubCustomers[0]) === null || _d === void 0 ? void 0 : _d.companyName;
             if (this.payment) {
                 request.paymentType = this.payment.creditCardTypeCode;
             }
@@ -591,24 +602,21 @@ var CreateOrderComponent = /** @class */ (function () {
     CreateOrderComponent.prototype.getAddresses = function () {
         return __awaiter(this, void 0, void 0, function () {
             var countries, regions;
-            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.addressService.getAddress(1)];
                     case 1:
                         countries = _a.sent();
-                        this.countries = countries;
-                        this.countries.forEach(function (b) {
-                            var country = { name: b.description, code: b.code };
-                            _this._countries.push(country);
+                        // Ülkeleri döngüye alarak dönüştür ve _countries dizisine ekle
+                        this._countries = countries.map(function (b) {
+                            return { name: b.description, code: b.code };
                         });
                         return [4 /*yield*/, this.addressService.getAddress(2, "TR")];
                     case 2:
                         regions = _a.sent();
-                        this.regions = regions;
-                        this.regions.forEach(function (b) {
-                            var region = { name: b.description, code: b.code };
-                            _this._regions.push(region);
+                        // Region'ları döngüye alarak dönüştür ve _regions dizisine ekle
+                        this._regions = regions.map(function (b) {
+                            return { name: b.description, code: b.code };
                         });
                         return [2 /*return*/];
                 }
@@ -704,6 +712,25 @@ var CreateOrderComponent = /** @class */ (function () {
         else if (state === 3) {
             if (this.preview) {
                 this.preview.nativeElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    };
+    CreateOrderComponent.prototype.showPanel = function (type) {
+        if (this.selectedCustomers.length == 0) {
+            if (type == 1) {
+                if (this.dropdown) {
+                    this.dropdown.show();
+                }
+            }
+            else if (type == 2) {
+                if (this.dropdown_2) {
+                    this.dropdown_2.show();
+                }
+            }
+        }
+        else if (type == 3) {
+            if (this.dropdown_3) {
+                this.dropdown_3.show();
             }
         }
     };
@@ -855,35 +882,81 @@ var CreateOrderComponent = /** @class */ (function () {
             });
         });
     };
-    CreateOrderComponent.prototype.showPanel = function (type) {
-        if (type == 1) {
-            if (this.dropdown) {
-                this.dropdown.show();
-            }
-        }
-        else {
-            if (this.dropdown_2) {
-                this.dropdown_2.show();
-            }
-        }
-    };
     CreateOrderComponent.prototype.createsubCustomerForm = function () {
+        var _this = this;
         this.addSubCustomerForm = this.formBuilder.group({
             currAccCode: [null],
             subCurrAccDesc: [null],
             mail: [null],
-            phone: [null]
+            phone: [null],
+            country: [null],
+            region: [null],
+            province: [null],
+            taxOffice: [null],
+            district: [null],
+            address: [null]
         });
+        this.addSubCustomerForm.get('region').valueChanges.subscribe(function (value) { return __awaiter(_this, void 0, void 0, function () {
+            var _value, response;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _value = this.addSubCustomerForm.get('region').value.code;
+                        return [4 /*yield*/, this.addressService.getAddress(3, _value)];
+                    case 1:
+                        response = _a.sent();
+                        this.provinces = response;
+                        this._provinces = [];
+                        this.provinces.forEach(function (b) {
+                            var provinces = { name: b.description, code: b.code };
+                            _this._provinces.push(provinces);
+                        });
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        this.addSubCustomerForm.get('province').valueChanges.subscribe(function (value) { return __awaiter(_this, void 0, void 0, function () {
+            var _value, response, _value, response;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _value = this.addSubCustomerForm.get('province').value.code;
+                        return [4 /*yield*/, this.addressService.getAddress(4, _value)];
+                    case 1:
+                        response = _a.sent();
+                        this.districts = response;
+                        this._districts = [];
+                        this.districts.forEach(function (b) {
+                            var district = { name: b.description, code: b.code };
+                            _this._districts.push(district);
+                        });
+                        _value = this.addSubCustomerForm.get('province').value.code;
+                        return [4 /*yield*/, this.addressService.getAddress(5, _value)];
+                    case 2:
+                        response = _a.sent();
+                        this.taxOffices = response;
+                        this._taxOffices = [];
+                        this.taxOffices.forEach(function (b) {
+                            var taxOffice = { name: b.description, code: b.code };
+                            _this._taxOffices.push(taxOffice);
+                        });
+                        return [2 /*return*/];
+                }
+            });
+        }); });
     };
     CreateOrderComponent.prototype.createCustomerFormMethod = function () {
         var _this = this;
+        console.log("Müşteri Formu Oluşturuldu :" + this.selectedCustomers.length);
         this.createCustomerForm = this.formBuilder.group({
             office: [null],
             warehouse: [null],
             salesPersonCode: [null],
             currAccDescription: [null, forms_1.Validators.required],
             mail: [' ', forms_1.Validators.required],
-            phoneNumber: ['05', forms_1.Validators.required],
+            phoneNumber: ['05', [forms_1.Validators.required]],
             stampPhotoUrl: [null],
             bussinesCardPhotoUrl: [null],
             address_country: [null],
@@ -908,6 +981,23 @@ var CreateOrderComponent = /** @class */ (function () {
         //     this.
         //   }
         // });
+        this.createCustomerForm.get('sc_Description').valueChanges.subscribe(function (value) { return __awaiter(_this, void 0, void 0, function () {
+            var subCustomer;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!!this.generalService.isNullOrEmpty(value === null || value === void 0 ? void 0 : value.name)) return [3 /*break*/, 2];
+                        subCustomer = new subCustomerList_VM_1.SubCustomerList_VM();
+                        subCustomer = this.subCustomers.find(function (p) { return p.subCurrAccId == value.value; });
+                        if (!subCustomer) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.selectCurrentSubCustomer(subCustomer)];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
+                }
+            });
+        }); });
         this.createCustomerForm.get('phoneNumber').valueChanges.subscribe(function (value) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 if (this.generalService.isNullOrEmpty(value)) {
@@ -1076,19 +1166,38 @@ var CreateOrderComponent = /** @class */ (function () {
     };
     CreateOrderComponent.prototype.getSubCustomers = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var request, response;
+            var request, response, request, response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        if (!(this.createCustomerForm.value.sc_Description != null ||
+                            (typeof this.createCustomerForm.value.sc_Description === 'object' &&
+                                this.generalService.isNullOrEmpty(this.createCustomerForm.value.sc_Description.name)))) return [3 /*break*/, 5];
+                        if (!(typeof this.createCustomerForm.value.sc_Description === 'object')) return [3 /*break*/, 2];
                         request = new subCustomerList_VM_1.SubCustomerList_VM();
-                        request.currAccCode = this.createCustomerForm.value.sc_Description;
+                        request.currAccCode = this.createCustomerForm.value.sc_Description.name;
                         return [4 /*yield*/, this.orderService.getSubCustomerList(request)];
                     case 1:
                         response = _a.sent();
                         if (response) {
+                            this.subCustomers = [];
                             this.subCustomers = response;
-                            this.subCustomerDialog = true;
                         }
+                        return [3 /*break*/, 4];
+                    case 2:
+                        request = new subCustomerList_VM_1.SubCustomerList_VM();
+                        request.currAccCode = this.createCustomerForm.value.sc_Description;
+                        return [4 /*yield*/, this.orderService.getSubCustomerList(request)];
+                    case 3:
+                        response = _a.sent();
+                        if (response) {
+                            this.subCustomers = [];
+                            this.subCustomers = response;
+                        }
+                        _a.label = 4;
+                    case 4: return [3 /*break*/, 5];
+                    case 5:
+                        this.subCustomerDialog = !this.subCustomerDialog;
                         return [2 /*return*/];
                 }
             });
@@ -1107,9 +1216,10 @@ var CreateOrderComponent = /** @class */ (function () {
                     case 1:
                         order_response = _a.sent();
                         if (order_response) {
+                            this.toasterService.success("Alt Müşteri Seçildi");
+                            this.generalService.beep();
                             this.subCustomerDialog = false;
                             this.activeIndex = 2;
-                            this.generalService.beep();
                         }
                         return [2 /*return*/];
                 }
@@ -1122,6 +1232,7 @@ var CreateOrderComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        console.log(this.addSubCustomerForm.value);
                         if (!(this.selectedCustomers.length === 0)) return [3 /*break*/, 1];
                         this.toasterService.error("Müşteri Seçiniz");
                         return [2 /*return*/];
@@ -1131,6 +1242,9 @@ var CreateOrderComponent = /** @class */ (function () {
                         request.companyName = this.addSubCustomerForm.value.subCurrAccDesc;
                         request.mail = this.addSubCustomerForm.value.mail;
                         request.phone = this.addSubCustomerForm.value.phone;
+                        request.city = this.addSubCustomerForm.value.province.name;
+                        request.district = this.addSubCustomerForm.value.district.name;
+                        request.address = this.addSubCustomerForm.value.address;
                         return [4 /*yield*/, this.orderService.addSubCustomer(request)];
                     case 2:
                         response = _a.sent();
@@ -1169,6 +1283,8 @@ var CreateOrderComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.orderService.getSubCustomerList(subCustomer_request)];
                     case 2:
                         subCustomer_response = _b.sent();
+                        this.subCustomers = [];
+                        this.subCustomers = subCustomer_response;
                         if (subCustomer_response) {
                             subCustomer_response.forEach(function (c) {
                                 _this.selectableSubCustomers.push({ name: c.companyName, value: c.subCurrAccId });
@@ -2404,6 +2520,9 @@ var CreateOrderComponent = /** @class */ (function () {
     __decorate([
         core_1.ViewChild('preview', { static: false })
     ], CreateOrderComponent.prototype, "preview");
+    __decorate([
+        core_1.ViewChild('subCurrAccDescription_dropdown')
+    ], CreateOrderComponent.prototype, "dropdown_3");
     __decorate([
         core_1.ViewChild('currAccDescription_dropdown')
     ], CreateOrderComponent.prototype, "dropdown");

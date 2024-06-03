@@ -335,6 +335,8 @@ export class ClientOrder {
   recepientPhone: string;
   orderDescription: string;
   subCurrAccId: string;
+  subCustomerDescription?: string;
+
   constructor() {
     this.createdDate = new Date();
     this.isCompleted = false;

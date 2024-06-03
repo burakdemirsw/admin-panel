@@ -24,7 +24,12 @@ export class GeneralService {
   }
 
   isNullOrEmpty(value: string | null | undefined): boolean {
-    return value === null || value === undefined || value.trim() === '';
+    if (typeof value === 'object') {
+      return value === null || value === undefined
+    } else {
+      return value === null || value === undefined || value.trim() === '';
+    }
+
   }
 
   beep() {

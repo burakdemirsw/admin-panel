@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Dropdown } from 'primeng/dropdown';
 import { Table } from 'primeng/table';
@@ -109,11 +109,19 @@ export class CreateOrderComponent implements OnInit {
     this.paymentForm.get('paymentType').setValue(this.paymentMethods[2])
 
     this.paymentForm.get('taxTypeCode').setValue(this.stateOptions[1])
-
-
+    this.console();
   }
 
 
+  console() {
+    console.clear();
+    console.log('payment:', this.payment);
+    console.log('selectedCustomers:', this.selectedCustomers);
+    console.log('selectedProducts:', this.selectedProducts);
+    console.log('selectedAddresses:', this.selectedAddresses);
+    console.log('selectedOfficeAndWarehosue:', this.selectedOfficeAndWarehosue);
+    console.log('selectedSubCustomers:', this.selectedSubCustomers);
+  }
   //--------------------------------------------------------------------------- KAMERA
 
   printValue(ev: any) {
@@ -176,16 +184,21 @@ export class CreateOrderComponent implements OnInit {
         }
 
         //ALT MÜŞTERİ EKLENDİ
-
         this.createCustomerForm.value.sc_Mode = true;
-        var scRequest = new SubCustomerList_VM();
-        scRequest.subCurrAccId = order.clientOrder.subCurrAccId;
-        var scResponse = await this.orderService.getSubCustomerList(scRequest);
-        if (scResponse) {
-          this.createCustomerForm.value.sc_Mode = true;
-          this.createCustomerForm.value.sc_Description = scResponse[0]?.companyName;
-          this.selectedSubCustomers.push(scResponse[0]);
-          console.log("Alt Müşteri Eklendi")
+        if (!this.generalService.isNullOrEmpty(order.clientOrder.subCurrAccId)) {
+
+          var scRequest = new SubCustomerList_VM();
+          scRequest.subCurrAccId = order.clientOrder.subCurrAccId;
+          var scResponse = await this.orderService.getSubCustomerList(scRequest);
+          if (scResponse) {
+
+            this.createCustomerForm.value.sc_Description = scResponse[0]?.companyName;
+            this.selectedSubCustomers.push(scResponse[0]);
+            console.log("Alt Müşteri Eklendi")
+          }
+
+        } else {
+
         }
 
 
@@ -279,6 +292,7 @@ export class CreateOrderComponent implements OnInit {
       request.orderDescription = this.paymentForm.get('orderDescription').value;
       request.paymentDescription = this.payment.creditCardTypeCode;
       request.subCurrAccId = this.selectedSubCustomers[0]?.subCurrAccId;
+      request.subCustomerDescription = this.selectedSubCustomers[0]?.companyName;
       if (this.payment) {
         request.paymentType = this.payment.creditCardTypeCode;
       } else {
@@ -461,24 +475,19 @@ export class CreateOrderComponent implements OnInit {
   //-------------------------------
 
   async getAddresses() {
-    var countries = await this.addressService.getAddress(1)
-    this.countries = countries;
-
-    this.countries.forEach((b) => {
-      var country: any = { name: b.description, code: b.code };
-      this._countries.push(country);
+    // Ülkelerin adres bilgilerini al
+    var countries = await this.addressService.getAddress(1);
+    // Ülkeleri döngüye alarak dönüştür ve _countries dizisine ekle
+    this._countries = countries.map((b) => {
+      return { name: b.description, code: b.code };
     });
 
+    // Region'ların adres bilgilerini al (örneğin Türkiye)
     var regions = await this.addressService.getAddress(2, "TR");
-    this.regions = regions;
-
-    this.regions.forEach((b) => {
-      var region: any = { name: b.description, code: b.code };
-      this._regions.push(region);
+    // Region'ları döngüye alarak dönüştür ve _regions dizisine ekle
+    this._regions = regions.map((b) => {
+      return { name: b.description, code: b.code };
     });
-
-    //console.log(countries);
-    //console.log(provinces);
   }
 
 
@@ -584,6 +593,37 @@ export class CreateOrderComponent implements OnInit {
   }
   //----------------------------------------------------
   //---------------------------------------------------- Dialog değişkenleri ve metodları
+
+
+  @ViewChild('subCurrAccDescription_dropdown') dropdown_3: Dropdown;
+  @ViewChild('currAccDescription_dropdown') dropdown: Dropdown;
+  @ViewChild('phoneNumber_dropdown') dropdown_2: Dropdown;
+
+  showPanel(type: Number) {
+
+    if (this.selectedCustomers.length == 0) {
+      if (type == 1) {
+        if (this.dropdown) {
+          this.dropdown.show();
+        }
+      }
+      else if (type == 2) {
+        if (this.dropdown_2) {
+          this.dropdown_2.show();
+        }
+      }
+
+
+    }
+    else if (type == 3) {
+      if (this.dropdown_3) {
+        this.dropdown_3.show();
+      }
+    }
+
+  }
+
+
   getCustomerDialog: boolean = false;
   findProductDialog: boolean = false;
   selectAddressDialog: boolean = false;
@@ -650,9 +690,10 @@ export class CreateOrderComponent implements OnInit {
   }
   async submitAddressForm(formValue: any) {
 
+
+    //kotnrol isteği atılıyor **
     var check_request = new GetCustomerAddress_CM();
     check_request.currAccCode = formValue.currAccDescription.currAccCode;
-
     var check_response = await this.orderService.getCustomerList_2(check_request);
     if (check_response.length > 0 && check_request.currAccCode != undefined) {
       var _findedCustomer = check_response.find(c => c.currAccCode == formValue.currAccDescription.currAccCode);
@@ -662,6 +703,8 @@ export class CreateOrderComponent implements OnInit {
       }
       return;
     }
+
+    // eğer form geçerli ise **
     if (this.createCustomerForm.valid) {
       var request: CreateCustomer_CM = new CreateCustomer_CM();
       request.currAccDescription = formValue.currAccDescription; //++
@@ -721,41 +764,74 @@ export class CreateOrderComponent implements OnInit {
   }
 
 
-
-  @ViewChild('currAccDescription_dropdown') dropdown: Dropdown;
-  @ViewChild('phoneNumber_dropdown') dropdown_2: Dropdown;
-
-  showPanel(type: Number) {
-    if (type == 1) {
-      if (this.dropdown) {
-        this.dropdown.show();
-      }
-    } else {
-      if (this.dropdown_2) {
-        this.dropdown_2.show();
-      }
-    }
-
-  }
   addSubCustomerForm: FormGroup;
   createsubCustomerForm() {
     this.addSubCustomerForm = this.formBuilder.group({
       currAccCode: [null],
       subCurrAccDesc: [null],
       mail: [null],
-      phone: [null]
+      phone: [null],
+      country: [null],
+      region: [null],
+      province: [null],
+      taxOffice: [null],
+      district: [null],
+      address: [null]
+    });
+
+
+
+    this.addSubCustomerForm.get('region').valueChanges.subscribe(async (value) => { //illeri getir
+      var _value = this.addSubCustomerForm.get('region').value.code;
+      var response = await this.addressService.getAddress(3, _value)
+      this.provinces = response
+
+      this._provinces = [];
+      this.provinces.forEach((b) => {
+        var provinces: any = { name: b.description, code: b.code };
+        this._provinces.push(provinces);
+      });
+    });
+
+    this.addSubCustomerForm.get('province').valueChanges.subscribe(async (value) => { //ilçeleri getir
+      var _value = this.addSubCustomerForm.get('province').value.code;
+
+      var response = await this.addressService.getAddress(4, _value)
+      this.districts = response
+
+      this._districts = [];
+      this.districts.forEach((b) => {
+        var district: any = { name: b.description, code: b.code };
+        this._districts.push(district);
+      });
+
+
+      var _value = this.addSubCustomerForm.get('province').value.code;
+
+      var response = await this.addressService.getAddress(5, _value)
+      this.taxOffices = response
+
+      this._taxOffices = [];
+      this.taxOffices.forEach((b) => {
+        var taxOffice: any = { name: b.description, code: b.code };
+        this._taxOffices.push(taxOffice);
+      });
+
 
     });
 
+
+
   }
   createCustomerFormMethod() {
+    console.log("Müşteri Formu Oluşturuldu :" + this.selectedCustomers.length)
     this.createCustomerForm = this.formBuilder.group({
       office: [null],
       warehouse: [null],
       salesPersonCode: [null],
       currAccDescription: [null, Validators.required],
       mail: [' ', Validators.required],
-      phoneNumber: ['05', Validators.required],
+      phoneNumber: ['05', [Validators.required]],
       stampPhotoUrl: [null],
       bussinesCardPhotoUrl: [null],
       address_country: [null],
@@ -782,6 +858,19 @@ export class CreateOrderComponent implements OnInit {
     //     this.
     //   }
     // });
+
+    this.createCustomerForm.get('sc_Description').valueChanges.subscribe(async (value) => { //alt müşteri olayını
+      if (!this.generalService.isNullOrEmpty(value?.name)) {
+        var subCustomer: SubCustomerList_VM = new SubCustomerList_VM();
+        subCustomer = this.subCustomers.find(p => p.subCurrAccId == value.value);
+        if (subCustomer) {
+          await this.selectCurrentSubCustomer(subCustomer);
+        }
+
+      }
+
+    });
+
 
     this.createCustomerForm.get('phoneNumber').valueChanges.subscribe(async (value) => { //illeri getir
       if (this.generalService.isNullOrEmpty(value)) {
@@ -912,14 +1001,40 @@ export class CreateOrderComponent implements OnInit {
 
   async getSubCustomers() {
 
-    var request: SubCustomerList_VM = new SubCustomerList_VM();
-    request.currAccCode = this.createCustomerForm.value.sc_Description;
-    var response = await this.orderService.getSubCustomerList(request);
-    if (response) {
-      this.subCustomers = response;
-      this.subCustomerDialog = true;
+    if (this.createCustomerForm.value.sc_Description != null ||
+      (typeof this.createCustomerForm.value.sc_Description === 'object' &&
+        this.generalService.isNullOrEmpty(this.createCustomerForm.value.sc_Description.name))) {
+
+      if (typeof this.createCustomerForm.value.sc_Description === 'object') {
+        var request: SubCustomerList_VM = new SubCustomerList_VM();
+        request.currAccCode = this.createCustomerForm.value.sc_Description.name;
+        var response = await this.orderService.getSubCustomerList(request);
+        if (response) {
+          this.subCustomers = [];
+          this.subCustomers = response;
+
+        }
+      }
+
+      else {
+        var request: SubCustomerList_VM = new SubCustomerList_VM();
+        request.currAccCode = this.createCustomerForm.value.sc_Description;
+        var response = await this.orderService.getSubCustomerList(request);
+        if (response) {
+          this.subCustomers = [];
+          this.subCustomers = response;
+
+        }
+      }
+
+    } else {
+
     }
 
+
+
+
+    this.subCustomerDialog = !this.subCustomerDialog;
   }
 
 
@@ -930,16 +1045,17 @@ export class CreateOrderComponent implements OnInit {
     var order_request = this.createClientOrder_RM()
     var order_response = await this.orderService.createClientOrder(order_request)
     if (order_response) {
+      this.toasterService.success("Alt Müşteri Seçildi")
+      this.generalService.beep()
       this.subCustomerDialog = false;
       this.activeIndex = 2;
-      this.generalService.beep()
     }
 
 
   }
 
   async addSubCustomer() {
-
+    console.log(this.addSubCustomerForm.value);
     if (this.selectedCustomers.length === 0) {
       this.toasterService.error("Müşteri Seçiniz");
       return;
@@ -949,6 +1065,9 @@ export class CreateOrderComponent implements OnInit {
       request.companyName = this.addSubCustomerForm.value.subCurrAccDesc;
       request.mail = this.addSubCustomerForm.value.mail;
       request.phone = this.addSubCustomerForm.value.phone;
+      request.city = this.addSubCustomerForm.value.province.name;
+      request.district = this.addSubCustomerForm.value.district.name;
+      request.address = this.addSubCustomerForm.value.address;
       var response = await this.orderService.addSubCustomer(request);
       if (response) {
         this.toasterService.success("Alt Müşteri Eklendi")
@@ -976,7 +1095,10 @@ export class CreateOrderComponent implements OnInit {
 
       var subCustomer_request = new SubCustomerList_VM();
       subCustomer_request.currAccCode = this.selectedCustomers[0].currAccCode;
+
       var subCustomer_response = await this.orderService.getSubCustomerList(subCustomer_request)
+      this.subCustomers = [];
+      this.subCustomers = subCustomer_response;
       if (subCustomer_response) {
 
         subCustomer_response.forEach(c => {

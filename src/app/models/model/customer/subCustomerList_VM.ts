@@ -5,5 +5,8 @@ export class SubCustomerList_VM {
   companyName: string | null;
   mail: string | null;
   phone: string | null;
+  city: string
+  district: string;
+  address: string
 
 }
