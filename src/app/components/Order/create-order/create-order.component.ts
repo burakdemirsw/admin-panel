@@ -658,7 +658,7 @@ export class CreateOrderComponent implements OnInit {
 
 
   async setCustomer() {
-    var salesPersonCode = localStorage.getItem('salesPersonCode');
+    var salesPersonCode = localStorage.getItem('currAccCode');
     var request: GetCustomerList_CM = new GetCustomerList_CM();
     request.currAccCode = salesPersonCode;
     var response = await this.orderService.getCustomerList_2(request)

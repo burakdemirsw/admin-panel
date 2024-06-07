@@ -60,6 +60,7 @@ export class PagesRegisterComponent implements OnInit {
       this.registerForm.get("roleDescription").setValue(findedRole);
       // this.registerForm.get("password").setValue(registerModel.password);
       // this.registerForm.get("confirmPassword").setValue(registerModel.password);
+      this.registerForm.get("currAccCode").setValue(registerModel.currAccCode);
 
       this.registerForm.get("phoneNumber").setValue(registerModel.phoneNumber);
       this.registerForm.get("salesPersonCode").setValue(registerModel.salesPersonCode);
@@ -105,17 +106,30 @@ export class PagesRegisterComponent implements OnInit {
   selectedRole: any;
   formGenerator() {
     this.registerForm = this.formBuilder.group({
-      firstName: [null, Validators.required],
-      lastName: [null, Validators.required],
-      email: [{ value: null, disabled: false }, [Validators.required, Validators.email]],
+      firstName: ['Burak', Validators.required],
+      lastName: ['Burak', Validators.required],
+      email: [{ value: 'demir.burock96@gmail.com', disabled: false }, [Validators.required, Validators.email]],
       phoneNumber: [null, Validators.required],
       salesPersonCode: [null, Validators.required],
       password: [null],
       confirmPassword: [null],
       gender: ["Erkek"],
-      roleDescription: [null],
-      printerName_1: [null],
-      printerName_2: [null]
+      roleDescription: [],
+      printerName_1: ['Burak'],
+      printerName_2: ['Burak'],
+      currAccCode: ['Burak']
+      // firstName: [null, Validators.required],
+      // lastName: [null, Validators.required],
+      // email: [{ value: null, disabled: false }, [Validators.required, Validators.email]],
+      // phoneNumber: [null, Validators.required],
+      // salesPersonCode: [null, Validators.required],
+      // password: [null],
+      // confirmPassword: [null],
+      // gender: ["Erkek"],
+      // roleDescription: [null],
+      // printerName_1: [null],
+      // printerName_2: [null],
+      // currAccCode: [null]
 
 
     });
@@ -145,8 +159,8 @@ export class PagesRegisterComponent implements OnInit {
             gender: this.registerForm.value.gender,
             roleDescription: this.registerForm.value.roleDescription.role,
             printerName_1: this.registerForm.value.printerName_1,
-            printerName_2: this.registerForm.value.printerName_2
-
+            printerName_2: this.registerForm.value.printerName_2,
+            currAccCode: this.registerForm.value.currAccCode
 
 
           };
@@ -184,7 +198,9 @@ export class PagesRegisterComponent implements OnInit {
             gender: this.registerForm.value.gender,
             roleDescription: this.registerForm.value.roleDescription.role,
             printerName_1: this.registerForm.value.printerName_1,
-            printerName_2: this.registerForm.value.printerName_2
+            printerName_2: this.registerForm.value.printerName_2,
+            currAccCode: this.registerForm.value.currAccCode
+
           };
 
           var response = await this.userService.update(model);

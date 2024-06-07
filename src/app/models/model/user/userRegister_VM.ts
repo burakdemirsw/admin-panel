@@ -10,6 +10,7 @@ export class UserRegister_VM {
   roleDescription: string;
   printerName_1?: string
   printerName_2?: string
+  currAccCode?: string
 }
 export class Token {
   accessToken !: string
@@ -47,6 +48,8 @@ export class UserClientInfoResponse {
   name: string
   surname: string
   roleDescription: string
+  currAccCode?: string
+
 }
 export class RefreshTokenCommandResponse {
   state?: boolean;
@@ -64,6 +67,8 @@ export class UserList_VM {
   roleDescription?: string
   printerName_1?: string
   printerName_2?: string
+  currAccCode?: string
+
 
 }
 export class PasswordRequest_CM {

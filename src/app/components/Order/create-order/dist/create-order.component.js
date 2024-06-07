@@ -755,7 +755,7 @@ var CreateOrderComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        salesPersonCode = localStorage.getItem('salesPersonCode');
+                        salesPersonCode = localStorage.getItem('currAccCode');
                         request = new getCustomerList_CM_2.GetCustomerList_CM();
                         request.currAccCode = salesPersonCode;
                         return [4 /*yield*/, this.orderService.getCustomerList_2(request)];

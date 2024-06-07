@@ -127,6 +127,7 @@ var UserService = /** @class */ (function () {
                         localStorage.setItem("phoneNumber", userClientInfoResponse.phoneNumber.toString() == null ? "" : userClientInfoResponse.phoneNumber.toString());
                         localStorage.setItem("name", userClientInfoResponse.name.toString() == null ? "" : userClientInfoResponse.name.toString());
                         localStorage.setItem("surname", userClientInfoResponse.surname.toString() == null ? "" : userClientInfoResponse.surname.toString());
+                        localStorage.setItem("currAccCode", userClientInfoResponse.surname.toString() == null ? "" : userClientInfoResponse.currAccCode.toString());
                         if (response) {
                             // console.log(response);
                             return [2 /*return*/, true];
@@ -166,6 +167,7 @@ var UserService = /** @class */ (function () {
                         localStorage.setItem("phoneNumber", userClientInfoResponse.phoneNumber.toString());
                         localStorage.setItem("name", userClientInfoResponse.name.toString());
                         localStorage.setItem("surname", userClientInfoResponse.surname.toString());
+                        localStorage.setItem("currAccCode", userClientInfoResponse.currAccCode.toString());
                         if (response) {
                             // console.log(response);
                             return [2 /*return*/, true];
@@ -234,6 +236,7 @@ var UserService = /** @class */ (function () {
                 model.mail = localStorage.getItem("phoneNumber");
                 model.mail = localStorage.getItem("name");
                 model.mail = localStorage.getItem("surname");
+                model.mail = localStorage.getItem("currAccCode");
                 model.roleDescription = localStorage.getItem("roleDescription");
                 return model;
             }

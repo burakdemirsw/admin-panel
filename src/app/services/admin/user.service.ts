@@ -63,6 +63,7 @@ export class UserService {
       localStorage.setItem("phoneNumber", userClientInfoResponse.phoneNumber.toString() == null ? "" : userClientInfoResponse.phoneNumber.toString());
       localStorage.setItem("name", userClientInfoResponse.name.toString() == null ? "" : userClientInfoResponse.name.toString());
       localStorage.setItem("surname", userClientInfoResponse.surname.toString() == null ? "" : userClientInfoResponse.surname.toString());
+      localStorage.setItem("currAccCode", userClientInfoResponse.surname.toString() == null ? "" : userClientInfoResponse.currAccCode.toString());
 
 
       if (response) {
@@ -100,6 +101,7 @@ export class UserService {
     localStorage.setItem("phoneNumber", userClientInfoResponse.phoneNumber.toString());
     localStorage.setItem("name", userClientInfoResponse.name.toString());
     localStorage.setItem("surname", userClientInfoResponse.surname.toString());
+    localStorage.setItem("currAccCode", userClientInfoResponse.currAccCode.toString());
 
     if (response) {
       // console.log(response);
@@ -149,6 +151,8 @@ export class UserService {
         model.mail = localStorage.getItem("phoneNumber")
         model.mail = localStorage.getItem("name")
         model.mail = localStorage.getItem("surname")
+        model.mail = localStorage.getItem("currAccCode")
+
         model.roleDescription = localStorage.getItem("roleDescription")
         return model;
       } else {

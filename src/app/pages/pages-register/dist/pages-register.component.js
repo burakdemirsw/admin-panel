@@ -120,6 +120,7 @@ var PagesRegisterComponent = /** @class */ (function () {
             this.registerForm.get("roleDescription").setValue(findedRole);
             // this.registerForm.get("password").setValue(registerModel.password);
             // this.registerForm.get("confirmPassword").setValue(registerModel.password);
+            this.registerForm.get("currAccCode").setValue(registerModel.currAccCode);
             this.registerForm.get("phoneNumber").setValue(registerModel.phoneNumber);
             this.registerForm.get("salesPersonCode").setValue(registerModel.salesPersonCode);
             var salesPerson = this.salesPersonModels.find(function (sp) { return sp.salespersonCode === registerModel.salesPersonCode; });
@@ -170,17 +171,30 @@ var PagesRegisterComponent = /** @class */ (function () {
     };
     PagesRegisterComponent.prototype.formGenerator = function () {
         this.registerForm = this.formBuilder.group({
-            firstName: [null, forms_1.Validators.required],
-            lastName: [null, forms_1.Validators.required],
-            email: [{ value: null, disabled: false }, [forms_1.Validators.required, forms_1.Validators.email]],
+            firstName: ['Burak', forms_1.Validators.required],
+            lastName: ['Burak', forms_1.Validators.required],
+            email: [{ value: 'demir.burock96@gmail.com', disabled: false }, [forms_1.Validators.required, forms_1.Validators.email]],
             phoneNumber: [null, forms_1.Validators.required],
             salesPersonCode: [null, forms_1.Validators.required],
             password: [null],
             confirmPassword: [null],
             gender: ["Erkek"],
-            roleDescription: [null],
-            printerName_1: [null],
-            printerName_2: [null]
+            roleDescription: [],
+            printerName_1: ['Burak'],
+            printerName_2: ['Burak'],
+            currAccCode: ['Burak']
+            // firstName: [null, Validators.required],
+            // lastName: [null, Validators.required],
+            // email: [{ value: null, disabled: false }, [Validators.required, Validators.email]],
+            // phoneNumber: [null, Validators.required],
+            // salesPersonCode: [null, Validators.required],
+            // password: [null],
+            // confirmPassword: [null],
+            // gender: ["Erkek"],
+            // roleDescription: [null],
+            // printerName_1: [null],
+            // printerName_2: [null],
+            // currAccCode: [null]
         });
     };
     PagesRegisterComponent.prototype.submitForm = function () {
@@ -204,7 +218,8 @@ var PagesRegisterComponent = /** @class */ (function () {
                             gender: this.registerForm.value.gender,
                             roleDescription: this.registerForm.value.roleDescription.role,
                             printerName_1: this.registerForm.value.printerName_1,
-                            printerName_2: this.registerForm.value.printerName_2
+                            printerName_2: this.registerForm.value.printerName_2,
+                            currAccCode: this.registerForm.value.currAccCode
                         };
                         return [4 /*yield*/, this.userService.register(model)];
                     case 1:
@@ -236,7 +251,8 @@ var PagesRegisterComponent = /** @class */ (function () {
                             gender: this.registerForm.value.gender,
                             roleDescription: this.registerForm.value.roleDescription.role,
                             printerName_1: this.registerForm.value.printerName_1,
-                            printerName_2: this.registerForm.value.printerName_2
+                            printerName_2: this.registerForm.value.printerName_2,
+                            currAccCode: this.registerForm.value.currAccCode
                         };
                         return [4 /*yield*/, this.userService.update(model)];
                     case 7:
