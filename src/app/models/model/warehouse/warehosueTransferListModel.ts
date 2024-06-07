@@ -1,7 +1,7 @@
 export class WarehosueTransferListModel {
-    quantity!: number  ;
-    operationDate!: Date  ;
-    orderNumber!: string  ;
-    warehouseCode!: string  ;
-    toWarehouseCode!: string  ;
-  }
+  quantity!: number;
+  createdDate!: Date;
+  operationId!: string;
+  warehouseCode!: string;
+  toWarehouseCode!: string;
+}

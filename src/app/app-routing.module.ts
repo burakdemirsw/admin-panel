@@ -57,6 +57,8 @@ import { OrderStateComponent } from './components/Order/order-state/order-state.
 import { IdeasoftComponent } from './components2/marketplace/ideasoft/ideasoft.component';
 import { MarketplaceInvoicesComponent } from './components/Order/marketplace-invoices/marketplace-invoices.component';
 import { SearchShelfComponent } from './components/Product/search-shelf/search-shelf.component';
+import { ImportTransaction } from './models/model/warehouse/importTransaction';
+import { ImportTransactionsComponent } from './components/Order/import-transactions/import-transactions.component';
 
 
 const routes: Routes = [
@@ -302,6 +304,7 @@ const routes: Routes = [
   { path: 'create-barcode/:operationNo', component: CreateBarcodeComponent },
   { path: 'marketplace-invoices', component: MarketplaceInvoicesComponent },
   { path: 'search-shelf', component: SearchShelfComponent },
+  { path: 'import-transactions', component: ImportTransactionsComponent },
 
   //------------------------------------------------------------------------- PERAKENDE
   { path: 'ideasoft/auth', component: IdeasoftComponent, pathMatch: 'prefix', runGuardsAndResolvers: 'always' },

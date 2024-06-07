@@ -160,12 +160,15 @@ export class OrderOperationComponent implements OnInit {
         var response = await this.orderService.getOrderDetail(params['orderNumber']);
         this.customerName = response.description;
         await this.getAllProducts(params['orderNumber'], 'WS'); //toplanan ve toplanacak ürünleri çeker
-      } else if (orderNumberType === 'WT' || orderNumber.startsWith("W-")) {
+      } else if (orderNumberType === 'WT' || orderNumber.startsWith("W-") || orderNumberType === 'S') {
         this.userType = 0; //Perakende
         if (orderNumber.startsWith("W-")) {
           this.currentOrderNo = params['orderNumber'].split('W-')[1]
           await this.getAllProducts(params['orderNumber'].split('W-')[1], 'WT'); //toplanan ve toplanacak ürünleri çeker
-        } else {
+        } else if (orderNumberType === 'WT') {
+          await this.getAllProducts(params['orderNumber'], 'WT'); //toplanan ve toplanacak ürünleri çeker
+        }
+        else if (orderNumberType === 'S') {
           await this.getAllProducts(params['orderNumber'], 'WT'); //toplanan ve toplanacak ürünleri çeker
         }
 
@@ -325,7 +328,15 @@ export class OrderOperationComponent implements OnInit {
       this.operation = 'Transferi Onayla';
 
       this.pageDescription = 'Transfer Onaylama Detay ' + this.currentOrderNo;
+    } else if (orderNumberType === 'S') {
+      this.title.setTitle('Mağaza Transfer Detay');
+      this.operation = 'Mağaza Transferi Onayla';
+
+      this.pageDescription = 'Transfer Onaylama Detay ' + this.currentOrderNo;
     }
+
+
+
 
     this.headerService.updatePageTitle(this.pageDescription);
 
@@ -338,8 +349,9 @@ export class OrderOperationComponent implements OnInit {
       orderNoType = 'MIS'
     }
     const productData = await this.orderService //toplanacak ürünler çekildi
-      .getCollectedProducts(orderNo, orderNoType)
-      .toPromise();
+      .getCollectedProducts(orderNo, orderNoType);
+
+
     if (productData.length === 0) {
       this._productsToCollect = []
       // this.toasterService.success("SAYIM TAMAMLANDI");
@@ -571,6 +583,8 @@ export class OrderOperationComponent implements OnInit {
 
   async onSubmit(productModel: CountProduct): Promise<any> {
 
+    var operationType = this.orderNo.split('-')[1]
+
     // = işareti varsa - yap
     if (productModel.barcode.includes("=")) {
       productModel.barcode = productModel.barcode.replace(/=/g, "-");
@@ -741,7 +755,7 @@ export class OrderOperationComponent implements OnInit {
 
     }
     //transfer-------------------------------------------------------------------- WT
-    else if (this.currentOrderNo.split('-')[1] === 'WT' || this.isBPTransferForm === true) {
+    else if (this.currentOrderNo.split('-')[1] === 'WT' || this.isBPTransferForm === true || operationType === 'S') {
       if (this.checkForm.valid) {
 
         if (productModel.barcode && productModel.barcode.charAt(0) === '0') {
@@ -766,9 +780,10 @@ export class OrderOperationComponent implements OnInit {
             model.innerNumber = this.currentOrderNo;
             model.quantity = productModel.quantity;
             model.shelfNumber = productModel.shelfNo;
-            model.warehouse = foundModel.itemDim1Code;
+            model.warehouse = this.warehouseCode;
 
             const response = await this.warehouseService.transfer(model);
+            //ZTMS RAF STOPĞA BURADA AKTARIYORZ
             //↑↑↑↑↑↑↑↑↑ TRANSFER YAPILDI ↑↑↑↑↑↑↑↑↑
 
             if (response > 0) {
@@ -784,7 +799,7 @@ export class OrderOperationComponent implements OnInit {
                 null,
                 null,
                 productModel.batchCode == null ? "" : productModel.batchCode,
-                'Order/CountProduct4',
+                'Order/CountProduct',
                 this.orderNo,
                 null,
                 lineId
@@ -792,7 +807,7 @@ export class OrderOperationComponent implements OnInit {
               //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
 
 
-              await this.getAllProducts(this.orderNo, 'WT');
+              await this.getAllProducts(this.orderNo, operationType);
               //↑↑↑↑↑↑↑↑↑ TOPLANAN ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
 
               this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
@@ -976,7 +991,6 @@ export class OrderOperationComponent implements OnInit {
         this.generalService.beep3();
         this.lastCollectedProducts =
           await this.productService.getCollectedOrderProducts(this.orderNo);
-
         if (orderNo.includes("MIS")) {
           await this.getAllProducts(orderNo, 'MIS'); //toplanan ve toplanacak ürünleri çeker
         }
@@ -991,10 +1005,7 @@ export class OrderOperationComponent implements OnInit {
             await this.getAllProducts(orderNo, 'WT');
           }
         }
-
       }
-
-
       return response;
     } else {
       return false;

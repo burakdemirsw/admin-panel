@@ -117,6 +117,7 @@ import { MarketplaceInvoicesComponent } from './components/Order/marketplace-inv
 import { ExportCsvService } from './services/export-csv.service';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { SearchShelfComponent } from './components/Product/search-shelf/search-shelf.component';
+import { ImportTransactionsComponent } from './components/Order/import-transactions/import-transactions.component';
 
 @NgModule({
 
@@ -191,7 +192,8 @@ import { SearchShelfComponent } from './components/Product/search-shelf/search-s
     ReadBarcodeComponent,
     IdeasoftComponent,
     MarketplaceInvoicesComponent,
-    SearchShelfComponent
+    SearchShelfComponent,
+    ImportTransactionsComponent
 
   ],
 

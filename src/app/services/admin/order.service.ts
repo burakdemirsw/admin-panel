@@ -146,16 +146,16 @@ export class OrderService {
     return true;
   }
   //toplanacak ürünleri çeker
-  getCollectedProducts(
+  async getCollectedProducts(
     orderNo: string,
     orderNoType: string
-  ): Observable<ProductOfOrder[]> {
+  ): Promise<any> {
 
     let endpoint: string = '';
 
     if (orderNoType === 'BP') {
       endpoint = 'Order/GetPurchaseOrderSaleDetail/'; //GET_MSRAFSalesOrderDetailBP
-    } else if (orderNoType === 'WT') {
+    } else if (orderNoType === 'WT' || orderNoType === 'S') {
       endpoint = 'Warehouse/GetWarehouseOperationDetail/'; //Usp_GETTransferOnayla
     } else if (orderNoType === 'WS' || orderNoType === 'R') {
       endpoint = 'Order/GetOrderSaleDetail/'; //GET_MSRAFSalesOrderDetail
@@ -163,9 +163,12 @@ export class OrderService {
       endpoint = 'Order/get-missing-products-of-order/'; //GET_MSRAFOrderListMissing
     }
 
-    return this.httpClientService.get<ProductOfOrder>({
+    var response = await this.httpClientService.get<ProductOfOrder>({
       controller: endpoint + orderNo,
-    });
+    }).toPromise();
+
+    return response;
+
 
   }
   //transferi onaylama

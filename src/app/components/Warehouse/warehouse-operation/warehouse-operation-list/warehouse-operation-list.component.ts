@@ -39,45 +39,7 @@ export class WarehouseOperationListComponent implements OnInit {
     this.spinnerService.hide();
     this.headerService.updatePageTitle("Havuzda Kalan Transfer Paneli")
   }
-  //--------------------------------------------------------------------------------------------- ITEMS TO BRING
-  itemsToCollectDialog: boolean = false;
-  itemsToCollect: ProductOfOrder[] = [];
-  async bringItemsToCollect(orderNumber: string) {
-    this.itemsToCollect = [];
-    this.itemsToCollectDialog = true;
-    if (orderNumber.startsWith("W-")) {
-      var orderNumberType = "WT";
-    } else {
-      var orderNumberType = orderNumber.split('-')[1];
-    }
 
-
-    if (orderNumberType === 'WT' || orderNumber.startsWith("W-")) {
-      if (orderNumber.startsWith("W-")) {
-
-        await this.getAllProducts(orderNumber.split('W-')[1], 'WT'); //toplanan ve toplanacak ürünleri çeker
-      } else {
-        await this.getAllProducts(orderNumber, 'WT'); //toplanan ve toplanacak ürünleri çeker
-      }
-    }
-  }
-
-
-  async getAllProducts(orderNo: string, orderNoType: string): Promise<any> {
-    if (orderNo.startsWith("W-")) {
-      orderNo = orderNo.split("W-")[1]
-    }
-
-    const productData = await this.orderService //toplanacak ürünler çekildi
-      .getCollectedProducts(orderNo, orderNoType).toPromise();
-    if (productData.length > 0) {
-      this.itemsToCollect = productData;
-    } else {
-      this.itemsToCollectDialog = false;
-    }
-
-
-  }
   //---------------------------------------------------------------------------------------------
   formGenerator() {
     this.filterForm = this.formBuilder.group({

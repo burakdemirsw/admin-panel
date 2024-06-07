@@ -1,25 +1,13 @@
 <aside id="sidebar" class="sidebar">
   <ul class="sidebar-nav" id="sidebar-nav">
-    <li
-      class="nav-item"
-      *ngIf="
+    <li class="nav-item" *ngIf="
         this.roleDescription == 'Admin' || this.roleDescription == 'Salesman'
-      "
-    >
-      <a
-        class="nav-link collapsed"
-        data-bs-target="#Orders-nav"
-        data-bs-toggle="collapse"
-      >
-        <i class="fas fa-dolly"></i><span>Toptan Sipariş</span
-        ><i class="bi bi-chevron-down ms-auto"></i>
+      ">
+      <a class="nav-link collapsed" data-bs-target="#Orders-nav" data-bs-toggle="collapse">
+        <i class="fas fa-dolly"></i><span>Toptan Sipariş</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
 
-      <ul
-        id="Orders-nav"
-        class="nav-content collapse"
-        data-bs-parent="#sidebar-nav"
-      >
+      <ul id="Orders-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
         <li *ngIf="this.roleDescription == 'Admin'">
           <a routerLink="orders-managament/1/2">
             <i class="bi bi-circle"></i><span>Alınan Siparişler </span>
@@ -77,26 +65,14 @@
       </ul>
     </li>
 
-    <li
-      class="nav-item"
-      *ngIf="
+    <li class="nav-item" *ngIf="
         this.roleDescription == 'Admin' || this.roleDescription == 'Salesman'
-      "
-    >
-      <a
-        class="nav-link collapsed"
-        data-bs-target="#Retail-nav"
-        data-bs-toggle="collapse"
-      >
-        <i class="fa-solid fa-bag-shopping"></i><span>Perakende Sipariş</span
-        ><i class="bi bi-chevron-down ms-auto"></i>
+      ">
+      <a class="nav-link collapsed" data-bs-target="#Retail-nav" data-bs-toggle="collapse">
+        <i class="fa-solid fa-bag-shopping"></i><span>Perakende Sipariş</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
 
-      <ul
-        id="Retail-nav"
-        class="nav-content collapse"
-        data-bs-parent="#Retail-nav"
-      >
+      <ul id="Retail-nav" class="nav-content collapse" data-bs-parent="#Retail-nav">
         <li>
           <a routerLink="retail-orders-managament/1/2">
             <i class="bi bi-circle"></i><span>Alınan Siparişler </span>
@@ -116,19 +92,10 @@
       </ul>
     </li>
     <li class="nav-item">
-      <a
-        class="nav-link collapsed"
-        data-bs-target="#Cargo-nav"
-        data-bs-toggle="collapse"
-      >
-        <i class="fa fa-truck"></i><span>Kargo</span
-        ><i class="bi bi-chevron-down ms-auto"></i>
+      <a class="nav-link collapsed" data-bs-target="#Cargo-nav" data-bs-toggle="collapse">
+        <i class="fa fa-truck"></i><span>Kargo</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
-      <ul
-        id="Cargo-nav"
-        class="nav-content collapse"
-        data-bs-parent="#Cargo-nav"
-      >
+      <ul id="Cargo-nav" class="nav-content collapse" data-bs-parent="#Cargo-nav">
         <!-- <li>
           <a routerLink="product-managament">
             <i class="bi bi-circle"></i><span>Ürün Sorgulama</span>
@@ -142,19 +109,10 @@
       </ul>
     </li>
     <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
-      <a
-        class="nav-link collapsed"
-        data-bs-target="#Warehouse-nav"
-        data-bs-toggle="collapse"
-      >
-        <i class="fa fa-archive"></i><span>Depo </span
-        ><i class="bi bi-chevron-down ms-auto"></i>
+      <a class="nav-link collapsed" data-bs-target="#Warehouse-nav" data-bs-toggle="collapse">
+        <i class="fa fa-archive"></i><span>Depo </span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
-      <ul
-        id="Warehouse-nav"
-        class="nav-content collapse"
-        data-bs-parent="#Warehouse-nav"
-      >
+      <ul id="Warehouse-nav" class="nav-content collapse" data-bs-parent="#Warehouse-nav">
         <li>
           <a routerLink="warehouse-transfer-list">
             <i class="bi bi-circle"></i><span>Depolar Arası Transfer</span>
@@ -195,22 +153,18 @@
             <i class="bi bi-circle"></i><span>Sayımlar</span>
           </a>
         </li>
+        <li>
+          <a routerLink="import-transactions">
+            <i class="bi bi-circle"></i><span>İthalat</span>
+          </a>
+        </li>
       </ul>
     </li>
     <li class="nav-item">
-      <a
-        class="nav-link collapsed"
-        data-bs-target="#Product-nav"
-        data-bs-toggle="collapse"
-      >
-        <i class="fa fa-box"></i><span>Sorgulama</span
-        ><i class="bi bi-chevron-down ms-auto"></i>
+      <a class="nav-link collapsed" data-bs-target="#Product-nav" data-bs-toggle="collapse">
+        <i class="fa fa-box"></i><span>Sorgulama</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
-      <ul
-        id="Product-nav"
-        class="nav-content collapse"
-        data-bs-parent="#Product-nav"
-      >
+      <ul id="Product-nav" class="nav-content collapse" data-bs-parent="#Product-nav">
         <!-- <li>
           <a routerLink="product-managament">
             <i class="bi bi-circle"></i><span>Ürün Sorgulama</span>
@@ -221,7 +175,7 @@
             <i class="bi bi-circle"></i><span>Ürün Sorgulama</span>
           </a>
         </li>
-         <li>
+        <li>
           <a routerLink="search-shelf">
             <i class="bi bi-circle"></i><span>Raf Sorgulama</span>
           </a>
@@ -287,19 +241,10 @@
     </li> -->
 
     <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
-      <a
-        class="nav-link collapsed"
-        data-bs-target="#devolopment-nav"
-        data-bs-toggle="collapse"
-      >
-        <i class="fa-solid fa-gear"></i><span>Ayarlar</span
-        ><i class="bi bi-chevron-down ms-auto"></i>
+      <a class="nav-link collapsed" data-bs-target="#devolopment-nav" data-bs-toggle="collapse">
+        <i class="fa-solid fa-gear"></i><span>Ayarlar</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
-      <ul
-        id="devolopment-nav"
-        class="nav-content collapse"
-        data-bs-parent="#devolopment-nav"
-      >
+      <ul id="devolopment-nav" class="nav-content collapse" data-bs-parent="#devolopment-nav">
         <li>
           <a routerLink="user-list">
             <i class="bi bi-circle"></i><span>Kulanıcılar</span>

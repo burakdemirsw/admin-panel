@@ -17,12 +17,7 @@
                 <tbody>
                   <tr *ngFor="let item of _inventoryItems; let i = index">
                     <td>
-                      <p-image
-                        src="{{ item.photoUrl }}"
-                        alt="Image"
-                        width="50"
-                        [preview]="true"
-                      ></p-image>
+                      <p-image src="{{ item.photoUrl }}" alt="Image" width="50" [preview]="true"></p-image>
                     </td>
                     <td>{{ item.shelfNo }}</td>
                     <td>{{ item.itemCode }}</td>
@@ -34,48 +29,28 @@
                     <td>{{ item.barcode }}</td>
                     <td>
                       <div class="btn-group" role="group">
-                        <button
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="
+                        <button class="btn btn-primary" type="submit" (click)="
                             goDown2(
                               item.barcode,
                               item.shelfNo,
                               item.itemCode,
                               item.transferQty
                             )
-                          "
-                        >
+                          ">
                           <i class="fa fa-angle-down"></i>
                         </button>
 
-                        <button
-                          data-toggle="tooltip"
-                          data-placement="right"
-                          title="Raflar"
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="getShelves(item.barcode)"
-                        >
+                        <button data-toggle="tooltip" data-placement="right" title="Raflar" class="btn btn-primary"
+                          type="submit" (click)="getShelves(item.barcode)">
                           <i class="fa-solid fa-bars"></i>
                         </button>
 
-                        <button
-                          data-toggle="tooltip"
-                          data-placement="right"
-                          title="Raflar"
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="pasteItemToForm(item)"
-                        >
+                        <button data-toggle="tooltip" data-placement="right" title="Raflar" class="btn btn-primary"
+                          type="submit" (click)="pasteItemToForm(item)">
                           <i class="fa-solid fa-file"></i>
                         </button>
 
-                        <button
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="addDeletedItemList(item)"
-                        >
+                        <button class="btn btn-primary" type="submit" (click)="addDeletedItemList(item)">
                           <i class="fa fa-trash"></i>
                         </button>
                       </div>
@@ -87,7 +62,7 @@
           </div>
         </div>
 
-        <div class="card custom-card mb-3">
+        <!-- <div class="card custom-card mb-3">
           <div
             class="p-4 card-body d-flex justify-content-start"
             style="overflow-x: auto"
@@ -108,50 +83,30 @@
               Raf Fulle
             </button>
           </div>
-        </div>
+        </div> -->
 
         <div class="card mobile">
           <div class="card-body">
-            <form
-              class="mt-4"
-              [formGroup]="warehouseForm"
-              (ngSubmit)="onSubmit(warehouseForm.value)"
-            >
+            <form class="mt-4" [formGroup]="warehouseForm" (ngSubmit)="onSubmit(warehouseForm.value)">
               <!-- Form alanları -->
               <div class="row mb-3">
                 <div class="form-group col">
-                  <p-dropdown
-                    formControlName="office"
-                    [options]="offices"
-                    [showClear]="true"
-                    placeholder="Hangi Ofisten"
-                  ></p-dropdown>
+                  <p-dropdown formControlName="office" [options]="offices" [showClear]="true"
+                    placeholder="Hangi Ofisten"></p-dropdown>
                 </div>
                 <div class="form-group col">
-                  <p-dropdown
-                    formControlName="warehouse"
-                    [options]="warehouses"
-                    [showClear]="true"
-                    placeholder="Hangi Depoya"
-                  ></p-dropdown>
+                  <p-dropdown formControlName="warehouseCode" [showClear]="true" optionLabel="name"
+                    [options]="warehouses" className="mobile-spacing" placeholder="Hangi Depoya"></p-dropdown>
                 </div>
               </div>
               <div class="row mb-3">
                 <div class="form-group col">
-                  <p-dropdown
-                    formControlName="officeTo"
-                    [options]="offices"
-                    [showClear]="true"
-                    placeholder="Hangi Ofise"
-                  ></p-dropdown>
+                  <p-dropdown formControlName="officeTo" [options]="offices" [showClear]="true"
+                    placeholder="Hangi Ofise"></p-dropdown>
                 </div>
                 <div class="form-group col">
-                  <p-dropdown
-                    formControlName="warehouseTo"
-                    [options]="warehouses"
-                    [showClear]="true"
-                    placeholder="Hangi Depoya"
-                  ></p-dropdown>
+                  <p-dropdown formControlName="toWarehouseCode" [showClear]="true" optionLabel="name"
+                    [options]="warehouses" className="mobile-spacing" placeholder="Hangi Depoya"></p-dropdown>
 
                   <!-- </select> -->
                 </div>
@@ -159,24 +114,12 @@
               <div class="row mb-3">
                 <div class="form-group">
                   <div class="input-group">
-                    <input
-                      placeholder="{{
+                    <input placeholder="{{
                         shelfNumbers != 'RAFLAR:' ? shelfNumbers : 'Raf No'
-                      }}"
-                      pInputText
-                      type="text"
-                      id="shelfNo"
-                      class="form-control"
-                      formControlName="shelfNo"
-                      (keydown.enter)="focusNextInput('barcode')"
-                    />
+                      }}" pInputText type="text" id="shelfNo" class="form-control" formControlName="shelfNo"
+                      (keydown.enter)="focusNextInput('barcode')" />
                     <div class="input-group-append">
-                      <button
-                        type="button"
-                        style="height: 100%"
-                        (click)="clearShelfNumbers()"
-                        class="btn btn-primary"
-                      >
+                      <button type="button" style="height: 100%" (click)="clearShelfNumbers()" class="btn btn-primary">
                         Formu Temizle
                       </button>
                     </div>
@@ -189,60 +132,31 @@
 
               <div class="row mb-3">
                 <div class="form-group">
-                  <input
-                    placeholder="Barkod"
-                    pInputText
-                    type="text"
-                    id="barcode"
-                    class="form-control"
-                    formControlName="barcode"
-                    (keydown.enter)="onSubmit(this.warehouseForm.value)"
-                  />
+                  <input placeholder="Barkod" pInputText type="text" id="barcode" class="form-control"
+                    formControlName="barcode" (keydown.enter)="onSubmit(this.warehouseForm.value)" />
                 </div>
               </div>
 
               <div class="row mb-3">
                 <div class="form-group col">
-                  <input
-                    pInputText
-                    placeholder="Toplam Stok"
-                    type="number"
-                    id="quantity"
-                    class="form-control"
-                    formControlName="quantity"
-                    (keydown.enter)="focusNextInput2()"
-                  />
+                  <input pInputText placeholder="Toplam Stok" type="number" id="quantity" class="form-control"
+                    formControlName="quantity" (keydown.enter)="focusNextInput2()" />
                 </div>
                 <div class="form-group col">
-                  <input
-                    placeholder="Parti"
-                    pInputText
-                    type="text"
-                    id="batchCode"
-                    class="form-control"
-                    formControlName="batchCode"
-                    (keydown.enter)="focusNextInput('itemCode')"
-                  />
+                  <input placeholder="Parti" pInputText type="text" id="batchCode" class="form-control"
+                    formControlName="batchCode" (keydown.enter)="focusNextInput('itemCode')" />
                 </div>
               </div>
               <div class="row mb-3">
                 <div class="form-group col">
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    style="width: 100%"
-                    (click)="onSubmit(warehouseForm.value)"
-                  >
+                  <button type="button" class="btn btn-primary" style="width: 100%"
+                    (click)="onSubmit(warehouseForm.value)">
                     Ekle
                   </button>
                 </div>
                 <div class="form-group col">
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    style="color: white; width: 100%"
-                    (click)="transferToNebim(this.currentOrderNo)"
-                  >
+                  <button type="button" class="btn btn-primary" style="color: white; width: 100%"
+                    (click)="storeTransfer(this.currentOrderNo)">
                     Transferi Tamamla
                   </button>
                 </div>
@@ -266,12 +180,7 @@
                   <tr *ngFor="let item of inventoryItems; let i = index">
                     <td>{{ i + 1 }}</td>
                     <td>
-                      <p-image
-                        src="{{ item.photoUrl }}"
-                        alt="Image"
-                        width="50"
-                        [preview]="true"
-                      ></p-image>
+                      <p-image src="{{ item.photoUrl }}" alt="Image" width="50" [preview]="true"></p-image>
                     </td>
                     <td>{{ item.shelfNo }}</td>
                     <td>{{ item.itemCode }}</td>
@@ -303,45 +212,37 @@
                     <th scope="col">Stok Miktarı</th>
                     <th scope="col">Gönderen Depo</th>
                     <th scope="col">Hedef Depo</th>
-                    <th scope="col">Güncel Stok Adedi</th>
-                    <th scope="col">Durum</th>
+                    <!-- <th scope="col">Güncel Stok Adedi</th>
+                    <th scope="col">Durum</th> -->
                     <th scope="col">İşlemler</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    *ngFor="
+                  <tr *ngFor="
                       let warehousePackageDetail of warehouseTransferForms;
                       let a = index
-                    "
-                  >
+                    ">
                     <td>{{ a + 1 }}</td>
                     <td>
-                      <p-image
-                        src="{{ warehousePackageDetail.photoUrl }}"
-                        alt="Image"
-                        width="50"
-                        [preview]="true"
-                      ></p-image>
+                      <p-image src="{{ warehousePackageDetail.photoUrl }}" alt="Image" width="50" [preview]="true">
+                      </p-image>
                     </td>
                     <td>{{ warehousePackageDetail.shelfNo }}</td>
                     <td>{{ warehousePackageDetail.itemCode }}</td>
                     <td>{{ warehousePackageDetail.batchCode }}</td>
                     <td>{{ warehousePackageDetail.barcode }}</td>
                     <td>{{ warehousePackageDetail.quantity }}</td>
-                    <td>{{ warehousePackageDetail.warehouse }}</td>
-                    <td>{{ warehousePackageDetail.warehouseTo }}</td>
-                    <td>{{ warehousePackageDetail.availableQty }}</td>
+                    <td>{{ warehousePackageDetail.warehouseCode }}</td>
+                    <td>{{ warehousePackageDetail.toWarehouseCode }}</td>
+                    <!-- <td>{{ warehousePackageDetail.availableQty }}</td>
 
                     <td>
-                      <span
-                        [ngClass]="
+                      <span [ngClass]="
                           warehousePackageDetail.availableQty >=
                           warehousePackageDetail.quantity
                             ? 'badge badge-success'
                             : 'badge badge-danger'
-                        "
-                      >
+                        ">
                         {{
                           warehousePackageDetail.availableQty >=
                           warehousePackageDetail.quantity
@@ -349,19 +250,15 @@
                             : "Başarısız"
                         }}
                       </span>
-                    </td>
+                    </td> -->
                     <td>
                       <div class="btn-group">
-                        <button
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="
+                        <button class="btn btn-primary" type="submit" (click)="
                             deleteOrderProduct(
                               this.currentOrderNo,
                               warehousePackageDetail
                             )
-                          "
-                        >
+                          ">
                           <i class="fa fa-trash" aria-hidden="true"></i>
                         </button>
                         <!-- *ngIf="warehousePackageDetail.availableQty <= warehousePackageDetail.quantity" -->
@@ -369,18 +266,7 @@
 
                                                     class="btn btn-warning" type="submit" (click)="updateItemStock()"><i class="fa-solid fa-arrows-rotate" style="color: white;"></i>
                                                 </button> -->
-                        <button
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="
-                            change(
-                              warehousePackageDetail.barcode,
-                              warehousePackageDetail.quantity
-                            )
-                          "
-                        >
-                          <i class="fa fa-print"></i>
-                        </button>
+
                       </div>
                     </td>
                   </tr>
@@ -400,36 +286,9 @@
       </div>
     </div>
 
-    <app-image-modal
-      [imageUrl]="modalImageUrl"
-      [title]="'Ürün Detay'"
-    ></app-image-modal>
 
-    <p-dialog header="Header" [(visible)]="visible" [style]="{ width: '75vw' }">
-      <app-create-qr [barcode]="_barcode" [quantity]="quantity"></app-create-qr>
-    </p-dialog>
-
-    <p-dialog header="Raflar" [(visible)]="productShelvesDialog">
-      <div class="btn-group mr-2" role="group" aria-label="First group">
-        <button
-          *ngFor="let shelve of productShelves; let i = index"
-          (click)="setShelveToForm(shelve)"
-          type="button"
-          [ngClass]="i % 2 === 0 ? 'btn btn-primary' : 'btn btn-secondary'"
-          style="height: 10rem"
-        >
-          {{ shelve }}
-        </button>
-      </div>
-    </p-dialog>
-    <p-dialog
-      header="Ürün Eklenemedi"
-      [(visible)]="blockedCount"
-      [modal]="true"
-      [style]="{ width: '50vw' }"
-      [draggable]="false"
-      [resizable]="false"
-    >
+    <p-dialog header="Ürün Eklenemedi" [(visible)]="blockedCount" [modal]="true" [style]="{ width: '50vw' }"
+      [draggable]="false" [resizable]="false">
       <h1>{{ blockedCountReason }}</h1>
     </p-dialog>
   </section>

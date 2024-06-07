@@ -4,59 +4,32 @@
       <div class="card-body">
         <!-- Filtreleme Alanı (Başlangıç) -->
         <div class="btn-group mb-3 mt-4">
-          <button
-            class="btn btn-primary"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#filterCollapse"
-            aria-expanded="false"
-            aria-controls="filterCollapse"
-          >
+          <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse"
+            aria-expanded="false" aria-controls="filterCollapse">
             <i class="fa fa-bars" aria-hidden="true"></i>
           </button>
         </div>
 
         <div class="collapse" id="filterCollapse">
-          <form
-            [formGroup]="filterForm"
-            (ngSubmit)="onSubmit(filterForm.value)"
-          >
+          <form [formGroup]="filterForm" (ngSubmit)="onSubmit(filterForm.value)">
             <div class="row mb-3">
               <div class="col-md-4">
                 <div class="form-group">
-                  <input
-                    pInputText
-                    placeholder="Sipariş Numarası"
-                    type="text"
-                    id="orderNumber"
-                    class="form-control"
-                    formControlName="orderNumber"
-                  />
+                  <input pInputText placeholder="Sipariş Numarası" type="text" id="orderNumber" class="form-control"
+                    formControlName="orderNumber" />
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <input
-                    pInputText
-                    placeholder=" Depo Kodu"
-                    type="text"
-                    id="warehouseCode"
-                    class="form-control"
-                    formControlName="warehouseCode"
-                  />
+                  <input pInputText placeholder=" Depo Kodu" type="text" id="warehouseCode" class="form-control"
+                    formControlName="warehouseCode" />
                 </div>
               </div>
 
               <div class="col-md-4">
                 <div class="form-group">
-                  <input
-                    pInputText
-                    placeholder=" Hedef Depo Kodu"
-                    type="text"
-                    id="toWarehouseCode"
-                    class="form-control"
-                    formControlName="toWarehouseCode"
-                  />
+                  <input pInputText placeholder=" Hedef Depo Kodu" type="text" id="toWarehouseCode" class="form-control"
+                    formControlName="toWarehouseCode" />
                 </div>
               </div>
             </div>
@@ -64,26 +37,14 @@
             <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
-                  <input
-                    pInputText
-                    placeholder="İşlem Başlangıç Tarihi"
-                    type="date"
-                    id="operationStartDate"
-                    class="form-control"
-                    formControlName="operationStartDate"
-                  />
+                  <input pInputText placeholder="İşlem Başlangıç Tarihi" type="date" id="operationStartDate"
+                    class="form-control" formControlName="operationStartDate" />
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <input
-                    pInputText
-                    placeholder="İşlem Bitiş Tarihi"
-                    type="date"
-                    id="operationEndDate"
-                    class="form-control"
-                    formControlName="operationEndDate"
-                  />
+                  <input pInputText placeholder="İşlem Bitiş Tarihi" type="date" id="operationEndDate"
+                    class="form-control" formControlName="operationEndDate" />
                 </div>
               </div>
             </div>
@@ -101,18 +62,10 @@
     <div class="card custom-card mb-3">
       <div class="card-body">
         <div class="btn-group mt-4">
-          <button
-            class="btn btn-primary"
-            type="button"
-            (click)="routeNewPage(null)"
-          >
+          <button class="btn btn-primary" type="button" (click)="routeNewPage(null)">
             Yeni Transfer Yap
           </button>
-          <button
-            class="btn btn-primary"
-            type="button"
-            (click)="routeNewPage2()"
-          >
+          <button class="btn btn-primary" type="button" (click)="routeNewPage2()">
             Depolar Arası İstek
           </button>
         </div>
@@ -138,17 +91,15 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="
+              <tr *ngFor="
                   let operation of warehouseTransferListModels
                     | paginate : { itemsPerPage: 10, currentPage: currentPage }
-                "
-              >
+                ">
                 <!-- <td><input class="form-check-input" type="checkbox" value=""
                                         (click)="addInnerNumberToList(operation.orderNumber)"></td> -->
 
                 <td>
-                  {{ operation.operationDate | date : "dd.MM.yyyy HH:mm" }}
+                  {{ operation.createdDate | date : "dd.MM.yyyy HH:mm" }}
                 </td>
 
                 <!-- <td>{{ operation.orderNumber }}</td> -->
@@ -159,60 +110,37 @@
 
                 <td>
                   <div class="btn-group">
-                    <button
-                      class="btn btn-success"
-                      data-text="Transfere Git"
-                      (click)="routeNewPage(operation.orderNumber)"
-                    >
+                    <button class="btn btn-success" data-text="Transfere Git"
+                      (click)="routeNewPage(operation.operationId)">
                       <i class="fas fa-sliders-h"></i>
                     </button>
 
-                    <button
-                      class="btn btn-success"
-                      data-text="Sil"
-                      (click)="deleteTransfer(operation.orderNumber)"
-                    >
+                    <button class="btn btn-success" data-text="Sil" (click)="deleteTransfer(operation.operationId)">
                       <i class="fas fa-trash"></i>
                     </button>
-                    <div
+                    <!-- <div
                       class="btn btn-success"
                       data-text="Barkod Etiketi Oluştur"
-                      (click)="showModal(operation.orderNumber)"
+                      (click)="showModal(operation.operationId)"
                     >
                       <i class="fa fa-barcode" aria-hidden="true"></i>
-                    </div>
+                    </div> -->
                   </div>
                 </td>
               </tr>
             </tbody>
           </table>
-          <pagination-controls
-            (pageChange)="currentPage = $event"
-          ></pagination-controls>
+          <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
         </div>
       </div>
     </div>
 
-    <p-dialog
-      header="Barkod Türü Seçiniz - {{ this.selectedOrderNo }}"
-      [(visible)]="visible"
-      [modal]="true"
-      [style]="{ width: '50vw' }"
-      [draggable]="false"
-      [resizable]="false"
-    >
-      <button
-        type="button"
-        class="btn custom-btn-primary mt-3"
-        (click)="this.sendBarcodesToNebim(true)"
-      >
+    <p-dialog header="Barkod Türü Seçiniz - {{ this.selectedOrderNo }}" [(visible)]="visible" [modal]="true"
+      [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+      <button type="button" class="btn custom-btn-primary mt-3" (click)="this.sendBarcodesToNebim(true)">
         Koli
       </button>
-      <button
-        type="button"
-        class="btn custom-btn-primary mt-3"
-        (click)="this.sendBarcodesToNebim(false)"
-      >
+      <button type="button" class="btn custom-btn-primary mt-3" (click)="this.sendBarcodesToNebim(false)">
         Barkod
       </button>
     </p-dialog>

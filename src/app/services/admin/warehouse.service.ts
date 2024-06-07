@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
 import { CountListFilterModel } from 'src/app/models/model/filter/countListFilterModel';
-import { InvocieFilterModel } from 'src/app/models/model/filter/invoiceFilterModel';
 import { WarehouseOperationListFilterModel } from 'src/app/models/model/filter/warehouseOperationListFilterModel';
 import { WarehouseTransferListFilterModel } from 'src/app/models/model/filter/warehouseTransferListFilterModel';
 import { CountProductRequestModel2, CountProductRequestModel3 } from 'src/app/models/model/order/countProductRequestModel2';
@@ -12,8 +11,7 @@ import {
   ProductCountModel
 } from 'src/app/models/model/shelfNameModel';
 import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
-import { FastTransferListModel, FastTransferModel, FastTransferModel2 } from 'src/app/models/model/warehouse/fastTransferModel';
-import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
+import { FastTransferListModel, FastTransferModel, FastTransferModel2, WarehouseTransferModel } from 'src/app/models/model/warehouse/fastTransferModel';
 import { TransferModel } from 'src/app/models/model/warehouse/transferModel';
 import { TransferRequestListModel } from 'src/app/models/model/warehouse/transferRequestListModel';
 import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
@@ -382,4 +380,66 @@ export class WarehouseService {
     return response;
   }
   //---------------------------------------------------------------------------
+
+  //raflar arası transfer ----------------------------------------------------
+  async addWarehouseTransferModel(request: WarehouseTransferModel): Promise<boolean> {
+
+    const response = await this.httpClientService
+      .post<any>({ controller: 'Warehouse/add-warehouse-transfer-model' }, request)
+      .toPromise();
+    return response;
+
+  }
+
+  async deleteWarehouseTransferModel(request: string): Promise<any> {
+
+    const response = await this.httpClientService
+      .get<any>({ controller: 'Warehouse/delete-warehouse-transfer-model' }, request)
+      .toPromise();
+    return response;
+
+  }
+
+  async getWarehouseTransferModels(request: string): Promise<WarehouseTransferModel[]> {
+
+    const response = await this.httpClientService
+      .get<WarehouseTransferModel>({ controller: 'Warehouse/get-warehouse-transfer-models' }, request)
+      .toPromise();
+    return response;
+
+  }
+
+  // Get fast transfer list models
+  async getWarehouseTransferListModels(): Promise<any> {
+    const response = await this.httpClientService
+      .get<any>({
+        controller: 'Warehouse/get-warehouse-transfer-list',
+      })
+      .toPromise();
+    return response;
+  }
+  //---------------------------------------------------------------------------
+  //İTHALAT İŞLEMLERİ----------------------------------------------------------
+
+  async getImportTransactionList(invoiceNumber?: string): Promise<any> {
+    const response = await this.httpClientService
+      .get<any>({
+        controller: 'Warehouse/get-import-transactions',
+      })
+      .toPromise();
+    return response;
+  }
+
+  async completeImportTransaction(invoiceNumber: string, warehouseCode: string): Promise<any> {
+    var request = invoiceNumber + "/" + warehouseCode
+    const response = await this.httpClientService
+      .get<any>({
+        controller: 'Warehouse/complete-import-transaction',
+      }, request)
+      .toPromise();
+    return response;
+  }
+
+  //---------------------------------------------------------------------------
+
 }

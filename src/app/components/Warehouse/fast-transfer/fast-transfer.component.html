@@ -4,11 +4,7 @@
       <div style="width: 100%">
         <div class="card">
           <div class="card-body">
-            <form
-              [formGroup]="checkForm"
-              (ngSubmit)="onSubmit(checkForm.value)"
-              class="mt-4"
-            >
+            <form [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)" class="mt-4">
               <!-- Alınacak Ürün -->
               <div class="row mb-3">
                 <div class="col-md-12">
@@ -19,46 +15,23 @@
 
               <div class="row mb-3">
                 <div class="form-group col">
-                  <p-dropdown
-                    placeholder="Ofis"
-                    formControlName="office"
-                    [options]="offices"
-                    [showClear]="true"
-                    placeholder="Ofis"
-                  ></p-dropdown>
+                  <p-dropdown placeholder="Ofis" formControlName="office" [options]="offices" [showClear]="true"
+                    placeholder="Ofis"></p-dropdown>
                 </div>
 
                 <div class="form-group col">
-                  <p-dropdown
-                    [options]="warehouses"
-                    [showClear]="true"
-                    placeholder="Depo"
-                    optionLabel="name"
-                    formControlName="warehouseCode"
-                    className="mobile-spacing"
-                  ></p-dropdown>
+                  <p-dropdown [options]="warehouses" [showClear]="true" placeholder="Depo" optionLabel="name"
+                    className="mobile-spacing" formControlName="warehouseCode"></p-dropdown>
                 </div>
               </div>
 
               <div class="row mb-3">
                 <div class="form-group">
                   <div class="input-group">
-                    <input
-                      pInputText
-                      placeholder="Raf Numarası"
-                      type="text"
-                      id="shelfNo"
-                      class="form-control"
-                      formControlName="shelfNo"
-                      (keydown.enter)="focusNextInput('barcode')"
-                    />
+                    <input pInputText placeholder="Raf Numarası" type="text" id="shelfNo" class="form-control"
+                      formControlName="shelfNo" (keydown.enter)="focusNextInput('barcode')" />
                     <div class="input-group-append">
-                      <button
-                        style="height: 100%"
-                        type="button"
-                        (click)="clearShelfNumbers()"
-                        class="btn btn-primary"
-                      >
+                      <button style="height: 100%" type="button" (click)="clearShelfNumbers()" class="btn btn-primary">
                         Formu Temizle
                       </button>
                     </div>
@@ -74,42 +47,23 @@
                   <label *ngIf="qrBarcodeUrl !== null" for="qrBarcode">{{
                     qrBarcodeUrl
                   }}</label>
-                  <input
-                    pInputText
-                    placeholder="Barkod"
-                    type="text"
-                    id="barcode"
-                    class="form-control"
-                    formControlName="barcode"
-                    (keydown.enter)="onSubmit(checkForm.value)"
-                  />
+                  <input pInputText placeholder="Barkod" type="text" id="barcode" class="form-control"
+                    formControlName="barcode" (keydown.enter)="onSubmit(checkForm.value)" />
                 </div>
               </div>
 
               <div class="row mb-3">
                 <div class="form-group col">
                   <div class="form-group">
-                    <input
-                      pInputText
-                      placeholder="Miktar"
-                      type="number"
-                      id="quantity"
-                      class="form-control"
-                      formControlName="quantity"
-                    />
+                    <input pInputText placeholder="Miktar" type="number" id="quantity" class="form-control"
+                      formControlName="quantity" />
                   </div>
                 </div>
 
                 <div class="form-group col">
                   <div class="form-group">
-                    <input
-                      pInputText
-                      placeholder="Parti"
-                      type="text"
-                      id="batchCode"
-                      class="form-control"
-                      formControlName="batchCode"
-                    />
+                    <input pInputText placeholder="Parti" type="text" id="batchCode" class="form-control"
+                      formControlName="batchCode" />
                   </div>
                 </div>
               </div>
@@ -126,13 +80,8 @@
                 <div class="form-group col">
                   <label for="targetShelfNo">Raf:</label>
                   <div class="input-group">
-                    <input
-                      type="search"
-                      id="targetShelfNo"
-                      class="form-control"
-                      formControlName="targetShelfNo"
-                      (keydown.enter)="onSubmit(checkForm.value)"
-                    />
+                    <input type="search" id="targetShelfNo" class="form-control" formControlName="targetShelfNo"
+                      (keydown.enter)="onSubmit(checkForm.value)" />
                     <!-- <div class="input-group-append">
                       <button
                         type="button"
@@ -148,12 +97,8 @@
               <div class="row mb-3">
                 <div class="form-group col">
                   <div class="form-group">
-                    <button
-                      type="button"
-                      class="btn btn-primary"
-                      style="width: 100%; margin-top: 1%"
-                      (click)="onSubmit(checkForm.value)"
-                    >
+                    <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 1%"
+                      (click)="onSubmit(checkForm.value)">
                       Ekle
                     </button>
                   </div>
@@ -161,12 +106,8 @@
 
                 <div class="form-group col">
                   <div class="form-group">
-                    <button
-                      type="button"
-                      class="btn btn-primary"
-                      style="width: 100%; margin-top: 1%"
-                      (click)="finishTransfer(checkForm.value)"
-                    >
+                    <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 1%"
+                      (click)="finishTransfer(checkForm.value)">
                       Transferi Tamamla
                     </button>
                   </div>
@@ -208,23 +149,16 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    *ngFor="
+                  <tr *ngFor="
                       let product of collectedFastTransferModels;
                       let i = index
-                    "
-                  >
+                    ">
                     <td>
                       {{ i + 1 }}
                     </td>
                     <td>
-                      <img
-                        src="{{ product.photoUrl }}"
-                        alt="Resim"
-                        width="50"
-                        height="50"
-                        (click)="openImageModal(product.photoUrl)"
-                      />
+                      <img src="{{ product.photoUrl }}" alt="Resim" width="50" height="50"
+                        (click)="openImageModal(product.photoUrl)" />
                     </td>
                     <td>{{ product.description }}</td>
                     <td>{{ product.itemCode }}</td>
@@ -235,10 +169,7 @@
                     <td>{{ product.batchCode }}</td>
                     <td>{{ product.targetShelfNo }}</td>
                     <td>
-                      <button
-                        class="btn btn-danger"
-                        (click)="deleteFastTransfer(product)"
-                      >
+                      <button class="btn btn-danger" (click)="deleteFastTransfer(product)">
                         <i class="fa fa-trash"></i>
                       </button>
                     </td>

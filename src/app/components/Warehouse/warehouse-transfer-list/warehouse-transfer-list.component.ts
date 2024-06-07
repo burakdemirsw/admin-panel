@@ -62,10 +62,7 @@ export class WarehouseTransferListComponent implements OnInit {
   }
 
   async onSubmit(model: WarehouseTransferListFilterModel) {
-    //this.spinnerService.show()
     this.warehouseTransferListModels = await this.warehosueService.getWarehosueTransferListByFilter(model);
-    //this.spinnerService.hide();
-
   }
   async deleteTransfer(orderNumber: string) {
     // Silme işleminden önce kullanıcıya emin olup olmadığını sormak için bir onay penceresi göster
@@ -113,8 +110,8 @@ export class WarehouseTransferListComponent implements OnInit {
   }
   async getWarehouseOperations(): Promise<any> {
     try {
-      var filterModel: WarehouseTransferListFilterModel = new WarehouseTransferListFilterModel()
-      this.warehouseTransferListModels = await this.warehosueService.getWarehosueTransferListByFilter(filterModel);
+
+      this.warehouseTransferListModels = await this.warehosueService.getWarehouseTransferListModels();
 
     } catch (error: any) {
       console.log(error.message);

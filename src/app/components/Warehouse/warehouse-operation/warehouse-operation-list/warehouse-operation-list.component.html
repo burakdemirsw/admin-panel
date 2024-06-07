@@ -4,59 +4,32 @@
       <div class="card-body">
         <!-- Filtreleme Alanı (Başlangıç) -->
         <div class="btn-group mb-3 mt-4">
-          <button
-            class="btn btn-primary"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#filterCollapse"
-            aria-expanded="false"
-            aria-controls="filterCollapse"
-          >
+          <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse"
+            aria-expanded="false" aria-controls="filterCollapse">
             <i class="fa fa-bars" aria-hidden="true"></i>
           </button>
         </div>
 
         <div class="collapse" id="filterCollapse">
-          <form
-            [formGroup]="filterForm"
-            (ngSubmit)="onSubmit(filterForm.value)"
-          >
+          <form [formGroup]="filterForm" (ngSubmit)="onSubmit(filterForm.value)">
             <div class="row mb-3">
               <div class="col-md-4">
                 <div class="form-group">
-                  <input
-                    pInputText
-                    placeholder="İç Numara"
-                    type="text"
-                    id="innerNumber"
-                    class="form-control"
-                    formControlName="innerNumber"
-                  />
+                  <input pInputText placeholder="İç Numara" type="text" id="innerNumber" class="form-control"
+                    formControlName="innerNumber" />
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <input
-                    pInputText
-                    placeholder="İşlem Bitiş Tarihi"
-                    type="date"
-                    id="endDate"
-                    class="form-control"
-                    formControlName="endDate"
-                  />
+                  <input pInputText placeholder="İşlem Bitiş Tarihi" type="date" id="endDate" class="form-control"
+                    formControlName="endDate" />
                 </div>
               </div>
 
               <div class="col-md-4">
                 <div class="form-group">
-                  <input
-                    pInputText
-                    placeholder="İşlem Başlangıç Tarihi"
-                    type="date"
-                    id="startDate"
-                    class="form-control"
-                    formControlName="startDate"
-                  />
+                  <input pInputText placeholder="İşlem Başlangıç Tarihi" type="date" id="startDate" class="form-control"
+                    formControlName="startDate" />
                 </div>
               </div>
             </div>
@@ -75,22 +48,14 @@
     <div class="card">
       <div class="card-body">
         <div class="btn-group mt-3" role="group" aria-label="Basic example">
-          <button
-            type="button"
-            [ngClass]="
+          <button type="button" [ngClass]="
               selectedButton === 0 ? 'btn btn-success' : 'btn btn-primary'
-            "
-            (click)="getWarehouseOperations('0')"
-          >
+            " (click)="getWarehouseOperations('0')">
             Onaylanmayalanlar
           </button>
-          <button
-            type="button"
-            [ngClass]="
+          <button type="button" [ngClass]="
               selectedButton === 1 ? 'btn btn-success' : 'btn btn-primary'
-            "
-            (click)="getWarehouseOperations('1')"
-          >
+            " (click)="getWarehouseOperations('1')">
             Onaylananlar
           </button>
         </div>
@@ -153,12 +118,10 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="
+              <tr *ngFor="
                   let operation of warehouseOperationListModels
                     | paginate : { itemsPerPage: 10, currentPage: currentPage }
-                "
-              >
+                ">
                 <!-- <td>
                   <input
                     class="form-check-input"
@@ -179,38 +142,20 @@
                 <td>{{ operation.isCompleted == 0 ? "Hayır" : "Evet" }}</td>
                 <!-- <td>{{ operation.id }}</td> -->
                 <td>
-                  <div
-                    class="btn-group"
-                    role="group"
-                    aria-label="Basic example"
-                  >
-                    <button
-                      class="btn btn-success"
-                      data-text="İşlemler"
-                      (click)="
+                  <div class="btn-group" role="group" aria-label="Basic example">
+                    <button class="btn btn-success" data-text="İşlemler" (click)="
                         setCurrentWarehouseToLocalStorage(
                           operation.toWarehouseCode,
                           operation.innerNumber
                         )
-                      "
-                      routerLink="/order-operation/{{
+                      " routerLink="/order-operation/{{
                         operation.innerNumber
-                      }}/false/{{ operation.toWarehouseCode }}"
-                    >
+                      }}/false/{{ operation.toWarehouseCode }}">
                       <i class="fas fa-sliders-h"></i>
                     </button>
-                    <button
-                      class="btn btn-success mr -2"
-                      data-text="İşlemler"
-                      (click)="bringItemsToCollect(operation.innerNumber)"
-                    >
-                      <i class="fas fa-eye"></i>
-                    </button>
-                    <div
-                      class="btn btn-success"
-                      data-text="Barkod Etiketi Oluştur"
-                      (click)="showModal(operation.innerNumber)"
-                    >
+
+                    <div class="btn btn-success" data-text="Barkod Etiketi Oluştur"
+                      (click)="showModal(operation.innerNumber)">
                       <i class="fa fa-barcode" aria-hidden="true"></i>
                     </div>
                   </div>
@@ -218,111 +163,18 @@
               </tr>
             </tbody>
           </table>
-          <pagination-controls
-            (pageChange)="currentPage = $event"
-          ></pagination-controls>
+          <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
         </div>
       </div>
     </div>
-    <p-dialog
-      header="Toplanacak Ürünler"
-      [(visible)]="itemsToCollectDialog"
-      [style]="{ width: '75vw' }"
-    >
-      <div class="card" *ngIf="itemsToCollect.length > 0">
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <!-- <th scope="col">Seç</th> -->
-                  <th scope="col">Raf</th>
-                  <th scope="col">Kof</th>
-                  <th scope="col">Sipariş</th>
-                  <!-- <th scope="col">SAYILAN</th>
-                  <th scope="col">UD RAF</th>
-                  <th scope="col">UD STOK</th>
-                  <th scope="col">MD STOK</th>
-                  <th scope="col">TOPLAM STOK</th> -->
 
-                  <th scope="col">Fotoğraf</th>
-                  <th scope="col">Barkod</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  *ngFor="
-                    let product of itemsToCollect
-                      | paginate
-                        : { itemsPerPage: 50, currentPage: currentPage };
-                    let i = index
-                  "
-                  [ngClass]="{ 'green-row': product.colorDescription == '1' }"
-                  [ngClass]="{ 'success-row': product.quantity === 0 }"
-                >
-                  <!-- <td>
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="pi{{ product.packageNo }}"
-                        (change)="addProductToList(product.packageNo)"
-                      />
-                    </td> -->
 
-                  <td>{{ product.shelfNo }}</td>
-                  <td>{{ product.itemCode }}</td>
-                  <td>{{ product.quantity }}</td>
-                  <!-- <td>{{ product.countedQty }}</td>
-                  <td>{{ product.description }}</td>
-
-                  <td>{{ product.colorDescription }}</td>
-                  <td>{{ product.itemDim1Code }}</td>
-                  <td>{{ product.currentQty }}</td> -->
-                  <td>
-                    <p-image
-                      src="{{ product.photoUrl }}"
-                      alt="Image"
-                      width="50"
-                      [preview]="true"
-                    ></p-image>
-                  </td>
-                  <td>{{ product.barcode }}</td>
-                  <!-- <td>{{ product.packageNo }}</td> -->
-                  <!-- <td>{{ product.colorCode }}</td> -->
-
-                  <!-- <td>{{ product.lineId }}</td> -->
-                </tr>
-              </tbody>
-            </table>
-            <pagination-controls
-              #id1
-              (pageChange)="currentPage = $event"
-            ></pagination-controls>
-          </div>
-        </div>
-      </div>
-    </p-dialog>
-
-    <p-dialog
-      header="Barkod Türü Seçiniz - {{ this.selectedOrderNo }}"
-      [(visible)]="visible"
-      [modal]="true"
-      [style]="{ width: '50vw' }"
-      [draggable]="false"
-      [resizable]="false"
-    >
-      <button
-        type="button"
-        class="btn custom-btn-primary mt-3"
-        (click)="this.sendBarcodesToNebim(true)"
-      >
+    <p-dialog header="Barkod Türü Seçiniz - {{ this.selectedOrderNo }}" [(visible)]="visible" [modal]="true"
+      [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+      <button type="button" class="btn custom-btn-primary mt-3" (click)="this.sendBarcodesToNebim(true)">
         Koli
       </button>
-      <button
-        type="button"
-        class="btn custom-btn-primary mt-3"
-        (click)="this.sendBarcodesToNebim(false)"
-      >
+      <button type="button" class="btn custom-btn-primary mt-3" (click)="this.sendBarcodesToNebim(false)">
         Barkod
       </button>
     </p-dialog>

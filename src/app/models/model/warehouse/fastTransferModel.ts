@@ -26,6 +26,21 @@ export class FastTransferModel2 {
   warehouseCode: any;
   createdDate: Date;
 }
+
+export class WarehouseTransferModel {
+  id: string;
+  photoUrl: string;
+  itemCode: string;
+  description: string;
+  barcode: string;
+  quantity: number;
+  batchCode: string;
+  operationId: string;
+  shelfNo: string;
+  warehouseCode: any;
+  createdDate: Date;
+  toWarehouseCode: any
+}
 export class FastTransferListModel {
   operationId: string;
   createdDate !: Date;
