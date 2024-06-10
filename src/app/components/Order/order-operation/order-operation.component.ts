@@ -620,8 +620,6 @@ export class OrderOperationComponent implements OnInit {
       if (this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-') || this.currentOrderNo.includes('R-')) {
         await this.onSubmit(productModel);
       }
-
-
       // this.toasterService.success("Formu Verileri Dolduruldu.")
       return;
     }
