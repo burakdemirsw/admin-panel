@@ -74,24 +74,24 @@
         ">
         <form [formGroup]="getProductsForm" (ngSubmit)="getProducts(this.getProductsForm.value, this.orderType)">
           <div class="row mb-3">
-            <div class="col-md-4">
-              <input pInputText type="search" class="form-control" id="barcode_product" placeholder="Barkod"
-                formControlName="barcode" />
-            </div>
 
-            <div class="col-md-4" *ngIf="!this.orderType">
-              <input pInputText type="search" class="form-control" id="shelfNo" placeholder="{{
+            <p-inputGroup>
+              <input pInputText type="search" id="barcode_product" placeholder="Barkod" formControlName="barcode" />
+
+              <input pInputText *ngIf="!this.orderType" type="search" id="shelfNo" placeholder="{{
                   shelfNumbers != 'RAFLAR:' ? shelfNumbers : 'Raf No'
                 }}" formControlName="shelfNo" />
-            </div>
-            <div class="col-md-4">
+
+
               <button pButton pRipple class="p-button-rounded p-button-text"
                 (onClick)="getCustomers(this.getCustomerForm.value)" icon="pi pi-search" label="Ürün Bul"
-                type="submit"></button>
+                type="submit"></button> <button pButton pRipple class="p-button-rounded p-button-text"
+                (onClick)="resetProductForm()" icon="pi pi-trash" label="Formu Sil" type="reset"></button>
               <app-read-barcode (value)="printValue($event)"></app-read-barcode>
-              <button pButton pRipple class="p-button-rounded p-button-text" (onClick)="resetProductForm()"
-                icon="pi pi-trash" label="Formu Sil" type="reset"></button>
-            </div>
+
+            </p-inputGroup>
+
+
           </div>
         </form>
         <p-table [scrollable]="true" [value]="products" *ngIf="products.length > 0" styleClass="p-datatable-striped">
@@ -166,8 +166,7 @@
               <th scope="col">Birim Fiyat</th>
               <th scope="col">İndirimli Fiyatı</th>
               <th scope="col">Toplam Fiyat</th>
-              <th scope="col">Dolar Fiyatı</th>
-              <th scope="col">Euro Fiyatı</th>
+
 
               <th scope="col">Ürün</th>
 
@@ -236,17 +235,7 @@
                     : (product.price * product.quantity | currency : "₺")
                 }}
               </td>
-              <td>
-                ${{
-                  (product.discountedPrice / this.exchangeRate.eur).toFixed(2)
-                }}
-              </td>
 
-              <td>
-                £{{
-                  (product.discountedPrice / this.exchangeRate.eur).toFixed(2)
-                }}
-              </td>
 
               <td>
                 {{ product.description.substring(0, 10) }}
@@ -337,23 +326,22 @@
 
                 <hr />
                 <form [formGroup]="createCustomerForm">
-                  <div>
-                    <div class="input-group mb-3">
-                      <div class="input-group-prepend">
-                        <!-- <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text" type="button"
-                          (click)=" this.subCustomerDialog = !this.subCustomerDialog "></button> -->
-                        <button pButton pRipple icon="pi pi-search" class="p-button-rounded p-button-text" type="button"
-                          (click)="getSubCustomers()"></button>
+                  <p-inputGroup>
+                    <p-inputGroupAddon>
+                      <!-- <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text" type="button"
+      (click)=" this.subCustomerDialog = !this.subCustomerDialog "></button> -->
+                      <button pButton pRipple icon="pi pi-search" class="p-button-rounded p-button-text" type="button"
+                        (click)="getSubCustomers()"></button>
+                    </p-inputGroupAddon>
 
-                      </div>
+                    <p-dropdown class="custom-dropdown" #subCurrAccDescription_dropdown formControlName="sc_Description"
+                      (click)="showPanel(3)" [options]="selectableSubCustomers" placeholder="Müşteri" [editable]="true"
+                      optionLabel="name">
+                    </p-dropdown>
 
-                      <p-dropdown #subCurrAccDescription_dropdown formControlName="sc_Description"
-                        (click)="showPanel(3)" [options]="selectableSubCustomers" placeholder="Müşteri"
-                        [editable]="true" optionLabel="name">
-                      </p-dropdown>
-                    </div>
-                  </div>
-                  <div>
+                  </p-inputGroup>
+
+                  <div class="mt-3 mb-3">
                     <button label="Yeni Alt Müşteri Oluştur" pButton pRipple icon="pi pi-plus"
                       class="p-button-rounded p-button-text" type="button"
                       (click)="openDialog('addSubCustomerDialog')"></button>
