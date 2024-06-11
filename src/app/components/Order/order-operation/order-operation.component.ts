@@ -617,7 +617,7 @@ export class OrderOperationComponent implements OnInit {
       this.toasterService.error(error.message);
       return null;
     }
-  }
+  }  
 
 
   qrBarcodeUrl: string = null;

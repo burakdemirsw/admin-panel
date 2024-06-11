@@ -1227,10 +1227,11 @@ var CreateOrderComponent = /** @class */ (function () {
         });
     };
     CreateOrderComponent.prototype.addSubCustomer = function () {
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function () {
             var request, response;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_e) {
+                switch (_e.label) {
                     case 0:
                         console.log(this.addSubCustomerForm.value);
                         if (!(this.selectedCustomers.length === 0)) return [3 /*break*/, 1];
@@ -1242,12 +1243,12 @@ var CreateOrderComponent = /** @class */ (function () {
                         request.companyName = this.addSubCustomerForm.value.subCurrAccDesc;
                         request.mail = this.addSubCustomerForm.value.mail;
                         request.phone = this.addSubCustomerForm.value.phone;
-                        request.city = this.addSubCustomerForm.value.province.name;
-                        request.district = this.addSubCustomerForm.value.district.name;
+                        request.city = this.generalService.isNullOrEmpty((_a = this.addSubCustomerForm.value.province) === null || _a === void 0 ? void 0 : _a.name) ? 'İSTANBUL' : (_b = this.addSubCustomerForm.value.province) === null || _b === void 0 ? void 0 : _b.name;
+                        request.district = this.generalService.isNullOrEmpty((_c = this.addSubCustomerForm.value.district) === null || _c === void 0 ? void 0 : _c.name) ? 'FATİH' : (_d = this.addSubCustomerForm.value.district) === null || _d === void 0 ? void 0 : _d.name;
                         request.address = this.addSubCustomerForm.value.address;
                         return [4 /*yield*/, this.orderService.addSubCustomer(request)];
                     case 2:
-                        response = _a.sent();
+                        response = _e.sent();
                         if (response) {
                             this.toasterService.success("Alt Müşteri Eklendi");
                             this.selectableSubCustomers.push({ name: response[0].companyName, value: response[0].subCurrAccId });
@@ -1258,7 +1259,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         else {
                             this.toasterService.error("Alt Müşteri Eklenemedi");
                         }
-                        _a.label = 3;
+                        _e.label = 3;
                     case 3: return [2 /*return*/];
                 }
             });

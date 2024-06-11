@@ -157,6 +157,8 @@
             <tr>
               <th scope="col">Resim</th>
               <th scope="col">Kod</th>
+              <th scope="col">İşlem</th>
+
               <th *ngIf="!this.orderType" scope="col">Raf</th>
               <th *ngIf="!this.orderType" scope="col">Parti</th>
 
@@ -178,6 +180,19 @@
             <tr [pEditableRow]="product">
               <td class="image-icon-td">
                 <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true"></p-image>
+              </td>
+
+              <td>
+                <div class="flex align-items-center justify-content-center gap-2">
+                  <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
+                    (click)="onRowEditInit(product)" class="p-button-rounded p-button-text"></button>
+                  <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+                    (click)="onRowEditSave(product, ri)"
+                    class="p-button-rounded p-button-text p-button-success"></button>
+                  <button *ngIf="editing" pButton pRipple type="button"
+                    class="p-button-rounded p-button-text p-button-danger" pCancelEditableRow
+                    (click)="onRowEditCancel(product, ri)" icon="pi pi-times"></button>
+                </div>
               </td>
 
               <td>{{ product.itemCode }}</td>
@@ -237,18 +252,6 @@
                 {{ product.description.substring(0, 10) }}
               </td>
 
-              <td>
-                <div class="flex align-items-center justify-content-center gap-2">
-                  <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
-                    (click)="onRowEditInit(product)" class="p-button-rounded p-button-text"></button>
-                  <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
-                    (click)="onRowEditSave(product, ri)"
-                    class="p-button-rounded p-button-text p-button-success"></button>
-                  <button *ngIf="editing" pButton pRipple type="button"
-                    class="p-button-rounded p-button-text p-button-danger" pCancelEditableRow
-                    (click)="onRowEditCancel(product, ri)" icon="pi pi-times"></button>
-                </div>
-              </td>
 
               <td>
                 <button pButton pRipple icon="pi pi-trash" type="button"
@@ -341,8 +344,7 @@
                           (click)=" this.subCustomerDialog = !this.subCustomerDialog "></button> -->
                         <button pButton pRipple icon="pi pi-search" class="p-button-rounded p-button-text" type="button"
                           (click)="getSubCustomers()"></button>
-                        <button pButton pRipple icon="pi pi-plus" class="p-button-rounded p-button-text" type="button"
-                          (click)="openDialog('addSubCustomerDialog')"></button>
+
                       </div>
 
                       <p-dropdown #subCurrAccDescription_dropdown formControlName="sc_Description"
@@ -350,6 +352,11 @@
                         [editable]="true" optionLabel="name">
                       </p-dropdown>
                     </div>
+                  </div>
+                  <div>
+                    <button label="Yeni Alt Müşteri Oluştur" pButton pRipple icon="pi pi-plus"
+                      class="p-button-rounded p-button-text" type="button"
+                      (click)="openDialog('addSubCustomerDialog')"></button>
                   </div>
                 </form>
               </div>

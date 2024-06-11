@@ -1065,8 +1065,8 @@ export class CreateOrderComponent implements OnInit {
       request.companyName = this.addSubCustomerForm.value.subCurrAccDesc;
       request.mail = this.addSubCustomerForm.value.mail;
       request.phone = this.addSubCustomerForm.value.phone;
-      request.city = this.addSubCustomerForm.value.province.name;
-      request.district = this.addSubCustomerForm.value.district.name;
+      request.city = this.generalService.isNullOrEmpty(this.addSubCustomerForm.value.province?.name) ? 'İSTANBUL' : this.addSubCustomerForm.value.province?.name;
+      request.district = this.generalService.isNullOrEmpty(this.addSubCustomerForm.value.district?.name) ? 'FATİH' : this.addSubCustomerForm.value.district?.name;
       request.address = this.addSubCustomerForm.value.address;
       var response = await this.orderService.addSubCustomer(request);
       if (response) {
