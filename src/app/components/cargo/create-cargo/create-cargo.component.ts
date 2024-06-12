@@ -13,6 +13,7 @@ import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { AddCustomerAddress_CM } from '../../../models/model/order/createCustomer_CM';
 import { PostalAddress } from '../../../models/nebim/customer/nebimCustomer';
 import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from './models/models';
+import { ZTMSG_CreateCargoBarcode_CM } from 'src/app/models/model/cargo/ZTMSG_CreateCargoBarcode_CM';
 
 @Component({
   selector: 'app-create-cargo',
@@ -264,16 +265,29 @@ export class CreateCargoComponent implements OnInit {
       request.cargoFirmId = 2;
     } else {
       request.barcodeBase64 = null;
-      request.cargoFirmId = 1;
+      request.cargoFirmId = Number(cargoFirmId);
     }
 
 
-    var response = await this.cargoService.createCargo(request, request.cargoFirmId);
+
+    var _request: ZTMSG_CreateCargoBarcode_CM[] = [];
+    var __request = new ZTMSG_CreateCargoBarcode_CM();
+    __request.orderNumber = this.orderDetail.orderNumber;
+    __request.cargoFirmId = cargoFirmId;
+    _request.push(__request);
+    var response = await this.cargoService.createCargoBulk(_request);
     if (response) {
-      this.cargoResponse = response;
+      // this.cargoResponse = response;
       this.router.navigate(['/cargo-list']);
 
     }
+
+    // var response = await this.cargoService.createCargo(request, request.cargoFirmId);
+    // if (response) {
+    //   this.cargoResponse = response;
+    //   this.router.navigate(['/cargo-list']);
+
+    // }
     //console.log(response);
   }
 

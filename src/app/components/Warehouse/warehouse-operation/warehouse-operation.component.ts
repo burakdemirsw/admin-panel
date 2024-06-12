@@ -8,7 +8,6 @@ import { InventoryItem } from 'src/app/models/model/product/inventoryItemModel';
 import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
 import { WarehouseTransferModel } from 'src/app/models/model/warehouse/fastTransferModel';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
-import { TransferModel } from 'src/app/models/model/warehouse/transferModel';
 import { WarehouseItem } from 'src/app/models/model/warehouse/warehouseItem';
 import { WarehouseModel } from 'src/app/models/model/warehouse/warehouseModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
@@ -19,7 +18,6 @@ import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
-import { QrCode } from '../../../models/model/product/qrCode';
 declare var window: any;
 
 @Component({
@@ -109,7 +107,10 @@ export class WarehouseOperationComponent implements OnInit {
 
   async ngOnInit() {
 
+    //depolar ve ofisleri çeker
     this.getWarehouseAndOffices();
+
+    //eğer istek sayfası ise düzenleme yapıldı
     if (location.href.includes('REQ-')) {
       this.activatedRoute.params.subscribe(async (params) => {
         if (params['type']) {
@@ -117,27 +118,51 @@ export class WarehouseOperationComponent implements OnInit {
         }
       });
 
-      // }
+
       if (this.currentDataType === '1') {
-        this.pageStatus = 'İstek - Standart';
+        this.pageStatus = 'Depolar Arası İstek - Standart';
       } else {
-        this.pageStatus = 'İstek - Raf Fulle';
+        this.pageStatus = 'Depolar Arasıİstek - Raf Fulle';
       }
     } else {
-      this.pageStatus = 'Transfer';
-      this.currentDataType = '-1';
-
-    }
-    this.formGenerator();
-    this.activatedRoute.params.subscribe(async (params) => {
-      this.currentOrderNo = 'TP-' + params['number'];
-
-      if (!this.currentOrderNo.includes('REQ-')) {
-        await this.getProductOfCount(this.currentOrderNo);
-      } else if (this.currentOrderNo.includes('REQ-')) {
-        await this.getProductOfCount(this.currentOrderNo);
+      if (location.href.includes('MT-')) {
+        this.pageStatus = 'Mağaza Depoları Arası Transfer';
+        this.currentDataType = '-1';
+      }
+      else if (location.href.includes('RC-')) {
+        this.pageStatus = 'Merkeze İade';
+        this.currentDataType = '-1';
+      }
+      else {
+        this.pageStatus = 'Depolar Arası Transfer';
+        this.currentDataType = '-1';
       }
 
+
+    }
+
+    this.toasterService.success('Sipariş No: ' + this.currentOrderNo);
+    this.formGenerator();
+    this.activatedRoute.params.subscribe(async (params) => {
+
+      if (location.href.includes('MT-')) {
+        this.currentOrderNo = params['number'];
+        this.pageStatus = 'Mağaza Depoları Arası Transfer';
+        this.currentDataType = '-1';
+      } else if (location.href.includes('RC-')) {
+        this.currentOrderNo = params['number'];
+        this.pageStatus = 'Merkeze İade';
+        this.currentDataType = '-1';
+      }
+
+      else {
+        this.currentOrderNo = 'TP-' + params['number'];
+        this.pageStatus = 'Depolar Arası Transfer';
+        this.currentDataType = '-1';
+      }
+
+      this.toasterService.success('Sipariş No: ' + this.currentOrderNo);
+      await this.getProductOfCount(this.currentOrderNo);
       this.warehouseForm.get('orderNo').setValue(this.currentOrderNo);
     });
   }
@@ -219,26 +244,7 @@ export class WarehouseOperationComponent implements OnInit {
       currentDataType;
   }
   async onDataChange(currentDataType: string) {
-    if (location.href.includes('REQ')) {
-      localStorage.removeItem('currentDataType');
-      localStorage.setItem('currentDataType', this.currentDataType);
-
-      this.currentDataType = currentDataType;
-      if (currentDataType === '0') {
-        this.toasterService.success('Varsayılan Ürünler Getirildi');
-
-        this.pageStatus = 'İstek - Standart';
-      } else if (currentDataType === '1') {
-        this.pageStatus = 'İstek -Raf Fulle';
-        this.toasterService.success('Raflar Fullendi');
-      }
-
-      this.inventoryItems = [];
-      this.inventoryItems = await this.orderService.getInventoryItems(
-        currentDataType
-      ); //transfer edilcek ürünler
-    }
-    this.headerService.updatePageTitle('Depolar Arası ' + this.pageStatus);
+    this.headerService.updatePageTitle(this.pageStatus);
     if (this.deletedProductList.length > 0) {
       this.deletedProductList.forEach((deletedItem) => {
         this.inventoryItems.forEach((inventoryItem, _index) => {
@@ -382,12 +388,100 @@ export class WarehouseOperationComponent implements OnInit {
     this.getShelfByQrDetail(value);
   }
 
+  handleTransfer() {
+    if (location.href.includes('MT-')) {
+      this.transferBetweenStoreWarehouses(this.currentOrderNo);
+    } else if (location.href.includes('RC-')) {
+      this.refundToCenter(this.currentOrderNo);
+    }
+
+    else {
+      this.storeTransfer(this.currentOrderNo);
+    }
+  }
+
+  async refundToCenter(currentOrderNo: string) {
+    if (currentOrderNo != null && currentOrderNo !== '') {
+      const userConfirmed = window.confirm(
+        this.currentOrderNo +
+        ' numaralı transfer için İşlemi başlatmak istediğinize emin misiniz?'
+      );
+
+      if (userConfirmed) {
+        try {
+
+          const data = await this.httpClient
+            .get<WarehouseItem | any>(
+              ClientUrls.baseUrl +
+              '/warehouse/refund-to-center/' +
+              currentOrderNo
+            )
+            .toPromise();
+
+          if (data === true) {
+            this.generalService.waitAndNavigate(
+              'Mağaza Depoları Arası Transfer İşlemi Başarıyla Gerçekleşti.',
+              'warehouse-operation-list'
+            );
+          } else {
+            this.toasterService.error('İşlem Başarısız');
+          }
+        } catch (error: any) {
+
+        }
+      } else {
+        this.toasterService.warn('İşlem iptal edildi.');
+      }
+    } else {
+      this.toasterService.warn('Sipariş No Boş Geliyor.');
+    }
+
+  }
+
+  async transferBetweenStoreWarehouses(currentOrderNo: string) {
+    if (currentOrderNo != null && currentOrderNo !== '') {
+      const userConfirmed = window.confirm(
+        this.currentOrderNo +
+        ' numaralı transfer için İşlemi başlatmak istediğinize emin misiniz?'
+      );
+
+      if (userConfirmed) {
+        try {
+
+          const data = await this.httpClient
+            .get<WarehouseItem | any>(
+              ClientUrls.baseUrl +
+              '/warehouse/transfer-between-store-warehouses/' +
+              currentOrderNo
+            )
+            .toPromise();
+
+          if (data === true) {
+            this.generalService.waitAndNavigate(
+              'Mağaza Depoları Arası Transfer İşlemi Başarıyla Gerçekleşti.',
+              'warehouse-operation-list'
+            );
+          } else {
+            this.toasterService.error('İşlem Başarısız');
+          }
+        } catch (error: any) {
+
+        }
+      } else {
+        this.toasterService.warn('İşlem iptal edildi.');
+      }
+    } else {
+      this.toasterService.warn('Sipariş No Boş Geliyor.');
+    }
+
+  }
+
 
   async storeTransfer(currentOrderNo: string) {
     if (currentOrderNo != null && currentOrderNo !== '') {
       const userConfirmed = window.confirm(
         this.currentOrderNo +
-        ' numaralı sipariş için İşlemi başlatmak istediğinize emin misiniz?'
+        ' numaralı transfer için İşlemi başlatmak istediğinize emin misiniz?'
       );
 
       if (userConfirmed) {
@@ -424,7 +518,7 @@ export class WarehouseOperationComponent implements OnInit {
     if (currentOrderNo != null && currentOrderNo !== '') {
       const userConfirmed = window.confirm(
         this.currentOrderNo +
-        ' numaralı sipariş için İşlemi başlatmak istediğinize emin misiniz?'
+        ' numaralı transfer için İşlemi başlatmak istediğinize emin misiniz?'
       );
 
       if (userConfirmed) {

@@ -226,6 +226,7 @@ export class CargoBarcode_VM {
   barcodeRequest: string;
   customer: string;
   isPrinted: boolean
+  shipmentServiceType: number
 }
 export class NebimOrder_RM {
   orderNumber: string;

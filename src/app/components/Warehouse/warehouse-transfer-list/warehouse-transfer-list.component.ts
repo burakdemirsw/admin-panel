@@ -141,5 +141,14 @@ export class WarehouseTransferListComponent implements OnInit {
     this.router.navigate(["/warehouse-operation/" + "REQ-" + result + "/0"])
   }
 
+  async routeNewPage3() {
+    const result = await this.generalService.generateGUID()
+    this.router.navigate(["/warehouse-operation/" + "MT-" + result + "/0"])
+  }
+  async routeNewPage4() {
+    const result = await this.generalService.generateGUID()
+    this.router.navigate(["/warehouse-operation/" + "RC-" + result + "/0"])
+  }
+
 
 }
