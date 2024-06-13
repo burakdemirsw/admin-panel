@@ -82,7 +82,9 @@ var CreateQrComponent = /** @class */ (function () {
         if (changes["quantity"] && !changes["quantity"].isFirstChange()) {
             this.checkForm.get('quantity').setValue(changes["quantity"].currentValue);
         }
-        this.onSubmit(this.checkForm.value);
+        if (changes["barcode"].currentValue != undefined && changes["barcode"].currentValue != null) {
+            this.onSubmit(this.checkForm.value);
+        }
     };
     CreateQrComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {

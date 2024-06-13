@@ -58,17 +58,17 @@ var NebimOrder = /** @class */ (function () {
             if (_this.taxTypeCode == 0) { //standart ise
                 if (exchangeRate != 1) { //dövizli ise
                     line.priceVI = null;
-                    line.price = parseFloat((p.price / exchangeRate).toFixed(0));
+                    line.price = parseFloat((p.price / exchangeRate).toFixed(1));
                 }
                 else { //dövizli değilse
                     line.priceVI = null;
-                    line.price = parseFloat(p.price.toFixed(0));
+                    line.price = parseFloat(p.price.toFixed(1));
                 }
             }
             else if (_this.taxTypeCode == 5) {
                 if (exchangeRate != 1) { //dövizli ise
-                    line.priceVI = parseFloat((p.price / exchangeRate).toFixed(0));
-                    line.price = parseFloat((p.price / exchangeRate).toFixed(0));
+                    line.priceVI = parseFloat((p.price / exchangeRate).toFixed(1));
+                    line.price = parseFloat((p.price / exchangeRate).toFixed(1));
                 }
                 else { //dövizli değilse
                     line.priceVI = parseFloat((p.price).toFixed(0));
@@ -77,8 +77,8 @@ var NebimOrder = /** @class */ (function () {
             }
             else { //vergisiz ise
                 if (exchangeRate != 1) { //dövizli ise
-                    line.priceVI = parseFloat((p.price / exchangeRate).toFixed(0));
-                    line.price = parseFloat((p.price / exchangeRate).toFixed(0));
+                    line.priceVI = parseFloat((p.price / exchangeRate).toFixed(1));
+                    line.price = parseFloat((p.price / exchangeRate).toFixed(1));
                 }
                 else { //dövizli değilse
                     line.priceVI = parseFloat((p.price).toFixed(0));

@@ -581,6 +581,53 @@ var WarehouseService = /** @class */ (function () {
         });
     };
     //---------------------------------------------------------------------------
+    // ZTMSG_ProductOnShelf -----------------------------------------------------------
+    WarehouseService.prototype.addProductOnShelf = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .post({ controller: 'Warehouse/add-product-on-shelf' }, request)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    WarehouseService.prototype.getProductOnShelf = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({ controller: 'Warehouse/get-products-on-shelves' }, request)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    WarehouseService.prototype.deleteProductOnShelf = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({ controller: 'Warehouse/delete-product-on-shelf' }, request)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    //---------------------------------------------------------------------------
     WarehouseService.prototype.completeCountOperation = function (request) {
         return __awaiter(this, void 0, Promise, function () {
             var response;

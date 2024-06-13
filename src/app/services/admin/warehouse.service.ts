@@ -17,7 +17,7 @@ import { TransferRequestListModel } from 'src/app/models/model/warehouse/transfe
 import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/warehouseOperationProductModel';
-import { ZTMSG_CountedProduct } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
+import { ZTMSG_CountedProduct, ZTMSG_ProductOnShelf } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { HttpClientService } from '../http-client.service';
 import { CompleteCountOperation_CM } from 'src/app/models/model/warehouse/completeCount_CM';
 
@@ -450,6 +450,31 @@ export class WarehouseService {
   }
   //---------------------------------------------------------------------------
 
+
+  // ZTMSG_ProductOnShelf -----------------------------------------------------------
+
+  async addProductOnShelf(request: ZTMSG_ProductOnShelf): Promise<boolean> {
+    const response = await this.httpClientService
+      .post<any>({ controller: 'Warehouse/add-product-on-shelf' }, request)
+      .toPromise();
+    return response;
+  }
+
+  async getProductOnShelf(request: string): Promise<ZTMSG_ProductOnShelf[]> {
+    const response = await this.httpClientService
+      .get<ZTMSG_ProductOnShelf>({ controller: 'Warehouse/get-products-on-shelves' }, request)
+      .toPromise();
+    return response;
+  }
+
+  async deleteProductOnShelf(request: string): Promise<any> {
+
+    const response = await this.httpClientService
+      .get<any>({ controller: 'Warehouse/delete-product-on-shelf' }, request)
+      .toPromise();
+    return response;
+  }
+  //---------------------------------------------------------------------------
   async completeCountOperation(request: CompleteCountOperation_CM): Promise<boolean> {
 
     const response = await this.httpClientService

@@ -96,7 +96,7 @@ var WarehouseShelfCountListComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.generalService.generateGUID()];
                     case 1:
                         orderNo = _a.sent();
-                        this.router.navigate(['/warehouse-shelf-count/' + orderNo]);
+                        this.router.navigate(['/warehouse-shelf-count/count/' + orderNo]);
                         return [3 /*break*/, 3];
                     case 2:
                         error_1 = _a.sent();
@@ -107,9 +107,51 @@ var WarehouseShelfCountListComponent = /** @class */ (function () {
             });
         });
     };
+    WarehouseShelfCountListComponent.prototype.newCount2 = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var orderNo, error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.generalService.generateGUID()];
+                    case 1:
+                        orderNo = _a.sent();
+                        this.router.navigate(['/warehouse-shelf-count/add-product-to-shelf/' + orderNo]);
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_2 = _a.sent();
+                        console.log(error_2.message);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    WarehouseShelfCountListComponent.prototype.newCount3 = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var orderNo, error_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.generalService.generateGUID()];
+                    case 1:
+                        orderNo = _a.sent();
+                        this.router.navigate(['/warehouse-shelf-count/remove-product-to-shelf/' + orderNo]);
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_3 = _a.sent();
+                        console.log(error_3.message);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     WarehouseShelfCountListComponent.prototype.getGetCountList = function () {
         return __awaiter(this, void 0, Promise, function () {
-            var _a, error_2;
+            var _a, error_4;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -120,8 +162,8 @@ var WarehouseShelfCountListComponent = /** @class */ (function () {
                         _a.countList = _b.sent();
                         return [3 /*break*/, 3];
                     case 2:
-                        error_2 = _b.sent();
-                        console.log(error_2.message);
+                        error_4 = _b.sent();
+                        console.log(error_4.message);
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }

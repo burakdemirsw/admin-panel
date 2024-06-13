@@ -247,7 +247,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'warehouse-shelf-count/:orderNo',
+    path: 'warehouse-shelf-count/:type/:orderNo',
     component: WarehosueShelfCountComponent,
     canActivate: [AuthGuard],
   },

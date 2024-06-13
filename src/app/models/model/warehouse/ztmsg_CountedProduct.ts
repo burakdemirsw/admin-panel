@@ -24,3 +24,19 @@ export class ZTMSG_CountedProduct {
   officeCode?: string
   isCompleted?: boolean
 }
+export class ZTMSG_ProductOnShelf {
+  id: string;
+  createdDate?: Date;
+  updatedDate: Date = new Date();
+  shelfNo?: string;
+  barcode?: string;
+  in_Quantity?: number;
+  out_Quantity?: number;
+  batchCode?: string;
+  operationNumber?: string;
+  price?: number;
+  warehouseCode?: string;
+  itemCode?: string;
+
+
+}

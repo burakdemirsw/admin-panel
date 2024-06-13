@@ -3,87 +3,29 @@
   <section class="section">
     <div class="row">
       <div style="width: 100%">
-        <!-- <div class="card" *ngIf="shelves2.length > 0">
-          <div class="card-body">
-            <h5 class="card-title">Raflar</h5>
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                  <th scope="col">Id</th>
-                    <th scope="col">Raf</th>
-                     <th scope="col">İşlem</th>
-                </thead>
-                <tbody>
-                  <tr
-                    *ngFor="let shelve of shelves2; let i = index">
-                    <td>{{ i + 1 }}</td>
-
-                    <td>{{ shelve.description }}</td>
-                     <td>
-
-                      <div class="btn-group" role="group" aria-label="Basic example">
-
-                        <button class="btn btn-primary" type="submit" (click)="goDown2(shelve.description)">
-                          <i class="fa fa-angle-down"> </i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div> -->
-        <!-- RAFLAR KALDIRILDI -->
-
         <div class="card" *ngIf="!blocked">
           <div class="card-body">
-            <form
-              [formGroup]="checkForm"
-              (ngSubmit)="onSubmit(checkForm.value)"
-            >
+            <form [formGroup]="checkForm" (ngSubmit)="manageOnSubmit(checkForm.value)">
               <div class="row mb-3 mt-3">
                 <div class="form-group col">
-                  <p-dropdown
-                    formControlName="office"
-                    [options]="offices"
-                    [showClear]="true"
-                    placeholder="Ofis"
-                  ></p-dropdown>
+                  <p-dropdown formControlName="office" [options]="offices" [showClear]="true" placeholder="Ofis">
+                  </p-dropdown>
                 </div>
 
                 <div class="form-group col">
-                  <p-dropdown
-                    formControlName="warehosue"
-                    [options]="warehouses"
-                    [showClear]="true"
-                    placeholder="Depo"
-                    formControlName="warehouseCode"
-                  ></p-dropdown>
+                  <p-dropdown formControlName="warehosue" [options]="warehouses" [showClear]="true" placeholder="Depo"
+                    formControlName="warehouseCode"></p-dropdown>
                 </div>
               </div>
               <div class="row mb-3">
                 <div class="form-group">
                   <div class="input-group">
-                    <input
-                      pInputText
-                      placeholder="{{
+                    <input pInputText placeholder="{{
                         shelfNumbers != 'RAFLAR:' ? shelfNumbers : 'Raf No'
-                      }}"
-                      type="text"
-                      id="shelfNo"
-                      class="form-control"
-                      formControlName="shelfNo"
-                      (keydown.enter)="focusNextInput('countPageBarcode')"
-                    />
+                      }}" type="text" id="shelfNo" class="form-control" formControlName="shelfNo"
+                      (keydown.enter)="focusNextInput('countPageBarcode')" />
                     <div class="input-group-append">
-                      <button
-                        type="button"
-                        style="height: 100%"
-                        (click)="clearShelfNumbers()"
-                        class="btn btn-dark"
-                      >
+                      <button type="button" style="height: 100%" (click)="clearShelfNumbers()" class="btn btn-dark">
                         Formu Temizle
                       </button>
                     </div>
@@ -92,105 +34,59 @@
               </div>
               <div class="row mb-3">
                 <div class="form-group">
-                  <label
-                    *ngIf="qrBarcodeUrl !== null || qrBarcodeUrl"
-                    for="qrBarcode"
-                    >{{ qrBarcodeUrl }}</label
-                  >
-                  <input
-                    pInputText
-                    type="search"
-                    placeholder="Barkod"
-                    id="countPageBarcode"
-                    class="form-control"
-                    formControlName="barcode"
-                    [disabled]="checkForm.disabled"
-                    [(ngModel)]="currentbarcode"
-                    (keydown.enter)="onSubmit(checkForm.value)"
-                  />
+                  <label *ngIf="qrBarcodeUrl !== null || qrBarcodeUrl" for="qrBarcode">{{ qrBarcodeUrl }}</label>
+                  <input pInputText type="search" placeholder="Barkod" id="countPageBarcode" class="form-control"
+                    formControlName="barcode" [disabled]="checkForm.disabled" [(ngModel)]="currentbarcode"
+                    (keydown.enter)="manageOnSubmit(checkForm.value)" />
                 </div>
               </div>
               <div class="row mb-3">
                 <div class="form-group col">
                   <div class="form-group">
-                    <input
-                      pInputText
-                      placeholder="Miktar"
-                      type="number"
-                      id="quantity"
-                      class="form-control"
-                      formControlName="quantity"
-                      [disabled]="checkForm.disabled"
-                    />
+                    <input pInputText placeholder="Miktar" type="number" id="quantity" class="form-control"
+                      formControlName="quantity" [disabled]="checkForm.disabled" />
                   </div>
                 </div>
                 <div class="form-group col">
                   <div class="form-group">
-                    <input
-                      placeholder="Parti"
-                      pInputText
-                      input
-                      type="text"
-                      id="batchCode"
-                      class="form-control"
-                      formControlName="batchCode"
-                      (keydown.enter)="onSubmit(checkForm.value)"
-                      [disabled]="checkForm.disabled"
-                    />
+                    <input placeholder="Parti" pInputText input type="text" id="batchCode" class="form-control"
+                      formControlName="batchCode" (keydown.enter)="manageOnSubmit(checkForm.value)"
+                      [disabled]="checkForm.disabled" />
                   </div>
                 </div>
               </div>
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="this.countType == 'count'">
                 <div class="col-6">
-                  <label for="isShelfBased" class="col-form-label"
-                    >Raf Bazında Sayım</label
-                  >
+                  <label for="isShelfBased" class="col-form-label">Raf Bazında Sayım</label>
                 </div>
                 <div class="col-6">
                   <div class="form-check">
-                    <p-inputSwitch
-                      id="isShelfBased"
-                      formControlName="isShelfBased"
-                    ></p-inputSwitch>
+                    <p-inputSwitch id="isShelfBased" formControlName="isShelfBased"></p-inputSwitch>
                   </div>
                 </div>
               </div>
 
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="this.countType == 'count'">
                 <div class="col-6">
-                  <label for="isShelfBased2" class="col-form-label"
-                    >Raf Bazında Ürün Sayım</label
-                  >
+                  <label for="isShelfBased2" class="col-form-label">Raf Bazında Ürün Sayım</label>
                 </div>
                 <div class="col-6">
                   <div class="form-check">
-                    <p-inputSwitch
-                      id="isShelfBased2"
-                      formControlName="isShelfBased2"
-                    ></p-inputSwitch>
+                    <p-inputSwitch id="isShelfBased2" formControlName="isShelfBased2"></p-inputSwitch>
                   </div>
                 </div>
               </div>
 
               <div class="row mb-1">
                 <div class="form-group col">
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    (click)="check()"
-                    style="width: 100%"
-                  >
+                  <button type="button" class="btn btn-primary" (click)="manageOnSubmit(this.checkForm.value)"
+                    style="width: 100%">
                     Ekle
                   </button>
                 </div>
                 <div class="form-group col">
-                  <button
-                    type="button"
-                    class="btn btn-dark"
-                    style="margin-left: 10px; color: white"
-                    (click)="completeCountFromService(currentOrderNo)"
-                    style="width: 100%"
-                  >
+                  <button type="button" class="btn btn-dark" style="margin-left: 10px; color: white"
+                    (click)="completeCountFromService(currentOrderNo)" style="width: 100%">
                     Sayımı Bitir
                   </button>
                 </div>
@@ -214,13 +110,8 @@
                 <tbody>
                   <tr *ngFor="let product of infoProducts; let i = index">
                     <td>
-                      <img
-                        src="{{ product.photoUrl }}"
-                        alt="Resim"
-                        width="50"
-                        height="50"
-                        (click)="openImageModal(product.photoUrl)"
-                      />
+                      <img src="{{ product.photoUrl }}" alt="Resim" width="50" height="50"
+                        (click)="openImageModal(product.photoUrl)" />
                     </td>
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.itemCode }}</td>
@@ -238,7 +129,7 @@
           </div>
         </div>
 
-        <div class="card" *ngIf="lastCollectedProducts.length > 0">
+        <div class="card" *ngIf="lastCollectedProducts.length > 0 && this.countType==='count'">
           <div class="card-body">
             <h5 class="card-title">Sayılan Ürünler</h5>
             <div class="table-responsive">
@@ -251,14 +142,12 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    *ngFor="
+                  <tr *ngFor="
                       let product of lastCollectedProducts
                         | paginate
                           : { itemsPerPage: 10, currentPage: currentPage };
                       let i = index
-                    "
-                  >
+                    ">
                     <!-- <td>{{ i + 1 }}</td> -->
                     <td>
                       <!-- <img
@@ -271,15 +160,9 @@
                         "
                       /> -->
 
-                      <p-image
-                        src="{{ photoUrl + product.itemCode + '.jpg' }}"
-                        previewImageSrc="{{
+                      <p-image src="{{ photoUrl + product.itemCode + '.jpg' }}" previewImageSrc="{{
                           photoUrl + product.itemCode + '.jpg'
-                        }}"
-                        alt="Image"
-                        width="30"
-                        [preview]="true"
-                      />
+                        }}" alt="Image" width="30" [preview]="true" />
                     </td>
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.itemCode }}</td>
@@ -288,25 +171,17 @@
                     <td>{{ product.barcode }}</td>
                     <td>
                       <div class="btn-group">
-                        <button
-                          class="btn btn-danger"
-                          type="submit"
-                          (click)="deleteOrderProduct(orderNo, product)"
-                        >
+                        <button class="btn btn-danger" type="submit" (click)="deleteOrderProduct(orderNo, product)">
                           <i class="fa fa-trash"></i>
                         </button>
 
-                        <button
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="
+                        <button class="btn btn-primary" type="submit" (click)="
                             change(
                               product.barcode,
                               product.quantity,
                               product.batchCode
                             )
-                          "
-                        >
+                          ">
                           <i class="fa fa-print"></i>
                         </button>
                       </div>
@@ -314,13 +189,56 @@
                   </tr>
                 </tbody>
               </table>
-              <pagination-controls
-                (pageChange)="currentPage = $event"
-              ></pagination-controls>
+              <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
             </div>
           </div>
         </div>
+        <div class="card" *ngIf="lastCollectedProducts2.length > 0 && this.countType!='count'">
+          <div class="card-body">
+            <h5 class="card-title">Sayılan Ürünler</h5>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col" *ngFor="let header of _tableHeaders3">
+                      {{ header }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="
+                      let product of lastCollectedProducts2
+                        | paginate
+                          : { itemsPerPage: 10, currentPage: currentPage };
+                      let i = index
+                    ">
+                    <td>
+                      <p-image src="{{ photoUrl + product.itemCode + '.jpg' }}" previewImageSrc="{{
+                          photoUrl + product.itemCode + '.jpg'
+                        }}" alt="Image" width="30" [preview]="true" />
+                    </td>
+                    <td>{{ product.shelfNo }}</td>
+                    <td>{{ product.itemCode }}</td>
+                    <td>{{ product.in_Quantity }}</td>
+                    <td>{{ product.out_Quantity }}</td>
+                    <td>{{ product.batchCode }}</td>
+                    <td>{{ product.barcode }}</td>
+                    <td>
+                      <div class="btn-group">
+                        <button class="btn btn-danger" type="submit" (click)="deleteOrderProduct(orderNo, product)">
+                          <i class="fa fa-trash"></i>
+                        </button>
 
+
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+            </div>
+          </div>
+        </div>
         <!-- Yeni kart: Toplanan Ürünler -->
         <div class="card text-center">
           <div class="card-body">
@@ -333,37 +251,19 @@
     </div>
 
     <!-- Yeni -->
-    <qrcode
-      style="display: none"
-      (qrCodeURL)="onChangeURL($event)"
-      [qrdata]="qrCodeValue"
-      [width]="256"
-      [errorCorrectionLevel]="'M'"
-    ></qrcode>
+    <qrcode style="display: none" (qrCodeURL)="onChangeURL($event)" [qrdata]="qrCodeValue" [width]="256"
+      [errorCorrectionLevel]="'M'"></qrcode>
 
-    <app-image-modal
-      [imageUrl]="modalImageUrl"
-      [title]="'Ürün Detay'"
-    ></app-image-modal>
+    <app-image-modal [imageUrl]="modalImageUrl" [title]="'Ürün Detay'"></app-image-modal>
 
-    <p-dialog header="Header" [(visible)]="visible" [style]="{ width: '100vw' }"
-      >a
-      <app-create-qr
-        upPageDescription="Sayım"
-        [barcode]="barcode"
-        [quantity]="quantity"
-        [batchCode]="batchCode"
-      ></app-create-qr>
+    <p-dialog header="Header" [(visible)]="visible" [style]="{ width: '100vw' }">
+      <app-create-qr [upPageDescription]="upPageDescription" [barcode]="barcode" [quantity]="quantity"
+        [batchCode]="batchCode">
+      </app-create-qr>
     </p-dialog>
 
-    <p-dialog
-      header="Kontrol"
-      [(visible)]="_visible"
-      [modal]="true"
-      [style]="{ width: '90vw', padding: '0' }"
-      [draggable]="false"
-      [resizable]="false"
-    >
+    <p-dialog header="Kontrol" [(visible)]="_visible" [modal]="true" [style]="{ width: '90vw', padding: '0' }"
+      [draggable]="false" [resizable]="false">
       <div class="mb-3">
         <strong>{{ controlMessage }}</strong>
       </div>
@@ -379,14 +279,12 @@
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  *ngFor="
+                <tr *ngFor="
                     let product of countedProductControl
                       | paginate
                         : { itemsPerPage: 10, currentPage: currentPage };
                     let i = index
-                  "
-                >
+                  ">
                   <td>{{ product.itemCode }}</td>
                   <td>
                     {{ product.state === true ? "BAŞARILI" : "BAŞARISIZ" }}
@@ -394,9 +292,7 @@
                 </tr>
               </tbody>
             </table>
-            <pagination-controls
-              (pageChange)="currentPage = $event"
-            ></pagination-controls>
+            <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
           </div>
         </div>
       </div>

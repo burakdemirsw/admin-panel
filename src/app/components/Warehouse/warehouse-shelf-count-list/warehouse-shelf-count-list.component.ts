@@ -59,7 +59,25 @@ export class WarehouseShelfCountListComponent implements OnInit {
   async newCount() {
     try {
       const orderNo: string = await this.generalService.generateGUID();
-      this.router.navigate(['/warehouse-shelf-count/' + orderNo]);
+      this.router.navigate(['/warehouse-shelf-count/count/' + orderNo]);
+    } catch (error: any) {
+      console.log(error.message);
+    }
+
+  }
+  async newCount2() {
+    try {
+      const orderNo: string = await this.generalService.generateGUID();
+      this.router.navigate(['/warehouse-shelf-count/add-product-to-shelf/' + orderNo]);
+    } catch (error: any) {
+      console.log(error.message);
+    }
+
+  }
+  async newCount3() {
+    try {
+      const orderNo: string = await this.generalService.generateGUID();
+      this.router.navigate(['/warehouse-shelf-count/remove-product-to-shelf/' + orderNo]);
     } catch (error: any) {
       console.log(error.message);
     }

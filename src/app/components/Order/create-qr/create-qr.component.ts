@@ -41,7 +41,10 @@ export class CreateQrComponent implements OnInit, OnChanges {
     if (changes["quantity"] && !changes["quantity"].isFirstChange()) {
       this.checkForm.get('quantity').setValue(changes["quantity"].currentValue)
     }
-    this.onSubmit(this.checkForm.value);
+    if (changes["barcode"].currentValue != undefined && changes["barcode"].currentValue != null) {
+      this.onSubmit(this.checkForm.value);
+
+    }
   }
 
   checkForm: FormGroup;
