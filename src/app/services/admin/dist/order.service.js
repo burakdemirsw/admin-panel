@@ -362,7 +362,7 @@ var OrderService = /** @class */ (function () {
                     case 2:
                         data = _a.sent();
                         if (data) {
-                            this.router.navigate(['orders-managament']);
+                            this.router.navigate(['orders-managament/1/2']);
                             return [2 /*return*/, data];
                         }
                         else {

@@ -65,6 +65,7 @@ export class NebimOrder {
       line.usedBarcode = p.barcode;
       line.salesPersonCode = salesPersonCode;
       if (this.taxTypeCode == 0) { //standart ise
+
         if (exchangeRate != 1) { //dövizli ise
           line.priceVI = null;
           line.price = parseFloat((p.price / exchangeRate).toFixed(1));
@@ -73,6 +74,7 @@ export class NebimOrder {
           line.price = parseFloat(p.price.toFixed(1));
         }
       } else if (this.taxTypeCode == 5) {
+
         if (exchangeRate != 1) { //dövizli ise
           line.priceVI = parseFloat((p.price / exchangeRate).toFixed(1));
           line.price = parseFloat((p.price / exchangeRate).toFixed(1));
@@ -82,6 +84,7 @@ export class NebimOrder {
         }
       }
       else { //vergisiz ise
+
         if (exchangeRate != 1) { //dövizli ise
           line.priceVI = parseFloat((p.price / exchangeRate).toFixed(1));
           line.price = parseFloat((p.price / exchangeRate).toFixed(1));
@@ -105,7 +108,7 @@ export class NebimOrder {
     }
     // this.payments = [];
     this.discounts.push(new Discount(discountPercentage, 1, "1"));
-    this.discounts.push(new Discount(discountPercentage2, 2, "2"));
+    this.discounts.push(new Discount(exchangeRate != 1 ? discountPercentage2 / exchangeRate : discountPercentage2, 2, "2"));
   }
 }
 export class NebimOrder_2 {

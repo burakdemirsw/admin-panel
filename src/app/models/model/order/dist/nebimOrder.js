@@ -98,7 +98,7 @@ var NebimOrder = /** @class */ (function () {
         }
         // this.payments = [];
         this.discounts.push(new Discount(discountPercentage, 1, "1"));
-        this.discounts.push(new Discount(discountPercentage2, 2, "2"));
+        this.discounts.push(new Discount(exchangeRate != 1 ? discountPercentage2 / exchangeRate : discountPercentage2, 2, "2"));
     }
     return NebimOrder;
 }());

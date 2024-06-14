@@ -2362,7 +2362,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         if (!(batchStart < totalProducts)) return [3 /*break*/, 6];
                         batchEnd = Math.min(batchStart + batchSize, totalProducts);
                         productBatch = this.selectedProducts.slice(batchStart, batchEnd);
-                        _request = new nebimOrder_1.NebimOrder((addedOrderNumber != undefined || addedOrderNumber != null) ? addedOrderNumber : null, exchangeRate, this.currentDiscountRate, this.currentCashdiscountRate, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, // Ensure this variable supports being split if necessary
+                        _request = new nebimOrder_1.NebimOrder((addedOrderNumber != undefined || addedOrderNumber != null) ? addedOrderNumber : null, exchangeRate, this.currentDiscountRate, this.currentCashdiscountRate, this.paymentForm.get('orderDescription').value, this.currAccCode, this.orderNo, formValue, // Ensure this variable supports being split if necessary
                         productBatch, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value, (_b = this.selectedSubCustomers[0]) === null || _b === void 0 ? void 0 : _b.subCurrAccId);
                         return [4 /*yield*/, this.orderService.createOrder(_request)];
                     case 5:

@@ -2227,7 +2227,7 @@ export class CreateOrderComponent implements OnInit {
           exchangeRate,
           this.currentDiscountRate,
           this.currentCashdiscountRate,
-          this.cargoForm.get("address_recepient_name").value,
+          this.paymentForm.get('orderDescription').value,
           this.currAccCode,
           this.orderNo,
           formValue,  // Ensure this variable supports being split if necessary

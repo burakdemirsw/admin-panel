@@ -10,11 +10,13 @@ exports.HeaderService = void 0;
 var core_1 = require("@angular/core");
 var rxjs_1 = require("rxjs");
 var HeaderService = /** @class */ (function () {
-    function HeaderService() {
+    function HeaderService(titleService) {
+        this.titleService = titleService;
         this.pageTitleSource = new rxjs_1.BehaviorSubject('');
         this.currentPageTitle = this.pageTitleSource.asObservable();
     }
     HeaderService.prototype.updatePageTitle = function (title) {
+        this.titleService.setTitle(title); // SEO title'ını günceller
         if (title.length > 25) {
             title = title.substring(0, 25) + '.';
         }

@@ -359,7 +359,7 @@ export class OrderService {
           )
           .toPromise();
         if (data) {
-          this.router.navigate(['orders-managament']);
+          this.router.navigate(['orders-managament/1/2']);
 
           return data;
 
