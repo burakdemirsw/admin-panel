@@ -529,11 +529,15 @@ export class OrderOperationComponent implements OnInit {
 
     if (this.gs.isNullOrEmpty(product.shelfNo)) {
       var _product = this.productsToCollect.find(p => p.shelfNo != undefined && p.shelfNo != null && p.shelfNo != "");
+      var _product2 = this.lastCollectedProducts.find(p => p.shelfNo != undefined && p.shelfNo != null && p.shelfNo != "");
       if (!_product) {
-        this.toasterService.error("Raf Numarası Giriniz")
-        return;
+
+        product.shelfNo = _product2.shelfNo;
+
+      } else {
+        product.shelfNo = _product.shelfNo;
       }
-      product.shelfNo = _product.shelfNo;
+
 
     }
 
