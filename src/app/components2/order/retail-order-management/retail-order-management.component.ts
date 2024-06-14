@@ -351,8 +351,13 @@ export class RetailOrderManagementComponent implements OnInit {
     if (this.selectedOrders.length > 0) {
       if (window.confirm("Seçili Siparişleri Kargoya Göndermek İstediğinize Emin Misiniz?")) {
 
-        var request = this.selectedOrders.filter(x => x.isShipped == false);
+        var request = this.selectedOrders.filter(x => x.currAccDescription != null);
         var _request: ZTMSG_CreateCargoBarcode_CM[] = [];
+
+        if (request.length == 0) {
+          this.toasterService.warn('Siparişler Daha Önce Kargolanmış Ya Da Kargo Seçilmemiştir.');
+          return;
+        }
         for (let i = 0; i < request.length; i++) {
           var __request = new ZTMSG_CreateCargoBarcode_CM();
           __request.orderNumber = request[i].orderNumber;

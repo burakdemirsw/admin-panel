@@ -81,7 +81,7 @@ export class OrderOperationComponent implements OnInit {
     private httpClient: HttpClient,
     private productService: ProductService,
     private warehouseService: WarehouseService,
-    private generalService: GeneralService,
+    private gs: GeneralService,
     private title: Title,
     private sanitizer: DomSanitizer,
   ) {
@@ -195,7 +195,7 @@ export class OrderOperationComponent implements OnInit {
 
   async addOrderStatus() {
     var request = new OrderStatus();
-    request.id = await this.generalService.generateGUID();
+    request.id = await this.gs.generateGUID();
     request.orderNo = this.currentOrderNo;
     request.status = 'Hazırlanıyor';
     request.warehousePerson = localStorage.getItem('name') + ' ' + localStorage.getItem('surname');
@@ -523,6 +523,37 @@ export class OrderOperationComponent implements OnInit {
     }
     //this.spinnerService.hide();
   }
+
+  async dropItem(product: ProductOfOrder) {
+
+
+    if (this.gs.isNullOrEmpty(product.shelfNo)) {
+      var _product = this.productsToCollect.find(p => p.shelfNo != undefined && p.shelfNo != null && p.shelfNo != "");
+      if (!_product) {
+        this.toasterService.error("Raf Numarası Giriniz")
+        return;
+      }
+      product.shelfNo = _product.shelfNo;
+
+    }
+
+    var response = await this.warehouseService.countProductRequest2(
+      product.barcode,
+      product.shelfNo,
+      product.quantity,
+      null,
+      null,
+      null,
+      'Order/CountProduct',
+      this.orderNo,
+      null,
+      product.lineId
+    );
+    await this.getAllProducts(this.orderNo, 'WS');
+    this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
+    this.clearBarcodeAndQuantity();
+
+  }
   async countProductRequest(
     barcode: string,
     shelfNo: string,
@@ -631,7 +662,7 @@ export class OrderOperationComponent implements OnInit {
 
       if (this.checkForm.valid) {
 
-        if (this.generalService.isNullOrEmpty(this.shelfNumbers)) {
+        if (this.gs.isNullOrEmpty(this.shelfNumbers)) {
           await this.getShelves(productModel.barcode);
         }
 
@@ -690,8 +721,6 @@ export class OrderOperationComponent implements OnInit {
               }
 
               await this.getAllProducts(this.orderNo, 'WS');
-
-              //↑↑↑↑↑↑↑↑↑ TÜM ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
               this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
               this.clearBarcodeAndQuantity();
 
@@ -957,7 +986,7 @@ export class OrderOperationComponent implements OnInit {
     this.shelfNumbers = null;
     this.checkForm.get('batchCode').setValue(null);
     this.checkForm.get('quantity').setValue(null);
-    this.generalService.beep();
+    this.gs.beep();
   }
   async scanCompleteHandler(result: string) {
     if (result != undefined) {
@@ -986,7 +1015,7 @@ export class OrderOperationComponent implements OnInit {
       );
       if (response) {
         this.toasterService.success('Silme İşlemi Başarılı');
-        this.generalService.beep3();
+        this.gs.beep3();
         this.lastCollectedProducts =
           await this.productService.getCollectedOrderProducts(this.orderNo);
         if (orderNo.includes("MIS")) {

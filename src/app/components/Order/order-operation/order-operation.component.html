@@ -14,19 +14,12 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    *ngFor="let product of _productsToCollect; let i = index"
+                  <tr *ngFor="let product of _productsToCollect; let i = index"
                     [ngClass]="{ 'green-row': product.colorDescription == '1' }"
-                    [ngClass]="{ 'success-row': product.quantity === 0 }"
-                  >
+                    [ngClass]="{ 'success-row': product.quantity === 0 }">
                     <td>
-                      <p-image
-                        src="{{ product.photoUrl }}"
-                        previewImageSrc="{{ product.photoUrl }}"
-                        alt="Image"
-                        width="30"
-                        [preview]="true"
-                      />
+                      <p-image src="{{ product.photoUrl }}" previewImageSrc="{{ product.photoUrl }}" alt="Image"
+                        width="30" [preview]="true" />
                     </td>
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.itemCode }}</td>
@@ -39,33 +32,19 @@
                     <td>{{ product.currentQty }}</td>
 
                     <td>
-                      <div
-                        class="btn-group"
-                        role="group"
-                        aria-label="Basic example"
-                      >
-                        <button
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="
+                      <div class="btn-group" role="group" aria-label="Basic example">
+                        <button class="btn btn-primary" type="submit" (click)="
                             goDown2(
                               product.barcode,
                               product.shelfNo,
                               product.itemCode
                             )
-                          "
-                        >
+                          ">
                           <i class="fa fa-angle-down"> </i>
                         </button>
 
-                        <button
-                          data-toggle="tooltip"
-                          data-placement="right"
-                          title="Raflar"
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="getShelves(product.barcode)"
-                        >
+                        <button data-toggle="tooltip" data-placement="right" title="Raflar" class="btn btn-primary"
+                          type="submit" (click)="getShelves(product.barcode)">
                           <i class="fa-solid fa-bars"></i>
                         </button>
                       </div>
@@ -86,11 +65,7 @@
             <p class="card-text" *ngIf="isInvoice">
               Bu Sipariş Faturalaştırılmıştır
             </p>
-            <p
-              style="cursor: pointer"
-              class="card-title"
-              routerLink="/create-cargo/{{ this.orderNo }}"
-            >
+            <p style="cursor: pointer" class="card-title" routerLink="/create-cargo/{{ this.orderNo }}">
               Siparişi Kargolayabilirsiniz
             </p>
           </div>
@@ -103,30 +78,14 @@
               }}{{ customerName != undefined ? "-" + customerName : "" }}
             </h5>
 
-            <form
-              class="mt-3"
-              [formGroup]="checkForm"
-              (ngSubmit)="onSubmit(checkForm.value)"
-            >
+            <form class="mt-3" [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)">
               <div class="row mb-3">
                 <div class="form-group">
                   <div class="input-group">
-                    <input
-                      pInputText
-                      placeholder="{{ shelfNumbers }}"
-                      type="text"
-                      id="shelfNo"
-                      class="form-control"
-                      formControlName="shelfNo"
-                      (keydown.enter)="focusNextInput('barcode')"
-                    />
+                    <input pInputText placeholder="{{ shelfNumbers }}" type="text" id="shelfNo" class="form-control"
+                      formControlName="shelfNo" (keydown.enter)="focusNextInput('barcode')" />
                     <div class="input-group-append">
-                      <button
-                        type="button"
-                        style="height: 100%"
-                        (click)="clearShelfNumbers()"
-                        class="btn btn-primary"
-                      >
+                      <button type="button" style="height: 100%" (click)="clearShelfNumbers()" class="btn btn-primary">
                         Formu Temizle
                       </button>
                     </div>
@@ -142,15 +101,8 @@
                   <label *ngIf="qrBarcodeUrl !== null" for="qrBarcode">{{
                     qrBarcodeUrl
                   }}</label>
-                  <input
-                    placeholder="Barkod"
-                    pInputText
-                    type="text"
-                    id="barcode"
-                    class="form-control"
-                    formControlName="barcode"
-                    (keydown.enter)="onSubmit(checkForm.value)"
-                  />
+                  <input placeholder="Barkod" pInputText type="text" id="barcode" class="form-control"
+                    formControlName="barcode" (keydown.enter)="onSubmit(checkForm.value)" />
                   <div class="input-group-append">
                     <!-- <button type="button" class="btn btn-primary">Camera</button> -->
                   </div>
@@ -160,27 +112,15 @@
               <div class="row mb-3">
                 <div class="form-group col">
                   <div class="form-group">
-                    <input
-                      pInputText
-                      type="number"
-                      placeholder="Miktar"
-                      id="quantity"
-                      class="form-control"
-                      formControlName="quantity"
-                    />
+                    <input pInputText type="number" placeholder="Miktar" id="quantity" class="form-control"
+                      formControlName="quantity" />
                   </div>
                 </div>
 
                 <div class="form-group col">
                   <div class="form-group">
-                    <input
-                      placeholder="Parti"
-                      pInputText
-                      type="text"
-                      id="batchCode"
-                      class="form-control"
-                      formControlName="batchCode"
-                    />
+                    <input placeholder="Parti" pInputText type="text" id="batchCode" class="form-control"
+                      formControlName="batchCode" />
                   </div>
                 </div>
               </div>
@@ -191,12 +131,8 @@
           <div class="card-body">
             <div class="row mb-3">
               <div class="col-md-12">
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  style="width: 100%; margin-top: 1%"
-                  (click)="onSubmit(checkForm.value)"
-                >
+                <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 1%"
+                  (click)="onSubmit(checkForm.value)">
                   Ekle
                 </button>
               </div>
@@ -207,12 +143,8 @@
           <div class="card-body" *ngIf="isInvoice === false">
             <div class="row mt-3 mb-3">
               <div class="col-md-12">
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  (click)="collectAndPack(this.collectedProducts)"
-                  style="width: 100%"
-                >
+                <button type="button" class="btn btn-primary" (click)="collectAndPack(this.collectedProducts)"
+                  style="width: 100%">
                   {{ operation }}
                 </button>
               </div>
@@ -220,12 +152,7 @@
 
             <div class="row mb-3" *ngIf="this.currentOrderNo.includes('BP')">
               <div class="col-md-12">
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  (click)="showDialog2()"
-                  style="width: 100%"
-                >
+                <button type="button" class="btn btn-primary" (click)="showDialog2()" style="width: 100%">
                   Fatura Bul
                   <i class="fa fa-search" aria-hidden="true"></i>
                 </button>
@@ -233,25 +160,11 @@
             </div>
 
             <div class="form-group col" *ngIf="infoProducts.length > 0">
-              <div
-                class="btn-group"
-                role="group"
-                aria-label="Basic example"
-                style="width: 100%"
-              >
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  (click)="showCountPage()"
-                  style="width: 100%"
-                >
+              <div class="btn-group" role="group" aria-label="Basic example" style="width: 100%">
+                <button type="button" class="btn btn-primary" (click)="showCountPage()" style="width: 100%">
                   {{ addedProductCount }}
                 </button>
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  (click)="showModal2()"
-                >
+                <button type="button" class="btn btn-primary" (click)="showModal2()">
                   <i class="fa fa-angle-down" aria-hidden="true"></i>
                 </button>
               </div>
@@ -271,24 +184,16 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    *ngFor="
+                  <tr *ngFor="
                       let product of productsToCollect
                         | paginate
                           : { itemsPerPage: 5, currentPage: currentPage };
                       let i = index
-                    "
-                    [ngClass]="{ 'green-row': product.colorDescription == '1' }"
-                    [ngClass]="{ 'success-row': product.quantity === 0 }"
-                  >
+                    " [ngClass]="{ 'green-row': product.colorDescription == '1' }"
+                    [ngClass]="{ 'success-row': product.quantity === 0 }">
                     <td>
-                      <p-image
-                        src="{{ product.photoUrl }}"
-                        previewImageSrc="{{ product.photoUrl }}"
-                        alt="Image"
-                        width="30"
-                        [preview]="true"
-                      />
+                      <p-image src="{{ product.photoUrl }}" previewImageSrc="{{ product.photoUrl }}" alt="Image"
+                        width="30" [preview]="true" />
                     </td>
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.itemCode }}</td>
@@ -301,11 +206,7 @@
                     <td>{{ product.currentQty }}</td>
 
                     <td>
-                      <div
-                        class="btn-group"
-                        role="group"
-                        aria-label="Basic example"
-                      >
+                      <div class="btn-group" role="group" aria-label="Basic example">
                         <!-- <button
                           class="btn btn-primary"
                           type="submit"
@@ -313,14 +214,12 @@
                         >
                           <i class="fa fa-trash"></i>
                         </button> -->
-                        <button
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="goDown(product.packageNo)"
-                        >
+                        <!-- <button class="btn btn-primary" type="submit" (click)="goDown(product.packageNo)">
+                          <i class="fa fa-angle-down"> </i>
+                        </button> -->
+                        <button class="btn btn-primary" type="submit" (click)="dropItem( product)">
                           <i class="fa fa-angle-down"> </i>
                         </button>
-
                         <!-- <button
                           data-toggle="tooltip"
                           data-placement="right"
@@ -358,10 +257,7 @@
                   </tr>
                 </tbody>
               </table>
-              <pagination-controls
-                #id1
-                (pageChange)="currentPage = $event"
-              ></pagination-controls>
+              <pagination-controls #id1 (pageChange)="currentPage = $event"></pagination-controls>
             </div>
           </div>
         </div>
@@ -386,21 +282,14 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    *ngFor="let product of lastCollectedProducts; let i = index"
-                  >
+                  <tr *ngFor="let product of lastCollectedProducts; let i = index">
                     <td>
                       {{ i + 1 }}
                     </td>
 
                     <td>
-                      <p-image
-                        src="{{ product.photoUrl }}"
-                        previewImageSrc="{{ product.photoUrl }}"
-                        alt="Image"
-                        width="30"
-                        [preview]="true"
-                      />
+                      <p-image src="{{ product.photoUrl }}" previewImageSrc="{{ product.photoUrl }}" alt="Image"
+                        width="30" [preview]="true" />
                     </td>
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.itemCode }}</td>
@@ -424,13 +313,11 @@
                     </td> -->
                     <td>
                       <div class="btn-group">
-                        <button
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="deleteOrderProduct(orderNo, product)"
-                        >
+                        <button class="btn btn-primary" type="submit" (click)="deleteOrderProduct(orderNo, product)">
                           <i class="fas fa-trash"> </i>
                         </button>
+
+
                         <!-- <button
                           class="btn btn-primary"
                           type="submit"
@@ -493,11 +380,7 @@
       [title]="'Ürün Detay'"
     ></app-image-modal> -->
 
-    <p-dialog
-      header="Fatura Bul"
-      [(visible)]="_visible2"
-      [style]="{ width: '50vw' }"
-    >
+    <p-dialog header="Fatura Bul" [(visible)]="_visible2" [style]="{ width: '50vw' }">
       <div class="card">
         <div class="card-body">
           <div style="overflow-x: auto">
@@ -515,11 +398,7 @@
                   <td>{{ invoice.eInvoiceNumber }}</td>
                   <td>{{ invoice.invoiceDate | date }}</td>
                   <td>
-                    <button
-                      class="btn btn-primary"
-                      type="submit"
-                      (click)="selectInvoice(invoice)"
-                    >
+                    <button class="btn btn-primary" type="submit" (click)="selectInvoice(invoice)">
                       <i class="fa fa-check" aria-hidden="true"></i>
                     </button>
                   </td>
@@ -533,26 +412,15 @@
 
     <p-dialog header="Raflar" [(visible)]="productShelvesDialog">
       <div class="btn-group mr-2" role="group" aria-label="First group">
-        <button
-          *ngFor="let shelve of productShelves; let i = index"
-          (click)="setShelveToForm(shelve)"
-          type="button"
-          [ngClass]="i % 2 === 0 ? 'btn btn-primary' : 'btn btn-secondary'"
-          style="height: 10rem"
-        >
+        <button *ngFor="let shelve of productShelves; let i = index" (click)="setShelveToForm(shelve)" type="button"
+          [ngClass]="i % 2 === 0 ? 'btn btn-primary' : 'btn btn-secondary'" style="height: 10rem">
           {{ shelve }}
         </button>
       </div>
     </p-dialog>
-    <p-dialog
-      header="Sayım Paneli"
-      [(visible)]="visible"
-      [style]="{ width: '90vw' }"
-    >
+    <p-dialog header="Sayım Paneli" [(visible)]="visible" [style]="{ width: '90vw' }">
       <p>
-        <app-warehosue-shelf-count
-          [infoProducts]="this.infoProducts"
-        ></app-warehosue-shelf-count>
+        <app-warehosue-shelf-count [infoProducts]="this.infoProducts"></app-warehosue-shelf-count>
       </p>
     </p-dialog>
   </section>
