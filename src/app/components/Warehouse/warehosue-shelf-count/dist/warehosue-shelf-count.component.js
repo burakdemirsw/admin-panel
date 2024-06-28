@@ -53,7 +53,7 @@ var completeCount_CM_1 = require("src/app/models/model/warehouse/completeCount_C
 var ztmsg_CountedProduct_1 = require("src/app/models/model/warehouse/ztmsg_CountedProduct");
 var ztmsg_CountedProduct_2 = require("../../../models/model/warehouse/ztmsg_CountedProduct");
 var WarehosueShelfCountComponent = /** @class */ (function () {
-    function WarehosueShelfCountComponent(formBuilder, toasterService, httpClient, productService, generalService, warehouseService, activatedRoute, title, sanitizer, orderService, router) {
+    function WarehosueShelfCountComponent(formBuilder, toasterService, httpClient, productService, generalService, warehouseService, activatedRoute, title, sanitizer, orderService, router, headerService) {
         this.formBuilder = formBuilder;
         this.toasterService = toasterService;
         this.httpClient = httpClient;
@@ -65,6 +65,9 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         this.sanitizer = sanitizer;
         this.orderService = orderService;
         this.router = router;
+        this.headerService = headerService;
+        this.infoProducts = [];
+        this.isChild = false;
         this.visible = false;
         this._visible = false;
         this.barcode = null;
@@ -72,7 +75,6 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         this.batchCode = null;
         this.shelfNumbers = 'RAFLAR:';
         this.location = location.href;
-        this.infoProducts = [];
         this.photoUrl = ClientUrls_1.ClientUrls.photoUrl;
         this.collectedProducts = [];
         this.process = false;
@@ -134,7 +136,6 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         ];
         this.lastCollectedProducts = [];
         this.lastCollectedProducts2 = [];
-        this.title.setTitle('Sayım');
     }
     WarehosueShelfCountComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -146,7 +147,6 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         switch (_a.label) {
                             case 0:
                                 this.countType = params['type'];
-                                this.toasterService.success(this.countType);
                                 this.currentOrderNo = params['orderNo'];
                                 return [4 /*yield*/, this.addOperationStatus()];
                             case 1:
@@ -154,13 +154,14 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                                 return [4 /*yield*/, this.getProductOfCount(this.currentOrderNo)];
                             case 2:
                                 _a.sent();
-                                if (this.countType == "count") {
+                                // if (this.countType == "count") {
+                                // } else if (this.countType == "add-product-to-shelf") {
+                                // }
+                                // else if (this.countType == "remove-product-to-shelf") {
+                                // }
+                                if (!this.isChild) {
+                                    this.setTitle();
                                 }
-                                else if (this.countType == "add-product-to-shelf") {
-                                }
-                                else if (this.countType == "remove-product-to-shelf") {
-                                }
-                                this.setTitle();
                                 return [2 /*return*/];
                         }
                     });
@@ -171,15 +172,15 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
     };
     WarehosueShelfCountComponent.prototype.setTitle = function () {
         if (this.countType == "count") {
-            this.title.setTitle('Sayım');
+            this.headerService.updatePageTitle('Sayım');
             this.upPageDescription = "Sayım";
         }
         else if (this.countType == "add-product-to-shelf") {
-            this.title.setTitle('Rafa Ürün Ekle');
+            this.headerService.updatePageTitle('Rafa Ürün Ekle');
             this.upPageDescription = "Rafa Ürün Ekle";
         }
         else if (this.countType == "remove-product-to-shelf") {
-            this.title.setTitle('Rafdan Ürün Çıkar');
+            this.headerService.updatePageTitle('Rafdan Ürün Çıkar');
             this.upPageDescription = "Rafdan Ürün Çıkar";
         }
     };
@@ -873,6 +874,9 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
     __decorate([
         core_1.Input()
     ], WarehosueShelfCountComponent.prototype, "infoProducts");
+    __decorate([
+        core_1.Input()
+    ], WarehosueShelfCountComponent.prototype, "isChild");
     WarehosueShelfCountComponent = __decorate([
         core_1.Component({
             selector: 'app-warehosue-shelf-count',

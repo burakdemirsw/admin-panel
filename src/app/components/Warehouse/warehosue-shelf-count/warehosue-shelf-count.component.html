@@ -257,7 +257,7 @@
     <app-image-modal [imageUrl]="modalImageUrl" [title]="'Ürün Detay'"></app-image-modal>
 
     <p-dialog header="Header" [(visible)]="visible" [style]="{ width: '100vw' }">
-      <app-create-qr [upPageDescription]="upPageDescription" [barcode]="barcode" [quantity]="quantity"
+      <app-create-qr [isChild]="true" [upPageDescription]="upPageDescription" [barcode]="barcode" [quantity]="quantity"
         [batchCode]="batchCode">
       </app-create-qr>
     </p-dialog>

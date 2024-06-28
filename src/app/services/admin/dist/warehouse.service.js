@@ -92,16 +92,22 @@ var WarehouseService = /** @class */ (function () {
     };
     WarehouseService.prototype.getCountsOfOperation = function (request) {
         return __awaiter(this, void 0, Promise, function () {
-            var response;
+            var response, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.httpClientService.get({
-                            controller: "Warehouse/get-counts-of-operation/" + request
-                        })
-                            .toPromise()];
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.httpClientService.get({
+                                controller: "Warehouse/get-counts-of-operation/" + request
+                            })
+                                .toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];
+                    case 2:
+                        error_1 = _a.sent();
+                        return [2 /*return*/, null];
+                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -177,7 +183,7 @@ var WarehouseService = /** @class */ (function () {
     //ofisleri çeker
     WarehouseService.prototype.getOfficeCodeList = function () {
         return __awaiter(this, void 0, Promise, function () {
-            var data, error_1;
+            var data, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -191,8 +197,8 @@ var WarehouseService = /** @class */ (function () {
                         data = _a.sent();
                         return [2 /*return*/, data];
                     case 2:
-                        error_1 = _a.sent();
-                        console.log(error_1.message);
+                        error_2 = _a.sent();
+                        console.log(error_2.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -202,7 +208,7 @@ var WarehouseService = /** @class */ (function () {
     //depo listesini çeker
     WarehouseService.prototype.getWarehouseList = function (value) {
         return __awaiter(this, void 0, Promise, function () {
-            var selectElement, data, error_2;
+            var selectElement, data, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -218,8 +224,8 @@ var WarehouseService = /** @class */ (function () {
                         data = _a.sent();
                         return [2 /*return*/, data];
                     case 2:
-                        error_2 = _a.sent();
-                        console.log(error_2.message);
+                        error_3 = _a.sent();
+                        console.log(error_3.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -229,7 +235,7 @@ var WarehouseService = /** @class */ (function () {
     //müşteri listesini çeker
     WarehouseService.prototype.getCustomerList = function (customerType) {
         return __awaiter(this, void 0, Promise, function () {
-            var data, error_3;
+            var data, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -243,8 +249,8 @@ var WarehouseService = /** @class */ (function () {
                         data = _a.sent();
                         return [2 /*return*/, data];
                     case 2:
-                        error_3 = _a.sent();
-                        console.log(error_3.message);
+                        error_4 = _a.sent();
+                        console.log(error_4.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -460,7 +466,7 @@ var WarehouseService = /** @class */ (function () {
     };
     WarehouseService.prototype.deleteCountFromId = function (id) {
         return __awaiter(this, void 0, Promise, function () {
-            var result, error_4;
+            var result, error_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -474,8 +480,8 @@ var WarehouseService = /** @class */ (function () {
                         result = _a.sent();
                         return [2 /*return*/, result];
                     case 2:
-                        error_4 = _a.sent();
-                        console.log(error_4.message);
+                        error_5 = _a.sent();
+                        console.log(error_5.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }

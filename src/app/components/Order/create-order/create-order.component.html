@@ -15,7 +15,7 @@
         [selected]="true"
       >
         <form [formGroup]="createCustomerForm">
-          <p-dropdown
+          <p-dropdown [style]="{'width': '100%'}"
             formControlName="salesPersonCode"
             [options]="salesPersonModelList"
             [(ngModel)]="selectedPerson"
@@ -40,7 +40,7 @@
             <div class="col-md-6">
               <label for="office"> Ofis</label>
               <br />
-              <p-dropdown
+              <p-dropdown [style]="{'width': '100%'}"
                 formControlName="office"
                 [options]="offices"
                 optionLabel="name"
@@ -50,7 +50,7 @@
             <div class="col-md-6">
               <label for="warehouse">Depo</label>
               <br />
-              <p-dropdown
+              <p-dropdown [style]="{'width': '100%'}"
                 formControlName="warehouse"
                 [options]="warehouses"
                 optionLabel="name"
@@ -72,6 +72,8 @@
         pi-check'
             : 'pi pi-times'
         ">
+
+
         <form [formGroup]="getProductsForm" (ngSubmit)="getProducts(this.getProductsForm.value, this.orderType)">
           <div class="row mb-3">
 
@@ -87,8 +89,7 @@
                 (onClick)="getCustomers(this.getCustomerForm.value)" icon="pi pi-search" label="Ürün Bul"
                 type="submit"></button> <button pButton pRipple class="p-button-rounded p-button-text"
                 (onClick)="resetProductForm()" icon="pi pi-trash" label="Formu Sil" type="reset"></button>
-              <app-read-barcode (value)="printValue($event)"></app-read-barcode>
-
+              <!-- <app-read-barcode (value)="printValue($event)"></app-read-barcode>-->
             </p-inputGroup>
 
 
@@ -167,7 +168,7 @@
               <th scope="col">İndirimli Fiyatı</th>
               <th scope="col">Toplam Fiyat</th>
 
-
+              <th scope="col">Envanter</th>
               <th scope="col">Ürün</th>
 
               <th scope="col" style="cursor: pointer" (click)="deleteAllPRoduct()">
@@ -235,6 +236,9 @@
                     : (product.price * product.quantity | currency : "₺")
                 }}
               </td>
+              <td>
+                {{ product.uD_Stock + product.mD_Stock }}
+              </td>
 
 
               <td>
@@ -247,6 +251,41 @@
                   class="p-button-rounded p-button-text p-button-danger" (click)="deleteProduct(product)"></button>
               </td>
             </tr>
+
+            <style>
+              .price-list-container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+                padding: 1rem;
+              }
+
+              .price-item {
+                flex: 1 1 calc(33.333% - 1rem);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              }
+
+              .price-button {
+                width: 100%;
+                padding: 1rem;
+                font-size: 1.2rem;
+
+                transition: background-color 0.3s, border-color 0.3s;
+              }
+
+            </style>
+            <p-dialog header="Fiyat Seçiniz" [(visible)]="priceListDialog" [style]="{ width: '80vw' }" modal="true"
+              [closable]="false" [dismissableMask]="true">
+              <div class="price-list-container">
+                <div *ngFor="let price of priceList" class="price-item">
+                  <button (click)="selectPrice(product,ri,price)" pButton pRipple icon="pi pi-check"
+                    class="p-button-rounded p-button-text price-button" type="button">{{price}}</button>
+                </div>
+              </div>
+            </p-dialog>
           </ng-template>
         </p-table>
 
@@ -323,7 +362,6 @@
             <div class="row mb-3">
               <div class="col-md-6">
                 <h3>ALT MÜŞTERİ</h3>
-
                 <hr />
                 <form [formGroup]="createCustomerForm">
                   <p-inputGroup>
@@ -334,9 +372,9 @@
                         (click)="getSubCustomers()"></button>
                     </p-inputGroupAddon>
 
-                    <p-dropdown class="custom-dropdown" #subCurrAccDescription_dropdown formControlName="sc_Description"
-                      (click)="showPanel(3)" [options]="selectableSubCustomers" placeholder="Müşteri" [editable]="true"
-                      optionLabel="name">
+                    <p-dropdown [style]="{'width': '50%'}" #subCurrAccDescription_dropdown
+                      formControlName="sc_Description" (click)="showPanel(3)" [options]="selectableSubCustomers"
+                      placeholder="Müşteri" [editable]="true" optionLabel="name">
                     </p-dropdown>
 
                   </p-inputGroup>
@@ -355,9 +393,9 @@
                   (ngSubmit)="submitAddressForm(createCustomerForm.value)">
                   <div class="row mb-3">
                     <div class="col-md-6">
-                      <p-dropdown #currAccDescription_dropdown formControlName="currAccDescription"
-                        [options]="selectableCustomers" placeholder="Bayi" [disabled]="selectedCustomers.length > 0"
-                        (click)="showPanel(1)"></p-dropdown>
+                      <p-dropdown [style]="{'width': '100%'}" #currAccDescription_dropdown
+                        formControlName="currAccDescription" [options]="selectableCustomers" placeholder="Bayi"
+                        [disabled]="selectedCustomers.length > 0" (click)="showPanel(1)"></p-dropdown>
                     </div>
                   </div>
                   <div class="row mb-3">
@@ -632,34 +670,38 @@
               <form [formGroup]="_createCustomerForm" (ngSubmit)="_submitAddressForm(_createCustomerForm.value)">
                 <div class="row">
                   <div class="col-md-6 form-group mb-3">
-                    <p-dropdown [filter]="true" filterBy="name" id="address_country" formControlName="address_country"
-                      [options]="_countries" optionLabel="name" placeholder="Ülke Seçiniz"></p-dropdown>
+                    <p-dropdown [style]="{'width': '100%'}" [filter]="true" filterBy="name" id="address_country"
+                      formControlName="address_country" [options]="_countries" optionLabel="name"
+                      placeholder="Ülke Seçiniz"></p-dropdown>
                   </div>
                 </div>
 
                 <div class="row">
                   <div class="col-md-6 form-group mb-3">
-                    <p-dropdown [filter]="true" filterBy="name" id="address_region" formControlName="address_region"
-                      [options]="_regions" optionLabel="name" placeholder="Bölge Seçiniz"></p-dropdown>
+                    <p-dropdown [style]="{'width': '100%'}" [filter]="true" filterBy="name" id="address_region"
+                      formControlName="address_region" [options]="_regions" optionLabel="name"
+                      placeholder="Bölge Seçiniz"></p-dropdown>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-md-6 form-group mb-3">
-                    <p-dropdown [filter]="true" filterBy="name" id="address_province" formControlName="address_province"
-                      [options]="_provinces" optionLabel="name" placeholder="İl Seçiniz"></p-dropdown>
+                    <p-dropdown [style]="{'width': '100%'}" [filter]="true" filterBy="name" id="address_province"
+                      formControlName="address_province" [options]="_provinces" optionLabel="name"
+                      placeholder="İl Seçiniz"></p-dropdown>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-md-6 form-group mb-3">
-                    <p-dropdown [filter]="true" filterBy="name" id="address_taxOffice"
+                    <p-dropdown [style]="{'width': '100%'}" [filter]="true" filterBy="name" id="address_taxOffice"
                       formControlName="address_taxOffice" [options]="_taxOffices" optionLabel="name"
                       placeholder="Vergi Dairesi Seçiniz"></p-dropdown>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-md-6 form-group mb-3">
-                    <p-dropdown [filter]="true" filterBy="name" id="address_district" formControlName="address_district"
-                      [options]="_districts" optionLabel="name" placeholder="İlçe Seçiniz"></p-dropdown>
+                    <p-dropdown [style]="{'width': '100%'}" [filter]="true" filterBy="name" id="address_district"
+                      formControlName="address_district" [options]="_districts" optionLabel="name"
+                      placeholder="İlçe Seçiniz"></p-dropdown>
                   </div>
                 </div>
 
@@ -732,44 +774,135 @@
                   formControlName="mail" />
               </div>
             </div>
+
             <div class="row mb-3">
-              <div class=" form-group">
-                <p-dropdown [filter]="true" filterBy="name" id="country" formControlName="country"
-                  [options]="_countries" optionLabel="name" placeholder="Ülke Seçiniz"></p-dropdown>
+              <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus" label="Detaylar"
+                type="button" (click)="isCollapsed_2 = !isCollapsed_2"></button>
+            </div>
+
+
+            <div class="row" *ngIf="!this.createCustomerForm.value.stampPhotoUrl">
+              <div class="col-md-3">
+                <div class="input-group mb-3">
+                  <div class="fileUpload">
+                    <input type="file" class="upload" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01"
+                      (change)="onUpload($event, 'stampPhotoUrl')" />
+                    <span> <i class="fas fa-camera"></i></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <div class="form-group">
+                  <input pInputText placeholder="Kaşe Fotoğraf Yolu" type="text" class="form-control"
+                    style="width: 100%" id="stampPhotoUrl" formControlName="stampPhotoUrl" />
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3" *ngIf="this.addSubCustomerForm.value.bussinesCardPhotoUrl">
+              <p-image src="{{
+                          this.addSubCustomerForm.value.bussinesCardPhotoUrl
+                        }}" alt="Image" width="350" [preview]="true" />
+            </div>
+            <div class="row" *ngIf="
+                        !this.addSubCustomerForm.value.bussinesCardPhotoUrl
+                      ">
+              <div class="col-md-3">
+                <div class="input-group mb-3">
+                  <div class="fileUpload">
+                    <input type="file" class="upload" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01"
+                      (change)="
+                                onUpload($event, 'bussinesCardPhotoUrl')
+                              " />
+                    <span> <i class="fas fa-camera"></i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <input type="text" pInputText placeholder="Kartvizit Fotoğraf Yolu" class="form-control"
+                  id="bussinesCardPhotoUrl" placeholder="Kartvizit Fotoğraf Yolu"
+                  formControlName="bussinesCardPhotoUrl" />
               </div>
             </div>
 
-            <div class="row  mb-3">
-              <div class="form-group ">
-                <p-dropdown [filter]="true" filterBy="name" id="region" formControlName="region" [options]="_regions"
-                  optionLabel="name" placeholder="Bölge Seçiniz"></p-dropdown>
-              </div>
+            <div class="row mb-3" *ngIf="this.addSubCustomerForm.value.cargoAddressPhotoUrl">
+              <p-image src="{{
+                          this.addSubCustomerForm.value.cargoAddressPhotoUrl
+                        }}" alt="Image" width="350" [preview]="true" />
             </div>
-            <div class="row  mb-3">
-              <div class=" form-group">
-                <p-dropdown [filter]="true" filterBy="name" id="province" formControlName="province"
-                  [options]="_provinces" optionLabel="name" placeholder="İl Seçiniz"></p-dropdown>
+
+            <div class="row" *ngIf="
+                        !this.addSubCustomerForm.value.cargoAddressPhotoUrl
+                      ">
+              <div class="col-md-3">
+                <div class="input-group mb-3">
+                  <div class="fileUpload">
+                    <input type="file" class="upload" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01"
+                      (change)="
+                                onUpload($event, 'cargoAddressPhotoUrl')
+                              " />
+                    <span> <i class="fas fa-camera"></i></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <div class="form-group">
+                  <input pInputText placeholder="Kargo Adres Fotoğraf Yolu" type="text" class="form-control"
+                    style="width: 100%" id="cargoAddressPhotoUrl" formControlName="cargoAddressPhotoUrl" />
+                </div>
               </div>
             </div>
 
-            <div class="row  mb-3">
-              <div class="form-group">
-                <p-dropdown [filter]="true" filterBy="name" id="district" formControlName="district"
-                  [options]="_districts" optionLabel="name" placeholder="İlçe Seçiniz"></p-dropdown>
+
+            <div *ngIf="isCollapsed_2">
+              <div class="row mb-3">
+                <div class=" form-group">
+                  <p-dropdown [style]="{'width': '100%'}" [filter]="true" filterBy="name" id="country"
+                    formControlName="country" [options]="_countries" optionLabel="name" placeholder="Ülke Seçiniz">
+                  </p-dropdown>
+                </div>
               </div>
-            </div>
-            <div class="row  mb-3">
-              <div class=" form-group mb-3">
-                <p-dropdown [filter]="true" filterBy="name" id="taxOffice" formControlName="taxOffice"
-                  [options]="_taxOffices" optionLabel="name" placeholder="Vergi Dairesi Seçiniz"></p-dropdown>
+
+              <div class="row  mb-3">
+                <div class="form-group ">
+                  <p-dropdown [style]="{'width': '100%'}" [filter]="true" filterBy="name" id="region"
+                    formControlName="region" [options]="_regions" optionLabel="name" placeholder="Bölge Seçiniz">
+                  </p-dropdown>
+                </div>
               </div>
-            </div>
-            <div class="row  mb-3">
-              <div class="form-group">
-                <input pInputText placeholder="Adres Tarifi *" type="text" class="form-control" id="address"
-                  name="address" fullWidth formControlName="address" />
+              <div class="row  mb-3">
+                <div class=" form-group">
+                  <p-dropdown [style]="{'width': '100%'}" [filter]="true" filterBy="name" id="province"
+                    formControlName="province" [options]="_provinces" optionLabel="name" placeholder="İl Seçiniz">
+                  </p-dropdown>
+                </div>
               </div>
+
+              <div class="row  mb-3">
+                <div class="form-group">
+                  <p-dropdown [style]="{'width': '100%'}" [filter]="true" filterBy="name" id="district"
+                    formControlName="district" [options]="_districts" optionLabel="name" placeholder="İlçe Seçiniz">
+                  </p-dropdown>
+                </div>
+              </div>
+              <div class="row  mb-3">
+                <div class=" form-group mb-3">
+                  <p-dropdown [style]="{'width': '100%'}" [filter]="true" filterBy="name" id="taxOffice"
+                    formControlName="taxOffice" [options]="_taxOffices" optionLabel="name"
+                    placeholder="Vergi Dairesi Seçiniz"></p-dropdown>
+                </div>
+              </div>
+              <div class="row  mb-3">
+                <div class="form-group">
+                  <input pInputText placeholder="Adres Tarifi *" type="text" class="form-control" id="address"
+                    name="address" fullWidth formControlName="address" />
+                </div>
+              </div>
+
             </div>
+
+
             <div class="row mb-3">
               <div class="form-group">
                 <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus" label="Ekle"
@@ -838,16 +971,16 @@
           <div class="row">
             <div class="col-md-6">
               <br />
-              <p-dropdown placeholder="Kargo Şirketi Seçiniz" [filter]="true" filterBy="name"
-                formControlName="cargoFirm" [options]="cargoFirms" optionLabel="name"
+              <p-dropdown [style]="{'width': '100%'}" placeholder="Kargo Şirketi Seçiniz" [filter]="true"
+                filterBy="name" formControlName="cargoFirm" [options]="cargoFirms" optionLabel="name"
                 placeholder=" Kargo Şirketi Seçiniz"></p-dropdown>
             </div>
           </div>
           <div class="row mb-3">
             <div class="col-md-6">
               <br />
-              <p-dropdown placeholder="Paketleme Tipi Seçiniz" [filter]="true" filterBy="name"
-                class="'ng-dirty ng-invalid'" formControlName="packagingType" [options]="packagingTypes"
+              <p-dropdown [style]="{'width': '100%'}" placeholder="Paketleme Tipi Seçiniz" [filter]="true"
+                filterBy="name" class="'ng-dirty ng-invalid'" formControlName="packagingType" [options]="packagingTypes"
                 optionLabel="name" placeholder=" Paketleme Tipi Seçiniz"></p-dropdown>
             </div>
           </div>
@@ -881,15 +1014,15 @@
 
           <div class="row mb-3">
             <div class="col-md-6">
-              <p-dropdown placeholder="Gönderim Türü Seçiniz" [filter]="true" filterBy="name"
-                formControlName="shipmentServiceType" [options]="shipmentServiceTypes" optionLabel="name"
-                placeholder="  Gönderim Türü Seçiniz"></p-dropdown>
+              <p-dropdown [style]="{'width': '100%'}" placeholder="Gönderim Türü Seçiniz" [filter]="true"
+                filterBy="name" formControlName="shipmentServiceType" [options]="shipmentServiceTypes"
+                optionLabel="name" placeholder="  Gönderim Türü Seçiniz"></p-dropdown>
             </div>
           </div>
           <div class="row mb-3">
             <div class="col-md-6">
-              <p-dropdown [filter]="true" filterBy="name" formControlName="cargoPrice" [options]="cargoPrices"
-                optionLabel="name" placeholder="Paket Fiyatlandırması Seçiniz"></p-dropdown>
+              <p-dropdown [style]="{'width': '100%'}" [filter]="true" filterBy="name" formControlName="cargoPrice"
+                [options]="cargoPrices" optionLabel="name" placeholder="Paket Fiyatlandırması Seçiniz"></p-dropdown>
             </div>
           </div>
           <div class="row mb-3">
@@ -1002,12 +1135,12 @@
                   this.selectedAddresses.length > 0
                 ">
                 <div class="col-md-6 mb-3">
-                  <p-dropdown [options]="stateOptions" optionLabel="label" placeholder="Vergi Tipi Seçiniz"
-                    formControlName="taxTypeCode"></p-dropdown>
+                  <p-dropdown [style]="{'width': '100%'}" [options]="stateOptions" optionLabel="label"
+                    placeholder="Vergi Tipi Seçiniz" formControlName="taxTypeCode"></p-dropdown>
                 </div>
                 <div class="col-md-6 mb-3">
-                  <p-dropdown [options]="paymentMethods" optionLabel="name" placeholder="Ödeme Seçiniz"
-                    formControlName="paymentType"></p-dropdown>
+                  <p-dropdown [style]="{'width': '100%'}" [options]="paymentMethods" optionLabel="name"
+                    placeholder="Ödeme Seçiniz" formControlName="paymentType"></p-dropdown>
                 </div>
               </div>
               <div class="row">

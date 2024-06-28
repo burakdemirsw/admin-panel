@@ -1,8 +1,9 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Dropdown } from 'primeng/dropdown';
 import { Table } from 'primeng/table';
+import { SubCustomerList_VM } from 'src/app/models/model/customer/subCustomerList_VM';
 import { Address_VM } from 'src/app/models/model/order/ViewModel/provinceVM';
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
 import { GetCustomerAddress_CM } from 'src/app/models/model/order/getCustomerList_CM';
@@ -27,7 +28,6 @@ import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, Payment }
 import { OrderService } from '../../../services/admin/order.service';
 import { GoogleDriveService } from '../../../services/common/google-drive.service';
 import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from '../../cargo/create-cargo/models/models';
-import { SubCustomerList_VM } from 'src/app/models/model/customer/subCustomerList_VM';
 
 @Component({
   selector: 'app-create-order',
@@ -60,6 +60,7 @@ export class CreateOrderComponent implements OnInit {
   pageTitle: string;
   exchangeRate: ExchangeRate;
   isCollapsed: boolean = false;
+  isCollapsed_2: boolean = false;
   constructor(private headerService: HeaderService, private warehouseService: WarehouseService, private paymentService: PaymentService, private toasterService: ToasterService, private activatedRoute: ActivatedRoute,
     private router: Router, private httpClientService: HttpClientService,
     private generalService: GeneralService, private addressService: AddressService,
@@ -496,7 +497,8 @@ export class CreateOrderComponent implements OnInit {
   selectedFiles: File[] = [];
 
   async onUpload(event: any, to: string) {
-    this.selectedFiles = []; // Her seferinde diziyi sıfırla
+    this.selectedFiles = [];
+    // this.toasterService.info(to);
     const files: FileList = event.target.files;
     for (let i = 0; i < files.length; i++) {
       const selectedFile: File = files[i];
@@ -504,7 +506,7 @@ export class CreateOrderComponent implements OnInit {
       this.toasterService.success("İşlem Başarılı");
       await this.addPicture(selectedFile, to);
     }
-    event.target.value = ""; // Dosyaları sıfırlamak için value değerini sıfırla
+    event.target.value = "";
   }
 
   async addPicture(file: File, to: string) {
@@ -512,16 +514,16 @@ export class CreateOrderComponent implements OnInit {
 
     if (to === "bussinesCardPhotoUrl") {
 
-      this.createCustomerForm.get("bussinesCardPhotoUrl").setValue(response.url);
+      this.addSubCustomerForm.get("bussinesCardPhotoUrl").setValue(response.url);
 
     } if (to === "stampPhotoUrl") {
 
-      this.createCustomerForm.get("stampPhotoUrl").setValue(response.url);
+      this.addSubCustomerForm.get("stampPhotoUrl").setValue(response.url);
 
     }
     if (to === "cargoAddressPhotoUrl") {
 
-      this.createCustomerForm.get("cargoAddressPhotoUrl").setValue(response.url);
+      this.addSubCustomerForm.get("cargoAddressPhotoUrl").setValue(response.url);
 
     }
 
@@ -629,7 +631,7 @@ export class CreateOrderComponent implements OnInit {
   selectAddressDialog: boolean = false;
   subCustomerDialog: boolean = false;
   addSubCustomerDialog: boolean = false;
-
+  priceListDialog: boolean = false;
   openDialog(dialogName: string) {
     if (dialogName === "getCustomerDialog") {
       this.getCustomerDialog = !this.getCustomerDialog
@@ -639,6 +641,9 @@ export class CreateOrderComponent implements OnInit {
     }
     if (dialogName === "addSubCustomerDialog") {
       this.addSubCustomerDialog = !this.addSubCustomerDialog
+    }
+    if (dialogName === "priceListDialog") {
+      this.priceListDialog = !this.priceListDialog
     }
   }
   goToPage(index: number) {
@@ -776,7 +781,10 @@ export class CreateOrderComponent implements OnInit {
       province: [null],
       taxOffice: [null],
       district: [null],
-      address: [null]
+      address: [null],
+      stampPhotoUrl: [null],
+      bussinesCardPhotoUrl: [null],
+      cargoAddressPhotoUrl: [null],
     });
 
 
@@ -834,6 +842,7 @@ export class CreateOrderComponent implements OnInit {
       phoneNumber: ['05', [Validators.required]],
       stampPhotoUrl: [null],
       bussinesCardPhotoUrl: [null],
+      cargoAddressPhotoUrl: [null],
       address_country: [null],
       address_province: [null],
       address_district: [null],
@@ -844,7 +853,6 @@ export class CreateOrderComponent implements OnInit {
       address_taxOffice: [null],
       sc_Description: [null],
       sc_mode: [false],
-      cargoAddressPhotoUrl: [null],
     });
 
 
@@ -1068,6 +1076,10 @@ export class CreateOrderComponent implements OnInit {
       request.city = this.generalService.isNullOrEmpty(this.addSubCustomerForm.value.province?.name) ? 'İSTANBUL' : this.addSubCustomerForm.value.province?.name;
       request.district = this.generalService.isNullOrEmpty(this.addSubCustomerForm.value.district?.name) ? 'FATİH' : this.addSubCustomerForm.value.district?.name;
       request.address = this.addSubCustomerForm.value.address;
+      request.stampPhotoUrl = this.addSubCustomerForm.value.stampPhotoUrl;
+      request.bussinesCardPhotoUrl = this.addSubCustomerForm.value.bussinesCardPhotoUrl;
+      request.cargoAddressPhotoUrl = this.addSubCustomerForm.value.cargoAddressPhotoUrl;
+
       var response = await this.orderService.addSubCustomer(request);
       if (response) {
         this.toasterService.success("Alt Müşteri Eklendi")
@@ -1549,20 +1561,39 @@ export class CreateOrderComponent implements OnInit {
   }
 
   @ViewChild('dt1') myTable: Table;
+  priceList: number[] = []
+
+  async selectPrice(product: ProductList_VM, index: number, quantity: number) {
+    // this.toasterService.success(product.quantity.toString());
+    product.quantity = quantity;
+    var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price, product.discountedPrice, product.basePrice)
+    if (response) {
+      this.toasterService.success("Ürün Güncellendi")
+      this.focusNextInput('barcode_product')
+      this.resetDiscount();
+      this.getClientOrder(1);
+    }
+
+    this.priceListDialog = false;
+
+    delete this.clonedProducts[product.lineId as string];
+    this.cancelRowEdit(product, 0);
+  }
   async onRowEditSave(product: ProductList_VM, index: number) {
+    this.priceList = [];
     if (product.price > 0) {
 
       var findedProduct = this.selectedProducts
         .find(p => p.itemCode == product.itemCode)
 
-      if (Number(findedProduct.quantity) < product.quantity) {
-        if (!window.confirm("Ürünü Güncellemek İstediğinize Emin Misiniz?")) {
-          this.toasterService.error("Ürün Eklenmedi")
-          return;
-        }
+      this.priceList.push(product.quantity);
+      this.priceList.push((Number(product.uD_Stock) + Number(product.mD_Stock)));
+      if (Number(findedProduct.quantity) > (Number(product.uD_Stock) + Number(product.mD_Stock))) {
+        this.openDialog('priceListDialog');
+        return;
       }
 
-      // this.toasterService.success(product.quantity.toString());
+      this.toasterService.success(product.quantity.toString());
       var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price, product.discountedPrice, product.basePrice)
       if (response) {
         this.toasterService.success("Ürün Güncellendi")

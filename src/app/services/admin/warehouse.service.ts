@@ -68,15 +68,21 @@ export class WarehouseService {
   async getCountsOfOperation(
     request: string
   ): Promise<ZTMSG_CountedProduct[]> {
-    var response = await this.httpClientService.get<ZTMSG_CountedProduct | any>(
-      {
-        controller: "Warehouse/get-counts-of-operation/" + request,
-      },
 
-    )
-      .toPromise();
+    try {
+      var response = await this.httpClientService.get<ZTMSG_CountedProduct | any>(
+        {
+          controller: "Warehouse/get-counts-of-operation/" + request,
+        },
 
-    return response;
+      )
+        .toPromise();
+
+      return response;
+    } catch (error) {
+      return null;
+    }
+
   }
 
   //ürün sayım 1

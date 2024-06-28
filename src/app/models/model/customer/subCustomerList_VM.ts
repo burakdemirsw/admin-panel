@@ -7,6 +7,9 @@ export class SubCustomerList_VM {
   phone: string | null;
   city: string
   district: string;
-  address: string
+  address: string;
+  stampPhotoUrl: string;
+  bussinesCardPhotoUrl: string;
+  cargoAddressPhotoUrl: string;
 
 }

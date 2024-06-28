@@ -68,29 +68,29 @@ export class NebimOrder {
 
         if (exchangeRate != 1) { //dövizli ise
           line.priceVI = null;
-          line.price = parseFloat((p.price / exchangeRate).toFixed(1));
+          line.price = parseFloat((p.price / exchangeRate).toFixed(2));
         } else { //dövizli değilse
           line.priceVI = null;
-          line.price = parseFloat(p.price.toFixed(1));
+          line.price = parseFloat(p.price.toFixed(2));
         }
       } else if (this.taxTypeCode == 5) {
 
         if (exchangeRate != 1) { //dövizli ise
-          line.priceVI = parseFloat((p.price / exchangeRate).toFixed(1));
-          line.price = parseFloat((p.price / exchangeRate).toFixed(1));
+          line.priceVI = parseFloat((p.price / exchangeRate).toFixed(2));
+          line.price = parseFloat((p.price / exchangeRate).toFixed(2));
         } else { //dövizli değilse
-          line.priceVI = parseFloat((p.price).toFixed(0));
-          line.price = parseFloat((p.price).toFixed(0));
+          line.priceVI = parseFloat((p.price).toFixed(2));
+          line.price = parseFloat((p.price).toFixed(2));
         }
       }
       else { //vergisiz ise
 
         if (exchangeRate != 1) { //dövizli ise
-          line.priceVI = parseFloat((p.price / exchangeRate).toFixed(1));
-          line.price = parseFloat((p.price / exchangeRate).toFixed(1));
+          line.priceVI = parseFloat((p.price / exchangeRate).toFixed(2));
+          line.price = parseFloat((p.price / exchangeRate).toFixed(2));
         } else { //dövizli değilse
-          line.priceVI = parseFloat((p.price).toFixed(0));
-          line.price = parseFloat((p.price).toFixed(0));
+          line.priceVI = parseFloat((p.price).toFixed(2));
+          line.price = parseFloat((p.price).toFixed(2));
         }
       }
 
@@ -231,9 +231,9 @@ export class NebimInvoice {
       var line: Line_3 = new Line_3();
       if (exchangeRate != 1) {
 
-        line.price = parseFloat((p.price / exchangeRate).toFixed(1));
+        line.price = parseFloat((p.price / exchangeRate).toFixed(2));
       } else {
-        line.price = parseFloat((p.price).toFixed(1));
+        line.price = parseFloat((p.price).toFixed(2));
       }
       line.usedBarcode = p.barcode;
       line.salesPersonCode = salesPersonCode;

@@ -12,7 +12,7 @@ import { OrderBillingListModel } from 'src/app/models/model/order/orderBillingLi
 import { OrderStatus } from 'src/app/models/model/order/orderStatus';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { CountProduct3 } from 'src/app/models/model/product/countProduct';
-import { CountedProduct, CountedProductControl } from 'src/app/models/model/product/countedProduct';
+import { CountedProductControl } from 'src/app/models/model/product/countedProduct';
 import { ItemBillingModel } from 'src/app/models/model/product/itemBillingModel ';
 import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
 import {
@@ -23,6 +23,7 @@ import { CompleteCountOperation_CM } from 'src/app/models/model/warehouse/comple
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { ZTMSG_CountedProduct } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { GeneralService } from 'src/app/services/admin/general.service';
+import { HeaderService } from 'src/app/services/admin/header.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
@@ -35,6 +36,9 @@ declare var window: any;
   styleUrls: ['./warehosue-shelf-count.component.css'],
 })
 export class WarehosueShelfCountComponent implements OnInit {
+  @Input() infoProducts: CreatePurchaseInvoice[] = [];
+  @Input() isChild: boolean = false;
+
   countType: string;
   visible: boolean = false;
   _visible: boolean = false;
@@ -43,7 +47,6 @@ export class WarehosueShelfCountComponent implements OnInit {
   batchCode: string = null;
   shelfNumbers: string = 'RAFLAR:';
   location = location.href;
-  @Input() infoProducts: CreatePurchaseInvoice[] = [];
   photoUrl: string = ClientUrls.photoUrl;
   [x: string]: any;
   productsToCollect: ProductOfOrder[];
@@ -104,7 +107,6 @@ export class WarehosueShelfCountComponent implements OnInit {
     'Ürün Kodu',
     'Durum',
   ];
-
   _tableHeaders3: string[] = [
     'Resim',
     'Raf',
@@ -126,9 +128,10 @@ export class WarehosueShelfCountComponent implements OnInit {
     private title: Title,
     private sanitizer: DomSanitizer,
     private orderService: OrderService,
-    private router: Router
+    private router: Router,
+    private headerService: HeaderService
   ) {
-    this.title.setTitle('Sayım');
+
   }
 
 
@@ -136,36 +139,42 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.formGenerator();
     this.activatedRoute.params.subscribe(async (params) => {
       this.countType = params['type'];
-      this.toasterService.success(this.countType)
+
       this.currentOrderNo = params['orderNo'];
       await this.addOperationStatus();
       await this.getProductOfCount(this.currentOrderNo);
-      if (this.countType == "count") {
+      // if (this.countType == "count") {
 
-      } else if (this.countType == "add-product-to-shelf") {
+      // } else if (this.countType == "add-product-to-shelf") {
 
+      // }
+      // else if (this.countType == "remove-product-to-shelf") {
+
+      // }
+
+      if (!this.isChild) {
+        this.setTitle();
       }
-      else if (this.countType == "remove-product-to-shelf") {
-
-      }
-      this.setTitle();
     });
 
   }
 
   setTitle() {
+
     if (this.countType == "count") {
 
-      this.title.setTitle('Sayım');
+      this.headerService.updatePageTitle('Sayım');
       this.upPageDescription = "Sayım"
     } else if (this.countType == "add-product-to-shelf") {
-      this.title.setTitle('Rafa Ürün Ekle');
+      this.headerService.updatePageTitle('Rafa Ürün Ekle');
       this.upPageDescription = "Rafa Ürün Ekle"
     }
     else if (this.countType == "remove-product-to-shelf") {
-      this.title.setTitle('Rafdan Ürün Çıkar');
+      this.headerService.updatePageTitle('Rafdan Ürün Çıkar');
       this.upPageDescription = "Rafdan Ürün Çıkar"
     }
+
+
 
   }
   change(barcode: string, quantity: number, batchCode: string) {
