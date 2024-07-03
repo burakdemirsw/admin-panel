@@ -1,0 +1,50 @@
+<main id="main" class="main">
+  <section class="section">
+    <div class="card p-4">
+      <div class="card-body">
+        <div class="row align-items-center mb-3">
+          <div class="col-md-8">
+            <div class="form-group">
+              <input type="text" id="barcodeInput" class="form-control" [(ngModel)]="barcodeInput"
+                (keydown.enter)="addBarcode()" placeholder="Barkod Giriniz">
+            </div>
+          </div>
+          <div class="col-md-2">
+            <button pButton type="button" label="Ekle" (click)="addBarcode()" class="btn btn-primary"
+              style="width: 100%;"></button>
+          </div>
+
+          <div class="col-md-2">
+            <button pButton type="button" label="İşlemi Tamamla" (click)="onSubmit()" class="btn btn-primary"
+              style="width: 100%;"></button>
+          </div>
+        </div>
+
+
+
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Barkod</th>
+                <th>İşlemler</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let barcode of barcodeList; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ barcode }}</td>
+                <td>
+                  <div class="btn btn-primary" data-text="Sil" (click)="delete(barcode,i)">
+                    <i class="fa-solid fa-trash"></i>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

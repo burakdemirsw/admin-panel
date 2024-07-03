@@ -56,5 +56,10 @@ export class SidebarComponent implements OnInit {
 
     ])
   }
+  async routeNewPage7() {
+    const result = await this.generalService.generateGUID()
+    this.router.navigate(["/create-product-barcode/" + result
 
+    ])
+  }
 }

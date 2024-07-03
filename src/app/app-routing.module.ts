@@ -54,6 +54,7 @@ import { RetailInvoiceListComponent } from './components2/invoice/retail-invoice
 import { RetailOrderManagementComponent } from './components2/order/retail-order-management/retail-order-management.component';
 import { CollectedPackagesComponent as CollectedPackagesComponent2 } from './components2/order/collected-packages/collected-packages.component';
 import { OrderStateComponent } from './components/Order/order-state/order-state.component';
+import { CreateProductBarcodeComponent } from './components/Product/create-product-barcode/create-product-barcode.component';
 
 
 const routes: Routes = [
@@ -297,6 +298,7 @@ const routes: Routes = [
   { path: 'nebim-stock-control', component: NebimStockControlComponent },
   { path: 'nebim-product-extract', component: NebimProductExtractComponent },
   { path: 'create-barcode/:operationNo', component: CreateBarcodeComponent },
+  { path: 'create-product-barcode/:operationNo', component: CreateProductBarcodeComponent },
 
 
   //-------------------------------------------------------------------------

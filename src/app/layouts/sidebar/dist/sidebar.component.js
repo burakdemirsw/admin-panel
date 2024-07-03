@@ -148,6 +148,21 @@ var SidebarComponent = /** @class */ (function () {
             });
         });
     };
+    SidebarComponent.prototype.routeNewPage7 = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.generalService.generateGUID()];
+                    case 1:
+                        result = _a.sent();
+                        this.router.navigate(["/create-product-barcode/" + result
+                        ]);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     SidebarComponent = __decorate([
         core_1.Component({
             selector: 'app-sidebar',

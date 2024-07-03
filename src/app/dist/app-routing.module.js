@@ -63,6 +63,7 @@ var retail_invoice_list_component_1 = require("./components2/invoice/retail-invo
 var retail_order_management_component_1 = require("./components2/order/retail-order-management/retail-order-management.component");
 var collected_packages_component_2 = require("./components2/order/collected-packages/collected-packages.component");
 var order_state_component_1 = require("./components/Order/order-state/order-state.component");
+var create_product_barcode_component_1 = require("./components/Product/create-product-barcode/create-product-barcode.component");
 var routes = [
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     {
@@ -300,6 +301,7 @@ var routes = [
     { path: 'nebim-stock-control', component: nebim_stock_control_component_1.NebimStockControlComponent },
     { path: 'nebim-product-extract', component: nebim_product_extract_component_1.NebimProductExtractComponent },
     { path: 'create-barcode/:operationNo', component: create_barcode_component_1.CreateBarcodeComponent },
+    { path: 'create-product-barcode/:operationNo', component: create_product_barcode_component_1.CreateProductBarcodeComponent },
     //-------------------------------------------------------------------------
     { path: 'retail-invoice-list', component: retail_invoice_list_component_1.RetailInvoiceListComponent },
     { path: 'retail-orders-managament/:status/:invoiceStatus', component: retail_order_management_component_1.RetailOrderManagementComponent },

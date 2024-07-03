@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './layouts/header/header.component';
@@ -108,12 +107,13 @@ import { RetailInvoiceListComponent } from './components2/invoice/retail-invoice
 import { RetailOrderManagementComponent } from './components2/order/retail-order-management/retail-order-management.component';
 import { CollectedPackagesComponent as CollectedPackagesComponent2 } from './components2/order/collected-packages/collected-packages.component';
 import { OrderStateComponent } from './components/Order/order-state/order-state.component';
-import { OverlayPanelModule } from 'primeng/overlaypanel';  
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ReadBarcodeComponent } from './components/Product/read-barcode/read-barcode.component';
 import { SidebarModule } from 'primeng/sidebar';
+import { CreateProductBarcodeComponent } from './components/Product/create-product-barcode/create-product-barcode.component';
 
 @NgModule({
-   
+
   declarations: [
     AppComponent,
     HeaderComponent,
@@ -182,7 +182,8 @@ import { SidebarModule } from 'primeng/sidebar';
     RetailOrderManagementComponent,
     CollectedPackagesComponent2,
     OrderStateComponent,
-    ReadBarcodeComponent
+    ReadBarcodeComponent,
+    CreateProductBarcodeComponent
 
   ],
 

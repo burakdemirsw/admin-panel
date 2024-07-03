@@ -1,0 +1,30 @@
+.main {
+  padding: 20px;
+}
+
+.card {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-group input {
+  border-radius: 5px;
+}
+
+.btn-primary {
+  margin-left: 10px;
+  border-radius: 5px;
+}
+
+.table {
+  margin-top: 20px;
+}
+
+.table th,
+.table td {
+  vertical-align: middle;
+}
+
+.btn-success {
+  border-radius: 5px;
+}

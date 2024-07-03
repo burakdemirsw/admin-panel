@@ -119,6 +119,7 @@ var order_state_component_1 = require("./components/Order/order-state/order-stat
 var overlaypanel_1 = require("primeng/overlaypanel");
 var read_barcode_component_1 = require("./components/Product/read-barcode/read-barcode.component");
 var sidebar_1 = require("primeng/sidebar");
+var create_product_barcode_component_1 = require("./components/Product/create-product-barcode/create-product-barcode.component");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -192,7 +193,8 @@ var AppModule = /** @class */ (function () {
                 retail_order_management_component_1.RetailOrderManagementComponent,
                 collected_packages_component_2.CollectedPackagesComponent,
                 order_state_component_1.OrderStateComponent,
-                read_barcode_component_1.ReadBarcodeComponent
+                read_barcode_component_1.ReadBarcodeComponent,
+                create_product_barcode_component_1.CreateProductBarcodeComponent
             ],
             imports: [
                 toolbar_1.ToolbarModule,
