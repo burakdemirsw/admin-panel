@@ -569,7 +569,7 @@
                     <div class="row">
                       <div class="col-md-6">
                         <div class="form-group">
-                          <label for="address_description" class="label">Adres Tarifi (ZORUNLUDUR)</label>
+                          <label for="address_description" class="label">Adres (ZORUNLUDUR)</label>
                           <input type="text" class="form-control" id="address_description" name="address_description"
                             fullWidth formControlName="address_description" />
                         </div>
@@ -707,9 +707,8 @@
 
                 <div class="row">
                   <div class="col-md-6 form-group mb-3">
-                    <input pInputText placeholder="Adres Tarifi *" type="text" class="form-control"
-                      id="address_description" name="address_description" fullWidth
-                      formControlName="address_description" />
+                    <input pInputText placeholder="Adres  *" type="text" class="form-control" id="address_description"
+                      name="address_description" fullWidth formControlName="address_description" />
                   </div>
                 </div>
 
@@ -754,7 +753,7 @@
           </p-table>
         </p-dialog>
 
-        <p-dialog header="Alt Müşteri Ekle" [(visible)]="addSubCustomerDialog" [style]="{ width: '50vw' }">
+        <p-dialog header="Alt Müşteri Ekle" [(visible)]="addSubCustomerDialog" [style]="{ width: '100vw' }">
           <form [formGroup]="addSubCustomerForm">
             <div class="row mb-3">
               <div class="form-group">
@@ -774,15 +773,12 @@
                   formControlName="mail" />
               </div>
             </div>
-
             <div class="row mb-3">
-              <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus" label="Detaylar"
-                type="button" (click)="isCollapsed_2 = !isCollapsed_2"></button>
-            </div>
-
-
-            <div class="row" *ngIf="!this.createCustomerForm.value.stampPhotoUrl">
-              <div class="col-md-3">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <input pInputText placeholder="Kaşe Fotoğraf Yolu" type="text" class="form-control"
+                    style="width: 100%" id="stampPhotoUrl" formControlName="stampPhotoUrl" hidden />
+                </div>
                 <div class="input-group mb-3">
                   <div class="fileUpload">
                     <input type="file" class="upload" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01"
@@ -792,40 +788,47 @@
                 </div>
               </div>
 
-              <div class="col-md-3">
+              <div class="col-md-6">
                 <div class="form-group">
-                  <input pInputText placeholder="Kaşe Fotoğraf Yolu" type="text" class="form-control"
-                    style="width: 100%" id="stampPhotoUrl" formControlName="stampPhotoUrl" />
+                  <input type="text" pInputText placeholder="Kartvizit Fotoğraf Yolu" class="form-control"
+                    id="bussinesCardPhotoUrl" formControlName="bussinesCardPhotoUrl" hidden />
                 </div>
-              </div>
-            </div>
-            <div class="row mb-3" *ngIf="this.addSubCustomerForm.value.bussinesCardPhotoUrl">
-              <p-image src="{{
-                          this.addSubCustomerForm.value.bussinesCardPhotoUrl
-                        }}" alt="Image" width="350" [preview]="true" />
-            </div>
-            <div class="row" *ngIf="
-                        !this.addSubCustomerForm.value.bussinesCardPhotoUrl
-                      ">
-              <div class="col-md-3">
                 <div class="input-group mb-3">
                   <div class="fileUpload">
                     <input type="file" class="upload" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01"
-                      (change)="
-                                onUpload($event, 'bussinesCardPhotoUrl')
-                              " />
+                      (change)="onUpload($event, 'bussinesCardPhotoUrl')" />
                     <span> <i class="fas fa-camera"></i></span>
                   </div>
                 </div>
               </div>
-              <div class="col-md-3">
-                <input type="text" pInputText placeholder="Kartvizit Fotoğraf Yolu" class="form-control"
-                  id="bussinesCardPhotoUrl" placeholder="Kartvizit Fotoğraf Yolu"
-                  formControlName="bussinesCardPhotoUrl" />
+            </div>
+
+            <div class="row mb-3" *ngIf="this.addSubCustomerForm.value.stampPhotoUrl">
+              <div class="col-md-6">
+                <div class="row mb-3">
+                  <p-image [appendTo]="'body'" src="{{ this.addSubCustomerForm.value.stampPhotoUrl }}" alt="Image"
+                    width="100%" height="100%" [preview]="true" />
+                </div>
+
+
+              </div>
+
+              <div class="col-md-6" *ngIf="this.addSubCustomerForm.value.bussinesCardPhotoUrl">
+                <div class="row mb-3">
+                  <p-image [appendTo]="'body'" src="{{ this.addSubCustomerForm.value.bussinesCardPhotoUrl }}"
+                    alt="Image" width="100%" height="100%" [preview]="true" />
+                </div>
               </div>
             </div>
 
-            <div class="row mb-3" *ngIf="this.addSubCustomerForm.value.cargoAddressPhotoUrl">
+            <div class="row mb-3">
+              <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus" label="Detaylar"
+                type="button" (click)="isCollapsed_2 = !isCollapsed_2"></button>
+            </div>
+
+
+
+            <!-- <div class="row mb-3" *ngIf="this.addSubCustomerForm.value.cargoAddressPhotoUrl">
               <p-image src="{{
                           this.addSubCustomerForm.value.cargoAddressPhotoUrl
                         }}" alt="Image" width="350" [preview]="true" />
@@ -852,7 +855,7 @@
                     style="width: 100%" id="cargoAddressPhotoUrl" formControlName="cargoAddressPhotoUrl" />
                 </div>
               </div>
-            </div>
+            </div> -->
 
 
             <div *ngIf="isCollapsed_2">
@@ -895,8 +898,8 @@
               </div>
               <div class="row  mb-3">
                 <div class="form-group">
-                  <input pInputText placeholder="Adres Tarifi *" type="text" class="form-control" id="address"
-                    name="address" fullWidth formControlName="address" />
+                  <input pInputText placeholder="Adres *" type="text" class="form-control" id="address" name="address"
+                    fullWidth formControlName="address" />
                 </div>
               </div>
 
