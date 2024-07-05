@@ -400,7 +400,7 @@ export class WarehosueShelfCountComponent implements OnInit {
     try {
       // İşlem öncesi kullanıcıya onay iletilisi göster
       const userConfirmed = window.confirm(
-        'İşlemi tamamlamadan önce sayımı eşitlemek istiyor musunuz?'
+        'Sayım Fişi Gönderilecektir. Onaylıyor Musunuz ?'
       );
 
       if (!userConfirmed) {

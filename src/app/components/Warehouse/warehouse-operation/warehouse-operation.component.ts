@@ -390,13 +390,15 @@ export class WarehouseOperationComponent implements OnInit {
 
   handleTransfer() {
     if (location.href.includes('MT-')) {
-      this.transferBetweenStoreWarehouses(this.currentOrderNo);
+      this.transferBetweenStoreWarehouses(this.currentOrderNo); //mağaza depoları arası transfer
     } else if (location.href.includes('RC-')) {
-      this.refundToCenter(this.currentOrderNo);
+      this.refundToCenter(this.currentOrderNo); //Merkeze İade
     }
 
     else {
-      this.storeTransfer(this.currentOrderNo);
+      //this.storeTransfer(this.currentOrderNo); //Mağazalar arası transfer yapar
+      this.transferToNebim(this.currentOrderNo); //Mağazalar arası transfer yapar
+
     }
   }
 
