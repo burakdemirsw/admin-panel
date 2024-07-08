@@ -277,8 +277,8 @@
               }
 
             </style>
-            <p-dialog header="Fiyat Seçiniz" [(visible)]="priceListDialog" [style]="{ width: '80vw' }" modal="true"
-              [closable]="false" [dismissableMask]="true">
+            <p-dialog header="Stok Miktarı Yetersiz! Eğer Birinci Seçeneği Seçerseniz Eksik Gönderilcek Ürünler Olacaktır. İkince Seçenek Stoktaki Ürünler
+            " [(visible)]="priceListDialog" [style]="{ width: '80vw' }" modal="true" [dismissableMask]="true">
               <div class="price-list-container">
                 <div *ngFor="let price of priceList" class="price-item">
                   <button (click)="selectPrice(product,ri,price)" pButton pRipple icon="pi pi-check"

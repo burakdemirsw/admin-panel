@@ -488,10 +488,11 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
     };
     WarehosueShelfCountComponent.prototype.onSubmit = function (countProductRequestModel) {
         return __awaiter(this, void 0, Promise, function () {
-            var updated_product, url, result, shelves, request, _response, qrResponse, request, _response, qrResponse, error_2;
+            var _isUUID, updated_product, url, result, shelves, request, _response, qrResponse, request, _response, qrResponse, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        _isUUID = this.generalService.isGuid(countProductRequestModel.barcode);
                         // EĞER BARKODTA = VARSA - İLE DEĞİŞTİR
                         if (countProductRequestModel.barcode.includes('=')) {
                             countProductRequestModel.barcode = countProductRequestModel.barcode.replace(/=/g, '-');
@@ -507,8 +508,10 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                     case 1:
                         updated_product = _a.sent();
                         countProductRequestModel = updated_product;
-                        if (this.checkForm.valid) {
+                        if (this.checkForm.valid && !_isUUID) {
                             this.onSubmit(countProductRequestModel);
+                        }
+                        else {
                         }
                         this.toasterService.success("Form Verileri Güncellendi");
                         return [2 /*return*/];

@@ -462,7 +462,7 @@ export class WarehosueShelfCountComponent implements OnInit {
   async onSubmit(
     countProductRequestModel: CountProduct3
   ): Promise<any> {
-
+    var _isUUID = this.generalService.isGuid(countProductRequestModel.barcode);
     // EĞER BARKODTA = VARSA - İLE DEĞİŞTİR
     if (countProductRequestModel.barcode.includes('=')) {
       countProductRequestModel.barcode = countProductRequestModel.barcode.replace(/=/g, '-');
@@ -484,8 +484,10 @@ export class WarehosueShelfCountComponent implements OnInit {
         countProductRequestModel
       );
       countProductRequestModel = updated_product;
-      if (this.checkForm.valid) {
+      if (this.checkForm.valid && !_isUUID) {
         this.onSubmit(countProductRequestModel);
+      } else {
+
       }
       this.toasterService.success("Form Verileri Güncellendi")
       return;
