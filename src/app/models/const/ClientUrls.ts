@@ -1,6 +1,6 @@
 export const ClientUrls = {
-  baseUrl: "http://localhost:7178/api", // Local PC DEMIRLER
-  //baseUrl: "http://10.200.245.10:7978/api",
+  //baseUrl: "http://localhost:7178/api", // Local PC DEMIRLER
+  baseUrl: "http://10.200.245.10:7978/api",
   baseUrl2: "http://212.156.46.206:4201/search-qr/", // Local PC for another API
   cargoFirms: [
     { name: "MNG", id: 1 },
