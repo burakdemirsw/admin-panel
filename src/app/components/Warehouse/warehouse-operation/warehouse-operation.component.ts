@@ -67,7 +67,7 @@ export class WarehouseOperationComponent implements OnInit {
 
   //#region Params
   warehouseModels: WarehouseOfficeModel[] = [];
-  warehouseModels2: WarehouseOfficeModel[] = [];
+  warehouseModels_2: WarehouseOfficeModel[] = [];
   barcodeModel: BarcodeModel = new BarcodeModel();
   shelfNo: string = null;
   colorCode: string = null;
@@ -80,6 +80,8 @@ export class WarehouseOperationComponent implements OnInit {
   quantity: number = null;
   offices: any[] = [];
   warehouses: any[] = [];
+  offices_2: any[] = [];
+  warehouses_2: any[] = [];
   inventoryItemColums: string[] = [
     'Id',
     'Fotoğraf',
@@ -108,7 +110,7 @@ export class WarehouseOperationComponent implements OnInit {
   async ngOnInit() {
 
     //depolar ve ofisleri çeker
-    this.getWarehouseAndOffices();
+
 
     //eğer istek sayfası ise düzenleme yapıldı
     if (location.href.includes('REQ-')) {
@@ -128,14 +130,17 @@ export class WarehouseOperationComponent implements OnInit {
       if (location.href.includes('MT-')) {
         this.pageStatus = 'Mağaza Depoları Arası Transfer';
         this.currentDataType = '-1';
+        this.getWarehouseAndOffices(1, 2);
       }
       else if (location.href.includes('RC-')) {
         this.pageStatus = 'Merkeze İade';
         this.currentDataType = '-1';
+        this.getWarehouseAndOffices(2, 1);
       }
       else {
         this.pageStatus = 'Depolar Arası Transfer';
         this.currentDataType = '-1';
+        this.getWarehouseAndOffices(1, 1);
       }
 
 
@@ -167,13 +172,14 @@ export class WarehouseOperationComponent implements OnInit {
     });
   }
 
-  async getWarehouseAndOffices() {
-    var response = await this.warehouseService.getWarehouseAndOffices();
+  async getWarehouseAndOffices(top: number, bottom: number) {
+
+
+    var response = await this.warehouseService.getWarehouseAndOffices(top);
     this.warehouseModels = response;
 
     const officeSet = new Set();
     const warehouseSet = new Set();
-
     this.warehouseModels.forEach(model => {
       officeSet.add(model.officeCode);
       warehouseSet.add(model.warehouseCode);
@@ -187,8 +193,29 @@ export class WarehouseOperationComponent implements OnInit {
         name: model.warehouseDescription
       };
     });
-  }
 
+
+    var _response = await this.warehouseService.getWarehouseAndOffices(bottom);
+    this.warehouseModels_2 = _response;
+
+    const _officeSet = new Set();
+    const _warehouseSet = new Set();
+    this.warehouseModels_2.forEach(model => {
+      _officeSet.add(model.officeCode);
+      _warehouseSet.add(model.warehouseCode);
+    });
+
+    this.offices_2 = Array.from(_officeSet);
+    this.warehouses_2 = Array.from(_warehouseSet).map(code => {
+      const model = this.warehouseModels_2.find(warehouse => warehouse.warehouseCode === code);
+      return {
+        code: model.warehouseCode,
+        name: model.warehouseDescription
+      };
+    });
+
+
+  }
 
 
   change(barcode: string, quantity: number) {
@@ -378,7 +405,18 @@ export class WarehouseOperationComponent implements OnInit {
         toWarehouseCode: [null, Validators.required],
         orderNo: [null, Validators.required],
       });
+      this.warehouseForm.get('office')?.valueChanges.subscribe(value => {
+        var wc = this.warehouseModels.find(m => m.officeCode == value).warehouseCode;
+        var md = this.warehouses.find(m => m.code == wc);
+        this.warehouseForm.get('warehouseCode').setValue(md);
+      });
 
+      this.warehouseForm.get('officeTo')?.valueChanges.subscribe(value => {
+        var wc = this.warehouseModels_2.find(m => m.officeCode == value).warehouseCode;
+        var md = this.warehouses_2.find(m => m.code == wc);
+        this.warehouseForm.get('toWarehouseCode').setValue(md);
+
+      });
     } catch (error) {
       console.error(error);
       // Handle the error as needed.
@@ -390,7 +428,7 @@ export class WarehouseOperationComponent implements OnInit {
 
   handleTransfer() {
     if (location.href.includes('MT-')) {
-      this.transferBetweenStoreWarehouses(this.currentOrderNo); //mağaza depoları arası transfer
+      this.storeTransfer(this.currentOrderNo); //mağaza depoları arası transfer
     } else if (location.href.includes('RC-')) {
       this.refundToCenter(this.currentOrderNo); //Merkeze İade
     }

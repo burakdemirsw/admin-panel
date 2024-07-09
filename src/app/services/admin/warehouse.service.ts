@@ -20,6 +20,7 @@ import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/w
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 import { GeneralService } from './general.service';
+import { int } from '@zxing/library/esm/customTypings';
 
 @Injectable({
   providedIn: 'root',
@@ -116,11 +117,12 @@ export class WarehouseService {
 
 
   //depo ve ofis listesini çeker
-  async getWarehouseAndOffices(): Promise<WarehouseOfficeModel[]> {
+  async getWarehouseAndOffices(type?: number): Promise<WarehouseOfficeModel[]> {
     try {
+      type = (type == null || type == undefined) ? 1 : type
       const data = await this.httpClientService
         .get<WarehouseOfficeModel>({
-          controller: 'Warehouse/get-office-and-warehouses',
+          controller: 'Warehouse/get-office-and-warehouses/' + type,
         })
         .toPromise();
       return data;

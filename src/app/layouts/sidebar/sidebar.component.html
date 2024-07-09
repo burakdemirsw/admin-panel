@@ -1,6 +1,6 @@
 <aside id="sidebar" class="sidebar">
   <ul class="sidebar-nav" id="sidebar-nav">
-    <li class="nav-item" *ngIf="
+    <!-- <li class="nav-item" *ngIf="
         this.roleDescription == 'Admin' || this.roleDescription == 'Salesman'
       ">
       <a class="nav-link collapsed" data-bs-target="#Orders-nav" data-bs-toggle="collapse">
@@ -61,8 +61,7 @@
           <a routerLink="/order-state">
             <i class="bi bi-circle"></i><span>Sipariş Durumu </span>
           </a>
-        </li> -->
-      </ul>
+        </li>
     </li>
 
     <li class="nav-item" *ngIf="
@@ -88,7 +87,7 @@
           <a routerLink="retail-orders-collected-packages">
             <i class="bi bi-circle"></i><span>Pazaryeri Faturaları </span>
           </a>
-        </li> -->
+        </li>
       </ul>
     </li>
     <li class="nav-item">
@@ -100,14 +99,14 @@
           <a routerLink="product-managament">
             <i class="bi bi-circle"></i><span>Ürün Sorgulama</span>
           </a>
-        </li> -->
+        </li>
         <li *ngIf="this.roleDescription == 'Admin'">
           <a routerLink="cargo-list">
             <i class="bi bi-circle"></i><span>Kargolar</span>
           </a>
         </li>
       </ul>
-    </li>
+    </li> -->
     <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
       <a class="nav-link collapsed" data-bs-target="#Warehouse-nav" data-bs-toggle="collapse">
         <i class="fa fa-archive"></i><span>Depo </span><i class="bi bi-chevron-down ms-auto"></i>
@@ -121,11 +120,11 @@
         <!-- <li (click)="routeNewPage2()">
           <a> <i class="bi bi-circle"></i><span>Depolar Arası İstek</span> </a>
         </li> -->
-        <li>
+        <!-- <li>
           <a routerLink="fast-transfer-list">
             <i class="bi bi-circle"></i><span>Raflar Arası Transferler</span>
           </a>
-        </li>
+        </li> -->
         <!-- <li>
           <a (click)="routeNewPage6()">
             <i class="bi bi-circle"></i><span>Raflar Arası Transfer</span>
@@ -148,7 +147,7 @@
             <i class="bi bi-circle"></i><span>Kutu Sayımı</span>
           </a>
         </li> -->
-        <li>
+        <!-- <li>
           <a routerLink="warehouse-shelf-count-list">
             <i class="bi bi-circle"></i><span>Sayımlar</span>
           </a>
@@ -157,7 +156,7 @@
           <a routerLink="import-transactions">
             <i class="bi bi-circle"></i><span>İthalat</span>
           </a>
-        </li>
+        </li> -->
       </ul>
     </li>
     <li class="nav-item">
@@ -175,11 +174,11 @@
             <i class="bi bi-circle"></i><span>Ürün Sorgulama</span>
           </a>
         </li>
-        <li>
+        <!-- <li>
           <a routerLink="search-shelf">
             <i class="bi bi-circle"></i><span>Raf Sorgulama</span>
           </a>
-        </li>
+        </li> -->
       </ul>
     </li>
     <!-- <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
