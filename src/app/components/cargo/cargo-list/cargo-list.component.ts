@@ -190,14 +190,15 @@ export class CargoListComponent implements OnInit {
 
   async createMarketplaceCargoBarcode() {
 
+    console.log(this.selectedCargos);
     var list = this.selectedCargos.filter(x => x.cargoFirmId == 3);
-    var orderNoList: string[] = list.map(x => x.orderNo);
+    // var orderNoList: string[] = list.map(x => x.orderNo);
 
     if (this.selectedCargos.length <= 0) {
       this.toasterService.info("Bu Alandan Sadece Yurtiçi Gönderileri Yazdırılabilir");
       return;
     }
-    var response = await this.cargoService.createMarketplaceCargoBarcode(orderNoList);
+    var response = await this.cargoService.createMarketplaceCargoBarcode(this.selectedCargos);
     if (response) {
       this.toasterService.success("İşlem Başarılı");
     } else {

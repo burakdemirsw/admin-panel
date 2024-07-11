@@ -180,7 +180,7 @@ export class CargoService {
       return null;
     }
   }
-  async createMarketplaceCargoBarcode(request: string[]): Promise<any> {
+  async createMarketplaceCargoBarcode(request: CargoBarcode_VM[]): Promise<any> {
     try {
       var userId = localStorage.getItem('userId')
 

@@ -298,27 +298,27 @@ export class RetailOrderManagementComponent implements OnInit {
     }
   }
 
-  async createMarketplaceCargoBarcode(orders: SaleOrderModel[]) {
+  // async createMarketplaceCargoBarcode(orders: SaleOrderModel[]) {
 
-    var orderNoList: string[] = [];
-    for (const element of orders) {
-      if (!element.description.includes('B')) {
-        this.toasterService.warn('Sadece Beymen Siparişleri Seçilebilir.');
-        return;
-      }
-      orderNoList.push(element.orderNumber);
-    }
+  //   var orderNoList: string[] = [];
+  //   for (const element of orders) {
+  //     if (!element.description.includes('B')) {
+  //       this.toasterService.warn('Sadece Beymen Siparişleri Seçilebilir.');
+  //       return;
+  //     }
+  //     orderNoList.push(element.orderNumber);
+  //   }
 
-    var response = await this.cargoService.createMarketplaceCargoBarcode(orderNoList);
-    if (response) {
-      this.toasterService.success("İşlem Başarılı");
+  //   var response = await this.cargoService.createMarketplaceCargoBarcode(orderNoList);
+  //   if (response) {
+  //     this.toasterService.success("İşlem Başarılı");
 
 
-    } else {
-      this.toasterService.error("İşlem Başarısız");
-    }
+  //   } else {
+  //     this.toasterService.error("İşlem Başarısız");
+  //   }
 
-  }
+  // }
 
 
   getCargoImage(name: string): string {
