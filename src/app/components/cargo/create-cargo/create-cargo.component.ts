@@ -274,6 +274,9 @@ export class CreateCargoComponent implements OnInit {
     var __request = new ZTMSG_CreateCargoBarcode_CM();
     __request.orderNumber = this.orderDetail.orderNumber;
     __request.cargoFirmId = cargoFirmId;
+    __request.isCod = request.orderRequest.order.isCod;
+    __request.paymentType = request.orderRequest.order.paymentType;
+    __request.packagingType = request.orderRequest.order.packagingType;
     _request.push(__request);
     var response = await this.cargoService.createCargoBulk(_request);
     if (response) {

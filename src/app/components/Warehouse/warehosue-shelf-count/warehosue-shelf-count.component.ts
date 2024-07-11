@@ -348,6 +348,7 @@ export class WarehosueShelfCountComponent implements OnInit {
             countProductRequestModel.quantity,
             countProductRequestModel.office,
             countProductRequestModel.warehouseCode.code,
+            null,
             countProductRequestModel.batchCode,
             'Order/CountProduct',
             this.currentOrderNo,

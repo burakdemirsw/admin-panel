@@ -20,6 +20,7 @@ export class CountProductRequestModel3 {
   batchCode?: string;
   office?: string;
   warehouseCode?: string;
+  toWarehouseCode: string;
   orderNo?: string;
   currAccCode?: string
   isReturn?: boolean

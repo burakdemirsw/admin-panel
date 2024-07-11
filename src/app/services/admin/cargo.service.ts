@@ -238,7 +238,7 @@ export class CargoService {
         newWindow?.print();
       }, 1000);
 
-
+      return true;
     } catch (error: any) {
 
       return null;

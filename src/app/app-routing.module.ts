@@ -59,6 +59,8 @@ import { MarketplaceInvoicesComponent } from './components/Order/marketplace-inv
 import { SearchShelfComponent } from './components/Product/search-shelf/search-shelf.component';
 import { ImportTransaction } from './models/model/warehouse/importTransaction';
 import { ImportTransactionsComponent } from './components/Order/import-transactions/import-transactions.component';
+import { ExportTransactionsComponent } from './components/Order/export-transactions/export-transactions.component';
+import { CollectExportProductsComponent } from './components/Order/export-transactions/collect-export-products/collect-export-products.component';
 
 
 const routes: Routes = [
@@ -305,6 +307,8 @@ const routes: Routes = [
   { path: 'marketplace-invoices', component: MarketplaceInvoicesComponent },
   { path: 'search-shelf', component: SearchShelfComponent },
   { path: 'import-transactions', component: ImportTransactionsComponent },
+  { path: 'export-transactions', component: ExportTransactionsComponent },
+  { path: 'collect-export-products/:id/:warehouseCode', component: CollectExportProductsComponent },
 
   //------------------------------------------------------------------------- PERAKENDE
   { path: 'ideasoft/auth', component: IdeasoftComponent, pathMatch: 'prefix', runGuardsAndResolvers: 'always' },

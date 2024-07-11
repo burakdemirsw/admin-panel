@@ -26,6 +26,7 @@ import { ClientCustomer } from '../../components/Customer/customer-list/customer
 import { AddCustomerAddress_CM, CreateCustomer_CM } from '../../models/model/order/createCustomer_CM';
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
+import { Invoice_RPM } from 'src/app/models/model/order/RPMs/invoice_RPM';
 
 @Injectable({
   providedIn: 'root',
@@ -161,6 +162,8 @@ export class OrderService {
       endpoint = 'Order/GetOrderSaleDetail/'; //GET_MSRAFSalesOrderDetail
     } else if (orderNoType === 'MIS') {
       endpoint = 'Order/get-missing-products-of-order/'; //GET_MSRAFOrderListMissing
+    } else if (orderNoType.includes('ES')) {
+      endpoint = 'Warehouse/GetWarehouseOperationDetailExport/'; //GET_MSRAFOrderListMissing
     }
 
     var response = await this.httpClientService.get<ProductOfOrder>({
@@ -834,6 +837,16 @@ export class OrderService {
       // console.log(error.message);
       return null;
     }
+  }
+
+  async sendBeymenInvoices(request: string[]) {
+    const response = this.httpClientService
+      .post<any>({
+        controller: 'order/send-beymen-invoices',
+      }, request)
+      .toPromise();
+
+    return response;
   }
   async getWayBillReport(request: string[]): Promise<any> {
     try {

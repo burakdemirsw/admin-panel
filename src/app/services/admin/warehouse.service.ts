@@ -78,6 +78,7 @@ export class WarehouseService {
     qty: number,
     office: string,
     warehouseCode: string,
+    toWarehouseCode: string,
     batchCode: string,
     url: string,
     orderNo: string,
@@ -95,6 +96,7 @@ export class WarehouseService {
     requestModel.batchCode = batchCode;
     requestModel.office = office;
     requestModel.warehouseCode = warehouseCode;
+    requestModel.toWarehouseCode = toWarehouseCode;
     requestModel.quantity = qty;
     requestModel.currAccCode = currAccCode;
     requestModel.isReturn = false;
@@ -429,7 +431,14 @@ export class WarehouseService {
       .toPromise();
     return response;
   }
-
+  async getExportTransactionList(invoiceNumber?: string): Promise<any> {
+    const response = await this.httpClientService
+      .get<any>({
+        controller: 'Warehouse/get-export-transactions',
+      })
+      .toPromise();
+    return response;
+  }
   async completeImportTransaction(invoiceNumber: string, warehouseCode: string): Promise<any> {
     var request = invoiceNumber + "/" + warehouseCode
     const response = await this.httpClientService

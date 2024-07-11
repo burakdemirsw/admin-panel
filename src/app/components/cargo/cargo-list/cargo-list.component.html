@@ -37,8 +37,8 @@
               <th pSortableColumn="createdDate" style="width: 15%">
                 Oluşturulma Zamanı <p-sortIcon field="createdDate"></p-sortIcon>
               </th>
-              <th pSortableColumn="shipmentServiceType" style="width: 10%">
-                Gönderi Türü <p-sortIcon field="shipmentServiceType"></p-sortIcon>
+              <th pSortableColumn="paymentType" style="width: 10%">
+                Gönderi Türü <p-sortIcon field="paymentType"></p-sortIcon>
               </th>
               <th pSortableColumn="packagingType" style="width: 10%">
                 Paketleme Türü <p-sortIcon field="packagingType"></p-sortIcon>
@@ -74,7 +74,7 @@
                 <p-columnFilter type="text" field="createdDate" [showClearButton]="false"></p-columnFilter>
               </th>
               <th>
-                <p-columnFilter type="text" field="shipmentServiceType" [showClearButton]="false"></p-columnFilter>
+                <p-columnFilter type="text" field="paymentType" [showClearButton]="false"></p-columnFilter>
               </th>
               <th>
                 <p-columnFilter type="text" field="packagingType" [showClearButton]="false"></p-columnFilter>
@@ -107,7 +107,7 @@
               <td>{{ cargo.createdDate | date : "dd.MM.yyyy HH:mm" }}</td>
               <td>
                 {{
-                  cargo.shipmentServiceType === 1
+                  cargo.paymentType === 1
                     ? "GÖ"
                     : "AÖ"
                 }}

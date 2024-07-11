@@ -5,3 +5,7 @@ export class ImportTransaction {
   currAccDescription: string;
 
 }
+export class ExportTransaction extends ImportTransaction {
+
+
+}

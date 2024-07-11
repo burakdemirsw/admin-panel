@@ -116,6 +116,10 @@ export class CargoListComponent implements OnInit {
   async createBarcode() {
 
     var referenceIdList: string[] = this.selectedCargos.filter(x => x.cargoFirmId === 1).map(x => x.referenceId);
+    if (referenceIdList.length <= 0) {
+      this.toasterService.info("Bu Alandan Sadece MNG Gönderileri Yazdırılabilir");
+      return;
+    }
     if (window.confirm("Barkodları yazdırmak istediğinize emin misiniz?")) {
       var data = await this.cargoService.createBarcode(referenceIdList);
       if (data) {
@@ -153,8 +157,10 @@ export class CargoListComponent implements OnInit {
         this.toasterService.success("BARKOD YAZDIRILDI");
 
         this.getCargos(this.cargoState);
-      } else
+      } else {
         this.toasterService.error("BARKOD YAZDIRILAMADI");
+      }
+
 
 
 
@@ -164,6 +170,10 @@ export class CargoListComponent implements OnInit {
   async createYurticiBarcode() {
     if (this.selectedCargos.length > 0) {
       this.selectedCargos = this.selectedCargos.filter(x => x.cargoFirmId === 3);
+      if (this.selectedCargos.length <= 0) {
+        this.toasterService.info("Bu Alandan Sadece MNG Gönderileri Yazdırılabilir");
+        return;
+      }
       var request: string[] = [];
       this.selectedCargos.forEach(element => {
         request.push(element.referenceId)
@@ -180,9 +190,13 @@ export class CargoListComponent implements OnInit {
 
   async createMarketplaceCargoBarcode() {
 
-    var orderNoList: string[] = this.selectedCargos.map(x => x.orderNo);
+    var list = this.selectedCargos.filter(x => x.cargoFirmId == 3);
+    var orderNoList: string[] = list.map(x => x.orderNo);
 
-
+    if (this.selectedCargos.length <= 0) {
+      this.toasterService.info("Bu Alandan Sadece Yurtiçi Gönderileri Yazdırılabilir");
+      return;
+    }
     var response = await this.cargoService.createMarketplaceCargoBarcode(orderNoList);
     if (response) {
       this.toasterService.success("İşlem Başarılı");

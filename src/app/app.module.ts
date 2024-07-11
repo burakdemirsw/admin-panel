@@ -118,6 +118,9 @@ import { ExportCsvService } from './services/export-csv.service';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { SearchShelfComponent } from './components/Product/search-shelf/search-shelf.component';
 import { ImportTransactionsComponent } from './components/Order/import-transactions/import-transactions.component';
+import { ExportTransaction } from './models/model/warehouse/importTransaction';
+import { ExportTransactionsComponent } from './components/Order/export-transactions/export-transactions.component';
+import { CollectExportProductsComponent } from './components/Order/export-transactions/collect-export-products/collect-export-products.component';
 
 @NgModule({
 
@@ -193,7 +196,9 @@ import { ImportTransactionsComponent } from './components/Order/import-transacti
     IdeasoftComponent,
     MarketplaceInvoicesComponent,
     SearchShelfComponent,
-    ImportTransactionsComponent
+    ImportTransactionsComponent,
+    ExportTransactionsComponent,
+    CollectExportProductsComponent
 
   ],
 

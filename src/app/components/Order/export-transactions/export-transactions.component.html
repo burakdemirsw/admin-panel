@@ -1,0 +1,88 @@
+<main id="main" class="main">
+  <section class="section">
+
+    <div class="card">
+      <div class="p-4 card-body">
+        <p-table [value]="importTransactions" [(selection)]="selectedTransactions" dataKey="invoiceNumber"
+          [paginator]="true" [rowsPerPageOptions]="[5, 10, 20]" [resizableColumns]="true" columnResizeMode="expand"
+          styleClass="p-datatable-striped" [rows]="10" [tableStyle]="{ 'min-width': '50rem' }"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+          <ng-template pTemplate="caption">
+            <div class="card-body d-flex justify-content-start" style="overflow-x: auto">
+              <p-splitButton label="İşlemler" [model]="items" appendTo="body"></p-splitButton>
+
+            </div>
+            <h5 *ngIf="selectedTransactions.length > 0" style="text-align: left">
+              {{ selectedTransactions.length }}/{{ importTransactions.length }} Adet İşlem Seçildi
+            </h5>
+          </ng-template>
+
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Seç</th>
+              <th pSortableColumn="invoiceDate">Fatura Tarihi <p-sortIcon field="invoiceDate"></p-sortIcon>
+              </th>
+              <th pSortableColumn="invoiceNumber">Fatura Numarası <p-sortIcon field="invoiceNumber"></p-sortIcon>
+              </th>
+              <th pSortableColumn="currAccDescription">Müşteri Adı <p-sortIcon field="currAccDescription"></p-sortIcon>
+              </th>
+
+              <th>İşlemler
+              </th>
+            </tr>
+            <tr>
+              <th style="width: 4rem">
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+              </th>
+              <th>
+                <p-columnFilter type="date" field="invoiceDate" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="invoiceNumber" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="currAccDescription" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+              </th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-transaction>
+            <tr>
+              <td>
+                <p-tableCheckbox [value]="transaction"></p-tableCheckbox>
+              </td>
+              <td>{{ transaction.invoiceDate | date: 'MM.dd HH:mm' }}</td>
+              <td>{{ transaction.invoiceNumber }}</td>
+              <td>{{ transaction.currAccDescription }}</td>
+              <td>
+                <p-button icon="pi pi-send" (onClick)="sendTransfer( transaction.invoiceNumber)" />
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+
+      </div>
+    </div>
+
+    <p-dialog header="Depo Seç {{selectedInvoiceNumber != null ? '| '+selectedInvoiceNumber : ''}}"
+      [(visible)]="warehouseDialog" [modal]="true" [style]="{ 'max-width': '800px' }" [draggable]="false"
+      [resizable]="false">
+      <div class="container mt-3">
+        <div class="row">
+          <div class="col-lg-4 col-md-6 col-sm-6 col-12 mb-3" *ngFor="let model of warehouseModels">
+            <div class="card h-100" style="cursor: pointer">
+
+              <div class="card-body d-flex align-items-center justify-content-center"
+                routerLink="/collect-export-products/{{this.selectedInvoiceNumber}}/{{model.warehouseCode}}">
+                <h5 class="card-title m-0">{{ model.warehouseDescription }}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </p-dialog>
+  </section>
+</main>

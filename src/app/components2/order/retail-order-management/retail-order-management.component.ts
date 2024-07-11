@@ -97,6 +97,12 @@ export class RetailOrderManagementComponent implements OnInit {
       command: () => {
         this.getWayBillReport();
       }
+    },
+    {
+      label: 'Beymen Faturalarını Gönder',
+      command: () => {
+        this.sendBeymenInvoices();
+      }
     }
   ];
   //#endregion
@@ -379,6 +385,16 @@ export class RetailOrderManagementComponent implements OnInit {
 
 
   }
+  async sendBeymenInvoices() {
+    var orderNumberList = this.selectedOrders.map(x => x.orderNumber) as string[];
+    var response = await this._orderService.sendBeymenInvoices(orderNumberList)
+    if (response) {
+      this.toasterService.success("İşlem Başarılı")
+    } else {
+      this.toasterService.error("İşlem Başarısız")
+    }
+  }
+
   async getWayBillReport() {
     var orderNumberList = this.selectedOrders.map(x => x.orderNumber) as string[];
     var response = await this._orderService.getWayBillReport(orderNumberList)
