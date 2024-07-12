@@ -837,4 +837,13 @@ export class WarehouseOperationComponent implements OnInit {
     this.productShelvesDialog = false;
   }
   //--------------------------------------------------------------------
+  //--------------------------------------------------------------------------- KAMERA
+  printValue(ev: any) {
+    this.toasterService.info("Okutma Başarılı :" + ev);
+    this.generalService.beep2();
+    this.warehouseForm.get('barcode').setValue(ev);
+    // this.onSubmit(this.warehouseForm.value);
+  }
+
+
 }

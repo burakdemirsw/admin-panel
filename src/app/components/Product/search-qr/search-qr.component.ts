@@ -52,6 +52,15 @@ export class SearchQrComponent implements OnInit {
   qrCodeValue: string;
 
   invoiceProducts2: CreatePurchaseInvoice[] = [];
+
+  //--------------------------------------------------------------------------- KAMERA
+  printValue(ev: any) {
+    this.toasterService.info("Okutma Başarılı :" + ev);
+    this.generalService.beep2();
+    this.qrForm.get('barcode').setValue(ev);
+    this.onSubmit(this.qrForm.value);
+  }
+
   createJson(barcode: string, shelfNo: string) {
 
     var model: QrCode = this.qrCodes.find(

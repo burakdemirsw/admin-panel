@@ -1099,4 +1099,12 @@ export class OrderOperationComponent implements OnInit {
     this.quantity = quantity
   }
   //--------------
+
+  //--------------------------------------------------------------------------- KAMERA
+  printValue(ev: any) {
+    this.toasterService.info("Okutma Başarılı :" + ev);
+    this.gs.beep2();
+    this.checkForm.get('barcode').setValue(ev);
+    // this.onSubmit(this.warehouseForm.value);
+  }
 }

@@ -75,10 +75,8 @@ export class CargoListComponent implements OnInit {
         this.toasterService.warn("Gönderi Silinemedi")
       }
     }
-
-
-
   }
+
 
   async deleteCargoBulk(cargo: CargoBarcode_VM[]) {
     var windowResponse = window.confirm("Gönderiyi silmek istediğinize emin misiniz?")

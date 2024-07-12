@@ -148,11 +148,14 @@
                 </div>
               </div>
               <div class="row mb-3">
-                <div class="form-group col">
+                <div class="form-group col-3">
                   <button type="button" class="btn btn-primary" style="width: 100%"
                     (click)="onSubmit(warehouseForm.value)">
                     Ekle
                   </button>
+                </div>
+                <div class="form-group col-3">
+                  <app-read-barcode (value)="printValue($event)" style="width: 100%; "></app-read-barcode>
                 </div>
                 <div class="form-group col">
                   <button type="button" class="btn btn-primary" style="color: white; width: 100%"

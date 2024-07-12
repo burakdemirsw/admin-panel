@@ -130,97 +130,99 @@
         <div class="card" *ngIf="productsToCollect.length > 0">
           <div class="card-body">
             <div class="row mb-3">
-              <div class="col-md-12">
+              <div class="col-md-3">
                 <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 1%"
                   (click)="onSubmit(checkForm.value)">
                   Ekle
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-body" *ngIf="isInvoice === false">
-            <div class="row mt-3 mb-3">
-              <div class="col-md-12">
-                <button type="button" class="btn btn-primary" (click)="collectAndPack(this.collectedProducts)"
-                  style="width: 100%">
-                  {{ operation }}
-                </button>
-              </div>
+            <div class="col-md-3">
+              <app-read-barcode (value)="printValue($event)"></app-read-barcode>
             </div>
-
-            <div class="row mb-3" *ngIf="this.currentOrderNo.includes('BP')">
-              <div class="col-md-12">
-                <button type="button" class="btn btn-primary" (click)="showDialog2()" style="width: 100%">
-                  Fatura Bul
-                  <i class="fa fa-search" aria-hidden="true"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="form-group col" *ngIf="infoProducts.length > 0">
-              <div class="btn-group" role="group" aria-label="Basic example" style="width: 100%">
-                <button type="button" class="btn btn-primary" (click)="showCountPage()" style="width: 100%">
-                  {{ addedProductCount }}
-                </button>
-                <button type="button" class="btn btn-primary" (click)="showModal2()">
-                  <i class="fa fa-angle-down" aria-hidden="true"></i>
-                </button>
-              </div>
+            <div class="col-md-6">
+              <button type="button" class="btn btn-primary" (click)="collectAndPack(this.collectedProducts)"
+                style="width: 100%">
+                {{ operation }}
+              </button>
             </div>
           </div>
+
         </div>
-        <div class="card" *ngIf="productsToCollect.length > 0">
-          <div class="card-body">
-            <h5 class="card-title">Toplanacak Ürünler</h5>
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col" *ngFor="let header of tableHeaders">
-                      {{ header }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="
+      </div>
+      <div class="card">
+        <div class="card-body" *ngIf="isInvoice === false">
+          <div class="row mb-3" *ngIf="this.currentOrderNo.includes('BP')">
+            <div class="col-md-12">
+              <button type="button" class="btn btn-primary" (click)="showDialog2()" style="width: 100%">
+                Fatura Bul
+                <i class="fa fa-search" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group col" *ngIf="infoProducts.length > 0">
+            <div class="btn-group" role="group" aria-label="Basic example" style="width: 100%">
+              <button type="button" class="btn btn-primary" (click)="showCountPage()" style="width: 100%">
+                {{ addedProductCount }}
+              </button>
+              <button type="button" class="btn btn-primary" (click)="showModal2()">
+                <i class="fa fa-angle-down" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" *ngIf="productsToCollect.length > 0">
+        <div class="card-body">
+          <h5 class="card-title">Toplanacak Ürünler</h5>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col" *ngFor="let header of tableHeaders">
+                    {{ header }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="
                       let product of productsToCollect
                         | paginate
                           : { itemsPerPage: 5, currentPage: currentPage };
                       let i = index
                     " [ngClass]="{ 'green-row': product.colorDescription == '1' }"
-                    [ngClass]="{ 'success-row': product.quantity === 0 }">
-                    <td>
-                      <p-image src="{{ product.photoUrl }}" previewImageSrc="{{ product.photoUrl }}" alt="Image"
-                        width="30" [preview]="true" />
-                    </td>
-                    <td>{{ product.shelfNo }}</td>
-                    <td>{{ product.itemCode }}</td>
-                    <td>{{ product.itemDescription.substring(0, 30) }}</td>
-                    <td>{{ product.barcode }}</td>
-                    <td>{{ product.quantity }}</td>
-                    <td>{{ product.countedQty }}</td>
-                    <td>{{ product.itemDim1Code }}</td>
-                    <td>{{ product.colorDescription }}</td>
-                    <td>{{ product.currentQty }}</td>
+                  [ngClass]="{ 'success-row': product.quantity === 0 }">
+                  <td>
+                    <p-image src="{{ product.photoUrl }}" previewImageSrc="{{ product.photoUrl }}" alt="Image"
+                      width="30" [preview]="true" />
+                  </td>
+                  <td>{{ product.shelfNo }}</td>
+                  <td>{{ product.itemCode }}</td>
+                  <td>{{ product.itemDescription.substring(0, 30) }}</td>
+                  <td>{{ product.barcode }}</td>
+                  <td>{{ product.quantity }}</td>
+                  <td>{{ product.countedQty }}</td>
+                  <td>{{ product.itemDim1Code }}</td>
+                  <td>{{ product.colorDescription }}</td>
+                  <td>{{ product.currentQty }}</td>
 
-                    <td>
-                      <div class="btn-group" role="group" aria-label="Basic example">
-                        <!-- <button
+                  <td>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                      <!-- <button
                           class="btn btn-primary"
                           type="submit"
                           (click)="deleteOrderProduct(orderNo, product)"
                         >
                           <i class="fa fa-trash"></i>
                         </button> -->
-                        <!-- <button class="btn btn-primary" type="submit" (click)="goDown(product.packageNo)">
+                      <!-- <button class="btn btn-primary" type="submit" (click)="goDown(product.packageNo)">
                           <i class="fa fa-angle-down"> </i>
                         </button> -->
-                        <button class="btn btn-primary" type="submit" (click)="dropItem( product)">
-                          <i class="fa fa-angle-down"> </i>
-                        </button>
-                        <!-- <button
+                      <button class="btn btn-primary" type="submit" (click)="dropItem( product)">
+                        <i class="fa fa-angle-down"> </i>
+                      </button>
+                      <!-- <button
                           data-toggle="tooltip"
                           data-placement="right"
                           title="Eksik Ürün"
@@ -234,7 +236,7 @@
                         >
                           <i class="fa-solid fa-minus"></i>
                         </button> -->
-                        <!-- <button
+                      <!-- <button
                           data-toggle="tooltip"
                           data-placement="right"
                           title="Raflar"
@@ -251,52 +253,52 @@
                         >
                           <i class="fas fa-print"></i>
                         </button> -->
-                      </div>
-                    </td>
-                    <!-- <td>{{ product.lineId }}</td> -->
-                  </tr>
-                </tbody>
-              </table>
-              <pagination-controls #id1 (pageChange)="currentPage = $event"></pagination-controls>
-            </div>
+                    </div>
+                  </td>
+                  <!-- <td>{{ product.lineId }}</td> -->
+                </tr>
+              </tbody>
+            </table>
+            <pagination-controls #id1 (pageChange)="currentPage = $event"></pagination-controls>
           </div>
         </div>
+      </div>
 
-        <div class="card" *ngIf="lastCollectedProducts.length > 0">
-          <div class="card-body">
-            <h5 class="card-title">Toplanan Ürünler</h5>
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Fotoğraf</th>
-                    <th scope="col">Raf</th>
-                    <th scope="col">Ürün Kodu</th>
-                    <th scope="col">Rafa Giren Miktar</th>
-                    <th scope="col">Barkod</th>
+      <div class="card" *ngIf="lastCollectedProducts.length > 0">
+        <div class="card-body">
+          <h5 class="card-title">Toplanan Ürünler</h5>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Id</th>
+                  <th scope="col">Fotoğraf</th>
+                  <th scope="col">Raf</th>
+                  <th scope="col">Ürün Kodu</th>
+                  <th scope="col">Rafa Giren Miktar</th>
+                  <th scope="col">Barkod</th>
 
-                    <!-- <th scope="col">Durum</th> -->
+                  <!-- <th scope="col">Durum</th> -->
 
-                    <th scope="col">İşlemler</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let product of lastCollectedProducts; let i = index">
-                    <td>
-                      {{ i + 1 }}
-                    </td>
+                  <th scope="col">İşlemler</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let product of lastCollectedProducts; let i = index">
+                  <td>
+                    {{ i + 1 }}
+                  </td>
 
-                    <td>
-                      <p-image src="{{ product.photoUrl }}" previewImageSrc="{{ product.photoUrl }}" alt="Image"
-                        width="30" [preview]="true" />
-                    </td>
-                    <td>{{ product.shelfNo }}</td>
-                    <td>{{ product.itemCode }}</td>
-                    <td>{{ product.quantity }}</td>
-                    <td>{{ product.barcode }}</td>
+                  <td>
+                    <p-image src="{{ product.photoUrl }}" previewImageSrc="{{ product.photoUrl }}" alt="Image"
+                      width="30" [preview]="true" />
+                  </td>
+                  <td>{{ product.shelfNo }}</td>
+                  <td>{{ product.itemCode }}</td>
+                  <td>{{ product.quantity }}</td>
+                  <td>{{ product.barcode }}</td>
 
-                    <!-- <td>
+                  <!-- <td>
                       <span
                         [ngClass]="
                           product.availableQty >= product.quantity
@@ -311,14 +313,14 @@
                         }}
                       </span>
                     </td> -->
-                    <td>
-                      <div class="btn-group">
-                        <button class="btn btn-primary" type="submit" (click)="deleteOrderProduct(orderNo, product)">
-                          <i class="fas fa-trash"> </i>
-                        </button>
+                  <td>
+                    <div class="btn-group">
+                      <button class="btn btn-primary" type="submit" (click)="deleteOrderProduct(orderNo, product)">
+                        <i class="fas fa-trash"> </i>
+                      </button>
 
 
-                        <!-- <button
+                      <!-- <button
                           class="btn btn-primary"
                           type="submit"
                           (click)="
@@ -331,7 +333,7 @@
                         >
                           <i class="fas fa-print"> </i>
                         </button> -->
-                        <!-- <button
+                      <!-- <button
                           class="btn btn-primary"
                           type="submit"
                           (click)="getShelves(product.barcode)"
@@ -345,27 +347,27 @@
                         >
                           <i class="fas fa-print"></i>
                         </button> -->
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- Yeni kart: Toplanan Ürünler -->
-        <div div class="card text-center">
-          <div class="card-body">
-            <h5 class="card-title">Toplanan Ürünler</h5>
-            <h1 class="display-1">{{ totalCount }}</h1>
-            <!--eklenen ürün miktarı yazcak! -->
-
-            <p class="card-text">Adet Ürün Toplandı</p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
+
+      <!-- Yeni kart: Toplanan Ürünler -->
+      <div div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Toplanan Ürünler</h5>
+          <h1 class="display-1">{{ totalCount }}</h1>
+          <!--eklenen ürün miktarı yazcak! -->
+
+          <p class="card-text">Adet Ürün Toplandı</p>
+        </div>
+      </div>
     </div>
+
     <!-- Yeni -->
     <!-- <qrcode
       style="display: none"
