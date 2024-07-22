@@ -3,12 +3,21 @@
 
 <p-dialog *ngIf="enableScanner" header="BARKOD OKUT" [(visible)]="enableScanner" [style]="{ width: '80vw' }"
   [modal]="true">
-  <label for="cameras">Kamera Seçin:</label>
-  <select id="cameras" (change)="onCameraSelected($event)">
-    <option *ngFor="let camera of availableCameras" [value]="camera.deviceId">
-      {{ camera.label }}
-    </option>
-  </select>
+  <div class="mb-3">
+    <label for="cameras">Kamera Seçin:</label>
+    <select id="cameras" (change)="onCameraSelected($event)">
+      <option *ngFor="let camera of availableCameras" [value]="camera.deviceId">
+        {{ camera.label }}
+      </option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="zoom">Yakınlaştır:</label>
+    <input type="range" id="zoom" min="1" max="3" step="0.1" (input)="onZoomChange($event)" value="0" />
+  </div>
+
+
   <zxing-scanner #scanner [device]="selectedDevice" [autofocus]="autofocus" (camerasFound)="camerasFoundHandler($event)"
     (scanSuccess)="scanSuccessHandler($event)" [formats]="allowedFormats"></zxing-scanner>
 </p-dialog>

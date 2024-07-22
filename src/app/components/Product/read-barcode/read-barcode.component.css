@@ -1,0 +1,8 @@
+.vertical-slider {
+  writing-mode: bt-lr;
+  /* top to bottom, left to right */
+  -webkit-appearance: slider-vertical;
+  width: 8px;
+  height: 200px;
+  margin-top: 10px;
+}
