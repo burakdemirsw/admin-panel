@@ -27,6 +27,7 @@ import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 import { GeneralService } from './general.service';
 import { CreateBarcodeFromOrder_RM, CreateBarcodeModel } from 'src/app/components/Product/create-barcode/models/createBarcode';
+import { ProposalProduct_SM, ZTMSG_ProposalProduct } from 'src/app/models/model/product/proposalProduct_SM';
 
 @Injectable({
   providedIn: 'root',
@@ -311,8 +312,41 @@ export class ProductService {
     return response;
   }
 
+  async searchProposalProducts(model: ProposalProduct_SM): Promise<any> {
+    const response: ProposalProduct_SM[] = await this.httpClientService
+      .post<ProposalProduct_SM>({ controller: 'Products/search-proposal-products' }, model)
+      .toPromise();
 
+    return response;
+  }
+  async getProposalProducts(request: string): Promise<ZTMSG_ProposalProduct[]> {
+    const response: ZTMSG_ProposalProduct[] = await this.httpClientService
+      .get_new<ZTMSG_ProposalProduct>({ controller: 'Products/get-proposal-products' }, request)
+      .toPromise();
 
+    return response;
+  }
+  async deleteProposalProduct(request: number): Promise<any> {
+    const response: ZTMSG_ProposalProduct[] = await this.httpClientService
+      .get_new<boolean>({ controller: 'Products/delete-proposal-product' }, request.toString())
+      .toPromise();
+
+    return response;
+  }
+  async addProposalProduct(request: ZTMSG_ProposalProduct): Promise<any> {
+    const response: ZTMSG_ProposalProduct[] = await this.httpClientService
+      .post<ZTMSG_ProposalProduct>({ controller: 'Products/add-proposal-product' }, request)
+      .toPromise();
+
+    return response;
+  }
+  async updateProposalProduct(request: ZTMSG_ProposalProduct): Promise<any> {
+    const response: ZTMSG_ProposalProduct[] = await this.httpClientService
+      .post<ZTMSG_ProposalProduct>({ controller: 'Products/update-proposal-product' }, request)
+      .toPromise();
+
+    return response;
+  }
   async searchProduct(model: BarcodeSearch_RM): Promise<any> {
     const response = await this.httpClientService
       .post<BarcodeSearch_RM>({ controller: 'Products/SearchProduct2' }, model)
@@ -320,6 +354,8 @@ export class ProductService {
 
     return response;
   }
+
+
   async searchProduct3(barcode: string, batchCode: string, shelfNo: string): Promise<any> {
     if (batchCode === '0') {
       batchCode = null;
@@ -330,7 +366,13 @@ export class ProductService {
 
     return response;
   }
+  async searchProduct4(model: BarcodeSearch_RM): Promise<ZTMSG_ProposalProduct[]> {
+    const response: ZTMSG_ProposalProduct[] = await this.httpClientService
+      .post<BarcodeSearch_RM>({ controller: 'Products/search-product-4' }, model)
+      .toPromise();
 
+    return response;
+  }
   async getQr(id: string): Promise<any> {
     const response = await this.httpClientService
       .get<QrCode>({ controller: 'Products/get-qr' }, id)

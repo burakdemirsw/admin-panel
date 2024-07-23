@@ -402,6 +402,81 @@ var ProductService = /** @class */ (function () {
             });
         });
     };
+    ProductService.prototype.searchProposalProducts = function (model) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .post({ controller: 'Products/search-proposal-products' }, model)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    ProductService.prototype.getProposalProducts = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get_new({ controller: 'Products/get-proposal-products' }, request)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    ProductService.prototype.deleteProposalProduct = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get_new({ controller: 'Products/delete-proposal-product' }, request.toString())
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    ProductService.prototype.addProposalProduct = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .post({ controller: 'Products/add-proposal-product' }, request)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    ProductService.prototype.updateProposalProduct = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .post({ controller: 'Products/update-proposal-product' }, request)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
     ProductService.prototype.searchProduct = function (model) {
         return __awaiter(this, void 0, Promise, function () {
             var response;
@@ -429,6 +504,21 @@ var ProductService = /** @class */ (function () {
                         return [4 /*yield*/, this.httpClientService
                                 .get({ controller: 'Products/SearchProduct3/' + barcode + "/" + batchCode }, shelfNo)
                                 .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    ProductService.prototype.searchProduct4 = function (model) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .post({ controller: 'Products/search-product-4' }, model)
+                            .toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];

@@ -27,8 +27,8 @@ export class SearchQrComponent implements OnInit {
 
     private productService: ProductService,
     private formBuilder: FormBuilder, private sanitizer: DomSanitizer,
-    private activatedRoute: ActivatedRoute,
     private httpClientService: HttpClientService,
+    private activatedRoute: ActivatedRoute,
     private headerService: HeaderService,
     private generalService: GeneralService
   ) { }

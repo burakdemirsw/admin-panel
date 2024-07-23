@@ -55,6 +55,8 @@ import { RetailOrderManagementComponent } from './components2/order/retail-order
 import { CollectedPackagesComponent as CollectedPackagesComponent2 } from './components2/order/collected-packages/collected-packages.component';
 import { OrderStateComponent } from './components/Order/order-state/order-state.component';
 import { CreateProductBarcodeComponent } from './components/Product/create-product-barcode/create-product-barcode.component';
+import { CreateProposalComponent } from './components/Product/create-proposal/create-proposal.component';
+import { ProposalListComponent } from './components/Product/proposal-list/proposal-list.component';
 
 
 const routes: Routes = [
@@ -299,6 +301,8 @@ const routes: Routes = [
   { path: 'nebim-product-extract', component: NebimProductExtractComponent },
   { path: 'create-barcode/:operationNo', component: CreateBarcodeComponent },
   { path: 'create-product-barcode/:operationNo', component: CreateProductBarcodeComponent },
+  { path: 'create-proposal/:id', component: CreateProposalComponent, canActivate: [AuthGuard] },
+  { path: 'proposal-list', component: ProposalListComponent, canActivate: [AuthGuard] },
 
 
   //-------------------------------------------------------------------------

@@ -27,6 +27,7 @@ import { AddCustomerAddress_CM, CreateCustomer_CM } from '../../models/model/ord
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 import { SubCustomerList_VM } from 'src/app/models/model/customer/subCustomerList_VM';
+import { SuggestedProduct } from 'src/app/models/model/order/suggestedProduct';
 
 @Injectable({
   providedIn: 'root',
@@ -833,5 +834,16 @@ export class OrderService {
       return null;
     }
   }
-  //ExecuteSqlRawAsync
+
+  async getSuggestedProducts(itemCode: string): Promise<SuggestedProduct[]> {
+    try {
+      var response = await this.httpClientService.get_new<SuggestedProduct[]>({ controller: "order/get-suggested-products" + "/" + itemCode }).toPromise();
+
+      return response;
+
+    } catch (error: any) {
+      // console.log(error.message);
+      return null;
+    }
+  }
 }

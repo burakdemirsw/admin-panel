@@ -28,6 +28,7 @@ import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, Payment }
 import { OrderService } from '../../../services/admin/order.service';
 import { GoogleDriveService } from '../../../services/common/google-drive.service';
 import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from '../../cargo/create-cargo/models/models';
+import { SuggestedProduct } from 'src/app/models/model/order/suggestedProduct';
 
 @Component({
   selector: 'app-create-order',
@@ -127,7 +128,7 @@ export class CreateOrderComponent implements OnInit {
 
   printValue(ev: any) {
     this.toasterService.info("Okutma Başarılı :" + ev);
-    this.generalService.beep2();
+    //this.generalService.beep()2();
     this.getProductsForm.get('barcode').setValue(ev);
     this.getProducts(this.getProductsForm.value, this.orderType);
   }
@@ -274,9 +275,7 @@ export class CreateOrderComponent implements OnInit {
     object.taxRate = line.taxRate;
     return object;
   }
-  LOG() {
-    console.log(this.orderDescription);
-  }
+
   createClientOrder_RM(): ClientOrder {
     try {
 
@@ -357,7 +356,7 @@ export class CreateOrderComponent implements OnInit {
   selectedPerson: any;
   selectSalesPerson() {
     this.activeIndex = 1;
-    this.generalService.beep();
+    //this.generalService.beep()();
     this.toasterService.success("Satış Elemanı Seçildi")
   }
   async getSalesPersonModels(): Promise<any> {
@@ -626,12 +625,13 @@ export class CreateOrderComponent implements OnInit {
   }
 
 
+  suggestedProductsDialog: boolean = false;
   getCustomerDialog: boolean = false;
   findProductDialog: boolean = false;
   selectAddressDialog: boolean = false;
   subCustomerDialog: boolean = false;
   addSubCustomerDialog: boolean = false;
-  priceListDialog: boolean = false;
+  quantityListDialog: boolean = false;
   openDialog(dialogName: string) {
     if (dialogName === "getCustomerDialog") {
       this.getCustomerDialog = !this.getCustomerDialog
@@ -642,8 +642,11 @@ export class CreateOrderComponent implements OnInit {
     if (dialogName === "addSubCustomerDialog") {
       this.addSubCustomerDialog = !this.addSubCustomerDialog
     }
-    if (dialogName === "priceListDialog") {
-      this.priceListDialog = !this.priceListDialog
+    if (dialogName === "quantityListDialog") {
+      this.quantityListDialog = !this.quantityListDialog
+    }
+    if (dialogName === "suggestedProductsDialog") {
+      this.suggestedProductsDialog = !this.suggestedProductsDialog
     }
   }
   goToPage(index: number) {
@@ -995,7 +998,7 @@ export class CreateOrderComponent implements OnInit {
     this.currAccCode = request.currAccCode
     this.openDialog("getCustomerDialog");
     this.toasterService.success("Müşteri Seçildi")
-    this.generalService.beep();
+    //this.generalService.beep()();
     var _request: GetCustomerAddress_CM = new GetCustomerAddress_CM();
     _request.currAccCode = request.currAccCode;
     this.getCustomerAddresses(_request);
@@ -1054,7 +1057,7 @@ export class CreateOrderComponent implements OnInit {
     var order_response = await this.orderService.createClientOrder(order_request)
     if (order_response) {
       this.toasterService.success("Alt Müşteri Seçildi")
-      this.generalService.beep()
+      //this.generalService.beep()()
       this.subCustomerDialog = false;
       this.activeIndex = 2;
     }
@@ -1143,7 +1146,7 @@ export class CreateOrderComponent implements OnInit {
       // this.activeIndex = 2;
       this.getCustomerForm.reset();
       this.customers = [];
-      this.generalService.beep()
+      //this.generalService.beep()()
     }
 
 
@@ -1273,6 +1276,7 @@ export class CreateOrderComponent implements OnInit {
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
   async getProducts(request: any, pageType: boolean) {
+
     if (pageType) { //HIZLI SATIŞ
       try {
 
@@ -1304,18 +1308,22 @@ export class CreateOrderComponent implements OnInit {
 
         if (response.length == 0) {
           this.toasterService.error("Ürün Sorgusundan Yanıt Alınamadı");
+          await this.getsuggestedProducts(_request.barcode, true)
           this.getProductsForm.get('barcode').setValue(null);
           return;
         }
         this.products = response;
         if (this.products.length > 0) {
-          this.products.forEach(p => {
+          this.products.forEach(async p => {
             if (p.quantity <= 0) {
               this.toasterService.error("STOK HATASI")
               this.products = [];
               this.getProductsForm.get('barcode').setValue(null);
+
+              await this.getsuggestedProducts(_request.barcode, true)
               return;
             }
+
           });
 
           var totalQuantity = 0;
@@ -1329,6 +1337,7 @@ export class CreateOrderComponent implements OnInit {
             this.toasterService.error("STOK HATASI")
             this.products = [];
             this.getProductsForm.get('barcode').setValue(null);
+            await this.getsuggestedProducts(_request.barcode, true)
 
             return;
           } else {
@@ -1428,17 +1437,19 @@ export class CreateOrderComponent implements OnInit {
           const response = await this.productService.searchProduct3(check_response.description, check_response.batchCode, this.getProductsForm.value.shelfNo);
           if (response.length == 0) {
             this.toasterService.error("Ürün Sorgusundan Yanıt Alınamadı");
+            await this.getsuggestedProducts(_request.barcode, true)
             this.getProductsForm.get('barcode').setValue(null);
             return;
           }
           this.products = response;
           if (this.products.length > 0) {
 
-            this.products.forEach(p => {
+            this.products.forEach(async p => {
               if (p.quantity <= 0) {
                 this.toasterService.error("STOK HATASI")
                 this.products = [];
                 this.getProductsForm.get('barcode').setValue(null);
+                await this.getsuggestedProducts(_request.barcode, true)
                 return;
               }
             });
@@ -1458,6 +1469,8 @@ export class CreateOrderComponent implements OnInit {
               this.toasterService.error("STOK HATASI")
               this.products = [];
               this.getProductsForm.get('barcode').setValue(null);
+              await this.getsuggestedProducts(_request.barcode, true)
+
               return;
             } else {
               this.getProductsForm.get('barcode').setValue(null);
@@ -1492,6 +1505,21 @@ export class CreateOrderComponent implements OnInit {
 
   }
 
+  suggestedProducts: SuggestedProduct[] = [];
+
+  async routeGetProduct(request: string) {
+    this.getProductsForm.get('barcode').setValue(request);
+    await this.getProducts(this.getProductsForm.value, this.orderType)
+  }
+  async getsuggestedProducts(itemCode: string, openDialog: boolean) {
+    this.suggestedProducts = []
+    var response: SuggestedProduct[] = await this.orderService.getSuggestedProducts(itemCode);
+    this.suggestedProducts = response
+    if (openDialog) {
+      this.openDialog("suggestedProductsDialog");
+
+    }
+  }
 
   async addCurrentProducts(request: ProductList_VM): Promise<boolean> {
 
@@ -1508,7 +1536,7 @@ export class CreateOrderComponent implements OnInit {
         var line_response = await this.orderService.createClientOrderBasketItem(line_request); //sipariş ürünü oluşturuldu
         if (line_response) {
           this.toasterService.success("Ürün Eklendi")
-          this.generalService.beep()
+          //this.generalService.beep()()
           await this.getClientOrder(1);
           return true;
         } else {
@@ -1561,9 +1589,9 @@ export class CreateOrderComponent implements OnInit {
   }
 
   @ViewChild('dt1') myTable: Table;
-  priceList: number[] = []
+  quantityList: number[] = []
 
-  async selectPrice(product: ProductList_VM, index: number, quantity: number) {
+  async selectQuantity(product: ProductList_VM, index: number, quantity: number) {
     // this.toasterService.success(product.quantity.toString());
     product.quantity = quantity;
     var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price, product.discountedPrice, product.basePrice)
@@ -1574,22 +1602,23 @@ export class CreateOrderComponent implements OnInit {
       this.getClientOrder(1);
     }
 
-    this.priceListDialog = false;
+    this.quantityListDialog = false;
 
     delete this.clonedProducts[product.lineId as string];
     this.cancelRowEdit(product, 0);
   }
   async onRowEditSave(product: ProductList_VM, index: number) {
-    this.priceList = [];
+    this.quantityList = [];
     if (product.price > 0) {
 
       var findedProduct = this.selectedProducts
         .find(p => p.itemCode == product.itemCode)
 
-      this.priceList.push(product.quantity);
-      this.priceList.push((Number(product.uD_Stock) + Number(product.mD_Stock)));
+      this.quantityList.push(product.quantity);
+      this.quantityList.push((Number(product.uD_Stock) + Number(product.mD_Stock)));
       if (Number(findedProduct.quantity) > (Number(product.uD_Stock) + Number(product.mD_Stock))) {
-        this.openDialog('priceListDialog');
+        await this.getsuggestedProducts(product.itemCode, false)
+        this.openDialog('quantityListDialog');
         return;
       }
 
@@ -2147,7 +2176,7 @@ export class CreateOrderComponent implements OnInit {
       }
     }
     this.payment = payment;
-    this.generalService.beep();
+    //this.generalService.beep()();
 
     // this.toasterService.success("Ödeme Onaylandı")
     return true;

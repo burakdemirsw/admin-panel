@@ -5,6 +5,7 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { CreateBarcodeFromOrder_RM, CreateBarcodeModel } from '../create-barcode/models/createBarcode';
+import { HeaderService } from 'src/app/services/admin/header.service';
 
 @Component({
   selector: 'app-create-product-barcode',
@@ -21,11 +22,13 @@ export class CreateProductBarcodeComponent implements OnInit {
     private toasterService: ToasterService,
     private productService: ProductService,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private headerService: HeaderService
   ) { }
 
   operationId: string;
   async ngOnInit() {
+    this.headerService.updatePageTitle("Ürün Etiketi")
     this.operationId = await this.generalService.generateGUID();
     this.toasterService.info(this.operationId);
   }

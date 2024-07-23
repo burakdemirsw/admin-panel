@@ -46,13 +46,14 @@ exports.CreateProductBarcodeComponent = void 0;
 var core_1 = require("@angular/core");
 var createBarcode_1 = require("../create-barcode/models/createBarcode");
 var CreateProductBarcodeComponent = /** @class */ (function () {
-    function CreateProductBarcodeComponent(formBuilder, generalService, toasterService, productService, activatedRoute, router) {
+    function CreateProductBarcodeComponent(formBuilder, generalService, toasterService, productService, activatedRoute, router, headerService) {
         this.formBuilder = formBuilder;
         this.generalService = generalService;
         this.toasterService = toasterService;
         this.productService = productService;
         this.activatedRoute = activatedRoute;
         this.router = router;
+        this.headerService = headerService;
         this.barcodeInput = '';
         this.barcodeList = [];
     }
@@ -62,6 +63,7 @@ var CreateProductBarcodeComponent = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        this.headerService.updatePageTitle("Ürün Etiketi");
                         _a = this;
                         return [4 /*yield*/, this.generalService.generateGUID()];
                     case 1:

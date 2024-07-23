@@ -32,13 +32,27 @@ export class HttpClientService {
     });
   }
 
+  get_new<T>(
+    requestParameter: Partial<RequestParameters>,
+    id?: string
+  ): Observable<any> {
+    let url: string = '';
+    if (requestParameter.fullEndPoint) url = requestParameter.fullEndPoint;
+    else
+      url = `${this.url(requestParameter)}${id ? `/${id}` : ''}${requestParameter.queryString ? `?${requestParameter.queryString}` : ''
+        }`;
 
+    return this.httpClient.get<any>(url, {
+      headers: requestParameter.headers,
+      responseType: requestParameter.responseType as 'json',
+    });
+  }
 
 
   post<T>(
     requestParameter: Partial<RequestParameters>,
     body: Partial<T>
-  ): Observable<T> {
+  ): any {
     let url: string = '';
     if (requestParameter.fullEndPoint) url = requestParameter.fullEndPoint;
     else

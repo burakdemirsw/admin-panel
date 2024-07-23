@@ -27,6 +27,17 @@ var HttpClientService = /** @class */ (function () {
             responseType: requestParameter.responseType
         });
     };
+    HttpClientService.prototype.get_new = function (requestParameter, id) {
+        var url = '';
+        if (requestParameter.fullEndPoint)
+            url = requestParameter.fullEndPoint;
+        else
+            url = "" + this.url(requestParameter) + (id ? "/" + id : '') + (requestParameter.queryString ? "?" + requestParameter.queryString : '');
+        return this.httpClient.get(url, {
+            headers: requestParameter.headers,
+            responseType: requestParameter.responseType
+        });
+    };
     HttpClientService.prototype.post = function (requestParameter, body) {
         var url = '';
         if (requestParameter.fullEndPoint)

@@ -111,6 +111,8 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ReadBarcodeComponent } from './components/Product/read-barcode/read-barcode.component';
 import { SidebarModule } from 'primeng/sidebar';
 import { CreateProductBarcodeComponent } from './components/Product/create-product-barcode/create-product-barcode.component';
+import { ProposalListComponent } from './components/Product/proposal-list/proposal-list.component';
+import { CreateProposalComponent } from './components/Product/create-proposal/create-proposal.component';
 
 @NgModule({
 
@@ -183,7 +185,9 @@ import { CreateProductBarcodeComponent } from './components/Product/create-produ
     CollectedPackagesComponent2,
     OrderStateComponent,
     ReadBarcodeComponent,
-    CreateProductBarcodeComponent
+    CreateProductBarcodeComponent,
+    ProposalListComponent,
+    CreateProposalComponent
 
   ],
 

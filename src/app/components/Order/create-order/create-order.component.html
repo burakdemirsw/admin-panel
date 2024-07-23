@@ -85,16 +85,20 @@
                 }}" formControlName="shelfNo" />
 
 
-              <button pButton pRipple class="p-button-rounded p-button-text"
-                (onClick)="getCustomers(this.getCustomerForm.value)" icon="pi pi-search" label="Ürün Bul"
-                type="submit"></button> <button pButton pRipple class="p-button-rounded p-button-text"
-                (onClick)="resetProductForm()" icon="pi pi-trash" label="Formu Sil" type="reset"></button>
+              <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-search" label="Ürün Bul"
+                type="submit"></button>
+              <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-search" label="Muadil Bul"
+                type="button" (click)="getsuggestedProducts(this.getProductsForm.value.barcode,true)"></button>
+              <button pButton pRipple class="p-button-rounded p-button-text" (onClick)="resetProductForm()"
+                icon="pi pi-trash" label="Formu Sil" type="reset"></button>
               <!-- <app-read-barcode (value)="printValue($event)"></app-read-barcode>-->
             </p-inputGroup>
 
 
           </div>
         </form>
+
+
         <p-table [scrollable]="true" [value]="products" *ngIf="products.length > 0" styleClass="p-datatable-striped">
           <ng-template pTemplate="caption">
             Bulunan Ürünler
@@ -157,8 +161,8 @@
           <ng-template pTemplate="header" let-editing="editing">
             <tr>
               <th scope="col">Resim</th>
-              <th scope="col">Kod</th>
               <th scope="col">İşlem</th>
+              <th scope="col">Kod</th>
 
               <th *ngIf="!this.orderType" scope="col">Raf</th>
               <th *ngIf="!this.orderType" scope="col">Parti</th>
@@ -278,13 +282,38 @@
 
             </style>
             <p-dialog header="Stok Miktarı Yetersiz! Eğer Birinci Seçeneği Seçerseniz Eksik Gönderilcek Ürünler Olacaktır. İkince Seçenek Stoktaki Ürünler
-            " [(visible)]="priceListDialog" [style]="{ width: '80vw' }" modal="true" [dismissableMask]="true">
+            " [(visible)]="quantityListDialog" [style]="{ width: '80vw' }" modal="true" [dismissableMask]="true">
               <div class="price-list-container">
-                <div *ngFor="let price of priceList" class="price-item">
-                  <button (click)="selectPrice(product,ri,price)" pButton pRipple icon="pi pi-check"
-                    class="p-button-rounded p-button-text price-button" type="button">{{price}}</button>
+                <div *ngFor="let quantity of quantityList" class="price-item">
+                  <button (click)="selectQuantity(product,ri,quantity)" pButton pRipple icon="pi pi-check"
+                    class="p-button-rounded p-button-text price-button" type="button">{{quantity}}</button>
                 </div>
               </div>
+
+              <p-table [scrollable]="true" [value]="suggestedProducts" styleClass="p-datatable-striped"
+                *ngIf="suggestedProducts.length>0">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Aranan Ürün Kodu</th>
+                    <th>Muadil Ürün Kodu</th>
+                    <th>Envanter</th>
+                    <th>İşlemler</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product>
+                  <tr>
+                    <td>{{ product?.itemCode }}</td>
+                    <td>{{ product?.suggestedItemCode }}</td>
+                    <td>{{ product?.suggestedItemInventory }}</td>
+
+                    <td>
+                      <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus"
+                        (click)="routeGetProduct( product?.suggestedItemCode)" type="submit"></button>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+              <h5 *ngIf="suggestedProducts.length<=0">Muadil Ürün Bulunamamıştır</h5>
             </p-dialog>
           </ng-template>
         </p-table>
@@ -1149,7 +1178,7 @@
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <input type="text" pInputText style="width: 100%" formControlName="orderDescription"
-                    placeholder="Sipariş Açıklaması" (change)="LOG()" />
+                    placeholder="Sipariş Açıklaması" />
                 </div>
                 <div class="col-md-3 mb-3">
                   <h5>Toplam(V.H) : ₺{{ getTotalPrice() }}</h5>

@@ -48,13 +48,13 @@ var forms_1 = require("@angular/forms");
 var library_1 = require("@zxing/library");
 var product_service_1 = require("src/app/services/admin/product.service");
 var SearchQrComponent = /** @class */ (function () {
-    function SearchQrComponent(toasterService, productService, formBuilder, sanitizer, activatedRoute, httpClientService, headerService, generalService) {
+    function SearchQrComponent(toasterService, productService, formBuilder, sanitizer, httpClientService, activatedRoute, headerService, generalService) {
         this.toasterService = toasterService;
         this.productService = productService;
         this.formBuilder = formBuilder;
         this.sanitizer = sanitizer;
-        this.activatedRoute = activatedRoute;
         this.httpClientService = httpClientService;
+        this.activatedRoute = activatedRoute;
         this.headerService = headerService;
         this.generalService = generalService;
         this.qrCodes = [];

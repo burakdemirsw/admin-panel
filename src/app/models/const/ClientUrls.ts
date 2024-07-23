@@ -1,4 +1,4 @@
-import { BarcodeSearch_RM } from 'src/app/services/admin/product.service';
+
 export enum ClientUrls {
   baseUrl = "http://localhost:7178/api", //local
   // baseUrl = "https://www.davyebkmapi.com/api", // yeni server
