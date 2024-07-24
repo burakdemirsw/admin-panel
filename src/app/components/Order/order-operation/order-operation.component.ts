@@ -604,6 +604,8 @@ export class OrderOperationComponent implements OnInit {
       );
       this.shelfNumbers = result[0];
       var currentShelfNo = this.checkForm.get('shelfNo').value;
+      this.checkForm.get('shelfNo').setValue(result[0].replace(',', ''));
+
       this.checkForm.get('barcode').setValue(result[3]);
       this.checkForm.get('batchCode').setValue(result[2].toString());
       this.checkForm.get('quantity').setValue(result[1]);

@@ -130,7 +130,7 @@ export class WarehouseOperationComponent implements OnInit {
       if (location.href.includes('MT-')) {
         this.pageStatus = 'Mağaza Depoları Arası Transfer';
         this.currentDataType = '-1';
-        this.getWarehouseAndOffices(1, 2);
+        this.getWarehouseAndOffices(2, 2);
       }
       else if (location.href.includes('RC-')) {
         this.pageStatus = 'Merkeze İade';
@@ -612,6 +612,8 @@ export class WarehouseOperationComponent implements OnInit {
       product.barcode
     );
     this.shelfNumbers = result[0];
+    this.warehouseForm.get('shelfNo').setValue(result[0].replace(',', ''));
+
     this.warehouseForm.get('barcode').setValue(result[3]);
     this.warehouseForm.get('batchCode').setValue(result[2].toString());
     this.warehouseForm.get('quantity').setValue(result[1]);
