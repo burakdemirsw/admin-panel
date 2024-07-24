@@ -378,7 +378,30 @@ export class WarehouseOperationComponent implements OnInit {
         toWarehouseCode: [null, Validators.required],
         orderNo: [null, Validators.required],
       });
+      this.warehouseForm.get('office')?.valueChanges.subscribe(value => {
+        var wc = this.warehouseModels.find(m => m.officeCode == value).warehouseCode;
+        var md = this.warehouses.find(m => m.code == wc);
+        this.warehouseForm.get('warehouseCode').setValue(md);
+      });
 
+      this.warehouseForm.get('officeTo')?.valueChanges.subscribe(value => {
+        var wc = this.warehouseModels.find(m => m.officeCode == value).warehouseCode;
+        var md = this.warehouses.find(m => m.code == wc);
+        this.warehouseForm.get('toWarehouseCode').setValue(md);
+
+      });
+
+
+      this.warehouseForm.get('warehouseCode')?.valueChanges.subscribe(value => {
+        var oc = this.warehouseModels.find(m => m.warehouseCode == value.code).officeCode;
+        this.warehouseForm.get('office').setValue(oc);
+
+      });
+      this.warehouseForm.get('toWarehouseCode')?.valueChanges.subscribe(value => {
+        var oc = this.warehouseModels.find(m => m.warehouseCode == value.code).officeCode;
+        this.warehouseForm.get('officeTo').setValue(oc);
+
+      });
     } catch (error) {
       console.error(error);
       // Handle the error as needed.
