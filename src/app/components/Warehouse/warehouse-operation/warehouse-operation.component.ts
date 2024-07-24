@@ -378,18 +378,20 @@ export class WarehouseOperationComponent implements OnInit {
         toWarehouseCode: [null, Validators.required],
         orderNo: [null, Validators.required],
       });
-      this.warehouseForm.get('office')?.valueChanges.subscribe(value => {
-        var wc = this.warehouseModels.find(m => m.officeCode == value).warehouseCode;
-        var md = this.warehouses.find(m => m.code == wc);
-        this.warehouseForm.get('warehouseCode').setValue(md);
-      });
 
-      this.warehouseForm.get('officeTo')?.valueChanges.subscribe(value => {
-        var wc = this.warehouseModels.find(m => m.officeCode == value).warehouseCode;
-        var md = this.warehouses.find(m => m.code == wc);
-        this.warehouseForm.get('toWarehouseCode').setValue(md);
+      console.log(this.warehouseForm.value)
+      // this.warehouseForm.get('office')?.valueChanges.subscribe(value => {
+      //   var wc = this.warehouseModels.find(m => m.officeCode == value).warehouseCode;
+      //   var md = this.warehouses.find(m => m.code == wc);
+      //   this.warehouseForm.get('warehouseCode').setValue(md);
+      // });
 
-      });
+      // this.warehouseForm.get('officeTo')?.valueChanges.subscribe(value => {
+      //   var wc = this.warehouseModels.find(m => m.officeCode == value).warehouseCode;
+      //   var md = this.warehouses.find(m => m.code == wc);
+      //   this.warehouseForm.get('toWarehouseCode').setValue(md);
+
+      // });
 
 
       this.warehouseForm.get('warehouseCode')?.valueChanges.subscribe(value => {
@@ -402,6 +404,8 @@ export class WarehouseOperationComponent implements OnInit {
         this.warehouseForm.get('officeTo').setValue(oc);
 
       });
+
+      console.log(this.warehouseForm.value)
     } catch (error) {
       console.error(error);
       // Handle the error as needed.
@@ -609,6 +613,7 @@ export class WarehouseOperationComponent implements OnInit {
 
   async onSubmit(formValue: WarehouseTransferModel): Promise<any> {
 
+    console.log(this.warehouses);
     formValue.operationId = this.currentOrderNo;
     formValue.warehouseCode = formValue.warehouseCode.code;
     formValue.toWarehouseCode = formValue.toWarehouseCode.code;
