@@ -106,7 +106,8 @@ export class WarehouseOperationComponent implements OnInit {
   ];
   pageStatus = '';
   //#endregion
-
+  top;
+  bottom;
   async ngOnInit() {
 
     //depolar ve ofisleri çeker
@@ -130,23 +131,29 @@ export class WarehouseOperationComponent implements OnInit {
       if (location.href.includes('MT-')) {
         this.pageStatus = 'Mağaza Depoları Arası Transfer';
         this.currentDataType = '-1';
-        this.getWarehouseAndOffices(2, 2);
+        this.top = 2;
+        this.bottom = 2;
+        this.getWarehouseAndOffices(this.top, this.bottom);
       }
       else if (location.href.includes('RC-')) {
         this.pageStatus = 'Merkeze İade';
         this.currentDataType = '-1';
-        this.getWarehouseAndOffices(2, 1);
+        this.top = 2;
+        this.bottom = 1;
+        this.getWarehouseAndOffices(this.top, this.bottom);
       }
       else {
         this.pageStatus = 'Depolar Arası Transfer';
         this.currentDataType = '-1';
-        this.getWarehouseAndOffices(1, 1);
+        this.top = 1;
+        this.bottom = 1;
+        this.getWarehouseAndOffices(this.top, this.bottom);
       }
 
 
     }
 
-    this.toasterService.success('Sipariş No: ' + this.currentOrderNo);
+    // this.toasterService.success('Sipariş No: ' + this.currentOrderNo);
     this.formGenerator();
     this.activatedRoute.params.subscribe(async (params) => {
 
@@ -166,7 +173,7 @@ export class WarehouseOperationComponent implements OnInit {
         this.currentDataType = '-1';
       }
 
-      this.toasterService.success('Sipariş No: ' + this.currentOrderNo);
+      // this.toasterService.success('Sipariş No: ' + this.currentOrderNo);
       await this.getProductOfCount(this.currentOrderNo);
       this.warehouseForm.get('orderNo').setValue(this.currentOrderNo);
     });
@@ -405,14 +412,19 @@ export class WarehouseOperationComponent implements OnInit {
         toWarehouseCode: [null, Validators.required],
         orderNo: [null, Validators.required],
       });
-      this.warehouseForm.get('office')?.valueChanges.subscribe(value => {
+      this.warehouseForm.get('office')?.valueChanges.subscribe(async value => {
         var wc = this.warehouseModels.find(m => m.officeCode == value).warehouseCode;
+        await this.getWarehouseAndOffices(this.top, this.bottom);
+        this.warehouses = this.warehouses.filter(w => w.name.includes(value))
         var md = this.warehouses.find(m => m.code == wc);
+
         this.warehouseForm.get('warehouseCode').setValue(md);
       });
 
-      this.warehouseForm.get('officeTo')?.valueChanges.subscribe(value => {
+      this.warehouseForm.get('officeTo')?.valueChanges.subscribe(async value => {
         var wc = this.warehouseModels_2.find(m => m.officeCode == value).warehouseCode;
+        await this.getWarehouseAndOffices(this.top, this.bottom);
+        this.warehouses_2 = this.warehouses_2.filter(w => w.name.includes(value))
         var md = this.warehouses_2.find(m => m.code == wc);
         this.warehouseForm.get('toWarehouseCode').setValue(md);
 
