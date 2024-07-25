@@ -786,11 +786,11 @@ export class OrderService {
 
   async deleteNebimOrder(request: string): Promise<any> {
     try {
-      if (window.confirm("Siparişi silmek istediğinize emin misiniz?")) {
-        var response = await this.httpClientService.get<string>({ controller: "order/delete-nebim-order" + "/" + request }).toPromise();
 
-        return response;
-      }
+      var response = await this.httpClientService.get<string>({ controller: "order/delete-nebim-order" + "/" + request }).toPromise();
+
+      return response;
+
 
     } catch (error: any) {
       // console.log(error.message);

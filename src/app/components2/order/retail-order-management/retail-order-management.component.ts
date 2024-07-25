@@ -104,6 +104,13 @@ export class RetailOrderManagementComponent implements OnInit {
         this.sendBeymenInvoices();
       }
     }
+    ,
+    {
+      label: 'Siparişleri Sil',
+      command: () => {
+        this.deleteNebimOrder();
+      }
+    }
   ];
   //#endregion
 
@@ -403,5 +410,23 @@ export class RetailOrderManagementComponent implements OnInit {
     } else {
       this.toasterService.error("İşlem Başarısız")
     }
+  }
+  async deleteNebimOrder() {
+    if (this.selectedOrders.length < 1) {
+      this.toasterService.warn('Lütfen En Az Bir Sipariş Seçiniz.')
+    }
+
+    if (window.confirm(this.selectedOrders.length + " Adet Siparişi silmek istediğinize emin misiniz?")) {
+
+      this.selectedOrders.forEach(async order => {
+        var response = await this._orderService.deleteNebimOrder(order.orderNumber)
+        if (response) {
+          this.toasterService.success("İşlem Başarılı")
+          this.getOrders(this.status, this.invoiceStatus)
+        }
+      });
+    }
+
+
   }
 }

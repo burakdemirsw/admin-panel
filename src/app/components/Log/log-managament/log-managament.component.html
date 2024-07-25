@@ -4,68 +4,39 @@
       <div class="card-body">
         <!-- Filtreleme Alanı (Başlangıç) -->
         <div class="btn-group mb-3 mt-4">
-          <button
-            class="btn btn-primary"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#filterCollapse"
-            aria-expanded="false"
-            aria-controls="filterCollapse"
-          >
+          <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse"
+            aria-expanded="false" aria-controls="filterCollapse">
             <i class="fa fa-bars" aria-hidden="true"></i>
           </button>
         </div>
 
         <div class="collapse" id="filterCollapse">
-          <form
-            [formGroup]="filterForm"
-            (ngSubmit)="onSubmit(filterForm.value)"
-          >
+          <form [formGroup]="filterForm" (ngSubmit)="onSubmit(filterForm.value)">
             <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
                   <label for="messageHeader">Mesaj Başlığı</label>
-                  <input
-                    type="text"
-                    id="messageHeader"
-                    class="form-control"
-                    formControlName="messageHeader"
-                  />
+                  <input type="text" id="messageHeader" class="form-control" formControlName="messageHeader" />
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
                   <label for="level">Tip</label>
-                  <input
-                    type="text"
-                    id="level"
-                    class="form-control"
-                    formControlName="level"
-                  />
+                  <input type="text" id="level" class="form-control" formControlName="level" />
                 </div>
               </div>
 
               <div class="col-md-4">
                 <div class="form-group">
                   <label for="endDate">İşlem Bitiş Tarihi:</label>
-                  <input
-                    type="date"
-                    id="endDate"
-                    class="form-control"
-                    formControlName="endDate"
-                  />
+                  <input type="date" id="endDate" class="form-control" formControlName="endDate" />
                 </div>
               </div>
 
               <div class="col-md-4">
                 <div class="form-group">
                   <label for="startDate">İşlem Başlangıç Tarihi:</label>
-                  <input
-                    type="date"
-                    id="startDate"
-                    class="form-control"
-                    formControlName="startDate"
-                  />
+                  <input type="date" id="startDate" class="form-control" formControlName="startDate" />
                 </div>
               </div>
             </div>
@@ -97,47 +68,39 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="
+              <tr *ngFor="
                   let log of log_VMList
                     | paginate : { itemsPerPage: 10, currentPage: currentPage }
-                "
-              >
+                ">
                 <td>{{ log.id }}</td>
                 <td>{{ log.messageHeader }}</td>
                 <td>
-                  <div
-                    class="btn"
-                    [ngClass]="{
+                  <div class="btn" [ngClass]="{
                       'btn-warning': log.level === 'WARNING',
                       'btn-success': log.level === 'SUCCESS',
                       'btn-primary': log.level === 'INFO',
                       'btn-danger': log.level === 'ERROR'
-                    }"
-                  >
+                    }">
                     {{ log.level }}
                   </div>
                 </td>
 
                 <td>{{ log.exceptionText }}</td>
 
+                <style>
+                  .full-width {
+                    width: 100% !important;
+                  }
+
+                </style>
+
                 <td>
-                  <textarea
-                    rows="5"
-                    cols="30"
-                    [(ngModel)]="log.request"
-                    *ngIf="log.request"
-                    readonly
-                  ></textarea>
+                  <textarea rows="5" cols="50" [(ngModel)]="log.request" *ngIf="log.request" readonly
+                    class="full-width"></textarea>
                 </td>
 
                 <td>
-                  <textarea
-                    rows="5"
-                    cols="30"
-                    [(ngModel)]="log.logEvent"
-                    readonly
-                  ></textarea>
+                  <textarea rows="5" cols="30" [(ngModel)]="log.logEvent" readonly></textarea>
                 </td>
 
                 <!-- <td>{{ log.requestPath }}</td> -->
@@ -145,9 +108,7 @@
               </tr>
             </tbody>
           </table>
-          <pagination-controls
-            (pageChange)="currentPage = $event"
-          ></pagination-controls>
+          <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
         </div>
       </div>
     </div>

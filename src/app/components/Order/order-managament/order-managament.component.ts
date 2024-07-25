@@ -92,6 +92,13 @@ export class OrderManagamentComponent implements OnInit {
         this.updateOrderStatus();
       }
     },
+
+    {
+      label: 'Siparişleri Sil',
+      command: () => {
+        this.deleteNebimOrder();
+      }
+    }
   ];
   async ngOnInit() {
     //this.spinnerService.show();
@@ -121,12 +128,23 @@ export class OrderManagamentComponent implements OnInit {
   exportCsv() {
     this.exportCsvService.exportToCsv(this.selectedOrders, 'my-orders');
   }
-  async deleteNebimOrder(request: string) {
-    var response = await this.orderService.deleteNebimOrder(request)
-    if (response) {
-      this.toasterService.success("İşlem Başarılı")
-      this.getOrders(this.status, this.invoiceStatus)
+  async deleteNebimOrder() {
+    if (this.selectedOrders.length < 1) {
+      this.toasterService.warn('Lütfen En Az Bir Sipariş Seçiniz.')
     }
+
+    if (window.confirm(this.selectedOrders.length + " Adet Siparişi silmek istediğinize emin misiniz?")) {
+
+      this.selectedOrders.forEach(async order => {
+        var response = await this.orderService.deleteNebimOrder(order.orderNumber)
+        if (response) {
+          this.toasterService.success("İşlem Başarılı")
+          this.getOrders(this.status, this.invoiceStatus)
+        }
+      });
+    }
+
+
   }
 
   async getWayBillReport() {
