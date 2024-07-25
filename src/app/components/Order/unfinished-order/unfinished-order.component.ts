@@ -3,6 +3,7 @@ import { HeaderService } from 'src/app/services/admin/header.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { ClientOrder } from '../../../models/model/order/nebimOrder';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-unfinished-order',
@@ -12,7 +13,7 @@ import { ClientOrder } from '../../../models/model/order/nebimOrder';
 export class UnfinishedOrderComponent implements OnInit {
 
   constructor(private headerService: HeaderService
-    , private toasterService: ToasterService, private orderService: OrderService) { }
+    , private toasterService: ToasterService, private orderService: OrderService, private router: Router) { }
   currentPage = 1;
   orders: ClientOrder[] = [];
   visible: boolean = false;
@@ -23,6 +24,14 @@ export class UnfinishedOrderComponent implements OnInit {
 
   }
 
+  route(order: ClientOrder) {
+    if (order.orderNo.includes('MSG-P')) {
+      this.router.navigate(["/create-order/retail-order/" + order.id])
+    } else {
+      this.router.navigate(["/create-order/quick-order/" + order.id])
+    }
+
+  }
   async getOrders(isCompleted: boolean) {
     this.headerService.updatePageTitle("Panel Siparişleri");
     this.currentOrderState = isCompleted;

@@ -24,13 +24,11 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr
-                      *ngFor="
+                    <tr *ngFor="
                         let order of collectableOrders.slice(0, 25)
                           | paginate
                             : { itemsPerPage: 50, currentPage: currentPage }
-                      "
-                    >
+                      ">
                       <td>{{ order.orderNumber.split("-")[3] }}</td>
                       <td>
                         {{
@@ -50,12 +48,10 @@
                         }}
                       </td>
                       <td>
-                        <a
-                          class="btn btn-success {{
-                            order.orderStatus == null ? 'null-status' : ''
-                          }}"
-                          style="color: #fff; width: 100%"
-                        >
+                        <a class="btn btn-success {{
+                            order.orderStatus == null ? 'null-status' :
+                            order.orderStatus == 'TOPLANAMAZ' ? 'uncollectable-status' : ''
+                          }}" style="color: #fff; width: 100%">
                           {{
                             order.orderStatus == null
                               ? "ALINDI"
@@ -63,6 +59,7 @@
                           }}
                         </a>
                       </td>
+
                     </tr>
                   </tbody>
                 </table>
@@ -92,13 +89,11 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr
-                      *ngFor="
+                    <tr *ngFor="
                         let order of collectedOrders.slice(0, 25)
                           | paginate
                             : { itemsPerPage: 50, currentPage: currentPage }
-                      "
-                    >
+                      ">
                       <!-- <td>{{ order.orderDate | date : "HH:mm" }}</td> -->
                       <td>{{ order.orderNumber.split("-")[3] }}</td>
                       <td>
@@ -119,11 +114,7 @@
                         }}
                       </td>
                       <td>
-                        <a
-                          class="btn btn-primary"
-                          style="color: #fff; width: 100%"
-                          >HAZIR</a
-                        >
+                        <a class="btn btn-primary" style="color: #fff; width: 100%">HAZIR</a>
                       </td>
                     </tr>
                   </tbody>

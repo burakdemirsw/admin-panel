@@ -176,24 +176,6 @@ var CreateOrderComponent = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        this.setCustomer();
-                        this.createCargoForm();
-                        this.createCargoForm_2();
-                        this.createsubCustomerForm();
-                        this.createPaymentForm();
-                        this.createGetProductForm();
-                        this.createCustomerFormMethod();
-                        _a = this;
-                        return [4 /*yield*/, this.orderService.getExchangeRates()];
-                    case 1:
-                        _a.exchangeRate = _b.sent();
-                        this.generatedCargoNumber = this._generateRandomNumber();
-                        this.createDiscountForm();
-                        this.createGetCustomerForm();
-                        this.createOfficeWarehouseForm();
-                        this._createCustomerFormMethod();
-                        this.getAddresses();
-                        this.selectOfficeAndWarehosue();
                         this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_a) {
                                 if (params['id']) {
@@ -212,6 +194,24 @@ var CreateOrderComponent = /** @class */ (function () {
                                 return [2 /*return*/];
                             });
                         }); });
+                        this.setCustomer();
+                        this.createCargoForm();
+                        this.createCargoForm_2();
+                        this.createsubCustomerForm();
+                        this.createPaymentForm();
+                        this.createGetProductForm();
+                        this.createCustomerFormMethod();
+                        _a = this;
+                        return [4 /*yield*/, this.orderService.getExchangeRates()];
+                    case 1:
+                        _a.exchangeRate = _b.sent();
+                        this.generatedCargoNumber = this._generateRandomNumber();
+                        this.createDiscountForm();
+                        this.createGetCustomerForm();
+                        this.createOfficeWarehouseForm();
+                        this._createCustomerFormMethod();
+                        this.getAddresses();
+                        this.selectOfficeAndWarehosue();
                         spc = localStorage.getItem('salesPersonCode');
                         if (!spc) {
                             this.router.navigate(["/pages-loginv2"]);
@@ -229,12 +229,12 @@ var CreateOrderComponent = /** @class */ (function () {
     };
     CreateOrderComponent.prototype.console = function () {
         console.clear();
-        console.log('payment:', this.payment);
-        console.log('selectedCustomers:', this.selectedCustomers);
-        console.log('selectedProducts:', this.selectedProducts);
-        console.log('selectedAddresses:', this.selectedAddresses);
-        console.log('selectedOfficeAndWarehosue:', this.selectedOfficeAndWarehosue);
-        console.log('selectedSubCustomers:', this.selectedSubCustomers);
+        // console.log('payment:', this.payment);
+        // console.log('selectedCustomers:', this.selectedCustomers);
+        // console.log('selectedProducts:', this.selectedProducts);
+        // console.log('selectedAddresses:', this.selectedAddresses);
+        // console.log('selectedOfficeAndWarehosue:', this.selectedOfficeAndWarehosue);
+        // console.log('selectedSubCustomers:', this.selectedSubCustomers);
     };
     //--------------------------------------------------------------------------- KAMERA
     CreateOrderComponent.prototype.printValue = function (ev) {
@@ -256,6 +256,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         if (!(state === 0)) return [3 /*break*/, 10];
                         if (!response.clientOrder) return [3 /*break*/, 8];
                         order = response;
+                        this.orderNo = order.clientOrder.orderNo;
                         this.isCompleted = order.clientOrder.isCompleted;
                         this.currAccCode = order.clientOrder.customerCode;
                         this.orderNumber = order.clientOrder.orderNumber;
@@ -2248,7 +2249,12 @@ var CreateOrderComponent = /** @class */ (function () {
         for (var i = 0; i < 10; i++) {
             result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
-        return "MSG-" + result;
+        if (this.orderType == true) {
+            return "MSG-" + result;
+        }
+        else {
+            return "MSG-P-" + result;
+        }
     };
     CreateOrderComponent.prototype.createPayment = function (state) {
         return __awaiter(this, void 0, Promise, function () {
@@ -2390,7 +2396,7 @@ var CreateOrderComponent = /** @class */ (function () {
     CreateOrderComponent.prototype.createOrder = function () {
         var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function () {
-            var payment_response, formValue, exchangeRate, order_request, order_response, totalPrice, discountedPrice, _i, _e, _product, after_discountPrice, dif, addedOrderNumber, batchSize, totalProducts, batchStart, batchEnd, productBatch, _request, response, addedOrder, batchSize, totalProducts, batchStart, batchEnd, productBatch, _request, response, __request, __response, addedOrder;
+            var payment_response, formValue, exchangeRate, order_request, order_response, totalPrice, discountedPrice, _i, _e, _product, after_discountPrice, dif, addedOrderNumber, batchSize, totalProducts, batchStart, batchEnd, productBatch, _request, response, addedOrder, batchSize, totalProducts, batchStart, batchEnd, productBatch, _request, response, _batchSize, _totalProducts, _batchStart, _batchEnd, _productBatch, __request, __response, addedOrder;
             var _this = this;
             return __generator(this, function (_f) {
                 switch (_f.label) {
@@ -2496,7 +2502,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         }
                         this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament/1/2");
                         _f.label = 11;
-                    case 11: return [3 /*break*/, 21];
+                    case 11: return [3 /*break*/, 23];
                     case 12:
                         batchSize = 50;
                         totalProducts = this.selectedProducts.length;
@@ -2528,7 +2534,15 @@ var CreateOrderComponent = /** @class */ (function () {
                         this.toasterService.info('KARGO OLUŞTURULMADI');
                         _f.label = 18;
                     case 18:
-                        __request = new nebimOrder_1.NebimInvoice(this.currentDiscountRate, this.currentCashdiscountRate, exchangeRate, this.selectedCustomers[0].docCurrencyCode, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, this.selectedProducts, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value, this.selectedAddresses[0].postalAddressID, (_d = this.selectedSubCustomers[0]) === null || _d === void 0 ? void 0 : _d.subCurrAccId);
+                        _batchSize = 50;
+                        _totalProducts = this.selectedProducts.length;
+                        _batchStart = 0;
+                        _f.label = 19;
+                    case 19:
+                        if (!(_batchStart < _totalProducts)) return [3 /*break*/, 21];
+                        _batchEnd = Math.min(_batchStart + batchSize, totalProducts);
+                        _productBatch = this.selectedProducts.slice(_batchStart, _batchEnd);
+                        __request = new nebimOrder_1.NebimInvoice(this.currentDiscountRate, this.currentCashdiscountRate, exchangeRate, this.selectedCustomers[0].docCurrencyCode, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, _productBatch, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value, this.selectedAddresses[0].postalAddressID, (_d = this.selectedSubCustomers[0]) === null || _d === void 0 ? void 0 : _d.subCurrAccId);
                         __request.lines.forEach(function (l1) {
                             var fp = response.lines.find(function (p) {
                                 return p.itemCode === l1.itemCode && p.usedBarcode === l1.usedBarcode && p.qty1 === l1.qty1;
@@ -2539,18 +2553,25 @@ var CreateOrderComponent = /** @class */ (function () {
                             }
                         });
                         return [4 /*yield*/, this.orderService.createInvoice(__request)];
-                    case 19:
-                        __response = _f.sent();
-                        if (!__response) return [3 /*break*/, 21];
-                        return [4 /*yield*/, this.orderService.getOrderDetail(this.orderNumber)];
                     case 20:
+                        __response = _f.sent();
+                        if (__response == null) {
+                            this.toasterService.error("Faturalaştırma Sırasında Hata Alındı");
+                            return [3 /*break*/, 21];
+                        }
+                        _batchStart += _batchSize;
+                        return [3 /*break*/, 19];
+                    case 21:
+                        if (!__response) return [3 /*break*/, 23];
+                        return [4 /*yield*/, this.orderService.getOrderDetail(this.orderNumber)];
+                    case 22:
                         addedOrder = _f.sent();
                         if (addedOrder.orderNumber) {
                             this.sendInvoiceToPrinter(addedOrder.orderNumber);
                         }
                         this.generalService.waitAndNavigate("Sipariş Oluşturuldu & Faturalaştırıdı", "orders-managament/1/1");
-                        _f.label = 21;
-                    case 21: return [2 /*return*/];
+                        _f.label = 23;
+                    case 23: return [2 /*return*/];
                 }
             });
         });

@@ -52,39 +52,58 @@ var OrderStateComponent = /** @class */ (function () {
         this.currentPage = 1;
         this.collectableOrders = [];
         this.collectedOrders = [];
+        this.uncollectableProducts = [];
     }
     OrderStateComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var response, _a, _b;
+            var response, _a, _b, _c;
             var _this = this;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0: return [4 /*yield*/, this.orderService.getExchangeRates()];
                     case 1:
-                        response = _c.sent();
+                        response = _d.sent();
                         this.exchangeRates = response;
                         _a = this;
                         return [4 /*yield*/, this.getOrders(1, 2)];
                     case 2:
-                        _a.collectableOrders = _c.sent();
+                        _a.collectableOrders = _d.sent();
                         _b = this;
                         return [4 /*yield*/, this.getOrders(1, 1)];
                     case 3:
-                        _b.collectedOrders = _c.sent();
+                        _b.collectedOrders = _d.sent();
+                        _c = this;
+                        return [4 /*yield*/, this.getOrders(0, 2)];
+                    case 4:
+                        _c.uncollectableProducts = _d.sent();
+                        this.uncollectableProducts.forEach(function (order) {
+                            order.orderStatus = 'TOPLANAMAZ';
+                        });
+                        console.log(this.collectableOrders);
+                        this.collectableOrders = this.collectableOrders.concat(this.uncollectableProducts);
+                        console.log(this.collectableOrders);
                         // setInterval başlat ve referansı intervalId'e ata
                         this.intervalId = setInterval(function () { return __awaiter(_this, void 0, void 0, function () {
-                            var _a, _b;
-                            return __generator(this, function (_c) {
-                                switch (_c.label) {
+                            var _a, _b, _c;
+                            return __generator(this, function (_d) {
+                                switch (_d.label) {
                                     case 0:
                                         _a = this;
                                         return [4 /*yield*/, this.getOrders(1, 2)];
                                     case 1:
-                                        _a.collectableOrders = _c.sent();
+                                        _a.collectableOrders = _d.sent();
                                         _b = this;
                                         return [4 /*yield*/, this.getOrders(1, 1)];
                                     case 2:
-                                        _b.collectedOrders = _c.sent();
+                                        _b.collectedOrders = _d.sent();
+                                        _c = this;
+                                        return [4 /*yield*/, this.getOrders(0, 2)];
+                                    case 3:
+                                        _c.uncollectableProducts = _d.sent();
+                                        this.uncollectableProducts.forEach(function (order) {
+                                            order.orderStatus = 'TOPLANAMAZ';
+                                        });
+                                        this.collectableOrders = this.collectableOrders.concat(this.uncollectableProducts);
                                         return [2 /*return*/];
                                 }
                             });

@@ -45,10 +45,11 @@ exports.__esModule = true;
 exports.UnfinishedOrderComponent = void 0;
 var core_1 = require("@angular/core");
 var UnfinishedOrderComponent = /** @class */ (function () {
-    function UnfinishedOrderComponent(headerService, toasterService, orderService) {
+    function UnfinishedOrderComponent(headerService, toasterService, orderService, router) {
         this.headerService = headerService;
         this.toasterService = toasterService;
         this.orderService = orderService;
+        this.router = router;
         this.currentPage = 1;
         this.orders = [];
         this.visible = false;
@@ -56,6 +57,14 @@ var UnfinishedOrderComponent = /** @class */ (function () {
     }
     UnfinishedOrderComponent.prototype.ngOnInit = function () {
         this.getOrders(this.currentOrderState);
+    };
+    UnfinishedOrderComponent.prototype.route = function (order) {
+        if (order.orderNo.includes('MSG-P')) {
+            this.router.navigate(["/create-order/retail-order/" + order.id]);
+        }
+        else {
+            this.router.navigate(["/create-order/quick-order/" + order.id]);
+        }
     };
     UnfinishedOrderComponent.prototype.getOrders = function (isCompleted) {
         return __awaiter(this, void 0, void 0, function () {

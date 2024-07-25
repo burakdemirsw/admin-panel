@@ -70,22 +70,6 @@ export class CreateOrderComponent implements OnInit {
     private cargoService: CargoService) { }
 
   async ngOnInit() {
-    this.setCustomer();
-    this.createCargoForm();
-    this.createCargoForm_2()
-    this.createsubCustomerForm();
-    this.createPaymentForm();
-    this.createGetProductForm();
-    this.createCustomerFormMethod();
-    this.exchangeRate = await this.orderService.getExchangeRates();
-    this.generatedCargoNumber = this._generateRandomNumber();
-    this.createDiscountForm();
-    this.createGetCustomerForm();
-    this.createOfficeWarehouseForm();
-    this._createCustomerFormMethod();
-    this.getAddresses();
-    this.selectOfficeAndWarehosue();
-
     this.activatedRoute.params.subscribe(async (params) => {
       if (params['id']) {
         this.id = params['id']
@@ -102,6 +86,24 @@ export class CreateOrderComponent implements OnInit {
         this.headerService.updatePageTitle(this.pageTitle);
       }
     })
+
+    this.setCustomer();
+    this.createCargoForm();
+    this.createCargoForm_2()
+    this.createsubCustomerForm();
+    this.createPaymentForm();
+    this.createGetProductForm();
+    this.createCustomerFormMethod();
+    this.exchangeRate = await this.orderService.getExchangeRates();
+    this.generatedCargoNumber = this._generateRandomNumber();
+    this.createDiscountForm();
+    this.createGetCustomerForm();
+    this.createOfficeWarehouseForm();
+    this._createCustomerFormMethod();
+    this.getAddresses();
+    this.selectOfficeAndWarehosue();
+
+
     var spc = localStorage.getItem('salesPersonCode');
     if (!spc) {
       this.router.navigate(["/pages-loginv2"])
@@ -117,12 +119,12 @@ export class CreateOrderComponent implements OnInit {
 
   console() {
     console.clear();
-    console.log('payment:', this.payment);
-    console.log('selectedCustomers:', this.selectedCustomers);
-    console.log('selectedProducts:', this.selectedProducts);
-    console.log('selectedAddresses:', this.selectedAddresses);
-    console.log('selectedOfficeAndWarehosue:', this.selectedOfficeAndWarehosue);
-    console.log('selectedSubCustomers:', this.selectedSubCustomers);
+    // console.log('payment:', this.payment);
+    // console.log('selectedCustomers:', this.selectedCustomers);
+    // console.log('selectedProducts:', this.selectedProducts);
+    // console.log('selectedAddresses:', this.selectedAddresses);
+    // console.log('selectedOfficeAndWarehosue:', this.selectedOfficeAndWarehosue);
+    // console.log('selectedSubCustomers:', this.selectedSubCustomers);
   }
   //--------------------------------------------------------------------------- KAMERA
 
@@ -144,6 +146,7 @@ export class CreateOrderComponent implements OnInit {
     if (state === 0) {
       if (response.clientOrder) {
         var order = response;
+        this.orderNo = order.clientOrder.orderNo
         this.isCompleted = order.clientOrder.isCompleted
         this.currAccCode = order.clientOrder.customerCode;
         this.orderNumber = order.clientOrder.orderNumber
@@ -2053,7 +2056,13 @@ export class CreateOrderComponent implements OnInit {
     for (let i = 0; i < 10; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
-    return "MSG-" + result;
+
+    if (this.orderType == true) {
+      return "MSG-" + result;
+    } else {
+      return "MSG-P-" + result;
+    }
+
   }
   async createPayment(state: number): Promise<boolean> {
     this.activeIndex = 6;
@@ -2373,36 +2382,57 @@ export class CreateOrderComponent implements OnInit {
         }
       }
 
+      const _batchSize = 50;
+      const _totalProducts = this.selectedProducts.length;
+      let _batchStart = 0;
+      while (_batchStart < _totalProducts) {
+        // Determine the end of the current batch
+        let _batchEnd = Math.min(_batchStart + batchSize, totalProducts);
 
-      var __request: NebimInvoice = new NebimInvoice(
-        this.currentDiscountRate,
-        this.currentCashdiscountRate,
-        exchangeRate,
-        this.selectedCustomers[0].docCurrencyCode,
-        this.cargoForm.get("address_recepient_name").value,
-        this.currAccCode,
-        this.orderNo,
-        formValue,
-        this.selectedProducts,
-        this.salesPersonCode,
-        this.paymentForm.value.taxTypeCode.value,
-        this.selectedAddresses[0].postalAddressID,
-        this.selectedSubCustomers[0]?.subCurrAccId
-      );
+        // Create a batch of products
+        let _productBatch = this.selectedProducts.slice(_batchStart, _batchEnd);
 
-      __request.lines.forEach(l1 => {
-        var fp = response.lines.find((p: { itemCode: string; usedBarcode: string; qty1: number; }) =>
-          p.itemCode === l1.itemCode && p.usedBarcode === l1.usedBarcode && p.qty1 === l1.qty1
+        var __request: NebimInvoice = new NebimInvoice(
+          this.currentDiscountRate,
+          this.currentCashdiscountRate,
+          exchangeRate,
+          this.selectedCustomers[0].docCurrencyCode,
+          this.cargoForm.get("address_recepient_name").value,
+          this.currAccCode,
+          this.orderNo,
+          formValue,
+          _productBatch,
+          this.salesPersonCode,
+          this.paymentForm.value.taxTypeCode.value,
+          this.selectedAddresses[0].postalAddressID,
+          this.selectedSubCustomers[0]?.subCurrAccId
         );
 
-        if (fp) {
-          l1.currencyCode = this.selectedCustomers[0].docCurrencyCode;
-          l1.orderLineId = fp.orderLineId;
+        __request.lines.forEach(l1 => {
+          var fp = response.lines.find((p: { itemCode: string; usedBarcode: string; qty1: number; }) =>
+            p.itemCode === l1.itemCode && p.usedBarcode === l1.usedBarcode && p.qty1 === l1.qty1
+          );
+
+          if (fp) {
+            l1.currencyCode = this.selectedCustomers[0].docCurrencyCode;
+            l1.orderLineId = fp.orderLineId;
+
+          }
+        });
+
+        var __response = await this.orderService.createInvoice(__request);
+        if (__response == null) {
+          this.toasterService.error("Faturalaştırma Sırasında Hata Alındı")
+          break;
 
         }
-      });
+        _batchStart += _batchSize;
+      }
 
-      var __response = await this.orderService.createInvoice(__request);
+
+
+
+
       if (__response) {
         var addedOrder: OrderDetail = await this.orderService.getOrderDetail(this.orderNumber);
         if (addedOrder.orderNumber) {

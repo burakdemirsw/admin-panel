@@ -397,14 +397,15 @@
                     <p-inputGroupAddon>
                       <!-- <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text" type="button"
       (click)=" this.subCustomerDialog = !this.subCustomerDialog "></button> -->
-                      <button pButton pRipple icon="pi pi-search" class="p-button-rounded p-button-text" type="button"
-                        (click)="getSubCustomers()"></button>
-                    </p-inputGroupAddon>
+                      <p-dropdown [style]="{'width': '50%'}" #subCurrAccDescription_dropdown
+                        formControlName="sc_Description" (click)="showPanel(3)" [options]="selectableSubCustomers"
+                        placeholder="Müşteri" [editable]="true" optionLabel="name" filter="true">
+                      </p-dropdown>
 
-                    <p-dropdown [style]="{'width': '50%'}" #subCurrAccDescription_dropdown
-                      formControlName="sc_Description" (click)="showPanel(3)" [options]="selectableSubCustomers"
-                      placeholder="Müşteri" [editable]="true" optionLabel="name">
-                    </p-dropdown>
+                    </p-inputGroupAddon>
+                    <button pButton pRipple icon="pi pi-search" class="p-button-rounded p-button-text" type="button"
+                      (click)="getSubCustomers()"></button>
+
 
                   </p-inputGroup>
 

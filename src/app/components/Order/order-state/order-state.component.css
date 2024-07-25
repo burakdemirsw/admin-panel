@@ -27,6 +27,12 @@
   animation: blink-animation 2s infinite;
 }
 
+.uncollectable-status {
+  background-color: rgb(255, 136, 0);
+  border-color: #00000000 !important;
+  animation: blink-animation 2s infinite;
+}
+
 @keyframes blink-animation {
 
   0%,

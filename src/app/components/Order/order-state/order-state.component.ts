@@ -20,6 +20,7 @@ export class OrderStateComponent implements OnInit {
   invoiceStatus: number;
   collectableOrders: OrderStatusModels[] = [];
   collectedOrders: OrderStatusModels[] = [];
+  uncollectableProducts: OrderStatusModels[] = [];
   exchangeRates: ExchangeRate
   private intervalId: any;
 
@@ -28,10 +29,24 @@ export class OrderStateComponent implements OnInit {
     this.exchangeRates = response;
     this.collectableOrders = await this.getOrders(1, 2);
     this.collectedOrders = await this.getOrders(1, 1);
+    this.uncollectableProducts = await this.getOrders(0, 2);
+    this.uncollectableProducts.forEach(order => {
+      order.orderStatus = 'TOPLANAMAZ';
+    });
+    console.log(this.collectableOrders)
+    this.collectableOrders = this.collectableOrders.concat(this.uncollectableProducts)
+    console.log(this.collectableOrders)
     // setInterval başlat ve referansı intervalId'e ata
     this.intervalId = setInterval(async () => {
       this.collectableOrders = await this.getOrders(1, 2);
       this.collectedOrders = await this.getOrders(1, 1);
+
+
+      this.uncollectableProducts = await this.getOrders(0, 2);
+      this.uncollectableProducts.forEach(order => {
+        order.orderStatus = 'TOPLANAMAZ';
+      });
+      this.collectableOrders = this.collectableOrders.concat(this.uncollectableProducts)
     }, 40000);
 
     // Yavaş yavaş sayfanın altına kaydır
