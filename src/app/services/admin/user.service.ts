@@ -126,7 +126,7 @@ export class UserService {
   async deleteUser(id: number): Promise<boolean> {
     try {
       const response: any = await this.client
-        .delete<string>({ controller: "users/delete-user" }, id)
+        .get<string>({ controller: "users/delete-user" }, id.toString())
         .toPromise();
 
       return response;
