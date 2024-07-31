@@ -46,7 +46,8 @@ exports.WarehouseOperationListComponent = void 0;
 var core_1 = require("@angular/core");
 var createBarcode_1 = require("src/app/components/Product/create-barcode/models/createBarcode");
 var WarehouseOperationListComponent = /** @class */ (function () {
-    function WarehouseOperationListComponent(httpClientService, productService, spinnerService, router, warehosueService, formBuilder, orderService, headerService, toasterService) {
+    function WarehouseOperationListComponent(httpClientService, productService, spinnerService, router, warehosueService, formBuilder, orderService, headerService, toasterService, exportCsvService) {
+        var _this = this;
         this.httpClientService = httpClientService;
         this.productService = productService;
         this.spinnerService = spinnerService;
@@ -56,7 +57,18 @@ var WarehouseOperationListComponent = /** @class */ (function () {
         this.orderService = orderService;
         this.headerService = headerService;
         this.toasterService = toasterService;
+        this.exportCsvService = exportCsvService;
         this.currentPage = 1;
+        this.warehouseOperationListModels = [];
+        this.selectedOperations = [];
+        this.items = [
+            {
+                label: 'Excele Aktar',
+                command: function () {
+                    _this.exportCsv();
+                }
+            }
+        ];
         //--------------------------------------------------------------------------------------------- ITEMS TO BRING
         this.itemsToCollectDialog = false;
         this.itemsToCollect = [];
@@ -80,6 +92,9 @@ var WarehouseOperationListComponent = /** @class */ (function () {
                 }
             });
         });
+    };
+    WarehouseOperationListComponent.prototype.exportCsv = function () {
+        this.exportCsvService.exportToCsv(this.warehouseOperationListModels, 'my-orders');
     };
     WarehouseOperationListComponent.prototype.bringItemsToCollect = function (orderNumber) {
         return __awaiter(this, void 0, void 0, function () {

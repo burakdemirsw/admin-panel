@@ -83,7 +83,6 @@ var card_1 = require("primeng/card");
 var button_1 = require("primeng/button");
 var fileupload_1 = require("primeng/fileupload");
 var referrer_policy_directive_1 = require("./referrer-policy.directive");
-var test_component_1 = require("./components/Order/invoice-list/test/test.component");
 var table_1 = require("primeng/table");
 var inputtext_1 = require("primeng/inputtext");
 var pages_loginv2_component_1 = require("./pages/pages-loginv2/pages-loginv2.component");
@@ -120,6 +119,11 @@ var overlaypanel_1 = require("primeng/overlaypanel");
 var read_barcode_component_1 = require("./components/Product/read-barcode/read-barcode.component");
 var sidebar_1 = require("primeng/sidebar");
 var create_product_barcode_component_1 = require("./components/Product/create-product-barcode/create-product-barcode.component");
+var proposal_list_component_1 = require("./components/Product/proposal-list/proposal-list.component");
+var create_proposal_component_1 = require("./components/Product/create-proposal/create-proposal.component");
+var shelf_component_1 = require("./components/Warehouse/shelf/shelf.component");
+var splitbutton_1 = require("primeng/splitbutton");
+var service_management_component_1 = require("./components/service-management/service-management.component");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -172,7 +176,6 @@ var AppModule = /** @class */ (function () {
                 box_count_component_1.BoxCountComponent,
                 create_order_component_1.CreateOrderComponent,
                 referrer_policy_directive_1.ReferrerPolicyDirective,
-                test_component_1.TestComponent,
                 pages_loginv2_component_1.PagesLoginv2Component,
                 user_list_component_1.UserListComponent,
                 customer_list_component_1.CustomerListComponent,
@@ -194,7 +197,11 @@ var AppModule = /** @class */ (function () {
                 collected_packages_component_2.CollectedPackagesComponent,
                 order_state_component_1.OrderStateComponent,
                 read_barcode_component_1.ReadBarcodeComponent,
-                create_product_barcode_component_1.CreateProductBarcodeComponent
+                create_product_barcode_component_1.CreateProductBarcodeComponent,
+                proposal_list_component_1.ProposalListComponent,
+                create_proposal_component_1.CreateProposalComponent,
+                shelf_component_1.ShelfComponent,
+                service_management_component_1.ServiceManagementComponent
             ],
             imports: [
                 toolbar_1.ToolbarModule,
@@ -224,6 +231,7 @@ var AppModule = /** @class */ (function () {
                 tabview_1.TabViewModule,
                 card_1.CardModule,
                 button_1.ButtonModule,
+                splitbutton_1.SplitButtonModule,
                 steps_1.StepsModule,
                 chart_1.ChartModule,
                 selectbutton_1.SelectButtonModule,

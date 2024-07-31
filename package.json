@@ -45,6 +45,7 @@
     "tesseract.js": "^5.0.5",
     "tslib": "^2.3.0",
     "uuid": "^9.0.1",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.14.6"
   },
   "devDependencies": {

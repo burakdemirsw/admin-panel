@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 import { UserRegister_VM, UserLoginCommandModel, RefreshTokenCommandModel, GetUserFilter, UserClientInfoResponse, UserList_VM, Token, PasswordRequest_CM } from 'src/app/models/model/user/userRegister_VM';
+import { UserShelf } from 'src/app/models/model/user/personalShelf';
+
 
 @Injectable({
   providedIn: 'root'
@@ -63,7 +65,7 @@ export class UserService {
       localStorage.setItem("phoneNumber", userClientInfoResponse.phoneNumber.toString() == null ? "" : userClientInfoResponse.phoneNumber.toString());
       localStorage.setItem("name", userClientInfoResponse.name.toString() == null ? "" : userClientInfoResponse.name.toString());
       localStorage.setItem("surname", userClientInfoResponse.surname.toString() == null ? "" : userClientInfoResponse.surname.toString());
-      localStorage.setItem("currAccCode", userClientInfoResponse.surname.toString() == null ? "" : userClientInfoResponse.currAccCode.toString());
+      localStorage.setItem("currAccCode", userClientInfoResponse.currAccCode.toString() == null ? "" : userClientInfoResponse.currAccCode.toString());
 
 
       if (response) {
@@ -149,9 +151,9 @@ export class UserService {
         model.mail = localStorage.getItem("mail")
         model.salesPersonCode = localStorage.getItem("salesPersonCode")
         model.mail = localStorage.getItem("phoneNumber")
-        model.mail = localStorage.getItem("name")
-        model.mail = localStorage.getItem("surname")
-        model.mail = localStorage.getItem("currAccCode")
+        model.name = localStorage.getItem("name")
+        model.surname = localStorage.getItem("surname")
+        model.currAccCode = localStorage.getItem("currAccCode")
 
         model.roleDescription = localStorage.getItem("roleDescription")
         return model;
@@ -206,5 +208,54 @@ export class UserService {
     localStorage.clear();
     this.router.navigate(["/pages-loginv2"]);
 
+  }
+
+  async addUserShelf(request: UserShelf): Promise<boolean> {
+    try {
+      const response = await this.client
+
+        .post<boolean>({ controller: "users/add-user-shelf" }, request)
+        .toPromise();
+
+      return response;
+    } catch (error) {
+      return null;
+    }
+  }
+  async updateUserShelf(request: UserShelf): Promise<boolean> {
+    try {
+      const response = await this.client
+
+        .post<boolean>({ controller: "users/update-user-shelf" }, request)
+        .toPromise();
+
+      return response;
+    } catch (error) {
+      return null;
+    }
+  }
+  async getUserShelves(request: number): Promise<UserShelf[]> {
+    try {
+      const response = await this.client
+
+        .get_new<UserShelf[]>({ controller: "users/get-user-shelves" }, request.toString())
+        .toPromise();
+
+      return response;
+    } catch (error) {
+      return null;
+    }
+  }
+  async deleteUserShelf(request: number): Promise<boolean> {
+    try {
+      const response = await this.client
+
+        .get_new<boolean>({ controller: "users/delete-user-shelf" }, request.toString())
+        .toPromise();
+
+      return response;
+    } catch (error) {
+      return null;
+    }
   }
 }

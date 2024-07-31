@@ -11,6 +11,8 @@ import { CreateBarcodeFromOrder_RM } from '../../Product/create-barcode/models/c
 import { Product } from 'src/app/models/model/product/product';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
+import { ExportCsvService } from 'src/app/services/admin/export-csv.service';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-purchase-order-managament',
@@ -20,8 +22,17 @@ import { HeaderService } from 'src/app/services/admin/header.service';
 export class PurchaseOrderManagamentComponent implements OnInit {
 
   numberOfList: number[] = [1, 10, 20, 50, 100]
-  saleOrderModels: SaleOrderModel[]
+  saleOrderModels: SaleOrderModel[] = []
+  selectedOrders: SaleOrderModel[] = []
   currentPage: number = 1;
+  items: MenuItem[] = [
+    {
+      label: 'Excele Aktar',
+      command: () => {
+        this.exportCsv();
+      }
+    }
+  ];
   constructor(
     private httpClientService: HttpClientService,
     private toasterService: ToasterService,
@@ -29,7 +40,8 @@ export class PurchaseOrderManagamentComponent implements OnInit {
     private orderService: OrderService,
     private formBuilder: FormBuilder,
     private productService: ProductService,
-    private headerService: HeaderService
+    private headerService: HeaderService,
+    private exportCsvService: ExportCsvService
 
 
   ) { }
@@ -41,6 +53,9 @@ export class PurchaseOrderManagamentComponent implements OnInit {
     //this.spinnerService.hide();
 
 
+  }
+  exportCsv() {
+    this.exportCsvService.exportToCsv(this.saleOrderModels, 'my-orders');
   }
   productsToCollect: ProductOfOrder[];
   formGenerator() {
@@ -102,8 +117,8 @@ export class PurchaseOrderManagamentComponent implements OnInit {
   }
 
   async getPurchaseOrders(): Promise<any> {
-    const response =
-      this.saleOrderModels = await this.orderService.getPurchaseOrders()
+
+    this.saleOrderModels = await this.orderService.getPurchaseOrders()
 
   }
 

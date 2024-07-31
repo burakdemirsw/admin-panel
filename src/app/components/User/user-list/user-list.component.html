@@ -1,15 +1,8 @@
 <main id="main" class="main">
   <section class="section">
     <div class="card custom-card mb-3">
-      <div
-        class="card-body d-flex justify-content-start mt-3"
-        style="overflow-x: auto"
-      >
-        <button
-          type="button"
-          class="btn custom-btn-primary"
-          routerLink="/register"
-        >
+      <div class="card-body d-flex justify-content-start mt-3" style="overflow-x: auto">
+        <button type="button" class="btn custom-btn-primary" routerLink="/register">
           <i class="fas fa-plus"></i> Kullanıcı Ekle
         </button>
       </div>
@@ -17,70 +10,111 @@
 
     <div class="card">
       <div class="card-body">
-        <div class="table-responsive-lg">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Ad</th>
-                <th scope="col">SoyAd</th>
-                <th scope="col">Satış Elemanı Kodu</th>
-                <th scope="col">Email</th>
-                <th scope="col">Şifre</th>
-                <th scope="col">Telefon Numarası</th>
-                <th scope="col">Rol</th>
+        <p-table #dt6 [value]="users" [(selection)]="selectedUsers" dataKey="id" [paginator]="true"
+          [rowsPerPageOptions]="[5, 10, 20]" [resizableColumns]="true" expandableRows="true" columnResizeMode="expand"
+          styleClass="p-datatable-striped" [rows]="10" [tableStyle]="{ 'min-width': '50rem' }"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+          <ng-template pTemplate="caption">
 
-                <th scope="col">İşlemler</th>
-                <!-- <th scope="col">Bildirim Açık</th> -->
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let user of users; let i = index">
-                <!-- <td>
-              <p-image
-              src="{{ personal.photoUrl }}"
-              previewImageSrc="{{ personal.photoUrl }}"
-              alt="Image"
-              width="40"
-              [preview]="true"
-              ></p-image>
-            </td> -->
-                <td>{{ user.id }}</td>
-                <td>{{ user.firstName }}</td>
-                <td>{{ user.lastName }}</td>
-                <td>{{ user.salesPersonCode }}</td>
-                <td>{{ user.email }}</td>
-                <td>****</td>
-                <td>{{ user.phoneNumber }}</td>
-                <td>{{ user.roleDescription }}</td>
-                <!-- <td>{{ user.SubscribeToPromotions }}</td> -->
-                <!--  -->
-                <td>
-                  <button
-                    class="btn btn-primary"
-                    status="primary"
-                    routerLink="/user-update/{{ user.id }}"
-                  >
-                    <i class="fa-solid fa-pencil"></i>
-                  </button>
-                  <div
-                    class="btn-group"
-                    role="group"
-                    aria-label="Basic example"
-                  >
-                    <button
-                      class="btn btn-danger"
-                      status="danger"
-                      (click)="deleteUser(user.id)"
-                    >
-                      <i class="fa-solid fa-trash"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+            <h5 *ngIf="selectedUsers.length > 0" style="text-align: left">
+              {{ selectedUsers.length }}/{{ users.length }} Adet Kullanıcı Seçildi
+            </h5>
+          </ng-template>
+
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="id">
+                Id
+                <p-sortIcon field="id"></p-sortIcon>
+              </th>
+              <th pSortableColumn="firstName">
+                Ad
+                <p-sortIcon field="firstName"></p-sortIcon>
+              </th>
+              <th pSortableColumn="lastName">
+                SoyAd
+                <p-sortIcon field="lastName"></p-sortIcon>
+              </th>
+              <th pSortableColumn="salesPersonCode">
+                Satış Elemanı Kodu
+                <p-sortIcon field="salesPersonCode"></p-sortIcon>
+              </th>
+              <th pSortableColumn="email">
+                Email
+                <p-sortIcon field="email"></p-sortIcon>
+              </th>
+              <th>
+                Şifre
+              </th>
+              <th pSortableColumn="phoneNumber">
+                Telefon Numarası
+                <p-sortIcon field="phoneNumber"></p-sortIcon>
+              </th>
+              <th pSortableColumn="roleDescription">
+                Rol
+                <p-sortIcon field="roleDescription"></p-sortIcon>
+              </th>
+              <th>İşlemler</th>
+            </tr>
+            <tr>
+              <th>
+                <p-columnFilter type="text" field="id" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="firstName" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="lastName" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="salesPersonCode" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="email" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="phoneNumber" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="roleDescription" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th></th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-user>
+            <tr>
+              <td>{{ user.id }}</td>
+              <td>{{ user.firstName }}</td>
+              <td>{{ user.lastName }}</td>
+              <td>{{ user.salesPersonCode }}</td>
+              <td>{{ user.email }}</td>
+              <td>****</td>
+              <td>{{ user.phoneNumber }}</td>
+              <td>{{ user.roleDescription }}</td>
+              <td>
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                </button>
+                <ul class="dropdown-menu" style="z-index: 99999;">
+                  <li>
+                    <a class="dropdown-item" [routerLink]="'/user-update/' + user.id">
+                      <i class="fa-solid fa-pencil"></i> Güncelle
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="deleteUser(user.id)">
+                      <i class="fa-solid fa-trash"></i> Sil
+                    </a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
       </div>
     </div>
   </section>

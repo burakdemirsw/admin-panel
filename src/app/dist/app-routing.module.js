@@ -66,6 +66,8 @@ var order_state_component_1 = require("./components/Order/order-state/order-stat
 var create_product_barcode_component_1 = require("./components/Product/create-product-barcode/create-product-barcode.component");
 var create_proposal_component_1 = require("./components/Product/create-proposal/create-proposal.component");
 var proposal_list_component_1 = require("./components/Product/proposal-list/proposal-list.component");
+var shelf_component_1 = require("./components/Warehouse/shelf/shelf.component");
+var service_management_component_1 = require("./components/service-management/service-management.component");
 var routes = [
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     {
@@ -291,6 +293,11 @@ var routes = [
         canActivate: [auth_guard_1.AuthGuard]
     },
     {
+        path: 'shelf-transfer-request/:operationNo/:type/:shelfNo',
+        component: shelf_transfer_request_component_1.ShelfTransferRequestComponent,
+        canActivate: [auth_guard_1.AuthGuard]
+    },
+    {
         path: 'devolopment-list',
         component: devolopment_list_component_1.DevolopmentListComponent,
         canActivate: [auth_guard_1.AuthGuard]
@@ -306,6 +313,8 @@ var routes = [
     { path: 'create-product-barcode/:operationNo', component: create_product_barcode_component_1.CreateProductBarcodeComponent },
     { path: 'create-proposal/:id', component: create_proposal_component_1.CreateProposalComponent, canActivate: [auth_guard_1.AuthGuard] },
     { path: 'proposal-list', component: proposal_list_component_1.ProposalListComponent, canActivate: [auth_guard_1.AuthGuard] },
+    { path: 'shelf', component: shelf_component_1.ShelfComponent, canActivate: [auth_guard_1.AuthGuard] },
+    { path: 'service-management', component: service_management_component_1.ServiceManagementComponent, canActivate: [auth_guard_1.AuthGuard] },
     //-------------------------------------------------------------------------
     { path: 'retail-invoice-list', component: retail_invoice_list_component_1.RetailInvoiceListComponent },
     { path: 'retail-orders-managament/:status/:invoiceStatus', component: retail_order_management_component_1.RetailOrderManagementComponent },

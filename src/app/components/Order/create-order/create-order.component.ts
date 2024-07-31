@@ -86,7 +86,7 @@ export class CreateOrderComponent implements OnInit {
         this.headerService.updatePageTitle(this.pageTitle);
       }
     })
-
+    this.createUpdateProductForm()
     this.setCustomer();
     this.createCargoForm();
     this.createCargoForm_2()
@@ -235,6 +235,7 @@ export class CreateOrderComponent implements OnInit {
       if (response.clientOrder) {
         var order = response;
         this.selectedProducts = [];
+
         if (order.clientOrderBasketItems.length > 0) {
           order.clientOrderBasketItems.forEach((basketItem: ClientOrderBasketItem) => {
             var object = this.convertLineToObject(basketItem);
@@ -627,7 +628,7 @@ export class CreateOrderComponent implements OnInit {
 
   }
 
-
+  updateProductDialog: boolean = false;
   suggestedProductsDialog: boolean = false;
   getCustomerDialog: boolean = false;
   findProductDialog: boolean = false;
@@ -650,6 +651,9 @@ export class CreateOrderComponent implements OnInit {
     }
     if (dialogName === "suggestedProductsDialog") {
       this.suggestedProductsDialog = !this.suggestedProductsDialog
+    }
+    if (dialogName === "updateProductDialog") {
+      this.updateProductDialog = !this.updateProductDialog
     }
   }
   goToPage(index: number) {
@@ -1161,9 +1165,25 @@ export class CreateOrderComponent implements OnInit {
   //----------------------------------------------------
   //---------------------------------------------------- PRODUCTS
 
+  selectedProduct: ProductList_VM;
+  selectedIndex: number;
+  updateProductForm: FormGroup
+  createUpdateProductForm() {
+    this.updateProductForm = this.formBuilder.group({
+      price: [null, Validators.required],
+      quantity: [null, Validators.required]
+    });
+  }
+  openUpdateDialog(product: ProductList_VM, index: number) {
+    this.selectedProduct = product;
+    this.selectedIndex = index;
+
+    this.updateProductForm.get('price').setValue(this.selectedProduct.discountedPrice)
+    this.updateProductForm.get('quantity').setValue(this.selectedProduct.quantity)
+    this.openDialog('updateProductDialog');
+
+  }
   discountForm: FormGroup;
-
-
   resetProductForm() {
     this.getProductsForm.reset();
     this.toasterService.success("Form Sıfırlandı")
@@ -1346,8 +1366,10 @@ export class CreateOrderComponent implements OnInit {
           } else {
             this.toasterService.success(this.products.length + " Adet Ürün Bulundu")
             for (const _product of this.products) {
+              // if (this.products.length > 1) {
+              //   _product.description += ` (SK: ${request.barcode})`;
+              // }
               await this.addCurrentProducts(_product);
-
             }
             this.getProductsForm.get('barcode').setValue(null);
             this.products = [];
@@ -1480,6 +1502,9 @@ export class CreateOrderComponent implements OnInit {
               this.getProductsForm.get('shelfNo').setValue(null);
 
               for (const _product of this.products) {
+                // if (this.products.length > 1) {
+                //   _product.description += ` (SK: ${request.barcode})`;
+                // }
                 await this.addCurrentProducts(_product);
 
               }
@@ -1497,11 +1522,6 @@ export class CreateOrderComponent implements OnInit {
 
 
         }
-        //↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑ ↑
-
-
-
-
 
       }
     }
@@ -1611,6 +1631,9 @@ export class CreateOrderComponent implements OnInit {
     this.cancelRowEdit(product, 0);
   }
   async onRowEditSave(product: ProductList_VM, index: number) {
+    product.discountedPrice = this.updateProductForm.value.price;
+    product.quantity = this.updateProductForm.value.quantity;
+
     this.quantityList = [];
     if (product.price > 0) {
 
@@ -1637,6 +1660,7 @@ export class CreateOrderComponent implements OnInit {
 
     }
     this.cancelRowEdit(product, 0);
+    this.updateProductDialog = false;
   }
 
 
@@ -1814,7 +1838,6 @@ export class CreateOrderComponent implements OnInit {
           var __product: ProductList_VM = this.selectedProducts.find(p => p.itemCode == 'KARGO');
 
           __product.price = value.code;
-
           __product.basePrice = value.code;
           __product.discountedPrice = value.code;
           await this.orderService.updateClientOrderBasketItem(this.id, __product.lineId, __product.quantity, __product.price, __product.discountedPrice, __product.discountedPrice);
@@ -2385,9 +2408,10 @@ export class CreateOrderComponent implements OnInit {
       const _batchSize = 50;
       const _totalProducts = this.selectedProducts.length;
       let _batchStart = 0;
+      let invoiceNumber = "";
       while (_batchStart < _totalProducts) {
         // Determine the end of the current batch
-        let _batchEnd = Math.min(_batchStart + batchSize, totalProducts);
+        let _batchEnd = Math.min(_batchStart + _batchSize, totalProducts);
 
         // Create a batch of products
         let _productBatch = this.selectedProducts.slice(_batchStart, _batchEnd);
@@ -2405,7 +2429,8 @@ export class CreateOrderComponent implements OnInit {
           this.salesPersonCode,
           this.paymentForm.value.taxTypeCode.value,
           this.selectedAddresses[0].postalAddressID,
-          this.selectedSubCustomers[0]?.subCurrAccId
+          this.selectedSubCustomers[0]?.subCurrAccId,
+          invoiceNumber
         );
 
         __request.lines.forEach(l1 => {
@@ -2421,10 +2446,12 @@ export class CreateOrderComponent implements OnInit {
         });
 
         var __response = await this.orderService.createInvoice(__request);
-        if (__response == null) {
+        if (__response.status) {
+          invoiceNumber = __response.invoiceNumber;
+
+        } else {
           this.toasterService.error("Faturalaştırma Sırasında Hata Alındı")
           break;
-
         }
         _batchStart += _batchSize;
       }

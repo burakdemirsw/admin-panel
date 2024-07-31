@@ -10,6 +10,7 @@ import { HeaderService } from 'src/app/services/admin/header.service';
 })
 export class CustomerListComponent implements OnInit {
   customers: ClientCustomer[] = []
+  selectedCustomers: ClientCustomer[] = []
   currentPage = 0
   constructor(private orderService: OrderService, private headerService: HeaderService) { }
 

@@ -51,6 +51,7 @@ var CustomerListComponent = /** @class */ (function () {
         this.orderService = orderService;
         this.headerService = headerService;
         this.customers = [];
+        this.selectedCustomers = [];
         this.currentPage = 0;
     }
     CustomerListComponent.prototype.ngOnInit = function () {

@@ -591,6 +591,7 @@ var WarehouseOperationComponent = /** @class */ (function () {
                                         product.itemCode +
                                         '\n Barkod- ' +
                                         product.barcode;
+                                this.toasterService.error(this.blockedCountReason);
                                 return [2 /*return*/];
                             }
                         }

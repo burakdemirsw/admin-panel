@@ -3,25 +3,16 @@
     <div class="card" *ngIf="!pageDescription">
       <div class="card-body">
         <!-- Filtreleme Alanı (Başlangıç) -->
+
+
         <div class="btn-group mb-3 mt-4">
           <div class="input-group">
-            <button
-              class="btn btn-primary"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#filterCollapse"
-              aria-expanded="false"
-              aria-controls="filterCollapse"
-            >
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse"
+              aria-expanded="false" aria-controls="filterCollapse">
               <i class="fa fa-bars" aria-hidden="true"></i>
             </button>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Ara..."
-              [(ngModel)]="searchedOrder"
-              (keydown.enter)="goToPage()"
-            />
+            <input type="text" class="form-control" placeholder="Ara..." [(ngModel)]="searchedOrder"
+              (keydown.enter)="goToPage()" />
             <button class="btn btn-primary" type="button" (click)="goToPage()">
               <i class="fa fa-search" aria-hidden="true"></i>
             </button>
@@ -29,84 +20,45 @@
         </div>
 
         <div class="collapse" id="filterCollapse">
-          <form
-            [formGroup]="filterForm"
-            (ngSubmit)="onSubmit(filterForm.value)"
-          >
+          <form [formGroup]="filterForm" (ngSubmit)="onSubmit(filterForm.value)">
             <div class="row mb-3">
               <div class="col-md-4 mb-3">
                 <div class="form-group">
-                  <input
-                    pInputText
-                    placeholder="Sipariş Numarası"
-                    type="text"
-                    id="orderNo"
-                    class="form-control"
-                    formControlName="orderNo"
-                  />
+                  <input pInputText placeholder="Sipariş Numarası" type="text" id="orderNo" class="form-control"
+                    formControlName="orderNo" />
                 </div>
               </div>
               <div class="col-md-4 mb-3">
                 <div class="form-group">
-                  <input
-                    pInputText
-                    placeholder="Müşteri Kodu"
-                    type="text"
-                    id="currAccCode"
-                    class="form-control"
-                    formControlName="currAccCode"
-                  />
+                  <input pInputText placeholder="Müşteri Kodu" type="text" id="currAccCode" class="form-control"
+                    formControlName="currAccCode" />
                 </div>
               </div>
 
               <div class="col-md-4 mb-3">
                 <div class="form-group">
-                  <input
-                    pInputText
-                    placeholder="Müşteri Adı"
-                    type="text"
-                    id="customerName"
-                    class="form-control"
-                    formControlName="customerName"
-                  />
+                  <input pInputText placeholder="Müşteri Adı" type="text" id="customerName" class="form-control"
+                    formControlName="customerName" />
                 </div>
               </div>
             </div>
             <div class="row mb-3">
               <div class="col-md-4 mb-3">
                 <div class="form-group">
-                  <input
-                    pInputText
-                    placeholder="Satıcı Kodu"
-                    type="text"
-                    id="sellerCode"
-                    class="form-control"
-                    formControlName="sellerCode"
-                  />
+                  <input pInputText placeholder="Satıcı Kodu" type="text" id="sellerCode" class="form-control"
+                    formControlName="sellerCode" />
                 </div>
               </div>
               <div class="col-md-4 mb-3">
                 <div class="form-group">
-                  <input
-                    pInputText
-                    placeholder="İşlem Başlangıç Tarihi"
-                    type="date"
-                    id="startDate"
-                    class="form-control"
-                    formControlName="startDate"
-                  />
+                  <input pInputText placeholder="İşlem Başlangıç Tarihi" type="date" id="startDate" class="form-control"
+                    formControlName="startDate" />
                 </div>
               </div>
               <div class="col-md-4 mb-3">
                 <div class="form-group">
-                  <input
-                    pInputText
-                    placeholder="İşlem Bitiş Tarihi"
-                    type="date"
-                    id="endDate"
-                    class="form-control"
-                    formControlName="endDate"
-                  />
+                  <input pInputText placeholder="İşlem Bitiş Tarihi" type="date" id="endDate" class="form-control"
+                    formControlName="endDate" />
                 </div>
               </div>
             </div>
@@ -117,27 +69,15 @@
             </div>
             <div class="card custom-card mt-3">
               <div class="card-body">
-                <button
-                  type="button"
-                  class="btn custom-btn-primary mt-3"
-                  (click)="getOrders(1, 1)"
-                >
+                <button type="button" class="btn custom-btn-primary mt-3" (click)="getOrders(1, 1)">
                   <i class="fas fa-file-invoice-dollar"></i> Faturalandırılan
                   Siparişler
                 </button>
-                <button
-                  type="button"
-                  class="btn custom-btn-primary mt-3"
-                  (click)="getOrders(1, 2)"
-                >
+                <button type="button" class="btn custom-btn-primary mt-3" (click)="getOrders(1, 2)">
                   <i class="fas fa-file-excel"></i> Faturalandırılmayan
                   Siparişler
                 </button>
-                <button
-                  type="button"
-                  class="btn custom-btn-primary mt-3"
-                  (click)="getOrders(0, 3)"
-                >
+                <button type="button" class="btn custom-btn-primary mt-3" (click)="getOrders(0, 3)">
                   <i class="fas fa-file-invoice"></i> Kısmi Faturalaştırılan
                   Siparişler
                 </button>
@@ -150,37 +90,21 @@
     </div>
 
     <div class="card custom-card mb-3">
-      <div
-        class="p-4 card-body d-flex justify-content-start"
-        style="overflow-x: auto"
-      >
-        <button
-          type="button"
-          class="btn custom-btn-primary"
-          (click)="getOrders(1, 2)"
-        >
+      <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
+        <button type="button" class="btn custom-btn-primary" (click)="getOrders(1, 2)">
           <i class="fas fa-check"></i> Toplanabilir Siparişler
         </button>
-        <button
-          type="button"
-          class="btn custom-btn-primary"
-          (click)="getOrders(0, 2)"
-        >
+        <button type="button" class="btn custom-btn-primary" (click)="getOrders(0, 2)">
           <i class="fas fa-times-circle"></i> Toplanamaz Siparişler
         </button>
-        <button
-          type="button"
-          class="btn custom-btn-primary"
-          (click)="getMissingOrders()"
-        >
+        <button type="button" class="btn custom-btn-primary" (click)="getMissingOrders()">
           <i class="fas fa-exclamation-triangle"></i> Eksik Ürünlü Siparişler
         </button>
       </div>
     </div>
 
     <div class="card">
-      <div class="p-4 card-body">
-        <h5 class="card-title">Ürünler</h5>
+      <div class=" card-body">
 
         <div class="btn-group mb-3" *ngIf="!pageDescription">
           <!-- <button type="button" class="btn btn-primary" (click)="routeToCPP()">
@@ -204,231 +128,226 @@
           </select> -->
         </div>
 
-        <div style="overflow-x: auto">
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Sipariş Tarihi</th>
-                <th scope="col">Sipariş Numarası</th>
-                <th scope="col">Müşteri Kodu</th>
-                <th scope="col">Müşteri Adı</th>
-                <th scope="col">Satıcı Kodu</th>
-                <th scope="col">Açıklama</th>
 
-                <th scope="col">Miktar</th>
-                <th scope="col">Tutar</th>
-                <th scope="col">Toplanan Miktar</th>
-                <th scope="col">Toplanalabilir Miktar</th>
-                <!-- <th scope="col">Durum</th> -->
-                <th scope="col">Depo</th>
+        <p-table #dt2 [value]="saleOrderModels" [(selection)]="selectedOrders" dataKey="orderNumber" [paginator]="true"
+          [rowsPerPageOptions]="[5, 10, 20]" [resizableColumns]="true" expandableRows="true" columnResizeMode="expand"
+          styleClass="p-datatable-striped" [rows]="50"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+          <ng-template pTemplate="caption">
+            <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
+              <p-splitButton label="İşlemler" [model]="items" appendTo="body" />
 
-                <th scope="col">Kargo</th>
-                <th scope="col">Fatura</th>
-                <!-- <th scope="col">Sip. Top. Tut.</th> -->
-                <th scope="col">İşlemler</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                *ngFor="
-                  let order of saleOrderModels
-                    | paginate : { itemsPerPage: 50, currentPage: currentPage }
-                "
-              >
-                <td>{{ order.orderDate | date : "dd.MM.yyyy HH:mm" }}</td>
-                <td>{{ order.orderNumber }}</td>
-                <td>{{ order.currAccCode }}</td>
-                <td>{{ order.currAccDescription }}</td>
-                <td>{{ order.salespersonCode }}</td>
-                <td>{{ order.description }}</td>
+            </div>
+            <h5 *ngIf="selectedOrders.length > 0" style="text-align: left">
+              {{ selectedOrders.length }}/{{ saleOrderModels.length }} Adet Sipariş Seçildi
+            </h5>
+          </ng-template>
 
-                <td>{{ order.qty1 }}</td>
-                <td>{{ order.price.toString() | currency : "₺" }}</td>
-                <td>{{ order.collectedQty }}</td>
-                <td>{{ order.remainingQty }}</td>
-                <!-- <td>
-                  <button
-                    class="btn"
-                    [ngClass]="{
-                      'btn-success': order.status === 1,
-                      'btn-danger': order.status === 2
-                    }"
-                  >
-                    {{ order.status === 2 ? "Toplanamaz" : "Toplanabilir" }}
-                  </button>
-                </td> -->
-                <td>{{ order.warehouseCode }}</td>
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Seç</th>
+              <th>İşlemler</th>
+              <th pSortableColumn="orderDate">
+                Sipariş Tarihi
+                <p-sortIcon field="orderDate"></p-sortIcon>
+              </th>
+              <th pSortableColumn="orderNumber">
+                Sipariş Numarası
+                <p-sortIcon field="orderNumber"></p-sortIcon>
+              </th>
+              <th pSortableColumn="currAccCode">
+                Müşteri Kodu
+                <p-sortIcon field="currAccCode"></p-sortIcon>
+              </th>
+              <th pSortableColumn="currAccDescription">
+                Müşteri Adı
+                <p-sortIcon field="currAccDescription"></p-sortIcon>
+              </th>
+              <th pSortableColumn="salespersonCode">
+                Satıcı Kodu
+                <p-sortIcon field="salespersonCode"></p-sortIcon>
+              </th>
+              <th pSortableColumn="description">
+                Açıklama
+                <p-sortIcon field="description"></p-sortIcon>
+              </th>
+              <th pSortableColumn="qty1">
+                Miktar
+                <p-sortIcon field="qty1"></p-sortIcon>
+              </th>
+              <th pSortableColumn="price">
+                Tutar
+                <p-sortIcon field="price"></p-sortIcon>
+              </th>
+              <th pSortableColumn="collectedQty">
+                Toplanan Miktar
+                <p-sortIcon field="collectedQty"></p-sortIcon>
+              </th>
+              <th pSortableColumn="remainingQty">
+                Toplanalabilir Miktar
+                <p-sortIcon field="remainingQty"></p-sortIcon>
+              </th>
+              <th pSortableColumn="warehouseCode">
+                Depo
+                <p-sortIcon field="warehouseCode"></p-sortIcon>
+              </th>
+              <th pSortableColumn="isShipped">
+                Kargo
+                <p-sortIcon field="isShipped"></p-sortIcon>
+              </th>
+              <th pSortableColumn="invoiceStatus">
+                Fatura
+                <p-sortIcon field="invoiceStatus"></p-sortIcon>
+              </th>
 
-                <td>
-                  <button
-                    class="btn"
-                    [ngClass]="{
-                      'btn-success': order.isShipped === true,
-                      'btn-danger': order.isShipped === false
-                    }"
-                  >
-                    <i
-                      *ngIf="order.isShipped"
-                      class="fa fa-check"
-                      aria-hidden="true"
-                    ></i>
-                    <i
-                      *ngIf="!order.isShipped"
-                      class="fa-solid fa-ban"
-                      aria-hidden="true"
-                    ></i>
-                  </button>
-                </td>
-                <td>
-                  <button
-                    class="btn"
-                    [ngClass]="{
-                      'btn-success': order.invoiceStatus === 1,
-                      'btn-danger':
-                        order.invoiceStatus === 2 || order.invoiceStatus === 3
-                    }"
-                  >
-                    <i
-                      *ngIf="order.invoiceStatus === 1"
-                      class="fa fa-check"
-                      aria-hidden="true"
-                    ></i>
-                    <i
-                      *ngIf="order.invoiceStatus === 2"
-                      class="fa-solid fa-ban"
-                      aria-hidden="true"
-                    ></i>
-                    <i
-                      *ngIf="order.invoiceStatus === 3"
-                      class="fa fa-exclamation-triangle"
-                      aria-hidden="true"
-                    ></i>
-                  </button>
-                </td>
+            </tr>
+            <tr>
 
-                <!-- <td>{{ order.price }}</td> -->
-                <td>
-                  <div class="btn-group">
-                    <div
-                      *ngIf="!pageDescription"
-                      class="btn btn-success"
-                      data-text="Varyasyonlar"
-                      [routerLink]="
-                        order.invoiceStatus === 1
-                          ? '/order-operation/' +
-                            order.orderNumber +
-                            '/true' +
-                            '/' +
-                            order.warehouseCode
-                          : '/order-operation/' +
-                            order.orderNumber +
-                            '/false' +
-                            '/' +
-                            order.warehouseCode
-                      "
-                    >
-                      <i class="fas fa-sliders-h"></i>
-                    </div>
-                    <!-- <div
-                      class="btn btn-dark"
-                      data-text="Fatura Yazdır"
-                      *ngIf="!pageDescription"
-                    >
-                      <i
-                        (click)="
-                          printPicture(
-                            'https://marketplace.canva.com/EAFEOwL2BQo/2/0/1131w/canva-white-simple-invoice-S_aHY7Zi14A.jpg'
-                          )
-                        "
-                        class="fa fa-print"
-                      ></i>
-                    </div> -->
-                    <div
-                      *ngIf="!pageDescription"
-                      class="btn btn-success"
-                      data-text="Sil"
-                      (click)="deleteInvoiceProducts(order.orderNumber)"
-                    >
-                      <i class="fa-solid fa-file-invoice"></i>
-                    </div>
-                    <!-- <div
-                      *ngIf="!_pageDescription"
-                      class="btn btn-success"
-                      data-text="Eksik Ürünler"
-                      (click)="routeNewPage3(order.orderNumber)"
-                    >
-                      <i class="fas fa-arrow-right"></i>
-                    </div> -->
+              <th style="width: 4rem">
+                <p-tableHeaderCheckbox />
+              </th>
+              <th></th>
+              <th>
+                <p-columnFilter type="date" field="orderDate" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="orderNumber" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="currAccCode" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="currAccDescription" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="salespersonCode" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="description" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="numeric" field="qty1" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="numeric" field="price" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="numeric" field="collectedQty" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="numeric" field="remainingQty" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="warehouseCode" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="boolean" field="isShipped" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th></th>
 
-                    <div
-                      class="btn btn-success"
-                      data-text="Kargo"
-                      routerLink="/create-cargo/{{ order.orderNumber }}"
-                    >
-                      <i class="fa fa-truck" aria-hidden="true"></i>
-                    </div>
-                    <div
-                      class="btn btn-success"
-                      data-text="Barkod Etiketi Oluştur"
-                      (click)="showModal(order.orderNumber)"
-                    >
-                      <i class="fa fa-barcode" aria-hidden="true"></i>
-                    </div>
+            </tr>
+          </ng-template>
 
-                    <div
-                      *ngIf="!pageDescription"
-                      class="btn btn-success"
-                      data-text="Sil"
-                      (click)="deleteNebimOrder(order.orderNumber)"
-                    >
-                      <i class="fa-solid fa-trash"></i>
-                    </div>
+          <ng-template pTemplate="body" let-order>
+            <tr>
+              <td>
+                <p-tableCheckbox [value]="order" />
+              </td>
+              <td>
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item" data-text="Git" [routerLink]="
+        order.invoiceStatus === 1
+          ? '/order-operation/' + order.orderNumber + '/true/' + order.warehouseCode
+          : '/order-operation/' + order.orderNumber + '/false/' + order.warehouseCode
+      ">
+                      <i class="fas fa-sliders-h"></i> Git
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" data-text="Kargo" [routerLink]="'/create-cargo/' + order.orderNumber">
+                      <i class="fa fa-truck" aria-hidden="true"></i> Kargo Oluştur
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" data-text="" (click)="showModal(order.orderNumber)">
+                      <i class="fa fa-barcode" aria-hidden="true"></i> Barkod Etiketi Oluştur
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" *ngIf="!pageDescription" data-text=""
+                      (click)="deleteNebimOrder(order.orderNumber)">
+                      <i class="fas fa-trash"></i> Siparişi Nebimden Sil
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" *ngIf="!pageDescription" data-text=""
+                      (click)="deleteInvoiceProducts  (order.orderNumber)">
+                      <i class="fas fa-trash"></i> Fatura Sil
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="sendInvoiceToPrinter(order.orderNumber)">
+                      <i class="fa fa-print"></i> Fiş Yazdır
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="createPdf(order.orderNumber)">
+                      <i class="fa fa-file-pdf" aria-hidden="true"></i> Pdf Çıktısı Al
+                    </a>
+                  </li>
+                </ul>
+              </td>
+              <td>{{ order.orderDate | date : "dd.MM.yyyy HH:mm" }}</td>
+              <td>{{ order.orderNumber }}</td>
+              <td>{{ order.currAccCode }}</td>
+              <td>{{ order.currAccDescription }}</td>
+              <td>{{ order.salespersonCode }}</td>
+              <td>{{ order.description }}</td>
+              <td>{{ order.qty1 }}</td>
+              <td>{{ order.price.toString() | currency : "₺" }}</td>
+              <td>{{ order.collectedQty }}</td>
+              <td>{{ order.remainingQty }}</td>
+              <td>{{ order.warehouseCode }}</td>
+              <td>
+                <button class="btn" [ngClass]="{
+                    'btn-success': order.isShipped,
+                    'btn-danger': !order.isShipped
+                  }">
+                  <i *ngIf="order.isShipped" class="fa fa-check" aria-hidden="true"></i>
+                  <i *ngIf="!order.isShipped" class="fa-solid fa-ban" aria-hidden="true"></i>
+                </button>
+              </td>
+              <td>
+                <button class="btn" [ngClass]="{
+                    'btn-success': order.invoiceStatus === 1,
+                    'btn-danger': order.invoiceStatus !== 1
+                  }">
+                  <i *ngIf="order.invoiceStatus === 1" class="fa fa-check" aria-hidden="true"></i>
+                  <i *ngIf="order.invoiceStatus !== 1" class="fa-solid fa-ban" aria-hidden="true"></i>
+                  <i *ngIf="order.invoiceStatus === 3" class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                </button>
+              </td>
 
-                    <div
-                      class="btn btn-success"
-                      data-text="Sil"
-                      (click)="sendInvoiceToPrinter(order.orderNumber)"
-                    >
-                      <i class="fa-solid fa-print"></i>
-                    </div>
-                    <div
-                      class="btn btn-success"
-                      (click)="createPdf(order.orderNumber)"
-                    >
-                      <i class="fa-solid fa-file"></i>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <pagination-controls
-            (pageChange)="currentPage = $event"
-          ></pagination-controls>
-        </div>
+
+            </tr>
+          </ng-template>
+        </p-table>
+
+
+
       </div>
     </div>
 
-    <p-dialog
-      header="Barkod Türü Seçiniz - {{ this.selectedOrderNo }}"
-      [(visible)]="visible"
-      [modal]="true"
-      [style]="{ width: '50vw' }"
-      [draggable]="false"
-      [resizable]="false"
-    >
-      <button
-        type="button"
-        class="btn custom-btn-primary mt-3"
-        (click)="this.sendBarcodesToNebim(true)"
-      >
+    <p-dialog header="Barkod Türü Seçiniz - {{ this.selectedOrderNo }}" [(visible)]="visible" [modal]="true"
+      [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+      <button type="button" class="btn custom-btn-primary mt-3" (click)="this.sendBarcodesToNebim(true)">
         Koli
       </button>
-      <button
-        type="button"
-        class="btn custom-btn-primary mt-3"
-        (click)="this.sendBarcodesToNebim(false)"
-      >
+      <button type="button" class="btn custom-btn-primary mt-3" (click)="this.sendBarcodesToNebim(false)">
         Barkod
       </button>
     </p-dialog>

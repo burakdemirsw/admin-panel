@@ -56,6 +56,7 @@ var LogManagamentComponent = /** @class */ (function () {
         this.headerService = headerService;
         this.currentPage = 1;
         this.log_VMList = [];
+        this.selectedLogs = [];
     }
     LogManagamentComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {

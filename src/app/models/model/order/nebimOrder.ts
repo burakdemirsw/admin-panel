@@ -202,9 +202,9 @@ export class NebimInvoice {
   constructor(discountPercentage: number, discountPercentage2: number,
     exchangeRate: number, docCurrencyCode: string, customerDesc: string,
     currAccCode: string, orderNo: string, formValue: any, selectedProducts: any,
-    salesPersonCode: string, taxTypeCode: number, addressId: string, subCurrAccID: string) {
+    salesPersonCode: string, taxTypeCode: number, addressId: string, subCurrAccID: string, invoiceNumber: string) {
     this.modelType = 7;
-    this.invoiceNumber = "";
+    this.invoiceNumber = invoiceNumber;
     this.eMailAddress = "";
     this.companyCode = 1;
     this.shippingPostalAddressID = addressId;
@@ -249,7 +249,10 @@ export class NebimInvoice {
     // this.payments.push(payment)
   }
 }
-
+export class NebimInvoiceResponse {
+  status: boolean
+  invoiceNumber: string;
+}
 export class Discount {
   discountTypeCode: number;
   value: number;

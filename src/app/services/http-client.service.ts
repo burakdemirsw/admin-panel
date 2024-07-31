@@ -51,7 +51,7 @@ export class HttpClientService {
 
   post<T>(
     requestParameter: Partial<RequestParameters>,
-    body: Partial<T>
+    body: Partial<any>
   ): any {
     let url: string = '';
     if (requestParameter.fullEndPoint) url = requestParameter.fullEndPoint;

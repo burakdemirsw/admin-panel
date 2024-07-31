@@ -57,6 +57,8 @@ var WarehouseTransferListComponent = /** @class */ (function () {
         this.formBuilder = formBuilder;
         this.generalService = generalService;
         this.currentPage = 1;
+        this.warehouseTransferListModels = [];
+        this.selectedTransfers = [];
         this.innerNumberList = [];
         this.visible = false;
     }

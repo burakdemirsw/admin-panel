@@ -1,0 +1,18 @@
+<main id="main" class="main">
+  <section class="section">
+    <div class="container">
+
+      <div *ngFor="let service of services" class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">{{ service.header }}</h5>
+          <p class="card-text">
+            {{ service.desc }}
+            <button class="btn btn-primary float-end" (click)="executeAction(service.action)">
+              İşlemi Çalıştır
+            </button>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

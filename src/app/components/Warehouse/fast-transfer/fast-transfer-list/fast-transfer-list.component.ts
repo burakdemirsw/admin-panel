@@ -2,12 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { MenuItem } from 'primeng/api/public_api';
 import { CreateBarcodeFromOrder_RM } from 'src/app/components/Product/create-barcode/models/createBarcode';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
+import { UserShelf } from 'src/app/models/model/user/personalShelf';
+import { UserClientInfoResponse } from 'src/app/models/model/user/userRegister_VM';
 import { FastTransferListModel } from 'src/app/models/model/warehouse/fastTransferModel';
+import { ExportCsvService } from 'src/app/services/admin/export-csv.service';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { ProductService } from 'src/app/services/admin/product.service';
+import { UserService } from 'src/app/services/admin/user.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 
@@ -17,7 +22,7 @@ import { ToasterService } from 'src/app/services/ui/toaster.service';
   styleUrls: ['./fast-transfer-list.component.css']
 })
 export class FastTransferListComponent implements OnInit {
-
+  shelf: any;
   currentPage: number = 1;
   constructor(
 
@@ -25,14 +30,19 @@ export class FastTransferListComponent implements OnInit {
     private router: Router, private headerService: HeaderService,
     private warehosueService: WarehouseService, private generalService: GeneralService,
     private productService: ProductService, private toasterService: ToasterService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private userService: UserService,
+    private exportCsvService: ExportCsvService
 
   ) { }
   filterForm: FormGroup;
   fastTransferListModels: FastTransferListModel[] = []
+  selectedTransfers: FastTransferListModel[] = []
   pageType: string;
+  user_info: UserClientInfoResponse;
   async ngOnInit() {
-
+    this.user_info = await this.userService.getUserClientInfoResponse();
+    await this.getUserShelves();
     this.spinnerService.show();
     this.activatedRoute.params.subscribe(async (params) => {
       if (params["type"]) {
@@ -52,15 +62,52 @@ export class FastTransferListComponent implements OnInit {
 
     this.spinnerService.hide();
   }
-  async goPage(pageType: string) {
-    var uuid = await this.generalService.generateGUID()
-    location.href =
-      location.origin +
-      '/shelf-transfer-request/' +
-      uuid +
-      '/' +
-      pageType;
+
+
+  items: MenuItem[] = [
+    {
+      label: 'Excele Aktar',
+      command: () => {
+        this.exportCsv();
+      }
+    }
+  ];
+  exportCsv() {
+    this.exportCsvService.exportToCsv(this.fastTransferListModels, 'my-orders');
   }
+  userShelves: UserShelf[] = [];
+  async getUserShelves() {
+    var response = await this.userService.getUserShelves(this.user_info.userId)
+    this.userShelves = response;
+  }
+  async goPage(pageType: string) {
+    if (pageType != '4') {
+      var uuid = await this.generalService.generateGUID()
+      location.href =
+        location.origin +
+        '/shelf-transfer-request/' +
+        uuid +
+        '/' +
+        pageType;
+    } else {
+      var uuid = await this.generalService.generateGUID()
+      var shelfNo: string = this.shelf.shelfNo;
+      var url = location.origin +
+        '/shelf-transfer-request/' +
+        uuid +
+        '/' +
+        pageType
+        + '/' +
+        shelfNo;
+      this.toasterService.info(shelfNo)
+      console.log(url)
+
+      location.href =
+        url;
+    }
+
+  }
+
   productsToCollect: ProductOfOrder[];
 
   // formGenerator() {

@@ -91,7 +91,6 @@
                 type="button" (click)="getsuggestedProducts(this.getProductsForm.value.barcode,true)"></button>
               <button pButton pRipple class="p-button-rounded p-button-text" (onClick)="resetProductForm()"
                 icon="pi pi-trash" label="Formu Sil" type="reset"></button>
-              <!-- <app-read-barcode (value)="printValue($event)"></app-read-barcode>-->
             </p-inputGroup>
 
 
@@ -113,7 +112,6 @@
             <tr>
               <th scope="col">Resim</th>
               <th scope="col">Ürün Kodu</th>
-
               <th scope="col">UD Stok</th>
               <th scope="col">MD Stok</th>
               <th scope="col">Miktar</th>
@@ -141,7 +139,7 @@
               <td>
                 {{ product.price | currency : "₺" }}
               </td>
-              <td>{{ product.description.substring(0, 10) }}</td>
+              <td>{{ product.description}}</td>
             </tr>
           </ng-template>
         </p-table>
@@ -187,7 +185,9 @@
               </td>
 
               <td>
-                <div class="flex align-items-center justify-content-center gap-2">
+                <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
+                  (click)="openUpdateDialog(product,ri)" class="p-button-rounded p-button-text"></button>
+                <!-- <div class="flex align-items-center justify-content-center gap-2">
                   <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
                     (click)="onRowEditInit(product)" class="p-button-rounded p-button-text"></button>
                   <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
@@ -196,40 +196,21 @@
                   <button *ngIf="editing" pButton pRipple type="button"
                     class="p-button-rounded p-button-text p-button-danger" pCancelEditableRow
                     (click)="onRowEditCancel(product, ri)" icon="pi pi-times"></button>
-                </div>
+                </div> -->
               </td>
 
               <td>{{ product.itemCode }}</td>
               <td *ngIf="!this.orderType">{{ product.shelfNo }}</td>
               <td *ngIf="!this.orderType">{{ product.batchCode }}</td>
 
-              <td pInitEditableRow>
-                <p-cellEditor>
-                  <ng-template pTemplate="input">
-                    <input pInputText type="number" style="max-width: 100px" [(ngModel)]="product.quantity"
-                      (keyup.enter)="onRowEditSave(product, ri)" />
-                  </ng-template>
-
-                  <ng-template pTemplate="output" style="font-weight: bold">
-                    <span style="font-weight: bold">
-                      {{ product.quantity }}</span>
-                  </ng-template>
-                </p-cellEditor>
+              <td style="cursor: pointer;" (click)="openUpdateDialog(product,ri)">
+                {{ product.quantity }}
               </td>
               <td>
                 {{ product.price | currency : "₺" }}
               </td>
-              <td pInitEditableRow>
-                <p-cellEditor>
-                  <ng-template pTemplate="input">
-                    <input pInputText style="max-width: 100px" type="number" [(ngModel)]="product.discountedPrice"
-                      (keyup.enter)="onRowEditSave(product, ri)" />
-                  </ng-template>
-                  <ng-template pTemplate="output">
-                    <span style="font-weight: bold">
-                      {{ product.discountedPrice | currency : "₺" }}</span>
-                  </ng-template>
-                </p-cellEditor>
+              <td style="cursor: pointer;" (click)="openUpdateDialog(product,ri)" class="hover-dark">
+                {{ product.discountedPrice | currency : "₺" }}
               </td>
 
               <td>
@@ -246,7 +227,7 @@
 
 
               <td>
-                {{ product.description.substring(0, 10) }}
+                {{ product.description }}
               </td>
 
 
@@ -317,6 +298,32 @@
             </p-dialog>
           </ng-template>
         </p-table>
+
+
+        <p-dialog header="Ürün Güncelle" [(visible)]="updateProductDialog" [modal]="true" [closable]="false"
+          [style]="{width: '300px'}">
+          <form [formGroup]="updateProductForm">
+            <div class="p-fluid">
+              <div class="p-field">
+                <label for="price">Fiyat</label>
+                <input id="price" type="text" pInputText formControlName="price">
+              </div>
+              <div class="p-field mb-3">
+                <label for="quantity">Adet</label>
+                <input id="quantity" type="text" pInputText formControlName="quantity">
+              </div>
+              <div class="p-field mb-3">
+                <button type="button" pButton label="Güncelle"
+                  (click)="onRowEditSave(this.selectedProduct,this.selectedIndex)"></button>
+              </div>
+
+              <div class="p-field">
+                <button type="button" pButton label="Kapat" (click)="this.updateProductDialog =false"></button>
+              </div>
+            </div>
+          </form>
+        </p-dialog>
+
 
         <div class="mb-3"></div>
 
@@ -1225,8 +1232,8 @@
                 <!-- <th scope="col">Sil</th> -->
               </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-product let-editing="editing" let-ri="rowIndex">
-              <tr [pEditableRow]="product">
+            <ng-template pTemplate="body" let-product let-ri="rowIndex">
+              <tr>
                 <td class="image-icon-td">
                   <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true"></p-image>
                 </td>
@@ -1234,30 +1241,11 @@
                 <td>{{ product.itemCode }}</td>
 
                 <td>
-                  <p-cellEditor>
-                    <ng-template pTemplate="input">
-                      <input pInputText type="number" style="max-width: 70px" [(ngModel)]="product.quantity"
-                        (keyup.enter)="onRowEditSave(product, ri)" />
-                    </ng-template>
-
-                    <ng-template pTemplate="output" style="font-weight: bold">
-                      <span style="font-weight: bold">
-                        {{ product.quantity }}</span>
-                    </ng-template>
-                  </p-cellEditor>
+                  {{ product.quantity }}
                 </td>
 
                 <td>
-                  <p-cellEditor>
-                    <ng-template pTemplate="input">
-                      <input pInputText style="max-width: 70px" type="number" [(ngModel)]="product.price"
-                        (keyup.enter)="onRowEditSave(product, ri)" />
-                    </ng-template>
-                    <ng-template pTemplate="output">
-                      <span style="font-weight: bold">
-                        {{ product.price | currency : "₺" }}</span>
-                    </ng-template>
-                  </p-cellEditor>
+                  {{ product.price | currency : "₺" }}
                 </td>
                 <td>{{ product.discountedPrice | currency : "₺" }}</td>
 
@@ -1270,7 +1258,7 @@
                   }}
                 </td>
                 <td>
-                  {{ product.description.substring(0, 10) }}
+                  {{ product.description}}
                 </td>
               </tr>
             </ng-template>

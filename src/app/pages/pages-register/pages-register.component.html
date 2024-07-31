@@ -12,73 +12,168 @@
         </div>
         <form [formGroup]="registerForm">
           <div class="row">
-            <div class="col-md-6">
-              <div class="form-group mb-3">
-                <input pInputText placeholder="Ad" type="text" class="form-control" id="firstName" placeholder="Ad"
-                  formControlName="firstName" />
-              </div>
-              <div class="form-group mb-3">
-                <input pInputText placeholder="Email" type="text" class="form-control" id="email" placeholder="Email"
-                  formControlName="email" />
-              </div>
-              <div class="form-group mb-3">
-                <input pInputText placeholder="Şifre" type="password" class="form-control" id="password"
-                  formControlName="password" />
-              </div>
-              <div class="form-group mb-3">
-                <input pInputText placeholder="Cinsiyet" type="text" class="form-control" id="gender"
-                  placeholder="Cinsiyet" formControlName="gender" />
-              </div>
 
-              <div class="form-group mb-3">
-                <div class="mt-3"></div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <input pInputText placeholder="Ad" type="text" class="form-control" id="firstName" placeholder="Ad"
+                    formControlName="firstName" />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <input pInputText placeholder="Soyad" type="text" class="form-control" id="lastName"
+                    formControlName="lastName" />
+                </div>
+
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <input pInputText placeholder="Telefon Numarası" type="text" class="form-control" id="phoneNumber"
+                    formControlName="phoneNumber" />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <input pInputText placeholder="Email" type="text" class="form-control" id="email" placeholder="Email"
+                    formControlName="email" />
+                </div>
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <input pInputText placeholder="Şifre" type="password" class="form-control" id="password"
+                    formControlName="password" />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <input pInputText placeholder="Şifre Tekrar*" type="password" class="form-control"
+                    id="confirmPassword" formControlName="confirmPassword" />
+                </div>
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+
+
+                  <input pInputText placeholder="Cinsiyet" type="text" class="form-control" id="gender"
+                    placeholder="Cinsiyet" formControlName="gender" />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <div class="form-group mb-3">
+                    <input pInputText placeholder="Müşteri Kodu" type="text" class="form-control" id="currAccCode"
+                      formControlName="currAccCode" />
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <input pInputText placeholder="Yazıcı Adı (1)" type="text" class="form-control" id="printerName_1"
+                    formControlName="printerName_1" />
+                </div>
+
+              </div>
+              <div class="col-md-6">
+
+                <div class="form-group mb-3">
+                  <input pInputText placeholder="Yazıcı Adı (2)" type="text" class="form-control" id="printerName_2"
+                    formControlName="printerName_2" />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
                 <p-dropdown placeholder="Rol Seçiniz" formControlName="roleDescription" [options]="roleDescriptions"
-                  [(ngModel)]="selectedRole" optionLabel="role" [filter]="true" class="mt-3"></p-dropdown>
+                  [(ngModel)]="selectedRole" optionLabel="role" [filter]="true"></p-dropdown>
               </div>
+              <div class="col-md-6">
 
-              <div class="form-group mb-3">
-                <input pInputText placeholder="Yazıcı Adı (2)" type="text" class="form-control" id="printerName_2"
-                  formControlName="printerName_2" />
+                <div class="form-group mb-3">
+                  <p-dropdown placeholder="Satış Personel Kodu" formControlName="salesPersonCode"
+                    [options]="salesPersonModelList" [(ngModel)]="selectedPerson" optionLabel="name" [filter]="true">
+                  </p-dropdown>
+
+                </div>
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="form-group mb-3">
-                <input pInputText placeholder="Soyad" type="text" class="form-control" id="lastName"
-                  formControlName="lastName" />
-              </div>
 
-              <div class="form-group mb-3">
-                <input pInputText placeholder="Telefon Numarası" type="text" class="form-control" id="phoneNumber"
-                  formControlName="phoneNumber" />
-              </div>
-              <div class="form-group mb-3">
-                <input pInputText placeholder="Şifre Tekrar*" type="password" class="form-control" id="confirmPassword"
-                  formControlName="confirmPassword" />
-              </div>
-              <div class="form-group mb-3">
-                <div class="mt-3"></div>
-                <p-dropdown placeholder="Satış Personel Kodu" formControlName="salesPersonCode"
-                  [options]="salesPersonModelList" [(ngModel)]="selectedPerson" optionLabel="name" [filter]="true"
-                  class="mt-3"></p-dropdown>
-              </div>
-
-              <div class="form-group mb-3">
-                <input pInputText placeholder="Müşteri Kodu" type="text" class="form-control" id="currAccCode"
-                  formControlName="currAccCode" />
-              </div>
-              <div class="form-group mb-3">
-                <input pInputText placeholder="Yazıcı Adı (1)" type="text" class="form-control" id="printerName_1"
-                  formControlName="printerName_1" />
-              </div>
-
-
-            </div>
           </div>
 
-          <button class="btn btn-primary mt-3" status="success" (click)="submitForm()">
+          <button class="btn btn-primary " status="success" (click)="submitForm()">
             {{ isUpdate ? "Kullanıcıyı Güncelle" : "Kullanıcı Ekle" }}
           </button>
         </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+
+        <p-tabView>
+          <p-tabPanel header="Raflarım">
+            <div>
+              <div class="table-responsive-lg">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Id</th>
+                      <th scope="col">Raf</th>
+                      <th scope="col">Tarih</th>
+                      <th scope="col">İşlemler</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let userShelf of userShelves; let i = index">
+
+                      <td>{{ userShelf.id }}</td>
+                      <td>{{ userShelf.shelfNo }}</td>
+                      <td>{{ userShelf.createdDate }}</td>
+
+                      <td>
+
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                          <button class="btn btn-danger" status="danger" (click)="deleteUserShelf(userShelf.id)">
+                            <i class="fa-solid fa-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </p-tabPanel>
+          <p-tabPanel header="Raf Ekle">
+            <form [formGroup]="shelfForm" (ngSubmit)="onShelfFormSubmit(shelfForm.value)">
+
+              <div class="form-group mb-3">
+                <!-- <input type="text" id="shelfNo" class="form-control" formControlName="shelfNo"
+                  placeholder="Raf Numarası"> -->
+
+                <p-dropdown placeholder="Raflar" [options]="shelves" formControlName="shelfNo" optionLabel="description"
+                  [filter]="true">
+                </p-dropdown>
+              </div>
+              <button type="submit" class="btn btn-primary">Raf Ekle</button>
+            </form>
+          </p-tabPanel>
+        </p-tabView>
+
       </div>
     </div>
   </section>

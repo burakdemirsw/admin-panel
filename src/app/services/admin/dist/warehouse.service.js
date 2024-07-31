@@ -488,15 +488,15 @@ var WarehouseService = /** @class */ (function () {
             });
         });
     };
-    WarehouseService.prototype.getTransferRequestListModel = function (type) {
+    WarehouseService.prototype.getTransferRequestListModel = function (type, shelfNo) {
         return __awaiter(this, void 0, Promise, function () {
             var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.httpClientService
                             .get({
-                            controller: 'Warehouse/TransferRequestList'
-                        }, type)
+                            controller: 'Warehouse/TransferRequestList/' + type + "/" + shelfNo
+                        })
                             .toPromise()];
                     case 1:
                         response = _a.sent();
@@ -507,6 +507,7 @@ var WarehouseService = /** @class */ (function () {
     };
     //sayılabilecek rafları çeker
     // Get_MSRAFWillBeCounted
+    //RAFLAR----------------------------------------------------
     WarehouseService.prototype.getAvailableShelves = function () {
         return __awaiter(this, void 0, Promise, function () {
             var data;
@@ -522,6 +523,67 @@ var WarehouseService = /** @class */ (function () {
             });
         });
     };
+    WarehouseService.prototype.getShelves = function () {
+        return __awaiter(this, void 0, Promise, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get_new({ controller: 'Order/get-shelves' })
+                            .toPromise()];
+                    case 1:
+                        data = _a.sent();
+                        return [2 /*return*/, data];
+                }
+            });
+        });
+    };
+    WarehouseService.prototype.addShelf = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .post({ controller: 'Order/add-shelf' }, request)
+                            .toPromise()];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result];
+                }
+            });
+        });
+    };
+    WarehouseService.prototype.updateShelf = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .post({ controller: 'Order/update-shelf' }, request)
+                            .toPromise()];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result];
+                }
+            });
+        });
+    };
+    WarehouseService.prototype.removeShelf = function (id) {
+        return __awaiter(this, void 0, Promise, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get_new({ controller: 'Order/remove-Shelf' }, id)
+                            .toPromise()];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result];
+                }
+            });
+        });
+    };
+    //----------------------------------------------------
     //raflar arası transfer ----------------------------------------------------
     WarehouseService.prototype.addFastTransferModel = function (request) {
         return __awaiter(this, void 0, Promise, function () {
@@ -641,6 +703,22 @@ var WarehouseService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.httpClientService
                             .post({ controller: 'Warehouse/complete-count-operation' }, request)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    //----
+    WarehouseService.prototype.doCount = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({ controller: 'Warehouse/do-count' }, request.toString())
                             .toPromise()];
                     case 1:
                         response = _a.sent();

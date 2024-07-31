@@ -9,17 +9,16 @@ import { CountedProduct, CountedProductControl } from 'src/app/models/model/prod
 import {
   ProductCountModel
 } from 'src/app/models/model/shelfNameModel';
-import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
+import { AvailableShelf, Shelf } from 'src/app/models/model/warehouse/availableShelf';
+import { CompleteCountOperation_CM } from 'src/app/models/model/warehouse/completeCount_CM';
 import { FastTransferListModel, FastTransferModel, FastTransferModel2 } from 'src/app/models/model/warehouse/fastTransferModel';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { TransferModel } from 'src/app/models/model/warehouse/transferModel';
-import { TransferRequestListModel } from 'src/app/models/model/warehouse/transferRequestListModel';
 import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/warehouseOperationProductModel';
 import { ZTMSG_CountedProduct, ZTMSG_ProductOnShelf } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { HttpClientService } from '../http-client.service';
-import { CompleteCountOperation_CM } from 'src/app/models/model/warehouse/completeCount_CM';
 
 @Injectable({
   providedIn: 'root',
@@ -394,12 +393,12 @@ export class WarehouseService {
       return null;
     }
   }
-  async getTransferRequestListModel(type: string): Promise<TransferRequestListModel[]> {
+  async getTransferRequestListModel(type: string, shelfNo: string): Promise<any> {
 
     const response = await this.httpClientService
-      .get<TransferRequestListModel>({
-        controller: 'Warehouse/TransferRequestList'
-      }, type)
+      .get<any>({
+        controller: 'Warehouse/TransferRequestList/' + type + "/" + shelfNo
+      })
       .toPromise();
     return response;
 
@@ -407,6 +406,8 @@ export class WarehouseService {
 
   //sayılabilecek rafları çeker
   // Get_MSRAFWillBeCounted
+
+  //RAFLAR----------------------------------------------------
   async getAvailableShelves(): Promise<AvailableShelf[]> {
 
     const data = await this.httpClientService
@@ -415,8 +416,35 @@ export class WarehouseService {
     return data;
 
   }
+  async getShelves(): Promise<Shelf[]> {
+    const data = await this.httpClientService
+      .get_new<Shelf[]>({ controller: 'Order/get-shelves' })
+      .toPromise();
+    return data;
+  }
 
+  async addShelf(request: Shelf): Promise<boolean> {
+    const result = await this.httpClientService
+      .post<boolean>({ controller: 'Order/add-shelf' }, request)
+      .toPromise();
+    return result;
+  }
 
+  async updateShelf(request: Shelf): Promise<boolean> {
+    const result = await this.httpClientService
+      .post<boolean>({ controller: 'Order/update-shelf' }, request)
+      .toPromise();
+    return result;
+  }
+
+  async removeShelf(id: string): Promise<boolean> {
+    const result = await this.httpClientService
+      .get_new<boolean>({ controller: 'Order/remove-Shelf' }, id)
+      .toPromise();
+    return result;
+  }
+
+  //----------------------------------------------------
   //raflar arası transfer ----------------------------------------------------
   async addFastTransferModel(request: FastTransferModel2): Promise<boolean> {
 
@@ -488,5 +516,14 @@ export class WarehouseService {
       .toPromise();
     return response;
 
+  }
+
+  //----
+  async doCount(request: number): Promise<any> {
+
+    const response = await this.httpClientService
+      .get<any>({ controller: 'Warehouse/do-count' }, request.toString())
+      .toPromise();
+    return response;
   }
 }

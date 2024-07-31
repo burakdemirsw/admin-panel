@@ -53,6 +53,7 @@ var UserListComponent = /** @class */ (function () {
         this.headerService = headerService;
         this.userService = userService;
         this.users = [];
+        this.selectedUsers = [];
         this.registerModel = null;
         this.visible = false;
     }

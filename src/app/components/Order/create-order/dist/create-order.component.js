@@ -119,6 +119,7 @@ var CreateOrderComponent = /** @class */ (function () {
         //---------------------------------------------------- TEXT OKUMA
         this.extractedText = null;
         this.imageData = null;
+        this.updateProductDialog = false;
         this.suggestedProductsDialog = false;
         this.getCustomerDialog = false;
         this.findProductDialog = false;
@@ -194,6 +195,7 @@ var CreateOrderComponent = /** @class */ (function () {
                                 return [2 /*return*/];
                             });
                         }); });
+                        this.createUpdateProductForm();
                         this.setCustomer();
                         this.createCargoForm();
                         this.createCargoForm_2();
@@ -752,6 +754,9 @@ var CreateOrderComponent = /** @class */ (function () {
         }
         if (dialogName === "suggestedProductsDialog") {
             this.suggestedProductsDialog = !this.suggestedProductsDialog;
+        }
+        if (dialogName === "updateProductDialog") {
+            this.updateProductDialog = !this.updateProductDialog;
         }
     };
     CreateOrderComponent.prototype.goToPage = function (index) {
@@ -1346,6 +1351,19 @@ var CreateOrderComponent = /** @class */ (function () {
         this.selectedAddresses = [];
         this.toasterService.success("Adres Silindi");
     };
+    CreateOrderComponent.prototype.createUpdateProductForm = function () {
+        this.updateProductForm = this.formBuilder.group({
+            price: [null, forms_1.Validators.required],
+            quantity: [null, forms_1.Validators.required]
+        });
+    };
+    CreateOrderComponent.prototype.openUpdateDialog = function (product, index) {
+        this.selectedProduct = product;
+        this.selectedIndex = index;
+        this.updateProductForm.get('price').setValue(this.selectedProduct.discountedPrice);
+        this.updateProductForm.get('quantity').setValue(this.selectedProduct.quantity);
+        this.openDialog('updateProductDialog');
+    };
     CreateOrderComponent.prototype.resetProductForm = function () {
         this.getProductsForm.reset();
         this.toasterService.success("Form Sıfırlandı");
@@ -1511,8 +1529,14 @@ var CreateOrderComponent = /** @class */ (function () {
                     case 9:
                         if (!(_i < _a.length)) return [3 /*break*/, 12];
                         _product = _a[_i];
+                        // if (this.products.length > 1) {
+                        //   _product.description += ` (SK: ${request.barcode})`;
+                        // }
                         return [4 /*yield*/, this.addCurrentProducts(_product)];
                     case 10:
+                        // if (this.products.length > 1) {
+                        //   _product.description += ` (SK: ${request.barcode})`;
+                        // }
                         _d.sent();
                         _d.label = 11;
                     case 11:
@@ -1630,8 +1654,14 @@ var CreateOrderComponent = /** @class */ (function () {
                     case 31:
                         if (!(_b < _c.length)) return [3 /*break*/, 34];
                         _product = _c[_b];
+                        // if (this.products.length > 1) {
+                        //   _product.description += ` (SK: ${request.barcode})`;
+                        // }
                         return [4 /*yield*/, this.addCurrentProducts(_product)];
                     case 32:
+                        // if (this.products.length > 1) {
+                        //   _product.description += ` (SK: ${request.barcode})`;
+                        // }
                         _d.sent();
                         _d.label = 33;
                     case 33:
@@ -1817,6 +1847,8 @@ var CreateOrderComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        product.discountedPrice = this.updateProductForm.value.price;
+                        product.quantity = this.updateProductForm.value.quantity;
                         this.quantityList = [];
                         if (!(product.price > 0)) return [3 /*break*/, 4];
                         findedProduct = this.selectedProducts
@@ -1844,6 +1876,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         _a.label = 4;
                     case 4:
                         this.cancelRowEdit(product, 0);
+                        this.updateProductDialog = false;
                         return [2 /*return*/];
                 }
             });
@@ -2396,7 +2429,7 @@ var CreateOrderComponent = /** @class */ (function () {
     CreateOrderComponent.prototype.createOrder = function () {
         var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function () {
-            var payment_response, formValue, exchangeRate, order_request, order_response, totalPrice, discountedPrice, _i, _e, _product, after_discountPrice, dif, addedOrderNumber, batchSize, totalProducts, batchStart, batchEnd, productBatch, _request, response, addedOrder, batchSize, totalProducts, batchStart, batchEnd, productBatch, _request, response, _batchSize, _totalProducts, _batchStart, _batchEnd, _productBatch, __request, __response, addedOrder;
+            var payment_response, formValue, exchangeRate, order_request, order_response, totalPrice, discountedPrice, _i, _e, _product, after_discountPrice, dif, addedOrderNumber, batchSize, totalProducts, batchStart, batchEnd, productBatch, _request, response, addedOrder, batchSize, totalProducts, batchStart, batchEnd, productBatch, _request, response, _batchSize, _totalProducts, _batchStart, invoiceNumber, _batchEnd, _productBatch, __request, __response, addedOrder;
             var _this = this;
             return __generator(this, function (_f) {
                 switch (_f.label) {
@@ -2537,12 +2570,13 @@ var CreateOrderComponent = /** @class */ (function () {
                         _batchSize = 50;
                         _totalProducts = this.selectedProducts.length;
                         _batchStart = 0;
+                        invoiceNumber = "";
                         _f.label = 19;
                     case 19:
                         if (!(_batchStart < _totalProducts)) return [3 /*break*/, 21];
-                        _batchEnd = Math.min(_batchStart + batchSize, totalProducts);
+                        _batchEnd = Math.min(_batchStart + _batchSize, totalProducts);
                         _productBatch = this.selectedProducts.slice(_batchStart, _batchEnd);
-                        __request = new nebimOrder_1.NebimInvoice(this.currentDiscountRate, this.currentCashdiscountRate, exchangeRate, this.selectedCustomers[0].docCurrencyCode, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, _productBatch, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value, this.selectedAddresses[0].postalAddressID, (_d = this.selectedSubCustomers[0]) === null || _d === void 0 ? void 0 : _d.subCurrAccId);
+                        __request = new nebimOrder_1.NebimInvoice(this.currentDiscountRate, this.currentCashdiscountRate, exchangeRate, this.selectedCustomers[0].docCurrencyCode, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, _productBatch, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value, this.selectedAddresses[0].postalAddressID, (_d = this.selectedSubCustomers[0]) === null || _d === void 0 ? void 0 : _d.subCurrAccId, invoiceNumber);
                         __request.lines.forEach(function (l1) {
                             var fp = response.lines.find(function (p) {
                                 return p.itemCode === l1.itemCode && p.usedBarcode === l1.usedBarcode && p.qty1 === l1.qty1;
@@ -2555,7 +2589,10 @@ var CreateOrderComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.orderService.createInvoice(__request)];
                     case 20:
                         __response = _f.sent();
-                        if (__response == null) {
+                        if (__response.status) {
+                            invoiceNumber = __response.invoiceNumber;
+                        }
+                        else {
                             this.toasterService.error("Faturalaştırma Sırasında Hata Alındı");
                             return [3 /*break*/, 21];
                         }

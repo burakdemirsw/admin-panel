@@ -46,7 +46,8 @@ exports.FastTransferListComponent = void 0;
 var core_1 = require("@angular/core");
 var createBarcode_1 = require("src/app/components/Product/create-barcode/models/createBarcode");
 var FastTransferListComponent = /** @class */ (function () {
-    function FastTransferListComponent(spinnerService, router, headerService, warehosueService, generalService, productService, toasterService, activatedRoute) {
+    function FastTransferListComponent(spinnerService, router, headerService, warehosueService, generalService, productService, toasterService, activatedRoute, userService, exportCsvService) {
+        var _this = this;
         this.spinnerService = spinnerService;
         this.router = router;
         this.headerService = headerService;
@@ -55,46 +56,88 @@ var FastTransferListComponent = /** @class */ (function () {
         this.productService = productService;
         this.toasterService = toasterService;
         this.activatedRoute = activatedRoute;
+        this.userService = userService;
+        this.exportCsvService = exportCsvService;
         this.currentPage = 1;
         this.fastTransferListModels = [];
+        this.selectedTransfers = [];
+        this.items = [
+            {
+                label: 'Excele Aktar',
+                command: function () {
+                    _this.exportCsv();
+                }
+            }
+        ];
+        this.userShelves = [];
         this.visible = false;
     }
     FastTransferListComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
+            var _a;
             var _this = this;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _a = this;
+                        return [4 /*yield*/, this.userService.getUserClientInfoResponse()];
+                    case 1:
+                        _a.user_info = _b.sent();
+                        return [4 /*yield*/, this.getUserShelves()];
+                    case 2:
+                        _b.sent();
+                        this.spinnerService.show();
+                        this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        if (!params["type"]) return [3 /*break*/, 2];
+                                        this.pageType = params["type"];
+                                        if (params["type"] == 'true') {
+                                            this.headerService.updatePageTitle("Hızlı Transfer İstekleri");
+                                        }
+                                        else {
+                                            this.headerService.updatePageTitle("Hızlı Transferler");
+                                        }
+                                        return [4 /*yield*/, this.getFastTransferList(params["type"])];
+                                    case 1:
+                                        _a.sent();
+                                        _a.label = 2;
+                                    case 2: return [2 /*return*/];
+                                }
+                            });
+                        }); });
+                        this.spinnerService.hide();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    FastTransferListComponent.prototype.exportCsv = function () {
+        this.exportCsvService.exportToCsv(this.fastTransferListModels, 'my-orders');
+    };
+    FastTransferListComponent.prototype.getUserShelves = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
             return __generator(this, function (_a) {
-                this.spinnerService.show();
-                this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                if (!params["type"]) return [3 /*break*/, 2];
-                                this.pageType = params["type"];
-                                if (params["type"] == 'true') {
-                                    this.headerService.updatePageTitle("Hızlı Transfer İstekleri");
-                                }
-                                else {
-                                    this.headerService.updatePageTitle("Hızlı Transferler");
-                                }
-                                return [4 /*yield*/, this.getFastTransferList(params["type"])];
-                            case 1:
-                                _a.sent();
-                                _a.label = 2;
-                            case 2: return [2 /*return*/];
-                        }
-                    });
-                }); });
-                this.spinnerService.hide();
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.userService.getUserShelves(this.user_info.userId)];
+                    case 1:
+                        response = _a.sent();
+                        this.userShelves = response;
+                        return [2 /*return*/];
+                }
             });
         });
     };
     FastTransferListComponent.prototype.goPage = function (pageType) {
         return __awaiter(this, void 0, void 0, function () {
-            var uuid;
+            var uuid, uuid, shelfNo, url;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.generalService.generateGUID()];
+                    case 0:
+                        if (!(pageType != '4')) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.generalService.generateGUID()];
                     case 1:
                         uuid = _a.sent();
                         location.href =
@@ -103,7 +146,24 @@ var FastTransferListComponent = /** @class */ (function () {
                                 uuid +
                                 '/' +
                                 pageType;
-                        return [2 /*return*/];
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, this.generalService.generateGUID()];
+                    case 3:
+                        uuid = _a.sent();
+                        shelfNo = this.shelf.shelfNo;
+                        url = location.origin +
+                            '/shelf-transfer-request/' +
+                            uuid +
+                            '/' +
+                            pageType
+                            + '/' +
+                            shelfNo;
+                        this.toasterService.info(shelfNo);
+                        console.log(url);
+                        location.href =
+                            url;
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
                 }
             });
         });

@@ -52,6 +52,7 @@ var DevolopmentListComponent = /** @class */ (function () {
         this.toasterService = toasterService;
         this.developmentService = developmentService;
         this.tasks = [];
+        this.selectedTasks = [];
         this.devolopments = [];
         this.visible = false;
         this.visible2 = false;

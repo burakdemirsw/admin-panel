@@ -46,8 +46,9 @@ exports.PagesRegisterComponent = void 0;
 var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
 var userRegister_VM_1 = require("src/app/models/model/user/userRegister_VM");
+var personalShelf_1 = require("src/app/models/model/user/personalShelf");
 var PagesRegisterComponent = /** @class */ (function () {
-    function PagesRegisterComponent(generalService, formBuilder, userService, headerService, alertifyService, httpClientService, activatedRoute) {
+    function PagesRegisterComponent(generalService, formBuilder, userService, headerService, alertifyService, httpClientService, activatedRoute, toasterService, warehouseService) {
         this.generalService = generalService;
         this.formBuilder = formBuilder;
         this.userService = userService;
@@ -55,37 +56,147 @@ var PagesRegisterComponent = /** @class */ (function () {
         this.alertifyService = alertifyService;
         this.httpClientService = httpClientService;
         this.activatedRoute = activatedRoute;
+        this.toasterService = toasterService;
+        this.warehouseService = warehouseService;
         this.isUpdate = false;
+        this.id = 0;
         this.userList = [];
+        this.userShelves = [];
+        this.shelves = [];
         this.salesPersonModels = [];
         this.salesPersonModelList = [];
         this.roleDescriptions = [{ role: "Admin" }, { role: "Salesman" }, { role: "Test User" }];
     }
     PagesRegisterComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
+            var _a;
             var _this = this;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         this.headerService.updatePageTitle("Kullanıcı Ekle");
                         this.formGenerator();
-                        return [4 /*yield*/, this.getSalesPersonModels()];
+                        this.shelfFormGenerator();
+                        return [4 /*yield*/, this.getShelves()];
                     case 1:
-                        _a.sent();
+                        _b.sent();
+                        return [4 /*yield*/, this.getSalesPersonModels()];
+                    case 2:
+                        _b.sent();
+                        _a = this;
+                        return [4 /*yield*/, this.userService.getUserClientInfoResponse()];
+                    case 3:
+                        _a.user_info = _b.sent();
+                        console.log(this.user_info);
                         this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
-                                        if (!params['userId']) return [3 /*break*/, 2];
-                                        this.isUpdate = true;
-                                        return [4 /*yield*/, this.findUser(Number(params['userId']))];
+                                        if (!params['userId']) return [3 /*break*/, 3];
+                                        this.id = Number(params['userId']);
+                                        return [4 /*yield*/, this.getUserShelves()];
                                     case 1:
                                         _a.sent();
-                                        _a.label = 2;
-                                    case 2: return [2 /*return*/];
+                                        this.isUpdate = true;
+                                        return [4 /*yield*/, this.findUser(Number(params['userId']))];
+                                    case 2:
+                                        _a.sent();
+                                        _a.label = 3;
+                                    case 3: return [2 /*return*/];
                                 }
                             });
                         }); });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesRegisterComponent.prototype.getShelves = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.warehouseService.getAvailableShelves()];
+                    case 1:
+                        response = _a.sent();
+                        this.shelves = response;
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesRegisterComponent.prototype.getUserShelves = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.userService.getUserShelves(this.id)];
+                    case 1:
+                        response = _a.sent();
+                        this.userShelves = response;
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesRegisterComponent.prototype.deleteUserShelf = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.userService.deleteUserShelf(id)];
+                    case 1:
+                        response = _a.sent();
+                        if (!response) return [3 /*break*/, 3];
+                        this.toasterService.success("Silindi");
+                        return [4 /*yield*/, this.getUserShelves()];
+                    case 2:
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        this.toasterService.warn("Silinmedi");
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesRegisterComponent.prototype.addUserShelf = function (request) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.userService.addUserShelf(request)];
+                    case 1:
+                        response = _a.sent();
+                        if (!response) return [3 /*break*/, 3];
+                        this.toasterService.success("Eklendi");
+                        return [4 /*yield*/, this.getUserShelves()];
+                    case 2:
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        this.toasterService.warn("Eklenmedi");
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesRegisterComponent.prototype.updateUserShelf = function (request) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.userService.updateUserShelf(request)];
+                    case 1:
+                        response = _a.sent();
+                        if (response) {
+                            this.toasterService.success("Güncellendi");
+                        }
+                        else {
+                            this.toasterService.warn("Güncellenmedi");
+                        }
                         return [2 /*return*/];
                 }
             });
@@ -167,6 +278,11 @@ var PagesRegisterComponent = /** @class */ (function () {
                     case 6: return [2 /*return*/];
                 }
             });
+        });
+    };
+    PagesRegisterComponent.prototype.shelfFormGenerator = function () {
+        this.shelfForm = this.formBuilder.group({
+            shelfNo: [null, forms_1.Validators.required]
         });
     };
     PagesRegisterComponent.prototype.formGenerator = function () {
@@ -267,6 +383,48 @@ var PagesRegisterComponent = /** @class */ (function () {
                         _a.label = 9;
                     case 9: return [3 /*break*/, 10];
                     case 10: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesRegisterComponent.prototype.onShelfFormSubmit = function (form) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function () {
+            var filter, _list, finded_user, isValid, request;
+            var _this = this;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        filter = new userRegister_VM_1.GetUserFilter();
+                        filter.count = 100;
+                        return [4 /*yield*/, this.userService.getUsers(filter)];
+                    case 1:
+                        _list = _b.sent();
+                        finded_user = _list.find(function (u) { return u.id == _this.id; });
+                        if (!finded_user) return [3 /*break*/, 7];
+                        if (!this.shelfForm.valid) return [3 /*break*/, 5];
+                        isValid = !((_a = this.userShelves) === null || _a === void 0 ? void 0 : _a.some(function (x) { return x.shelfNo === form.shelfNo.description; }));
+                        if (!isValid) return [3 /*break*/, 3];
+                        request = new personalShelf_1.UserShelf();
+                        request.shelfNo = form.shelfNo.description;
+                        request.userId = finded_user.id;
+                        request.customerCode = finded_user.currAccCode;
+                        return [4 /*yield*/, this.addUserShelf(request)];
+                    case 2:
+                        _b.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        this.toasterService.warn("Bu Raf Zaten Eklendi");
+                        _b.label = 4;
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        this.toasterService.warn("Form Geçersiz");
+                        _b.label = 6;
+                    case 6: return [3 /*break*/, 8];
+                    case 7:
+                        this.toasterService.warn("Kullanıcı Bulunamadı");
+                        _b.label = 8;
+                    case 8: return [2 /*return*/];
                 }
             });
         });

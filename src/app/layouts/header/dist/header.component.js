@@ -23,6 +23,7 @@ var HeaderComponent = /** @class */ (function () {
     }
     HeaderComponent.prototype.ngOnInit = function () {
         var _this = this;
+        this.user_info = this.userService.getUserClientInfoResponse();
         this.headerService.currentPageTitle.subscribe(function (title) {
             _this.currentPageTitle = title;
         });

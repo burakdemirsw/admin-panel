@@ -111,8 +111,8 @@ export class InvoiceListComponent implements OnInit, OnChanges {
     }
   }
 
-  countList: CountListModel[]
-
+  countList: CountListModel[] = []
+  selectedCounts: CountListModel[] = []
   async getInvoiceList(): Promise<any> {
     try {
       this.countList = await this.orderService.getInvoiceList();

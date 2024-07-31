@@ -74,7 +74,6 @@ import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ReferrerPolicyDirective } from './referrer-policy.directive';
-import { TestComponent } from './components/Order/invoice-list/test/test.component';
 import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { PagesLoginv2Component } from './pages/pages-loginv2/pages-loginv2.component';
@@ -113,7 +112,9 @@ import { SidebarModule } from 'primeng/sidebar';
 import { CreateProductBarcodeComponent } from './components/Product/create-product-barcode/create-product-barcode.component';
 import { ProposalListComponent } from './components/Product/proposal-list/proposal-list.component';
 import { CreateProposalComponent } from './components/Product/create-proposal/create-proposal.component';
-
+import { ShelfComponent } from './components/Warehouse/shelf/shelf.component';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { ServiceManagementComponent } from './components/service-management/service-management.component';
 @NgModule({
 
   declarations: [
@@ -163,7 +164,7 @@ import { CreateProposalComponent } from './components/Product/create-proposal/cr
     BoxCountComponent,
     CreateOrderComponent,
     ReferrerPolicyDirective,
-    TestComponent,
+
     PagesLoginv2Component,
     UserListComponent,
     CustomerListComponent,
@@ -187,13 +188,12 @@ import { CreateProposalComponent } from './components/Product/create-proposal/cr
     ReadBarcodeComponent,
     CreateProductBarcodeComponent,
     ProposalListComponent,
-    CreateProposalComponent
-
+    CreateProposalComponent,
+    ShelfComponent,
+    ServiceManagementComponent
   ],
 
-
   imports: [
-
     ToolbarModule,
     SkeletonModule,
     FormsModule,
@@ -221,6 +221,7 @@ import { CreateProposalComponent } from './components/Product/create-proposal/cr
     TabViewModule,
     CardModule,
     ButtonModule,
+    SplitButtonModule,
     StepsModule,
     ChartModule,
     SelectButtonModule,
@@ -233,7 +234,6 @@ import { CreateProposalComponent } from './components/Product/create-proposal/cr
         allowedDomains: ['localhost:7178', 'localhost:7180', '212.156.46.206:7180', 'www.dayvebkmapi.com', 'www.davyebkm.com'],
       },
     }),
-
   ],
 
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

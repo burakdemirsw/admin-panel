@@ -57,6 +57,8 @@ import { OrderStateComponent } from './components/Order/order-state/order-state.
 import { CreateProductBarcodeComponent } from './components/Product/create-product-barcode/create-product-barcode.component';
 import { CreateProposalComponent } from './components/Product/create-proposal/create-proposal.component';
 import { ProposalListComponent } from './components/Product/proposal-list/proposal-list.component';
+import { ShelfComponent } from './components/Warehouse/shelf/shelf.component';
+import { ServiceManagementComponent } from './components/service-management/service-management.component';
 
 
 const routes: Routes = [
@@ -288,6 +290,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'shelf-transfer-request/:operationNo/:type/:shelfNo',
+    component: ShelfTransferRequestComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'devolopment-list',
     component: DevolopmentListComponent,
     canActivate: [AuthGuard],
@@ -303,6 +310,8 @@ const routes: Routes = [
   { path: 'create-product-barcode/:operationNo', component: CreateProductBarcodeComponent },
   { path: 'create-proposal/:id', component: CreateProposalComponent, canActivate: [AuthGuard] },
   { path: 'proposal-list', component: ProposalListComponent, canActivate: [AuthGuard] },
+  { path: 'shelf', component: ShelfComponent, canActivate: [AuthGuard] },
+  { path: 'service-management', component: ServiceManagementComponent, canActivate: [AuthGuard] },
 
 
   //-------------------------------------------------------------------------

@@ -518,7 +518,7 @@ export class WarehouseOperationComponent implements OnInit {
           product.itemCode +
           '\n Barkod- ' +
           product.barcode;
-
+        this.toasterService.error(this.blockedCountReason)
         return;
       }
     }

@@ -88,7 +88,11 @@
         <i class="fa fa-archive"></i><span>Depo</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
       <ul id="Warehouse-nav" class="nav-content collapse" data-bs-parent="#Warehouse-nav">
-
+        <li>
+          <a routerLink="shelf">
+            <i class="bi bi-circle"></i><span>Raf</span>
+          </a>
+        </li>
         <li>
           <a routerLink="proposal-list">
             <i class="bi bi-circle"></i><span>Teklifler</span>
@@ -135,6 +139,22 @@
             <i class="bi bi-circle"></i><span>Sayımlar</span>
           </a>
         </li>
+      </ul>
+    </li>
+
+    <li class="nav-item" *ngIf="this.roleDescription == 'Admin'">
+      <a class="nav-link collapsed" data-bs-target="#Marketing-nav" data-bs-toggle="collapse">
+        <i class="fa fa-archive"></i><span>Satış & Pazarlama</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="Marketing-nav" class="nav-content collapse" data-bs-parent="#Marketing-nav">
+
+        <li>
+          <a routerLink="proposal-list">
+            <i class="bi bi-circle"></i><span>Teklifler</span>
+          </a>
+        </li>
+
+
       </ul>
     </li>
     <li class="nav-item">
@@ -200,7 +220,7 @@
             <i class="bi bi-circle"></i><span>Müşteri Ekle</span>
           </a>
         </li> -->
-        <li>
+        <li *ngIf="this.roleDescription=='Admin' ">
           <a routerLink="user-list">
             <i class="bi bi-circle"></i><span>Kulanıcılar</span>
           </a>
@@ -229,7 +249,11 @@
             <i class="bi bi-circle"></i><span>Loglar</span>
           </a>
         </li>
-
+        <li>
+          <a routerLink="service-management">
+            <i class="bi bi-circle"></i><span>Servisler</span>
+          </a>
+        </li>
         <!-- <li>
           <a routerLink="nebim-stock-control">
             <i class="bi bi-circle"></i><span>Stok Kontrol</span>

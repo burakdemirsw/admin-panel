@@ -13,6 +13,7 @@
   <section class="section">
     <div class="row">
       <div style="width: 100%">
+        <!-- Yeni kart: Toplanacak Ürünler Hızlı Menü -->
         <div class="card" *ngIf="_transferProducts.length > 0">
           <div class="card-body">
             <h1 class="card-title">Toplanacak Ürünler</h1>
@@ -20,21 +21,16 @@
               <table class="table">
                 <thead>
                   <tr>
-                    <th
-                      *ngFor="let item of _transferProductsColums"
-                      scope="col"
-                    >
+                    <th *ngFor="let item of _transferProductsColums" scope="col">
                       {{ item }}
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    *ngFor="
+                  <tr *ngFor="
                       let product of _transferProducts.slice(0, 1);
                       let i = index
-                    "
-                  >
+                    ">
                     <td>
                       {{ i + 1 }}
                     </td>
@@ -46,30 +42,18 @@
                     <td>{{ product.barcode }}</td>
                     <td>{{ product.drawerCount }}</td>
                     <td>
-                      <div
-                        class="btn-group"
-                        role="group"
-                        aria-label="Button Group"
-                      >
-                        <button
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="
+                      <div class="btn-group" role="group" aria-label="Button Group">
+                        <button class="btn btn-primary" type="submit" (click)="
                             goDown2(
                               product.barcode,
                               product.shelfNo,
                               product.itemCode,
                               product.transferQuantity
                             )
-                          "
-                        >
+                          ">
                           <i class="fa fa-angle-down"></i>
                         </button>
-                        <button
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="addDeletedItemList(product)"
-                        >
+                        <button class="btn btn-primary" type="submit" (click)="addDeletedItemList(product)">
                           <i class="fa fa-trash"></i>
                         </button>
                       </div>
@@ -95,7 +79,7 @@
                 <button
                   type="button"
                   [ngClass]="
-                    selectedButton === 0 ? 'btn btn-success' : 'btn btn-dark'
+                    selectedButton === 0 ? 'btn btn-success' : 'btn btn-primary'
                   "
                   (click)="goPage('0')"
                 >
@@ -104,7 +88,7 @@
                 <button
                   type="button"
                   [ngClass]="
-                    selectedButton === 1 ? 'btn btn-success' : 'btn btn-dark'
+                    selectedButton === 1 ? 'btn btn-success' : 'btn btn-primary'
                   "
                   (click)="goPage('1')"
                 >
@@ -113,7 +97,7 @@
                 <button
                   type="button"
                   [ngClass]="
-                    selectedButton === 2 ? 'btn btn-success' : 'btn btn-dark'
+                    selectedButton === 2 ? 'btn btn-success' : 'btn btn-primary'
                   "
                   (click)="goPage('2')"
                 >
@@ -122,7 +106,7 @@
                 <button
                   type="button"
                   [ngClass]="
-                    selectedButton === 3 ? 'btn btn-success' : 'btn btn-dark'
+                    selectedButton === 3 ? 'btn btn-success' : 'btn btn-primary'
                   "
                   (click)="goPage('3')"
                 >
@@ -132,7 +116,7 @@
                 <button
                   type="button"
                   [ngClass]="
-                    selectedButton === 4 ? 'btn btn-success' : 'btn btn-dark'
+                    selectedButton === 4 ? 'btn btn-success' : 'btn btn-primary'
                   "
                   (click)="goPage('4')"
                 >
@@ -141,7 +125,7 @@
                 <button
                   type="button"
                   [ngClass]="
-                    selectedButton === 5 ? 'btn btn-success' : 'btn btn-dark'
+                    selectedButton === 5 ? 'btn btn-success' : 'btn btn-primary'
                   "
                   (click)="goPage('5')"
                 >
@@ -150,7 +134,7 @@
                 <button
                   type="button"
                   [ngClass]="
-                    selectedButton === 6 ? 'btn btn-success' : 'btn btn-dark'
+                    selectedButton === 6 ? 'btn btn-success' : 'btn btn-primary'
                   "
                   (click)="goPage('6')"
                 >
@@ -159,7 +143,7 @@
                 <button
                   type="button"
                   [ngClass]="
-                    selectedButton === 7 ? 'btn btn-success' : 'btn btn-dark'
+                    selectedButton === 7 ? 'btn btn-success' : 'btn btn-primary'
                   "
                   (click)="goPage('7')"
                 >
@@ -168,7 +152,7 @@
                 <button
                   type="button"
                   [ngClass]="
-                    selectedButton === 8 ? 'btn btn-success' : 'btn btn-dark'
+                    selectedButton === 8 ? 'btn btn-success' : 'btn btn-primary'
                   "
                   (click)="goPage('8')"
                 >
@@ -177,7 +161,7 @@
                 <button
                   type="button"
                   [ngClass]="
-                    selectedButton === 9 ? 'btn btn-success' : 'btn btn-dark'
+                    selectedButton === 9 ? 'btn btn-success' : 'btn btn-primary'
                   "
                   (click)="goPage('9')"
                 >
@@ -191,11 +175,7 @@
           <div class="card-body">
             <!-- <h5 class="card-title">Raf Aktarma İstek Paneli</h5> -->
 
-            <form
-              class="mt-4"
-              [formGroup]="checkForm"
-              (ngSubmit)="onSubmit(checkForm.value)"
-            >
+            <form class="mt-4" [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)">
               <div class="row">
                 <div class="col-md-12">
                   <h5 class="card-title">Alınacak Ürün</h5>
@@ -205,44 +185,23 @@
 
               <div class="row mb-3">
                 <div class="form-group col">
-                  <p-dropdown
-                    formControlName="office"
-                    [options]="offices"
-                    [showClear]="true"
-                    placeholder="Ofis"
-                  ></p-dropdown>
+                  <p-dropdown formControlName="office" [options]="offices" [showClear]="true" placeholder="Ofis">
+                  </p-dropdown>
                 </div>
 
                 <div class="form-group col">
-                  <p-dropdown
-                    formControlName="warehosue"
-                    [options]="warehouses"
-                    [showClear]="true"
-                    placeholder="Depo"
-                    formControlName="warehouseCode"
-                  ></p-dropdown>
+                  <p-dropdown formControlName="warehosue" [options]="warehouses" [showClear]="true" placeholder="Depo"
+                    formControlName="warehouseCode"></p-dropdown>
                 </div>
               </div>
 
               <div class="row mb-3">
                 <div class="form-group">
                   <div class="input-group">
-                    <input
-                      pInputText
-                      type="text"
-                      placeholder="Raf No"
-                      id="shelfNo"
-                      class="form-control"
-                      formControlName="shelfNo"
-                      (keydown.enter)="focusNextInput('barcode')"
-                    />
+                    <input pInputText type="text" placeholder="Raf No" id="shelfNo" class="form-control"
+                      formControlName="shelfNo" (keydown.enter)="focusNextInput('barcode')" />
                     <div class="input-group-append">
-                      <button
-                        type="button"
-                        style="height: 100%"
-                        (click)="clearShelfNumbers()"
-                        class="btn btn-dark"
-                      >
+                      <button type="button" style="height: 100%" (click)="clearShelfNumbers()" class="btn btn-primary">
                         Formu Temizle
                       </button>
                     </div>
@@ -255,42 +214,23 @@
                   <label *ngIf="qrBarcodeUrl !== null" for="qrBarcode">{{
                     qrBarcodeUrl
                   }}</label>
-                  <input
-                    placeholder="Barkod"
-                    pInputText
-                    type="text"
-                    id="barcode"
-                    class="form-control"
-                    formControlName="barcode"
-                    (keydown.enter)="onSubmit(checkForm.value)"
-                  />
+                  <input placeholder="Barkod" pInputText type="text" id="barcode" class="form-control"
+                    formControlName="barcode" (keydown.enter)="onSubmit(checkForm.value)" />
                 </div>
               </div>
 
               <div class="row mb-3">
                 <div class="form-group col">
                   <div class="form-group">
-                    <input
-                      placeholder="Miktar"
-                      pInputText
-                      type="number"
-                      id="quantity"
-                      class="form-control"
-                      formControlName="quantity"
-                    />
+                    <input placeholder="Miktar" pInputText type="number" id="quantity" class="form-control"
+                      formControlName="quantity" />
                   </div>
                 </div>
 
                 <div class="form-group col">
                   <div class="form-group">
-                    <input
-                      placeholder="Parti Kodu"
-                      pInputText
-                      type="text"
-                      id="batchCode"
-                      class="form-control"
-                      formControlName="batchCode"
-                    />
+                    <input placeholder="Parti Kodu" pInputText type="text" id="batchCode" class="form-control"
+                      formControlName="batchCode" />
                   </div>
                 </div>
               </div>
@@ -306,20 +246,13 @@
               <div class="row mb-3">
                 <div class="form-group col">
                   <div class="input-group">
-                    <input
-                      pInputText
-                      placeholder="Hedef Raf No"
-                      type="search"
-                      id="targetShelfNo"
-                      class="form-control"
-                      formControlName="targetShelfNo"
-                      (keydown.enter)="onSubmit(checkForm.value)"
-                    />
+                    <input pInputText placeholder="Hedef Raf No" type="search" id="targetShelfNo" class="form-control"
+                      formControlName="targetShelfNo" (keydown.enter)="onSubmit(checkForm.value)" />
                     <!-- <div class="input-group-append">
                       <button
                         type="button"
                         (click)="clearTargetShelfNumber()"
-                        class="btn btn-dark"
+                        class="btn btn-primary"
                         style="height: 100%"
                       >
                         Tüm Formu Temizle
@@ -334,12 +267,8 @@
               <div class="row mb-3">
                 <div class="form-group col">
                   <div class="form-group">
-                    <button
-                      type="button"
-                      class="btn btn-primary"
-                      style="width: 100%"
-                      (click)="onSubmit(checkForm.value)"
-                    >
+                    <button type="button" class="btn btn-primary" style="width: 100%"
+                      (click)="onSubmit(checkForm.value)">
                       Ekle
                     </button>
                   </div>
@@ -347,12 +276,8 @@
 
                 <div class="form-group col">
                   <div class="form-group">
-                    <button
-                      type="button"
-                      class="btn btn-dark"
-                      style="width: 100%"
-                      (click)="finishTransfer(checkForm.value)"
-                    >
+                    <button type="button" class="btn btn-primary" style="width: 100%"
+                      (click)="finishTransfer(checkForm.value)">
                       Transferi Tamamla
                     </button>
                   </div>
@@ -362,27 +287,22 @@
           </div>
         </div>
 
-        <!-- Yeni kart: Toplacak Ürünler -->
+        <!-- Yeni kart: Toplanacak Ürünler Adedi -->
         <div class="card text-center" *ngIf="totalCount > 0">
           <div class="card-body">
-            <h5 class="card-title">Toplanacak Ürünler</h5>
+            <h5 class="card-title">Toplanan Ürünler</h5>
             <h1 class="display-1">{{ totalCount }}</h1>
             <!--eklenen ürün miktarı yazcak! -->
 
             <p class="card-text">Adet Ürün Toplandı</p>
           </div>
         </div>
-
+        <!-- Yeni kart: Toplanacak Ürünler -->
         <div class="card" *ngIf="transferProducts.length > 0">
           <div class="card-body">
             <h5 class="card-title">Toplanacak Ürünler</h5>
             <!-- Arama kutusu -->
-            <input
-              type="text"
-              [(ngModel)]="searchText"
-              placeholder="Ara..."
-              class="form-control mb-3"
-            />
+            <input type="text" [(ngModel)]="searchText" placeholder="Ara..." class="form-control mb-3" />
 
             <div class="table-responsive">
               <table class="table">
@@ -394,15 +314,13 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    *ngFor="
+                  <tr *ngFor="
                       let product of transferProducts
                         | fastTransfer : searchText : ['targetShelf']
                         | paginate
                           : { itemsPerPage: 10, currentPage: currentPage };
                       let i = index
-                    "
-                  >
+                    ">
                     <td>{{ i + 1 }}</td>
                     <td>{{ product.itemCode }}</td>
                     <td>{{ product.shelfNo }}</td>
@@ -412,24 +330,159 @@
                     <td>{{ product.barcode }}</td>
                     <td>{{ product.drawerCount }}</td>
                     <td>
-                      <button
-                        class="btn btn-dark"
-                        type="submit"
-                        (click)="getShelves(product.barcode)"
-                      >
+                      <button class="btn btn-primary" type="submit" (click)="getShelves(product.barcode)">
                         <i class="fa-solid fa-bars"></i>
                       </button>
                     </td>
                   </tr>
                 </tbody>
               </table>
-              <pagination-controls
-                (pageChange)="currentPage = $event"
-              ></pagination-controls>
+              <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
             </div>
           </div>
         </div>
 
+        <div class="card p-4" *ngIf="__transferProducts.length > 0">
+          <div class="card-body">
+
+
+            <p-table [styleClass]="'p-datatable-striped'" [value]="__transferProducts" [paginator]="true" [rows]="10"
+              [tableStyle]="{ 'min-width': '50rem' }" (onFilter)="logFilteredData($event)">
+
+              <ng-template pTemplate="caption">
+                <div class="flex align-items-center justify-content-between">
+                  Toplanacak Ürünler
+                </div>
+              </ng-template>
+              <ng-template pTemplate="header">
+
+                <tr>
+                  <th>Fotoğraf</th>
+                  <th pSortableColumn="brand">
+                    Marka <p-sortIcon field="brand"></p-sortIcon>
+                  </th>
+                  <!-- <th pSortableColumn="barcode">
+                    Barkod <p-sortIcon field="barcode"></p-sortIcon>
+                  </th> -->
+                  <th pSortableColumn="itemCode">
+                    Ürün Kodu <p-sortIcon field="itemCode"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="shelfNo">
+                    Raf <p-sortIcon field="shelfNo"></p-sortIcon>
+                  </th>
+                  <!-- <th pSortableColumn="drawerCount">
+                    Çekmece Kapasitesi <p-sortIcon field="drawerCount"></p-sortIcon>
+                  </th> -->
+                  <th pSortableColumn="transferQuantity">
+                    Transfer Miktarı <p-sortIcon field="transferQuantity"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="targetShelf">
+                    Hedef Raf <p-sortIcon field="targetShelf"></p-sortIcon>
+                  </th>
+                  <!-- <th pSortableColumn="quantity">
+                    Miktar <p-sortIcon field="quantity"></p-sortIcon>
+                  </th> -->
+                  <th pSortableColumn="productHierarchyLevel01">
+                    Ürün Hiyerarşisi 1 <p-sortIcon field="productHierarchyLevel01"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="productHierarchyLevel02">
+                    Ürün Hiyerarşisi 2 <p-sortIcon field="productHierarchyLevel02"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="productHierarchyLevel03">
+                    Ürün Hiyerarşisi 3 <p-sortIcon field="productHierarchyLevel03"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="speed">
+                    Hız <p-sortIcon field="speed"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="inventory">
+                    Envanter <p-sortIcon field="inventory"></p-sortIcon>
+                  </th>
+                  <th>
+                    İşlemler
+                  </th>
+                </tr>
+                <tr>
+                  <th></th>
+                  <!-- <th>
+                    <p-columnFilter type="text" field="barcode" [showClearButton]="false"></p-columnFilter>
+                  </th> -->
+                  <th>
+                    <p-columnFilter type="text" field="brand" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="itemCode" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="shelfNo" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <!-- <th>
+                    <p-columnFilter type="text" field="drawerCount" [showClearButton]="false"></p-columnFilter>
+                  </th> -->
+                  <th>
+                    <p-columnFilter type="text" field="transferQuantity" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="targetShelf" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <!-- <th>
+                    <p-columnFilter type="text" field="quantity" [showClearButton]="false"></p-columnFilter>
+                  </th> -->
+                  <th>
+                    <p-columnFilter type="text" field="productHierarchyLevel01" [showClearButton]="false">
+                    </p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="productHierarchyLevel02" [showClearButton]="false">
+                    </p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="productHierarchyLevel03" [showClearButton]="false">
+                    </p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="speed" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="inventory" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-product>
+                <tr>
+                  <!-- <td>{{ product.barcode }}</td> -->
+                  <td>
+                    <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true">
+                    </p-image>
+                  </td>
+                  <td>{{ product.brand }}</td>
+
+                  <td>{{ product.itemCode }}</td>
+                  <td>{{ product.shelfNo }}</td>
+                  <!-- <td>{{ product.drawerCount }}</td> -->
+                  <td>{{ product.transferQuantity }}</td>
+                  <td>{{ product.targetShelf }}</td>
+                  <!-- <td>{{ product.quantity }}</td> -->
+                  <td>{{ product.productHierarchyLevel01 }}</td>
+                  <td>{{ product.productHierarchyLevel02 }}</td>
+                  <td>{{ product.productHierarchyLevel03 }}</td>
+                  <td>{{ product.speed }}</td>
+                  <td>{{ product.inventory }}</td>
+                  <td>
+                    <button class="btn btn-primary" type="submit" (click)="getShelves(product.barcode)">
+                      <i class="fa-solid fa-bars"></i>
+                    </button>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+
+            <!-- <p-paginator [rows]="10" [totalRecords]="totalRecords" [rowsPerPageOptions]="[10, 20, 50]"
+              (onPageChange)="onPageChange($event)"></p-paginator> -->
+
+
+          </div>
+        </div>
+        <!-- Yeni kart: toplanan Ürünler -->
         <div class="card" *ngIf="collectedFastTransferModels.length > 0">
           <div class="card-body">
             <h5 class="card-title">Toplanan Ürünler</h5>
@@ -444,30 +497,23 @@
 
                     <th scope="col">Raf Numarası</th>
                     <th scope="col">Barkod</th>
-                    <th scope="col">Miktar</th>
+                    <!-- <th scope="col">Miktar</th> -->
                     <th scope="col">Parti</th>
                     <th scope="col">Hedef Raf</th>
                     <th scope="col">Sil</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    *ngFor="
+                  <tr *ngFor="
                       let product of collectedFastTransferModels;
                       let i = index
-                    "
-                  >
+                    ">
                     <td>
                       {{ i + 1 }}
                     </td>
                     <td>
-                      <img
-                        src="{{ product.photoUrl }}"
-                        alt="Resim"
-                        width="50"
-                        height="50"
-                        (click)="openImageModal(product.photoUrl)"
-                      />
+                      <img src="{{ product.photoUrl }}" alt="Resim" width="50" height="50"
+                        (click)="openImageModal(product.photoUrl)" />
                     </td>
                     <td>{{ product.description }}</td>
                     <td>{{ product.itemCode }}</td>
@@ -477,19 +523,14 @@
                     <td>{{ product.batchCode }}</td>
                     <td>{{ product.targetShelfNo }}</td>
                     <td>
-                      <button
-                        class="btn btn-danger"
-                        (click)="deleteFastTransfer(product)"
-                      >
+                      <button class="btn btn-danger" (click)="deleteFastTransfer(product)">
                         <i class="fa fa-trash"></i>
                       </button>
                     </td>
                   </tr>
                 </tbody>
               </table>
-              <pagination-controls
-                (pageChange)="currentPage = $event"
-              ></pagination-controls>
+              <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
             </div>
           </div>
         </div>
@@ -497,13 +538,8 @@
     </div>
     <p-dialog header="Raflar" [(visible)]="productShelvesDialog">
       <div class="btn-group mr-2" role="group" aria-label="First group">
-        <button
-          *ngFor="let shelve of productShelves; let i = index"
-          (click)="setShelveToForm(shelve)"
-          type="button"
-          [ngClass]="i % 2 === 0 ? 'btn btn-dark' : 'btn btn-secondary'"
-          style="height: 10rem"
-        >
+        <button *ngFor="let shelve of productShelves; let i = index" (click)="setShelveToForm(shelve)" type="button"
+          [ngClass]="i % 2 === 0 ? 'btn btn-primary' : 'btn btn-secondary'" style="height: 10rem">
           {{ shelve }}
         </button>
       </div>

@@ -4,7 +4,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Exception } from '@zxing/library';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
-import { ProductList_VM } from 'src/app/models/model/product/productList_VM';
+import { ProductList_VM, ProductList_VM_2 } from 'src/app/models/model/product/productList_VM';
 import { QrCode } from 'src/app/models/model/product/qrCode';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
@@ -130,7 +130,7 @@ export class SearchQrComponent implements OnInit {
 
   }
 
-  _products: ProductList_VM[] = [];
+  _products: ProductList_VM_2[] = [];
   async getProducts2(barcode: string) {
     try {
 

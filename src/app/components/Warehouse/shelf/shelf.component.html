@@ -1,0 +1,111 @@
+<main id="main" class="main">
+  <section class="section">
+    <div class="card">
+      <div class="card-body">
+        <p-tabView>
+          <p-tabPanel header="Raflar">
+            <div *ngIf="shelves.length > 0; else noShelves">
+              <p-table [value]="shelves" [paginator]="true" [rows]="10" [tableStyle]="{ 'min-width': '50rem' }"
+                [styleClass]="'p-datatable-striped'">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th pSortableColumn="warehouse">
+                      Depo <p-sortIcon field="warehouse"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="shelfNo">
+                      Raf <p-sortIcon field="shelfNo"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="rowNumber">
+                      Sıra Numarası <p-sortIcon field="rowNumber"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="konum">
+                      Konum <p-sortIcon field="konum"></p-sortIcon>
+                    </th>
+                    <th>İşlemler</th>
+                  </tr>
+                  <tr>
+                    <th>
+                      <p-columnFilter type="text" field="warehouse" [showClearButton]="false"></p-columnFilter>
+                    </th>
+                    <th>
+                      <p-columnFilter type="text" field="shelfNo" [showClearButton]="false"></p-columnFilter>
+                    </th>
+                    <th>
+                      <p-columnFilter type="text" field="rowNumber" [showClearButton]="false"></p-columnFilter>
+                    </th>
+                    <th>
+                      <p-columnFilter type="text" field="konum" [showClearButton]="false"></p-columnFilter>
+                    </th>
+                    <th></th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-shelf>
+                  <tr>
+                    <td>{{ shelf.warehouse }}</td>
+                    <td>{{ shelf.shelfNo }}</td>
+                    <td>{{ shelf.rowNumber }}</td>
+                    <td>{{ shelf.konum }}</td>
+                    <td>
+                      <button pButton type="button" icon="pi pi-pencil" (click)="openUpdateDialog(shelf)"></button>
+                      <button pButton type="button" icon="pi pi-trash" (click)="deleteShelf(shelf.id)"></button>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+            <ng-template #noShelves>
+              <p>Henüz raf yok.</p>
+            </ng-template>
+
+            <p-dialog header="Raf Güncelle" [(visible)]="displayUpdateDialog" [modal]="true" [closable]="false"
+              [style]="{width: '30vw'}">
+              <form [formGroup]="updateShelfForm" (ngSubmit)="updateShelf()">
+                <div>
+                  <div class="mb-3">
+                    <input type="text" pInputText formControlName="warehouse" placeholder="Depo" />
+                  </div>
+                  <div class="mb-3">
+                    <input type="text" pInputText formControlName="shelfNo" placeholder="Raf" />
+                  </div>
+                  <div class="mb-3">
+                    <input type="text" pInputText formControlName="rowNumber" placeholder="Sıra Numaraso" />
+                  </div>
+                  <div class="mb-3">
+                    <input type="text" pInputText formControlName="konum" placeholder="Konum" />
+                  </div>
+                  <div>
+                    <button pButton type="submit" label="Güncelle" [disabled]="updateShelfForm.invalid"></button>
+                    <button pButton type="button" label="İptal" (click)="displayUpdateDialog=false"></button>
+                  </div>
+                </div>
+              </form>
+            </p-dialog>
+          </p-tabPanel>
+
+          <p-tabPanel header="Raf Ekle">
+            <form [formGroup]="shelfForm" (ngSubmit)="addShelf(this.shelfForm.value)">
+              <div>
+                <div class="mb-3">
+                  <input type="text" pInputText formControlName="warehouse" placeholder="Depo" />
+                </div>
+                <div class="mb-3">
+                  <input type="text" pInputText formControlName="shelfNo" placeholder="Raf" />
+                </div>
+                <div class="mb-3">
+                  <input type="text" pInputText formControlName="rowNumber" placeholder="Sıra Numarası" />
+                </div>
+                <div class="mb-3">
+                  <input type="text" pInputText formControlName="konum" placeholder="Konum" />
+                </div>
+                <div>
+                  <button pButton type="submit" label="Ekle"></button>
+                </div>
+              </div>
+            </form>
+
+          </p-tabPanel>
+        </p-tabView>
+      </div>
+    </div>
+  </section>
+</main>

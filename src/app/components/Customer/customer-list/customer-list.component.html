@@ -1,15 +1,8 @@
 <main id="main" class="main">
   <section class="section">
     <div class="card custom-card mb-3">
-      <div
-        class="card-body d-flex justify-content-start mt-3"
-        style="overflow-x: auto"
-      >
-        <button
-          type="button"
-          class="btn custom-btn-primary"
-          routerLink="/add-customer"
-        >
+      <div class="card-body d-flex justify-content-start mt-3" style="overflow-x: auto">
+        <button type="button" class="btn custom-btn-primary" routerLink="/add-customer">
           <i class="fas fa-plus"></i> Müşteri Ekle
         </button>
       </div>
@@ -17,55 +10,70 @@
 
     <div class="card">
       <div class="card-body">
-        <div style="overflow-x: auto">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Müşteri</th>
-                <th scope="col">Müşteri Kodu</th>
-                <th scope="col">Kaşe</th>
-                <th scope="col">Kartvizit</th>
-                <th scope="col">Kargo Adresi</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let customer of customers">
-                <td>{{ customer.description }}</td>
-                <td>{{ customer.currAccCode }}</td>
-                <td>
-                  <p-image
-                    src="{{ customer.stampPhotoUrl }}"
-                    alt="Image"
-                    width="70"
-                    [preview]="true"
-                    appendTo="body"
-                  ></p-image>
-                </td>
-                <td>
-                  <p-image
-                    src="{{ customer.bussinesCardPhotoUrl }}"
-                    alt="Image"
-                    width="70"
-                    [preview]="true"
-                    appendTo="body"
-                  ></p-image>
-                </td>
-                <td>
-                  <p-image
-                    src="{{ customer.cargoAddressPhotoUrl }}"
-                    alt="Image"
-                    width="70"
-                    [preview]="true"
-                    appendTo="body"
-                  ></p-image>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <pagination-controls
-            (pageChange)="currentPage = $event"
-          ></pagination-controls>
-        </div>
+        <p-table #dt7 [value]="customers" [(selection)]="selectedCustomers" dataKey="currAccCode" [paginator]="true"
+          [rowsPerPageOptions]="[5, 10, 20]" [resizableColumns]="true" expandableRows="true" columnResizeMode="expand"
+          styleClass="p-datatable-striped" [rows]="10" [tableStyle]="{ 'min-width': '50rem' }"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+          <ng-template pTemplate="caption">
+
+            <h5 *ngIf="selectedCustomers.length > 0" style="text-align: left">
+              {{ selectedCustomers.length }}/{{ customers.length }} Adet Müşteri Seçildi
+            </h5>
+          </ng-template>
+
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="description">
+                Müşteri
+                <p-sortIcon field="description"></p-sortIcon>
+              </th>
+              <th pSortableColumn="currAccCode">
+                Müşteri Kodu
+                <p-sortIcon field="currAccCode"></p-sortIcon>
+              </th>
+              <th>
+                Kaşe
+              </th>
+              <th>
+                Kartvizit
+              </th>
+              <th>
+                Kargo Adresi
+              </th>
+            </tr>
+            <tr>
+              <th>
+                <p-columnFilter type="text" field="description" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="currAccCode" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th></th>
+              <th></th>
+              <th></th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-customer>
+            <tr>
+              <td>{{ customer.description }}</td>
+              <td>{{ customer.currAccCode }}</td>
+              <td>
+                <p-image src="{{ customer.stampPhotoUrl }}" alt="Image" width="70" [preview]="true" appendTo="body">
+                </p-image>
+              </td>
+              <td>
+                <p-image src="{{ customer.bussinesCardPhotoUrl }}" alt="Image" width="70" [preview]="true"
+                  appendTo="body"></p-image>
+              </td>
+              <td>
+                <p-image src="{{ customer.cargoAddressPhotoUrl }}" alt="Image" width="70" [preview]="true"
+                  appendTo="body"></p-image>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
       </div>
     </div>
   </section>

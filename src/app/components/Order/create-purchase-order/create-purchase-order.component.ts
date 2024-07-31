@@ -30,7 +30,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
   officeModels: OfficeModel[] = [];
   invoiceProducts: CreatePurchaseInvoice[] = [];
   invoiceProducts2: CreatePurchaseInvoice[] = [];
-
+  zz
   activeTab = 1;
   productForm: FormGroup;
   warehouseModels: WarehouseOfficeModel[] = [];

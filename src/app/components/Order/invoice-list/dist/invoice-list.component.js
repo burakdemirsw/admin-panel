@@ -60,6 +60,8 @@ var InvoiceListComponent = /** @class */ (function () {
         this.quantity = null;
         this.currentPage = 1; // Başlangıçta ilk sayfayı göster
         this.innerNumberList = [];
+        this.countList = [];
+        this.selectedCounts = [];
     }
     InvoiceListComponent.prototype.ngOnChanges = function (changes) {
         if (changes["barcode"] && !changes["barcode"].isFirstChange()) {

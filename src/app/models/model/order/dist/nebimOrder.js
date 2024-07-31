@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 exports.__esModule = true;
-exports.ClientOrderBasketItem = exports.ClientOrder = exports.ClientOrder_DTO = exports.OrdersViaInternetInfo = exports.Payment = exports.ITAttribute = exports.Line_3 = exports.Line_2 = exports.Line = exports.Discount = exports.NebimInvoice = exports.NebimOrder_2 = exports.NebimOrder = exports.CheckCustomerModel = exports.CheckOrderModel = void 0;
+exports.ClientOrderBasketItem = exports.ClientOrder = exports.ClientOrder_DTO = exports.OrdersViaInternetInfo = exports.Payment = exports.ITAttribute = exports.Line_3 = exports.Line_2 = exports.Line = exports.Discount = exports.NebimInvoiceResponse = exports.NebimInvoice = exports.NebimOrder_2 = exports.NebimOrder = exports.CheckCustomerModel = exports.CheckOrderModel = void 0;
 var CheckOrderModel = /** @class */ (function () {
     function CheckOrderModel() {
     }
@@ -146,11 +146,11 @@ var NebimOrder_2 = /** @class */ (function () {
 exports.NebimOrder_2 = NebimOrder_2;
 var NebimInvoice = /** @class */ (function () {
     // payments: Payment[];
-    function NebimInvoice(discountPercentage, discountPercentage2, exchangeRate, docCurrencyCode, customerDesc, currAccCode, orderNo, formValue, selectedProducts, salesPersonCode, taxTypeCode, addressId, subCurrAccID) {
+    function NebimInvoice(discountPercentage, discountPercentage2, exchangeRate, docCurrencyCode, customerDesc, currAccCode, orderNo, formValue, selectedProducts, salesPersonCode, taxTypeCode, addressId, subCurrAccID, invoiceNumber) {
         var _this = this;
         this.discounts = [];
         this.modelType = 7;
-        this.invoiceNumber = "";
+        this.invoiceNumber = invoiceNumber;
         this.eMailAddress = "";
         this.companyCode = 1;
         this.shippingPostalAddressID = addressId;
@@ -197,6 +197,12 @@ var NebimInvoice = /** @class */ (function () {
     return NebimInvoice;
 }());
 exports.NebimInvoice = NebimInvoice;
+var NebimInvoiceResponse = /** @class */ (function () {
+    function NebimInvoiceResponse() {
+    }
+    return NebimInvoiceResponse;
+}());
+exports.NebimInvoiceResponse = NebimInvoiceResponse;
 var Discount = /** @class */ (function () {
     function Discount(value, discountTypeCode, discountReasonCode) {
         this.discountTypeCode = discountTypeCode;

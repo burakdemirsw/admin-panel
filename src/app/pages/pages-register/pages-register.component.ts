@@ -2,12 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
-import { GetUserFilter, UserList_VM, UserRegister_VM } from 'src/app/models/model/user/userRegister_VM';
+import { GetUserFilter, UserClientInfoResponse, UserList_VM, UserRegister_VM } from 'src/app/models/model/user/userRegister_VM';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { UserService } from 'src/app/services/admin/user.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
 import { GeneralService } from '../../services/admin/general.service';
+import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { UserShelf } from 'src/app/models/model/user/personalShelf';
+import { WarehouseService } from 'src/app/services/admin/warehouse.service';
+import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
 
 @Component({
   selector: 'app-pages-register',
@@ -17,23 +21,37 @@ import { GeneralService } from '../../services/admin/general.service';
 export class PagesRegisterComponent implements OnInit {
   registerForm: FormGroup;
   isUpdate: boolean = false;
+  id: number = 0;
   constructor(
     private generalService: GeneralService,
     private formBuilder: FormBuilder,
     private userService: UserService,
     private headerService: HeaderService,
-    private alertifyService: AlertifyService, private httpClientService: HttpClientService, private activatedRoute: ActivatedRoute
+    private alertifyService: AlertifyService,
+    private httpClientService: HttpClientService,
+    private activatedRoute: ActivatedRoute,
+    private toasterService: ToasterService,
+    private warehouseService: WarehouseService
+
   ) { }
 
   userList: UserList_VM[] = []
   async ngOnInit() {
     this.headerService.updatePageTitle("Kullanıcı Ekle")
     this.formGenerator();
+    this.shelfFormGenerator();
+    await this.getShelves();
     await this.getSalesPersonModels()
+    this.user_info = await this.userService.getUserClientInfoResponse();
+    console.log(this.user_info)
+
+
 
     this.activatedRoute.params.subscribe(async (params) => {
       if (params['userId']) {
 
+        this.id = Number(params['userId'])
+        await this.getUserShelves();
         this.isUpdate = true;
         await this.findUser(Number(params['userId']))
       }
@@ -41,7 +59,44 @@ export class PagesRegisterComponent implements OnInit {
 
 
   }
-
+  user_info: UserClientInfoResponse;
+  userShelves: UserShelf[] = [];
+  shelves: AvailableShelf[] = [];
+  selectedShelve: AvailableShelf;
+  async getShelves() {
+    var response = await this.warehouseService.getAvailableShelves()
+    this.shelves = response;
+  }
+  async getUserShelves() {
+    var response = await this.userService.getUserShelves(this.id)
+    this.userShelves = response;
+  }
+  async deleteUserShelf(id: number) {
+    var response = await this.userService.deleteUserShelf(id)
+    if (response) {
+      this.toasterService.success("Silindi");
+      await this.getUserShelves();
+    } else {
+      this.toasterService.warn("Silinmedi")
+    }
+  }
+  async addUserShelf(request: UserShelf) {
+    var response = await this.userService.addUserShelf(request)
+    if (response) {
+      this.toasterService.success("Eklendi");
+      await this.getUserShelves();
+    } else {
+      this.toasterService.warn("Eklenmedi")
+    }
+  }
+  async updateUserShelf(request: UserShelf) {
+    var response = await this.userService.updateUserShelf(request)
+    if (response) {
+      this.toasterService.success("Güncellendi");
+    } else {
+      this.toasterService.warn("Güncellenmedi")
+    }
+  }
   async findUser(userId: number) {
     this.userList = await this.userService.getUsers(new GetUserFilter(userId))
     if (this.userList.length > 0) {
@@ -104,6 +159,15 @@ export class PagesRegisterComponent implements OnInit {
 
   roleDescriptions: any[] = [{ role: "Admin" }, { role: "Salesman" }, { role: "Test User" }]
   selectedRole: any;
+  shelfForm: FormGroup;
+  shelfFormGenerator() {
+
+    this.shelfForm = this.formBuilder.group({
+      shelfNo: [null, Validators.required]
+    });
+
+
+  }
   formGenerator() {
     this.registerForm = this.formBuilder.group({
       firstName: ['Burak', Validators.required],
@@ -223,4 +287,34 @@ export class PagesRegisterComponent implements OnInit {
 
   }
 
+  async onShelfFormSubmit(form: any) {
+    var filter: GetUserFilter = new GetUserFilter();
+    filter.count = 100;
+    var _list: UserList_VM[] = await this.userService.getUsers(filter)
+    var finded_user = _list.find(u => u.id == this.id);
+    if (finded_user) {
+      if (this.shelfForm.valid) {
+
+        const isValid = !this.userShelves?.some(x => x.shelfNo === form.shelfNo.description);
+
+        if (isValid) {
+          var request: UserShelf = new UserShelf();
+          request.shelfNo = form.shelfNo.description;
+          request.userId = finded_user.id;
+          request.customerCode = finded_user.currAccCode;
+          await this.addUserShelf(request);
+        }
+        else {
+          this.toasterService.warn("Bu Raf Zaten Eklendi")
+        }
+      } else {
+        this.toasterService.warn("Form Geçersiz")
+      }
+
+    } else {
+      this.toasterService.warn("Kullanıcı Bulunamadı")
+    }
+
+
+  }
 }

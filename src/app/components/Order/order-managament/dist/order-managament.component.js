@@ -47,25 +47,39 @@ var core_1 = require("@angular/core");
 var printerInvoiceRequestModel_1 = require("src/app/models/model/order/printerInvoiceRequestModel");
 var createBarcode_1 = require("../../Product/create-barcode/models/createBarcode");
 var OrderManagamentComponent = /** @class */ (function () {
-    function OrderManagamentComponent(headerService, httpClientService, toasterService, router, orderService, formBuilder, activatedRoute, productService) {
+    function OrderManagamentComponent(headerService, httpClientService, toasterService, exportCsvService, router, orderService, formBuilder, activatedRoute, productService) {
+        var _this = this;
         this.headerService = headerService;
         this.httpClientService = httpClientService;
         this.toasterService = toasterService;
+        this.exportCsvService = exportCsvService;
         this.router = router;
         this.orderService = orderService;
         this.formBuilder = formBuilder;
         this.activatedRoute = activatedRoute;
         this.productService = productService;
         this.numberOfList = [1, 10, 20, 50, 100];
+        this.selectedOrders = [];
         this.currentPage = 1;
         this.pageDescription = false;
         this._pageDescription = false;
         this.pageDescriptionLine = "Alınan Siparişler";
+        this.items = [
+            {
+                label: 'Excele Aktar',
+                command: function () {
+                    _this.exportCsv();
+                }
+            }
+        ];
         this.status = 1;
         this.invoiceStatus = 2;
         this.visible = false;
         this.searchedOrder = "";
     }
+    OrderManagamentComponent.prototype.exportCsv = function () {
+        this.exportCsvService.exportToCsv(this.saleOrderModels, 'my-orders');
+    };
     OrderManagamentComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;

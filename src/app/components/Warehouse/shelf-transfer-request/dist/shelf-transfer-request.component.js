@@ -75,12 +75,14 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
         this.orderBillingList = [];
         this.itemBillingModels = [];
         this.warehouseModels = [];
+        this.shelfNo = null;
         this.shelfNoList = [];
         this.barcodeValue = null; // Değişkeni tanımlayın
         this.currentPage = 1;
+        this.lastCollectedProduct = null;
         this.transferProducts = [];
         this._transferProducts = [];
-        this.lastCollectedProduct = null;
+        this.__transferProducts = [];
         this.transferProductsColums = [
             'Id',
             'Stok Kodu',
@@ -102,6 +104,20 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
             'Barkod',
             'Çekmece Adedi',
             'İşlem',
+        ];
+        this.__transferProductsColumns = [
+            'Barkod',
+            'Stok Kodu',
+            'Raf No',
+            'Çekmece Adedi',
+            'Transfer Miktarı',
+            'Hedef Raf',
+            'Miktar',
+            'Ürün Hiyerarşisi Düzey 01',
+            'Ürün Hiyerarşisi Düzey 02',
+            'Ürün Hiyerarşisi Düzey 03',
+            'Hız',
+            'Envanter' // Inventory
         ];
         this.offices = ['M', 'U'];
         this.warehouses = ['MD', 'UD'];
@@ -127,14 +143,16 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
+                                if (params['shelfNo']) {
+                                    this.toasterService.success(params['shelfNo']);
+                                    this.shelfNo = params['shelfNo'];
+                                }
                                 if (!params['operationNo']) return [3 /*break*/, 2];
                                 this.currentOrderNo = 'REQ-' + params['operationNo'];
                                 this.currentPageType = params['type'];
                                 return [4 /*yield*/, this.getFastTransferModels()];
                             case 1:
                                 _a.sent();
-                                this.toasterService.info('İşlem Numarası: ' + this.currentOrderNo);
-                                this.addOperationStatus();
                                 _a.label = 2;
                             case 2:
                                 if (!params['type']) return [3 /*break*/, 4];
@@ -146,6 +164,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         }
                     });
                 }); });
+                this.addOperationStatus();
                 this.collectedProducts = [];
                 return [2 /*return*/];
             });
@@ -169,12 +188,6 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.orderService.addOrderStatus(request)];
                     case 2:
                         response = _b.sent();
-                        if (response) {
-                            this.toasterService.success('Durum Güncellendi');
-                        }
-                        else {
-                            this.toasterService.error('Durum Güncellenemedi');
-                        }
                         return [2 /*return*/];
                 }
             });
@@ -273,25 +286,51 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
     };
     //-------------------
     ShelfTransferRequestComponent.prototype.goDown2 = function (barcode, shelfNo, itemCode, transferQuantity) {
-        // packageNo'ya eşleşen ProductOfOrder'ı bulun
-        var matchingProduct = this.transferProducts.find(function (product) {
-            return product.barcode === barcode &&
-                product.shelfNo == shelfNo &&
-                product.itemCode == itemCode &&
-                product.transferQuantity == transferQuantity;
-        });
-        if (matchingProduct) {
-            // Ürünü diziden çıkarın
-            var index = this.transferProducts.indexOf(matchingProduct);
-            if (index !== -1) {
-                if (this.transferProducts.length - 1 >= index + 1) {
-                    this._transferProducts = [];
-                    this._transferProducts.push(this.transferProducts[index + 1]);
-                    this.lastCollectedProduct = this.transferProducts[index + 1];
+        if (this.currentPageType != '4') {
+            // packageNo'ya eşleşen ProductOfOrder'ı bulun
+            var matchingProduct = this.transferProducts.find(function (product) {
+                return product.barcode === barcode &&
+                    product.shelfNo == shelfNo &&
+                    product.itemCode == itemCode &&
+                    product.transferQuantity == transferQuantity;
+            });
+            if (matchingProduct) {
+                // Ürünü diziden çıkarın
+                var index = this.transferProducts.indexOf(matchingProduct);
+                if (index !== -1) {
+                    if (this.transferProducts.length - 1 >= index + 1) {
+                        this._transferProducts = [];
+                        this._transferProducts.push(this.transferProducts[index + 1]);
+                        this.lastCollectedProduct = this.transferProducts[index + 1];
+                    }
+                    else {
+                        this._transferProducts = [];
+                        this._transferProducts.push(this.transferProducts[0]);
+                    }
                 }
-                else {
-                    this._transferProducts = [];
-                    this._transferProducts.push(this.transferProducts[0]);
+            }
+        }
+        else {
+            // packageNo'ya eşleşen ProductOfOrder'ı bulun
+            var matchingProduct = this.__transferProducts.find(function (product) {
+                return product.barcode === barcode &&
+                    product.shelfNo == shelfNo &&
+                    product.itemCode == itemCode &&
+                    product.transferQuantity == transferQuantity;
+            });
+            if (matchingProduct) {
+                // Ürünü diziden çıkarın
+                var index = this.__transferProducts.indexOf(matchingProduct);
+                if (index !== -1) {
+                    if (this.__transferProducts.length - 1 >= index + 1) {
+                        this._transferProducts = [];
+                        this._transferProducts.push(this.__transferProducts[index + 1]);
+                        this.lastCollectedProduct = this.__transferProducts[index + 1];
+                    }
+                    else {
+                        this._transferProducts = [];
+                        this._transferProducts.push(this.__transferProducts[0]);
+                    }
                 }
             }
         }
@@ -326,16 +365,126 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
             });
         });
     };
+    ShelfTransferRequestComponent.prototype.getTransferRequestListModel2 = function (type) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response, itemsToRemoveIndexes, i, foundedProduct;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.warehouseService.getTransferRequestListModel(type, this.shelfNo)];
+                    case 1:
+                        response = _a.sent();
+                        this.selectedButton = Number(type);
+                        //toplanacak ürünler getirildi
+                        this.toasterService.success(this.shelfNo + ' Rafına Yapılacak Transferler Getirildi');
+                        //toplanacak ürünler atandı
+                        this.__transferProducts = response;
+                        if (this.deletedProductList.length > 0) {
+                            this.deletedProductList.forEach(function (deletedItem) {
+                                _this.__transferProducts.forEach(function (inventoryItem, _index) {
+                                    if (inventoryItem.barcode === deletedItem.barcode &&
+                                        inventoryItem.shelfNo === deletedItem.shelfNo &&
+                                        inventoryItem.itemCode === deletedItem.itemCode) {
+                                        _this.__transferProducts.splice(_index, 1);
+                                    }
+                                });
+                            });
+                        }
+                        itemsToRemoveIndexes = [];
+                        // inventoryItems üzerinde döngü
+                        this.__transferProducts.forEach(function (inventoryItem, index) {
+                            //transfer edilcek ürünler
+                            // Eşleşme arama ve güncelleme
+                            _this.collectedProducts.forEach(function (transferItem) {
+                                //toplanan ürünler
+                                // barcode, shelfNo ve itemCode değerlerine göre eşleşme kontrolü
+                                if (inventoryItem.barcode === transferItem.barcode &&
+                                    inventoryItem.targetShelf === transferItem.targetShelfNo &&
+                                    inventoryItem.shelfNo === transferItem.shelfNo) {
+                                    // Eşleşen üründen quantity değerini çıkart
+                                    inventoryItem.transferQuantity -= transferItem.quantity;
+                                    // Eğer transfer edilen miktar sonucunda quantity 0 veya daha az ise
+                                    if (inventoryItem.transferQuantity <= 0) {
+                                        // İlgili inventoryItem'ın çıkarılması için indeksini kaydet
+                                        itemsToRemoveIndexes.push(index);
+                                    }
+                                }
+                            });
+                        });
+                        // Çıkarılacak öğeler için ters döngü (çıkarırken sıralamayı bozmamak için)
+                        for (i = itemsToRemoveIndexes.length - 1; i >= 0; i--) {
+                            this.collectedProducts.splice(itemsToRemoveIndexes[i], 1);
+                        }
+                        itemsToRemoveIndexes = [];
+                        //--------------------------------------------------------
+                        if (this.__transferProducts.length > 0) {
+                            if (this.lastCollectedProduct == null) {
+                                //üste atılcak ürün seçildi
+                                this._transferProducts = [];
+                                this._transferProducts.push(this.__transferProducts[0]);
+                                this.lastCollectedProduct = this.__transferProducts[0];
+                            }
+                            else {
+                                foundedProduct = this.__transferProducts.find(function (p) {
+                                    return p.barcode == _this.lastCollectedProduct.barcode &&
+                                        p.itemCode == _this.lastCollectedProduct.itemCode &&
+                                        p.shelfNo == _this.lastCollectedProduct.shelfNo;
+                                });
+                                if (foundedProduct) {
+                                    //eğer ürün bulunduysa
+                                    if (foundedProduct.quantity > 0) {
+                                        //miktar değeri 0 dan büyükse
+                                        this._transferProducts = [];
+                                        this._transferProducts.push(foundedProduct);
+                                        this.lastCollectedProduct = foundedProduct;
+                                    }
+                                    else {
+                                        //miktar değeri 0 dan küçükse
+                                        this._transferProducts = [];
+                                        this._transferProducts.push(this.__transferProducts[0]);
+                                        this.lastCollectedProduct = this.__transferProducts[0];
+                                    }
+                                }
+                                else {
+                                    //üürn bulunmdadıysa
+                                    this._transferProducts = [];
+                                    this._transferProducts.push(this.__transferProducts[0]);
+                                    this.lastCollectedProduct = this.__transferProducts[0];
+                                }
+                            }
+                        }
+                        //raf otomatik doldurma
+                        this.fillShelfNo(2);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    //tablo filtrelendiğinde en üstte kalanı üste atar
+    ShelfTransferRequestComponent.prototype.logFilteredData = function (event) {
+        console.log('Filtered data:', event.filteredValue);
+        var list = event.filteredValue;
+        this.lastCollectedProduct = null;
+        this.lastCollectedProduct = list[0];
+        this.toasterService.info("Hedef Ürün Güncellendi");
+    };
     ShelfTransferRequestComponent.prototype.getTransferRequestListModel = function (type) {
         return __awaiter(this, void 0, void 0, function () {
             var response, itemsToRemoveIndexes, i, foundedProduct;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.warehouseService.getTransferRequestListModel(type)];
+                    case 0:
+                        if (!(type == '4')) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.getTransferRequestListModel2(type)];
                     case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                    case 2: return [4 /*yield*/, this.warehouseService.getTransferRequestListModel(type, this.shelfNo)];
+                    case 3:
                         response = _a.sent();
                         this.selectedButton = Number(type);
+                        //toplanacak ürünler getirildi
                         if (type === '0') {
                             this.toasterService.success('Varsayılan Ürünler Getirildi');
                         }
@@ -345,6 +494,10 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         else if (type === '2') {
                             this.toasterService.success('Çanta Ürünleri Getirildi');
                         }
+                        else if (type === '3') {
+                            this.toasterService.success('Çanta Dan Rafa Ürünleri Getirildi');
+                        }
+                        //toplanacak ürünler atandı
                         this.transferProducts = response;
                         if (this.deletedProductList.length > 0) {
                             this.deletedProductList.forEach(function (deletedItem) {
@@ -358,8 +511,6 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                             });
                         }
                         itemsToRemoveIndexes = [];
-                        //console.log(this.collectedProducts);
-                        //console.log(this.transferProducts);
                         // inventoryItems üzerinde döngü
                         this.transferProducts.forEach(function (inventoryItem, index) {
                             //transfer edilcek ürünler
@@ -386,7 +537,6 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         }
                         itemsToRemoveIndexes = [];
                         //--------------------------------------------------------
-                        this.collectedProducts;
                         if (this.transferProducts.length > 0) {
                             if (this.lastCollectedProduct == null) {
                                 //üste atılcak ürün seçildi
@@ -423,10 +573,19 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                                 }
                             }
                         }
+                        this.fillShelfNo(1);
                         return [2 /*return*/];
                 }
             });
         });
+    };
+    ShelfTransferRequestComponent.prototype.fillShelfNo = function (type) {
+        if (type == 1) {
+            this.checkForm.get('shelfNo').setValue(this.transferProducts[0].shelfNo);
+        }
+        else if (type == 2) {
+            this.checkForm.get('shelfNo').setValue(this.__transferProducts[0].shelfNo);
+        }
     };
     ShelfTransferRequestComponent.prototype.calculateTotalQty = function () {
         //toplanan ürünler yazısı için

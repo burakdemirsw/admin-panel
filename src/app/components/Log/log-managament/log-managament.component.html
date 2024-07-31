@@ -4,68 +4,39 @@
       <div class="card-body">
         <!-- Filtreleme Alanı (Başlangıç) -->
         <div class="btn-group mb-3 mt-4">
-          <button
-            class="btn btn-primary"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#filterCollapse"
-            aria-expanded="false"
-            aria-controls="filterCollapse"
-          >
+          <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse"
+            aria-expanded="false" aria-controls="filterCollapse">
             <i class="fa fa-bars" aria-hidden="true"></i>
           </button>
         </div>
 
         <div class="collapse" id="filterCollapse">
-          <form
-            [formGroup]="filterForm"
-            (ngSubmit)="onSubmit(filterForm.value)"
-          >
+          <form [formGroup]="filterForm" (ngSubmit)="onSubmit(filterForm.value)">
             <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
                   <label for="messageHeader">Mesaj Başlığı</label>
-                  <input
-                    type="text"
-                    id="messageHeader"
-                    class="form-control"
-                    formControlName="messageHeader"
-                  />
+                  <input type="text" id="messageHeader" class="form-control" formControlName="messageHeader" />
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
                   <label for="level">Tip</label>
-                  <input
-                    type="text"
-                    id="level"
-                    class="form-control"
-                    formControlName="level"
-                  />
+                  <input type="text" id="level" class="form-control" formControlName="level" />
                 </div>
               </div>
 
               <div class="col-md-4">
                 <div class="form-group">
                   <label for="endDate">İşlem Bitiş Tarihi:</label>
-                  <input
-                    type="date"
-                    id="endDate"
-                    class="form-control"
-                    formControlName="endDate"
-                  />
+                  <input type="date" id="endDate" class="form-control" formControlName="endDate" />
                 </div>
               </div>
 
               <div class="col-md-4">
                 <div class="form-group">
                   <label for="startDate">İşlem Başlangıç Tarihi:</label>
-                  <input
-                    type="date"
-                    id="startDate"
-                    class="form-control"
-                    formControlName="startDate"
-                  />
+                  <input type="date" id="startDate" class="form-control" formControlName="startDate" />
                 </div>
               </div>
             </div>
@@ -83,71 +54,94 @@
     <div class="card">
       <div class="card-body">
         <div style="overflow-x: auto">
-          <table class="table">
-            <thead>
+          <p-table #dt8 [value]="log_VMList" [(selection)]="selectedLogs" dataKey="id" [paginator]="true"
+            [rowsPerPageOptions]="[5, 10, 20]" [resizableColumns]="true" expandableRows="true" columnResizeMode="expand"
+            styleClass="p-datatable-striped" [rows]="10" [tableStyle]="{ 'min-width': '50rem' }"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+            <ng-template pTemplate="caption">
+
+              <h5 *ngIf="selectedLogs.length > 0" style="text-align: left">
+                {{ selectedLogs.length }}/{{ log_VMList.length }} Adet Log Seçildi
+              </h5>
+            </ng-template>
+
+            <ng-template pTemplate="header">
               <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Log Başlığı</th>
-                <th scope="col">Durum</th>
-                <th scope="col">Hata Mesajı</th>
-                <th scope="col">İstek</th>
-                <th scope="col">Log</th>
-                <!-- <th scope="col">İstek Adresi</th> -->
-                <th scope="col">Tarih</th>
+                <th pSortableColumn="id">
+                  Id
+                  <p-sortIcon field="id"></p-sortIcon>
+                </th>
+                <th pSortableColumn="messageHeader">
+                  Log Başlığı
+                  <p-sortIcon field="messageHeader"></p-sortIcon>
+                </th>
+                <th pSortableColumn="level">
+                  Durum
+                  <p-sortIcon field="level"></p-sortIcon>
+                </th>
+                <th pSortableColumn="exceptionText">
+                  Hata Mesajı
+                  <p-sortIcon field="exceptionText"></p-sortIcon>
+                </th>
+                <th>
+                  İstek
+                </th>
+                <th>
+                  Log
+                </th>
+                <th pSortableColumn="createdDate">
+                  Tarih
+                  <p-sortIcon field="createdDate"></p-sortIcon>
+                </th>
               </tr>
-            </thead>
-            <tbody>
-              <tr
-                *ngFor="
-                  let log of log_VMList
-                    | paginate : { itemsPerPage: 10, currentPage: currentPage }
-                "
-              >
+              <tr>
+                <th>
+                  <p-columnFilter type="text" field="id" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="messageHeader" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="level" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="exceptionText" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th></th>
+                <th></th>
+                <th>
+                  <p-columnFilter type="date" field="createdDate" [showClearButton]="false"></p-columnFilter>
+                </th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-log>
+              <tr>
                 <td>{{ log.id }}</td>
                 <td>{{ log.messageHeader }}</td>
                 <td>
-                  <div
-                    class="btn"
-                    [ngClass]="{
-                      'btn-warning': log.level === 'WARNING',
-                      'btn-success': log.level === 'SUCCESS',
-                      'btn-primary': log.level === 'INFO',
-                      'btn-danger': log.level === 'ERROR'
-                    }"
-                  >
+                  <div class="btn" [ngClass]="{
+          'btn-warning': log.level === 'WARNING',
+          'btn-success': log.level === 'BAŞARILI',
+          'btn-primary': log.level === 'INFO',
+          'btn-danger': log.level === 'ERROR'
+        }">
                     {{ log.level }}
                   </div>
                 </td>
-
                 <td>{{ log.exceptionText }}</td>
-
                 <td>
-                  <textarea
-                    rows="5"
-                    cols="50"
-                    [(ngModel)]="log.request"
-                    *ngIf="log.request"
-                    readonly
-                  ></textarea>
+                  <textarea rows="5" cols="50" [(ngModel)]="log.request" *ngIf="log.request" readonly></textarea>
                 </td>
-
                 <td>
-                  <textarea
-                    rows="5"
-                    cols="50"
-                    [(ngModel)]="log.logEvent"
-                    readonly
-                  ></textarea>
+                  <textarea rows="5" cols="50" [(ngModel)]="log.logEvent" readonly></textarea>
                 </td>
-
-                <!-- <td>{{ log.requestPath }}</td> -->
                 <td>{{ log.createdDate }}</td>
               </tr>
-            </tbody>
-          </table>
-          <pagination-controls
-            (pageChange)="currentPage = $event"
-          ></pagination-controls>
+            </ng-template>
+          </p-table>
+
+          <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
         </div>
       </div>
     </div>

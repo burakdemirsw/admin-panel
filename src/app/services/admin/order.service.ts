@@ -12,7 +12,7 @@ import { OrderBillingRequestModel } from 'src/app/models/model/invoice/orderBill
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
 import { GetCustomerAddress_CM, GetCustomerList_CM } from 'src/app/models/model/order/getCustomerList_CM';
 import { GetNebimOrders_RM } from 'src/app/models/model/order/getOrder_RM';
-import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, NebimOrder_2 } from 'src/app/models/model/order/nebimOrder';
+import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimInvoiceResponse, NebimOrder, NebimOrder_2 } from 'src/app/models/model/order/nebimOrder';
 import { OrderStatus } from 'src/app/models/model/order/orderStatus';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
@@ -432,9 +432,9 @@ export class OrderService {
     }
   }
 
-  async createInvoice(request: NebimInvoice): Promise<any> {
+  async createInvoice(request: NebimInvoice): Promise<NebimInvoiceResponse> {
     try {
-      var response = await this.httpClientService.post<NebimInvoice>({ controller: "order/create-sale-invoice" }, request).toPromise();
+      var response: NebimInvoiceResponse = await this.httpClientService.post<NebimInvoice>({ controller: "order/create-sale-invoice" }, request).toPromise();
 
       return response;
     } catch (error: any) {

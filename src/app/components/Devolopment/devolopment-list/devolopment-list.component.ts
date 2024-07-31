@@ -13,6 +13,7 @@ import { HeaderService } from '../../../services/admin/header.service';
 export class DevolopmentListComponent implements OnInit {
 
   tasks: DevelopmentTask_VM[] = []
+  selectedTasks: DevelopmentTask_VM[] = []
   devolopments: Development[] = []
   visible: boolean = false;
   visible2: boolean = false;

@@ -46,7 +46,8 @@ exports.PurchaseOrderManagamentComponent = void 0;
 var core_1 = require("@angular/core");
 var createBarcode_1 = require("../../Product/create-barcode/models/createBarcode");
 var PurchaseOrderManagamentComponent = /** @class */ (function () {
-    function PurchaseOrderManagamentComponent(httpClientService, toasterService, router, orderService, formBuilder, productService, headerService) {
+    function PurchaseOrderManagamentComponent(httpClientService, toasterService, router, orderService, formBuilder, productService, headerService, exportCsvService) {
+        var _this = this;
         this.httpClientService = httpClientService;
         this.toasterService = toasterService;
         this.router = router;
@@ -54,8 +55,19 @@ var PurchaseOrderManagamentComponent = /** @class */ (function () {
         this.formBuilder = formBuilder;
         this.productService = productService;
         this.headerService = headerService;
+        this.exportCsvService = exportCsvService;
         this.numberOfList = [1, 10, 20, 50, 100];
+        this.saleOrderModels = [];
+        this.selectedOrders = [];
         this.currentPage = 1;
+        this.items = [
+            {
+                label: 'Excele Aktar',
+                command: function () {
+                    _this.exportCsv();
+                }
+            }
+        ];
         this.visible = false;
     }
     PurchaseOrderManagamentComponent.prototype.ngOnInit = function () {
@@ -72,6 +84,9 @@ var PurchaseOrderManagamentComponent = /** @class */ (function () {
                 }
             });
         });
+    };
+    PurchaseOrderManagamentComponent.prototype.exportCsv = function () {
+        this.exportCsvService.exportToCsv(this.saleOrderModels, 'my-orders');
     };
     PurchaseOrderManagamentComponent.prototype.formGenerator = function () {
         this.filterForm = this.formBuilder.group({
@@ -165,14 +180,14 @@ var PurchaseOrderManagamentComponent = /** @class */ (function () {
     };
     PurchaseOrderManagamentComponent.prototype.getPurchaseOrders = function () {
         return __awaiter(this, void 0, Promise, function () {
-            var response, _a;
+            var _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _a = this;
                         return [4 /*yield*/, this.orderService.getPurchaseOrders()];
                     case 1:
-                        response = _a.saleOrderModels = _b.sent();
+                        _a.saleOrderModels = _b.sent();
                         return [2 /*return*/];
                 }
             });

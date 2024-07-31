@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { MenuItem } from 'primeng/api';
 import { CreateBarcodeFromOrder_RM } from 'src/app/components/Product/create-barcode/models/createBarcode';
 import { WarehouseOperationListFilterModel } from 'src/app/models/model/filter/warehouseOperationListFilterModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
+import { ExportCsvService } from 'src/app/services/admin/export-csv.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
@@ -20,7 +22,8 @@ import { ToasterService } from 'src/app/services/ui/toaster.service';
 })
 export class WarehouseOperationListComponent implements OnInit {
   currentPage: number = 1;
-  warehouseOperationListModels: WarehouseOperationListModel[]
+  warehouseOperationListModels: WarehouseOperationListModel[] = []
+  selectedOperations: WarehouseOperationListModel[] = []
   filterForm: FormGroup
   constructor(
     private httpClientService: HttpClientService,
@@ -29,7 +32,8 @@ export class WarehouseOperationListComponent implements OnInit {
     private router: Router,
     private warehosueService: WarehouseService,
     private formBuilder: FormBuilder,
-    private orderService: OrderService, private headerService: HeaderService, private toasterService: ToasterService
+    private orderService: OrderService, private headerService: HeaderService, private toasterService: ToasterService,
+    private exportCsvService: ExportCsvService
   ) { }
 
   async ngOnInit() {
@@ -38,6 +42,18 @@ export class WarehouseOperationListComponent implements OnInit {
     await this.getWarehouseOperations('0');
     this.spinnerService.hide();
     this.headerService.updatePageTitle("Havuzda Kalan Transfer Paneli")
+  }
+
+  items: MenuItem[] = [
+    {
+      label: 'Excele Aktar',
+      command: () => {
+        this.exportCsv();
+      }
+    }
+  ];
+  exportCsv() {
+    this.exportCsvService.exportToCsv(this.warehouseOperationListModels, 'my-orders');
   }
   //--------------------------------------------------------------------------------------------- ITEMS TO BRING
   itemsToCollectDialog: boolean = false;

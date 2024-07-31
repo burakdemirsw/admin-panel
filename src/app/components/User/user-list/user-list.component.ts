@@ -28,6 +28,7 @@ export class UserListComponent implements OnInit {
   }
 
   users: UserList_VM[] = [];
+  selectedUsers: UserList_VM[] = [];
   async getUsers() {
     var filter: GetUserFilter = new GetUserFilter();
     filter.count = 100;

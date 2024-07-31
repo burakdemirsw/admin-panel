@@ -12,6 +12,8 @@ import { ProductService } from 'src/app/services/admin/product.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { CreateBarcodeFromOrder_RM } from '../../Product/create-barcode/models/createBarcode';
+import { MenuItem } from 'primeng/api';
+import { ExportCsvService } from 'src/app/services/admin/export-csv.service';
 
 @Component({
   selector: 'app-order-managament',
@@ -22,12 +24,13 @@ export class OrderManagamentComponent implements OnInit {
 
   numberOfList: number[] = [1, 10, 20, 50, 100]
   saleOrderModels: SaleOrderModel[]
+  selectedOrders: SaleOrderModel[] = [];
   currentPage: number = 1;
   constructor(
     private headerService: HeaderService,
     private httpClientService: HttpClientService,
     private toasterService: ToasterService,
-
+    private exportCsvService: ExportCsvService,
     private router: Router,
     private orderService: OrderService,
     private formBuilder: FormBuilder,
@@ -40,9 +43,20 @@ export class OrderManagamentComponent implements OnInit {
   _pageDescription: boolean = false;
   pageDescriptionLine: string = "Alınan Siparişler"
 
-
+  items: MenuItem[] = [
+    {
+      label: 'Excele Aktar',
+      command: () => {
+        this.exportCsv();
+      }
+    }
+  ];
+  exportCsv() {
+    this.exportCsvService.exportToCsv(this.saleOrderModels, 'my-orders');
+  }
   status = 1;
   invoiceStatus = 2
+
   async ngOnInit() {
     //this.spinnerService.show();
 
@@ -67,6 +81,8 @@ export class OrderManagamentComponent implements OnInit {
     this.setPageDescription();
 
   }
+
+
   productsToCollect: ProductOfOrder[];
 
   async deleteNebimOrder(request: string) {

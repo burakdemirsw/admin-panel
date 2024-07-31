@@ -127,7 +127,7 @@ var UserService = /** @class */ (function () {
                         localStorage.setItem("phoneNumber", userClientInfoResponse.phoneNumber.toString() == null ? "" : userClientInfoResponse.phoneNumber.toString());
                         localStorage.setItem("name", userClientInfoResponse.name.toString() == null ? "" : userClientInfoResponse.name.toString());
                         localStorage.setItem("surname", userClientInfoResponse.surname.toString() == null ? "" : userClientInfoResponse.surname.toString());
-                        localStorage.setItem("currAccCode", userClientInfoResponse.surname.toString() == null ? "" : userClientInfoResponse.currAccCode.toString());
+                        localStorage.setItem("currAccCode", userClientInfoResponse.currAccCode.toString() == null ? "" : userClientInfoResponse.currAccCode.toString());
                         if (response) {
                             // console.log(response);
                             return [2 /*return*/, true];
@@ -234,9 +234,9 @@ var UserService = /** @class */ (function () {
                 model.mail = localStorage.getItem("mail");
                 model.salesPersonCode = localStorage.getItem("salesPersonCode");
                 model.mail = localStorage.getItem("phoneNumber");
-                model.mail = localStorage.getItem("name");
-                model.mail = localStorage.getItem("surname");
-                model.mail = localStorage.getItem("currAccCode");
+                model.name = localStorage.getItem("name");
+                model.surname = localStorage.getItem("surname");
+                model.currAccCode = localStorage.getItem("currAccCode");
                 model.roleDescription = localStorage.getItem("roleDescription");
                 return model;
             }
@@ -314,6 +314,90 @@ var UserService = /** @class */ (function () {
     UserService.prototype.logOut = function () {
         localStorage.clear();
         this.router.navigate(["/pages-loginv2"]);
+    };
+    UserService.prototype.addUserShelf = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response, error_7;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.client
+                                .post({ controller: "users/add-user-shelf" }, request)
+                                .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                    case 2:
+                        error_7 = _a.sent();
+                        return [2 /*return*/, null];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UserService.prototype.updateUserShelf = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response, error_8;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.client
+                                .post({ controller: "users/update-user-shelf" }, request)
+                                .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                    case 2:
+                        error_8 = _a.sent();
+                        return [2 /*return*/, null];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UserService.prototype.getUserShelves = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response, error_9;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.client
+                                .get_new({ controller: "users/get-user-shelves" }, request.toString())
+                                .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                    case 2:
+                        error_9 = _a.sent();
+                        return [2 /*return*/, null];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UserService.prototype.deleteUserShelf = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response, error_10;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.client
+                                .get_new({ controller: "users/delete-user-shelf" }, request.toString())
+                                .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                    case 2:
+                        error_10 = _a.sent();
+                        return [2 /*return*/, null];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     UserService = __decorate([
         core_1.Injectable({
