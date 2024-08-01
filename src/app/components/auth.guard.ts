@@ -1,20 +1,16 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { AuthService } from '../services/ui/auth.service';
-import { AlertifyService } from '../services/ui/alertify.service';
 import { SessionService } from '../services/ui/session.service';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard  {
+export class AuthGuard {
   constructor(
-    private authService: AuthService,
     private router: Router,
     private jwtHelper: JwtHelperService,
-    private sessionService: SessionService
   ) { }
 
   async canActivate(
