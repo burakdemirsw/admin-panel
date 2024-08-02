@@ -6,5 +6,6 @@ export const ClientUrls = {
     { name: "MNG", id: 1 },
     { name: "Aras", id: 2 },
     { name: "Yurtiçi", id: 3 }
-  ]
+  ],
+  photoUrl: "http://10.100.160.10:5555/photo/"
 };

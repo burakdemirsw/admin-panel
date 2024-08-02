@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Exception } from '@zxing/library';
+import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { CountProductRequestModel2 } from 'src/app/models/model/order/countProductRequestModel2';
 import { OrderBillingListModel } from 'src/app/models/model/order/orderBillingListModel';
@@ -16,6 +17,7 @@ import {
 } from 'src/app/models/model/shelfNameModel';
 import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
+import { ZTMSG_CountedProduct, ZTMSG_ProductOnShelf } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
@@ -55,6 +57,7 @@ export class WarehosueShelfCountComponent implements OnInit {
   orderBillingModel: OrderBillingListModel;
   shelfNumbers: string = 'RAFLAR:';
   location = location.href;
+  photoUrl: string = ClientUrls.photoUrl;
   offices: any[] = []
   warehouses: any[] = []
   shelves: AvailableShelf[] = [];
@@ -156,18 +159,6 @@ export class WarehosueShelfCountComponent implements OnInit {
     });
   }
 
-  createJson(barcode: string, shelfNo: string, batchCode: string) {
-    var model: CountedProduct = this.lastCollectedProducts.find(
-      (p) =>
-        (p.barcode = barcode) &&
-        p.shelfNo == shelfNo &&
-        p.batchCode == batchCode
-    );
-    const formDataJSON = JSON.stringify(model); // Form verilerini JSON'a dönüştür
-
-    this.qrCodeValue = formDataJSON;
-    // this.toasterService.success(this.qrCodeValue)
-  }
 
   goDown2(desc: string) {
     // packageNo'ya eşleşen ProductOfOrder'ı bulun
@@ -234,14 +225,16 @@ export class WarehosueShelfCountComponent implements OnInit {
     });
     this.totalCount = totalQty;
   }
-  lastCollectedProducts: CountedProduct[] = [];
+  lastCollectedProducts: ZTMSG_CountedProduct[] = [];
+  lastCollectedProducts2: ZTMSG_ProductOnShelf[] = [];
   async getProductOfCount(orderNo: string): Promise<any> {
-    this.lastCollectedProducts = await this.warehouseService.getProductOfCount(
+    this.lastCollectedProducts = await this.warehouseService.getCountsOfOperation(
       orderNo
     );
 
     this.calculateTotalQty();
   }
+
 
   async countProductRequest(
     barcode: string,
@@ -317,8 +310,6 @@ export class WarehosueShelfCountComponent implements OnInit {
       countProductRequestModel.barcode = countProductRequestModel.barcode.replace(/=/g, '-');
     }
 
-
-
     if (
       !this.checkForm.valid
     ) {
@@ -340,23 +331,37 @@ export class WarehosueShelfCountComponent implements OnInit {
 
     if (this.checkForm.valid) {
       try {
-        //lkjdlşkjas
-        var response: ProductCountModel =
-          await this.warehouseService.countProductRequest2(
-            countProductRequestModel.barcode,
-            countProductRequestModel.shelfNo,
-            countProductRequestModel.quantity,
-            countProductRequestModel.office,
-            countProductRequestModel.warehouseCode.code,
-            null,
-            countProductRequestModel.batchCode,
-            'Order/CountProduct',
-            this.currentOrderNo,
-            null,
-            null
-          );
+        countProductRequestModel.warehouseCode = countProductRequestModel.warehouseCode.code;
+        var request: ZTMSG_CountedProduct = new ZTMSG_CountedProduct();
+        request.barcode = countProductRequestModel.barcode;
+        request.shelfNo = countProductRequestModel.shelfNo;
+        request.quantity = countProductRequestModel.quantity;
+        request.officeCode = countProductRequestModel.office;
+        request.warehouseCode = countProductRequestModel.warehouseCode;
+        request.batchCode = countProductRequestModel.batchCode;
+        request.operationNumber = this.currentOrderNo;
+        request.isCompleted = false;
+        request.operationType = this.checkForm.get("isShelfBased").value == true ? this.checkForm.get("isShelfBased").value : this.checkForm.get("isShelfBased2").value
 
-        if (response)
+        var _response = await this.warehouseService.addCount(request);
+
+
+        // var response: ProductCountModel =
+        //   await this.warehouseService.countProductRequest2(
+        //     countProductRequestModel.barcode,
+        //     countProductRequestModel.shelfNo,
+        //     countProductRequestModel.quantity,
+        //     countProductRequestModel.office,
+        //     countProductRequestModel.warehouseCode.code,
+        //     null,
+        //     countProductRequestModel.batchCode,
+        //     'Order/CountProduct',
+        //     this.currentOrderNo,
+        //     null,
+        //     null
+        //   );
+
+        if (_response)
           // SAYIM YAPILDI -------------------------------------------
           this.generalService.beep();
         await this.getProductOfCount(this.currentOrderNo); //this.list.push(countProductRequestModel);
