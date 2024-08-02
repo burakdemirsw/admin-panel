@@ -6,6 +6,7 @@ import { MenuItem } from 'primeng/api';
 import { CreateBarcodeFromOrder_RM } from 'src/app/components/Product/create-barcode/models/createBarcode';
 import { WarehouseOperationListFilterModel } from 'src/app/models/model/filter/warehouseOperationListFilterModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
+import { TransferQr_Report } from 'src/app/models/model/warehouse/completeCount_CM';
 import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
 import { ExportCsvService } from 'src/app/services/admin/export-csv.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
@@ -166,6 +167,61 @@ export class WarehouseOperationListComponent implements OnInit {
       this.toasterService.error("İşlem Başarısız")
     }
   }
+  async createTransferReport(request: WarehouseOperationListModel) {
+    var _request: TransferQr_Report = new TransferQr_Report();
+    _request.count = request.count;
+    _request.count2 = request.count_2;
+    _request.innerNumber = request.innerNumber;
+    _request.operationDate = request.operationDate;
+    _request.source = request.source;
+    _request.url = 'https://www.davyebkm.com/order-operation/' + request.innerNumber + '/false/' + request.toWarehouseCode
+    _request.warehouseCode = request.warehouseCode;
 
+    if (window.confirm("Barkodları yazdırmak istediğinize emin misiniz?")) {
+      var data = await this.warehosueService.createTransferReport(_request);
+      if (data) {
+
+
+        const file = new Blob([data], { type: 'application/pdf' });
+        const fileURL = URL.createObjectURL(file);
+
+        // Create a temporary link element
+        const downloadLink = document.createElement('a');
+        downloadLink.href = fileURL;
+        downloadLink.download = "marketplace-order-cargo-barcode.pdf";  // Set the filename for the download
+        document.body.appendChild(downloadLink); // Append to body
+        downloadLink.click();  // Trigger the download
+        document.body.removeChild(downloadLink); // Remove the link after triggering the download
+        URL.revokeObjectURL(fileURL); // Clean up the URL object
+
+
+
+        const _file = new Blob([data], { type: 'application/pdf' });
+        const _fileURL = URL.createObjectURL(_file);
+
+        // Create an iframe element
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';  // Hide the iframe
+        iframe.src = _fileURL;
+
+        // Append the iframe to the body
+        document.body.appendChild(iframe);
+
+        // Wait until the iframe is loaded, then call print
+        iframe.onload = () => {
+          iframe.contentWindow?.print();
+        };
+        this.toasterService.success("BARKOD YAZDIRILDI");
+
+      } else {
+        this.toasterService.error("BARKOD YAZDIRILAMADI");
+      }
+
+
+
+
+
+    }
+  }
 
 }

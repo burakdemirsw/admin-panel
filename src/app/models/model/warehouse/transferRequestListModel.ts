@@ -22,5 +22,7 @@ export class FastTransfer_VM {
   inventory: number;
   brand: string;
   photoUrl: string;
+  price: string;
+  description;
 
 }

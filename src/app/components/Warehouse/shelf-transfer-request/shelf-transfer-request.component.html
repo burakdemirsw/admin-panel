@@ -382,6 +382,9 @@
                   <!-- <th pSortableColumn="quantity">
                     Miktar <p-sortIcon field="quantity"></p-sortIcon>
                   </th> -->
+                  <th pSortableColumn="description">
+                    Ürün <p-sortIcon field="description"></p-sortIcon>
+                  </th>
                   <th pSortableColumn="productHierarchyLevel01">
                     Ürün Hiyerarşisi 1 <p-sortIcon field="productHierarchyLevel01"></p-sortIcon>
                   </th>
@@ -396,6 +399,9 @@
                   </th>
                   <th pSortableColumn="inventory">
                     Envanter <p-sortIcon field="inventory"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="price">
+                    Fiyat <p-sortIcon field="price"></p-sortIcon>
                   </th>
                   <th>
                     İşlemler
@@ -428,6 +434,10 @@
                     <p-columnFilter type="text" field="quantity" [showClearButton]="false"></p-columnFilter>
                   </th> -->
                   <th>
+                    <p-columnFilter type="text" field="description" [showClearButton]="false">
+                    </p-columnFilter>
+                  </th>
+                  <th>
                     <p-columnFilter type="text" field="productHierarchyLevel01" [showClearButton]="false">
                     </p-columnFilter>
                   </th>
@@ -444,6 +454,9 @@
                   </th>
                   <th>
                     <p-columnFilter type="text" field="inventory" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="price" [showClearButton]="false"></p-columnFilter>
                   </th>
                 </tr>
               </ng-template>
@@ -462,11 +475,13 @@
                   <td>{{ product.transferQuantity }}</td>
                   <td>{{ product.targetShelf }}</td>
                   <!-- <td>{{ product.quantity }}</td> -->
+                  <td class="scrollable-td">{{ product.description }}</td>
                   <td>{{ product.productHierarchyLevel01 }}</td>
                   <td>{{ product.productHierarchyLevel02 }}</td>
                   <td>{{ product.productHierarchyLevel03 }}</td>
                   <td>{{ product.speed }}</td>
                   <td>{{ product.inventory }}</td>
+                  <td>{{ product.price }}</td>
                   <td>
                     <button class="btn btn-primary" type="submit" (click)="getShelves(product.barcode)">
                       <i class="fa-solid fa-bars"></i>

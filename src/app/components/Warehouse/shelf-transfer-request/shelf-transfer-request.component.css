@@ -1,3 +1,16 @@
   ::ng-deep .p-dropdown {
     width: 100% !important;
   }
+
+  .scrollable-td {
+    max-width: 200px;
+    /* İhtiyacınıza göre ayarlayın */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .scrollable-td:hover {
+    overflow: auto;
+    white-space: normal;
+  }

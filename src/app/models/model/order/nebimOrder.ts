@@ -361,6 +361,7 @@ export class ClientOrderBasketItem {
   itemCode !: string
   batchCode !: string
   price: number
+  priceWs: string
   quantity: number
   warehouseCode !: string
   brandDescription !: string

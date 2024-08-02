@@ -49,10 +49,10 @@ var countProductRequestModel_1 = require("src/app/models/model/order/countProduc
 var productOfOrders_1 = require("src/app/models/model/order/productOfOrders");
 var library_1 = require("@zxing/library");
 var createPurchaseInvoice_1 = require("src/app/models/model/invoice/createPurchaseInvoice");
-var qrOperationModel_1 = require("src/app/models/model/product/qrOperationModel");
-var warehouseOperationProductModel_1 = require("src/app/models/model/warehouse/warehouseOperationProductModel");
 var orderStatus_1 = require("src/app/models/model/order/orderStatus");
 var countProduct_1 = require("src/app/models/model/product/countProduct");
+var qrOperationModel_1 = require("src/app/models/model/product/qrOperationModel");
+var warehouseOperationProductModel_1 = require("src/app/models/model/warehouse/warehouseOperationProductModel");
 var OrderOperationComponent = /** @class */ (function () {
     function OrderOperationComponent(headerService, toasterService, formBuilder, orderService, activatedRoute, router, httpClient, productService, warehouseService, generalService, title, sanitizer) {
         this.headerService = headerService;
@@ -405,6 +405,7 @@ var OrderOperationComponent = /** @class */ (function () {
                             // this.toasterService.success("SAYIM TAMAMLANDI");
                         }
                         this.productsToCollect = productData; //toplanacak ürünler çekildi
+                        this.productsToCollect = this.productsToCollect.filter(function (p) { return p.quantity > 0; });
                         if (this.productsToCollect.length > 0) {
                             if (this.lastCollectedProduct == null) {
                                 //üste atılcak ürün seçildi

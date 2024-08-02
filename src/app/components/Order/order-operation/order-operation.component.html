@@ -8,22 +8,21 @@
               <table class="table" #bilgilendirmeAlanı>
                 <thead>
                   <tr>
-                    <th scope="col">RAF</th>
-                    <th scope="col">KOD</th>
-                    <th scope="col">SİPARİŞ</th>
-                    <th scope="col">SAYILAN</th>
-                    <th scope="col">UD RAF</th>
-                    <th scope="col">UD STOK</th>
-                    <th scope="col">MD STOK</th>
+                    <th scope="col">Raf</th>
+                    <th scope="col">Kod</th>
+                    <th scope="col">Sipariş</th>
+                    <th scope="col">Sayılan</th>
+                    <th scope="col">Ud raf</th>
+                    <th scope="col">Ud stok</th>
+                    <th scope="col">Md stok</th>
                     <th scope="col">Fotoğraf</th>
                     <th scope="col">Barkod</th>
                     <th scope="col">Değiştir</th>
                   </tr>
+
                 </thead>
                 <tbody>
-                  <tr *ngFor="let product of _productsToCollect; let i = index"
-                    [ngClass]="{ 'green-row': product.colorDescription == '1' }"
-                    [ngClass]="{ 'success-row': product.quantity === 0 }">
+                  <tr *ngFor="let product of _productsToCollect; let i = index">
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.itemCode }}</td>
                     <td>{{ product.quantity }}</td>
@@ -186,14 +185,14 @@
                 <thead>
                   <tr>
                     <!-- <th scope="col">Seç</th> -->
-                    <th scope="col">RAF</th>
-                    <th scope="col">KOD</th>
-                    <th scope="col">SİPARİŞ</th>
-                    <th scope="col">SAYILAN</th>
-                    <th scope="col">UD RAF</th>
-                    <th scope="col">UD STOK</th>
-                    <th scope="col">MD STOK</th>
-                    <th scope="col">TOPLAM STOK</th>
+                    <th scope="col">Hedef Raf</th>
+                    <th scope="col">Kod</th>
+                    <th scope="col">Sipariş</th>
+                    <th scope="col">Sayılan</th>
+                    <th scope="col">Ud Raf</th>
+                    <th scope="col">Ud Stok</th>
+                    <th scope="col">Md Stok</th>
+                    <th scope="col">Toplam Stok</th>
 
                     <th scope="col">Fotoğraf</th>
                     <th scope="col">Barkod</th>
@@ -212,8 +211,7 @@
                         | paginate
                           : { itemsPerPage: 5, currentPage: currentPage };
                       let i = index
-                    " [ngClass]="{ 'green-row': product.colorDescription == '1' }"
-                    [ngClass]="{ 'success-row': product.quantity === 0 }">
+                    ">
                     <!-- <td>
                       <input      pInputText
                         class="form-check-input"

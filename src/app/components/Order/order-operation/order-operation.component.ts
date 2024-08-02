@@ -17,8 +17,10 @@ import { BrowserMultiFormatReader } from '@zxing/library';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
+import { OrderStatus } from 'src/app/models/model/order/orderStatus';
 import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
 import { CountConfirmData } from 'src/app/models/model/product/countConfirmModel';
+import { CountProduct } from 'src/app/models/model/product/countProduct';
 import {
   QrOperationModel
 } from 'src/app/models/model/product/qrOperationModel';
@@ -29,8 +31,6 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
-import { OrderStatus } from 'src/app/models/model/order/orderStatus';
-import { CountProduct } from 'src/app/models/model/product/countProduct';
 
 declare var window: any;
 
@@ -326,6 +326,7 @@ export class OrderOperationComponent implements OnInit {
 
     }
     this.productsToCollect = productData; //toplanacak ürünler çekildi
+    this.productsToCollect = this.productsToCollect.filter(p => p.quantity > 0);
     if (this.productsToCollect.length > 0) {
       if (this.lastCollectedProduct == null) {
         //üste atılcak ürün seçildi
@@ -617,7 +618,7 @@ export class OrderOperationComponent implements OnInit {
       this.toasterService.error(error.message);
       return null;
     }
-  }  
+  }
 
 
   qrBarcodeUrl: string = null;
@@ -802,6 +803,10 @@ export class OrderOperationComponent implements OnInit {
     }
     //transfer-------------------------------------------------------------------- WT
     else if (this.currentOrderNo.split('-')[1] === 'WT' || this.isBPTransferForm === true) {
+
+      //okututulan ürünü üste at ;
+
+      //
       if (this.checkForm.valid) {
 
         if (productModel.barcode && productModel.barcode.charAt(0) === '0') {

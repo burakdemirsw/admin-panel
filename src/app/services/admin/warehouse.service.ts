@@ -10,7 +10,7 @@ import {
   ProductCountModel
 } from 'src/app/models/model/shelfNameModel';
 import { AvailableShelf, Shelf } from 'src/app/models/model/warehouse/availableShelf';
-import { CompleteCountOperation_CM } from 'src/app/models/model/warehouse/completeCount_CM';
+import { CompleteCountOperation_CM, TransferQr_Report } from 'src/app/models/model/warehouse/completeCount_CM';
 import { FastTransferListModel, FastTransferModel, FastTransferModel2 } from 'src/app/models/model/warehouse/fastTransferModel';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { TransferModel } from 'src/app/models/model/warehouse/transferModel';
@@ -288,7 +288,7 @@ export class WarehouseService {
   //transfer işlemlerini çeker
   async getWarehouseOperations(status: string): Promise<any> {
 
-    const data = this.httpClientService
+    const data = await this.httpClientService
       .get<WarehouseOperationListModel>({
         controller: 'Warehouse/GetWarehosueOperationList',
       }, status)
@@ -526,4 +526,16 @@ export class WarehouseService {
       .toPromise();
     return response;
   }
+
+  async createTransferReport(request: TransferQr_Report): Promise<any> {
+    try {
+      var response = await this.httpClientService.post<any>({ controller: "Warehouse/create-transfer-report", responseType: 'arraybuffer' }, request).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
 }

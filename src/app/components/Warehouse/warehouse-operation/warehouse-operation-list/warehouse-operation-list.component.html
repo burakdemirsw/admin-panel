@@ -124,21 +124,34 @@
                 İç Numara
                 <p-sortIcon field="innerNumber"></p-sortIcon>
               </th>
-              <th pSortableColumn="officeCode">
+              <!-- <th pSortableColumn="officeCode">
                 Ofis Kodu
                 <p-sortIcon field="officeCode"></p-sortIcon>
-              </th>
+              </th> -->
               <th pSortableColumn="warehouseCode">
                 Depo Kodu
                 <p-sortIcon field="warehouseCode"></p-sortIcon>
               </th>
-              <th pSortableColumn="toOfficeCode">
+              <!-- <th pSortableColumn="toOfficeCode">
                 Hedef Ofis Kodu
                 <p-sortIcon field="toOfficeCode"></p-sortIcon>
-              </th>
+              </th> -->
               <th pSortableColumn="toWarehouseCode">
                 Hedef Depo Kodu
                 <p-sortIcon field="toWarehouseCode"></p-sortIcon>
+              </th>
+
+              <th pSortableColumn="count">
+                Adet
+                <p-sortIcon field="count"></p-sortIcon>
+              </th>
+              <th pSortableColumn="count_2">
+                Ürün Çeşit
+                <p-sortIcon field="count_2"></p-sortIcon>
+              </th>
+              <th pSortableColumn="source">
+                Kaynak
+                <p-sortIcon field="source"></p-sortIcon>
               </th>
               <th pSortableColumn="isCompleted">
                 Tamamlandı mı?
@@ -153,17 +166,26 @@
               <th>
                 <p-columnFilter type="text" field="innerNumber" [showClearButton]="false"></p-columnFilter>
               </th>
-              <th>
+              <!-- <th>
                 <p-columnFilter type="text" field="officeCode" [showClearButton]="false"></p-columnFilter>
-              </th>
+              </th> -->
               <th>
                 <p-columnFilter type="text" field="warehouseCode" [showClearButton]="false"></p-columnFilter>
               </th>
-              <th>
+              <!-- <th>
                 <p-columnFilter type="text" field="toOfficeCode" [showClearButton]="false"></p-columnFilter>
-              </th>
+              </th> -->
               <th>
                 <p-columnFilter type="text" field="toWarehouseCode" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="count" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="count_2" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="source" [showClearButton]="false"></p-columnFilter>
               </th>
               <th>
                 <p-columnFilter type="boolean" field="isCompleted" [showClearButton]="false"></p-columnFilter>
@@ -176,10 +198,13 @@
             <tr>
               <td>{{ operation.operationDate | date : "dd.MM.yyyy HH:mm" }}</td>
               <td>{{ operation.innerNumber }}</td>
-              <td>{{ operation.officeCode }}</td>
+              <!-- <td>{{ operation.officeCode }}</td> -->
               <td>{{ operation.warehouseCode }}</td>
-              <td>{{ operation.toOfficeCode }}</td>
+              <!-- <td>{{ operation.toOfficeCode }}</td> -->
               <td>{{ operation.toWarehouseCode }}</td>
+              <td>{{ operation.count }}</td>
+              <td>{{ operation.count_2 }}</td>
+              <td>{{ operation.source }}</td>
               <td>{{ operation.isCompleted == 0 ? "Hayır" : "Evet" }}</td>
               <td>
                 <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
@@ -204,6 +229,12 @@
                     <a class="dropdown-item" data-text="Barkod Etiketi Oluştur"
                       (click)="showModal(operation.innerNumber)">
                       <i class="fa fa-barcode" aria-hidden="true"></i> Barkod Etiketi Oluştur
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" data-text="Transfer Etiketi Oluştur"
+                      (click)="createTransferReport(operation)">
+                      <i class="fa fa-barcode" aria-hidden="true"></i> Transfer Etiketi Oluştur
                     </a>
                   </li>
                 </ul>

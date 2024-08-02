@@ -134,6 +134,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
             'Barkod',
             'İşlem',
         ];
+        this.isCompleted = false;
         this.lastCollectedProducts = [];
         this.lastCollectedProducts2 = [];
     }
@@ -191,14 +192,16 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
         this.batchCode = batchCode;
     };
     WarehosueShelfCountComponent.prototype.ngOnDestroy = function () {
-        if (this.location.includes("warehouse-shelf-count")) {
-            if (!window.confirm("Sayfadan Ayrılıyorsunuz. Emin Misiniz?")) {
-                this.toasterService.error(this.location + " İşlemi İptal Edildi");
-                location.href = this.location;
-                return;
-            }
-            else {
-                return; // İşlemi iptal et
+        if (this.isCompleted == false) {
+            if (this.location.includes("warehouse-shelf-count")) {
+                if (!window.confirm("Sayfadan Ayrılıyorsunuz. Emin Misiniz?")) {
+                    this.toasterService.error(this.location + " İşlemi İptal Edildi");
+                    location.href = this.location;
+                    return;
+                }
+                else {
+                    return; // İşlemi iptal et
+                }
             }
         }
     };
@@ -341,7 +344,6 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        this.toasterService.error(this.countType);
                         if (!(this.countType === "count")) return [3 /*break*/, 2];
                         _a = this;
                         return [4 /*yield*/, this.warehouseService.getCountsOfOperation(orderNo)];
@@ -521,7 +523,8 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         _a.label = 3;
                     case 3:
                         _a.trys.push([3, 17, , 18]);
-                        if (!this.generalService.isNullOrEmpty(this.shelfNumbers)) return [3 /*break*/, 5];
+                        console.log("RAF NUMARALARI --> : " + this.shelfNumbers);
+                        if (!(this.generalService.isNullOrEmpty(this.shelfNumbers) || this.shelfNumbers == undefined)) return [3 /*break*/, 5];
                         return [4 /*yield*/, this.productService.countProductByBarcode(countProductRequestModel.barcode)];
                     case 4:
                         result = _a.sent();
@@ -785,6 +788,7 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                     case 2:
                         response = _a.sent();
                         if (response === true) {
+                            this.isCompleted = true;
                             this.toasterService.success('İşlem Başarılı');
                             this.router.navigate(['/warehouse-shelf-count-list']);
                             return [2 /*return*/, true];

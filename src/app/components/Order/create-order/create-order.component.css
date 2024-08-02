@@ -196,3 +196,16 @@ input[type="file"] {
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   /* Gölgelendirme efekti */
 }
+
+.scrollable-td {
+  max-width: 200px;
+  /* İhtiyacınıza göre ayarlayın */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scrollable-td:hover {
+  overflow: auto;
+  white-space: normal;
+}

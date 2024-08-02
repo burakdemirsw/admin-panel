@@ -226,41 +226,42 @@ export class WarehouseOperationComponent implements OnInit {
   updateInventoryAndTransfers() {
     //eğer silinmiş ürün listesinde ürün varsa onları kaldır
     // İşlem sonrası çıkarılacak öğelerin indekslerini tutacak dizi
-    let itemsToRemoveIndexes: number[] = [];
+    // let itemsToRemoveIndexes: number[] = [];
 
-    // inventoryItems üzerinde döngü
-    this.inventoryItems.forEach((inventoryItem, index) => {
-      // Eşleşme arama ve güncelleme
-      this.warehouseTransferForms.forEach((transferItem) => {
-        // barcode, shelfNo ve itemCode değerlerine göre eşleşme kontrolü
-        if (
-          inventoryItem.barcode === transferItem.barcode &&
-          inventoryItem.shelfNo === transferItem.shelfNo &&
-          inventoryItem.itemCode === transferItem.itemCode
-        ) {
-          // Eşleşen üründen quantity değerini çıkart
-          inventoryItem.transferQty -= transferItem.quantity;
+    // // inventoryItems üzerinde döngü
+    // this.inventoryItems.forEach((inventoryItem, index) => {
+    //   // Eşleşme arama ve güncelleme
+    //   this.warehouseTransferForms.forEach((transferItem) => {
+    //     // barcode, shelfNo ve itemCode değerlerine göre eşleşme kontrolü
+    //     if (
+    //       inventoryItem.barcode === transferItem.barcode &&
+    //       inventoryItem.shelfNo === transferItem.shelfNo &&
+    //       inventoryItem.itemCode === transferItem.itemCode
+    //     ) {
+    //       // Eşleşen üründen quantity değerini çıkart
+    //       inventoryItem.transferQty -= transferItem.quantity;
 
-          // Eğer transfer edilen miktar sonucunda quantity 0 veya daha az ise
-          if (inventoryItem.transferQty <= 0) {
-            // İlgili inventoryItem'ın çıkarılması için indeksini kaydet
-            itemsToRemoveIndexes.push(index);
-          }
-        }
-      });
-    });
+    //       // Eğer transfer edilen miktar sonucunda quantity 0 veya daha az ise
+    //       if (inventoryItem.transferQty <= 0) {
+    //         // İlgili inventoryItem'ın çıkarılması için indeksini kaydet
+    //         itemsToRemoveIndexes.push(index);
+    //       }
+    //     }
+    //   });
+    // });
 
-    // Çıkarılacak öğeler için ters döngü (çıkarırken sıralamayı bozmamak için)
-    for (let i = itemsToRemoveIndexes.length - 1; i >= 0; i--) {
-      this.inventoryItems.splice(itemsToRemoveIndexes[i], 1);
-    }
-    itemsToRemoveIndexes = [];
-    //--------------------------------------------------------
+    // // Çıkarılacak öğeler için ters döngü (çıkarırken sıralamayı bozmamak için)
+    // for (let i = itemsToRemoveIndexes.length - 1; i >= 0; i--) {
+    //   this.inventoryItems.splice(itemsToRemoveIndexes[i], 1);
+    // }
+    // itemsToRemoveIndexes = [];
+    // //--------------------------------------------------------
 
-    // Çıkarılacak öğeler için ters döngü (çıkarırken sıralamayı bozmamak için)
+    // // Çıkarılacak öğeler için ters döngü (çıkarırken sıralamayı bozmamak için)
 
-    //--------------------------------------------------------
+    // //--------------------------------------------------------
 
+    //üste ürün attığımız yer
     if (this.inventoryItems.length > 0) {
       if (this.lastCollectedProduct == null) {
         //üste atılcak ürün seçildi

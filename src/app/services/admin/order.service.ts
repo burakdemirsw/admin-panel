@@ -443,9 +443,9 @@ export class OrderService {
     }
   }
   //onaylanacak ürünleri çekme
-  getInventoryItems(type: string): Promise<InventoryItem[]> {
+  async getInventoryItems(type: string): Promise<InventoryItem[]> {
     try {
-      const response = this.httpClientService
+      const response = await this.httpClientService
         .get<InventoryItem>({
           controller: 'Order/InventoryItems/' + type,
         })
@@ -625,10 +625,10 @@ export class OrderService {
   }
 
 
-  async updateClientOrderBasketItem(id: string, lineId: string, quantity: number, price: number, discountedPrice: number, basePrice: number): Promise<any> {
+  async updateClientOrderBasketItem(id: string, lineId: string, quantity: number, price: number, discountedPrice: number, basePrice: number, priceWs: string): Promise<any> {
     try {
 
-      var query = `${id}/${lineId}/${quantity}/${price}/${discountedPrice}/${basePrice}`
+      var query = `${id}/${lineId}/${quantity}/${price}/${discountedPrice}/${basePrice}/${priceWs}`
       var response = await this.httpClientService.get<any>({ controller: "order/update-client-order-basket-item" + "/" + query }).toPromise();
 
       return response;

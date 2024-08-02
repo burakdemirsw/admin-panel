@@ -183,17 +183,20 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.quantity = quantity;
     this.batchCode = batchCode;
   }
-
+  isCompleted: boolean = false;
   ngOnDestroy() {
-    if (this.location.includes("warehouse-shelf-count")) {
-      if (!window.confirm("Sayfadan Ayrılıyorsunuz. Emin Misiniz?")) {
-        this.toasterService.error(this.location + " İşlemi İptal Edildi")
-        location.href = this.location;
-        return;
-      } else {
-        return; // İşlemi iptal et
+    if (this.isCompleted == false) {
+      if (this.location.includes("warehouse-shelf-count")) {
+        if (!window.confirm("Sayfadan Ayrılıyorsunuz. Emin Misiniz?")) {
+          this.toasterService.error(this.location + " İşlemi İptal Edildi")
+          location.href = this.location;
+          return;
+        } else {
+          return; // İşlemi iptal et
+        }
       }
     }
+
   }
   getProductPhoto(itemCode: string) {
     return ClientUrls.photoUrl + itemCode + ".jpg";
@@ -327,7 +330,6 @@ export class WarehosueShelfCountComponent implements OnInit {
   lastCollectedProducts2: ZTMSG_ProductOnShelf[] = [];
 
   async getProductOfCount(orderNo: string): Promise<any> {
-    this.toasterService.error(this.countType);
     if (this.countType === "count") {
       this.lastCollectedProducts = await this.warehouseService.getCountsOfOperation(
         orderNo
@@ -499,7 +501,8 @@ export class WarehosueShelfCountComponent implements OnInit {
 
       try {
 
-        if (this.generalService.isNullOrEmpty(this.shelfNumbers)) {
+        console.log("RAF NUMARALARI --> : " + this.shelfNumbers)
+        if (this.generalService.isNullOrEmpty(this.shelfNumbers) || this.shelfNumbers == undefined) {
 
           var result: string[] = await this.productService.countProductByBarcode(
             countProductRequestModel.barcode
@@ -826,6 +829,7 @@ export class WarehosueShelfCountComponent implements OnInit {
         const response = await this.warehouseService.completeCountOperation(request)
 
         if (response === true) {
+          this.isCompleted = true
           this.toasterService.success('İşlem Başarılı');
           this.router.navigate(['/warehouse-shelf-count-list']);
           return true;

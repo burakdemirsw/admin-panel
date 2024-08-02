@@ -378,12 +378,16 @@ var WarehouseService = /** @class */ (function () {
         return __awaiter(this, void 0, Promise, function () {
             var data;
             return __generator(this, function (_a) {
-                data = this.httpClientService
-                    .get({
-                    controller: 'Warehouse/GetWarehosueOperationList'
-                }, status)
-                    .toPromise();
-                return [2 /*return*/, data];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({
+                            controller: 'Warehouse/GetWarehosueOperationList'
+                        }, status)
+                            .toPromise()];
+                    case 1:
+                        data = _a.sent();
+                        return [2 /*return*/, data];
+                }
             });
         });
     };
@@ -723,6 +727,26 @@ var WarehouseService = /** @class */ (function () {
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    WarehouseService.prototype.createTransferReport = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response, error_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.httpClientService.post({ controller: "Warehouse/create-transfer-report", responseType: 'arraybuffer' }, request).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                    case 2:
+                        error_6 = _a.sent();
+                        console.log(error_6.message);
+                        return [2 /*return*/, null];
+                    case 3: return [2 /*return*/];
                 }
             });
         });

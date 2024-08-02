@@ -174,7 +174,7 @@
                     <td>{{ i + 1 }}</td>
                     <td>{{ task.zone }}</td>
                     <td>{{ task.header }}</td>
-                    <td>
+                    <td (click)="openModal(task)" style="cursor :pointer !important; ">
                       <p-editor [(ngModel)]="task.description" [readonly]="true" [style]="{ height: '200px' }"
                         *ngIf="task.description"></p-editor>
                     </td>

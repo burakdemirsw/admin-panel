@@ -70,6 +70,9 @@ export class CreateOrderComponent implements OnInit {
     private cargoService: CargoService) { }
 
   async ngOnInit() {
+    this.createGetCustomerForm();
+    this.createGetProductForm();
+    await this.getAllCustomers();
     this.activatedRoute.params.subscribe(async (params) => {
       if (params['id']) {
         this.id = params['id']
@@ -92,12 +95,12 @@ export class CreateOrderComponent implements OnInit {
     this.createCargoForm_2()
     this.createsubCustomerForm();
     this.createPaymentForm();
-    this.createGetProductForm();
+
     this.createCustomerFormMethod();
     this.exchangeRate = await this.orderService.getExchangeRates();
     this.generatedCargoNumber = this._generateRandomNumber();
     this.createDiscountForm();
-    this.createGetCustomerForm();
+
     this.createOfficeWarehouseForm();
     this._createCustomerFormMethod();
     this.getAddresses();
@@ -110,15 +113,14 @@ export class CreateOrderComponent implements OnInit {
     } else {
       this.salesPersonCode = spc;
     }
-    this.paymentForm.get('paymentType').setValue(this.paymentMethods[2])
-
+    this.paymentForm.get('paymentType').setValue(this.paymentMethods[5])
     this.paymentForm.get('taxTypeCode').setValue(this.stateOptions[1])
     this.console();
   }
 
 
   console() {
-    console.clear();
+    // console.clear();
     // console.log('payment:', this.payment);
     // console.log('selectedCustomers:', this.selectedCustomers);
     // console.log('selectedProducts:', this.selectedProducts);
@@ -153,7 +155,7 @@ export class CreateOrderComponent implements OnInit {
         var customer_request = new GetCustomerList_CM();
         customer_request.currAccCode = this.currAccCode;
         if (customer_request.currAccCode != null) {
-          var customerResponse = await await this.orderService.getCustomerList_2(customer_request)
+          var customerResponse = await this.orderService.getCustomerList_2(customer_request)
           if (customerResponse) {
             this.selectedCustomers.push(customerResponse[0]);
             console.log("Müşteri Eklendi")
@@ -256,8 +258,13 @@ export class CreateOrderComponent implements OnInit {
     var response = await this.orderService.deleteClientOrder(this.id);
     if (response) {
       this.toasterService.success("Sipariş Silindi");
+      if (this.orderNumber) {
+        await this.orderService.deleteNebimOrder(this.orderNumber);
+      }
+
       this.createNewOrder();
     }
+
   }
   convertLineToObject(line: ClientOrderBasketItem): ProductList_VM {
     var object = new ProductList_VM();
@@ -277,6 +284,7 @@ export class CreateOrderComponent implements OnInit {
     object.basePrice = line.basePrice;
     object.discountedPrice = line.discountedPrice;
     object.taxRate = line.taxRate;
+    object.priceWs = line.priceWs;
     return object;
   }
 
@@ -287,6 +295,7 @@ export class CreateOrderComponent implements OnInit {
       request.customerCode = this.currAccCode
       request.id = this.id;
       request.orderNo = this.orderNo;
+      request.orderNumber = this.orderNumber;
       request.customerDescription = this.selectedCustomers[0]?.currAccDescription || null;
       request.shippingPostalAddressId = this.selectedAddresses[0]?.postalAddressID;
       request.recepientName = this.cargoForm_2.value.address_recepient_name;
@@ -297,6 +306,7 @@ export class CreateOrderComponent implements OnInit {
       request.paymentDescription = this.payment.creditCardTypeCode;
       request.subCurrAccId = this.selectedSubCustomers[0]?.subCurrAccId;
       request.subCustomerDescription = this.selectedSubCustomers[0]?.companyName;
+
       if (this.payment) {
         request.paymentType = this.payment.creditCardTypeCode;
       } else {
@@ -337,6 +347,7 @@ export class CreateOrderComponent implements OnInit {
       request.basePrice = newLine.basePrice;
       request.discountedPrice = newLine.discountedPrice;
       request.taxRate = newLine.taxRate;
+      request.priceWs = newLine.priceWs
       return request;
     } catch (error) {
       this.toasterService.error(error.message)
@@ -668,11 +679,16 @@ export class CreateOrderComponent implements OnInit {
   createCustomerForm: FormGroup;
   _activeIndex = 0;
   selectableCustomers: any[] = [];
+  _selectableCustomers: any[] = [];
   selectableSubCustomers: any[] = [];
   subCustomers: SubCustomerList_VM[] = [];
 
 
   async setCustomer() {
+    //ilk önce tüm müşterileri çek;
+
+
+
     var salesPersonCode = localStorage.getItem('currAccCode');
     var request: GetCustomerList_CM = new GetCustomerList_CM();
     request.currAccCode = salesPersonCode;
@@ -841,8 +857,19 @@ export class CreateOrderComponent implements OnInit {
 
 
   }
+
+  async onDropdownChange(value: any) {
+    var request: GetCustomerList_CM = new GetCustomerList_CM();
+    request.currAccCode = value.currAccCode;
+    var response = await this.orderService.getCustomerList_2(request)
+    if (response) {
+      var findedCustomer = response.find(c => c.currAccCode == request.currAccCode);
+      this.createCustomerForm.get('currAccDescription').setValue(findedCustomer.currAccDescription);
+      this.selectCurrentCustomer(findedCustomer);
+    }
+  }
+
   createCustomerFormMethod() {
-    console.log("Müşteri Formu Oluşturuldu :" + this.selectedCustomers.length)
     this.createCustomerForm = this.formBuilder.group({
       office: [null],
       warehouse: [null],
@@ -896,39 +923,6 @@ export class CreateOrderComponent implements OnInit {
       }
     });
 
-    this.createCustomerForm.get('currAccDescription').valueChanges.subscribe(async (value) => {
-      if (value != "" || value != null) {
-
-        if (value.name != undefined && value.name.length > 3) {
-          await this.getCustomersAutomaticaly(value.name)
-
-          var findedCustomer = this.selectableCustomers.find(p => p.name == value.name && p.currAccCode == value.currAccCode)
-          if (findedCustomer && !this.generalService.isNullOrEmpty(findedCustomer.value)) {
-
-            this.createCustomerForm.get('phoneNumber').setValue(findedCustomer?.value)
-            this.submitAddressForm(this.createCustomerForm.value)
-          } else {
-
-            this.createCustomerForm.get('phoneNumber').setValue(null)
-          }
-        }
-        if (value.length > 3) {
-          await this.getCustomersAutomaticaly(value)
-          var findedCustomer = this.selectableCustomers.find(p => p.name == value.name && p.currAccCode == value.currAccCode)
-          if (findedCustomer && !this.generalService.isNullOrEmpty(findedCustomer.value)) {
-
-            this.createCustomerForm.get('phoneNumber').setValue(findedCustomer?.value)
-            this.submitAddressForm(this.createCustomerForm.value)
-          } else {
-
-            this.createCustomerForm.get('phoneNumber').setValue(null)
-          }
-
-        }
-
-      }
-
-    });
 
     this.createCustomerForm.get('address_region').valueChanges.subscribe(async (value) => { //illeri getir
       var _value = this.createCustomerForm.get('address_region').value;
@@ -971,15 +965,31 @@ export class CreateOrderComponent implements OnInit {
 
   }
 
-  async createGetCustomerForm() {
+
+  async getAllCustomers() {
+    try {
+      var _request: GetCustomerList_CM = new GetCustomerList_CM();
+      _request.currAccCode = null;
+      _request.mail = null;
+      _request.phone = null;
+      var _response = await this.orderService.getCustomerList_2(_request)
+      _response.forEach(c => {
+        this._selectableCustomers.push({ name: c.currAccDescription, value: c.phone, currAccCode: c.currAccCode })
+      });;
+    } catch (error) {
+      this.toasterService.error(error.message);
+    }
+
+  }
+  createGetCustomerForm() {
     this.getCustomerForm = this.formBuilder.group({
       mail: [null],
       phone: [null],
       currAccCode: [null],
     });
-    this.getCustomerForm.get('currAccCode').valueChanges.subscribe(async (value) => {
+    this.getCustomerForm.get('currAccCode').valueChanges.subscribe((value) => {
       if (value != null && value != "") {
-        await this.getCustomers(this.getCustomerForm.value)
+
       }
 
     });
@@ -994,9 +1004,8 @@ export class CreateOrderComponent implements OnInit {
 
   }
 
-  async getCustomers(request: GetCustomerList_CM) {
+  async getCustomers(request: any) {
     this.customers = await this.orderService.getCustomerList_2(request)
-
   }
   async selectCurrentCustomer(request: CustomerList_VM) {
 
@@ -1151,7 +1160,7 @@ export class CreateOrderComponent implements OnInit {
       this.selectAddressDialog = false;
       // this.toasterService.success("Adres Eklendi")
       // this.activeIndex = 2;
-      this.getCustomerForm.reset();
+      //this.getCustomerForm.reset();
       this.customers = [];
       //this.generalService.beep()()
     }
@@ -1533,15 +1542,21 @@ export class CreateOrderComponent implements OnInit {
   async routeGetProduct(request: string) {
     this.getProductsForm.get('barcode').setValue(request);
     await this.getProducts(this.getProductsForm.value, this.orderType)
+    this.suggestedProductsDialog = false;
   }
   async getsuggestedProducts(itemCode: string, openDialog: boolean) {
-    this.suggestedProducts = []
-    var response: SuggestedProduct[] = await this.orderService.getSuggestedProducts(itemCode);
-    this.suggestedProducts = response
-    if (openDialog) {
-      this.openDialog("suggestedProductsDialog");
+    if (!this.generalService.isNullOrEmpty(itemCode)) {
+      this.suggestedProducts = []
+      var response: SuggestedProduct[] = await this.orderService.getSuggestedProducts(itemCode);
+      this.suggestedProducts = response
+      if (openDialog) {
+        this.openDialog("suggestedProductsDialog");
 
+      }
+    } else {
+      this.toasterService.error("Barkod Giriniz")
     }
+
   }
 
   async addCurrentProducts(request: ProductList_VM): Promise<boolean> {
@@ -1604,7 +1619,8 @@ export class CreateOrderComponent implements OnInit {
       qty = qty * 5
     }
     product.quantity += qty
-    var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price, product.discountedPrice, product.basePrice)
+    var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price,
+      product.discountedPrice, product.basePrice, product.priceWs)
     if (response) {
       this.toasterService.success("Ürün Güncellendi")
       this.getClientOrder(1);
@@ -1617,7 +1633,8 @@ export class CreateOrderComponent implements OnInit {
   async selectQuantity(product: ProductList_VM, index: number, quantity: number) {
     // this.toasterService.success(product.quantity.toString());
     product.quantity = quantity;
-    var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price, product.discountedPrice, product.basePrice)
+    var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price, product.discountedPrice,
+      product.basePrice, product.priceWs);
     if (response) {
       this.toasterService.success("Ürün Güncellendi")
       this.focusNextInput('barcode_product')
@@ -1649,7 +1666,8 @@ export class CreateOrderComponent implements OnInit {
       }
 
       this.toasterService.success(product.quantity.toString());
-      var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price, product.discountedPrice, product.basePrice)
+      var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price,
+        product.discountedPrice, product.basePrice, product.priceWs)
       if (response) {
         this.toasterService.success("Ürün Güncellendi")
         this.focusNextInput('barcode_product')
@@ -1840,14 +1858,16 @@ export class CreateOrderComponent implements OnInit {
           __product.price = value.code;
           __product.basePrice = value.code;
           __product.discountedPrice = value.code;
-          await this.orderService.updateClientOrderBasketItem(this.id, __product.lineId, __product.quantity, __product.price, __product.discountedPrice, __product.discountedPrice);
+          await this.orderService.updateClientOrderBasketItem(this.id, __product.lineId, __product.quantity,
+            __product.price, __product.discountedPrice, __product.discountedPrice, __product.priceWs);
 
         } else {
           _product.price = value.code;
           _product.basePrice = value.code;
 
           _product.discountedPrice = value.code;
-          await this.orderService.updateClientOrderBasketItem(this.id, _product.lineId, _product.quantity, _product.price, _product.discountedPrice, _product.basePrice);
+          await this.orderService.updateClientOrderBasketItem(this.id, _product.lineId, _product.quantity,
+            _product.price, _product.discountedPrice, _product.basePrice, _product.priceWs);
         }
 
       }

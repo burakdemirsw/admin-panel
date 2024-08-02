@@ -45,6 +45,7 @@ exports.__esModule = true;
 exports.WarehouseOperationListComponent = void 0;
 var core_1 = require("@angular/core");
 var createBarcode_1 = require("src/app/components/Product/create-barcode/models/createBarcode");
+var completeCount_CM_1 = require("src/app/models/model/warehouse/completeCount_CM");
 var WarehouseOperationListComponent = /** @class */ (function () {
     function WarehouseOperationListComponent(httpClientService, productService, spinnerService, router, warehosueService, formBuilder, orderService, headerService, toasterService, exportCsvService) {
         var _this = this;
@@ -247,6 +248,57 @@ var WarehouseOperationListComponent = /** @class */ (function () {
                             this.toasterService.error("İşlem Başarısız");
                         }
                         return [2 /*return*/];
+                }
+            });
+        });
+    };
+    WarehouseOperationListComponent.prototype.createTransferReport = function (request) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _request, data, file, fileURL, downloadLink, _file, _fileURL, iframe_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _request = new completeCount_CM_1.TransferQr_Report();
+                        _request.count = request.count;
+                        _request.count2 = request.count_2;
+                        _request.innerNumber = request.innerNumber;
+                        _request.operationDate = request.operationDate;
+                        _request.source = request.source;
+                        _request.url = 'https://www.davyebkm.com/order-operation/' + request.innerNumber + '/false/' + request.toWarehouseCode;
+                        _request.warehouseCode = request.warehouseCode;
+                        if (!window.confirm("Barkodları yazdırmak istediğinize emin misiniz?")) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.warehosueService.createTransferReport(_request)];
+                    case 1:
+                        data = _a.sent();
+                        if (data) {
+                            file = new Blob([data], { type: 'application/pdf' });
+                            fileURL = URL.createObjectURL(file);
+                            downloadLink = document.createElement('a');
+                            downloadLink.href = fileURL;
+                            downloadLink.download = "marketplace-order-cargo-barcode.pdf"; // Set the filename for the download
+                            document.body.appendChild(downloadLink); // Append to body
+                            downloadLink.click(); // Trigger the download
+                            document.body.removeChild(downloadLink); // Remove the link after triggering the download
+                            URL.revokeObjectURL(fileURL); // Clean up the URL object
+                            _file = new Blob([data], { type: 'application/pdf' });
+                            _fileURL = URL.createObjectURL(_file);
+                            iframe_1 = document.createElement('iframe');
+                            iframe_1.style.display = 'none'; // Hide the iframe
+                            iframe_1.src = _fileURL;
+                            // Append the iframe to the body
+                            document.body.appendChild(iframe_1);
+                            // Wait until the iframe is loaded, then call print
+                            iframe_1.onload = function () {
+                                var _a;
+                                (_a = iframe_1.contentWindow) === null || _a === void 0 ? void 0 : _a.print();
+                            };
+                            this.toasterService.success("BARKOD YAZDIRILDI");
+                        }
+                        else {
+                            this.toasterService.error("BARKOD YAZDIRILAMADI");
+                        }
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
                 }
             });
         });
