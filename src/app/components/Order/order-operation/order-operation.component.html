@@ -53,6 +53,10 @@
                           type="submit" (click)="getShelves(product.barcode)">
                           <i class="fa-solid fa-bars"></i>
                         </button>
+                        <button class="btn btn-primary" type="submit" (click)="stickToTop(product, false)" *ngIf="this.stickedProduct && (this.stickedProduct.barcode == product.barcode &&
+                        this.stickedProduct.shelfNo == product.shelfNo ) ">
+                          <i class="fa fa-thumbtack-slash"></i>
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -185,16 +189,24 @@
                 <thead>
                   <tr>
                     <!-- <th scope="col">Seç</th> -->
+                    <th scope="col">Fotoğraf</th>
                     <th scope="col">Hedef Raf</th>
                     <th scope="col">Kod</th>
                     <th scope="col">Sipariş</th>
-                    <th scope="col">Sayılan</th>
-                    <th scope="col">Ud Raf</th>
-                    <th scope="col">Ud Stok</th>
-                    <th scope="col">Md Stok</th>
-                    <th scope="col">Toplam Stok</th>
+                    <th scope="col" *ngIf="!this.currentOrderNo.includes('WT') && !this.currentOrderNo.includes('BP') ">
+                      Sayılan</th>
+                    <th scope="col"
+                      *ngIf="!this.currentOrderNo.includes('WT')  && !this.currentOrderNo.includes('BP') ">
+                      Ud Raf</th>
+                    <th scope="col"
+                      *ngIf="!this.currentOrderNo.includes('WT') &&  !this.currentOrderNo.includes('BP') ">
+                      Ud Stok</th>
+                    <th scope="col" *ngIf="!this.currentOrderNo.includes('WT') && !this.currentOrderNo.includes('BP') ">
+                      Md Stok</th>
+                    <th scope="col" *ngIf="!this.currentOrderNo.includes('WT') && !this.currentOrderNo.includes('BP') ">
+                      Toplam Stok</th>
 
-                    <th scope="col">Fotoğraf</th>
+
                     <th scope="col">Barkod</th>
 
                     <!-- <th scope="col">Paket No</th> -->
@@ -220,19 +232,24 @@
                         (change)="addProductToList(product.packageNo)"
                       />
                     </td> -->
-
-                    <td>{{ product.shelfNo }}</td>
-                    <td>{{ product.itemCode }}</td>
-                    <td>{{ product.quantity }}</td>
-                    <td>{{ product.description }}</td>
-                    <td>{{ product.colorDescription }}</td>
-                    <td>{{ product.itemDim1Code }}</td>
-                    <td>{{ product.currentQty }}</td>
-                    <td>{{ +product.itemDim1Code + +product.currentQty }}</td>
                     <td>
                       <img src="{{ product.photoUrl }}" alt="Resim" width="50" height="50"
                         (click)="openImageModal(product.photoUrl)" />
                     </td>
+                    <td>{{ product.shelfNo }}</td>
+                    <td>{{ product.itemCode }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td *ngIf="!this.currentOrderNo.includes('WT') && !this.currentOrderNo.includes('BP')  ">
+                      {{ product.description }}</td>
+                    <td *ngIf="!this.currentOrderNo.includes('WT')  && !this.currentOrderNo.includes('BP') ">
+                      {{ product.colorDescription }}</td>
+                    <td *ngIf="!this.currentOrderNo.includes('WT')  && !this.currentOrderNo.includes('BP') ">
+                      {{ product.itemDim1Code }}</td>
+                    <td *ngIf="!this.currentOrderNo.includes('WT')  &&!this.currentOrderNo.includes('BP') ">
+                      {{ product.currentQty }}</td>
+                    <td *ngIf="!this.currentOrderNo.includes('WT') && !this.currentOrderNo.includes('BP') ">
+                      {{ +product.itemDim1Code + +product.currentQty }}</td>
+
                     <td>{{ product.barcode }}</td>
 
                     <td>
@@ -244,9 +261,9 @@
                         >
                           <i class="fa fa-trash"></i>
                         </button> -->
-                        <button class="btn btn-primary" type="submit" (click)="goDown(product.packageNo)">
+                        <!-- <button class="btn btn-primary" type="submit" (click)="goDown(product.packageNo)">
                           <i class="fa fa-angle-down"> </i>
-                        </button>
+                        </button> -->
 
                         <button data-toggle="tooltip" data-placement="right" title="Eksik Ürün" *ngIf="
                             this.currentOrderNo.includes('WS') &&
@@ -261,6 +278,9 @@
                         <button class="btn btn-primary" type="submit"
                           (click)="change(product.barcode, product.quantity)">
                           <i class="fas fa-print"></i>
+                        </button>
+                        <button class="btn btn-primary" type="submit" (click)="stickToTop(product, true)">
+                          <i class="fa fa-thumb-tack" aria-hidden="true"></i>
                         </button>
                       </div>
                     </td>

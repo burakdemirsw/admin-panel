@@ -126,6 +126,14 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
         this.productShelves = [];
         this.deletedProductList = [];
         this.selectedButton = 0;
+        this.brands = [];
+        this.itemCodes = [];
+        this.shelfNos = [];
+        // targetShelfs: any[] = []
+        this.descriptions = [];
+        this.productHierarchyLevel01s = [];
+        this.productHierarchyLevel02s = [];
+        this.productHierarchyLevel03s = [];
         this.baglist = ['2', '4', '5', '6', '7', '8', '0'];
         this.qrBarcodeUrl = null;
         this.qrOperationModels = [];
@@ -453,20 +461,55 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                                 }
                             }
                         }
-                        //raf otomatik doldurma
+                        this.mapProducts(this.__transferProducts);
                         this.fillShelfNo(2);
                         return [2 /*return*/];
                 }
             });
         });
     };
+    ShelfTransferRequestComponent.prototype.mapProducts = function (data) {
+        var uniqueMap = function (array, key) {
+            var map = new Map();
+            array.forEach(function (item) {
+                if (!map.has(item[key])) {
+                    map.set(item[key], { label: item[key], value: item[key] });
+                }
+            });
+            return Array.from(map.values()).sort(function (a, b) { return a.label.localeCompare(b.label); });
+        };
+        this.shelfNos = uniqueMap(this.__transferProducts, 'shelfNo');
+        this.brands = uniqueMap(this.__transferProducts, 'brand');
+        this.itemCodes = uniqueMap(this.__transferProducts, 'itemCode');
+        // this.targetShelfs = uniqueMap(this.__transferProducts, 'targetShelf');
+        this.descriptions = uniqueMap(this.__transferProducts, 'description');
+        this.productHierarchyLevel01s = uniqueMap(this.__transferProducts, 'productHierarchyLevel01');
+        this.productHierarchyLevel02s = uniqueMap(this.__transferProducts, 'productHierarchyLevel02');
+        this.productHierarchyLevel03s = uniqueMap(this.__transferProducts, 'productHierarchyLevel03');
+    };
     //tablo filtrelendiğinde en üstte kalanı üste atar
     ShelfTransferRequestComponent.prototype.logFilteredData = function (event) {
-        console.log('Filtered data:', event.filteredValue);
-        var list = event.filteredValue;
-        this.lastCollectedProduct = null;
-        this.lastCollectedProduct = list[0];
-        this.toasterService.info("Hedef Ürün Güncellendi");
+        try {
+            if (event.filteredValue) {
+                console.log('Filtered data:', event.filteredValue);
+                var list = event.filteredValue;
+                this.lastCollectedProduct = null;
+                this._transferProducts = [list[0]];
+                this.lastCollectedProduct = list[0];
+                this.mapProducts(list);
+            }
+            else {
+                var list = [event];
+                this.lastCollectedProduct = null;
+                this._transferProducts = [list[0]];
+                this.lastCollectedProduct = list[0];
+                this.mapProducts(list);
+            }
+            this.toasterService.info("Hedef Ürün Güncellendi");
+        }
+        catch (error) {
+            this.toasterService.error(error.message);
+        }
     };
     ShelfTransferRequestComponent.prototype.getTransferRequestListModel = function (type) {
         return __awaiter(this, void 0, void 0, function () {

@@ -12,6 +12,8 @@ import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { UserShelf } from 'src/app/models/model/user/personalShelf';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
+import { OrderService } from 'src/app/services/admin/order.service';
+import { GetCustomerList_CM, CustomerList_VM } from '../../models/model/order/getCustomerList_CM';
 
 @Component({
   selector: 'app-pages-register',
@@ -31,7 +33,8 @@ export class PagesRegisterComponent implements OnInit {
     private httpClientService: HttpClientService,
     private activatedRoute: ActivatedRoute,
     private toasterService: ToasterService,
-    private warehouseService: WarehouseService
+    private warehouseService: WarehouseService,
+    private orderService: OrderService
 
   ) { }
 
@@ -43,10 +46,6 @@ export class PagesRegisterComponent implements OnInit {
     await this.getShelves();
     await this.getSalesPersonModels()
     this.user_info = await this.userService.getUserClientInfoResponse();
-    console.log(this.user_info)
-
-
-
     this.activatedRoute.params.subscribe(async (params) => {
       if (params['userId']) {
 
@@ -56,6 +55,9 @@ export class PagesRegisterComponent implements OnInit {
         await this.findUser(Number(params['userId']))
       }
     })
+    if (!this.id) {
+      this.isUpdate = false;
+    }
 
 
   }
@@ -128,34 +130,39 @@ export class PagesRegisterComponent implements OnInit {
       this.registerForm.reset();
     }
   }
-
-
+  customerModels: CustomerList_VM[] = [];
   salesPersonModels: SalesPersonModel[] = [];
   salesPersonModelList: any[] = [];
+  customerModelList: any[] = [];
   selectedPerson: any;
+  selectedCustomer: any;
   async getSalesPersonModels(): Promise<any> {
     try {
-      try {
-        this.salesPersonModels = await this.httpClientService
-          .get<SalesPersonModel>({
-            controller: 'Order/GetSalesPersonModels',
-          })
-          .toPromise();
+      this.salesPersonModels = await this.httpClientService
+        .get<SalesPersonModel>({
+          controller: 'Order/GetSalesPersonModels',
+        })
+        .toPromise();
 
-        this.salesPersonModels.forEach((c) => {
-          var color: any = { name: c.firstLastName + " " + `${c.salespersonCode}`, code: c.salespersonCode };
-          this.salesPersonModelList.push(color);
-        });
+      this.salesPersonModelList = this.salesPersonModels.map((c) => {
+        return { name: (c.firstLastName + " " + `${c.salespersonCode}`), code: c.salespersonCode };
+      });
 
+      //------------
+      var request: GetCustomerList_CM = new GetCustomerList_CM();
+      request.currAccCode = null;
+      var response: CustomerList_VM[] = await this.orderService.getCustomerList_2(request);
 
-      } catch (error: any) {
-        this.alertifyService.error(error.message);
-        return null;
-      }
+      this.customerModels = response;
+      this.customerModelList = this.customerModels.map((c) => {
+        return { name: (c.currAccDescription + " " + `${c.currAccCode}`), code: c.currAccCode };
+      });
     } catch (error: any) {
       this.alertifyService.error(error.message);
+      return null;
     }
   }
+
 
   roleDescriptions: any[] = [{ role: "Admin" }, { role: "Salesman" }, { role: "Test User" }]
   selectedRole: any;
@@ -170,30 +177,30 @@ export class PagesRegisterComponent implements OnInit {
   }
   formGenerator() {
     this.registerForm = this.formBuilder.group({
-      firstName: ['Burak', Validators.required],
-      lastName: ['Burak', Validators.required],
-      email: [{ value: 'demir.burock96@gmail.com', disabled: false }, [Validators.required, Validators.email]],
-      phoneNumber: [null, Validators.required],
-      salesPersonCode: [null, Validators.required],
-      password: [null],
-      confirmPassword: [null],
-      gender: ["Erkek"],
-      roleDescription: [],
-      printerName_1: ['Burak'],
-      printerName_2: ['Burak'],
-      currAccCode: ['Burak']
-      // firstName: [null, Validators.required],
-      // lastName: [null, Validators.required],
-      // email: [{ value: null, disabled: false }, [Validators.required, Validators.email]],
+      // firstName: ['Burak', Validators.required],
+      // lastName: ['Burak', Validators.required],
+      // email: [{ value: 'demir.burock96@gmail.com', disabled: false }, [Validators.required, Validators.email]],
       // phoneNumber: [null, Validators.required],
       // salesPersonCode: [null, Validators.required],
       // password: [null],
       // confirmPassword: [null],
       // gender: ["Erkek"],
-      // roleDescription: [null],
-      // printerName_1: [null],
-      // printerName_2: [null],
-      // currAccCode: [null]
+      // roleDescription: [],
+      // printerName_1: ['Burak'],
+      // printerName_2: ['Burak'],
+      // currAccCode: ['Burak']
+      firstName: [null, Validators.required],
+      lastName: [null, Validators.required],
+      email: [{ value: null, disabled: false }, [Validators.required, Validators.email]],
+      phoneNumber: [null, Validators.required],
+      salesPersonCode: [null, Validators.required],
+      password: [null],
+      confirmPassword: [null],
+      gender: [null],
+      roleDescription: [null],
+      printerName_1: [null],
+      printerName_2: [null],
+      currAccCode: [null]
 
 
     });
@@ -224,7 +231,7 @@ export class PagesRegisterComponent implements OnInit {
             roleDescription: this.registerForm.value.roleDescription.role,
             printerName_1: this.registerForm.value.printerName_1,
             printerName_2: this.registerForm.value.printerName_2,
-            currAccCode: this.registerForm.value.currAccCode
+            currAccCode: this.registerForm.value.currAccCode.code
 
 
           };
@@ -235,6 +242,8 @@ export class PagesRegisterComponent implements OnInit {
 
             this.generalService.waitAndNavigate("İşlem Başaılı: " + "Kullanıcı Sisteme Eklendi", "user-list")
 
+          } else {
+            this.toasterService.warn('Müşteri Eklenmedi');
           }
           //console.log("Model:", model);
         } else {
@@ -263,7 +272,7 @@ export class PagesRegisterComponent implements OnInit {
             roleDescription: this.registerForm.value.roleDescription.role,
             printerName_1: this.registerForm.value.printerName_1,
             printerName_2: this.registerForm.value.printerName_2,
-            currAccCode: this.registerForm.value.currAccCode
+            currAccCode: this.registerForm.value.currAccCode.code
 
           };
 
@@ -274,6 +283,8 @@ export class PagesRegisterComponent implements OnInit {
 
 
 
+          } else {
+            this.toasterService.warn('Müşteri Güncellenmedi');
           }
           //console.log("Model:", model);
         } else {

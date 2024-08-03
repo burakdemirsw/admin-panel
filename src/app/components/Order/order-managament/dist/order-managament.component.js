@@ -70,6 +70,12 @@ var OrderManagamentComponent = /** @class */ (function () {
                 command: function () {
                     _this.exportCsv();
                 }
+            },
+            {
+                label: 'Excele Ürünleri Aktar Aktar',
+                command: function () {
+                    _this.exportCsv_Products();
+                }
             }
         ];
         this.status = 1;
@@ -79,6 +85,26 @@ var OrderManagamentComponent = /** @class */ (function () {
     }
     OrderManagamentComponent.prototype.exportCsv = function () {
         this.exportCsvService.exportToCsv(this.saleOrderModels, 'my-orders');
+    };
+    OrderManagamentComponent.prototype.exportCsv_Products = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                this.selectedOrders.forEach(function (order) { return __awaiter(_this, void 0, void 0, function () {
+                    var response;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, this.orderService.getOrderDetail(order.orderNumber)];
+                            case 1:
+                                response = _a.sent();
+                                this.exportCsvService.exportToCsv(response.products, 'my-products');
+                                return [2 /*return*/];
+                        }
+                    });
+                }); });
+                return [2 /*return*/];
+            });
+        });
     };
     OrderManagamentComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {

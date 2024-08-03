@@ -97,6 +97,7 @@ var OrderOperationComponent = /** @class */ (function () {
         this.qrCodeDownloadLink = this.sanitizer.bypassSecurityTrustResourceUrl('');
         this.addedProductCount = '';
         this.lastCollectedProduct = null;
+        this.stickedProduct = null;
         this.orderBillingList = [];
         this.itemBillingModels = [];
         this.qrBarcodeUrl = null;
@@ -202,6 +203,7 @@ var OrderOperationComponent = /** @class */ (function () {
                     case 1:
                         //this.spinnerService.show();
                         _a.sent();
+                        this.toasterService.info(this.currentOrderNo);
                         return [2 /*return*/];
                 }
             });
@@ -384,7 +386,7 @@ var OrderOperationComponent = /** @class */ (function () {
     };
     OrderOperationComponent.prototype.getAllProducts = function (orderNo, orderNoType) {
         return __awaiter(this, void 0, Promise, function () {
-            var productData, foundedProduct, response, warehouseOperationListModel;
+            var productData, response, warehouseOperationListModel;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -405,46 +407,8 @@ var OrderOperationComponent = /** @class */ (function () {
                             // this.toasterService.success("SAYIM TAMAMLANDI");
                         }
                         this.productsToCollect = productData; //toplanacak ürünler çekildi
-                        this.productsToCollect = this.productsToCollect.filter(function (p) { return p.quantity > 0; });
-                        if (this.productsToCollect.length > 0) {
-                            if (this.lastCollectedProduct == null) {
-                                //üste atılcak ürün seçildi
-                                this._productsToCollect = [];
-                                this._productsToCollect.push(productData[0]);
-                                this.lastCollectedProduct = productData[0];
-                            }
-                            else {
-                                foundedProduct = this.productsToCollect.find(function (p) {
-                                    return p.barcode == _this.lastCollectedProduct.barcode &&
-                                        p.itemCode == _this.lastCollectedProduct.itemCode &&
-                                        p.shelfNo == _this.lastCollectedProduct.shelfNo;
-                                });
-                                if (foundedProduct) {
-                                    //eğer ürün bulunduysa
-                                    if (foundedProduct.quantity > 0) {
-                                        //miktar değeri 0 dan büyükse üste at
-                                        this._productsToCollect = [];
-                                        this._productsToCollect.push(foundedProduct);
-                                        this.lastCollectedProduct = foundedProduct;
-                                    }
-                                    else {
-                                        //miktar değeri 0 dan küçükse
-                                        this._productsToCollect = [];
-                                        this._productsToCollect.push(productData[0]);
-                                        this.lastCollectedProduct = productData[0];
-                                    }
-                                }
-                                else {
-                                    //üürn bulunmdadıysa
-                                    this._productsToCollect = [];
-                                    this._productsToCollect.push(productData[0]);
-                                    this.lastCollectedProduct = productData[0];
-                                }
-                            }
-                        }
-                        if (this._productsToCollect.length > 0) {
-                            this.checkForm.get('shelfNo').setValue(this._productsToCollect[0].shelfNo);
-                        }
+                        // this.productsToCollect = this.productsToCollect.filter(p => p.quantity > 0);
+                        this.setTopProduct(productData);
                         if (orderNoType == 'WS') {
                             //sayım yapılabilcek ürünler listesine atıldı
                             this.productsToCollect.forEach(function (e) {
@@ -476,6 +440,115 @@ var OrderOperationComponent = /** @class */ (function () {
                 }
             });
         });
+    };
+    OrderOperationComponent.prototype.setTopProduct = function (productData) {
+        var _this = this;
+        if (this.productsToCollect.length > 0) {
+            if (this.stickedProduct != null) {
+                var _foundedProduct = this.productsToCollect.find(function (p) {
+                    return p.barcode == _this.stickedProduct.barcode &&
+                        p.itemCode == _this.stickedProduct.itemCode &&
+                        p.shelfNo == _this.stickedProduct.shelfNo;
+                });
+                if (_foundedProduct == undefined) {
+                    if (this.lastCollectedProduct == null) {
+                        //üste atılcak ürün seçildi
+                        this._productsToCollect = [];
+                        this._productsToCollect.push(productData[0]);
+                        this.lastCollectedProduct = productData[0];
+                        this.checkForm.get('shelfNo').setValue(productData[0].shelfNo);
+                    }
+                    else {
+                        //eğer son sayılan ürün varsa toplanacak ürünlerden bul
+                        var foundedProduct = this.productsToCollect.find(function (p) {
+                            return p.barcode == _this.lastCollectedProduct.barcode &&
+                                p.itemCode == _this.lastCollectedProduct.itemCode &&
+                                p.shelfNo == _this.lastCollectedProduct.shelfNo;
+                        });
+                        if (foundedProduct) {
+                            //eğer ürün bulunduysa
+                            if (foundedProduct.quantity > 0) {
+                                //miktar değeri 0 dan büyükse üste at
+                                this._productsToCollect = [];
+                                this._productsToCollect.push(foundedProduct);
+                                this.lastCollectedProduct = foundedProduct;
+                                this.checkForm.get('shelfNo').setValue(foundedProduct.shelfNo);
+                            }
+                            else {
+                                //miktar değeri 0 dan küçükse
+                                this._productsToCollect = [];
+                                this._productsToCollect.push(productData[0]);
+                                this.lastCollectedProduct = productData[0];
+                                this.checkForm.get('shelfNo').setValue(productData[0].shelfNo);
+                            }
+                        }
+                        else {
+                            //eğer ürün bulunamadıysa
+                            this._productsToCollect = [];
+                            this._productsToCollect.push(productData[0]);
+                            this.lastCollectedProduct = productData[0];
+                            this.checkForm.get('shelfNo').setValue(productData[0].shelfNo);
+                        }
+                    }
+                }
+                else {
+                    //üürn bulunmdadıysa
+                    this._productsToCollect = [];
+                    this._productsToCollect.push(_foundedProduct);
+                    this.lastCollectedProduct = _foundedProduct;
+                    this.checkForm.get('shelfNo').setValue(_foundedProduct.shelfNo);
+                }
+            }
+            else {
+                //üürn bulunmdadıysa
+                this._productsToCollect = [];
+                this._productsToCollect.push(productData[0]);
+                this.lastCollectedProduct = productData[0];
+                this.checkForm.get('shelfNo').setValue(productData[0].shelfNo);
+            }
+        }
+    };
+    OrderOperationComponent.prototype.stickToTop = function (product, add) {
+        if (product.quantity > 0 && add) {
+            this.stickedProduct = product;
+            this.setTopProduct(this.productsToCollect);
+            this.toasterService.success('Ürün Sabitlendi');
+        }
+        else if (!add) {
+            this.stickedProduct = null;
+            this.setTopProduct(this.productsToCollect);
+            this.toasterService.success('Ürün Sabitlenenlerden Kaldırıldı');
+        }
+    };
+    OrderOperationComponent.prototype.goDown2 = function (barcode, shelfNo, itemCode) {
+        // packageNo'ya eşleşen ProductOfOrder'ı bulun
+        var matchingProduct = this.productsToCollect.find(function (product) {
+            return product.barcode === barcode &&
+                product.shelfNo == shelfNo &&
+                product.itemCode == itemCode;
+        });
+        // Eğer eşleşen bir ürün bulunduysa
+        if (matchingProduct) {
+            // Ürünü diziden çıkarın
+            var index = this.productsToCollect.indexOf(matchingProduct);
+            if (index !== -1) {
+                if (this.productsToCollect.length - 1 >= index + 1) {
+                    this.stickToTop(this.productsToCollect[index + 1], true);
+                    // this._productsToCollect = [];
+                    // this._productsToCollect.push(this.productsToCollect[index + 1]);
+                    // this.lastCollectedProduct = this.productsToCollect[index + 1];
+                    // this.checkForm.get('shelfNo').setValue(this.productsToCollect[index + 1].shelfNo);
+                }
+                else {
+                    this._productsToCollect = [];
+                    this._productsToCollect.push(this.productsToCollect[0]);
+                    this.checkForm.get('shelfNo').setValue(this.productsToCollect[0].shelfNo);
+                }
+                // this.productsToCollect.splice(index, 1);
+                // // Ürünü dizinin sonuna ekleyin
+                // this.productsToCollect.push(matchingProduct);
+            }
+        }
     };
     OrderOperationComponent.prototype.focusNextInput = function (nextInputId) {
         var nextInput = document.getElementById(nextInputId);
@@ -646,7 +719,7 @@ var OrderOperationComponent = /** @class */ (function () {
     };
     OrderOperationComponent.prototype.setFormValues = function (barcode) {
         return __awaiter(this, void 0, Promise, function () {
-            var result, currentShelfNo, product, result, currentShelfNo, product, error_1;
+            var result, currentShelfNo, product, foundedProduct, result, currentShelfNo, product, foundedProduct, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -661,6 +734,11 @@ var OrderOperationComponent = /** @class */ (function () {
                         this.checkForm.get('barcode').setValue(result[3]);
                         this.checkForm.get('quantity').setValue(result[1]);
                         product = new countProduct_1.CountProduct(result[3], currentShelfNo, result[2], Number(result[1]));
+                        foundedProduct = this.productsToCollect.find(function (p) {
+                            return p.barcode == product.barcode;
+                        });
+                        this.stickToTop(foundedProduct, true);
+                        //------------------
                         return [2 /*return*/, product];
                     case 2: return [4 /*yield*/, this.productService.countProductByBarcode4(barcode, this.warehouseCode)];
                     case 3:
@@ -672,7 +750,7 @@ var OrderOperationComponent = /** @class */ (function () {
                         if (this.checkForm.get('quantity').value == null || this.checkForm.get('quantity').value == 1) {
                             this.checkForm.get('quantity').setValue(result[1]);
                         }
-                        if (result[4] == 'false') {
+                        if (result[4] == 'false' && result[3].length != 13) {
                             if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
                                 this.checkForm.get('batchCode').setValue(null);
                                 this.focusNextInput('batchCode');
@@ -687,6 +765,11 @@ var OrderOperationComponent = /** @class */ (function () {
                         else {
                             product.quantity = this.checkForm.get('quantity').value;
                         }
+                        foundedProduct = this.productsToCollect.find(function (p) {
+                            return p.barcode == product.barcode;
+                        });
+                        this.stickToTop(foundedProduct, true);
+                        //------------------
                         return [2 /*return*/, product];
                     case 4: return [3 /*break*/, 6];
                     case 5:
@@ -720,7 +803,6 @@ var OrderOperationComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.setFormValues(productModel.barcode)];
                     case 1:
                         updated_product = _a.sent();
-                        productModel = updated_product;
                         if (!(this.checkForm.get('quantity').value == null || this.checkForm.get('quantity').value == 1)) return [3 /*break*/, 3];
                         if (!((this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-')) && this.checkForm.valid)) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.onSubmit(productModel)];
@@ -1022,6 +1104,7 @@ var OrderOperationComponent = /** @class */ (function () {
         this.checkForm.get('barcode').setValue(null);
         this.checkForm.get('batchCode').setValue(null);
         this.qrBarcodeUrl = null;
+        this.shelfNumbers = 'Raf No';
         this.checkForm.get('quantity').setValue(null);
         if (this.currentOrderNo.split('-')[1] === 'WS') {
             this.focusNextInput('shelfNo');
@@ -1179,33 +1262,6 @@ var OrderOperationComponent = /** @class */ (function () {
                 this.productsToCollect.splice(index, 1);
                 // Ürünü dizinin sonuna ekleyin
                 this.productsToCollect.push(matchingProduct);
-            }
-        }
-    };
-    OrderOperationComponent.prototype.goDown2 = function (barcode, shelfNo, itemCode) {
-        // packageNo'ya eşleşen ProductOfOrder'ı bulun
-        var matchingProduct = this.productsToCollect.find(function (product) {
-            return product.barcode === barcode &&
-                product.shelfNo == shelfNo &&
-                product.itemCode == itemCode;
-        });
-        // Eğer eşleşen bir ürün bulunduysa
-        if (matchingProduct) {
-            // Ürünü diziden çıkarın
-            var index = this.productsToCollect.indexOf(matchingProduct);
-            if (index !== -1) {
-                if (this.productsToCollect.length - 1 >= index + 1) {
-                    this._productsToCollect = [];
-                    this._productsToCollect.push(this.productsToCollect[index + 1]);
-                    this.lastCollectedProduct = this.productsToCollect[index + 1];
-                }
-                else {
-                    this._productsToCollect = [];
-                    this._productsToCollect.push(this.productsToCollect[0]);
-                }
-                // this.productsToCollect.splice(index, 1);
-                // // Ürünü dizinin sonuna ekleyin
-                // this.productsToCollect.push(matchingProduct);
             }
         }
     };

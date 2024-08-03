@@ -29,6 +29,7 @@ import { OrderService } from '../../../services/admin/order.service';
 import { GoogleDriveService } from '../../../services/common/google-drive.service';
 import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from '../../cargo/create-cargo/models/models';
 import { SuggestedProduct } from 'src/app/models/model/order/suggestedProduct';
+import { FastTransfer_VM } from '../../../models/model/warehouse/transferRequestListModel';
 
 @Component({
   selector: 'app-create-order',
@@ -72,6 +73,7 @@ export class CreateOrderComponent implements OnInit {
   async ngOnInit() {
     this.createGetCustomerForm();
     this.createGetProductForm();
+    this.createUpdateProductForm()
     await this.getAllCustomers();
     this.activatedRoute.params.subscribe(async (params) => {
       if (params['id']) {
@@ -89,7 +91,7 @@ export class CreateOrderComponent implements OnInit {
         this.headerService.updatePageTitle(this.pageTitle);
       }
     })
-    this.createUpdateProductForm()
+
     this.setCustomer();
     this.createCargoForm();
     this.createCargoForm_2()
@@ -97,8 +99,7 @@ export class CreateOrderComponent implements OnInit {
     this.createPaymentForm();
 
     this.createCustomerFormMethod();
-    this.exchangeRate = await this.orderService.getExchangeRates();
-    this.generatedCargoNumber = this._generateRandomNumber();
+
     this.createDiscountForm();
 
     this.createOfficeWarehouseForm();
@@ -113,6 +114,8 @@ export class CreateOrderComponent implements OnInit {
     } else {
       this.salesPersonCode = spc;
     }
+    this.exchangeRate = await this.orderService.getExchangeRates();
+    this.generatedCargoNumber = this._generateRandomNumber();
     this.paymentForm.get('paymentType').setValue(this.paymentMethods[5])
     this.paymentForm.get('taxTypeCode').setValue(this.stateOptions[1])
     this.console();
@@ -682,13 +685,20 @@ export class CreateOrderComponent implements OnInit {
   _selectableCustomers: any[] = [];
   selectableSubCustomers: any[] = [];
   subCustomers: SubCustomerList_VM[] = [];
+  invoiceType: boolean;
+  changeInvoiceType(type: boolean) {
+    //bireysel ise
+    if (this.invoiceType) {
+      this.invoiceType = type;
+    }
+    //doktora kesilcek ise
+    else {
+      this.invoiceType = type
 
-
+    }
+  }
   async setCustomer() {
     //ilk önce tüm müşterileri çek;
-
-
-
     var salesPersonCode = localStorage.getItem('currAccCode');
     var request: GetCustomerList_CM = new GetCustomerList_CM();
     request.currAccCode = salesPersonCode;
@@ -966,6 +976,10 @@ export class CreateOrderComponent implements OnInit {
   }
 
 
+  customFilter = (options: any[], filter: string): any[] => {
+    const filterValue = filter.toLowerCase();
+    return options.filter(option => option.name.toLowerCase().includes(filterValue));
+  }
   async getAllCustomers() {
     try {
       var _request: GetCustomerList_CM = new GetCustomerList_CM();
@@ -1027,6 +1041,7 @@ export class CreateOrderComponent implements OnInit {
 
 
   async getSubCustomers() {
+
 
     if (this.createCustomerForm.value.sc_Description != null ||
       (typeof this.createCustomerForm.value.sc_Description === 'object' &&
@@ -1174,9 +1189,76 @@ export class CreateOrderComponent implements OnInit {
   //----------------------------------------------------
   //---------------------------------------------------- PRODUCTS
 
+
   selectedProduct: ProductList_VM;
   selectedIndex: number;
   updateProductForm: FormGroup
+  allProducts: FastTransfer_VM[] = [];
+
+
+  brands: any[] = []
+  itemCodes: any[] = []
+  shelfNos: any[] = []
+  // targetShelfs: any[] = []
+  descriptions: any[] = []
+  productHierarchyLevel01s: any[] = []
+  productHierarchyLevel02s: any[] = []
+  productHierarchyLevel03s: any[] = []
+
+  logFilteredData(event: any) {
+
+    try {
+      if (event.filteredValue) {
+        console.log('Filtered data:', event.filteredValue);
+        var list: FastTransfer_VM[] = event.filteredValue;
+        this.mapProducts(list)
+
+        this.toasterService.info("Dinamik Search Güncellendi")
+      }
+
+    } catch (error) {
+      this.toasterService.error(error.message)
+    }
+
+  }
+  async addProduct(product: FastTransfer_VM) {
+
+
+    this.getProductsForm.get('barcode').setValue(product.barcode);
+    this.getProductsForm.get('shelfNo').setValue(null);
+    this.findProductDialog = false;
+    await this.getProducts(this.getProductsForm.value, this.orderType);
+  }
+  async getAllProducts() {
+    if (this.allProducts.length == 0) {
+      this.allProducts = await this.productService.searchProduct5();
+
+    }
+    this.toasterService.success('Tüm Ürünler Getirildi')
+    this.mapProducts(this.allProducts);
+    this.openDialog('findProductDialog');
+  }
+
+  mapProducts(data: FastTransfer_VM[]) {
+    const uniqueMap = (array, key) => {
+      const map = new Map();
+      array.forEach(item => {
+        if (!map.has(item[key])) {
+          map.set(item[key], { label: item[key], value: item[key] });
+        }
+      });
+      return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label));
+    };
+
+    this.shelfNos = uniqueMap(data, 'shelfNo');
+    this.brands = uniqueMap(data, 'brand');
+    this.itemCodes = uniqueMap(data, 'itemCode');
+    // this.targetShelfs = uniqueMap(this.__transferProducts, 'targetShelf');
+    this.descriptions = uniqueMap(data, 'description');
+    this.productHierarchyLevel01s = uniqueMap(data, 'productHierarchyLevel01');
+    this.productHierarchyLevel02s = uniqueMap(data, 'productHierarchyLevel02');
+    this.productHierarchyLevel03s = uniqueMap(data, 'productHierarchyLevel03');
+  }
   createUpdateProductForm() {
     this.updateProductForm = this.formBuilder.group({
       price: [null, Validators.required],
@@ -1189,6 +1271,7 @@ export class CreateOrderComponent implements OnInit {
 
     this.updateProductForm.get('price').setValue(this.selectedProduct.discountedPrice)
     this.updateProductForm.get('quantity').setValue(this.selectedProduct.quantity)
+
     this.openDialog('updateProductDialog');
 
   }

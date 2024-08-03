@@ -482,6 +482,8 @@ export class WarehouseOperationComponent implements OnInit {
         this.warehouseForm.get('batchCode').setValue(result[2].toString());
         this.warehouseForm.get('quantity').setValue(result[1]);
         if (result[4] == 'false') {
+          this.toasterService.error('Parti Hatası Alındı . Partiyi Yeniden Giriniz')
+          return null;
           if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
             this.warehouseForm.get('batchCode').setValue(null);
             this.focusNextInput('batchCode');
@@ -515,7 +517,7 @@ export class WarehouseOperationComponent implements OnInit {
       if (product.availableQty < product.quantity) {
         this.blockedCount = true;
         this.blockedCountReason =
-          'Başarısız Ürün | \n Stok Kodu -' +
+          'STOK HATASI | Başarısız Ürün | \n Stok Kodu -' +
           product.itemCode +
           '\n Barkod- ' +
           product.barcode;

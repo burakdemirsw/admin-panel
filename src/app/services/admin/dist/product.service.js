@@ -477,6 +477,7 @@ var ProductService = /** @class */ (function () {
             });
         });
     };
+    //
     ProductService.prototype.searchProduct = function (model) {
         return __awaiter(this, void 0, Promise, function () {
             var response;
@@ -518,6 +519,21 @@ var ProductService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.httpClientService
                             .post({ controller: 'Products/search-product-4' }, model)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    ProductService.prototype.searchProduct5 = function () {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({ controller: 'Products/search-product-5' })
                             .toPromise()];
                     case 1:
                         response = _a.sent();

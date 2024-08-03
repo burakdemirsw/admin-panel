@@ -89,7 +89,7 @@
       </div>
     </div>
 
-    <div class="card custom-card mb-3">
+    <!-- <div class="card custom-card mb-3">
       <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
         <button type="button" class="btn custom-btn-primary" (click)="getOrders(1, 2)">
           <i class="fas fa-check"></i> Toplanabilir Siparişler
@@ -101,7 +101,7 @@
           <i class="fas fa-exclamation-triangle"></i> Eksik Ürünlü Siparişler
         </button>
       </div>
-    </div>
+    </div> -->
 
     <div class="card">
       <div class=" card-body">
@@ -136,6 +136,16 @@
           <ng-template pTemplate="caption">
             <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
               <p-splitButton label="İşlemler" [model]="items" appendTo="body" />
+              <div style="text-align: left">
+                <p-button icon="pi pi-plus" label=" Toplanabilir Siparişler" (click)="getOrders(1, 2)" />
+              </div>
+              <div style="text-align: left">
+                <p-button icon="pi pi-plus" label="Toplanamaz Toplanamaz" (click)="getOrders(0 ,2)" />
+              </div>
+              <div style="text-align: left">
+                <p-button icon="pi pi-plus" label="Eksik Ürünlü Toplanamaz" (click)="getMissingOrders()" />
+              </div>
+
 
             </div>
             <h5 *ngIf="selectedOrders.length > 0" style="text-align: left">

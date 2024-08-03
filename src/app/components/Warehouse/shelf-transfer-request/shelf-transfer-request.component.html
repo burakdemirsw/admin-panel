@@ -16,7 +16,7 @@
         <!-- Yeni kart: Toplanacak Ürünler Hızlı Menü -->
         <div class="card" *ngIf="_transferProducts.length > 0">
           <div class="card-body">
-            <h1 class="card-title">Toplanacak Ürünler</h1>
+            <h1 class="card-title">Toplanacak Ürünler Alanı</h1>
             <div class="table-responsive">
               <table class="table">
                 <thead>
@@ -413,50 +413,117 @@
                     <p-columnFilter type="text" field="barcode" [showClearButton]="false"></p-columnFilter>
                   </th> -->
                   <th>
-                    <p-columnFilter type="text" field="brand" [showClearButton]="false"></p-columnFilter>
+                    <p-columnFilter field="brand" matchMode="equals" [showMenu]="false">
+                      <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                        <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="brands"
+                          (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                          filterBy="label">
+                          <ng-template let-option pTemplate="item">
+                            <span class="ml-1 mt-1">{{ option.label }}</span>
+                          </ng-template>
+                        </p-dropdown>
+                      </ng-template>
+                    </p-columnFilter>
                   </th>
                   <th>
-                    <p-columnFilter type="text" field="itemCode" [showClearButton]="false"></p-columnFilter>
+                    <p-columnFilter field="itemCode" matchMode="equals" [showMenu]="false">
+                      <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                        <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="itemCodes"
+                          (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                          filterBy="label">
+                          <ng-template let-option pTemplate="item">
+                            <span class="ml-1 mt-1">{{ option.label }}</span>
+                          </ng-template>
+                        </p-dropdown>
+                      </ng-template>
+                    </p-columnFilter>
                   </th>
                   <th>
-                    <p-columnFilter type="text" field="shelfNo" [showClearButton]="false"></p-columnFilter>
+                    <p-columnFilter field="shelfNo" matchMode="equals" [showMenu]="false">
+                      <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                        <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="shelfNos"
+                          (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                          filterBy="label">
+                          <ng-template let-option pTemplate="item">
+                            <span class="ml-1 mt-1">{{ option.label }}</span>
+                          </ng-template>
+                        </p-dropdown>
+                      </ng-template>
+                    </p-columnFilter>
                   </th>
                   <!-- <th>
                     <p-columnFilter type="text" field="drawerCount" [showClearButton]="false"></p-columnFilter>
                   </th> -->
                   <th>
-                    <p-columnFilter type="text" field="transferQuantity" [showClearButton]="false"></p-columnFilter>
+                    <p-columnFilter type="numeric" field="transferQuantity" [showClearButton]="false"></p-columnFilter>
                   </th>
                   <th>
-                    <p-columnFilter type="text" field="targetShelf" [showClearButton]="false"></p-columnFilter>
+                    <p-columnFilter type="text" field="targetShelfNo" [showClearButton]="false">
+                    </p-columnFilter>
+
                   </th>
                   <!-- <th>
                     <p-columnFilter type="text" field="quantity" [showClearButton]="false"></p-columnFilter>
                   </th> -->
                   <th>
-                    <p-columnFilter type="text" field="description" [showClearButton]="false">
+                    <p-columnFilter field="description" matchMode="equals" [showMenu]="false">
+                      <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                        <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="descriptions"
+                          (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                          filterBy="label">
+                          <ng-template let-option pTemplate="item">
+                            <span class="ml-1 mt-1">{{ option.label }}</span>
+                          </ng-template>
+                        </p-dropdown>
+                      </ng-template>
                     </p-columnFilter>
                   </th>
                   <th>
-                    <p-columnFilter type="text" field="productHierarchyLevel01" [showClearButton]="false">
+                    <p-columnFilter field="productHierarchyLevel01" matchMode="equals" [showMenu]="false">
+                      <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                        <p-dropdown [options]="productHierarchyLevel01s" (onChange)="filter($event.value)"
+                          placeholder="Seçiniz" [showClear]="true" filter="true" filterBy="label">
+                          <ng-template let-option pTemplate="item">
+                            <span class="ml-1 mt-1">{{ option.label }}</span>
+                          </ng-template>
+                        </p-dropdown>
+                      </ng-template>
                     </p-columnFilter>
                   </th>
                   <th>
-                    <p-columnFilter type="text" field="productHierarchyLevel02" [showClearButton]="false">
+                    <p-columnFilter field="productHierarchyLevel02" matchMode="equals" [showMenu]="false">
+                      <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                        <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="productHierarchyLevel02s"
+                          (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                          filterBy="label">
+                          <ng-template let-option pTemplate="item">
+                            <span class="ml-1 mt-1">{{ option.label }}</span>
+                          </ng-template>
+                        </p-dropdown>
+                      </ng-template>
                     </p-columnFilter>
                   </th>
                   <th>
-                    <p-columnFilter type="text" field="productHierarchyLevel03" [showClearButton]="false">
+                    <p-columnFilter field="productHierarchyLevel03" matchMode="equals" [showMenu]="false">
+                      <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                        <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="productHierarchyLevel03s"
+                          (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                          filterBy="label">
+                          <ng-template let-option pTemplate="item">
+                            <span class="ml-1 mt-1">{{ option.label }}</span>
+                          </ng-template>
+                        </p-dropdown>
+                      </ng-template>
                     </p-columnFilter>
                   </th>
                   <th>
-                    <p-columnFilter type="text" field="speed" [showClearButton]="false"></p-columnFilter>
+                    <p-columnFilter type="numeric" field="speed" [showClearButton]="false"></p-columnFilter>
                   </th>
                   <th>
-                    <p-columnFilter type="text" field="inventory" [showClearButton]="false"></p-columnFilter>
+                    <p-columnFilter type="numeric" field="inventory" [showClearButton]="false"></p-columnFilter>
                   </th>
                   <th>
-                    <p-columnFilter type="text" field="price" [showClearButton]="false"></p-columnFilter>
+                    <p-columnFilter type="numeric" field="price" [showClearButton]="false"></p-columnFilter>
                   </th>
                 </tr>
               </ng-template>
@@ -483,9 +550,25 @@
                   <td>{{ product.inventory }}</td>
                   <td>{{ product.price }}</td>
                   <td>
-                    <button class="btn btn-primary" type="submit" (click)="getShelves(product.barcode)">
-                      <i class="fa-solid fa-bars"></i>
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                      aria-expanded="false">
                     </button>
+                    <ul class="dropdown-menu">
+
+                      <li>
+                        <a class="dropdown-item" data-text=" Kargo" (click)="getShelves(product.barcode)">
+                          <i class="fa-solid fa-bars"></i> Rafları Getir
+                        </a>
+                        <a class="dropdown-item" data-text=" Kargo" (click)="logFilteredData(product)">
+                          <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                          Üste At
+                        </a>
+
+
+
+                      </li>
+
+                    </ul>
                   </td>
                 </tr>
               </ng-template>

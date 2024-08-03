@@ -71,8 +71,14 @@
               <div class="col-md-6">
                 <div class="form-group mb-3">
                   <div class="form-group mb-3">
-                    <input pInputText placeholder="Müşteri Kodu" type="text" class="form-control" id="currAccCode"
-                      formControlName="currAccCode" />
+                    <!-- <input pInputText placeholder="Müşteri Kodu" type="text" class="form-control" id="currAccCode"
+                      formControlName="currAccCode" /> -->
+
+                    <p-dropdown placeholder="Müşteri Kodu" formControlName="currAccCode" virtualScroll="true"
+                      virtualScrollItemSize="50" [options]="customerModelList" [(ngModel)]="selectedPerson"
+                      optionLabel="name" [filter]="true">
+                    </p-dropdown>
+
                   </div>
 
                 </div>
@@ -103,8 +109,9 @@
               <div class="col-md-6">
 
                 <div class="form-group mb-3">
-                  <p-dropdown placeholder="Satış Personel Kodu" formControlName="salesPersonCode"
-                    [options]="salesPersonModelList" [(ngModel)]="selectedPerson" optionLabel="name" [filter]="true">
+                  <p-dropdown placeholder="Satış Personel Kodu" formControlName="salesPersonCode" virtualScroll="true"
+                    virtualScrollItemSize="50" [options]="salesPersonModelList" [(ngModel)]="selectedPerson"
+                    optionLabel="name" [filter]="true">
                   </p-dropdown>
 
                 </div>
@@ -120,7 +127,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" *ngIf=" this.id ">
       <div class="card-body">
 
         <p-tabView>

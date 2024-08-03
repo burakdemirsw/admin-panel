@@ -42,6 +42,7 @@ export class ShelfTransferRequestComponent implements OnInit {
   shelfNumbers: string = 'RAFLAR:';
   currentOrderNo: string;
   selectedFilter: string = '';
+  product: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -77,6 +78,7 @@ export class ShelfTransferRequestComponent implements OnInit {
   transferProducts: TransferRequestListModel[] = [];
   _transferProducts: TransferRequestListModel[] = [];
   __transferProducts: FastTransfer_VM[] = [];
+
   transferProductsColums: string[] = [
     'Id',
     'Stok Kodu',
@@ -392,18 +394,65 @@ export class ShelfTransferRequestComponent implements OnInit {
       }
     }
 
-    //raf otomatik doldurma
+    this.mapProducts(this.__transferProducts)
     this.fillShelfNo(2);
 
   }
 
+  mapProducts(data: FastTransfer_VM[]) {
+    const uniqueMap = (array, key) => {
+      const map = new Map();
+      array.forEach(item => {
+        if (!map.has(item[key])) {
+          map.set(item[key], { label: item[key], value: item[key] });
+        }
+      });
+      return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label));
+    };
+
+    this.shelfNos = uniqueMap(this.__transferProducts, 'shelfNo');
+    this.brands = uniqueMap(this.__transferProducts, 'brand');
+    this.itemCodes = uniqueMap(this.__transferProducts, 'itemCode');
+    // this.targetShelfs = uniqueMap(this.__transferProducts, 'targetShelf');
+    this.descriptions = uniqueMap(this.__transferProducts, 'description');
+    this.productHierarchyLevel01s = uniqueMap(this.__transferProducts, 'productHierarchyLevel01');
+    this.productHierarchyLevel02s = uniqueMap(this.__transferProducts, 'productHierarchyLevel02');
+    this.productHierarchyLevel03s = uniqueMap(this.__transferProducts, 'productHierarchyLevel03');
+
+  }
+
+  brands: any[] = []
+  itemCodes: any[] = []
+  shelfNos: any[] = []
+  // targetShelfs: any[] = []
+  descriptions: any[] = []
+  productHierarchyLevel01s: any[] = []
+  productHierarchyLevel02s: any[] = []
+  productHierarchyLevel03s: any[] = []
   //tablo filtrelendiğinde en üstte kalanı üste atar
   logFilteredData(event: any) {
-    console.log('Filtered data:', event.filteredValue);
-    var list: FastTransfer_VM[] = event.filteredValue;
-    this.lastCollectedProduct = null;
-    this.lastCollectedProduct = list[0];
-    this.toasterService.info("Hedef Ürün Güncellendi")
+
+    try {
+      if (event.filteredValue) {
+        console.log('Filtered data:', event.filteredValue);
+        var list: FastTransfer_VM[] = event.filteredValue;
+        this.lastCollectedProduct = null;
+        this._transferProducts = [list[0]];
+        this.lastCollectedProduct = list[0];
+        this.mapProducts(list)
+
+      } else {
+        var list: FastTransfer_VM[] = [event];
+        this.lastCollectedProduct = null;
+        this._transferProducts = [list[0]];
+        this.lastCollectedProduct = list[0];
+        this.mapProducts(list)
+      }
+      this.toasterService.info("Hedef Ürün Güncellendi")
+
+    } catch (error) {
+      this.toasterService.error(error.message)
+    }
 
   }
 

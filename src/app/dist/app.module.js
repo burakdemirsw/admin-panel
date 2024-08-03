@@ -245,6 +245,7 @@ var AppModule = /** @class */ (function () {
                     }
                 }),
             ],
+            //asdas
             schemas: [core_1.CUSTOM_ELEMENTS_SCHEMA],
             providers: [api_1.MessageService, common_1.DatePipe, alertify_service_1.AlertifyService, core_1.NgModule, angular_popper_1.NgxPopper, common_1.DatePipe, ngx_spinner_1.NgxSpinnerModule, {
                     provide: http_1.HTTP_INTERCEPTORS,

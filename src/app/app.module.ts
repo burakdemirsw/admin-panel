@@ -235,7 +235,7 @@ import { ServiceManagementComponent } from './components/service-management/serv
       },
     }),
   ],
-
+  //asdas
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [MessageService, DatePipe, AlertifyService, NgModule, NgxPopper, DatePipe, NgxSpinnerModule, {
     provide: HTTP_INTERCEPTORS,

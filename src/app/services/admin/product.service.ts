@@ -28,6 +28,7 @@ import { ToasterService } from '../ui/toaster.service';
 import { GeneralService } from './general.service';
 import { CreateBarcodeFromOrder_RM, CreateBarcodeModel } from 'src/app/components/Product/create-barcode/models/createBarcode';
 import { ProposalProduct_SM, ZTMSG_ProposalProduct } from 'src/app/models/model/product/proposalProduct_SM';
+import { FastTransfer_VM } from '../../models/model/warehouse/transferRequestListModel';
 
 @Injectable({
   providedIn: 'root',
@@ -347,6 +348,7 @@ export class ProductService {
 
     return response;
   }
+  //
   async searchProduct(model: BarcodeSearch_RM): Promise<any> {
     const response = await this.httpClientService
       .post<BarcodeSearch_RM>({ controller: 'Products/SearchProduct2' }, model)
@@ -354,7 +356,6 @@ export class ProductService {
 
     return response;
   }
-
 
   async searchProduct3(barcode: string, batchCode: string, shelfNo: string): Promise<any> {
     if (batchCode === '0') {
@@ -373,6 +374,15 @@ export class ProductService {
 
     return response;
   }
+
+  async searchProduct5(): Promise<FastTransfer_VM[]> {
+    const response = await this.httpClientService
+      .get<FastTransfer_VM>({ controller: 'Products/search-product-5' })
+      .toPromise();
+
+    return response;
+  }
+
   async getQr(id: string): Promise<any> {
     const response = await this.httpClientService
       .get<QrCode>({ controller: 'Products/get-qr' }, id)

@@ -133,8 +133,21 @@ var CreateOrderComponent = /** @class */ (function () {
         this._selectableCustomers = [];
         this.selectableSubCustomers = [];
         this.subCustomers = [];
+        this.customFilter = function (options, filter) {
+            var filterValue = filter.toLowerCase();
+            return options.filter(function (option) { return option.name.toLowerCase().includes(filterValue); });
+        };
         //----------------------------------------------------ADDRESS
         this.addresses = [];
+        this.allProducts = [];
+        this.brands = [];
+        this.itemCodes = [];
+        this.shelfNos = [];
+        // targetShelfs: any[] = []
+        this.descriptions = [];
+        this.productHierarchyLevel01s = [];
+        this.productHierarchyLevel02s = [];
+        this.productHierarchyLevel03s = [];
         this.selectedSize = '';
         this.products = [];
         this.currentDiscountRate = 0;
@@ -173,13 +186,14 @@ var CreateOrderComponent = /** @class */ (function () {
     }
     CreateOrderComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, spc;
+            var spc, _a;
             var _this = this;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         this.createGetCustomerForm();
                         this.createGetProductForm();
+                        this.createUpdateProductForm();
                         return [4 /*yield*/, this.getAllCustomers()];
                     case 1:
                         _b.sent();
@@ -201,18 +215,12 @@ var CreateOrderComponent = /** @class */ (function () {
                                 return [2 /*return*/];
                             });
                         }); });
-                        this.createUpdateProductForm();
                         this.setCustomer();
                         this.createCargoForm();
                         this.createCargoForm_2();
                         this.createsubCustomerForm();
                         this.createPaymentForm();
                         this.createCustomerFormMethod();
-                        _a = this;
-                        return [4 /*yield*/, this.orderService.getExchangeRates()];
-                    case 2:
-                        _a.exchangeRate = _b.sent();
-                        this.generatedCargoNumber = this._generateRandomNumber();
                         this.createDiscountForm();
                         this.createOfficeWarehouseForm();
                         this._createCustomerFormMethod();
@@ -225,6 +233,11 @@ var CreateOrderComponent = /** @class */ (function () {
                         else {
                             this.salesPersonCode = spc;
                         }
+                        _a = this;
+                        return [4 /*yield*/, this.orderService.getExchangeRates()];
+                    case 2:
+                        _a.exchangeRate = _b.sent();
+                        this.generatedCargoNumber = this._generateRandomNumber();
                         this.paymentForm.get('paymentType').setValue(this.paymentMethods[5]);
                         this.paymentForm.get('taxTypeCode').setValue(this.stateOptions[1]);
                         this.console();
@@ -774,6 +787,16 @@ var CreateOrderComponent = /** @class */ (function () {
     CreateOrderComponent.prototype.goToPage = function (index) {
         this.activeIndex = index;
         // this.toasterService.info(this.activeIndex.toString())
+    };
+    CreateOrderComponent.prototype.changeInvoiceType = function (type) {
+        //bireysel ise
+        if (this.invoiceType) {
+            this.invoiceType = type;
+        }
+        //doktora kesilcek ise
+        else {
+            this.invoiceType = type;
+        }
     };
     CreateOrderComponent.prototype.setCustomer = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -1359,6 +1382,75 @@ var CreateOrderComponent = /** @class */ (function () {
     CreateOrderComponent.prototype.deleteCurrentAddress = function () {
         this.selectedAddresses = [];
         this.toasterService.success("Adres Silindi");
+    };
+    CreateOrderComponent.prototype.logFilteredData = function (event) {
+        try {
+            if (event.filteredValue) {
+                console.log('Filtered data:', event.filteredValue);
+                var list = event.filteredValue;
+                this.mapProducts(list);
+                this.toasterService.info("Dinamik Search Güncellendi");
+            }
+        }
+        catch (error) {
+            this.toasterService.error(error.message);
+        }
+    };
+    CreateOrderComponent.prototype.addProduct = function (product) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.getProductsForm.get('barcode').setValue(product.barcode);
+                        this.getProductsForm.get('shelfNo').setValue(null);
+                        this.findProductDialog = false;
+                        return [4 /*yield*/, this.getProducts(this.getProductsForm.value, this.orderType)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CreateOrderComponent.prototype.getAllProducts = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        if (!(this.allProducts.length == 0)) return [3 /*break*/, 2];
+                        _a = this;
+                        return [4 /*yield*/, this.productService.searchProduct5()];
+                    case 1:
+                        _a.allProducts = _b.sent();
+                        _b.label = 2;
+                    case 2:
+                        this.toasterService.success('Tüm Ürünler Getirildi');
+                        this.mapProducts(this.allProducts);
+                        this.openDialog('findProductDialog');
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CreateOrderComponent.prototype.mapProducts = function (data) {
+        var uniqueMap = function (array, key) {
+            var map = new Map();
+            array.forEach(function (item) {
+                if (!map.has(item[key])) {
+                    map.set(item[key], { label: item[key], value: item[key] });
+                }
+            });
+            return Array.from(map.values()).sort(function (a, b) { return a.label.localeCompare(b.label); });
+        };
+        this.shelfNos = uniqueMap(data, 'shelfNo');
+        this.brands = uniqueMap(data, 'brand');
+        this.itemCodes = uniqueMap(data, 'itemCode');
+        // this.targetShelfs = uniqueMap(this.__transferProducts, 'targetShelf');
+        this.descriptions = uniqueMap(data, 'description');
+        this.productHierarchyLevel01s = uniqueMap(data, 'productHierarchyLevel01');
+        this.productHierarchyLevel02s = uniqueMap(data, 'productHierarchyLevel02');
+        this.productHierarchyLevel03s = uniqueMap(data, 'productHierarchyLevel03');
     };
     CreateOrderComponent.prototype.createUpdateProductForm = function () {
         this.updateProductForm = this.formBuilder.group({

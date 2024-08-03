@@ -7,7 +7,6 @@ export class ProductList_VM {
   itemCode !: string
   batchCode !: string
   priceWs !: string //new
-
   quantity: number
   quantity2: number
   warehouseCode !: string

@@ -85,9 +85,11 @@
                 }}" formControlName="shelfNo" />
 
 
-              <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-search" label="Ürün Bul"
+              <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus" label="Ürün Ekle"
                 type="submit"></button>
-              <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-search" label="Muadil Bul"
+              <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-search" label="Ürün Ara"
+                type="button" (click)="getAllProducts()"></button>
+              <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-refresh" label="Muadil Bul"
                 type="button" (click)="getsuggestedProducts(this.getProductsForm.value.barcode,true)"></button>
               <button pButton pRipple class="p-button-rounded p-button-text" (onClick)="resetProductForm()"
                 icon="pi pi-trash" label="Barkodu Sil" type="reset"></button>
@@ -98,7 +100,167 @@
 
           </div>
         </form>
+        <p-dialog header="Bulunan Ürünler" [(visible)]="findProductDialog" [style]="{ width: '100vw' }">
+          <p-table [styleClass]="'p-datatable-striped'" [value]="allProducts" [paginator]="true" [rows]="10"
+            (onFilter)="logFilteredData($event)" [tableStyle]="{ 'min-width': '50rem' }">
 
+
+            <ng-template pTemplate="header">
+
+              <tr>
+                <th>Fotoğraf</th>
+                <th pSortableColumn="brand">
+                  Marka <p-sortIcon field="brand"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="itemCode">
+                  Ürün Kodu <p-sortIcon field="itemCode"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="description">
+                  Ürün <p-sortIcon field="description"></p-sortIcon>
+                </th>
+                <th pSortableColumn="productHierarchyLevel01">
+                  Ürün Hiyerarşisi 1 <p-sortIcon field="productHierarchyLevel01"></p-sortIcon>
+                </th>
+                <th pSortableColumn="productHierarchyLevel02">
+                  Ürün Hiyerarşisi 2 <p-sortIcon field="productHierarchyLevel02"></p-sortIcon>
+                </th>
+                <th pSortableColumn="productHierarchyLevel03">
+                  Ürün Hiyerarşisi 3 <p-sortIcon field="productHierarchyLevel03"></p-sortIcon>
+                </th>
+                <th pSortableColumn="speed">
+                  Hız <p-sortIcon field="speed"></p-sortIcon>
+                </th>
+                <th pSortableColumn="inventory">
+                  Envanter <p-sortIcon field="inventory"></p-sortIcon>
+                </th>
+                <th pSortableColumn="price">
+                  Fiyat <p-sortIcon field="price"></p-sortIcon>
+                </th>
+                <th>
+                  İşlemler
+                </th>
+              </tr>
+              <tr>
+                <th></th>
+
+                <th>
+                  <p-columnFilter field="brand" matchMode="equals" [showMenu]="false">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="brands"
+                        (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                        filterBy="label">
+                        <ng-template let-option pTemplate="item">
+                          <span class="ml-1 mt-1">{{ option.label }}</span>
+                        </ng-template>
+                      </p-dropdown>
+                    </ng-template>
+                  </p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter field="itemCode" matchMode="equals" [showMenu]="false">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="itemCodes"
+                        (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                        filterBy="label">
+                        <ng-template let-option pTemplate="item">
+                          <span class="ml-1 mt-1">{{ option.label }}</span>
+                        </ng-template>
+                      </p-dropdown>
+                    </ng-template>
+                  </p-columnFilter>
+                </th>
+
+                <th>
+                  <p-columnFilter field="description" matchMode="equals" [showMenu]="false">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="descriptions"
+                        (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                        filterBy="label">
+                        <ng-template let-option pTemplate="item">
+                          <span class="ml-1 mt-1">{{ option.label }}</span>
+                        </ng-template>
+                      </p-dropdown>
+                    </ng-template>
+                  </p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter field="productHierarchyLevel01" matchMode="equals" [showMenu]="false">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <p-dropdown [options]="productHierarchyLevel01s" (onChange)="filter($event.value)"
+                        placeholder="Seçiniz" [showClear]="true" filter="true" filterBy="label">
+                        <ng-template let-option pTemplate="item">
+                          <span class="ml-1 mt-1">{{ option.label }}</span>
+                        </ng-template>
+                      </p-dropdown>
+                    </ng-template>
+                  </p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter field="productHierarchyLevel02" matchMode="equals" [showMenu]="false">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="productHierarchyLevel02s"
+                        (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                        filterBy="label">
+                        <ng-template let-option pTemplate="item">
+                          <span class="ml-1 mt-1">{{ option.label }}</span>
+                        </ng-template>
+                      </p-dropdown>
+                    </ng-template>
+                  </p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter field="productHierarchyLevel03" matchMode="equals" [showMenu]="false">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="productHierarchyLevel03s"
+                        (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                        filterBy="label">
+                        <ng-template let-option pTemplate="item">
+                          <span class="ml-1 mt-1">{{ option.label }}</span>
+                        </ng-template>
+                      </p-dropdown>
+                    </ng-template>
+                  </p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="numeric" field="speed" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="numeric" field="inventory" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="numeric" field="price" [showClearButton]="false"></p-columnFilter>
+                </th>
+
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-product>
+              <tr>
+
+                <td>
+                  <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true">
+                  </p-image>
+                </td>
+                <td>{{ product.brand }}</td>
+
+                <td>{{ product.itemCode }}</td>
+
+                <td class="scrollable-td">{{ product.description }}</td>
+                <td>{{ product.productHierarchyLevel01 }}</td>
+                <td>{{ product.productHierarchyLevel02 }}</td>
+                <td>{{ product.productHierarchyLevel03 }}</td>
+                <td>{{ product.speed }}</td>
+                <td>{{ product.inventory }}</td>
+                <td>{{ product.price }}</td>
+                <td>
+                  <button pButton pRipple icon="pi pi-plus" type="button" class="p-button-rounded p-button-text "
+                    (click)="addProduct(product)"></button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-dialog>
 
         <p-table [scrollable]="true" [value]="products" *ngIf="products.length > 0" styleClass="p-datatable-striped">
           <ng-template pTemplate="caption">
@@ -188,18 +350,9 @@
               </td>
 
               <td>
-                <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
+                <button pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
                   (click)="openUpdateDialog(product,ri)" class="p-button-rounded p-button-text"></button>
-                <!-- <div class="flex align-items-center justify-content-center gap-2">
-                  <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
-                    (click)="onRowEditInit(product)" class="p-button-rounded p-button-text"></button>
-                  <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
-                    (click)="onRowEditSave(product, ri)"
-                    class="p-button-rounded p-button-text p-button-success"></button>
-                  <button *ngIf="editing" pButton pRipple type="button"
-                    class="p-button-rounded p-button-text p-button-danger" pCancelEditableRow
-                    (click)="onRowEditCancel(product, ri)" icon="pi pi-times"></button>
-                </div> -->
+
               </td>
 
               <td>{{ product.itemCode }}</td>
@@ -336,11 +489,11 @@
             <div class="p-fluid">
               <div class="p-field">
                 <label for="price">Fiyat</label>
-                <input id="price" type="text" pInputText formControlName="price">
+                <input id="price" type="number" pInputText formControlName="price">
               </div>
               <div class="p-field mb-3">
                 <label for="quantity">Adet</label>
-                <input id="quantity" type="text" pInputText formControlName="quantity">
+                <input id="quantity" type="number" pInputText formControlName="quantity">
               </div>
               <div class="p-field mb-3">
                 <button type="button" pButton label="Güncelle"
@@ -425,46 +578,46 @@
       <p-tabPanel header="Müşteri" [rightIcon]="this.currAccCode ? 'pi pi-check' : 'pi pi-times'">
         <p-tabView>
           <p-tabPanel header="Müşteri Bul">
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <h3>ALT MÜŞTERİ</h3>
-                <hr />
-                <form [formGroup]="createCustomerForm">
-                  <p-inputGroup>
-                    <p-inputGroupAddon>
-                      <!-- <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text" type="button"
-      (click)=" this.subCustomerDialog = !this.subCustomerDialog "></button> -->
-                      <p-dropdown [virtualScroll]="true" [itemSize]="30" [style]="{'width': '50%'}"
-                        #subCurrAccDescription_dropdown formControlName="sc_Description" (click)="showPanel(3)"
-                        [options]="selectableSubCustomers" placeholder="Müşteri" [editable]="true" optionLabel="name"
-                        filter="true">
-                      </p-dropdown>
-
-                    </p-inputGroupAddon>
-                    <button pButton pRipple icon="pi pi-search" class="p-button-rounded p-button-text" type="button"
-                      (click)="getSubCustomers()"></button>
-
-
-                  </p-inputGroup>
-
-                  <div class="mt-3 mb-3">
-                    <button label="Yeni Alt Müşteri Oluştur" pButton pRipple icon="pi pi-plus"
-                      class="p-button-rounded p-button-text" type="button"
-                      (click)="openDialog('addSubCustomerDialog')"></button>
-                  </div>
-                </form>
+            <div class="row mb-3" *ngIf="this.invoiceType != undefined">
+              <div class="col-md-1">
+                <button pButton pRipple class="p-button-rounded p-button-text" label="Geri"
+                  (click)="changeInvoiceType(undefined)" type="submit" icon="pi pi-arrow-left"></button>
               </div>
-              <div class="col-md-6">
-                <h3>BAYİ {{ selectedCustomers.length > 0 ? ' - ' + selectedCustomers[0]?.currAccDescription : '' }}</h3>
+            </div>
+            <div class="container mt-5" *ngIf="invoiceType ==undefined">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <div class="card text-center card-hover" (click)="changeInvoiceType(true)">
+                    <div class="card-body">
+                      <h5 class="card-title">Kendime Fatura Kesilecek <i class="fas fa-booth-curtain    "></i></h5>
+                      <i class="fas fa-person fa-3x"></i>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div class="card text-center card-hover" (click)="changeInvoiceType(false)">
+                    <div class="card-body">
+                      <h5 class="card-title">Doktora Fatura Kesilcek</h5>
+                      <i class="fas fa-user-md fa-3x"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-12" *ngIf="invoiceType==false">
+                <h3>MÜŞTERİ {{ selectedCustomers.length > 0 ? ' - ' + selectedCustomers[0]?.currAccDescription : '' }}
+                </h3>
                 <hr />
                 <form [formGroup]="createCustomerForm" (ngSubmit)="submitAddressForm(createCustomerForm.value)">
                   <div class="row mb-3">
                     <div class="col-md-6">
-                      <p-dropdown [virtualScroll]="true" [itemSize]="30" [style]="{'width': '100%'}"
-                        #currAccDescription_dropdown optionLabel="name" filter="true"
+                      <p-dropdown [virtualScroll]="true" [itemSize]="50" [style]="{'width': '100%'}"
+                        #currAccDescription_dropdown optionLabel="name" filter="true" filterBy="name"
                         formControlName="currAccDescription" [options]="_selectableCustomers" placeholder="Müşteri"
-                        (onChange)="onDropdownChange($event.value)">
+                        [showClear]="true" (onChange)="onDropdownChange($event.value)" [filterFunction]="customFilter">
                       </p-dropdown>
+
                     </div>
                   </div>
 
@@ -670,8 +823,39 @@
                   </div>
                 </form>
               </div>
-
             </div>
+            <div class="row mb-3" *ngIf="invoiceType==true">
+              <div class="col-md-12">
+                <h3>ALT MÜŞTERİ</h3>
+                <hr />
+                <form [formGroup]="createCustomerForm">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>
+                      <!-- <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text" type="button"
+      (click)=" this.subCustomerDialog = !this.subCustomerDialog "></button> -->
+                      <p-dropdown [virtualScroll]="true" [itemSize]="50" [style]="{'width': '50%'}"
+                        #subCurrAccDescription_dropdown formControlName="sc_Description" (click)="showPanel(3)"
+                        [options]="selectableSubCustomers" placeholder="Müşteri" [editable]="true" optionLabel="name"
+                        [showClear]="true" filterBy="name" filter="true">
+                      </p-dropdown>
+
+                    </p-inputGroupAddon>
+                    <button pButton pRipple icon="pi pi-search" class="p-button-rounded p-button-text" type="button"
+                      (click)="getSubCustomers()"></button>
+
+
+                  </p-inputGroup>
+
+                  <div class="mt-3 mb-3">
+                    <button label="Yeni Alt Müşteri Oluştur" pButton pRipple icon="pi pi-plus"
+                      class="p-button-rounded p-button-text" type="button"
+                      (click)="openDialog('addSubCustomerDialog')"></button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+
           </p-tabPanel>
           <p-tabPanel header="Var Olan Müşteri">
             <form [formGroup]="getCustomerForm" class="customer-form"

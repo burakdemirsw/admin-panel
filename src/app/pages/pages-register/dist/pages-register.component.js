@@ -47,8 +47,9 @@ var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
 var userRegister_VM_1 = require("src/app/models/model/user/userRegister_VM");
 var personalShelf_1 = require("src/app/models/model/user/personalShelf");
+var getCustomerList_CM_1 = require("../../models/model/order/getCustomerList_CM");
 var PagesRegisterComponent = /** @class */ (function () {
-    function PagesRegisterComponent(generalService, formBuilder, userService, headerService, alertifyService, httpClientService, activatedRoute, toasterService, warehouseService) {
+    function PagesRegisterComponent(generalService, formBuilder, userService, headerService, alertifyService, httpClientService, activatedRoute, toasterService, warehouseService, orderService) {
         this.generalService = generalService;
         this.formBuilder = formBuilder;
         this.userService = userService;
@@ -58,13 +59,16 @@ var PagesRegisterComponent = /** @class */ (function () {
         this.activatedRoute = activatedRoute;
         this.toasterService = toasterService;
         this.warehouseService = warehouseService;
+        this.orderService = orderService;
         this.isUpdate = false;
         this.id = 0;
         this.userList = [];
         this.userShelves = [];
         this.shelves = [];
+        this.customerModels = [];
         this.salesPersonModels = [];
         this.salesPersonModelList = [];
+        this.customerModelList = [];
         this.roleDescriptions = [{ role: "Admin" }, { role: "Salesman" }, { role: "Test User" }];
     }
     PagesRegisterComponent.prototype.ngOnInit = function () {
@@ -87,7 +91,6 @@ var PagesRegisterComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.userService.getUserClientInfoResponse()];
                     case 3:
                         _a.user_info = _b.sent();
-                        console.log(this.user_info);
                         this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
@@ -106,6 +109,9 @@ var PagesRegisterComponent = /** @class */ (function () {
                                 }
                             });
                         }); });
+                        if (!this.id) {
+                            this.isUpdate = false;
+                        }
                         return [2 /*return*/];
                 }
             });
@@ -244,38 +250,37 @@ var PagesRegisterComponent = /** @class */ (function () {
     };
     PagesRegisterComponent.prototype.getSalesPersonModels = function () {
         return __awaiter(this, void 0, Promise, function () {
-            var _a, error_1, error_2;
-            var _this = this;
+            var _a, request, response, error_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        _b.trys.push([0, 5, , 6]);
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 3, , 4]);
+                        _b.trys.push([0, 3, , 4]);
                         _a = this;
                         return [4 /*yield*/, this.httpClientService
                                 .get({
                                 controller: 'Order/GetSalesPersonModels'
                             })
                                 .toPromise()];
-                    case 2:
+                    case 1:
                         _a.salesPersonModels = _b.sent();
-                        this.salesPersonModels.forEach(function (c) {
-                            var color = { name: c.firstLastName + " " + ("" + c.salespersonCode), code: c.salespersonCode };
-                            _this.salesPersonModelList.push(color);
+                        this.salesPersonModelList = this.salesPersonModels.map(function (c) {
+                            return { name: (c.firstLastName + " " + ("" + c.salespersonCode)), code: c.salespersonCode };
+                        });
+                        request = new getCustomerList_CM_1.GetCustomerList_CM();
+                        request.currAccCode = null;
+                        return [4 /*yield*/, this.orderService.getCustomerList_2(request)];
+                    case 2:
+                        response = _b.sent();
+                        this.customerModels = response;
+                        this.customerModelList = this.customerModels.map(function (c) {
+                            return { name: (c.currAccDescription + " " + ("" + c.currAccCode)), code: c.currAccCode };
                         });
                         return [3 /*break*/, 4];
                     case 3:
                         error_1 = _b.sent();
                         this.alertifyService.error(error_1.message);
                         return [2 /*return*/, null];
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
-                        error_2 = _b.sent();
-                        this.alertifyService.error(error_2.message);
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -287,30 +292,30 @@ var PagesRegisterComponent = /** @class */ (function () {
     };
     PagesRegisterComponent.prototype.formGenerator = function () {
         this.registerForm = this.formBuilder.group({
-            firstName: ['Burak', forms_1.Validators.required],
-            lastName: ['Burak', forms_1.Validators.required],
-            email: [{ value: 'demir.burock96@gmail.com', disabled: false }, [forms_1.Validators.required, forms_1.Validators.email]],
-            phoneNumber: [null, forms_1.Validators.required],
-            salesPersonCode: [null, forms_1.Validators.required],
-            password: [null],
-            confirmPassword: [null],
-            gender: ["Erkek"],
-            roleDescription: [],
-            printerName_1: ['Burak'],
-            printerName_2: ['Burak'],
-            currAccCode: ['Burak']
-            // firstName: [null, Validators.required],
-            // lastName: [null, Validators.required],
-            // email: [{ value: null, disabled: false }, [Validators.required, Validators.email]],
+            // firstName: ['Burak', Validators.required],
+            // lastName: ['Burak', Validators.required],
+            // email: [{ value: 'demir.burock96@gmail.com', disabled: false }, [Validators.required, Validators.email]],
             // phoneNumber: [null, Validators.required],
             // salesPersonCode: [null, Validators.required],
             // password: [null],
             // confirmPassword: [null],
             // gender: ["Erkek"],
-            // roleDescription: [null],
-            // printerName_1: [null],
-            // printerName_2: [null],
-            // currAccCode: [null]
+            // roleDescription: [],
+            // printerName_1: ['Burak'],
+            // printerName_2: ['Burak'],
+            // currAccCode: ['Burak']
+            firstName: [null, forms_1.Validators.required],
+            lastName: [null, forms_1.Validators.required],
+            email: [{ value: null, disabled: false }, [forms_1.Validators.required, forms_1.Validators.email]],
+            phoneNumber: [null, forms_1.Validators.required],
+            salesPersonCode: [null, forms_1.Validators.required],
+            password: [null],
+            confirmPassword: [null],
+            gender: [null],
+            roleDescription: [null],
+            printerName_1: [null],
+            printerName_2: [null],
+            currAccCode: [null]
         });
     };
     PagesRegisterComponent.prototype.submitForm = function () {
@@ -335,13 +340,16 @@ var PagesRegisterComponent = /** @class */ (function () {
                             roleDescription: this.registerForm.value.roleDescription.role,
                             printerName_1: this.registerForm.value.printerName_1,
                             printerName_2: this.registerForm.value.printerName_2,
-                            currAccCode: this.registerForm.value.currAccCode
+                            currAccCode: this.registerForm.value.currAccCode.code
                         };
                         return [4 /*yield*/, this.userService.register(model)];
                     case 1:
                         response = _a.sent();
                         if (response == true) {
                             this.generalService.waitAndNavigate("İşlem Başaılı: " + "Kullanıcı Sisteme Eklendi", "user-list");
+                        }
+                        else {
+                            this.toasterService.warn('Müşteri Eklenmedi');
                         }
                         return [3 /*break*/, 3];
                     case 2:
@@ -368,7 +376,7 @@ var PagesRegisterComponent = /** @class */ (function () {
                             roleDescription: this.registerForm.value.roleDescription.role,
                             printerName_1: this.registerForm.value.printerName_1,
                             printerName_2: this.registerForm.value.printerName_2,
-                            currAccCode: this.registerForm.value.currAccCode
+                            currAccCode: this.registerForm.value.currAccCode.code
                         };
                         return [4 /*yield*/, this.userService.update(model)];
                     case 7:
@@ -376,6 +384,9 @@ var PagesRegisterComponent = /** @class */ (function () {
                         if (response == true) {
                             // this.router.navigate(['/login']);
                             this.generalService.waitAndNavigate("İşlem Başaılı: " + "Kullanıcı Güncellendi", "user-list");
+                        }
+                        else {
+                            this.toasterService.warn('Müşteri Güncellenmedi');
                         }
                         return [3 /*break*/, 9];
                     case 8:

@@ -14,6 +14,7 @@ import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { CreateBarcodeFromOrder_RM } from '../../Product/create-barcode/models/createBarcode';
 import { MenuItem } from 'primeng/api';
 import { ExportCsvService } from 'src/app/services/admin/export-csv.service';
+import { OrderDetail } from '../../cargo/create-cargo/models/models';
 
 @Component({
   selector: 'app-order-managament',
@@ -49,10 +50,23 @@ export class OrderManagamentComponent implements OnInit {
       command: () => {
         this.exportCsv();
       }
+    },
+    {
+      label: 'Excele Ürünleri Aktar Aktar',
+      command: () => {
+        this.exportCsv_Products();
+      }
     }
   ];
   exportCsv() {
     this.exportCsvService.exportToCsv(this.saleOrderModels, 'my-orders');
+  }
+  async exportCsv_Products() {
+    this.selectedOrders.forEach(async order => {
+      var response = await this.orderService.getOrderDetail(order.orderNumber);
+      this.exportCsvService.exportToCsv(response.products, 'my-products');
+    });
+
   }
   status = 1;
   invoiceStatus = 2
