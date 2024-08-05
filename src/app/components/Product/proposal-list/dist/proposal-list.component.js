@@ -45,14 +45,119 @@ exports.__esModule = true;
 exports.ProposalListComponent = void 0;
 var core_1 = require("@angular/core");
 var ProposalListComponent = /** @class */ (function () {
-    function ProposalListComponent(generalService, toasterService, headerService, router) {
+    function ProposalListComponent(generalService, toasterService, headerService, router, productService, warehouseService) {
         this.generalService = generalService;
         this.toasterService = toasterService;
         this.headerService = headerService;
         this.router = router;
+        this.productService = productService;
+        this.warehouseService = warehouseService;
         this.currentPage = 1;
+        this.proposals = [];
     }
     ProposalListComponent.prototype.ngOnInit = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.getProposals()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ProposalListComponent.prototype.getProposals = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _a = this;
+                        return [4 /*yield*/, this.productService.getProposals()];
+                    case 1:
+                        _a.proposals = _b.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ProposalListComponent.prototype.deleteProposal = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var confirmed, response, error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        confirmed = window.confirm('Bu teklifi silmek istediğinizden emin misiniz?');
+                        if (!confirmed) return [3 /*break*/, 7];
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 6, , 7]);
+                        return [4 /*yield*/, this.productService.deleteProposal(id)];
+                    case 2:
+                        response = _a.sent();
+                        if (!response) return [3 /*break*/, 4];
+                        this.toasterService.success('Silindi');
+                        return [4 /*yield*/, this.getProposals()];
+                    case 3:
+                        _a.sent();
+                        return [3 /*break*/, 5];
+                    case 4:
+                        this.toasterService.error('Silinemedi');
+                        _a.label = 5;
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
+                        error_1 = _a.sent();
+                        console.error('Error deleting proposal', error_1);
+                        this.toasterService.error('Silinemedi');
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ProposalListComponent.prototype.createProposalReport = function (proposal) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, file, fileURL, downloadLink, _file, _fileURL, iframe_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!window.confirm("Teklifi Oluşturmak İstediğinize Emin Misiniz?")) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.warehouseService.createProposalReport(proposal.id)];
+                    case 1:
+                        data = _a.sent();
+                        if (data) {
+                            file = new Blob([data], { type: 'application/pdf' });
+                            fileURL = URL.createObjectURL(file);
+                            downloadLink = document.createElement('a');
+                            downloadLink.href = fileURL;
+                            downloadLink.download = "marketplace-order-cargo-barcode.pdf"; // Set the filename for the download
+                            document.body.appendChild(downloadLink); // Append to body
+                            downloadLink.click(); // Trigger the download
+                            document.body.removeChild(downloadLink); // Remove the link after triggering the download
+                            URL.revokeObjectURL(fileURL); // Clean up the URL object
+                            _file = new Blob([data], { type: 'application/pdf' });
+                            _fileURL = URL.createObjectURL(_file);
+                            iframe_1 = document.createElement('iframe');
+                            iframe_1.style.display = 'none'; // Hide the iframe
+                            iframe_1.src = _fileURL;
+                            // Append the iframe to the body
+                            document.body.appendChild(iframe_1);
+                            // Wait until the iframe is loaded, then call print
+                            iframe_1.onload = function () {
+                                var _a;
+                                (_a = iframe_1.contentWindow) === null || _a === void 0 ? void 0 : _a.print();
+                            };
+                            this.toasterService.success("Teklif YAZDIRILDI");
+                        }
+                        else {
+                            this.toasterService.error("Teklif YAZDIRILAMADI");
+                        }
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
+                }
+            });
+        });
     };
     ProposalListComponent.prototype.routeNewPage = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -62,7 +167,7 @@ var ProposalListComponent = /** @class */ (function () {
                     case 0: return [4 /*yield*/, this.generalService.generateGUID()];
                     case 1:
                         uuid = _a.sent();
-                        this.router.navigate(["/create-proposal/" + uuid]);
+                        this.router.navigate(["/create-proposal"]);
                         this.toasterService.info("Ürün Aratınız");
                         return [2 /*return*/];
                 }

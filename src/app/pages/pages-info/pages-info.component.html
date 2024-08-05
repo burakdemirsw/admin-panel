@@ -1,0 +1,226 @@
+<main id="main">
+  <section class="section">
+    <p-tabView>
+      <p-tabPanel header="Şirket Bilgileri">
+        <form [formGroup]="companyInfoForm" (ngSubmit)="onSubmitCompanyInfo()">
+          <div class="form-group">
+            <label for="companyName">Şirket Adı</label>
+            <input type="text" id="companyName" class="form-control" formControlName="companyName">
+            <div *ngIf="companyInfoForm.get('companyName').invalid && companyInfoForm.get('companyName').touched"
+              class="text-danger">
+              Şirket Adı zorunludur
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="logoUrl">Logo URL</label>
+            <input type="text" id="logoUrl" class="form-control" formControlName="logoUrl">
+          </div>
+          <div class="form-group">
+            <label for="serviceSector">Hizmet Sektörü</label>
+            <input type="text" id="serviceSector" class="form-control" formControlName="serviceSector">
+          </div>
+          <div class="form-group">
+            <label for="authorizedPerson">Yetkili Kişi</label>
+            <input type="text" id="authorizedPerson" class="form-control" formControlName="authorizedPerson">
+          </div>
+          <div class="form-group">
+            <label for="phone">Telefon</label>
+            <input type="text" id="phone" class="form-control" formControlName="phone">
+          </div>
+          <div class="form-group">
+            <label for="fax">Faks</label>
+            <input type="text" id="fax" class="form-control" formControlName="fax">
+          </div>
+          <div class="form-group">
+            <label for="taxOffice">Vergi Dairesi</label>
+            <input type="text" id="taxOffice" class="form-control" formControlName="taxOffice">
+          </div>
+          <div class="form-group">
+            <label for="taxNumber">Vergi Numarası</label>
+            <input type="text" id="taxNumber" class="form-control" formControlName="taxNumber">
+          </div>
+          <div class="form-group">
+            <label for="tradeRegistryNo">Ticaret Sicil No</label>
+            <input type="text" id="tradeRegistryNo" class="form-control" formControlName="tradeRegistryNo">
+          </div>
+          <div class="form-group">
+            <label for="mersisNo">Mersis No</label>
+            <input type="text" id="mersisNo" class="form-control" formControlName="mersisNo">
+          </div>
+          <div class="form-group">
+            <label for="email">E-posta</label>
+            <input type="email" id="email" class="form-control" formControlName="email">
+          </div>
+          <div class="form-group">
+            <label for="address">Adres</label>
+            <textarea id="address" class="form-control" formControlName="address"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="postalCode">Posta Kodu</label>
+            <input type="text" id="postalCode" class="form-control" formControlName="postalCode">
+          </div>
+          <div class="form-group">
+            <label for="companyCountry">Ülke</label>
+            <input type="text" id="companyCountry" class="form-control" formControlName="companyCountry">
+          </div>
+          <div class="form-group">
+            <label for="companyCity">Şehir</label>
+            <input type="text" id="companyCity" class="form-control" formControlName="companyCity">
+          </div>
+          <div class="form-group">
+            <label for="companyDistrict">İlçe</label>
+            <input type="text" id="companyDistrict" class="form-control" formControlName="companyDistrict">
+          </div>
+          <div class="form-group">
+            <label for="passwordResetUrl">Şifre Sıfırlama URL</label>
+            <input type="text" id="passwordResetUrl" class="form-control" formControlName="passwordResetUrl">
+          </div>
+          <div class="form-group">
+            <label for="webSiteUrl">Web Sitesi URL</label>
+            <input type="text" id="webSiteUrl" class="form-control" formControlName="webSiteUrl">
+          </div>
+          <div class="form-group">
+            <label for="printerName1">Yazıcı Adı 1</label>
+            <input type="text" id="printerName1" class="form-control" formControlName="printerName1">
+          </div>
+          <div class="form-group">
+            <label for="printerName2">Yazıcı Adı 2</label>
+            <input type="text" id="printerName2" class="form-control" formControlName="printerName2">
+          </div>
+          <div class="form-group">
+            <label for="documentsFolderPath">Döküman Klasör Yolu</label>
+            <input type="text" id="documentsFolderPath" class="form-control" formControlName="documentsFolderPath">
+          </div>
+          <div class="form-group">
+            <label for="invoiceFolderPath">Fatura Klasör Yolu</label>
+            <input type="text" id="invoiceFolderPath" class="form-control" formControlName="invoiceFolderPath">
+          </div>
+          <div class="form-group">
+            <label for="nebimUrl">Nebim URL</label>
+            <input type="text" id="nebimUrl" class="form-control" formControlName="nebimUrl">
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="companyInfoForm.invalid">Kaydet</button>
+        </form>
+      </p-tabPanel>
+      <p-tabPanel header="Mail Bilgileri">
+        <form [formGroup]="mailInfoForm" (ngSubmit)="onSubmitMailInfo()">
+          <div class="form-group">
+            <label for="isFirst">İlk Mi?</label>
+            <input type="checkbox" id="isFirst" class="form-control" formControlName="isFirst">
+          </div>
+          <div class="form-group">
+            <label for="userName">Kullanıcı Adı</label>
+            <input type="text" id="userName" class="form-control" formControlName="userName">
+          </div>
+          <div class="form-group">
+            <label for="password">Şifre</label>
+            <input type="password" id="password" class="form-control" formControlName="password">
+          </div>
+          <div class="form-group">
+            <label for="applicationPassword">Uygulama Şifresi</label>
+            <input type="password" id="applicationPassword" class="form-control" formControlName="applicationPassword">
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="mailInfoForm.invalid">Kaydet</button>
+        </form>
+      </p-tabPanel>
+      <p-tabPanel header="Veritabanı Bilgileri">
+        <form [formGroup]="databaseInfoForm" (ngSubmit)="onSubmitDatabaseInfo()">
+          <div class="form-group">
+            <label for="dataSource">Veri Kaynağı</label>
+            <input type="text" id="dataSource" class="form-control" formControlName="dataSource">
+          </div>
+          <div class="form-group">
+            <label for="initialCatalog">Başlangıç Kataloğu</label>
+            <input type="text" id="initialCatalog" class="form-control" formControlName="initialCatalog">
+          </div>
+          <div class="form-group">
+            <label for="userID">Kullanıcı ID</label>
+            <input type="text" id="userID" class="form-control" formControlName="userID">
+          </div>
+          <div class="form-group">
+            <label for="password">Şifre</label>
+            <input type="password" id="password" class="form-control" formControlName="password">
+          </div>
+          <div class="form-group">
+            <label for="trustServerCertificate">Sunucu Sertifikasına Güven</label>
+            <input type="checkbox" id="trustServerCertificate" class="form-control"
+              formControlName="trustServerCertificate">
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="databaseInfoForm.invalid">Kaydet</button>
+        </form>
+      </p-tabPanel>
+
+      <p-tabPanel header="Nebim Bilgileri">
+        <form [formGroup]="nebimInfoForm" (ngSubmit)="onSubmitNebimInfo()">
+          <div class="form-group">
+            <label for="type">Tür</label>
+            <input type="text" id="type" class="form-control" formControlName="type">
+          </div>
+          <div class="form-group">
+            <label for="officeCode">Ofis Kodu</label>
+            <input type="text" id="officeCode" class="form-control" formControlName="officeCode">
+          </div>
+          <div class="form-group">
+            <label for="storeCode">Mağaza Kodu</label>
+            <input type="text" id="storeCode" class="form-control" formControlName="storeCode">
+          </div>
+          <div class="form-group">
+            <label for="posTerminalId">POS Terminal ID</label>
+            <input type="text" id="posTerminalId" class="form-control" formControlName="posTerminalId">
+          </div>
+          <div class="form-group">
+            <label for="shipmentMethodCode">Kargo Metodu Kodu</label>
+            <input type="text" id="shipmentMethodCode" class="form-control" formControlName="shipmentMethodCode">
+          </div>
+          <div class="form-group">
+            <label for="deliveryCompanyCode">Teslimat Şirketi Kodu</label>
+            <input type="text" id="deliveryCompanyCode" class="form-control" formControlName="deliveryCompanyCode">
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="nebimInfoForm.invalid">Kaydet</button>
+        </form>
+
+        <!-- Nebim Bilgileri Tablosu -->
+        <table class="table mt-3">
+          <thead>
+            <tr>
+              <th scope="col">Tür</th>
+              <th scope="col">Ofis Kodu</th>
+              <th scope="col">Mağaza Kodu</th>
+              <th scope="col">POS Terminal ID</th>
+              <th scope="col">Kargo Metodu Kodu</th>
+              <th scope="col">Teslimat Şirketi Kodu</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let nebim of nebimInfos">
+              <td>{{ nebim.type }}</td>
+              <td>{{ nebim.officeCode }}</td>
+              <td>{{ nebim.storeCode }}</td>
+              <td>{{ nebim.posTerminalId }}</td>
+              <td>{{ nebim.shipmentMethodCode }}</td>
+              <td>{{ nebim.deliveryCompanyCode }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </p-tabPanel>
+
+      <p-tabPanel header="Rapor Bilgileri">
+        <form [formGroup]="reportInfoForm" (ngSubmit)="onSubmitReportInfo()">
+          <div class="form-group">
+            <label for="description">Açıklama</label>
+            <input type="text" id="description" class="form-control" formControlName="description">
+          </div>
+          <div class="form-group">
+            <label for="filePath">Dosya Yolu</label>
+            <input type="text" id="filePath" class="form-control" formControlName="filePath">
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="reportInfoForm.invalid">Kaydet</button>
+        </form>
+      </p-tabPanel>
+
+    </p-tabView>
+
+
+
+  </section>
+</main>

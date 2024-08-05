@@ -521,7 +521,7 @@ export class OrderService {
 
   async getCustomerList_2(request: GetCustomerList_CM): Promise<any> {
     try {
-      var response = await this.httpClientService.post<GetCustomerList_CM>({ controller: "order/get-customer-list-2" }, request).toPromise();
+      var response = await this.httpClientService.post<any>({ controller: "order/get-customer-list-2" }, request).toPromise();
 
       return response;
     } catch (error: any) {

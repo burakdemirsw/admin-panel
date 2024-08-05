@@ -169,8 +169,9 @@
             <form [formGroup]="shelfForm" (ngSubmit)="onShelfFormSubmit(shelfForm.value)">
 
               <div class="form-group mb-3">
-                <!-- <input type="text" id="shelfNo" class="form-control" formControlName="shelfNo"
-                  placeholder="Raf Numarası">  -->
+                <p-dropdown virtualScroll="true" virtualScrollItemSize="50" placeholder="Raflar" [options]="shelves"
+                  formControlName="shelfNo" optionLabel="description" [filter]="true">
+                </p-dropdown>
 
 
               </div>

@@ -1,21 +1,23 @@
 "use strict";
 exports.__esModule = true;
-exports.ZTMSG_ProposalProduct_VM = exports.ZTMSG_ProposalProduct = exports.ProposalProduct_SM = void 0;
-var ProposalProduct_SM = /** @class */ (function () {
-    function ProposalProduct_SM() {
-    }
-    return ProposalProduct_SM;
-}());
-exports.ProposalProduct_SM = ProposalProduct_SM;
+exports.Proposal_VM = exports.ZTMSG_Proposal = exports.ZTMSG_ProposalProduct = void 0;
 var ZTMSG_ProposalProduct = /** @class */ (function () {
     function ZTMSG_ProposalProduct() {
     }
     return ZTMSG_ProposalProduct;
 }());
 exports.ZTMSG_ProposalProduct = ZTMSG_ProposalProduct;
-var ZTMSG_ProposalProduct_VM = /** @class */ (function () {
-    function ZTMSG_ProposalProduct_VM() {
+var ZTMSG_Proposal = /** @class */ (function () {
+    function ZTMSG_Proposal() {
+        this.discountRate1 = 0;
+        this.discountRate2 = 0;
     }
-    return ZTMSG_ProposalProduct_VM;
+    return ZTMSG_Proposal;
 }());
-exports.ZTMSG_ProposalProduct_VM = ZTMSG_ProposalProduct_VM;
+exports.ZTMSG_Proposal = ZTMSG_Proposal;
+var Proposal_VM = /** @class */ (function () {
+    function Proposal_VM() {
+    }
+    return Proposal_VM;
+}());
+exports.Proposal_VM = Proposal_VM;

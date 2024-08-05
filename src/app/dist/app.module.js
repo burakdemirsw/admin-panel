@@ -124,6 +124,7 @@ var create_proposal_component_1 = require("./components/Product/create-proposal/
 var shelf_component_1 = require("./components/Warehouse/shelf/shelf.component");
 var splitbutton_1 = require("primeng/splitbutton");
 var service_management_component_1 = require("./components/service-management/service-management.component");
+var pages_info_component_1 = require("./pages/pages-info/pages-info.component");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -201,7 +202,8 @@ var AppModule = /** @class */ (function () {
                 proposal_list_component_1.ProposalListComponent,
                 create_proposal_component_1.CreateProposalComponent,
                 shelf_component_1.ShelfComponent,
-                service_management_component_1.ServiceManagementComponent
+                service_management_component_1.ServiceManagementComponent,
+                pages_info_component_1.PagesInfoComponent
             ],
             imports: [
                 toolbar_1.ToolbarModule,

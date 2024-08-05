@@ -68,6 +68,7 @@ var create_proposal_component_1 = require("./components/Product/create-proposal/
 var proposal_list_component_1 = require("./components/Product/proposal-list/proposal-list.component");
 var shelf_component_1 = require("./components/Warehouse/shelf/shelf.component");
 var service_management_component_1 = require("./components/service-management/service-management.component");
+var pages_info_component_1 = require("./pages/pages-info/pages-info.component");
 var routes = [
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     {
@@ -306,19 +307,21 @@ var routes = [
     { path: 'box-count', component: box_count_component_1.BoxCountComponent, canActivate: [auth_guard_1.AuthGuard] },
     { path: 'search-qr/:id', component: search_qr_component_1.SearchQrComponent },
     { path: 'search-qr', component: search_qr_component_1.SearchQrComponent },
-    { path: 'nebim-get-orders', component: nebim_get_orders_component_1.NebimGetOrdersComponent },
-    { path: 'nebim-stock-control', component: nebim_stock_control_component_1.NebimStockControlComponent },
-    { path: 'nebim-product-extract', component: nebim_product_extract_component_1.NebimProductExtractComponent },
-    { path: 'create-barcode/:operationNo', component: create_barcode_component_1.CreateBarcodeComponent },
+    { path: 'nebim-get-orders', component: nebim_get_orders_component_1.NebimGetOrdersComponent, canActivate: [auth_guard_1.AuthGuard] },
+    { path: 'nebim-stock-control', component: nebim_stock_control_component_1.NebimStockControlComponent, canActivate: [auth_guard_1.AuthGuard] },
+    { path: 'nebim-product-extract', component: nebim_product_extract_component_1.NebimProductExtractComponent, canActivate: [auth_guard_1.AuthGuard] },
+    { path: 'create-barcode/:operationNo', component: create_barcode_component_1.CreateBarcodeComponent, canActivate: [auth_guard_1.AuthGuard] },
     { path: 'create-product-barcode/:operationNo', component: create_product_barcode_component_1.CreateProductBarcodeComponent },
     { path: 'create-proposal/:id', component: create_proposal_component_1.CreateProposalComponent, canActivate: [auth_guard_1.AuthGuard] },
+    { path: 'create-proposal', component: create_proposal_component_1.CreateProposalComponent, canActivate: [auth_guard_1.AuthGuard] },
     { path: 'proposal-list', component: proposal_list_component_1.ProposalListComponent, canActivate: [auth_guard_1.AuthGuard] },
     { path: 'shelf', component: shelf_component_1.ShelfComponent, canActivate: [auth_guard_1.AuthGuard] },
     { path: 'service-management', component: service_management_component_1.ServiceManagementComponent, canActivate: [auth_guard_1.AuthGuard] },
+    { path: 'infos', component: pages_info_component_1.PagesInfoComponent, canActivate: [auth_guard_1.AuthGuard] },
     //-------------------------------------------------------------------------
-    { path: 'retail-invoice-list', component: retail_invoice_list_component_1.RetailInvoiceListComponent },
-    { path: 'retail-orders-managament/:status/:invoiceStatus', component: retail_order_management_component_1.RetailOrderManagementComponent },
-    { path: 'retail-orders-collected-packages', component: collected_packages_component_2.CollectedPackagesComponent },
+    { path: 'retail-invoice-list', component: retail_invoice_list_component_1.RetailInvoiceListComponent, canActivate: [auth_guard_1.AuthGuard] },
+    { path: 'retail-orders-managament/:status/:invoiceStatus', component: retail_order_management_component_1.RetailOrderManagementComponent, canActivate: [auth_guard_1.AuthGuard] },
+    { path: 'retail-orders-collected-packages', component: collected_packages_component_2.CollectedPackagesComponent, canActivate: [auth_guard_1.AuthGuard] },
     //-------------------------------------------------------------------------
     { path: '**', component: pages_error404_component_1.PagesError404Component },
 ];

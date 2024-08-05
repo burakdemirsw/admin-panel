@@ -287,8 +287,7 @@ export class CreateQrComponent implements OnInit, OnChanges {
   async onSubmit(m: any) {
 
     if (m.barcode) {
-      var model: BarcodeSearch_RM = new BarcodeSearch_RM();
-      model.barcode = m.barcode;
+      var model: BarcodeSearch_RM = new BarcodeSearch_RM(m.barcode);
       if (m.barcode.includes('http') || this.generalService.isGuid(m.barcode)) {
         var result: string[] = await this.productService.countProductByBarcode3(
           m.barcode

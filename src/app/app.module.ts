@@ -115,6 +115,7 @@ import { CreateProposalComponent } from './components/Product/create-proposal/cr
 import { ShelfComponent } from './components/Warehouse/shelf/shelf.component';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { ServiceManagementComponent } from './components/service-management/service-management.component';
+import { PagesInfoComponent } from './pages/pages-info/pages-info.component';
 @NgModule({
 
   declarations: [
@@ -190,7 +191,8 @@ import { ServiceManagementComponent } from './components/service-management/serv
     ProposalListComponent,
     CreateProposalComponent,
     ShelfComponent,
-    ServiceManagementComponent
+    ServiceManagementComponent,
+    PagesInfoComponent
   ],
 
   imports: [

@@ -1578,8 +1578,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         this.toasterService.success("Form Verileri Güncellendi");
                         return [2 /*return*/];
                     case 3:
-                        _request = new product_service_1.BarcodeSearch_RM();
-                        _request.barcode = request.barcode;
+                        _request = new product_service_1.BarcodeSearch_RM(request.barcode);
                         return [4 /*yield*/, this.productService.searchProduct(_request)];
                     case 4:
                         response = _d.sent();

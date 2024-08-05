@@ -331,8 +331,7 @@ var CreateQrComponent = /** @class */ (function () {
                 switch (_b.label) {
                     case 0:
                         if (!m.barcode) return [3 /*break*/, 9];
-                        model = new product_service_1.BarcodeSearch_RM();
-                        model.barcode = m.barcode;
+                        model = new product_service_1.BarcodeSearch_RM(m.barcode);
                         if (!(m.barcode.includes('http') || this.generalService.isGuid(m.barcode))) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.productService.countProductByBarcode3(m.barcode)];
                     case 1:

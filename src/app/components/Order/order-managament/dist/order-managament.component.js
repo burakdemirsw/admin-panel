@@ -88,21 +88,32 @@ var OrderManagamentComponent = /** @class */ (function () {
     };
     OrderManagamentComponent.prototype.exportCsv_Products = function () {
         return __awaiter(this, void 0, void 0, function () {
+            var data, promises, productsArray;
             var _this = this;
             return __generator(this, function (_a) {
-                this.selectedOrders.forEach(function (order) { return __awaiter(_this, void 0, void 0, function () {
-                    var response;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0: return [4 /*yield*/, this.orderService.getOrderDetail(order.orderNumber)];
-                            case 1:
-                                response = _a.sent();
-                                this.exportCsvService.exportToCsv(response.products, 'my-products');
-                                return [2 /*return*/];
-                        }
-                    });
-                }); });
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0:
+                        data = [];
+                        promises = this.selectedOrders.map(function (order) { return __awaiter(_this, void 0, void 0, function () {
+                            var response;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0: return [4 /*yield*/, this.orderService.getOrderDetail(order.orderNumber)];
+                                    case 1:
+                                        response = _a.sent();
+                                        return [2 /*return*/, response.products];
+                                }
+                            });
+                        }); });
+                        return [4 /*yield*/, Promise.all(promises)];
+                    case 1:
+                        productsArray = _a.sent();
+                        // Flatten the array if necessary
+                        data = productsArray.flat();
+                        // Export the data to CSV
+                        this.exportCsvService.exportToCsv(data, 'my-products');
+                        return [2 /*return*/];
+                }
             });
         });
     };

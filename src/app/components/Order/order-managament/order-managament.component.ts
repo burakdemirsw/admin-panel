@@ -62,12 +62,25 @@ export class OrderManagamentComponent implements OnInit {
     this.exportCsvService.exportToCsv(this.saleOrderModels, 'my-orders');
   }
   async exportCsv_Products() {
-    this.selectedOrders.forEach(async order => {
+    var data: any[] = [];
+
+    // Create an array of promises
+    var promises = this.selectedOrders.map(async order => {
       var response = await this.orderService.getOrderDetail(order.orderNumber);
-      this.exportCsvService.exportToCsv(response.products, 'my-products');
+
+      return response.products;
     });
 
+    // Wait for all promises to resolve
+    var productsArray = await Promise.all(promises);
+
+    // Flatten the array if necessary
+    data = productsArray.flat();
+
+    // Export the data to CSV
+    this.exportCsvService.exportToCsv(data, 'my-products');
   }
+
   status = 1;
   invoiceStatus = 2
 

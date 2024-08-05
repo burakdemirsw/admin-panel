@@ -127,8 +127,7 @@ var ProductManagementComponent = /** @class */ (function () {
                         if (barcode.includes("=")) {
                             barcode = barcode.replace(/=/g, "-");
                         }
-                        model = new product_service_1.BarcodeSearch_RM();
-                        model.barcode = barcode;
+                        model = new product_service_1.BarcodeSearch_RM(barcode);
                         return [4 /*yield*/, this.productService._searchProduct(model)];
                     case 1:
                         response = _a.sent();

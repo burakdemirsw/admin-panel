@@ -537,5 +537,15 @@ export class WarehouseService {
       return null;
     }
   }
+  async createProposalReport(request: number): Promise<any> {
+    try {
+      var response = await this.httpClientService.get<any>({ controller: "Warehouse/create-proposal-report", responseType: 'arraybuffer' }, request.toString()).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
 
 }

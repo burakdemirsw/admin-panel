@@ -59,6 +59,7 @@ import { CreateProposalComponent } from './components/Product/create-proposal/cr
 import { ProposalListComponent } from './components/Product/proposal-list/proposal-list.component';
 import { ShelfComponent } from './components/Warehouse/shelf/shelf.component';
 import { ServiceManagementComponent } from './components/service-management/service-management.component';
+import { PagesInfoComponent } from './pages/pages-info/pages-info.component';
 
 
 const routes: Routes = [
@@ -303,21 +304,24 @@ const routes: Routes = [
   { path: 'box-count', component: BoxCountComponent, canActivate: [AuthGuard] },
   { path: 'search-qr/:id', component: SearchQrComponent },
   { path: 'search-qr', component: SearchQrComponent },
-  { path: 'nebim-get-orders', component: NebimGetOrdersComponent },
-  { path: 'nebim-stock-control', component: NebimStockControlComponent },
-  { path: 'nebim-product-extract', component: NebimProductExtractComponent },
-  { path: 'create-barcode/:operationNo', component: CreateBarcodeComponent },
+  { path: 'nebim-get-orders', component: NebimGetOrdersComponent, canActivate: [AuthGuard] },
+  { path: 'nebim-stock-control', component: NebimStockControlComponent, canActivate: [AuthGuard] },
+  { path: 'nebim-product-extract', component: NebimProductExtractComponent, canActivate: [AuthGuard] },
+  { path: 'create-barcode/:operationNo', component: CreateBarcodeComponent, canActivate: [AuthGuard] },
   { path: 'create-product-barcode/:operationNo', component: CreateProductBarcodeComponent },
   { path: 'create-proposal/:id', component: CreateProposalComponent, canActivate: [AuthGuard] },
+  { path: 'create-proposal', component: CreateProposalComponent, canActivate: [AuthGuard] },
+
   { path: 'proposal-list', component: ProposalListComponent, canActivate: [AuthGuard] },
   { path: 'shelf', component: ShelfComponent, canActivate: [AuthGuard] },
   { path: 'service-management', component: ServiceManagementComponent, canActivate: [AuthGuard] },
+  { path: 'infos', component: PagesInfoComponent, canActivate: [AuthGuard] },
 
 
   //-------------------------------------------------------------------------
-  { path: 'retail-invoice-list', component: RetailInvoiceListComponent },
-  { path: 'retail-orders-managament/:status/:invoiceStatus', component: RetailOrderManagementComponent },
-  { path: 'retail-orders-collected-packages', component: CollectedPackagesComponent2 },
+  { path: 'retail-invoice-list', component: RetailInvoiceListComponent, canActivate: [AuthGuard] },
+  { path: 'retail-orders-managament/:status/:invoiceStatus', component: RetailOrderManagementComponent, canActivate: [AuthGuard] },
+  { path: 'retail-orders-collected-packages', component: CollectedPackagesComponent2, canActivate: [AuthGuard] },
   //-------------------------------------------------------------------------
   { path: '**', component: PagesError404Component },
 

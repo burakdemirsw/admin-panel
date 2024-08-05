@@ -402,21 +402,12 @@ var ProductService = /** @class */ (function () {
             });
         });
     };
-    ProductService.prototype.searchProposalProducts = function (model) {
-        return __awaiter(this, void 0, Promise, function () {
-            var response;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.httpClientService
-                            .post({ controller: 'Products/search-proposal-products' }, model)
-                            .toPromise()];
-                    case 1:
-                        response = _a.sent();
-                        return [2 /*return*/, response];
-                }
-            });
-        });
-    };
+    // async searchProposalProducts(model: ProposalProduct_SM): Promise<any> {
+    //   const response: ProposalProduct_SM[] = await this.httpClientService
+    //     .post<ProposalProduct_SM>({ controller: 'Products/search-proposal-products' }, model)
+    //     .toPromise();
+    //   return response;
+    // }
     ProductService.prototype.getProposalProducts = function (request) {
         return __awaiter(this, void 0, Promise, function () {
             var response;
@@ -469,6 +460,66 @@ var ProductService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.httpClientService
                             .post({ controller: 'Products/update-proposal-product' }, request)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    // Proposal işlemleri
+    ProductService.prototype.getProposals = function () {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .get({ controller: 'Products/get-proposals' })
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    ProductService.prototype.deleteProposal = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService["delete"]({ controller: 'Products/delete-proposal' }, request.toString())
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    ProductService.prototype.addProposal = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .post({ controller: 'Products/add-proposal' }, request)
+                            .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    ProductService.prototype.updateProposal = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService
+                            .post({ controller: 'Products/update-proposal' }, request)
                             .toPromise()];
                     case 1:
                         response = _a.sent();
@@ -790,7 +841,8 @@ var ProductService = /** @class */ (function () {
 }());
 exports.ProductService = ProductService;
 var BarcodeSearch_RM = /** @class */ (function () {
-    function BarcodeSearch_RM() {
+    function BarcodeSearch_RM(barcode) {
+        this.barcode = barcode;
     }
     return BarcodeSearch_RM;
 }());

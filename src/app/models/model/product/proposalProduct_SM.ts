@@ -1,58 +1,43 @@
-export class ProposalProduct_SM {
-  photoUrl: string;
-  itemCode: string;
-  itemDescription: string;
-  colorCode: string;
-  colorDescription: string;
-  itemDim1Code: string;
-  barcode: string;
-  price: number;
-  price2: number;
-  attribute1: string;
-  attribute2: string;
-  attribute3: string;
-  attribute4: string;
-  attribute5: string;
-}
 export class ZTMSG_ProposalProduct {
   id: number;
-  operationId: string;
-  lineId: string;
-  barcode?: string;
-  description?: string;
-  warehouseCode?: string;
+  proposalId: number; // Guid türü TypeScript'te string olarak temsil edilir
   photoUrl?: string;
-  shelfNo?: string;
+  barcode?: string;
   itemCode?: string;
-  batchCode?: string;
-  price: number;
-  discountedPrice: number;
-  basePrice: number;
   quantity: number;
-  quantity2: number;
+  brand?: string;
+  inventory: number;
+  price?: number;
+  discountedPrice?: number;
+  description?: string;
+  discountRate1: number;
+  discountRate2: number;
+  // discountRate3: number;
+  // discountRate4: number;
+  totalPrice: number;
   taxRate: number;
-  createdDate?: Date;
-  updatedDate?: Date;
+  totalTaxedPrice: number;
 
 
 }
-export class ZTMSG_ProposalProduct_VM {
 
-  operationId: string;
-  lineId: string;
-  barcode?: string;
-  description?: string;
-  warehouseCode?: string;
-  photoUrl?: string;
-  shelfNo?: string;
-  itemCode?: string;
-  batchCode?: string;
-  price: number;
-  discountedPrice: number;
-  basePrice: number;
-  quantity: number;
-  quantity2: number;
-  taxRate: number;
-
-
+export class ZTMSG_Proposal {
+  id: number;
+  discountRate1?: number; // Optional property
+  discountRate2?: number; // Optional property
+  userId: number;
+  createdDate?: Date; // Optional property
+  updatedDate?: Date; // Optional property
+  currAccDescription: string
+  constructor() {
+    this.discountRate1 = 0;
+    this.discountRate2 = 0;
+  }
+}
+export class Proposal_VM {
+  id: number;
+  count: number;
+  count2: number;
+  createdDate: Date;
+  user: string;
 }

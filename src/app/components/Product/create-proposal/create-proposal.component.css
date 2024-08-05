@@ -1,0 +1,4 @@
+::ng-deep .p-sidebar {
+  width: 100% !important;
+  height: 35vh !important;
+}

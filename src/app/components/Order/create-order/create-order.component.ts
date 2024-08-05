@@ -1416,8 +1416,8 @@ export class CreateOrderComponent implements OnInit {
         }
 
 
-        var _request = new BarcodeSearch_RM();
-        _request.barcode = request.barcode;
+        var _request = new BarcodeSearch_RM(request.barcode);
+
 
         const response = await this.productService.searchProduct(_request);
 

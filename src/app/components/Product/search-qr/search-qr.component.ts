@@ -138,8 +138,8 @@ export class SearchQrComponent implements OnInit {
         barcode = barcode.replace(/=/g, "-");
 
       }
-      var model: BarcodeSearch_RM = new BarcodeSearch_RM();
-      model.barcode = barcode;
+      var model: BarcodeSearch_RM = new BarcodeSearch_RM(barcode);
+
       const response = await this.productService._searchProduct(model);
       this._products = response;
       return response;

@@ -27,13 +27,14 @@ import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 import { GeneralService } from './general.service';
 import { CreateBarcodeFromOrder_RM, CreateBarcodeModel } from 'src/app/components/Product/create-barcode/models/createBarcode';
-import { ProposalProduct_SM, ZTMSG_ProposalProduct } from 'src/app/models/model/product/proposalProduct_SM';
 import { FastTransfer_VM } from '../../models/model/warehouse/transferRequestListModel';
+import { Proposal_VM, ZTMSG_Proposal, ZTMSG_ProposalProduct } from 'src/app/models/model/product/proposalProduct_SM';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
+
   constructor(
     private toasterService: ToasterService,
     private httpClientService: HttpClientService,
@@ -313,13 +314,13 @@ export class ProductService {
     return response;
   }
 
-  async searchProposalProducts(model: ProposalProduct_SM): Promise<any> {
-    const response: ProposalProduct_SM[] = await this.httpClientService
-      .post<ProposalProduct_SM>({ controller: 'Products/search-proposal-products' }, model)
-      .toPromise();
+  // async searchProposalProducts(model: ProposalProduct_SM): Promise<any> {
+  //   const response: ProposalProduct_SM[] = await this.httpClientService
+  //     .post<ProposalProduct_SM>({ controller: 'Products/search-proposal-products' }, model)
+  //     .toPromise();
 
-    return response;
-  }
+  //   return response;
+  // }
   async getProposalProducts(request: string): Promise<ZTMSG_ProposalProduct[]> {
     const response: ZTMSG_ProposalProduct[] = await this.httpClientService
       .get_new<ZTMSG_ProposalProduct>({ controller: 'Products/get-proposal-products' }, request)
@@ -346,6 +347,35 @@ export class ProductService {
       .post<ZTMSG_ProposalProduct>({ controller: 'Products/update-proposal-product' }, request)
       .toPromise();
 
+    return response;
+  }
+
+  // Proposal işlemleri
+
+  async getProposals(): Promise<Proposal_VM[]> {
+    const response: Proposal_VM[] = await this.httpClientService
+      .get<Proposal_VM>({ controller: 'Products/get-proposals' })
+      .toPromise();
+    return response;
+  }
+  async deleteProposal(request: number): Promise<any> {
+    const response: boolean = await this.httpClientService
+      .delete<boolean>({ controller: 'Products/delete-proposal' }, request.toString())
+      .toPromise();
+    return response;
+  }
+
+  async addProposal(request: ZTMSG_Proposal): Promise<any> {
+    const response: boolean = await this.httpClientService
+      .post<boolean>({ controller: 'Products/add-proposal' }, request)
+      .toPromise();
+    return response;
+  }
+
+  async updateProposal(request: ZTMSG_Proposal): Promise<any> {
+    const response: boolean = await this.httpClientService
+      .post<boolean>({ controller: 'Products/update-proposal' }, request)
+      .toPromise();
     return response;
   }
   //
@@ -532,5 +562,9 @@ export class ProductService {
 }
 export class BarcodeSearch_RM {
   barcode!: string;
+
+  constructor(barcode: string) {
+    this.barcode = barcode
+  }
 }
 
