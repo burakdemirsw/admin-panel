@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
-import { CompanyInfo, CargoInfo, DatabaseInfo, NebimInfo, MarketPlaceInfo, ReportInfo, MailInfo } from 'src/app/models/model/company/companyInfo';
+import { CompanyInfo, CargoInfo, DatabaseInfo, NebimInfo, MarketPlaceInfo, ReportInfo, MailInfo, PaymentInfo, Info } from 'src/app/models/model/company/companyInfo';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +16,12 @@ export class InfoService {
     private router: Router,
     private httpClient: HttpClient
   ) { }
+
+  async getAllInfos(): Promise<any> {
+    const response = await this.httpClientService.get<Info>({ controller: 'Infos/get-all-infos' }).toPromise();
+    return response;
+  }
+
 
   // CompanyInfo methods
   async addCompanyInfo(model: CompanyInfo): Promise<any> {
@@ -163,4 +169,26 @@ export class InfoService {
     const response = await this.httpClientService.get<MailInfo[]>({ controller: 'Infos/get-mail-infos' }).toPromise();
     return response;
   }
+
+  async addPaymentInfo(model: PaymentInfo): Promise<any> {
+    const response = await this.httpClientService.post<PaymentInfo>({ controller: 'Infos/add-payment-info' }, model).toPromise();
+    return response;
+  }
+
+  async updatePaymentInfo(model: PaymentInfo): Promise<any> {
+    const response = await this.httpClientService.post<PaymentInfo>({ controller: 'Infos/update-payment-info' }, model).toPromise();
+    return response;
+  }
+
+  async deletePaymentInfo(merchantId: string): Promise<any> {
+    const response = await this.httpClientService.get<any>({ controller: `Infos/delete-payment-info/${merchantId}` }).toPromise();
+    return response;
+  }
+
+  async getPaymentInfos(): Promise<any> {
+    const response = await this.httpClientService.get<PaymentInfo[]>({ controller: 'Infos/get-payment-infos' }).toPromise();
+    return response;
+  }
+
+
 }

@@ -51,6 +51,9 @@ var PagesInfoComponent = /** @class */ (function () {
         this.infoService = infoService;
         this.toasterService = toasterService;
         this.nebimInfos = [];
+        this.marketPlaceInfos = [];
+        this.cargoInfos = [];
+        this.paymentInfos = [];
     }
     PagesInfoComponent.prototype.ngOnInit = function () {
         this.createCompanyInfoForm();
@@ -58,10 +61,16 @@ var PagesInfoComponent = /** @class */ (function () {
         this.createMailInfoForm();
         this.createReportInfoForm();
         this.createDatabaseInfoForm();
+        this.createMarketPlaceInfoForm();
+        this.createPaymentInfoForm();
+        this.createCargoInfoForm();
         this.loadCompanyInfo();
-        this.loadNebimInfo();
+        this.loadNebimInfos();
         this.loadMailInfo();
         this.loadDatabaseInfo();
+        this.loadMarketPlaceInfos();
+        this.loadPaymentInfos();
+        this.loadCargoInfos();
     };
     PagesInfoComponent.prototype.createCompanyInfoForm = function () {
         this.companyInfoForm = this.fb.group({
@@ -92,6 +101,7 @@ var PagesInfoComponent = /** @class */ (function () {
     };
     PagesInfoComponent.prototype.createNebimInfoForm = function () {
         this.nebimInfoForm = this.fb.group({
+            id: [0],
             type: [null],
             officeCode: [null],
             storeCode: [null],
@@ -123,6 +133,39 @@ var PagesInfoComponent = /** @class */ (function () {
             trustServerCertificate: [false]
         });
     };
+    PagesInfoComponent.prototype.createMarketPlaceInfoForm = function () {
+        this.marketPlaceInfoForm = this.fb.group({
+            id: [0],
+            description: [null],
+            clientId: [null],
+            clientSecret: [null],
+            redirectUri: [null],
+            baseUrl: [null],
+            sellerId: [null]
+        });
+    };
+    PagesInfoComponent.prototype.createPaymentInfoForm = function () {
+        this.paymentInfoForm = this.fb.group({
+            id: [0],
+            merchantId: [null, forms_1.Validators.required],
+            description: [null, forms_1.Validators.required],
+            apiKey: [null, forms_1.Validators.required],
+            apiSecretKey: [null, forms_1.Validators.required],
+            okUrl: [null, forms_1.Validators.required],
+            failUrl: [null, forms_1.Validators.required]
+        });
+    };
+    PagesInfoComponent.prototype.createCargoInfoForm = function () {
+        this.cargoInfoForm = this.fb.group({
+            id: [0],
+            description: [null, forms_1.Validators.required],
+            userName: [null, forms_1.Validators.required],
+            password: [null, forms_1.Validators.required],
+            customerCode: [null],
+            apiKey: [null],
+            apiSecret: [null]
+        });
+    };
     PagesInfoComponent.prototype.loadCompanyInfo = function () {
         return __awaiter(this, void 0, void 0, function () {
             var data, error_1;
@@ -134,7 +177,7 @@ var PagesInfoComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         if (data) {
-                            this.companyInfoForm.patchValue(data[0]);
+                            this.companyInfoForm.patchValue(data);
                         }
                         return [3 /*break*/, 3];
                     case 2:
@@ -146,7 +189,7 @@ var PagesInfoComponent = /** @class */ (function () {
             });
         });
     };
-    PagesInfoComponent.prototype.loadNebimInfo = function () {
+    PagesInfoComponent.prototype.loadNebimInfos = function () {
         return __awaiter(this, void 0, void 0, function () {
             var data, error_2;
             return __generator(this, function (_a) {
@@ -180,7 +223,7 @@ var PagesInfoComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         if (data) {
-                            this.mailInfoForm.patchValue(data[0]);
+                            this.mailInfoForm.patchValue(data);
                         }
                         return [3 /*break*/, 3];
                     case 2:
@@ -203,7 +246,7 @@ var PagesInfoComponent = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         if (data) {
-                            this.databaseInfoForm.patchValue(data[0]);
+                            this.databaseInfoForm.patchValue(data);
                         }
                         return [3 /*break*/, 3];
                     case 2:
@@ -215,9 +258,78 @@ var PagesInfoComponent = /** @class */ (function () {
             });
         });
     };
+    PagesInfoComponent.prototype.loadMarketPlaceInfos = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, error_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.infoService.getMarketPlaceInfos()];
+                    case 1:
+                        data = _a.sent();
+                        if (data) {
+                            this.marketPlaceInfos = data;
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_5 = _a.sent();
+                        this.toasterService.error('Pazar yeri bilgileri yüklenirken bir hata oluştu');
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesInfoComponent.prototype.loadPaymentInfos = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, error_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.infoService.getPaymentInfos()];
+                    case 1:
+                        data = _a.sent();
+                        if (data) {
+                            this.paymentInfos = data;
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_6 = _a.sent();
+                        this.toasterService.error('Payment infos could not be loaded');
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesInfoComponent.prototype.loadCargoInfos = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, error_7;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.infoService.getCargoInfos()];
+                    case 1:
+                        data = _a.sent();
+                        if (data) {
+                            this.cargoInfos = data;
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_7 = _a.sent();
+                        this.toasterService.error('Cargo infos could not be loaded');
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     PagesInfoComponent.prototype.onSubmitCompanyInfo = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var result, error_5;
+            var result, error_8;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -233,14 +345,14 @@ var PagesInfoComponent = /** @class */ (function () {
                         result = _a.sent();
                         if (result) {
                             this.toasterService.success('Şirket bilgileri başarıyla kaydedildi');
-                            this.companyInfoForm.reset();
+                            // this.companyInfoForm.reset();
                         }
                         else {
                             this.toasterService.error('Şirket bilgileri kaydedilemedi');
                         }
                         return [3 /*break*/, 4];
                     case 3:
-                        error_5 = _a.sent();
+                        error_8 = _a.sent();
                         this.toasterService.error('Şirket bilgileri kaydedilirken bir hata oluştu');
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/];
@@ -248,9 +360,47 @@ var PagesInfoComponent = /** @class */ (function () {
             });
         });
     };
+    PagesInfoComponent.prototype.onEditNebimInfo = function (nebim) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.updatedNebimInfo = nebim;
+                this.nebimInfoForm.patchValue(nebim);
+                return [2 /*return*/];
+            });
+        });
+    };
+    PagesInfoComponent.prototype.onDeleteNebimInfo = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, error_9;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 5, , 6]);
+                        return [4 /*yield*/, this.infoService.deleteNebimInfo(id)];
+                    case 1:
+                        result = _a.sent();
+                        if (!result) return [3 /*break*/, 3];
+                        this.toasterService.success('Nebim bilgileri başarıyla silindi');
+                        return [4 /*yield*/, this.loadNebimInfos()];
+                    case 2:
+                        _a.sent(); // Refresh the list after deletion
+                        return [3 /*break*/, 4];
+                    case 3:
+                        this.toasterService.error('Nebim bilgileri silinemedi');
+                        _a.label = 4;
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        error_9 = _a.sent();
+                        this.toasterService.error('Nebim bilgileri silinirken bir hata oluştu');
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
     PagesInfoComponent.prototype.onSubmitNebimInfo = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var result, error_6;
+            var result, result, error_10;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -260,33 +410,44 @@ var PagesInfoComponent = /** @class */ (function () {
                         }
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 6, , 7]);
-                        return [4 /*yield*/, this.infoService.addNebimInfo(this.nebimInfoForm.value)];
+                        _a.trys.push([1, 9, , 10]);
+                        if (!this.updatedNebimInfo) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.infoService.updateNebimInfo(this.nebimInfoForm.value)];
                     case 2:
                         result = _a.sent();
-                        if (!result) return [3 /*break*/, 4];
-                        return [4 /*yield*/, this.loadNebimInfo()];
+                        return [3 /*break*/, 5];
                     case 3:
+                        this.nebimInfoForm.value.id = 0;
+                        return [4 /*yield*/, this.infoService.addNebimInfo(this.nebimInfoForm.value)];
+                    case 4:
+                        result = _a.sent();
+                        _a.label = 5;
+                    case 5:
+                        if (!result) return [3 /*break*/, 7];
+                        return [4 /*yield*/, this.loadNebimInfos()];
+                    case 6:
                         _a.sent();
                         this.toasterService.success('Nebim bilgileri başarıyla kaydedildi');
+                        this.updatedNebimInfo = null;
                         this.nebimInfoForm.reset();
-                        return [3 /*break*/, 5];
-                    case 4:
+                        return [3 /*break*/, 8];
+                    case 7:
                         this.toasterService.error('Nebim bilgileri kaydedilemedi');
-                        _a.label = 5;
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
-                        error_6 = _a.sent();
+                        _a.label = 8;
+                    case 8: return [3 /*break*/, 10];
+                    case 9:
+                        error_10 = _a.sent();
                         this.toasterService.error('Nebim bilgileri kaydedilirken bir hata oluştu');
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
+                        return [3 /*break*/, 10];
+                    case 10: return [2 /*return*/];
                 }
             });
         });
     };
+    //----------------------------------------------------------------------------------MAIL
     PagesInfoComponent.prototype.onSubmitMailInfo = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var result, error_7;
+            var result, error_11;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -302,14 +463,14 @@ var PagesInfoComponent = /** @class */ (function () {
                         result = _a.sent();
                         if (result) {
                             this.toasterService.success('Mail bilgileri başarıyla kaydedildi');
-                            this.mailInfoForm.reset();
+                            // this.mailInfoForm.reset();
                         }
                         else {
                             this.toasterService.error('Mail bilgileri kaydedilemedi');
                         }
                         return [3 /*break*/, 4];
                     case 3:
-                        error_7 = _a.sent();
+                        error_11 = _a.sent();
                         this.toasterService.error('Mail bilgileri kaydedilirken bir hata oluştu');
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/];
@@ -319,7 +480,7 @@ var PagesInfoComponent = /** @class */ (function () {
     };
     PagesInfoComponent.prototype.onSubmitReportInfo = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var result, error_8;
+            var result, error_12;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -342,7 +503,7 @@ var PagesInfoComponent = /** @class */ (function () {
                         }
                         return [3 /*break*/, 4];
                     case 3:
-                        error_8 = _a.sent();
+                        error_12 = _a.sent();
                         this.toasterService.error('Rapor bilgileri kaydedilirken bir hata oluştu');
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/];
@@ -352,7 +513,7 @@ var PagesInfoComponent = /** @class */ (function () {
     };
     PagesInfoComponent.prototype.onSubmitDatabaseInfo = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var result, error_9;
+            var result, error_13;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -362,23 +523,266 @@ var PagesInfoComponent = /** @class */ (function () {
                         }
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 3, , 4]);
+                        _a.trys.push([1, 6, , 7]);
                         return [4 /*yield*/, this.infoService.addDatabaseInfo(this.databaseInfoForm.value)];
                     case 2:
                         result = _a.sent();
+                        if (!result) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.loadDatabaseInfo()];
+                    case 3:
+                        _a.sent();
+                        this.toasterService.success('Veritabanı bilgileri başarıyla kaydedildi');
+                        return [3 /*break*/, 5];
+                    case 4:
+                        this.toasterService.error('Veritabanı bilgileri kaydedilemedi');
+                        _a.label = 5;
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
+                        error_13 = _a.sent();
+                        this.toasterService.error('Veritabanı bilgileri kaydedilirken bir hata oluştu');
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesInfoComponent.prototype.onSubmitMarketPlaceInfo = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, result, error_14;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (this.marketPlaceInfoForm.invalid) {
+                            this.toasterService.error('Lütfen tüm gerekli alanları doldurun');
+                            return [2 /*return*/];
+                        }
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 6, , 7]);
+                        if (!this.updatedMarketPlaceInfo) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.infoService.updateMarketPlaceInfo(this.marketPlaceInfoForm.value)];
+                    case 2:
+                        result = _a.sent();
+                        return [3 /*break*/, 5];
+                    case 3:
+                        this.marketPlaceInfoForm.value.id = 0;
+                        return [4 /*yield*/, this.infoService.addMarketPlaceInfo(this.marketPlaceInfoForm.value)];
+                    case 4:
+                        result = _a.sent();
+                        _a.label = 5;
+                    case 5:
                         if (result) {
-                            this.toasterService.success('Veritabanı bilgileri başarıyla kaydedildi');
-                            this.databaseInfoForm.reset();
+                            this.toasterService.success('Pazar yeri bilgileri başarıyla kaydedildi');
+                            this.updatedMarketPlaceInfo = null;
+                            this.marketPlaceInfoForm.reset();
+                            this.loadMarketPlaceInfos();
                         }
                         else {
-                            this.toasterService.error('Veritabanı bilgileri kaydedilemedi');
+                            this.toasterService.error('Pazar yeri bilgileri kaydedilemedi');
                         }
-                        return [3 /*break*/, 4];
+                        return [3 /*break*/, 7];
+                    case 6:
+                        error_14 = _a.sent();
+                        this.toasterService.error('Pazar yeri bilgileri kaydedilirken bir hata oluştu');
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesInfoComponent.prototype.onEditMarketPlaceInfo = function (marketPlace) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.updatedMarketPlaceInfo = marketPlace;
+                this.marketPlaceInfoForm.patchValue(marketPlace);
+                return [2 /*return*/];
+            });
+        });
+    };
+    PagesInfoComponent.prototype.onDeleteMarketPlaceInfo = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, error_15;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.infoService.deleteMarketPlaceInfo(id)];
+                    case 1:
+                        result = _a.sent();
+                        if (result) {
+                            this.toasterService.success('Pazar yeri bilgileri başarıyla silindi');
+                            this.loadMarketPlaceInfos();
+                        }
+                        else {
+                            this.toasterService.error('Pazar yeri bilgileri silinemedi');
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_15 = _a.sent();
+                        this.toasterService.error('Pazar yeri bilgileri silinirken bir hata oluştu');
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesInfoComponent.prototype.onSubmitPaymentInfo = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, result, error_16;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (this.paymentInfoForm.invalid) {
+                            this.toasterService.error('Please fill all required fields');
+                            return [2 /*return*/];
+                        }
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 6, , 7]);
+                        if (!this.updatedPaymentInfo) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.infoService.updatePaymentInfo(this.paymentInfoForm.value)];
+                    case 2:
+                        result = _a.sent();
+                        return [3 /*break*/, 5];
                     case 3:
-                        error_9 = _a.sent();
-                        this.toasterService.error('Veritabanı bilgileri kaydedilirken bir hata oluştu');
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/];
+                        this.paymentInfoForm.value.id = 0;
+                        return [4 /*yield*/, this.infoService.addPaymentInfo(this.paymentInfoForm.value)];
+                    case 4:
+                        result = _a.sent();
+                        _a.label = 5;
+                    case 5:
+                        if (result) {
+                            this.toasterService.success('Payment info successfully saved');
+                            this.loadPaymentInfos();
+                            this.updatedNebimInfo = null;
+                            this.paymentInfoForm.reset();
+                        }
+                        else {
+                            this.toasterService.error('Payment info could not be saved');
+                        }
+                        return [3 /*break*/, 7];
+                    case 6:
+                        error_16 = _a.sent();
+                        this.toasterService.error('An error occurred while saving payment info');
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesInfoComponent.prototype.onEditPaymentInfo = function (paymentInfo) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.updatedPaymentInfo = paymentInfo;
+                this.paymentInfoForm.patchValue(paymentInfo);
+                return [2 /*return*/];
+            });
+        });
+    };
+    PagesInfoComponent.prototype.onDeletePaymentInfo = function (merchantId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, error_17;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.infoService.deletePaymentInfo(merchantId)];
+                    case 1:
+                        result = _a.sent();
+                        if (result) {
+                            this.toasterService.success('Payment info successfully deleted');
+                            this.loadPaymentInfos();
+                        }
+                        else {
+                            this.toasterService.error('Payment info could not be deleted');
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_17 = _a.sent();
+                        this.toasterService.error('An error occurred while deleting payment info');
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesInfoComponent.prototype.onSubmitCargoInfo = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, error_18;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (this.cargoInfoForm.invalid) {
+                            this.toasterService.error('Please fill all required fields');
+                            return [2 /*return*/];
+                        }
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 6, , 7]);
+                        result = void 0;
+                        if (!this.updatedCargoInfo) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.infoService.updateCargoInfo(this.cargoInfoForm.value)];
+                    case 2:
+                        result = _a.sent();
+                        return [3 /*break*/, 5];
+                    case 3:
+                        this.cargoInfoForm.value.id = 0;
+                        return [4 /*yield*/, this.infoService.addCargoInfo(this.cargoInfoForm.value)];
+                    case 4:
+                        result = _a.sent();
+                        _a.label = 5;
+                    case 5:
+                        if (result) {
+                            this.toasterService.success('Cargo info successfully saved');
+                            this.loadCargoInfos();
+                            this.updatedCargoInfo = null;
+                            this.cargoInfoForm.reset();
+                        }
+                        else {
+                            this.toasterService.error('Cargo info could not be saved');
+                        }
+                        return [3 /*break*/, 7];
+                    case 6:
+                        error_18 = _a.sent();
+                        this.toasterService.error('An error occurred while saving cargo info');
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesInfoComponent.prototype.onEditCargoInfo = function (cargoInfo) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.updatedCargoInfo = cargoInfo;
+                this.cargoInfoForm.patchValue(cargoInfo);
+                return [2 /*return*/];
+            });
+        });
+    };
+    PagesInfoComponent.prototype.onDeleteCargoInfo = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, error_19;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.infoService.deleteCargoInfo(id)];
+                    case 1:
+                        result = _a.sent();
+                        if (result) {
+                            this.toasterService.success('Cargo info successfully deleted');
+                            this.loadCargoInfos();
+                        }
+                        else {
+                            this.toasterService.error('Cargo info could not be deleted');
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_19 = _a.sent();
+                        this.toasterService.error('An error occurred while deleting cargo info');
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
                 }
             });
         });

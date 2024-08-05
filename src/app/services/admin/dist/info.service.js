@@ -51,6 +51,19 @@ var InfoService = /** @class */ (function () {
         this.router = router;
         this.httpClient = httpClient;
     }
+    InfoService.prototype.getAllInfos = function () {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.get({ controller: 'Infos/get-all-infos' }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
     // CompanyInfo methods
     InfoService.prototype.addCompanyInfo = function (model) {
         return __awaiter(this, void 0, Promise, function () {
@@ -415,6 +428,58 @@ var InfoService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.httpClientService.get({ controller: 'Infos/get-mail-infos' }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    InfoService.prototype.addPaymentInfo = function (model) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.post({ controller: 'Infos/add-payment-info' }, model).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    InfoService.prototype.updatePaymentInfo = function (model) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.post({ controller: 'Infos/update-payment-info' }, model).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    InfoService.prototype.deletePaymentInfo = function (merchantId) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.get({ controller: "Infos/delete-payment-info/" + merchantId }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    InfoService.prototype.getPaymentInfos = function () {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.get({ controller: 'Infos/get-payment-infos' }).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];

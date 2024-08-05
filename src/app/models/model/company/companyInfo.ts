@@ -26,12 +26,14 @@ export class CompanyInfo extends BaseEntity {
   nebimUrl?: string;
 }
 
-export class CargoInfo extends BaseEntity {
+export class CargoInfo {
+  id: number;
+  description: string;
   userName?: string;
   password?: string;
-  attribute1?: string;
-  attribute2?: string;
-  attribute3?: string;
+  customerCode?: string;
+  apiKey?: string;
+  apiSecret?: string;
 }
 
 export class DatabaseInfo extends BaseEntity {
@@ -46,7 +48,7 @@ export class NebimInfo extends BaseEntity {
   type?: string;
   officeCode?: string;
   storeCode?: string;
-  posTerminalId?: string;
+  posTerminalID?: string;
   shipmentMethodCode?: string;
   deliveryCompanyCode?: string;
 }
@@ -70,4 +72,22 @@ export class MailInfo extends BaseEntity {
   userName?: string;
   password?: string;
   applicationPassword?: string;
+}
+export class PaymentInfo {
+  description?: string;
+  merchantId: string;
+  apiKey: string;
+  apiSecretKey: string;
+  okUrl: string;
+  failUrl: string;
+}
+export class Info {
+  companyInfos: CompanyInfo[];
+  cargoInfos: CargoInfo[];
+  databaseInfos: DatabaseInfo[];
+  nebimInfos: NebimInfo[];
+  marketPlaceInfos: MarketPlaceInfo[];
+  reportInfos: ReportInfo[];
+  mailInfos: MailInfo[];
+  paymentInfos: PaymentInfo[];
 }

@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 exports.__esModule = true;
-exports.MailInfo = exports.ReportInfo = exports.MarketPlaceInfo = exports.NebimInfo = exports.DatabaseInfo = exports.CargoInfo = exports.CompanyInfo = void 0;
+exports.Info = exports.PaymentInfo = exports.MailInfo = exports.ReportInfo = exports.MarketPlaceInfo = exports.NebimInfo = exports.DatabaseInfo = exports.CargoInfo = exports.CompanyInfo = void 0;
 var baseEntity_1 = require("../../entity/baseEntity");
 var CompanyInfo = /** @class */ (function (_super) {
     __extends(CompanyInfo, _super);
@@ -23,13 +23,11 @@ var CompanyInfo = /** @class */ (function (_super) {
     return CompanyInfo;
 }(baseEntity_1.BaseEntity));
 exports.CompanyInfo = CompanyInfo;
-var CargoInfo = /** @class */ (function (_super) {
-    __extends(CargoInfo, _super);
+var CargoInfo = /** @class */ (function () {
     function CargoInfo() {
-        return _super !== null && _super.apply(this, arguments) || this;
     }
     return CargoInfo;
-}(baseEntity_1.BaseEntity));
+}());
 exports.CargoInfo = CargoInfo;
 var DatabaseInfo = /** @class */ (function (_super) {
     __extends(DatabaseInfo, _super);
@@ -71,3 +69,15 @@ var MailInfo = /** @class */ (function (_super) {
     return MailInfo;
 }(baseEntity_1.BaseEntity));
 exports.MailInfo = MailInfo;
+var PaymentInfo = /** @class */ (function () {
+    function PaymentInfo() {
+    }
+    return PaymentInfo;
+}());
+exports.PaymentInfo = PaymentInfo;
+var Info = /** @class */ (function () {
+    function Info() {
+    }
+    return Info;
+}());
+exports.Info = Info;
