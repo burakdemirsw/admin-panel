@@ -76,6 +76,42 @@ var OrderManagamentComponent = /** @class */ (function () {
                 command: function () {
                     _this.exportCsv_Products();
                 }
+            },
+            {
+                label: 'Toplanabilir Siparişler',
+                command: function () {
+                    _this.getOrders(1, 2);
+                }
+            },
+            {
+                label: 'Toplanamaz Siparişler',
+                command: function () {
+                    _this.getOrders(0, 2);
+                }
+            },
+            {
+                label: 'Eksik Ürünlü Siparişler',
+                command: function () {
+                    _this.getMissingOrders();
+                }
+            },
+            {
+                label: 'Faturalandırılan Siparişler',
+                command: function () {
+                    _this.getOrders(1, 1);
+                }
+            },
+            {
+                label: 'Faturalandırılmayan Siparişler',
+                command: function () {
+                    _this.getOrders(1, 2);
+                }
+            },
+            {
+                label: 'Kısmi Faturalandırılan Siparişler',
+                command: function () {
+                    _this.getOrders(0, 3);
+                }
             }
         ];
         this.status = 1;

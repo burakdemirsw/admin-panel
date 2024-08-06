@@ -276,6 +276,58 @@ var InfoService = /** @class */ (function () {
             });
         });
     };
+    InfoService.prototype.addNebimUserInfo = function (model) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.post({ controller: 'Infos/add-nebim-user-info' }, model).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    InfoService.prototype.updateNebimUserInfo = function (model) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.post({ controller: 'Infos/update-nebim-user-info' }, model).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    InfoService.prototype.deleteNebimUserInfo = function (id) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.get({ controller: "Infos/delete-nebim-user-info/" + id }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    InfoService.prototype.getNebimUserInfos = function () {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.get({ controller: 'Infos/get-nebim-user-infos' }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
     // MarketPlaceInfo methods
     InfoService.prototype.addMarketPlaceInfo = function (model) {
         return __awaiter(this, void 0, Promise, function () {
@@ -480,6 +532,72 @@ var InfoService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.httpClientService.get({ controller: 'Infos/get-payment-infos' }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    InfoService.prototype.getStructuredMenu = function () {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.get({ controller: 'Infos/get-structured-menu' }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    // MenuInfo methods
+    InfoService.prototype.addMenuInfo = function (model) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.post({ controller: 'Infos/add-menu-info' }, model).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    InfoService.prototype.updateMenuInfo = function (model) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.post({ controller: 'Infos/update-menu-info' }, model).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    InfoService.prototype.deleteMenuInfo = function (id) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.get({ controller: "Infos/delete-menu-info/" + id }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    InfoService.prototype.getMenuInfos = function () {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.get({ controller: 'Infos/get-menu-infos' }).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];

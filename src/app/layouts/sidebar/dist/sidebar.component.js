@@ -45,13 +45,77 @@ exports.__esModule = true;
 exports.SidebarComponent = void 0;
 var core_1 = require("@angular/core");
 var SidebarComponent = /** @class */ (function () {
-    function SidebarComponent(router, generalService) {
+    function SidebarComponent(router, generalService, infoService) {
         this.router = router;
         this.generalService = generalService;
+        this.infoService = infoService;
+        this.menuItems = [];
     }
     SidebarComponent.prototype.ngOnInit = function () {
-        this.roleDescription = localStorage.getItem("roleDescription");
-        this.userId = localStorage.getItem("userId");
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.roleDescription = localStorage.getItem("roleDescription");
+                        this.userId = localStorage.getItem("userId");
+                        return [4 /*yield*/, this.loadMenu()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    SidebarComponent.prototype.loadMenu = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.infoService.getStructuredMenu()];
+                    case 1:
+                        data = _a.sent();
+                        this.menuItems = data;
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_1 = _a.sent();
+                        console.error('Error loading menu', error_1);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    SidebarComponent.prototype.onAction = function (action, param) {
+        switch (action) {
+            case 'routeNewPage':
+                this.routeNewPage();
+                break;
+            case 'routeNewPage2':
+                this.routeNewPage2();
+                break;
+            case 'routeNewPage3(true)':
+                this.routeNewPage3(true);
+                break;
+            case 'routeNewPage3(false)':
+                this.routeNewPage3(false);
+                break;
+            case 'routeNewPage4':
+                this.routeNewPage4();
+                break;
+            case 'routeNewPage5':
+                this.routeNewPage5();
+                break;
+            case 'routeNewPage6':
+                this.routeNewPage6();
+                break;
+            case 'routeNewPage7':
+                this.routeNewPage7();
+                break;
+            default:
+                console.error("Action \"" + action + "\" not found");
+        }
     };
     SidebarComponent.prototype.routeNewPage = function () {
         return __awaiter(this, void 0, void 0, function () {

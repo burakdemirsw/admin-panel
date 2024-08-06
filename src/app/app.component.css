@@ -33,7 +33,20 @@ th {
 }
 
 ul {
-  padding-left: 0px !important
+  padding-left: 0px
 }
+
+::ng-deep .p-button {
+
+  font-size: 1rem !important;
+  line-height: 1 !important;
+}
+
+::ng-deep .p-inputtext {
+
+  font-size: 1rem !important;
+  line-height: 1 !important;
+}
+
 
 /* Diğer kolonlar için de benzer şekilde sınıflar tanımlayabilirsiniz */

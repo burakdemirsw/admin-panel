@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 exports.__esModule = true;
-exports.Info = exports.PaymentInfo = exports.MailInfo = exports.ReportInfo = exports.MarketPlaceInfo = exports.NebimInfo = exports.DatabaseInfo = exports.CargoInfo = exports.CompanyInfo = void 0;
+exports.MenuItem = exports.MenuInfo = exports.Info = exports.NebimUserInfo = exports.PaymentInfo = exports.MailInfo = exports.ReportInfo = exports.MarketPlaceInfo = exports.NebimInfo = exports.DatabaseInfo = exports.CargoInfo = exports.CompanyInfo = void 0;
 var baseEntity_1 = require("../../entity/baseEntity");
 var CompanyInfo = /** @class */ (function (_super) {
     __extends(CompanyInfo, _super);
@@ -75,9 +75,29 @@ var PaymentInfo = /** @class */ (function () {
     return PaymentInfo;
 }());
 exports.PaymentInfo = PaymentInfo;
+var NebimUserInfo = /** @class */ (function (_super) {
+    __extends(NebimUserInfo, _super);
+    function NebimUserInfo() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return NebimUserInfo;
+}(baseEntity_1.BaseEntity));
+exports.NebimUserInfo = NebimUserInfo;
 var Info = /** @class */ (function () {
     function Info() {
     }
     return Info;
 }());
 exports.Info = Info;
+var MenuInfo = /** @class */ (function () {
+    function MenuInfo() {
+    }
+    return MenuInfo;
+}());
+exports.MenuInfo = MenuInfo;
+var MenuItem = /** @class */ (function () {
+    function MenuItem() {
+    }
+    return MenuItem;
+}());
+exports.MenuItem = MenuItem;

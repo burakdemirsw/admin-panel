@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
-import { CompanyInfo, CargoInfo, DatabaseInfo, NebimInfo, MarketPlaceInfo, ReportInfo, MailInfo, PaymentInfo, Info } from 'src/app/models/model/company/companyInfo';
+import { CompanyInfo, CargoInfo, DatabaseInfo, NebimInfo, MarketPlaceInfo, ReportInfo, MailInfo, PaymentInfo, Info, NebimUserInfo, MenuItem, MenuInfo } from 'src/app/models/model/company/companyInfo';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +16,7 @@ export class InfoService {
     private router: Router,
     private httpClient: HttpClient
   ) { }
+
 
   async getAllInfos(): Promise<any> {
     const response = await this.httpClientService.get<Info>({ controller: 'Infos/get-all-infos' }).toPromise();
@@ -107,6 +108,28 @@ export class InfoService {
     return response;
   }
 
+
+
+  async addNebimUserInfo(model: NebimUserInfo): Promise<any> {
+    const response = await this.httpClientService.post<NebimUserInfo>({ controller: 'Infos/add-nebim-user-info' }, model).toPromise();
+    return response;
+  }
+
+  async updateNebimUserInfo(model: NebimUserInfo): Promise<any> {
+    const response = await this.httpClientService.post<NebimUserInfo>({ controller: 'Infos/update-nebim-user-info' }, model).toPromise();
+    return response;
+  }
+
+  async deleteNebimUserInfo(id: number): Promise<any> {
+    const response = await this.httpClientService.get<any>({ controller: `Infos/delete-nebim-user-info/${id}` }).toPromise();
+    return response;
+  }
+
+  async getNebimUserInfos(): Promise<any> {
+    const response = await this.httpClientService.get<NebimUserInfo[]>({ controller: 'Infos/get-nebim-user-infos' }).toPromise();
+    return response;
+  }
+
   // MarketPlaceInfo methods
   async addMarketPlaceInfo(model: MarketPlaceInfo): Promise<any> {
     const response = await this.httpClientService.post<MarketPlaceInfo>({ controller: 'Infos/add-marketplace-info' }, model).toPromise();
@@ -191,4 +214,30 @@ export class InfoService {
   }
 
 
+  async getStructuredMenu(): Promise<any> {
+    const response = await this.httpClientService.get<MenuItem[]>({ controller: 'Infos/get-structured-menu' }).toPromise();
+    return response;
+  }
+
+  // MenuInfo methods
+  async addMenuInfo(model: MenuInfo): Promise<any> {
+    const response = await this.httpClientService.post<any>({ controller: 'Infos/add-menu-info' }, model).toPromise();
+    return response;
+  }
+
+  async updateMenuInfo(model: MenuInfo): Promise<any> {
+    const response = await this.httpClientService.post<any>({ controller: 'Infos/update-menu-info' }, model).toPromise();
+    return response;
+  }
+
+  async deleteMenuInfo(id: number): Promise<any> {
+    const response = await this.httpClientService.get<any>({ controller: `Infos/delete-menu-info/${id}` }).toPromise();
+    return response;
+  }
+
+  async getMenuInfos(): Promise<any> {
+    const response = await this.httpClientService.get<MenuInfo[]>({ controller: 'Infos/get-menu-infos' }).toPromise();
+    return response;
+  }
 }
+

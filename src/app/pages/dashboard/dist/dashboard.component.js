@@ -58,7 +58,7 @@ var DashboardComponent = /** @class */ (function () {
                         this.headerService.updatePageTitle("Anasayfa");
                         this.userId = Number(localStorage.getItem('userId'));
                         this.userName = localStorage.getItem('name');
-                        if (!(this.userId === 5)) return [3 /*break*/, 2];
+                        if (!(this.userId == 5 || this.userId == 1)) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.saleCountRaport()];
                     case 1:
                         _a.sent();
@@ -73,7 +73,7 @@ var DashboardComponent = /** @class */ (function () {
             var response, days, data, _data, documentStyle, textColor, textColorSecondary, surfaceBorder;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.orderService.getRaports(0)];
+                    case 0: return [4 /*yield*/, this.orderService.getRaports(7)];
                     case 1:
                         response = _a.sent();
                         this.raportData = response;

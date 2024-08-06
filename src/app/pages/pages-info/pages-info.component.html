@@ -96,8 +96,12 @@
             <input type="text" id="invoiceFolderPath" class="form-control" formControlName="invoiceFolderPath">
           </div>
           <div class="form-group mb-3">
-            <label for="nebimUrl">Nebim URL</label>
-            <input type="text" id="nebimUrl" class="form-control" formControlName="nebimUrl">
+            <label for="nebimInnerIp">Nebim İç Ip</label>
+            <input type="text" id="nebimInnerIp" class="form-control" formControlName="nebimInnerIp">
+          </div>
+          <div class="form-group mb-3">
+            <label for="nebimOuterIp">Nebim Dış Ip</label>
+            <input type="text" id="nebimOuterIp" class="form-control" formControlName="nebimOuterIp">
           </div>
           <button type="submit" class="btn btn-primary" [disabled]="companyInfoForm.invalid">Güncelle</button>
         </form>
@@ -272,66 +276,132 @@
           </tbody>
         </table>
       </p-tabPanel>
-      <p-tabPanel header="Nebim Bilgileri">
-        <form [formGroup]="nebimInfoForm" (ngSubmit)="onSubmitNebimInfo()">
-          <div class="form-group">
-            <label for="type">Tür</label>
-            <input type="text" id="type" class="form-control" formControlName="type">
-          </div>
-          <div class="form-group">
-            <label for="officeCode">Ofis Kodu</label>
-            <input type="text" id="officeCode" class="form-control" formControlName="officeCode">
-          </div>
-          <div class="form-group">
-            <label for="storeCode">Mağaza Kodu</label>
-            <input type="text" id="storeCode" class="form-control" formControlName="storeCode">
-          </div>
-          <div class="form-group">
-            <label for="posTerminalID">POS Terminal ID</label>
-            <input type="text" id="posTerminalID" class="form-control" formControlName="posTerminalID">
-          </div>
-          <div class="form-group">
-            <label for="shipmentMethodCode">Kargo Metodu Kodu</label>
-            <input type="text" id="shipmentMethodCode" class="form-control" formControlName="shipmentMethodCode">
-          </div>
-          <div class="form-group mb-3">
-            <label for="deliveryCompanyCode">Teslimat Şirketi Kodu</label>
-            <input type="text" id="deliveryCompanyCode" class="form-control" formControlName="deliveryCompanyCode">
-          </div>
-          <button type="submit" class="btn btn-primary"
-            [disabled]="nebimInfoForm.invalid">{{this.updatedNebimInfo ? 'Güncelle' : 'Ekle'}}</button>
-        </form>
+      <p-tabPanel header="Nebim">
 
-        <!-- Nebim Bilgileri Tablosu -->
-        <table class="table mt-3">
-          <thead>
-            <tr>
-              <th scope="col">Tür</th>
-              <th scope="col">Ofis Kodu</th>
-              <th scope="col">Mağaza Kodu</th>
-              <th scope="col">POS Terminal ID</th>
-              <th scope="col">Kargo Metodu Kodu</th>
-              <th scope="col">Teslimat Şirketi Kodu</th>
-              <th scope="col">İşlemler</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let nebim of nebimInfos">
-              <td>{{ nebim.type }}</td>
-              <td>{{ nebim.officeCode }}</td>
-              <td>{{ nebim.storeCode }}</td>
-              <td>{{ nebim.posTerminalID }}</td>
-              <td>{{ nebim.shipmentMethodCode }}</td>
-              <td>{{ nebim.deliveryCompanyCode }}</td>
-              <td>
-                <button (click)="onEditNebimInfo(nebim)" class="btn btn-primary btn-sm"><i class="fa fa-refresh"
-                    aria-hidden="true"></i></button>
-                <button (click)="onDeleteNebimInfo(nebim.id)" class="btn btn-danger btn-sm"><i class="fa fa-trash"
-                    aria-hidden="true"></i></button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <p-tabView>
+          <p-tabPanel header="Nebim Süreçleri">
+            <form [formGroup]="nebimInfoForm" (ngSubmit)="onSubmitNebimInfo()">
+              <div class="form-group">
+                <label for="type">Tür</label>
+                <input type="text" id="type" class="form-control" formControlName="type">
+              </div>
+              <div class="form-group">
+                <label for="officeCode">Ofis Kodu</label>
+                <input type="text" id="officeCode" class="form-control" formControlName="officeCode">
+              </div>
+              <div class="form-group">
+                <label for="storeCode">Mağaza Kodu</label>
+                <input type="text" id="storeCode" class="form-control" formControlName="storeCode">
+              </div>
+              <div class="form-group">
+                <label for="posTerminalID">POS Terminal ID</label>
+                <input type="text" id="posTerminalID" class="form-control" formControlName="posTerminalID">
+              </div>
+              <div class="form-group">
+                <label for="shipmentMethodCode">Kargo Metodu Kodu</label>
+                <input type="text" id="shipmentMethodCode" class="form-control" formControlName="shipmentMethodCode">
+              </div>
+              <div class="form-group ">
+                <label for="deliveryCompanyCode">Teslimat Şirketi Kodu</label>
+                <input type="text" id="deliveryCompanyCode" class="form-control" formControlName="deliveryCompanyCode">
+              </div>
+              <div class="form-group">
+                <label for="isOrderBase">Sipariş Bazlı Fatura</label>
+                <input type="text" id="isOrderBase" class="form-control" formControlName="isOrderBase">
+
+              </div>
+
+              <div class="form-group m">
+                <label for="isCreditSale">Nebim Dış Ip</label>
+                <input type="text" id="isCreditSale" class="form-control" formControlName="isCreditSale">
+
+              </div>
+              <div class="form-group mb-3">
+                <label for="warehouseCode">Depo Kodu</label>
+                <input type="text" id="warehouseCode" class="form-control" formControlName="warehouseCode">
+
+              </div>
+              <button type="submit" class="btn btn-primary"
+                [disabled]="nebimInfoForm.invalid">{{this.updatedNebimInfo ? 'Güncelle' : 'Ekle'}}</button>
+            </form>
+
+            <!-- Nebim Bilgileri Tablosu -->
+            <table class="table mt-3 mb-3">
+              <thead>
+                <tr>
+                  <th scope="col">Tür</th>
+                  <th scope="col">Ofis Kodu</th>
+                  <th scope="col">Mağaza Kodu</th>
+                  <th scope="col">POS Terminal ID</th>
+                  <th scope="col">Kargo Metodu Kodu</th>
+                  <th scope="col">Teslimat Şirketi Kodu</th>
+                  <th scope="col">İşlemler</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let nebim of nebimInfos">
+                  <td>{{ nebim.type }}</td>
+                  <td>{{ nebim.officeCode }}</td>
+                  <td>{{ nebim.storeCode }}</td>
+                  <td>{{ nebim.posTerminalID }}</td>
+                  <td>{{ nebim.shipmentMethodCode }}</td>
+                  <td>{{ nebim.deliveryCompanyCode }}</td>
+                  <td>
+                    <button (click)="onEditNebimInfo(nebim)" class="btn btn-primary btn-sm"><i class="fa fa-refresh"
+                        aria-hidden="true"></i></button>
+                    <button (click)="onDeleteNebimInfo(nebim.id)" class="btn btn-danger btn-sm"><i class="fa fa-trash"
+                        aria-hidden="true"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </p-tabPanel>
+          <p-tabPanel header="Nebim Kullanıcıları">
+            <form [formGroup]="nebimUserInfoForm" (ngSubmit)="onSubmitNebimUserInfo()">
+              <div class="form-group">
+                <label for="userGroupCode">Açıklama</label>
+                <input type="text" id="description" class="form-control" formControlName="description">
+              </div>
+              <div class="form-group">
+                <label for="userGroupCode">Kullanıcı Grup Kodu</label>
+                <input type="text" id="userGroupCode" class="form-control" formControlName="userGroupCode">
+              </div>
+              <div class="form-group">
+                <label for="userName">Kullanıcı Adı</label>
+                <input type="text" id="userName" class="form-control" formControlName="userName">
+              </div>
+              <div class="form-group">
+                <label for="password">Şifre</label>
+                <input type="password" id="password" class="form-control" formControlName="password">
+              </div>
+              <button type="submit" class="btn btn-primary" [disabled]="nebimUserInfoForm.invalid">Kaydet</button>
+            </form>
+            <table class="table mt-3">
+              <thead>
+                <tr>
+                  <th scope="col">Kullanıcı Grup Kodu</th>
+                  <th scope="col">Kullanıcı Adı</th>
+                  <th scope="col">Şifre</th>
+                  <th scope="col">İşlemler</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let nebimUser of nebimUserInfos">
+                  <td>{{ nebimUser.userGroupCode }}</td>
+                  <td>{{ nebimUser.userName }}</td>
+                  <td>{{ nebimUser.password }}</td>
+                  <td>
+                    <button (click)="onEditNebimUserInfo(nebimUser)" class="btn btn-primary btn-sm"> <i
+                        class="fa fa-refresh" aria-hidden="true"></i></button>
+                    <button (click)="onDeleteNebimUserInfo(nebimUser.id)" class="btn btn-danger btn-sm"><i
+                        class="fa fa-trash" aria-hidden="true"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </p-tabPanel>
+
+        </p-tabView>
 
       </p-tabPanel>
 
@@ -378,7 +448,7 @@
             [disabled]="marketPlaceInfoForm.invalid">{{this.updatedMarketPlaceInfo ? 'Güncelle' : 'Ekle'}}</button>
         </form>
 
-        <!-- MarketPlace Bilgileri Tablosu -->
+        <!-- MarketPlace Bilgileri Tablosuuu -->
         <table class="table mt-3">
           <thead>
             <tr>
@@ -409,7 +479,81 @@
           </tbody>
         </table>
       </p-tabPanel>
+      <p-tabPanel header="Menü Bilgileri">
+        <form [formGroup]="menuInfoForm" (ngSubmit)="onSubmitMenuInfo()">
+          <div class="form-group">
+            <label for="label">Etiket</label>
+            <input type="text" id="label" class="form-control" formControlName="label">
+            <div *ngIf="menuInfoForm.get('label').invalid && menuInfoForm.get('label').touched" class="text-danger">
+              Etiket gerekli
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="route">Rota</label>
+            <input type="text" id="route" class="form-control" formControlName="route">
+          </div>
+          <div class="form-group">
+            <label for="action">Aksiyon</label>
+            <input type="text" id="action" class="form-control" formControlName="action">
+          </div>
+          <div class="form-group">
+            <label for="icon">Simge</label>
+            <input type="text" id="icon" class="form-control" formControlName="icon">
+          </div>
 
+          <div class="form-group">
+            <label for="isActive">Aktif</label>
+            <p-inputSwitch id="isFisActiveirst" class="form-control" formControlName="isActive" />
+          </div>
+          <div class="form-group">
+            <label for="parentId">Üst Menü ID</label>
+            <select id="parentId" class="form-control" formControlName="parentId">
+              <option [ngValue]="null">Yok</option>
+              <option *ngFor="let menuInfo of menuInfos" [ngValue]="menuInfo.id">{{ menuInfo.label }}</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="menuInfoForm.invalid">Kaydet</button>
+        </form>
+
+        <table class="table mt-3">
+          <thead>
+            <tr>
+              <th scope="col">Id</th>
+
+              <th scope="col">Etiket</th>
+              <th scope="col">Rota</th>
+              <th scope="col">Aksiyon</th>
+              <th scope="col">Simge</th>
+              <th scope="col">Aktif</th>
+              <th scope="col">Üst Menü ID</th>
+              <th scope="col">İşlemler</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let menuInfo of menuInfos">
+              <td>{{ menuInfo.id }}</td>
+              <td>{{ menuInfo.label }}</td>
+              <td>{{ menuInfo.route }}</td>
+              <td>{{ menuInfo.action }}</td>
+              <td>{{ menuInfo.icon }}</td>
+              <td>
+                <button *ngIf="!menuInfo.isActive" class="btn btn-warning">Pasif</button>
+                <button *ngIf="menuInfo.isActive" class="btn btn-success">Aktif</button>
+              </td>
+              <td>{{ menuInfo.parentId }}</td>
+              <td>
+                <button class="btn btn-primary btn-sm" (click)="onEditMenuInfo(menuInfo)"><i class="fa fa-refresh"
+                    aria-hidden="true"></i></button>
+                <button class="btn btn-danger btn-sm" (click)="onDeleteMenuInfo(menuInfo.id)"><i class="fa fa-trash"
+                    aria-hidden="true"></i></button>
+                <button class="btn btn-secondary btn-sm" (click)="onToggleActive(menuInfo)">
+                  <i class="fa fa-toggle-on" aria-hidden="true"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </p-tabPanel>
     </p-tabView>
 
 

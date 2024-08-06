@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { MenuItem } from 'src/app/models/model/company/companyInfo';
 import { GeneralService } from 'src/app/services/admin/general.service';
+import { InfoService } from 'src/app/services/admin/info.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,13 +12,55 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 
 export class SidebarComponent implements OnInit {
 
-  constructor(private router: Router, private generalService: GeneralService) { }
+  constructor(private router: Router, private generalService: GeneralService, private infoService: InfoService) { }
   roleDescription: string;
   userId: string;
-  ngOnInit(): void {
+  menuItems: MenuItem[] = [];
+  async ngOnInit() {
+
     this.roleDescription = localStorage.getItem("roleDescription")
     this.userId = localStorage.getItem("userId")
+    await this.loadMenu();
+  }
 
+  async loadMenu() {
+    try {
+      const data = await this.infoService.getStructuredMenu();
+      this.menuItems = data;
+    } catch (error) {
+      console.error('Error loading menu', error);
+    }
+  }
+
+  onAction(action: string, param?: any) {
+    switch (action) {
+      case 'routeNewPage':
+        this.routeNewPage();
+        break;
+      case 'routeNewPage2':
+        this.routeNewPage2();
+        break;
+      case 'routeNewPage3(true)':
+        this.routeNewPage3(true);
+        break;
+      case 'routeNewPage3(false)':
+        this.routeNewPage3(false);
+        break;
+      case 'routeNewPage4':
+        this.routeNewPage4();
+        break;
+      case 'routeNewPage5':
+        this.routeNewPage5();
+        break;
+      case 'routeNewPage6':
+        this.routeNewPage6();
+        break;
+      case 'routeNewPage7':
+        this.routeNewPage7();
+        break;
+      default:
+        console.error(`Action "${action}" not found`);
+    }
   }
   async routeNewPage() {
     const result = await this.generalService.generateGUID()

@@ -50,9 +50,11 @@ var PagesInfoComponent = /** @class */ (function () {
         this.fb = fb;
         this.infoService = infoService;
         this.toasterService = toasterService;
+        this.menuInfos = [];
         this.nebimInfos = [];
         this.marketPlaceInfos = [];
         this.cargoInfos = [];
+        this.nebimUserInfos = [];
         this.paymentInfos = [];
     }
     PagesInfoComponent.prototype.ngOnInit = function () {
@@ -64,6 +66,9 @@ var PagesInfoComponent = /** @class */ (function () {
         this.createMarketPlaceInfoForm();
         this.createPaymentInfoForm();
         this.createCargoInfoForm();
+        this.createNebimUserInfoForm();
+        this.createMenuInfoForm();
+        this.loadMenuInfos();
         this.loadCompanyInfo();
         this.loadNebimInfos();
         this.loadMailInfo();
@@ -71,6 +76,7 @@ var PagesInfoComponent = /** @class */ (function () {
         this.loadMarketPlaceInfos();
         this.loadPaymentInfos();
         this.loadCargoInfos();
+        this.loadNebimUserInfos();
     };
     PagesInfoComponent.prototype.createCompanyInfoForm = function () {
         this.companyInfoForm = this.fb.group({
@@ -96,7 +102,11 @@ var PagesInfoComponent = /** @class */ (function () {
             printerName2: [null],
             documentsFolderPath: [null],
             invoiceFolderPath: [null],
-            nebimUrl: [null]
+            nebimInnerIp: [null],
+            nebimOuterIp: [null],
+            isOrderBase: [null],
+            isCreditSale: [null],
+            warehouseCode: [null]
         });
     };
     PagesInfoComponent.prototype.createNebimInfoForm = function () {
@@ -164,6 +174,26 @@ var PagesInfoComponent = /** @class */ (function () {
             customerCode: [null],
             apiKey: [null],
             apiSecret: [null]
+        });
+    };
+    PagesInfoComponent.prototype.createNebimUserInfoForm = function () {
+        this.nebimUserInfoForm = this.fb.group({
+            id: [0],
+            description: [null, forms_1.Validators.required],
+            userGroupCode: [null],
+            userName: [null, forms_1.Validators.required],
+            password: [null, forms_1.Validators.required]
+        });
+    };
+    PagesInfoComponent.prototype.createMenuInfoForm = function () {
+        this.menuInfoForm = this.fb.group({
+            id: [0],
+            label: [null, forms_1.Validators.required],
+            route: [null],
+            action: [null],
+            icon: [null],
+            parentId: [null],
+            isActive: [true]
         });
     };
     PagesInfoComponent.prototype.loadCompanyInfo = function () {
@@ -327,9 +357,53 @@ var PagesInfoComponent = /** @class */ (function () {
             });
         });
     };
+    PagesInfoComponent.prototype.loadNebimUserInfos = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, error_8;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.infoService.getNebimUserInfos()];
+                    case 1:
+                        data = _a.sent();
+                        if (data) {
+                            this.nebimUserInfos = data;
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_8 = _a.sent();
+                        this.toasterService.error('Nebim user infos could not be loaded');
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesInfoComponent.prototype.loadMenuInfos = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, error_9;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.infoService.getMenuInfos()];
+                    case 1:
+                        data = _a.sent();
+                        this.menuInfos = data;
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_9 = _a.sent();
+                        this.toasterService.error('Menü bilgileri yüklenirken bir hata oluştu');
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     PagesInfoComponent.prototype.onSubmitCompanyInfo = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var result, error_8;
+            var result, error_10;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -352,7 +426,7 @@ var PagesInfoComponent = /** @class */ (function () {
                         }
                         return [3 /*break*/, 4];
                     case 3:
-                        error_8 = _a.sent();
+                        error_10 = _a.sent();
                         this.toasterService.error('Şirket bilgileri kaydedilirken bir hata oluştu');
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/];
@@ -371,7 +445,7 @@ var PagesInfoComponent = /** @class */ (function () {
     };
     PagesInfoComponent.prototype.onDeleteNebimInfo = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, error_9;
+            var result, error_11;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -390,7 +464,7 @@ var PagesInfoComponent = /** @class */ (function () {
                         _a.label = 4;
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_9 = _a.sent();
+                        error_11 = _a.sent();
                         this.toasterService.error('Nebim bilgileri silinirken bir hata oluştu');
                         return [3 /*break*/, 6];
                     case 6: return [2 /*return*/];
@@ -400,7 +474,7 @@ var PagesInfoComponent = /** @class */ (function () {
     };
     PagesInfoComponent.prototype.onSubmitNebimInfo = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var result, result, error_10;
+            var result, result, error_12;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -436,7 +510,7 @@ var PagesInfoComponent = /** @class */ (function () {
                         _a.label = 8;
                     case 8: return [3 /*break*/, 10];
                     case 9:
-                        error_10 = _a.sent();
+                        error_12 = _a.sent();
                         this.toasterService.error('Nebim bilgileri kaydedilirken bir hata oluştu');
                         return [3 /*break*/, 10];
                     case 10: return [2 /*return*/];
@@ -447,7 +521,7 @@ var PagesInfoComponent = /** @class */ (function () {
     //----------------------------------------------------------------------------------MAIL
     PagesInfoComponent.prototype.onSubmitMailInfo = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var result, error_11;
+            var result, error_13;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -470,7 +544,7 @@ var PagesInfoComponent = /** @class */ (function () {
                         }
                         return [3 /*break*/, 4];
                     case 3:
-                        error_11 = _a.sent();
+                        error_13 = _a.sent();
                         this.toasterService.error('Mail bilgileri kaydedilirken bir hata oluştu');
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/];
@@ -480,7 +554,7 @@ var PagesInfoComponent = /** @class */ (function () {
     };
     PagesInfoComponent.prototype.onSubmitReportInfo = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var result, error_12;
+            var result, error_14;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -503,7 +577,7 @@ var PagesInfoComponent = /** @class */ (function () {
                         }
                         return [3 /*break*/, 4];
                     case 3:
-                        error_12 = _a.sent();
+                        error_14 = _a.sent();
                         this.toasterService.error('Rapor bilgileri kaydedilirken bir hata oluştu');
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/];
@@ -513,7 +587,7 @@ var PagesInfoComponent = /** @class */ (function () {
     };
     PagesInfoComponent.prototype.onSubmitDatabaseInfo = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var result, error_13;
+            var result, error_15;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -538,7 +612,7 @@ var PagesInfoComponent = /** @class */ (function () {
                         _a.label = 5;
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_13 = _a.sent();
+                        error_15 = _a.sent();
                         this.toasterService.error('Veritabanı bilgileri kaydedilirken bir hata oluştu');
                         return [3 /*break*/, 7];
                     case 7: return [2 /*return*/];
@@ -548,7 +622,7 @@ var PagesInfoComponent = /** @class */ (function () {
     };
     PagesInfoComponent.prototype.onSubmitMarketPlaceInfo = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var result, result, error_14;
+            var result, result, error_16;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -582,7 +656,7 @@ var PagesInfoComponent = /** @class */ (function () {
                         }
                         return [3 /*break*/, 7];
                     case 6:
-                        error_14 = _a.sent();
+                        error_16 = _a.sent();
                         this.toasterService.error('Pazar yeri bilgileri kaydedilirken bir hata oluştu');
                         return [3 /*break*/, 7];
                     case 7: return [2 /*return*/];
@@ -601,7 +675,7 @@ var PagesInfoComponent = /** @class */ (function () {
     };
     PagesInfoComponent.prototype.onDeleteMarketPlaceInfo = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, error_15;
+            var result, error_17;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -618,7 +692,7 @@ var PagesInfoComponent = /** @class */ (function () {
                         }
                         return [3 /*break*/, 3];
                     case 2:
-                        error_15 = _a.sent();
+                        error_17 = _a.sent();
                         this.toasterService.error('Pazar yeri bilgileri silinirken bir hata oluştu');
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
@@ -628,7 +702,7 @@ var PagesInfoComponent = /** @class */ (function () {
     };
     PagesInfoComponent.prototype.onSubmitPaymentInfo = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var result, result, error_16;
+            var result, result, error_18;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -662,7 +736,7 @@ var PagesInfoComponent = /** @class */ (function () {
                         }
                         return [3 /*break*/, 7];
                     case 6:
-                        error_16 = _a.sent();
+                        error_18 = _a.sent();
                         this.toasterService.error('An error occurred while saving payment info');
                         return [3 /*break*/, 7];
                     case 7: return [2 /*return*/];
@@ -681,7 +755,7 @@ var PagesInfoComponent = /** @class */ (function () {
     };
     PagesInfoComponent.prototype.onDeletePaymentInfo = function (merchantId) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, error_17;
+            var result, error_19;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -698,7 +772,7 @@ var PagesInfoComponent = /** @class */ (function () {
                         }
                         return [3 /*break*/, 3];
                     case 2:
-                        error_17 = _a.sent();
+                        error_19 = _a.sent();
                         this.toasterService.error('An error occurred while deleting payment info');
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
@@ -708,7 +782,7 @@ var PagesInfoComponent = /** @class */ (function () {
     };
     PagesInfoComponent.prototype.onSubmitCargoInfo = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var result, error_18;
+            var result, error_20;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -743,7 +817,7 @@ var PagesInfoComponent = /** @class */ (function () {
                         }
                         return [3 /*break*/, 7];
                     case 6:
-                        error_18 = _a.sent();
+                        error_20 = _a.sent();
                         this.toasterService.error('An error occurred while saving cargo info');
                         return [3 /*break*/, 7];
                     case 7: return [2 /*return*/];
@@ -762,7 +836,7 @@ var PagesInfoComponent = /** @class */ (function () {
     };
     PagesInfoComponent.prototype.onDeleteCargoInfo = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, error_19;
+            var result, error_21;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -779,8 +853,204 @@ var PagesInfoComponent = /** @class */ (function () {
                         }
                         return [3 /*break*/, 3];
                     case 2:
-                        error_19 = _a.sent();
+                        error_21 = _a.sent();
                         this.toasterService.error('An error occurred while deleting cargo info');
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesInfoComponent.prototype.onSubmitNebimUserInfo = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, error_22;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (this.nebimUserInfoForm.invalid) {
+                            this.toasterService.error('Please fill all required fields');
+                            return [2 /*return*/];
+                        }
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 6, , 7]);
+                        result = void 0;
+                        if (!this.updatedNebimUserInfo) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.infoService.updateNebimUserInfo(this.nebimUserInfoForm.value)];
+                    case 2:
+                        result = _a.sent();
+                        return [3 /*break*/, 5];
+                    case 3:
+                        this.nebimUserInfoForm.value.id = 0;
+                        return [4 /*yield*/, this.infoService.addNebimUserInfo(this.nebimUserInfoForm.value)];
+                    case 4:
+                        result = _a.sent();
+                        _a.label = 5;
+                    case 5:
+                        if (result) {
+                            this.toasterService.success('Nebim user info successfully saved');
+                            this.loadNebimUserInfos();
+                            this.updatedNebimUserInfo = null;
+                            this.nebimUserInfoForm.reset();
+                        }
+                        else {
+                            this.toasterService.error('Nebim user info could not be saved');
+                        }
+                        return [3 /*break*/, 7];
+                    case 6:
+                        error_22 = _a.sent();
+                        this.toasterService.error('An error occurred while saving Nebim user info');
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesInfoComponent.prototype.onEditNebimUserInfo = function (nebimUserInfo) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.updatedNebimUserInfo = nebimUserInfo;
+                this.nebimUserInfoForm.patchValue(nebimUserInfo);
+                return [2 /*return*/];
+            });
+        });
+    };
+    PagesInfoComponent.prototype.onDeleteNebimUserInfo = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, error_23;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.infoService.deleteNebimUserInfo(id)];
+                    case 1:
+                        result = _a.sent();
+                        if (result) {
+                            this.toasterService.success('Nebim user info successfully deleted');
+                            this.loadNebimUserInfos();
+                        }
+                        else {
+                            this.toasterService.error('Nebim user info could not be deleted');
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_23 = _a.sent();
+                        this.toasterService.error('An error occurred while deleting Nebim user info');
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesInfoComponent.prototype.onSubmitMenuInfo = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, result, error_24;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (this.menuInfoForm.invalid) {
+                            this.toasterService.error('Lütfen tüm gerekli alanları doldurun');
+                            return [2 /*return*/];
+                        }
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 6, , 7]);
+                        if (!this.updatedMenuInfo) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.infoService.updateMenuInfo(this.menuInfoForm.value)];
+                    case 2:
+                        result = _a.sent();
+                        if (result) {
+                            this.toasterService.success('Menü bilgileri başarıyla güncellendi');
+                            this.loadMenuInfos();
+                            this.updatedMenuInfo = null;
+                            this.menuInfoForm.reset();
+                        }
+                        else {
+                            this.toasterService.error('Menü bilgileri güncellenemedi');
+                        }
+                        return [3 /*break*/, 5];
+                    case 3:
+                        this.menuInfoForm.value.id = 0;
+                        return [4 /*yield*/, this.infoService.addMenuInfo(this.menuInfoForm.value)];
+                    case 4:
+                        result = _a.sent();
+                        if (result) {
+                            this.toasterService.success('Menü bilgileri başarıyla kaydedildi');
+                            this.loadMenuInfos();
+                            this.menuInfoForm.reset();
+                        }
+                        else {
+                            this.toasterService.error('Menü bilgileri kaydedilemedi');
+                        }
+                        _a.label = 5;
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
+                        error_24 = _a.sent();
+                        this.toasterService.error('Menü bilgileri kaydedilirken bir hata oluştu');
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesInfoComponent.prototype.onEditMenuInfo = function (menuInfo) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.updatedMenuInfo = menuInfo;
+                this.menuInfoForm.patchValue(menuInfo);
+                return [2 /*return*/];
+            });
+        });
+    };
+    PagesInfoComponent.prototype.onDeleteMenuInfo = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, error_25;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.infoService.deleteMenuInfo(id)];
+                    case 1:
+                        result = _a.sent();
+                        if (result) {
+                            this.toasterService.success('Menü bilgileri başarıyla silindi');
+                            this.loadMenuInfos();
+                        }
+                        else {
+                            this.toasterService.error('Menü bilgileri silinemedi');
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_25 = _a.sent();
+                        this.toasterService.error('Menü bilgileri silinirken bir hata oluştu');
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PagesInfoComponent.prototype.onToggleActive = function (menuInfo) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, error_26;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        menuInfo.isActive = !menuInfo.isActive;
+                        return [4 /*yield*/, this.infoService.updateMenuInfo(menuInfo)];
+                    case 1:
+                        result = _a.sent();
+                        if (result) {
+                            this.toasterService.success('Menü durumu güncellendi');
+                            this.loadMenuInfos();
+                        }
+                        else {
+                            this.toasterService.error('Menü durumu güncellenemedi');
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_26 = _a.sent();
+                        this.toasterService.error('Menü durumu güncellenirken bir hata oluştu');
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import TypedRegistry from 'chart.js/dist/core/core.typedRegistry';
-import { CargoInfo, MarketPlaceInfo, NebimInfo, PaymentInfo } from 'src/app/models/model/company/companyInfo';
+import { CargoInfo, MarketPlaceInfo, MenuInfo, NebimInfo, NebimUserInfo, PaymentInfo } from 'src/app/models/model/company/companyInfo';
 import { InfoService } from 'src/app/services/admin/info.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 
@@ -19,9 +19,14 @@ export class PagesInfoComponent implements OnInit {
   marketPlaceInfoForm: FormGroup;
   paymentInfoForm: FormGroup;
   cargoInfoForm: FormGroup;
+  nebimUserInfoForm: FormGroup;
+  menuInfoForm: FormGroup;
+  menuInfos: MenuInfo[] = [];
   nebimInfos: NebimInfo[] = [];
   marketPlaceInfos: MarketPlaceInfo[] = [];
   cargoInfos: CargoInfo[] = [];
+
+  nebimUserInfos: NebimUserInfo[] = [];
 
   paymentInfos: PaymentInfo[] = [];
   constructor(
@@ -39,7 +44,11 @@ export class PagesInfoComponent implements OnInit {
     this.createMarketPlaceInfoForm();
     this.createPaymentInfoForm();
     this.createCargoInfoForm();
+    this.createNebimUserInfoForm();
+    this.createMenuInfoForm();
 
+
+    this.loadMenuInfos();
     this.loadCompanyInfo();
     this.loadNebimInfos();
     this.loadMailInfo();
@@ -47,6 +56,7 @@ export class PagesInfoComponent implements OnInit {
     this.loadMarketPlaceInfos();
     this.loadPaymentInfos();
     this.loadCargoInfos();
+    this.loadNebimUserInfos();
   }
 
   createCompanyInfoForm() {
@@ -73,10 +83,13 @@ export class PagesInfoComponent implements OnInit {
       printerName2: [null],
       documentsFolderPath: [null],
       invoiceFolderPath: [null],
-      nebimUrl: [null]
+      nebimInnerIp: [null],
+      nebimOuterIp: [null],
+      isOrderBase: [null],
+      isCreditSale: [null],
+      warehouseCode: [null],
     });
   }
-
   createNebimInfoForm() {
     this.nebimInfoForm = this.fb.group({
       id: [0],
@@ -88,7 +101,6 @@ export class PagesInfoComponent implements OnInit {
       deliveryCompanyCode: [null]
     });
   }
-
   createMailInfoForm() {
     this.mailInfoForm = this.fb.group({
       isFirst: [false],
@@ -97,14 +109,12 @@ export class PagesInfoComponent implements OnInit {
       applicationPassword: [null]
     });
   }
-
   createReportInfoForm() {
     this.reportInfoForm = this.fb.group({
       description: [null],
       filePath: [null]
     });
   }
-
   createDatabaseInfoForm() {
     this.databaseInfoForm = this.fb.group({
       dataSource: [null],
@@ -114,7 +124,6 @@ export class PagesInfoComponent implements OnInit {
       trustServerCertificate: [false]
     });
   }
-
   createMarketPlaceInfoForm() {
     this.marketPlaceInfoForm = this.fb.group({
       id: [0],
@@ -126,7 +135,6 @@ export class PagesInfoComponent implements OnInit {
       sellerId: [null]
     });
   }
-
   createPaymentInfoForm() {
     this.paymentInfoForm = this.fb.group({
       id: [0],
@@ -138,7 +146,6 @@ export class PagesInfoComponent implements OnInit {
       failUrl: [null, Validators.required]
     });
   }
-
   createCargoInfoForm() {
     this.cargoInfoForm = this.fb.group({
       id: [0],
@@ -150,7 +157,28 @@ export class PagesInfoComponent implements OnInit {
       apiSecret: [null]
     });
   }
+  createNebimUserInfoForm() {
+    this.nebimUserInfoForm = this.fb.group({
+      id: [0],
+      description: [null, Validators.required],
+      userGroupCode: [null],
+      userName: [null, Validators.required],
+      password: [null, Validators.required]
+    });
+  }
 
+
+  createMenuInfoForm() {
+    this.menuInfoForm = this.fb.group({
+      id: [0],
+      label: [null, Validators.required],
+      route: [null],
+      action: [null],
+      icon: [null],
+      parentId: [null],
+      isActive: [true]
+    });
+  }
   async loadCompanyInfo() {
     try {
       const data = await this.infoService.getCompanyInfos();
@@ -222,6 +250,24 @@ export class PagesInfoComponent implements OnInit {
       }
     } catch (error) {
       this.toasterService.error('Cargo infos could not be loaded');
+    }
+  }
+  async loadNebimUserInfos() {
+    try {
+      const data = await this.infoService.getNebimUserInfos();
+      if (data) {
+        this.nebimUserInfos = data;
+      }
+    } catch (error) {
+      this.toasterService.error('Nebim user infos could not be loaded');
+    }
+  }
+  async loadMenuInfos() {
+    try {
+      const data = await this.infoService.getMenuInfos();
+      this.menuInfos = data;
+    } catch (error) {
+      this.toasterService.error('Menü bilgileri yüklenirken bir hata oluştu');
     }
   }
   async onSubmitCompanyInfo() {
@@ -495,5 +541,119 @@ export class PagesInfoComponent implements OnInit {
       this.toasterService.error('An error occurred while deleting cargo info');
     }
   }
+  //-----------------------------------------------------NEBIM USER INFO
+  updatedNebimUserInfo: NebimUserInfo;
+  async onSubmitNebimUserInfo() {
+    if (this.nebimUserInfoForm.invalid) {
+      this.toasterService.error('Please fill all required fields');
+      return;
+    }
 
+    try {
+      let result;
+      if (this.updatedNebimUserInfo) {
+        result = await this.infoService.updateNebimUserInfo(this.nebimUserInfoForm.value);
+      } else {
+        this.nebimUserInfoForm.value.id = 0;
+        result = await this.infoService.addNebimUserInfo(this.nebimUserInfoForm.value);
+      }
+
+      if (result) {
+        this.toasterService.success('Nebim user info successfully saved');
+        this.loadNebimUserInfos();
+        this.updatedNebimUserInfo = null;
+        this.nebimUserInfoForm.reset();
+      } else {
+        this.toasterService.error('Nebim user info could not be saved');
+      }
+    } catch (error) {
+      this.toasterService.error('An error occurred while saving Nebim user info');
+    }
+  }
+
+  async onEditNebimUserInfo(nebimUserInfo: NebimUserInfo) {
+    this.updatedNebimUserInfo = nebimUserInfo;
+    this.nebimUserInfoForm.patchValue(nebimUserInfo);
+  }
+
+  async onDeleteNebimUserInfo(id: number) {
+    try {
+      const result = await this.infoService.deleteNebimUserInfo(id);
+      if (result) {
+        this.toasterService.success('Nebim user info successfully deleted');
+        this.loadNebimUserInfos();
+      } else {
+        this.toasterService.error('Nebim user info could not be deleted');
+      }
+    } catch (error) {
+      this.toasterService.error('An error occurred while deleting Nebim user info');
+    }
+  }
+  //-----------------------------------------------------------------------------
+  updatedMenuInfo: MenuInfo;
+  async onSubmitMenuInfo() {
+    if (this.menuInfoForm.invalid) {
+      this.toasterService.error('Lütfen tüm gerekli alanları doldurun');
+      return;
+    }
+
+    try {
+      if (this.updatedMenuInfo) {
+        const result = await this.infoService.updateMenuInfo(this.menuInfoForm.value)
+        if (result) {
+          this.toasterService.success('Menü bilgileri başarıyla güncellendi');
+          this.loadMenuInfos();
+          this.updatedMenuInfo = null;
+          this.menuInfoForm.reset();
+        } else {
+          this.toasterService.error('Menü bilgileri güncellenemedi');
+        }
+      } else {
+        this.menuInfoForm.value.id = 0;
+        const result = await this.infoService.addMenuInfo(this.menuInfoForm.value)
+        if (result) {
+          this.toasterService.success('Menü bilgileri başarıyla kaydedildi');
+          this.loadMenuInfos();
+          this.menuInfoForm.reset();
+        } else {
+          this.toasterService.error('Menü bilgileri kaydedilemedi');
+        }
+      }
+    } catch (error) {
+      this.toasterService.error('Menü bilgileri kaydedilirken bir hata oluştu');
+    }
+  }
+
+  async onEditMenuInfo(menuInfo: MenuInfo) {
+    this.updatedMenuInfo = menuInfo;
+    this.menuInfoForm.patchValue(menuInfo);
+  }
+
+  async onDeleteMenuInfo(id: number) {
+    try {
+      const result = await this.infoService.deleteMenuInfo(id)
+      if (result) {
+        this.toasterService.success('Menü bilgileri başarıyla silindi');
+        this.loadMenuInfos();
+      } else {
+        this.toasterService.error('Menü bilgileri silinemedi');
+      }
+    } catch (error) {
+      this.toasterService.error('Menü bilgileri silinirken bir hata oluştu');
+    }
+  }
+  async onToggleActive(menuInfo: MenuInfo) {
+    try {
+      menuInfo.isActive = !menuInfo.isActive;
+      const result = await this.infoService.updateMenuInfo(menuInfo);
+      if (result) {
+        this.toasterService.success('Menü durumu güncellendi');
+        this.loadMenuInfos();
+      } else {
+        this.toasterService.error('Menü durumu güncellenemedi');
+      }
+    } catch (error) {
+      this.toasterService.error('Menü durumu güncellenirken bir hata oluştu');
+    }
+  }
 }

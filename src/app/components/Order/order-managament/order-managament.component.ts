@@ -1,20 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { MenuItem } from 'primeng/api';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
 import { PrinterInvoiceRequestModel } from 'src/app/models/model/order/printerInvoiceRequestModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
+import { ExportCsvService } from 'src/app/services/admin/export-csv.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { CreateBarcodeFromOrder_RM } from '../../Product/create-barcode/models/createBarcode';
-import { MenuItem } from 'primeng/api';
-import { ExportCsvService } from 'src/app/services/admin/export-csv.service';
-import { OrderDetail } from '../../cargo/create-cargo/models/models';
 
 @Component({
   selector: 'app-order-managament',
@@ -55,6 +53,42 @@ export class OrderManagamentComponent implements OnInit {
       label: 'Excele Ürünleri Aktar Aktar',
       command: () => {
         this.exportCsv_Products();
+      }
+    },
+    {
+      label: 'Toplanabilir Siparişler',
+      command: () => {
+        this.getOrders(1, 2);
+      }
+    },
+    {
+      label: 'Toplanamaz Siparişler',
+      command: () => {
+        this.getOrders(0, 2);
+      }
+    },
+    {
+      label: 'Eksik Ürünlü Siparişler',
+      command: () => {
+        this.getMissingOrders();
+      }
+    },
+    {
+      label: 'Faturalandırılan Siparişler',
+      command: () => {
+        this.getOrders(1, 1);
+      }
+    },
+    {
+      label: 'Faturalandırılmayan Siparişler',
+      command: () => {
+        this.getOrders(1, 2);
+      }
+    },
+    {
+      label: 'Kısmi Faturalandırılan Siparişler',
+      command: () => {
+        this.getOrders(0, 3);
       }
     }
   ];

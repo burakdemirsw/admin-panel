@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit } from '@angular/core';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { Raport_CR } from '../../models/model/raport/raport_CR';
 import { HeaderService } from '../../services/admin/header.service';
+import { UserClientInfoResponse } from 'src/app/models/model/user/userRegister_VM';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,11 +18,13 @@ export class DashboardComponent implements OnInit {
   raportData: Raport_CR;
   userId: number;
   userName: string
+  userinfo: UserClientInfoResponse;
   async ngOnInit() {
     this.headerService.updatePageTitle("Anasayfa")
     this.userId = Number(localStorage.getItem('userId'))
     this.userName = localStorage.getItem('name')
-    if (this.userId === 5) {
+
+    if (this.userId == 5 || this.userId == 1) {
       await this.saleCountRaport();
     }
 
@@ -32,7 +35,7 @@ export class DashboardComponent implements OnInit {
   }
 
   async saleCountRaport() {
-    const response: Raport_CR = await this.orderService.getRaports(0);
+    const response: Raport_CR = await this.orderService.getRaports(7);
     this.raportData = response;
     var days: string[] = [];
     var data: number[] = [];

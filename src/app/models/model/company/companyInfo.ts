@@ -81,6 +81,14 @@ export class PaymentInfo {
   okUrl: string;
   failUrl: string;
 }
+
+export class NebimUserInfo extends BaseEntity {
+  description?: string;
+  userGroupCode?: string;
+  userName?: string;
+  password?: string;
+}
+
 export class Info {
   companyInfos: CompanyInfo[];
   cargoInfos: CargoInfo[];
@@ -90,4 +98,20 @@ export class Info {
   reportInfos: ReportInfo[];
   mailInfos: MailInfo[];
   paymentInfos: PaymentInfo[];
+}
+export class MenuInfo {
+  id: number;
+  label?: string;
+  icon?: string;
+  route?: string;
+  action?: string;
+  parentId?: number;
+  isActive?: boolean;
+} export class MenuItem {
+  label?: string;  //asdasd
+  icon?: string;
+  route?: string;
+  action?: string;
+  children?: MenuItem[];
+  isActive: boolean
 }
