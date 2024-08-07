@@ -402,6 +402,7 @@ var ProductService = /** @class */ (function () {
             });
         });
     };
+    // Proposal işlemleri
     // async searchProposalProducts(model: ProposalProduct_SM): Promise<any> {
     //   const response: ProposalProduct_SM[] = await this.httpClientService
     //     .post<ProposalProduct_SM>({ controller: 'Products/search-proposal-products' }, model)
@@ -468,7 +469,6 @@ var ProductService = /** @class */ (function () {
             });
         });
     };
-    // Proposal işlemleri
     ProductService.prototype.getProposals = function () {
         return __awaiter(this, void 0, Promise, function () {
             var response;
