@@ -55,7 +55,7 @@ var nebimCustomer_1 = require("src/app/models/nebim/customer/nebimCustomer");
 var product_service_1 = require("src/app/services/admin/product.service");
 var models_1 = require("../../cargo/create-cargo/models/models");
 var customer_list_component_1 = require("../../Customer/customer-list/customer-list.component");
-var proposalProduct_SM_1 = require("src/app/models/model/product/proposalProduct_SM");
+var proposalProduct_1 = require("src/app/models/model/product/proposalProduct");
 var CreateProposalComponent = /** @class */ (function () {
     function CreateProposalComponent(headerService, warehouseService, paymentService, toasterService, activatedRoute, router, httpClientService, generalService, addressService, googleDriveService, productService, formBuilder, orderService, cargoService) {
         this.headerService = headerService;
@@ -149,7 +149,7 @@ var CreateProposalComponent = /** @class */ (function () {
         this.productHierarchyLevel02s = [];
         this.productHierarchyLevel03s = [];
         this.addedProducts = [];
-        this.proposal = new proposalProduct_SM_1.ZTMSG_Proposal();
+        this.proposal = new proposalProduct_1.ZTMSG_Proposal();
         this.currentDiscountRate = 0;
         this.selectedSize = '';
         this.currentCashdiscountRate = 0;
@@ -1399,7 +1399,7 @@ var CreateProposalComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        request = new proposalProduct_SM_1.ZTMSG_Proposal();
+                        request = new proposalProduct_1.ZTMSG_Proposal();
                         request.id = this.proposalId;
                         request.discountRate1 = 0;
                         request.discountRate2 = 0;
@@ -1489,7 +1489,7 @@ var CreateProposalComponent = /** @class */ (function () {
                         productDetail = _a.sent();
                         if (!productDetail) return [3 /*break*/, 3];
                         product.price = productDetail[0].basePrice;
-                        proposalProduct = new proposalProduct_SM_1.ZTMSG_ProposalProduct();
+                        proposalProduct = new proposalProduct_1.ZTMSG_ProposalProduct();
                         proposalProduct.id = 0; // Varsayılan bir değer, ya da uygun bir değer belirleyin
                         proposalProduct.proposalId = this.proposalId; // Uygun bir GUID değeri be  lirleyin
                         proposalProduct.photoUrl = product.photoUrl;

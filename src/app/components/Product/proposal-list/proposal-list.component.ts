@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Route, Router } from '@angular/router';
-import { Proposal_VM } from 'src/app/models/model/product/proposalProduct_SM';
+import { Proposal_VM } from 'src/app/models/model/product/proposalProduct';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { ProductService } from 'src/app/services/admin/product.service';

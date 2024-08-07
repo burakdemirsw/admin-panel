@@ -28,7 +28,7 @@ import { ToasterService } from '../ui/toaster.service';
 import { GeneralService } from './general.service';
 import { CreateBarcodeFromOrder_RM, CreateBarcodeModel } from 'src/app/components/Product/create-barcode/models/createBarcode';
 import { FastTransfer_VM } from '../../models/model/warehouse/transferRequestListModel';
-import { Proposal_VM, ZTMSG_Proposal, ZTMSG_ProposalProduct } from 'src/app/models/model/product/proposalProduct_SM';
+import { Proposal_VM, ZTMSG_Proposal, ZTMSG_ProposalProduct } from 'src/app/models/model/product/proposalProduct';
 
 @Injectable({
   providedIn: 'root',
@@ -314,6 +314,7 @@ export class ProductService {
     return response;
   }
 
+  // Proposal işlemleri
   // async searchProposalProducts(model: ProposalProduct_SM): Promise<any> {
   //   const response: ProposalProduct_SM[] = await this.httpClientService
   //     .post<ProposalProduct_SM>({ controller: 'Products/search-proposal-products' }, model)
@@ -350,7 +351,7 @@ export class ProductService {
     return response;
   }
 
-  // Proposal işlemleri
+
 
   async getProposals(): Promise<Proposal_VM[]> {
     const response: Proposal_VM[] = await this.httpClientService

@@ -30,7 +30,7 @@ import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, OrderDetail, OrderPieceListMNG } from '../../cargo/create-cargo/models/models';
 import { ClientCustomer } from '../../Customer/customer-list/customer-list.component';
-import { ZTMSG_Proposal, ZTMSG_ProposalProduct } from 'src/app/models/model/product/proposalProduct_SM';
+import { ZTMSG_Proposal, ZTMSG_ProposalProduct } from 'src/app/models/model/product/proposalProduct';
 import { borderTopRightRadius } from 'html2canvas/dist/types/css/property-descriptors/border-radius';
 import { Product } from '../../../models/model/product/product';
 
