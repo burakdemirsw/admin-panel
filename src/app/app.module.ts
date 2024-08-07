@@ -121,6 +121,7 @@ import { ImportTransactionsComponent } from './components/Order/import-transacti
 import { ExportTransaction } from './models/model/warehouse/importTransaction';
 import { ExportTransactionsComponent } from './components/Order/export-transactions/export-transactions.component';
 import { CollectExportProductsComponent } from './components/Order/export-transactions/collect-export-products/collect-export-products.component';
+import { PagesInfoComponent } from './pages/pages-info/pages-info.component';
 
 @NgModule({
 
@@ -198,7 +199,8 @@ import { CollectExportProductsComponent } from './components/Order/export-transa
     SearchShelfComponent,
     ImportTransactionsComponent,
     ExportTransactionsComponent,
-    CollectExportProductsComponent
+    CollectExportProductsComponent,
+    PagesInfoComponent
 
   ],
 

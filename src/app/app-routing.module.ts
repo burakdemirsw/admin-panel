@@ -61,6 +61,7 @@ import { ImportTransaction } from './models/model/warehouse/importTransaction';
 import { ImportTransactionsComponent } from './components/Order/import-transactions/import-transactions.component';
 import { ExportTransactionsComponent } from './components/Order/export-transactions/export-transactions.component';
 import { CollectExportProductsComponent } from './components/Order/export-transactions/collect-export-products/collect-export-products.component';
+import { PagesInfoComponent } from './pages/pages-info/pages-info.component';
 
 
 const routes: Routes = [
@@ -316,6 +317,8 @@ const routes: Routes = [
   { path: 'retail-invoice-list', component: RetailInvoiceListComponent, canActivate: [AuthGuard] },
   { path: 'retail-orders-managament/:status/:invoiceStatus', component: RetailOrderManagementComponent, canActivate: [AuthGuard] },
   { path: 'retail-orders-collected-packages', component: CollectedPackagesComponent2, canActivate: [AuthGuard] },
+  { path: 'infos', component: PagesInfoComponent, canActivate: [AuthGuard] },
+
   //-------------------------------------------------------------------------
   { path: '**', component: PagesError404Component },
 

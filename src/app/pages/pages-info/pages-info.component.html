@@ -1,0 +1,562 @@
+<main id="main">
+  <section class="section">
+    <p-tabView>
+      <p-tabPanel header="Şirket Bilgileri">
+        <form [formGroup]="companyInfoForm" (ngSubmit)="onSubmitCompanyInfo()">
+          <div class="form-group">
+            <label for="companyName">Şirket Adı</label>
+            <input type="text" id="companyName" class="form-control" formControlName="companyName">
+            <div *ngIf="companyInfoForm.get('companyName').invalid && companyInfoForm.get('companyName').touched"
+              class="text-danger">
+              Şirket Adı zorunludur
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="logoUrl">Logo URL</label>
+            <input type="text" id="logoUrl" class="form-control" formControlName="logoUrl">
+          </div>
+          <div class="form-group">
+            <label for="serviceSector">Hizmet Sektörü</label>
+            <input type="text" id="serviceSector" class="form-control" formControlName="serviceSector">
+          </div>
+          <div class="form-group">
+            <label for="authorizedPerson">Yetkili Kişi</label>
+            <input type="text" id="authorizedPerson" class="form-control" formControlName="authorizedPerson">
+          </div>
+          <div class="form-group">
+            <label for="phone">Telefon</label>
+            <input type="text" id="phone" class="form-control" formControlName="phone">
+          </div>
+          <div class="form-group">
+            <label for="fax">Faks</label>
+            <input type="text" id="fax" class="form-control" formControlName="fax">
+          </div>
+          <div class="form-group">
+            <label for="taxOffice">Vergi Dairesi</label>
+            <input type="text" id="taxOffice" class="form-control" formControlName="taxOffice">
+          </div>
+          <div class="form-group">
+            <label for="taxNumber">Vergi Numarası</label>
+            <input type="text" id="taxNumber" class="form-control" formControlName="taxNumber">
+          </div>
+          <div class="form-group">
+            <label for="tradeRegistryNo">Ticaret Sicil No</label>
+            <input type="text" id="tradeRegistryNo" class="form-control" formControlName="tradeRegistryNo">
+          </div>
+          <div class="form-group">
+            <label for="mersisNo">Mersis No</label>
+            <input type="text" id="mersisNo" class="form-control" formControlName="mersisNo">
+          </div>
+          <div class="form-group">
+            <label for="email">E-posta</label>
+            <input type="email" id="email" class="form-control" formControlName="email">
+          </div>
+          <div class="form-group">
+            <label for="address">Adres</label>
+            <textarea id="address" class="form-control" formControlName="address"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="postalCode">Posta Kodu</label>
+            <input type="text" id="postalCode" class="form-control" formControlName="postalCode">
+          </div>
+          <div class="form-group">
+            <label for="companyCountry">Ülke</label>
+            <input type="text" id="companyCountry" class="form-control" formControlName="companyCountry">
+          </div>
+          <div class="form-group">
+            <label for="companyCity">Şehir</label>
+            <input type="text" id="companyCity" class="form-control" formControlName="companyCity">
+          </div>
+          <div class="form-group">
+            <label for="companyDistrict">İlçe</label>
+            <input type="text" id="companyDistrict" class="form-control" formControlName="companyDistrict">
+          </div>
+          <div class="form-group">
+            <label for="passwordResetUrl">Şifre Sıfırlama URL</label>
+            <input type="text" id="passwordResetUrl" class="form-control" formControlName="passwordResetUrl">
+          </div>
+          <div class="form-group">
+            <label for="webSiteUrl">Web Sitesi URL</label>
+            <input type="text" id="webSiteUrl" class="form-control" formControlName="webSiteUrl">
+          </div>
+          <div class="form-group">
+            <label for="printerName1">Yazıcı Adı 1</label>
+            <input type="text" id="printerName1" class="form-control" formControlName="printerName1">
+          </div>
+          <div class="form-group">
+            <label for="printerName2">Yazıcı Adı 2</label>
+            <input type="text" id="printerName2" class="form-control" formControlName="printerName2">
+          </div>
+          <div class="form-group">
+            <label for="documentsFolderPath">Döküman Klasör Yolu</label>
+            <input type="text" id="documentsFolderPath" class="form-control" formControlName="documentsFolderPath">
+          </div>
+          <div class="form-group">
+            <label for="invoiceFolderPath">Fatura Klasör Yolu</label>
+            <input type="text" id="invoiceFolderPath" class="form-control" formControlName="invoiceFolderPath">
+          </div>
+          <div class="form-group mb-3">
+            <label for="nebimInnerIp">Nebim İç Ip</label>
+            <input type="text" id="nebimInnerIp" class="form-control" formControlName="nebimInnerIp">
+          </div>
+          <div class="form-group mb-3">
+            <label for="nebimOuterIp">Nebim Dış Ip</label>
+            <input type="text" id="nebimOuterIp" class="form-control" formControlName="nebimOuterIp">
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="companyInfoForm.invalid">Güncelle</button>
+        </form>
+      </p-tabPanel>
+      <p-tabPanel header="Mail Bilgileri">
+        <form [formGroup]="mailInfoForm" (ngSubmit)="onSubmitMailInfo()">
+          <div class="form-group">
+            <label for="isFirst">İlk Mi?</label>
+            <p-inputSwitch id="isFirst" class="form-control" formControlName="isFirst" />
+          </div>
+          <div class="form-group">
+            <label for="userName">Kullanıcı Adı</label>
+            <input type="text" id="userName" class="form-control" formControlName="userName">
+          </div>
+          <div class="form-group">
+            <label for="password">Şifre</label>
+            <input type="password" id="password" class="form-control" formControlName="password">
+          </div>
+          <div class="form-group mb-3">
+            <label for="applicationPassword">Uygulama Şifresi</label>
+            <input type="password" id="applicationPassword" class="form-control" formControlName="applicationPassword">
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="mailInfoForm.invalid">Güncelle</button>
+        </form>
+      </p-tabPanel>
+      <p-tabPanel header="Veritabanı Bilgileri">
+        <form [formGroup]="databaseInfoForm" (ngSubmit)="onSubmitDatabaseInfo()">
+          <div class="form-group">
+            <label for="dataSource">Veri Kaynağı</label>
+            <input type="text" id="dataSource" class="form-control" formControlName="dataSource">
+          </div>
+          <div class="form-group">
+            <label for="initialCatalog">Başlangıç Kataloğu</label>
+            <input type="text" id="initialCatalog" class="form-control" formControlName="initialCatalog">
+          </div>
+          <div class="form-group">
+            <label for="userID">Kullanıcı ID</label>
+            <input type="text" id="userID" class="form-control" formControlName="userID">
+          </div>
+          <div class="form-group">
+            <label for="password">Şifre</label>
+            <input type="password" id="password" class="form-control" formControlName="password">
+          </div>
+          <div class="form-group mb-3">
+            <label for="trustServerCertificate">Sunucu Sertifikasına Güven</label>
+
+
+            <p-inputSwitch id="trustServerCertificate" class="form-control" formControlName="trustServerCertificate" />
+
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="databaseInfoForm.invalid">Güncelle</button>
+        </form>
+      </p-tabPanel>
+      <p-tabPanel header="Ödeme Bilgileri">
+        <form [formGroup]="paymentInfoForm" (ngSubmit)="onSubmitPaymentInfo()">
+          <div class="form-group">
+            <label for="description">Açıklama</label>
+            <input type="text" id="description" class="form-control" formControlName="description">
+          </div>
+          <div class="form-group">
+            <label for="merchantId">Merchant ID</label>
+            <input type="text" id="merchantId" class="form-control" formControlName="merchantId">
+          </div>
+          <div class="form-group">
+            <label for="apiKey">API Key</label>
+            <input type="text" id="apiKey" class="form-control" formControlName="apiKey">
+          </div>
+          <div class="form-group">
+            <label for="apiSecretKey">API Secret Key</label>
+            <input type="text" id="apiSecretKey" class="form-control" formControlName="apiSecretKey">
+          </div>
+          <div class="form-group">
+            <label for="okUrl">Ok URL</label>
+            <input type="text" id="okUrl" class="form-control" formControlName="okUrl">
+          </div>
+          <div class="form-group mb-3">
+            <label for="failUrl">Fail URL</label>
+            <input type="text" id="failUrl" class="form-control" formControlName="failUrl">
+          </div>
+          <button type="submit" class="btn btn-primary"
+            [disabled]="paymentInfoForm.invalid">{{this.updatedPaymentInfo ? 'Güncelle' : 'Ekle'}}</button>
+        </form>
+        <table class="table mt-3">
+          <thead>
+            <tr>
+              <th scope="col">Açıklama</th>
+
+              <th scope="col">Merchant ID</th>
+              <th scope="col">API Key</th>
+              <th scope="col">API Secret Key</th>
+              <th scope="col">Ok URL</th>
+              <th scope="col">Fail URL</th>
+              <th scope="col">İşlemler</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let paymentInfo of paymentInfos">
+              <td>{{ paymentInfo.description }}</td>
+
+              <td>{{ paymentInfo.merchantId }}</td>
+              <td>{{ paymentInfo.apiKey }}</td>
+              <td>{{ paymentInfo.apiSecretKey }}</td>
+              <td>{{ paymentInfo.okUrl }}</td>
+              <td>{{ paymentInfo.failUrl }}</td>
+              <td>
+                <button (click)="onEditPaymentInfo(paymentInfo)" class="btn btn-primary btn-sm"><i class="fa fa-refresh"
+                    aria-hidden="true"></i></button>
+                <button (click)="onDeletePaymentInfo(paymentInfo.merchantId)" class="btn btn-danger btn-sm"><i
+                    class="fa fa-trash" aria-hidden="true"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </p-tabPanel>
+
+      <p-tabPanel header="Kargo Bilgileri">
+        <form [formGroup]="cargoInfoForm" (ngSubmit)="onSubmitCargoInfo()">
+          <div class="form-group">
+            <label for="description">Açıklama</label>
+            <input type="text" id="description" class="form-control" formControlName="description">
+          </div>
+          <div class="form-group">
+            <label for="userName">Kullanıcı Adı</label>
+            <input type="text" id="userName" class="form-control" formControlName="userName">
+          </div>
+          <div class="form-group">
+            <label for="password">Şifre</label>
+            <input type="password" id="password" class="form-control" formControlName="password">
+          </div>
+          <div class="form-group">
+            <label for="customerCode">Müşteri Kodu</label>
+            <input type="text" id="customerCode" class="form-control" formControlName="customerCode">
+          </div>
+          <div class="form-group">
+            <label for="apiKey">API Anahtarı</label>
+            <input type="text" id="apiKey" class="form-control" formControlName="apiKey">
+          </div>
+          <div class="form-group mb-3">
+            <label for="apiSecret">API Gizli Anahtarı</label>
+            <input type="text" id="apiSecret" class="form-control" formControlName="apiSecret">
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="cargoInfoForm.invalid">Kaydet</button>
+        </form>
+        <table class="table mt-3">
+          <thead>
+            <tr>
+              <th scope="col">Açıklama</th>
+
+              <th scope="col">Kullanıcı Adı</th>
+              <th scope="col">Şifre</th>
+              <th scope="col">Müşteri Kodu</th>
+              <th scope="col">API Anahtarı</th>
+              <th scope="col">API Gizli Anahtarı</th>
+              <th scope="col">İşlemler</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cargo of cargoInfos">
+              <td>{{ cargo.description }}</td>
+              <td>{{ cargo.userName }}</td>
+              <td>{{ cargo.password }}</td>
+              <td>{{ cargo.customerCode }}</td>
+              <td>{{ cargo.apiKey }}</td>
+              <td>{{ cargo.apiSecret }}</td>
+              <td>
+                <button (click)="onEditCargoInfo(cargo)" class="btn btn-primary btn-sm"><i class="fa fa-refresh"
+                    aria-hidden="true"></i></button>
+                <button (click)="onDeleteCargoInfo(cargo.id)" class="btn btn-danger btn-sm"><i class="fa fa-trash"
+                    aria-hidden="true"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </p-tabPanel>
+      <p-tabPanel header="Nebim">
+
+        <p-tabView>
+          <p-tabPanel header="Nebim Süreçleri">
+            <form [formGroup]="nebimInfoForm" (ngSubmit)="onSubmitNebimInfo()">
+              <div class="form-group">
+                <label for="type">Tür</label>
+                <input type="text" id="type" class="form-control" formControlName="type">
+              </div>
+              <div class="form-group">
+                <label for="officeCode">Ofis Kodu</label>
+                <input type="text" id="officeCode" class="form-control" formControlName="officeCode">
+              </div>
+              <div class="form-group">
+                <label for="storeCode">Mağaza Kodu</label>
+                <input type="text" id="storeCode" class="form-control" formControlName="storeCode">
+              </div>
+              <div class="form-group">
+                <label for="posTerminalID">POS Terminal ID</label>
+                <input type="text" id="posTerminalID" class="form-control" formControlName="posTerminalID">
+              </div>
+              <div class="form-group">
+                <label for="shipmentMethodCode">Kargo Metodu Kodu</label>
+                <input type="text" id="shipmentMethodCode" class="form-control" formControlName="shipmentMethodCode">
+              </div>
+              <div class="form-group ">
+                <label for="deliveryCompanyCode">Teslimat Şirketi Kodu</label>
+                <input type="text" id="deliveryCompanyCode" class="form-control" formControlName="deliveryCompanyCode">
+              </div>
+              <div class="form-group">
+                <label for="isOrderBase">Sipariş Bazlı Fatura</label>
+                <input type="text" id="isOrderBase" class="form-control" formControlName="isOrderBase">
+
+              </div>
+
+              <div class="form-group m">
+                <label for="isCreditSale">Nebim Dış Ip</label>
+                <input type="text" id="isCreditSale" class="form-control" formControlName="isCreditSale">
+
+              </div>
+              <div class="form-group mb-3">
+                <label for="warehouseCode">Depo Kodu</label>
+                <input type="text" id="warehouseCode" class="form-control" formControlName="warehouseCode">
+
+              </div>
+              <button type="submit" class="btn btn-primary"
+                [disabled]="nebimInfoForm.invalid">{{this.updatedNebimInfo ? 'Güncelle' : 'Ekle'}}</button>
+            </form>
+
+            <!-- Nebim Bilgileri Tablosu -->
+            <table class="table mt-3 mb-3">
+              <thead>
+                <tr>
+                  <th scope="col">Tür</th>
+                  <th scope="col">Ofis Kodu</th>
+                  <th scope="col">Mağaza Kodu</th>
+                  <th scope="col">POS Terminal ID</th>
+                  <th scope="col">Kargo Metodu Kodu</th>
+                  <th scope="col">Teslimat Şirketi Kodu</th>
+                  <th scope="col">İşlemler</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let nebim of nebimInfos">
+                  <td>{{ nebim.type }}</td>
+                  <td>{{ nebim.officeCode }}</td>
+                  <td>{{ nebim.storeCode }}</td>
+                  <td>{{ nebim.posTerminalID }}</td>
+                  <td>{{ nebim.shipmentMethodCode }}</td>
+                  <td>{{ nebim.deliveryCompanyCode }}</td>
+                  <td>
+                    <button (click)="onEditNebimInfo(nebim)" class="btn btn-primary btn-sm"><i class="fa fa-refresh"
+                        aria-hidden="true"></i></button>
+                    <button (click)="onDeleteNebimInfo(nebim.id)" class="btn btn-danger btn-sm"><i class="fa fa-trash"
+                        aria-hidden="true"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </p-tabPanel>
+          <p-tabPanel header="Nebim Kullanıcıları">
+            <form [formGroup]="nebimUserInfoForm" (ngSubmit)="onSubmitNebimUserInfo()">
+              <div class="form-group">
+                <label for="userGroupCode">Açıklama</label>
+                <input type="text" id="description" class="form-control" formControlName="description">
+              </div>
+              <div class="form-group">
+                <label for="userGroupCode">Kullanıcı Grup Kodu</label>
+                <input type="text" id="userGroupCode" class="form-control" formControlName="userGroupCode">
+              </div>
+              <div class="form-group">
+                <label for="userName">Kullanıcı Adı</label>
+                <input type="text" id="userName" class="form-control" formControlName="userName">
+              </div>
+              <div class="form-group">
+                <label for="password">Şifre</label>
+                <input type="password" id="password" class="form-control" formControlName="password">
+              </div>
+              <button type="submit" class="btn btn-primary" [disabled]="nebimUserInfoForm.invalid">Kaydet</button>
+            </form>
+            <table class="table mt-3">
+              <thead>
+                <tr>
+                  <th scope="col">Kullanıcı Grup Kodu</th>
+                  <th scope="col">Kullanıcı Adı</th>
+                  <th scope="col">Şifre</th>
+                  <th scope="col">İşlemler</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let nebimUser of nebimUserInfos">
+                  <td>{{ nebimUser.userGroupCode }}</td>
+                  <td>{{ nebimUser.userName }}</td>
+                  <td>{{ nebimUser.password }}</td>
+                  <td>
+                    <button (click)="onEditNebimUserInfo(nebimUser)" class="btn btn-primary btn-sm"> <i
+                        class="fa fa-refresh" aria-hidden="true"></i></button>
+                    <button (click)="onDeleteNebimUserInfo(nebimUser.id)" class="btn btn-danger btn-sm"><i
+                        class="fa fa-trash" aria-hidden="true"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </p-tabPanel>
+
+        </p-tabView>
+
+      </p-tabPanel>
+
+      <p-tabPanel header="Rapor Bilgileri">
+        <form [formGroup]="reportInfoForm" (ngSubmit)="onSubmitReportInfo()">
+          <div class="form-group">
+            <label for="description">Açıklama</label>
+            <input type="text" id="description" class="form-control" formControlName="description">
+          </div>
+          <div class="form-group mb-3">
+            <label for="filePath">Dosya Yolu</label>
+            <input type="text" id="filePath" class="form-control" formControlName="filePath">
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="reportInfoForm.invalid">Güncelle</button>
+        </form>
+      </p-tabPanel>
+      <p-tabPanel header="Pazar Yeri Bilgileri">
+        <form [formGroup]="marketPlaceInfoForm" (ngSubmit)="onSubmitMarketPlaceInfo()">
+          <div class="form-group">
+            <label for="description">Açıklama</label>
+            <input type="text" id="description" class="form-control" formControlName="description">
+          </div>
+          <div class="form-group">
+            <label for="clientId">Müşteri ID</label>
+            <input type="text" id="clientId" class="form-control" formControlName="clientId">
+          </div>
+          <div class="form-group">
+            <label for="clientSecret">Müşteri Gizli Anahtarı</label>
+            <input type="text" id="clientSecret" class="form-control" formControlName="clientSecret">
+          </div>
+          <div class="form-group">
+            <label for="redirectUri">Yönlendirme URI</label>
+            <input type="text" id="redirectUri" class="form-control" formControlName="redirectUri">
+          </div>
+          <div class="form-group">
+            <label for="baseUrl">Temel URL</label>
+            <input type="text" id="baseUrl" class="form-control" formControlName="baseUrl">
+          </div>
+          <div class="form-group mb-3">
+            <label for="sellerId">Satıcı ID</label>
+            <input type="text" id="sellerId" class="form-control" formControlName="sellerId">
+          </div>
+          <button type="submit" class="btn btn-primary"
+            [disabled]="marketPlaceInfoForm.invalid">{{this.updatedMarketPlaceInfo ? 'Güncelle' : 'Ekle'}}</button>
+        </form>
+
+        <!-- MarketPlace Bilgileri Tablosuuu -->
+        <table class="table mt-3">
+          <thead>
+            <tr>
+              <th scope="col">Açıklama</th>
+              <th scope="col">Müşteri ID</th>
+              <th scope="col">Müşteri Gizli Anahtarı</th>
+              <th scope="col">Yönlendirme URI</th>
+              <th scope="col">Temel URL</th>
+              <th scope="col">Satıcı ID</th>
+              <th scope="col">İşlemler</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let marketPlace of marketPlaceInfos">
+              <td>{{ marketPlace.description }}</td>
+              <td>{{ marketPlace.clientId }}</td>
+              <td>{{ marketPlace.clientSecret }}</td>
+              <td>{{ marketPlace.redirectUri }}</td>
+              <td>{{ marketPlace.baseUrl }}</td>
+              <td>{{ marketPlace.sellerId }}</td>
+              <td>
+                <button (click)="onEditMarketPlaceInfo(marketPlace)" class="btn btn-primary btn-sm"><i
+                    class="fa fa-refresh" aria-hidden="true"></i></button>
+                <button (click)="onDeleteMarketPlaceInfo(marketPlace.id)" class="btn btn-danger btn-sm"><i
+                    class="fa fa-trash" aria-hidden="true"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </p-tabPanel>
+      <p-tabPanel header="Menü Bilgileri">
+        <form [formGroup]="menuInfoForm" (ngSubmit)="onSubmitMenuInfo()">
+          <div class="form-group">
+            <label for="label">Etiket</label>
+            <input type="text" id="label" class="form-control" formControlName="label">
+            <div *ngIf="menuInfoForm.get('label').invalid && menuInfoForm.get('label').touched" class="text-danger">
+              Etiket gerekli
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="route">Rota</label>
+            <input type="text" id="route" class="form-control" formControlName="route">
+          </div>
+          <div class="form-group">
+            <label for="action">Aksiyon</label>
+            <input type="text" id="action" class="form-control" formControlName="action">
+          </div>
+          <div class="form-group">
+            <label for="icon">Simge</label>
+            <input type="text" id="icon" class="form-control" formControlName="icon">
+          </div>
+
+          <div class="form-group">
+            <label for="isActive">Aktif</label>
+            <p-inputSwitch id="isFisActiveirst" class="form-control" formControlName="isActive" />
+          </div>
+          <div class="form-group">
+            <label for="parentId">Üst Menü ID</label>
+            <select id="parentId" class="form-control" formControlName="parentId">
+              <option [ngValue]="null">Yok</option>
+              <option *ngFor="let menuInfo of menuInfos" [ngValue]="menuInfo.id">{{ menuInfo.label }}</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="menuInfoForm.invalid">Kaydet</button>
+        </form>
+
+        <table class="table mt-3">
+          <thead>
+            <tr>
+              <th scope="col">Id</th>
+
+              <th scope="col">Etiket</th>
+              <th scope="col">Rota</th>
+              <th scope="col">Aksiyon</th>
+              <th scope="col">Simge</th>
+              <th scope="col">Aktif</th>
+              <th scope="col">Üst Menü ID</th>
+              <th scope="col">İşlemler</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let menuInfo of menuInfos">
+              <td>{{ menuInfo.id }}</td>
+              <td>{{ menuInfo.label }}</td>
+              <td>{{ menuInfo.route }}</td>
+              <td>{{ menuInfo.action }}</td>
+              <td>{{ menuInfo.icon }}</td>
+              <td>
+                <button *ngIf="!menuInfo.isActive" class="btn btn-warning">Pasif</button>
+                <button *ngIf="menuInfo.isActive" class="btn btn-success">Aktif</button>
+              </td>
+              <td>{{ menuInfo.parentId }}</td>
+              <td>
+                <button class="btn btn-primary btn-sm" (click)="onEditMenuInfo(menuInfo)"><i class="fa fa-refresh"
+                    aria-hidden="true"></i></button>
+                <button class="btn btn-danger btn-sm" (click)="onDeleteMenuInfo(menuInfo.id)"><i class="fa fa-trash"
+                    aria-hidden="true"></i></button>
+                <button class="btn btn-secondary btn-sm" (click)="onToggleActive(menuInfo)">
+                  <i class="fa fa-toggle-on" aria-hidden="true"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </p-tabPanel>
+    </p-tabView>
+
+
+
+  </section>
+</main>
