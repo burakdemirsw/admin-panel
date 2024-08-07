@@ -214,8 +214,8 @@ export class InfoService {
   }
 
 
-  async getStructuredMenu(): Promise<any> {
-    const response = await this.httpClientService.get<MenuItem[]>({ controller: 'Infos/get-structured-menu' }).toPromise();
+  async getStructuredMenu(): Promise<MenuItem[]> {
+    const response: MenuItem[] = await this.httpClientService.get<MenuItem>({ controller: 'Infos/get-structured-menu' }).toPromise();
     return response;
   }
 

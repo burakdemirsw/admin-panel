@@ -93,7 +93,7 @@ export class PagesInfoComponent implements OnInit {
   createNebimInfoForm() {
     this.nebimInfoForm = this.fb.group({
       id: [0],
-      type: [null],
+      description: [null],
       officeCode: [null],
       storeCode: [null],
       posTerminalID: [null],

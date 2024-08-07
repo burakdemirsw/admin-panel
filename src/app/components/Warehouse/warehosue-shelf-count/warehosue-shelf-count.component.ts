@@ -470,11 +470,10 @@ export class WarehosueShelfCountComponent implements OnInit {
     );
 
     if (confirmDelete) {
-      const response: boolean = await this.productService.deleteOrderProduct(
-        this.currentOrderNo,
-        product.itemCode, product.id
-
+      const response: boolean = await this.warehouseService.deleteCount(
+        product
       );
+
       if (response) {
         this.list = this.list.filter(
           (o) => !(o.barcode == product.itemCode && o.shelfNo == product.shelfNo)

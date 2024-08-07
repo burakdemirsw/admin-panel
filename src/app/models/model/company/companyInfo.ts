@@ -45,7 +45,7 @@ export class DatabaseInfo extends BaseEntity {
 }
 
 export class NebimInfo extends BaseEntity {
-  type?: string;
+  description?: string;
   officeCode?: string;
   storeCode?: string;
   posTerminalID?: string;

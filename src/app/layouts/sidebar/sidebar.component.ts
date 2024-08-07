@@ -25,12 +25,33 @@ export class SidebarComponent implements OnInit {
 
   async loadMenu() {
     try {
-      const data = await this.infoService.getStructuredMenu();
-      this.menuItems = data;
+      const data: MenuItem[] = await this.infoService.getStructuredMenu();
+
+      // Temporary array to hold items that are not "Ayarlar"
+      const otherItems: MenuItem[] = [];
+      let ayarlarItem: MenuItem | null = null;
+
+      // Separate "Ayarlar" item from the rest
+      for (const item of data) {
+        if (item.label === 'Ayarlar') {
+          ayarlarItem = item;
+        } else {
+          otherItems.push(item);
+        }
+      }
+
+      // Add "Ayarlar" item to the end if it exists
+      if (ayarlarItem) {
+        otherItems.push(ayarlarItem);
+      }
+
+      // Update menuItems with reordered list
+      this.menuItems = otherItems;
     } catch (error) {
       console.error('Error loading menu', error);
     }
   }
+
 
   onAction(action: string, param?: any) {
     switch (action) {

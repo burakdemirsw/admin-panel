@@ -282,8 +282,8 @@
           <p-tabPanel header="Nebim Süreçleri">
             <form [formGroup]="nebimInfoForm" (ngSubmit)="onSubmitNebimInfo()">
               <div class="form-group">
-                <label for="type">Tür</label>
-                <input type="text" id="type" class="form-control" formControlName="type">
+                <label for="description">Tür</label>
+                <input type="text" id="description" class="form-control" formControlName="description">
               </div>
               <div class="form-group">
                 <label for="officeCode">Ofis Kodu</label>
@@ -311,11 +311,6 @@
 
               </div>
 
-              <div class="form-group m">
-                <label for="isCreditSale">Nebim Dış Ip</label>
-                <input type="text" id="isCreditSale" class="form-control" formControlName="isCreditSale">
-
-              </div>
               <div class="form-group mb-3">
                 <label for="warehouseCode">Depo Kodu</label>
                 <input type="text" id="warehouseCode" class="form-control" formControlName="warehouseCode">
@@ -329,7 +324,7 @@
             <table class="table mt-3 mb-3">
               <thead>
                 <tr>
-                  <th scope="col">Tür</th>
+                  <th scope="col">Açıklama</th>
                   <th scope="col">Ofis Kodu</th>
                   <th scope="col">Mağaza Kodu</th>
                   <th scope="col">POS Terminal ID</th>
@@ -340,7 +335,7 @@
               </thead>
               <tbody>
                 <tr *ngFor="let nebim of nebimInfos">
-                  <td>{{ nebim.type }}</td>
+                  <td>{{ nebim.description }}</td>
                   <td>{{ nebim.officeCode }}</td>
                   <td>{{ nebim.storeCode }}</td>
                   <td>{{ nebim.posTerminalID }}</td>
