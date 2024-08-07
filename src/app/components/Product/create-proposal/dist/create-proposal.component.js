@@ -65,7 +65,6 @@ var CreateProposalComponent = /** @class */ (function () {
         this.formBuilder = formBuilder;
         this.orderService = orderService;
         this.cargoService = cargoService;
-        this.suggestedProducts = [];
         this.selectedCustomers = [];
         this.selectedProducts = [];
         this.selectedAddresses = [];
@@ -78,7 +77,6 @@ var CreateProposalComponent = /** @class */ (function () {
         this.isCollapsed = false;
         this.isCollapsed_2 = false;
         this.updateProductDialog = false;
-        this.suggestedProductsDialog = false;
         this.getCustomerDialog = false;
         this.findProductDialog = false;
         this.selectAddressDialog = false;
@@ -200,9 +198,6 @@ var CreateProposalComponent = /** @class */ (function () {
         }
         if (dialogName === "quantityListDialog") {
             this.quantityListDialog = !this.quantityListDialog;
-        }
-        if (dialogName === "suggestedProductsDialog") {
-            this.suggestedProductsDialog = !this.suggestedProductsDialog;
         }
         if (dialogName === "updateProductDialog") {
             this.updateProductDialog = !this.updateProductDialog;
@@ -613,7 +608,7 @@ var CreateProposalComponent = /** @class */ (function () {
     };
     CreateProposalComponent.prototype.createProposalReport = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var data, file, fileURL, downloadLink, _file, _fileURL, iframe_1;
+            var data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -621,33 +616,6 @@ var CreateProposalComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.warehouseService.createProposalReport(this.proposal.id)];
                     case 1:
                         data = _a.sent();
-                        if (data) {
-                            file = new Blob([data], { type: 'application/pdf' });
-                            fileURL = URL.createObjectURL(file);
-                            downloadLink = document.createElement('a');
-                            downloadLink.href = fileURL;
-                            downloadLink.download = "marketplace-order-cargo-barcode.pdf"; // Set the filename for the download
-                            document.body.appendChild(downloadLink); // Append to body
-                            downloadLink.click(); // Trigger the download
-                            document.body.removeChild(downloadLink); // Remove the link after triggering the download
-                            URL.revokeObjectURL(fileURL); // Clean up the URL object
-                            _file = new Blob([data], { type: 'application/pdf' });
-                            _fileURL = URL.createObjectURL(_file);
-                            iframe_1 = document.createElement('iframe');
-                            iframe_1.style.display = 'none'; // Hide the iframe
-                            iframe_1.src = _fileURL;
-                            // Append the iframe to the body
-                            document.body.appendChild(iframe_1);
-                            // Wait until the iframe is loaded, then call print
-                            iframe_1.onload = function () {
-                                var _a;
-                                (_a = iframe_1.contentWindow) === null || _a === void 0 ? void 0 : _a.print();
-                            };
-                            this.toasterService.success("Teklif YAZDIRILDI");
-                        }
-                        else {
-                            this.toasterService.error("Teklif YAZDIRILAMADI");
-                        }
                         _a.label = 2;
                     case 2: return [2 /*return*/];
                 }
