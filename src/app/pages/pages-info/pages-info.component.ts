@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import TypedRegistry from 'chart.js/dist/core/core.typedRegistry';
-import { CargoInfo, MarketPlaceInfo, MenuInfo, NebimInfo, NebimUserInfo, PaymentInfo } from 'src/app/models/model/company/companyInfo';
+import { CargoInfo, MailInfo, MarketPlaceInfo, MenuInfo, NebimInfo, NebimUserInfo, PaymentInfo } from 'src/app/models/model/company/companyInfo';
 import { InfoService } from 'src/app/services/admin/info.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 
@@ -29,6 +29,7 @@ export class PagesInfoComponent implements OnInit {
   nebimUserInfos: NebimUserInfo[] = [];
 
   paymentInfos: PaymentInfo[] = [];
+  mailInfos: MailInfo[] = [];
   constructor(
     private fb: FormBuilder,
     private infoService: InfoService,
@@ -51,12 +52,22 @@ export class PagesInfoComponent implements OnInit {
     this.loadMenuInfos();
     this.loadCompanyInfo();
     this.loadNebimInfos();
-    this.loadMailInfo();
+    this.loadMailInfos();
     this.loadDatabaseInfo();
     this.loadMarketPlaceInfos();
     this.loadPaymentInfos();
     this.loadCargoInfos();
     this.loadNebimUserInfos();
+    this.createTestMailForm();
+  }
+  testMailDialog: boolean = false;
+  testMailForm: FormGroup;
+  createTestMailForm() {
+    this.testMailForm = this.fb.group({
+      mail: ['', [Validators.required, Validators.email]],
+      nameSurname: ['', Validators.required],
+      body: ['', Validators.required]
+    });
   }
 
   createCompanyInfoForm() {
@@ -103,9 +114,12 @@ export class PagesInfoComponent implements OnInit {
   }
   createMailInfoForm() {
     this.mailInfoForm = this.fb.group({
+      id: [0],
       isFirst: [false],
       userName: [null],
       password: [null],
+      smtpAddress: [null],
+      smtpPort: [null],
       applicationPassword: [null]
     });
   }
@@ -201,11 +215,12 @@ export class PagesInfoComponent implements OnInit {
     }
   }
 
-  async loadMailInfo() {
+  async loadMailInfos() {
     try {
       const data = await this.infoService.getMailInfos();
       if (data) {
-        this.mailInfoForm.patchValue(data);
+        this.mailInfos = data;
+        // this.mailInfoForm.patchValue(data);
       }
     } catch (error) {
       this.toasterService.error('Mail bilgileri yüklenirken bir hata oluştu');
@@ -339,22 +354,51 @@ export class PagesInfoComponent implements OnInit {
     }
   }
   //----------------------------------------------------------------------------------MAIL
+  updatedmailInfo: MailInfo;
   async onSubmitMailInfo() {
     if (this.mailInfoForm.invalid) {
-      this.toasterService.error('Lütfen tüm gerekli alanları doldurun');
+      this.toasterService.error('Please fill all required fields');
       return;
     }
 
     try {
-      const result = await this.infoService.addMailInfo(this.mailInfoForm.value);
-      if (result) {
-        this.toasterService.success('Mail bilgileri başarıyla kaydedildi');
-        // this.mailInfoForm.reset();
+
+      if (this.updatedmailInfo) {
+        var result = await this.infoService.updateMailInfo(this.mailInfoForm.value);
+
       } else {
-        this.toasterService.error('Mail bilgileri kaydedilemedi');
+        this.mailInfoForm.value.id = 0;
+        var result = await this.infoService.addMailInfo(this.mailInfoForm.value);
+
+      }
+      if (result) {
+        this.toasterService.success('Mail info successfully saved');
+        this.loadMailInfos();
+        this.updatedmailInfo = null;
+        this.mailInfoForm.reset();
+      } else {
+        this.toasterService.error('Payment info could not be saved');
       }
     } catch (error) {
-      this.toasterService.error('Mail bilgileri kaydedilirken bir hata oluştu');
+      this.toasterService.error('An error occurred while saving payment info');
+    }
+  }
+  async onEditMailInfo(mailInfo: MailInfo) {
+    this.updatedmailInfo = mailInfo;
+    this.mailInfoForm.patchValue(mailInfo);
+  }
+
+  async onDeleteMailInfo(id: number) {
+    try {
+      const result = await this.infoService.deleteMailInfo(id);
+      if (result) {
+        this.toasterService.success('Mail info successfully deleted');
+        this.loadMailInfos();
+      } else {
+        this.toasterService.error('Mail info could not be deleted');
+      }
+    } catch (error) {
+      this.toasterService.error('An error occurred while deleting payment info');
     }
   }
 
@@ -656,4 +700,30 @@ export class PagesInfoComponent implements OnInit {
       this.toasterService.error('Menü durumu güncellenirken bir hata oluştu');
     }
   }
+
+  //-------------------------------------;
+  async onSubmitTestMail() {
+    try {
+
+      const result = await this.infoService.sendTestMail(this.testMailForm.value);
+      if (result) {
+        this.toasterService.success('Mail Gönderildi');
+      } else {
+        this.toasterService.error('Mail Gönderilemedi');
+      }
+
+      this.testMailInfo = null;
+    } catch (error) {
+      this.testMailInfo = null;
+
+      this.toasterService.error('Mail gönderilirken bir hata oluştu');
+    }
+  }
+
+  testMailInfo: MailInfo;
+  openDialog(mailInfo) {
+    this.testMailInfo = mailInfo;
+    this.testMailDialog = true;
+  }
+
 }

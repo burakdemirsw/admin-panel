@@ -62,6 +62,8 @@ import { ImportTransactionsComponent } from './components/Order/import-transacti
 import { ExportTransactionsComponent } from './components/Order/export-transactions/export-transactions.component';
 import { CollectExportProductsComponent } from './components/Order/export-transactions/collect-export-products/collect-export-products.component';
 import { PagesInfoComponent } from './pages/pages-info/pages-info.component';
+import { CreateProposalComponent } from './components/Product/create-proposal/create-proposal.component';
+import { ProposalListComponent } from './components/Product/proposal-list/proposal-list.component';
 
 
 const routes: Routes = [
@@ -311,6 +313,10 @@ const routes: Routes = [
   { path: 'export-transactions', component: ExportTransactionsComponent, canActivate: [AuthGuard] },
   { path: 'collect-export-products/:id/:warehouseCode', component: CollectExportProductsComponent, canActivate: [AuthGuard] },
 
+  { path: 'create-proposal/:id', component: CreateProposalComponent, canActivate: [AuthGuard] },
+  { path: 'create-proposal', component: CreateProposalComponent, canActivate: [AuthGuard] },
+
+  { path: 'proposal-list', component: ProposalListComponent, canActivate: [AuthGuard] },
   //------------------------------------------------------------------------- PERAKENDE
   { path: 'ideasoft/auth', component: IdeasoftComponent, pathMatch: 'prefix', runGuardsAndResolvers: 'always' },
 

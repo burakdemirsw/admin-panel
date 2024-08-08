@@ -120,12 +120,59 @@
             <label for="password">Şifre</label>
             <input type="password" id="password" class="form-control" formControlName="password">
           </div>
+          <div class="form-group">
+            <label for="smtpAddress">SMTP Adres</label>
+            <input type="text" id="smtpAddress" class="form-control" formControlName="smtpAddress">
+          </div>
+          <div class="form-group">
+            <label for="smtpAddress">SMTP Port</label>
+            <input type="number" id="smtpPort" class="form-control" formControlName="smtpPort">
+          </div>
+
           <div class="form-group mb-3">
             <label for="applicationPassword">Uygulama Şifresi</label>
             <input type="password" id="applicationPassword" class="form-control" formControlName="applicationPassword">
           </div>
           <button type="submit" class="btn btn-primary" [disabled]="mailInfoForm.invalid">Güncelle</button>
         </form>
+
+        <table class="table mt-3">
+          <thead>
+            <tr>
+              <th scope="col">Aktif Mi</th>
+
+              <th scope="col">Mail</th>
+              <th scope="col">Şifre</th>
+              <th scope="col">SMTP Adres</th>
+              <th scope="col">SMTP Port</th>
+              <th scope="col">Uygulama Şifresi</th>
+              <th scope="col">İşlemler</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let mail of mailInfos">
+              <td>{{ mail.isFirst }}</td>
+
+              <td>{{ mail.userName }}</td>
+              <td>{{ mail.password }}</td>
+              <td>{{ mail.smtpAddress }}</td>
+              <td>{{ mail.smtpPort }}</td>
+              <td>{{ mail.applicationPassword }}</td>
+              <td>
+                <button *ngIf="mail.isFirst == true" (click)="openDialog(mail)" class="btn btn-primary btn-sm"><i
+                    class="fa fa-paper-plane" aria-hidden="true"></i>
+                </button>
+                <button (click)="onEditMailInfo(mail)" class="btn btn-primary btn-sm"><i class="fa fa-refresh"
+                    aria-hidden="true"></i></button>
+                <button (click)="onDeleteMailInfo(mail.id)" class="btn btn-danger btn-sm"><i class="fa fa-trash"
+                    aria-hidden="true"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+
+
       </p-tabPanel>
       <p-tabPanel header="Veritabanı Bilgileri">
         <form [formGroup]="databaseInfoForm" (ngSubmit)="onSubmitDatabaseInfo()">
@@ -152,7 +199,8 @@
             <p-inputSwitch id="trustServerCertificate" class="form-control" formControlName="trustServerCertificate" />
 
           </div>
-          <button type="submit" class="btn btn-primary" [disabled]="databaseInfoForm.invalid">Güncelle</button>
+          <button type="submit" class="btn btn-primary"
+            [disabled]="databaseInfoForm.invalid">{{this.updatedmailInfo ? 'Güncelle' : 'Ekle'}}</button>
         </form>
       </p-tabPanel>
       <p-tabPanel header="Ödeme Bilgileri">
@@ -550,8 +598,23 @@
         </table>
       </p-tabPanel>
     </p-tabView>
-
-
+    <p-dialog header="Test Maili" [(visible)]="testMailDialog" [style]="{ width: '80vw' }">
+      <form [formGroup]="testMailForm" (ngSubmit)="onSubmitTestMail()">
+        <div class="form-group">
+          <label for="mail">Mail</label>
+          <input id="mail" type="text" class="form-control" formControlName="mail" />
+        </div>
+        <div class="form-group">
+          <label for="nameSurname">Name Surname</label>
+          <input id="nameSurname" type="text" class="form-control" formControlName="nameSurname" />
+        </div>
+        <div class="form-group">
+          <label for="body">Body</label>
+          <textarea id="body" class="form-control" formControlName="body"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" (click)="onSubmitTestMail()">Send</button>
+      </form>
+    </p-dialog>
 
   </section>
 </main>

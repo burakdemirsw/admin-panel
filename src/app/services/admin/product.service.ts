@@ -27,6 +27,8 @@ import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 import { GeneralService } from './general.service';
 import { CreateBarcodeFromOrder_RM, CreateBarcodeModel } from 'src/app/components/Product/create-barcode/models/createBarcode';
+import { ZTMSG_ProposalProduct, Proposal_VM, ZTMSG_Proposal } from 'src/app/models/model/product/proposalProduct';
+import { FastTransfer_VM } from 'src/app/models/model/warehouse/transferRequestListModel';
 
 @Injectable({
   providedIn: 'root',
@@ -482,8 +484,135 @@ export class ProductService {
     }, request).toPromise();
     return response;
   }
+
+  // Proposal işlemleri
+  // async searchProposalProducts(model: ProposalProduct_SM): Promise<any> {
+  //   const response: ProposalProduct_SM[] = await this.httpClientService
+  //     .post<ProposalProduct_SM>({ controller: 'Products/search-proposal-products' }, model)
+  //     .toPromise();
+
+  //   return response;
+  // }
+  async getProposalProducts(request: string): Promise<ZTMSG_ProposalProduct[]> {
+    const response: ZTMSG_ProposalProduct[] = await this.httpClientService
+      .get_new<ZTMSG_ProposalProduct>({ controller: 'Products/get-proposal-products' }, request)
+      .toPromise();
+
+    return response;
+  }
+  async deleteProposalProduct(request: number): Promise<any> {
+    const response: ZTMSG_ProposalProduct[] = await this.httpClientService
+      .get_new<boolean>({ controller: 'Products/delete-proposal-product' }, request.toString())
+      .toPromise();
+
+    return response;
+  }
+  async addProposalProduct(request: ZTMSG_ProposalProduct): Promise<any> {
+    const response: ZTMSG_ProposalProduct[] = await this.httpClientService
+      .post<ZTMSG_ProposalProduct>({ controller: 'Products/add-proposal-product' }, request)
+      .toPromise();
+
+    return response;
+  }
+  async updateProposalProduct(request: ZTMSG_ProposalProduct): Promise<any> {
+    const response: ZTMSG_ProposalProduct[] = await this.httpClientService
+      .post<ZTMSG_ProposalProduct>({ controller: 'Products/update-proposal-product' }, request)
+      .toPromise();
+
+    return response;
+  }
+
+
+
+  async getProposals(): Promise<Proposal_VM[]> {
+    const response: Proposal_VM[] = await this.httpClientService
+      .get<Proposal_VM>({ controller: 'Products/get-proposals' })
+      .toPromise();
+    return response;
+  }
+  async deleteProposal(request: number): Promise<any> {
+    const response: boolean = await this.httpClientService
+      .delete<boolean>({ controller: 'Products/delete-proposal' }, request.toString())
+      .toPromise();
+    return response;
+  }
+
+  async addProposal(request: ZTMSG_Proposal): Promise<any> {
+    const response: boolean = await this.httpClientService
+      .post<boolean>({ controller: 'Products/add-proposal' }, request)
+      .toPromise();
+    return response;
+  }
+
+  async updateProposal(request: ZTMSG_Proposal): Promise<any> {
+    const response: boolean = await this.httpClientService
+      .post<boolean>({ controller: 'Products/update-proposal' }, request)
+      .toPromise();
+    return response;
+  }
+
+  async searchProduct5(): Promise<FastTransfer_VM[]> {
+    const response = await this.httpClientService
+      .get<FastTransfer_VM>({ controller: 'Products/search-product-5' })
+      .toPromise();
+
+    return response;
+  }
+  async createProposalReport(request: number): Promise<any> {
+    try {
+      var response: any = await this.httpClientService.get<any>({ controller: "Warehouse/create-proposal-report", responseType: 'arraybuffer' }, request.toString()).toPromise();
+      if (response) {
+
+
+        const file = new Blob([response], { type: 'application/pdf' });
+        const fileURL = URL.createObjectURL(file);
+
+        // Create a temporary link element
+        const downloadLink = document.createElement('a');
+        downloadLink.href = fileURL;
+        downloadLink.download = "marketplace-order-cargo-barcode.pdf";  // Set the filename for the download
+        document.body.appendChild(downloadLink); // Append to body
+        downloadLink.click();  // Trigger the download
+        document.body.removeChild(downloadLink); // Remove the link after triggering the download
+        URL.revokeObjectURL(fileURL); // Clean up the URL object
+
+
+
+        const _file = new Blob([response], { type: 'application/pdf' });
+        const _fileURL = URL.createObjectURL(_file);
+
+        // Create an iframe element
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';  // Hide the iframe
+        iframe.src = _fileURL;
+
+        // Append the iframe to the body
+        document.body.appendChild(iframe);
+
+        // Wait until the iframe is loaded, then call print
+        iframe.onload = () => {
+          iframe.contentWindow?.print();
+        };
+        alert("Teklif YAZDIRILDI");
+
+      } else {
+        alert("Teklif YAZDIRILAMADI");
+      }
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+  //
+
 }
 export class BarcodeSearch_RM {
   barcode!: string;
+
+  constructor(barcode?: string) {
+    this.barcode = barcode;
+
+  }
 }
 

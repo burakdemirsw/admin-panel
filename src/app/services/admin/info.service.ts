@@ -239,5 +239,11 @@ export class InfoService {
     const response = await this.httpClientService.get<MenuInfo[]>({ controller: 'Infos/get-menu-infos' }).toPromise();
     return response;
   }
+
+  //-----
+  async sendTestMail(request: any): Promise<any> {
+    const response = await this.httpClientService.post<any>({ controller: 'direct-request/send-mail' }, request).toPromise();
+    return response;
+  }
 }
 

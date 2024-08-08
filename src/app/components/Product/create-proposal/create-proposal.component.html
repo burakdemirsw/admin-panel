@@ -1,0 +1,574 @@
+<main id="main" class="main">
+
+  <section class="section">
+    <!-- HEADER----------------------------------------------------------------------------------------------------->
+
+    <div class="card mb-3">
+      <div class="card-body">
+
+        <div class="p-inputgroup p-4 justify-content-start" style="overflow-x: auto; white-space: nowrap;">
+
+          <div style="text-align: left">
+            <button pButton pRipple class="p-button-rounded p-button-primary" icon="pi pi-search" label="Ürün Ara"
+              type="button" (click)="getAllProducts()"></button>
+          </div>
+          <div style="text-align: left">
+            <button pButton pRipple class="p-button-rounded p-button-primary" icon="pi pi-search" label="Müşteri Ara"
+              type="button" (click)="getAllCustomers()"></button>
+          </div>
+          <div style="text-align: left">
+            <button *ngIf="addedProducts.length>0" pButton pRipple class="p-button-rounded p-button-danger"
+              (click)="deleteAllPRoduct()" icon="pi pi-trash" label="Tüm Ürünleri Sil" type="button"></button>
+          </div>
+          <div style="text-align: left">
+            <button *ngIf="this.proposal" pButton pRipple class="p-button-rounded p-button-danger"
+              (click)="deleteProposal(this.proposal.id)" icon="pi pi-trash" label="Teklifi Sil" type="button"></button>
+          </div>
+
+
+
+        </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="card" *ngIf="addedProducts.length>0">
+      <div class="card-body">
+
+
+        <!-- EKLENEN ÜRÜNLER----------------------------------------------------------------------------------------------------->
+        <p-table id="EKLENEN ÜRÜNLER" [styleClass]="'p-datatable-striped mt-3'" [value]="addedProducts"
+          [scrollable]="true" scrollHeight="600px" (onFilter)="logFilteredData($event)" [tableStyle]="{ 'min-width':
+          '50rem'
+            }">
+
+          <ng-template pTemplate="header">
+
+            <tr>
+              <th>Fotoğraf</th>
+              <th pSortableColumn="brand">
+                Marka <p-sortIcon field="brand"></p-sortIcon>
+              </th>
+              <th pSortableColumn="barcode">
+                Barkod <p-sortIcon field="barcode"></p-sortIcon>
+              </th>
+
+              <th pSortableColumn="itemCode">
+                Ürün Kodu <p-sortIcon field="itemCode"></p-sortIcon>
+              </th>
+
+              <th pSortableColumn="description">
+                Ürün <p-sortIcon field="description"></p-sortIcon>
+              </th>
+
+
+              <th pSortableColumn="quantity">
+                Miktar <p-sortIcon field="quantity"></p-sortIcon>
+              </th>
+              <th pSortableColumn="price">
+                Fiyat <p-sortIcon field="price"></p-sortIcon>
+              </th>
+
+
+              <th pSortableColumn="discountRate1">
+                %İSK<p-sortIcon field="discountRate1"></p-sortIcon>
+              </th>
+
+              <th pSortableColumn="discountRate2">
+                N.İSK <p-sortIcon field="discountRate2"></p-sortIcon>
+              </th>
+              <th pSortableColumn="discountedPrice">
+                S.Fiyat <p-sortIcon field="discountedPrice"></p-sortIcon>
+              </th>
+
+              <th pSortableColumn="totalPrice">
+                Total <p-sortIcon field="totalPrice"></p-sortIcon>
+              </th>
+              <th pSortableColumn="taxRate">
+                KDV <p-sortIcon field="taxRate"></p-sortIcon>
+              </th>
+
+              <th pSortableColumn="totalTaxedPrice">
+                K.Total <p-sortIcon field="totalTaxedPrice"></p-sortIcon>
+              </th>
+              <th>
+                İşlemler
+              </th>
+            </tr>
+
+          </ng-template>
+          <ng-template pTemplate="body" let-product>
+            <tr>
+
+              <td>
+                <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true">
+                </p-image>
+              </td>
+              <td>{{ product.brand }}</td>
+              <td>{{ product.barcode }}</td>
+
+              <td>{{ product.itemCode }}</td>
+
+              <td class="scrollable-td">{{ product.description.substring(0,15) }}</td>
+
+              <td>{{ product.quantity }}</td>
+              <td>{{ product.price }}</td>
+
+              <td>{{ product.discountRate1 }}</td>
+              <td>{{ product.discountRate2 }}</td>
+
+              <td>{{ product.discountedPrice }}</td>
+              <td>{{ product.totalPrice }}</td>
+              <td>{{ product.taxRate }}</td>
+              <td>{{ product.totalTaxedPrice }}</td>
+
+
+              <td>
+                <div class="p-inputgroup">
+                  <button pButton pRipple icon="pi pi-trash" type="button" class="p-button-rounded p-button-danger"
+                    (click)="deleteProposalProduct(product.id)"></button>
+                  <button pButton pRipple icon="pi pi-pencil" type="button" class="p-button-rounded p-button-peimary"
+                    (click)="openUpdateDialog(product)"></button>
+                  <button pButton pRipple icon="pi pi-refresh" type="button" class="p-button-rounded p-button-text"
+                    (click)="refreshProposalProduct(product)"></button>
+                </div>
+              </td>
+
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="footer">
+            <tr>
+              <td colspan="5" class="text-right">Toplam</td>
+              <td colspan="5" class="text-right">
+                {{getTotalQuantity() }} Adet
+              </td>
+              <td colspan="2" class="text-right"> {{getTotal() }} </td>
+              <td colspan="2" class="text-right"> {{getTotalTaxedPrice() }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+        <!-- Ürün Güncelle----------------------------------------------------------------------------------------------------->
+
+        <p-dialog header="Ürün Güncelle" [(visible)]="updateProductDialog" [modal]="true" [closable]="false"
+          [style]="{width: '300px'}" (ngSubmit)="updateProposalProduct(this.selectedProduct)">
+          <form [formGroup]="updateProductForm">
+            <div class="p-fluid">
+              <div class="p-field">
+                <label for="price">Fiyat</label>
+                <input id="price" type="number" pInputText formControlName="price">
+              </div>
+              <div class="p-field mb-3">
+                <label for="quantity">Adet</label>
+                <input id="quantity" type="number" pInputText formControlName="quantity">
+              </div>
+
+              <div class="p-field mb-3">
+                <label for="discountRate1">Yüzde İndirim</label>
+                <input id="discountRate1" type="number" pInputText formControlName="discountRate1">
+              </div>
+
+              <div class="p-field mb-3">
+                <label for="discountRate2">Nakit İndirim</label>
+                <input id="discountRate2" type="number" pInputText formControlName="discountRate2">
+              </div>
+              <div class="p-field mb-3">
+                <button type="submit" pButton label="Güncelle"
+                  (click)="updateProposalProduct(this.selectedProduct)"></button>
+              </div>
+
+              <div class="p-field">
+                <button type="button" pButton label="Kapat" (click)="this.updateProductDialog =false"></button>
+              </div>
+            </div>
+          </form>
+        </p-dialog>
+
+
+
+      </div>
+    </div>
+    <!-- BULUNAN ÜRÜNLER----------------------------------------------------------------------------------------------------->
+    <p-dialog header="Bulunan Ürünler" [(visible)]="findProductDialog" [style]="{ width: '100vw' ,minheight : '100vw'}"
+      modal="true">
+      <p-table [styleClass]="'p-datatable-striped'" [value]="allProducts" [paginator]="true" [rows]="10"
+        (onFilter)="logFilteredData($event)" [tableStyle]="{ 'min-width': '50rem' , 'minheight' : '100vw' }">
+
+
+        <ng-template pTemplate="header">
+
+          <tr>
+            <th>Fotoğraf</th>
+            <th pSortableColumn="brand">
+              Marka <p-sortIcon field="brand"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="itemCode">
+              Ürün Kodu <p-sortIcon field="itemCode"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="description">
+              Ürün <p-sortIcon field="description"></p-sortIcon>
+            </th>
+            <th pSortableColumn="productHierarchyLevel01">
+              Ürün Hiyerarşisi 1 <p-sortIcon field="productHierarchyLevel01"></p-sortIcon>
+            </th>
+            <th pSortableColumn="productHierarchyLevel02">
+              Ürün Hiyerarşisi 2 <p-sortIcon field="productHierarchyLevel02"></p-sortIcon>
+            </th>
+            <th pSortableColumn="productHierarchyLevel03">
+              Ürün Hiyerarşisi 3 <p-sortIcon field="productHierarchyLevel03"></p-sortIcon>
+            </th>
+            <th pSortableColumn="speed">
+              Hız <p-sortIcon field="speed"></p-sortIcon>
+            </th>
+            <th pSortableColumn="inventory">
+              Envanter <p-sortIcon field="inventory"></p-sortIcon>
+            </th>
+            <th pSortableColumn="price">
+              Fiyat <p-sortIcon field="price"></p-sortIcon>
+            </th>
+            <th>
+              İşlemler
+            </th>
+          </tr>
+          <tr>
+            <th></th>
+
+            <th>
+              <p-columnFilter field="brand" matchMode="equals" [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="brands"
+                    (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                    filterBy="label">
+                    <ng-template let-option pTemplate="item">
+                      <span class="ml-1 mt-1">{{ option.label }}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter field="itemCode" matchMode="equals" [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="itemCodes"
+                    (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                    filterBy="label">
+                    <ng-template let-option pTemplate="item">
+                      <span class="ml-1 mt-1">{{ option.label }}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+
+            <th>
+              <p-columnFilter field="description" matchMode="equals" [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="descriptions"
+                    (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                    filterBy="label">
+                    <ng-template let-option pTemplate="item">
+                      <span class="ml-1 mt-1">{{ option.label }}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter field="productHierarchyLevel01" matchMode="equals" [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown [options]="productHierarchyLevel01s" (onChange)="filter($event.value)"
+                    placeholder="Seçiniz" [showClear]="true" filter="true" filterBy="label">
+                    <ng-template let-option pTemplate="item">
+                      <span class="ml-1 mt-1">{{ option.label }}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter field="productHierarchyLevel02" matchMode="equals" [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="productHierarchyLevel02s"
+                    (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                    filterBy="label">
+                    <ng-template let-option pTemplate="item">
+                      <span class="ml-1 mt-1">{{ option.label }}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter field="productHierarchyLevel03" matchMode="equals" [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="productHierarchyLevel03s"
+                    (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                    filterBy="label">
+                    <ng-template let-option pTemplate="item">
+                      <span class="ml-1 mt-1">{{ option.label }}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="speed" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="inventory" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="price" [showClearButton]="false"></p-columnFilter>
+            </th>
+
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+          <tr>
+
+            <td>
+              <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true">
+              </p-image>
+            </td>
+            <td>{{ product.brand }}</td>
+
+            <td>{{ product.itemCode }}</td>
+
+            <td class="scrollable-td">{{ product.description }}</td>
+            <td>{{ product.productHierarchyLevel01 }}</td>
+            <td>{{ product.productHierarchyLevel02 }}</td>
+            <td>{{ product.productHierarchyLevel03 }}</td>
+            <td>{{ product.speed }}</td>
+            <td>{{ product.inventory }}</td>
+            <td>{{ product.price }}</td>
+            <td>
+              <button pButton pRipple icon="pi pi-plus" type="button" class="p-button-rounded p-button-text "
+                (click)="addProduct(product)"></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-dialog>
+    <!-- BULUNAN MÜŞTERİLER----------------------------------------------------------------------------------------------------->
+    <p-dialog header="Bulunan Müşteriler" [(visible)]="findCustomerDialog" [style]="{ width: '100vw' }" modal="true">
+      <p-table [styleClass]="'p-datatable-striped'" [value]="_selectableCustomers" [paginator]="true" [rows]="10"
+        (onFilter)="logFilteredData($event)" [tableStyle]="{ 'min-width': '50rem' , 'minheight' : '100vw' }">
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="currAccCode">
+              Müşteri Kodu <p-sortIcon field="currAccCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="currAccDescription">
+              Açıklama <p-sortIcon field="currAccDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="mail">
+              E-posta <p-sortIcon field="mail"></p-sortIcon>
+            </th>
+            <th pSortableColumn="phone">
+              Telefon <p-sortIcon field="phone"></p-sortIcon>
+            </th>
+            <th pSortableColumn="docCurrencyCode">
+              Döviz Kodu <p-sortIcon field="docCurrencyCode"></p-sortIcon>
+            </th>
+            <th>
+              İşlemler
+            </th>
+          </tr>
+          <tr>
+            <th>
+              <p-columnFilter field="currAccCode" matchMode="equals" [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="customerNames"
+                    (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                    filterBy="label">
+                    <ng-template let-option pTemplate="item">
+                      <span class="ml-1 mt-1">{{ option.label }}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter field="currAccDescription" matchMode="equals" [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="_descriptions"
+                    (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                    filterBy="label">
+                    <ng-template let-option pTemplate="item">
+                      <span class="ml-1 mt-1">{{ option.label }}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter field="mail" matchMode="equals" [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="emails"
+                    (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                    filterBy="label">
+                    <ng-template let-option pTemplate="item">
+                      <span class="ml-1 mt-1">{{ option.label }}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter field="phone" matchMode="equals" [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="phones"
+                    (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                    filterBy="label">
+                    <ng-template let-option pTemplate="item">
+                      <span class="ml-1 mt-1">{{ option.label }}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter field="docCurrencyCode" matchMode="equals" [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="docCurrencyCodes"
+                    (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                    filterBy="label">
+                    <ng-template let-option pTemplate="item">
+                      <span class="ml-1 mt-1">{{ option.label }}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-customer>
+          <tr>
+            <td>{{ customer.currAccCode }}</td>
+            <td>{{ customer.currAccDescription }}</td>
+            <td>{{ customer.mail }}</td>
+            <td>{{ customer.phone }}</td>
+            <td>{{ customer.docCurrencyCode }}</td>
+            <td>
+              <button pButton pRipple icon="pi pi-plus" type="button" class="p-button-rounded p-button-text"
+                (click)="addCustomer(customer)"></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-dialog>
+
+
+
+
+    <!-- TOPLAM------------------------------------------------------------------------------------------------------------>
+    <div class="card mb-3" *ngIf="addedProducts.length>0">
+      <div class="card-body">
+        <div class="mt-3">
+          <table class="table table-bordered">
+
+            <tbody>
+              <tr>
+                <th scope="row">Sayın</th>
+                <td style="font-weight: bold;">
+                  {{ this.proposal.currAccDescription == null ? 'MÜŞTERİ SEÇİNİZ' : this.proposal.currAccDescription.substring(0,15)}}
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Dip İskonto (%)</th>
+                <td>%{{ this.proposal.discountRate1}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Dip İskonto (₺)</th>
+                <td>₺{{ this.proposal.discountRate2}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Toplam</th>
+                <td>{{ getTotalPrice() | currency : "₺" }}</td>
+              </tr>
+              <tr>
+                <th scope="row">KDV</th>
+                <td>{{ getTotalTax() | currency : "₺" }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Genel Toplam</th>
+                <td>{{ getTotalPrice2() | currency : "₺" }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+
+        <!-- İNDİRİM FORMU----------------------------------------------------------------------------------------------------->
+
+        <form [formGroup]="discountForm" *ngIf="addedProducts.length > 0" class="mb-3 ">
+          <div class="row">
+            <div class="col-md-4  mb-3">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <button pButton pRipple icon="pi pi-check" class="p-button-rounded p-button-success" (click)="
+                      discount(this.discountForm.value.percentDiscountRate)
+                    " type="button"></button>
+                </div>
+                <input type="number" class="form-control" id="percentDiscountRate" placeholder="Yüzde İndirim Oranı"
+                  formControlName="percentDiscountRate" (keydown.enter)="
+                    discount(this.discountForm.value.percentDiscountRate)
+                  " />
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <div class="input-group ">
+                <div class="input-group-append">
+                  <button pButton pRipple class="p-button-rounded p-button-success" icon="pi pi-check" (click)="
+                      cashDiscount(this.discountForm.value.cashDiscountRate)
+                    " type="button"></button>
+                </div>
+                <input type="number" class="form-control" id="cashDiscountRate" placeholder="Nakit İndirim Tutarı"
+                  formControlName="cashDiscountRate" (keydown.enter)="
+                    cashDiscount(this.discountForm.value.cashDiscountRate)
+                  " />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <button pButton pRipple style="width: 100%" class="p-button p-button-danger" label="İndirimi Sıfırla"
+                (click)="resetDiscount()" type="button"></button>
+            </div>
+          </div>
+
+
+        </form>
+
+
+
+        <div>
+          <div class="row">
+            <div class="col-md-12">
+              <button pButton pRipple style="width: 100%" class="p-button p-button-success" label="Teklifi Oluştur"
+                (click)="createProposalReport()" type="button" [disabled]="this.addedProducts.length<=0 ||
+                !this.proposal.currAccDescription"></button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="card" *ngIf="addedProducts.length<=0">
+      <div class="card-body" style="text-align: center;">
+        @if(!this.proposal.currAccDescription && this.addedProducts.length <= 0){ <h1 class="card-title"> Lütfen Ürün ve
+          Müşteri Seçiniz</h1>
+          }@else if (this.proposal.currAccDescription && this.addedProducts.length <= 0){ <h1 class="card-title"> Lütfen
+            Ürün Ekleyiniz</h1>
+
+            }@else if (!this.proposal.currAccDescription && this.addedProducts.length > 0){ <h1 class="card-title">
+              Lütfen
+              Müşteri Seçiniz</h1>
+            }
+      </div>
+    </div>
+  </section>
+</main>

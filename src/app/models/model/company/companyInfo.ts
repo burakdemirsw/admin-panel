@@ -72,6 +72,8 @@ export class MailInfo extends BaseEntity {
   userName?: string;
   password?: string;
   applicationPassword?: string;
+  smtpAddress: string;
+  smtpPort: number
 }
 export class PaymentInfo {
   description?: string;

@@ -122,6 +122,8 @@ import { ExportTransaction } from './models/model/warehouse/importTransaction';
 import { ExportTransactionsComponent } from './components/Order/export-transactions/export-transactions.component';
 import { CollectExportProductsComponent } from './components/Order/export-transactions/collect-export-products/collect-export-products.component';
 import { PagesInfoComponent } from './pages/pages-info/pages-info.component';
+import { CreateProposalComponent } from './components/Product/create-proposal/create-proposal.component';
+import { ProposalListComponent } from './components/Product/proposal-list/proposal-list.component';
 
 @NgModule({
 
@@ -200,7 +202,9 @@ import { PagesInfoComponent } from './pages/pages-info/pages-info.component';
     ImportTransactionsComponent,
     ExportTransactionsComponent,
     CollectExportProductsComponent,
-    PagesInfoComponent
+    PagesInfoComponent,
+    CreateProposalComponent,
+    ProposalListComponent
 
   ],
 
