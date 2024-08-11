@@ -65,8 +65,8 @@ export class PagesInfoComponent implements OnInit {
   createTestMailForm() {
     this.testMailForm = this.fb.group({
       mail: ['', [Validators.required, Validators.email]],
-      nameSurname: ['', Validators.required],
-      body: ['', Validators.required]
+      nameSurname: ['Peter Parker', Validators.required],
+      body: ['This is a test mail from RTS.', Validators.required]
     });
   }
 
@@ -279,7 +279,7 @@ export class PagesInfoComponent implements OnInit {
   }
   async loadMenuInfos() {
     try {
-      const data = await this.infoService.getMenuInfos();
+      const data = await this.infoService.getMenuInfos(false);
       this.menuInfos = data;
     } catch (error) {
       this.toasterService.error('Menü bilgileri yüklenirken bir hata oluştu');

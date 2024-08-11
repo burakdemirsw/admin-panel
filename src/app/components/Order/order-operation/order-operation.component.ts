@@ -644,6 +644,9 @@ export class OrderOperationComponent implements OnInit {
       this.checkForm.reset();
       this.checkForm.get('shelfNo').setValue(productModel.barcode);
       return;
+    } else if (response.status == "Error:Ürün Rafta Bulunmamaktadır") {
+      alert("Ürün Rafta Bulunmamaktadır, Ürüne Sayım Giriniz");
+      return;
     }
 
     if (!this.checkForm.valid) {

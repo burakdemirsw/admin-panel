@@ -1,15 +1,8 @@
 <main id="main" class="main">
   <section class="section">
     <div class="card custom-card mb-3">
-      <div
-        class="card-body d-flex justify-content-start mt-3"
-        style="overflow-x: auto"
-      >
-        <button
-          type="button"
-          class="btn custom-btn-primary"
-          routerLink="/register"
-        >
+      <div class="card-body d-flex justify-content-start mt-3" style="overflow-x: auto">
+        <button type="button" class="btn custom-btn-primary" routerLink="/register">
           <i class="fas fa-plus"></i> Kullanıcı Ekle
         </button>
       </div>
@@ -28,7 +21,7 @@
                 <th scope="col">Email</th>
                 <th scope="col">Şifre</th>
                 <th scope="col">Telefon Numarası</th>
-                <th scope="col">Rol</th>
+                <th scope="col">Rol Ata</th>
 
                 <th scope="col">İşlemler</th>
                 <!-- <th scope="col">Bildirim Açık</th> -->
@@ -52,27 +45,17 @@
                 <td>{{ user.email }}</td>
                 <td>****</td>
                 <td>{{ user.phoneNumber }}</td>
-                <td>{{ user.roleDescription }}</td>
+                <td> <button pButton pRipple class="p-button-success" label="Rol Ata" (click)="openModalForUser(user)">
+
+                  </button></td>
                 <!-- <td>{{ user.SubscribeToPromotions }}</td> -->
                 <!--  -->
                 <td>
-                  <button
-                    class="btn btn-primary"
-                    status="primary"
-                    routerLink="/user-update/{{ user.id }}"
-                  >
+                  <button class="btn btn-primary" status="primary" routerLink="/user-update/{{ user.id }}">
                     <i class="fa-solid fa-pencil"></i>
                   </button>
-                  <div
-                    class="btn-group"
-                    role="group"
-                    aria-label="Basic example"
-                  >
-                    <button
-                      class="btn btn-danger"
-                      status="danger"
-                      (click)="deleteUser(user.id)"
-                    >
+                  <div class="btn-group" role="group" aria-label="Basic example">
+                    <button class="btn btn-danger" status="danger" (click)="deleteUser(user.id)">
                       <i class="fa-solid fa-trash"></i>
                     </button>
                   </div>
@@ -83,5 +66,23 @@
         </div>
       </div>
     </div>
+
+    <p-dialog header="{{ listHeader }} Kullanıcısına Rol Ata" [(visible)]="visible2" [style]="{ width: '50vw' }">
+      <div class="dialog-content">
+        <div class="card flex justify-content-center">
+          <p-listbox #ms [options]="listItems" [(ngModel)]="selectedItems" optionLabel="label" [style]="{}"
+            [virtualScroll]="true" [filter]="true" [virtualScrollItemSize]="50" [multiple]="true" [checkbox]="true"
+            [showToggleAll]="false" [metaKeySelection]="false" [showToggleAll]="true"
+            [listStyle]="{ 'max-height': '220px' }"></p-listbox>
+        </div>
+        <nb-card>
+          <nb-card-body>
+            <button pButton pRipple label="Seçili Rolleri Kaydet" class="p-button-success"
+              (click)="assignRoleToUser()"></button>
+          </nb-card-body>
+        </nb-card>
+      </div>
+    </p-dialog>
+
   </section>
 </main>

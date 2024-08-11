@@ -214,8 +214,8 @@ export class InfoService {
   }
 
 
-  async getStructuredMenu(): Promise<MenuItem[]> {
-    const response: MenuItem[] = await this.httpClientService.get<MenuItem>({ controller: 'Infos/get-structured-menu' }).toPromise();
+  async getStructuredMenu(userId: number): Promise<MenuItem[]> {
+    const response: MenuItem[] = await this.httpClientService.get<MenuItem>({ controller: 'Users/get-structured-menu' }, userId.toString()).toPromise();
     return response;
   }
 
@@ -235,8 +235,12 @@ export class InfoService {
     return response;
   }
 
-  async getMenuInfos(): Promise<any> {
-    const response = await this.httpClientService.get<MenuInfo[]>({ controller: 'Infos/get-menu-infos' }).toPromise();
+  async getMenuInfos(filter: boolean, isActive?: boolean): Promise<any> {
+    const response: MenuInfo[] = await this.httpClientService.get_new<MenuInfo[]>({ controller: 'Infos/get-menu-infos' }).toPromise();
+    if (filter) {
+      const _response = response.filter(p => p.isActive == isActive);
+      return _response;
+    }
     return response;
   }
 

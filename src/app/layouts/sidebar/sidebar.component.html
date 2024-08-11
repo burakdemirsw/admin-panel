@@ -1,24 +1,23 @@
 <aside id="sidebar" class="sidebar">
   <ul class="sidebar-nav" id="sidebar-nav">
     <li class="nav-item" *ngFor="let menuItem of menuItems">
-      <div *ngIf="menuItem.isActive">
-        <a class="nav-link collapsed" [attr.data-bs-target]="'#' + menuItem.label.substring(0,5) + '-nav'"
-          data-bs-toggle="collapse">
-          <i class="{{ menuItem.icon }}"></i><span>{{ menuItem.label }}</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul [attr.id]="menuItem.label.substring(0,5) + '-nav'" class="nav-content collapse"
-          data-bs-parent="#sidebar-nav">
-          <li *ngFor="let child of menuItem.children">
-            <a *ngIf="child.route && child.isActive" [routerLink]="child.route">
-              <i class="bi bi-circle"></i><span>{{ child.label }}</span>
-            </a>
-            <a *ngIf="child.action && child.isActive" (click)="onAction(child.action)">
-              <i class="bi bi-circle"></i><span>{{ child.label }}</span>
-            </a>
 
-          </li>
-        </ul>
-      </div>
+      <a class="nav-link collapsed" [attr.data-bs-target]="'#' + menuItem.label.substring(0,5) + '-nav'"
+        data-bs-toggle="collapse">
+        <i class="{{ menuItem.icon }}"></i><span>{{ menuItem.label }}</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul [attr.id]="menuItem.label.substring(0,5) + '-nav'" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+        <li *ngFor="let child of menuItem.children">
+          <a *ngIf="child.route && child.isActive" [routerLink]="child.route">
+            <i class="bi bi-circle"></i><span>{{ child.label }}</span>
+          </a>
+          <a *ngIf="child.action && child.isActive" (click)="onAction(child.action)">
+            <i class="bi bi-circle"></i><span>{{ child.label }}</span>
+          </a>
+
+        </li>
+      </ul>
+
 
     </li>
   </ul>

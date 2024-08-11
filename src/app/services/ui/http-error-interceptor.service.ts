@@ -24,15 +24,25 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         er.message = error.error.Message;
         er.title = error.error.Title;
         er.innerException = error.error.InnerException;
-        if (er.statusCode >= 400 && er.statusCode <= 500 || er.statusCode === 0) {
-          //this.toasterService.warn(` ${er.title + "-" + er.message}`);
-          console.error(` ${er.title + "-" + er.message}`);
-        } else if (error.status >= 500) {
 
-          //  this.toasterService.warn(`Sunucu Hatası: ${error.message}`);
-          console.error(`Sunucu Hatası: ${error.message}`);
+        if (er.statusCode) {
+          if (er.statusCode >= 400 && er.statusCode <= 500 || er.statusCode === 0) {
+            //this.toasterService.warn(` ${er.title + "-" + er.message}`);
+            console.error(` ${er.title + "-" + er.message}`);
+          } else if (error.status >= 500) {
+
+            //  this.toasterService.warn(`Sunucu Hatası: ${error.message}`);
+            console.error(`Sunucu Hatası: ${error.message}`);
+          } else if (er.statusCode == 401) {
+            this.toasterService.warn("Yetki Hatası(1)")
+          }
+          // this.toasterService.warn(`Sunucu Hatası: ${error.message}`);
+        } else {
+          if (error.status == 401) {
+            this.toasterService.warn("Yetki Hatası")
+          }
         }
-        // this.toasterService.warn(`Sunucu Hatası: ${error.message}`);
+
         return throwError(error);
 
       }),

@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit {
   }
 
   async saleCountRaport() {
-    const response: Raport_CR = await this.orderService.getRaports(0);
+    const response: Raport_CR = await this.orderService.getRaports(7);
     this.raportData = response;
     var days: string[] = [];
     var data: number[] = [];

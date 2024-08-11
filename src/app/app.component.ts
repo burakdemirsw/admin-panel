@@ -9,7 +9,7 @@ import { filter } from 'rxjs';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'admindashboard';
+
 
   constructor(@Inject(DOCUMENT) private document, private elementRef: ElementRef, public _router: Router) {
     const bodyClassList = this.document.body.classList;

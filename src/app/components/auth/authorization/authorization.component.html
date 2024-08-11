@@ -1,0 +1,26 @@
+<main id="main" class="main">
+  <section class="section">
+
+
+    <p-tree [value]="filesNodes" class="w-full md:w-30rem mt-4" [filter]="true" filterPlaceholder="Ara"
+      selectionMode="single" [(selection)]="selectedFiles" [contextMenu]="cm">
+    </p-tree>
+    <p-contextMenu #cm [model]="items"></p-contextMenu>
+
+    <p-dialog header="{{ listHeader }} Alanına Rol Ata" [(visible)]="visible" [style]="{ width: '80vw' }" modal="true">
+      <div class="dialog-content">
+        <div class="card flex justify-content-center">
+          <p-listbox #ms [options]="listItems" [(ngModel)]="selectedItems" optionLabel="label" [style]="{}"
+            [virtualScroll]="true" [filter]="true" [virtualScrollItemSize]="43" [multiple]="true" [checkbox]="true"
+            [showToggleAll]="false" [metaKeySelection]="false" [showToggleAll]="true"
+            [listStyle]="{ 'max-height': '220px' }"></p-listbox>
+        </div>
+        <div class="mt-4">
+          <button pButton pRipple label="Seçili Rolleri Kaydet" class="p-button-success"
+            (click)="assignRoleEndpoint()"></button>
+        </div>
+      </div>
+    </p-dialog>
+
+  </section>
+</main>

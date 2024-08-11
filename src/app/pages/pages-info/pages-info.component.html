@@ -580,8 +580,10 @@
               <td>{{ menuInfo.action }}</td>
               <td>{{ menuInfo.icon }}</td>
               <td>
-                <button *ngIf="!menuInfo.isActive" class="btn btn-warning">Pasif</button>
-                <button *ngIf="menuInfo.isActive" class="btn btn-success">Aktif</button>
+                <div *ngIf="!menuInfo.isActive" class="btn btn-danger"> <i class="fa fa-ban" aria-hidden="true"></i>
+                </div>
+                <div *ngIf="menuInfo.isActive" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i>
+                </div>
               </td>
               <td>{{ menuInfo.parentId }}</td>
               <td>
@@ -599,7 +601,7 @@
       </p-tabPanel>
     </p-tabView>
     <p-dialog header="Test Maili" [(visible)]="testMailDialog" [style]="{ width: '80vw' }">
-      <form [formGroup]="testMailForm" (ngSubmit)="onSubmitTestMail()">
+      <form [formGroup]="testMailForm">
         <div class="form-group">
           <label for="mail">Mail</label>
           <input id="mail" type="text" class="form-control" formControlName="mail" />
@@ -612,7 +614,7 @@
           <label for="body">Body</label>
           <textarea id="body" class="form-control" formControlName="body"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary" (click)="onSubmitTestMail()">Send</button>
+        <button type="button" class="btn btn-primary" (click)="onSubmitTestMail()">Send</button>
       </form>
     </p-dialog>
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { AuthService } from '../services/ui/auth.service';
-import { SessionService } from '../services/ui/session.service';
+import { AuthService } from '../ui/auth.service';
+import { SessionService } from '../ui/session.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({

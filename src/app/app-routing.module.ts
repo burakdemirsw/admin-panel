@@ -39,7 +39,7 @@ import { WarehouseOperationListComponent } from './components/Warehouse/warehous
 import { WarehouseOperationComponent } from './components/Warehouse/warehouse-operation/warehouse-operation.component';
 import { WarehouseShelfCountListComponent } from './components/Warehouse/warehouse-shelf-count-list/warehouse-shelf-count-list.component';
 import { WarehouseTransferListComponent } from './components/Warehouse/warehouse-transfer-list/warehouse-transfer-list.component';
-import { AuthGuard } from './components/auth.guard';
+import { AuthGuard } from './services/guards/auth.guard';
 import { CargoListComponent } from './components/cargo/cargo-list/cargo-list.component';
 import { CreateArasCargoBarcodeComponent } from './components/cargo/create-aras-cargo-barcode/create-aras-cargo-barcode.component';
 import { CreateCargoComponent } from './components/cargo/create-cargo/create-cargo.component';
@@ -64,6 +64,9 @@ import { CollectExportProductsComponent } from './components/Order/export-transa
 import { PagesInfoComponent } from './pages/pages-info/pages-info.component';
 import { CreateProposalComponent } from './components/Product/create-proposal/create-proposal.component';
 import { ProposalListComponent } from './components/Product/proposal-list/proposal-list.component';
+import { IdeasoftOffersComponent } from './components/special-panels/ideasoft-offers/ideasoft-offers.component';
+import { AuthorizationComponent } from './components/auth/authorization/authorization.component';
+import { RoleListComponent } from './components/User/user-list/role/role-list/role-list.component';
 
 
 const routes: Routes = [
@@ -312,11 +315,13 @@ const routes: Routes = [
   { path: 'import-transactions', component: ImportTransactionsComponent, canActivate: [AuthGuard] },
   { path: 'export-transactions', component: ExportTransactionsComponent, canActivate: [AuthGuard] },
   { path: 'collect-export-products/:id/:warehouseCode', component: CollectExportProductsComponent, canActivate: [AuthGuard] },
-
   { path: 'create-proposal/:id', component: CreateProposalComponent, canActivate: [AuthGuard] },
   { path: 'create-proposal', component: CreateProposalComponent, canActivate: [AuthGuard] },
-
   { path: 'proposal-list', component: ProposalListComponent, canActivate: [AuthGuard] },
+  { path: 'ideasoft-offers', component: IdeasoftOffersComponent, canActivate: [AuthGuard] },
+  { path: 'authorization', component: AuthorizationComponent, canActivate: [AuthGuard] },
+  { path: 'role-list', component: RoleListComponent, canActivate: [AuthGuard] },
+
   //------------------------------------------------------------------------- PERAKENDE
   { path: 'ideasoft/auth', component: IdeasoftComponent, pathMatch: 'prefix', runGuardsAndResolvers: 'always' },
 

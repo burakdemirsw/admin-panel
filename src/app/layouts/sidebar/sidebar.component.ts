@@ -20,12 +20,15 @@ export class SidebarComponent implements OnInit {
 
     this.roleDescription = localStorage.getItem("roleDescription")
     this.userId = localStorage.getItem("userId")
-    await this.loadMenu();
+    if (Number(this.userId) != 0) {
+      await this.loadMenu();
+
+    }
   }
 
   async loadMenu() {
     try {
-      const data: MenuItem[] = await this.infoService.getStructuredMenu();
+      const data: MenuItem[] = await this.infoService.getStructuredMenu(Number(this.userId));
 
       // Temporary array to hold items that are not "Ayarlar"
       const otherItems: MenuItem[] = [];

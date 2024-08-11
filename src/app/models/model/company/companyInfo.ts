@@ -102,18 +102,31 @@ export class Info {
   paymentInfos: PaymentInfo[];
 }
 export class MenuInfo {
-  id: number;
+  id?: number;
   label?: string;
   icon?: string;
   route?: string;
   action?: string;
   parentId?: number;
   isActive?: boolean;
-} export class MenuItem {
+}
+export class MenuInfo_VM {
+  id?: number;
+  label?: string;
+  icon?: string;
+  route?: string;
+  action?: string;
+  parentId?: number;
+  isActive?: boolean;
+}
+export class MenuItem {
+  id: number;
   label?: string;  //asdasd
   icon?: string;
   route?: string;
   action?: string;
   children?: MenuItem[];
-  isActive: boolean
+  isActive: boolean;
+  permittedRoleIds?: number[]
+
 }

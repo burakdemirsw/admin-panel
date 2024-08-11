@@ -72,6 +72,7 @@ export class PagesRegisterComponent implements OnInit {
       this.registerForm.reset();
     }
   }
+  customerModelList: any[] = [];
 
 
   salesPersonModels: SalesPersonModel[] = [];

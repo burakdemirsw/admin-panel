@@ -37,17 +37,15 @@
                   <li class="dropdown-header text-start">
                     <h6>Filtrele</h6>
                   </li>
-                  <li><a class="dropdown-item">Bugün</a></li>
+                  <li><a class="dropdown-item">7 Gün</a></li>
                   <li><a class="dropdown-item">Bu Ay</a></li>
                   <li><a class="dropdown-item">Bu Yıl</a></li>
                 </ul>
               </div> -->
                 <div class="card-body">
-                  <h5 class="card-title">Satışlar <span>| Bugün</span></h5>
+                  <h5 class="card-title">Satışlar <span>| 7 Gün</span></h5>
                   <div class="d-flex align-items-center">
-                    <div
-                      class="card-icon rounded-circle d-flex align-items-center justify-content-center"
-                    >
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                       <i class="bi bi-cart"></i>
                     </div>
                     <div class="ps-3">
@@ -69,17 +67,15 @@
                   <li class="dropdown-header text-start">
                     <h6>Filtrele</h6>
                   </li>
-                  <li><a class="dropdown-item">Bugün</a></li>
+                  <li><a class="dropdown-item">7 Gün</a></li>
                   <li><a class="dropdown-item">Bu Ay</a></li>
                   <li><a class="dropdown-item">Bu Yıl</a></li>
                 </ul>
               </div> -->
                 <div class="card-body">
-                  <h5 class="card-title">Gelirler <span>| Bu Gün</span></h5>
+                  <h5 class="card-title">Gelirler <span>|7 Gün</span></h5>
                   <div class="d-flex align-items-center">
-                    <div
-                      class="card-icon rounded-circle d-flex align-items-center justify-content-center"
-                    >
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                       <i class="bi bi-currency-dollar"></i>
                     </div>
                     <div class="ps-3">
@@ -108,17 +104,15 @@
                   <li class="dropdown-header text-start">
                     <h6>Filtrele</h6>
                   </li>
-                  <li><a class="dropdown-item">Bugün</a></li>
+                  <li><a class="dropdown-item">7 Gün</a></li>
                   <li><a class="dropdown-item">Bu Ay</a></li>
                   <li><a class="dropdown-item">Bu Yıl</a></li>
                 </ul>
               </div> -->
                 <div class="card-body">
-                  <h5 class="card-title">Müşteriler <span>| Bu Gün</span></h5>
+                  <h5 class="card-title">Müşteriler <span>|7 Gün</span></h5>
                   <div class="d-flex align-items-center">
-                    <div
-                      class="card-icon rounded-circle d-flex align-items-center justify-content-center"
-                    >
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                       <i class="bi bi-people"></i>
                     </div>
                     <div class="ps-3">
@@ -133,12 +127,8 @@
             <div class="col-12">
               <div class="card">
                 <div class="filter">
-                  <a class="icon" data-bs-toggle="dropdown"
-                    ><i class="bi bi-three-dots"></i
-                  ></a>
-                  <ul
-                    class="dropdown-menu dropdown-menu-end dropdown-menu-arrow"
-                  >
+                  <a class="icon" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                     <li class="dropdown-header text-start">
                       <h6>Filtrele</h6>
                     </li>
@@ -151,14 +141,9 @@
                   </ul>
                 </div>
                 <div class="card-body">
-                  <h5 class="card-title">Raporlar <span>/ Bugün</span></h5>
+                  <h5 class="card-title">Raporlar <span>/ 7 Gün</span></h5>
                   <!-- <div id="reportsChart"></div> -->
-                  <p-chart
-                    type="line"
-                    [data]="data"
-                    [options]="options"
-                    height="300"
-                  ></p-chart>
+                  <p-chart type="line" [data]="data" [options]="options" height="300"></p-chart>
                 </div>
               </div>
             </div>
@@ -166,7 +151,7 @@
               <div class="card top-selling overflow-auto">
                 <div class="card-body pb-0">
                   <h5 class="card-title">
-                    En Çok Satanlar <span>| Bugün</span>
+                    En Çok Satanlar <span>| 7 Gün</span>
                   </h5>
                   <table class="table table-striped">
                     <thead>
@@ -181,13 +166,8 @@
                     <tbody>
                       <tr *ngFor="let product of this.raportData.raport_4">
                         <td>
-                          <p-image
-                            src="{{ product.photoUrl }}"
-                            alt="Image"
-                            width="50"
-                            [preview]="true"
-                            appendTo="body"
-                          ></p-image>
+                          <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true" appendTo="body">
+                          </p-image>
                         </td>
                         <td>{{ product.product }}</td>
 
@@ -212,13 +192,13 @@
               <li class="dropdown-header text-start">
                 <h6>Filtrele</h6>
               </li>
-              <li><a class="dropdown-item">Bugün</a></li>
+              <li><a class="dropdown-item">7 Gün</a></li>
               <li><a class="dropdown-item">Bu Ay</a></li>
               <li><a class="dropdown-item">Bu Yıl</a></li>
             </ul>
           </div>
           <div class="card-body">
-            <h5 class="card-title">Son Etkinlikler <span>| Bugün</span></h5>
+            <h5 class="card-title">Son Etkinlikler <span>| 7 Gün</span></h5>
             <div class="activity">
               <div class="activity-item d-flex">
                 <div class="activite-label">32 dakika</div>
@@ -288,7 +268,7 @@
               <li class="dropdown-header text-start">
                 <h6>Filtrele</h6>
               </li>
-              <li><a class="dropdown-item">Bugün</a></li>
+              <li><a class="dropdown-item">7 Gün</a></li>
               <li><a class="dropdown-item">Bu Ay</a></li>
               <li><a class="dropdown-item">Bu Yıl</a></li>
             </ul>
@@ -311,13 +291,13 @@
               <li class="dropdown-header text-start">
                 <h6>Filtrele</h6>
               </li>
-              <li><a class="dropdown-item">Bugün</a></li>
+              <li><a class="dropdown-item">7 Gün</a></li>
               <li><a class="dropdown-item">Bu Ay</a></li>
               <li><a class="dropdown-item">Bu Yıl</a></li>
             </ul>
           </div>
           <div class="card-body pb-0">
-            <h5 class="card-title">Web Sitesi Trafik <span>| Bugün</span></h5>
+            <h5 class="card-title">Web Sitesi Trafik <span>| 7 Gün</span></h5>
             <div
               id="trafficChart"
               style="min-height: 400px"
@@ -334,14 +314,14 @@
               <li class="dropdown-header text-start">
                 <h6>Filtrele</h6>
               </li>
-              <li><a class="dropdown-item">Bugün</a></li>
+              <li><a class="dropdown-item">7 Gün</a></li>
               <li><a class="dropdown-item">Bu Ay</a></li>
               <li><a class="dropdown-item">Bu Yıl</a></li>
             </ul>
           </div>
           <div class="card-body pb-0">
             <h5 class="card-title">
-              Haberler ve Güncellemeler <span>| Bugün</span>
+              Haberler ve Güncellemeler <span>| 7 Gün</span>
             </h5>
             <div class="news">
               <div class="post-item clearfix">
