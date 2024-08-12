@@ -128,6 +128,7 @@ import { FastTransferPipe } from './services/pipes/fast-transfer.pipe';
 import { AlertifyService } from './services/ui/alertify.service';
 import { HttpErrorInterceptor } from './services/ui/http-error-interceptor.service';
 import { ListboxModule } from 'primeng/listbox';
+import { NgxPopperjsModule } from 'ngx-popperjs';
 
 @NgModule({
 
@@ -217,7 +218,7 @@ import { ListboxModule } from 'primeng/listbox';
 
 
   imports: [
-
+    NgxPopperjsModule,
     ToolbarModule,
     SkeletonModule,
     FormsModule,

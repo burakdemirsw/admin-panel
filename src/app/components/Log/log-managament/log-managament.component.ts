@@ -30,6 +30,7 @@ export class LogManagamentComponent implements OnInit {
   ) { }
   filterForm: FormGroup;
   log_VMList: Log_VM[] = []
+  selectedLogs: Log_VM[] = []
   async ngOnInit() {
     this.headerService.updatePageTitle("Log Yönetimi")
     this.spinnerService.show();

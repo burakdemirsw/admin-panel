@@ -52,64 +52,95 @@
     </div>
 
     <div class="card">
-      <div class="card-body">
-        <div style="overflow-x: auto">
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Log Başlığı</th>
-                <th scope="col">Durum</th>
-                <th scope="col">Hata Mesajı</th>
-                <th scope="col">İstek</th>
-                <th scope="col">Log</th>
-                <!-- <th scope="col">İstek Adresi</th> -->
-                <th scope="col">Tarih</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="
-                  let log of log_VMList
-                    | paginate : { itemsPerPage: 10, currentPage: currentPage }
-                ">
-                <td>{{ log.id }}</td>
-                <td>{{ log.messageHeader }}</td>
-                <td>
-                  <div class="btn" [ngClass]="{
-                      'btn-warning': log.level === 'WARNING',
-                      'btn-success': log.level === 'SUCCESS',
-                      'btn-primary': log.level === 'INFO',
-                      'btn-danger': log.level === 'ERROR'
-                    }">
-                    {{ log.level }}
-                  </div>
-                </td>
+      <div class="card-body p-4 ">
+        <p-table #dt8 [value]="log_VMList" [(selection)]="selectedLogs" dataKey="id" [paginator]="true"
+          [rowsPerPageOptions]="[5, 10, 20]" [resizableColumns]="true" expandableRows="true" columnResizeMode="expand"
+          styleClass="p-datatable-striped" [rows]="10" [tableStyle]="{ 'min-width': '50rem' }"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+          <ng-template pTemplate="caption">
 
-                <td>{{ log.exceptionText }}</td>
+            <h5 *ngIf="selectedLogs.length > 0" style="text-align: left">
+              {{ selectedLogs.length }}/{{ log_VMList.length }} Adet Log Seçildi
+            </h5>
+          </ng-template>
 
-                <style>
-                  .full-width {
-                    width: 100% !important;
-                  }
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="id">
+                Id
+                <p-sortIcon field="id"></p-sortIcon>
+              </th>
+              <th pSortableColumn="messageHeader">
+                Log Başlığı
+                <p-sortIcon field="messageHeader"></p-sortIcon>
+              </th>
+              <th pSortableColumn="level">
+                Durum
+                <p-sortIcon field="level"></p-sortIcon>
+              </th>
+              <th pSortableColumn="exceptionText">
+                Hata Mesajı
+                <p-sortIcon field="exceptionText"></p-sortIcon>
+              </th>
+              <th>
+                İstek
+              </th>
+              <th>
+                Log
+              </th>
+              <th pSortableColumn="createdDate">
+                Tarih
+                <p-sortIcon field="createdDate"></p-sortIcon>
+              </th>
+            </tr>
+            <tr>
+              <th>
+                <p-columnFilter type="text" field="id" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="messageHeader" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="level" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="exceptionText" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th></th>
+              <th></th>
+              <th>
+                <p-columnFilter type="date" field="createdDate" [showClearButton]="false"></p-columnFilter>
+              </th>
+            </tr>
+          </ng-template>
 
-                </style>
+          <ng-template pTemplate="body" let-log>
+            <tr>
+              <td>{{ log.id }}</td>
+              <td>{{ log.messageHeader }}</td>
+              <td>
+                <div class="btn" [ngClass]="{
+          'btn-warning': log.level === 'WARNING',
+          'btn-success': log.level === 'SUCCESS',
+          'btn-primary': log.level === 'INFO',
+          'btn-danger': log.level === 'ERROR'
+        }">
+                  {{ log.level }}
+                </div>
+              </td>
+              <td>{{ log.exceptionText }}</td>
+              <td>
+                <textarea rows="5" cols="50" [(ngModel)]="log.request" *ngIf="log.request" readonly></textarea>
+              </td>
+              <td>
+                <textarea rows="5" cols="50" [(ngModel)]="log.logEvent" readonly></textarea>
+              </td>
+              <td>{{ log.createdDate }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
 
-                <td>
-                  <textarea rows="5" cols="50" [(ngModel)]="log.request" *ngIf="log.request" readonly
-                    class="full-width"></textarea>
-                </td>
-
-                <td>
-                  <textarea rows="5" cols="30" [(ngModel)]="log.logEvent" readonly></textarea>
-                </td>
-
-                <!-- <td>{{ log.requestPath }}</td> -->
-                <td>{{ log.createdDate }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
-        </div>
+        <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
       </div>
     </div>
   </section>

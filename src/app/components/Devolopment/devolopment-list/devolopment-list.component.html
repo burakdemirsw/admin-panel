@@ -44,15 +44,8 @@
               <div class="row mb-3">
                 <div class="col-md-3 mb-3">
                   <div class="form-group">
-                    <select
-                      class="form-control"
-                      id="zone"
-                      formControlName="searchTask_DevelopmentId"
-                    >
-                      <option
-                        *ngFor="let dev of devolopments"
-                        value="{{ dev.id }}"
-                      >
+                    <select class="form-control" id="zone" formControlName="searchTask_DevelopmentId">
+                      <option *ngFor="let dev of devolopments" value="{{ dev.id }}">
                         {{ dev.zone }}
                       </option>
                     </select>
@@ -61,53 +54,33 @@
 
                 <div class="col-md-3 mb-3">
                   <div class="form-group">
-                    <select
-                      class="form-control"
-                      id="zone"
-                      formControlName="searchTask_IsCompleted"
-                    >
-                      <
-                      <option
-                        *ngFor="let opt of optionList"
-                        [value]="opt.value"
-                      >
+                    <select class="form-control" id="zone" formControlName="searchTask_IsCompleted">
+                      < <option *ngFor="let opt of optionList" [value]="opt.value">
                         {{ opt.label }}
-                      </option>
+                        </option>
                     </select>
                   </div>
                 </div>
                 <div class="col-md-2 mb-3">
                   <div class="form-group">
-                    <button
-                      class="btn btn-success"
-                      style="width: 100%"
-                      (click)="
+                    <button class="btn btn-success" style="width: 100%" (click)="
                         getAllDevelopments(
                           this.searchTaskForm.value.searchTask_IsCompleted,
                           this.searchTaskForm.value.searchTask_DevelopmentId
                         )
-                      "
-                    >
+                      ">
                       <i class="fa fa-search" aria-hidden="true"></i>
                     </button>
                   </div>
                 </div>
 
                 <div class="col-md-2 mb-3">
-                  <button
-                    class="btn btn-success"
-                    (click)="addTaskVisible = true"
-                    style="width: 100%"
-                  >
+                  <button class="btn btn-success" (click)="addTaskVisible = true" style="width: 100%">
                     Görev Ekle
                   </button>
                 </div>
                 <div class="col-md-2 mb-3">
-                  <button
-                    class="btn btn-success"
-                    (click)="addZoneVisible = true"
-                    style="width: 100%"
-                  >
+                  <button class="btn btn-success" (click)="addZoneVisible = true" style="width: 100%">
                     Başlık Ekle
                   </button>
                 </div>
@@ -140,43 +113,32 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr
-                      *ngFor="
+                    <tr *ngFor="
                         let task of tasks
                           | paginate
                             : { itemsPerPage: 10, currentPage: currentPage };
                         let i = index
-                      "
-                    >
+                      ">
                       <td>{{ i + 1 }}</td>
                       <td>{{ task.zone }}</td>
                       <td>{{ task.header }}</td>
 
                       <td>
-                        <p-editor
-                          [(ngModel)]="task.description"
-                          [readonly]="true"
-                          [style]="{ height: '200px' }"
-                          *ngIf="task.description"
-                        >
+                        <p-editor [(ngModel)]="task.description" [readonly]="true" [style]="{ height: '200px' }"
+                          *ngIf="task.description">
                           <p-header hidden>
-                            <span class="ql-formats"></span> </p-header
-                        ></p-editor>
+                            <span class="ql-formats"></span>
+                          </p-header>
+                        </p-editor>
                       </td>
                       <td>
-                        <span
-                          class="btn"
-                          [ngClass]="{
+                        <span class="btn" [ngClass]="{
                             'btn-success': task.isCompleted,
                             'btn-warning': !task.isCompleted,
                             blinking: !task.isCompleted
-                          }"
-                        >
+                          }">
                           <i *ngIf="task.isCompleted" class="fa fa-check"></i>
-                          <i
-                            *ngIf="!task.isCompleted"
-                            class="fa fa-exclamation"
-                          ></i>
+                          <i *ngIf="!task.isCompleted" class="fa fa-exclamation"></i>
                         </span>
                       </td>
 
@@ -189,29 +151,17 @@
 
                       <td>
                         <div class="btn-group">
-                          <button
-                            class="btn btn-success"
-                            (click)="updateTaskStatus(task, true)"
-                          >
+                          <button class="btn btn-success" (click)="updateTaskStatus(task, true)">
                             <i class="fa fa-check"></i>
                           </button>
 
-                          <button
-                            class="btn btn-success"
-                            (click)="updateTaskStatus(task, false)"
-                          >
+                          <button class="btn btn-success" (click)="updateTaskStatus(task, false)">
                             <i class="fa fa-cancel"></i>
                           </button>
-                          <button
-                            class="btn btn-success"
-                            (click)="openModal(task)"
-                          >
+                          <button class="btn btn-success" (click)="openModal(task)">
                             <i class="fa fa-pencil"></i>
                           </button>
-                          <button
-                            class="btn btn-success"
-                            (click)="deleteTask(task)"
-                          >
+                          <button class="btn btn-success" (click)="deleteTask(task)">
                             <i class="fa fa-trash"></i>
                           </button>
                         </div>
@@ -219,40 +169,24 @@
                     </tr>
                   </tbody>
                 </table>
-                <pagination-controls
-                  (pageChange)="currentPage = $event"
-                ></pagination-controls>
+                <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <p-dialog
-        header="{{ this.selectedTask.id }}-Açıklama Güncelle"
-        [(visible)]="visible"
-        [modal]="true"
-        [style]="{ width: '80vw' }"
-        [draggable]="false"
-        [resizable]="false"
-      >
+      <p-dialog header="{{ this.selectedTask.id }}-Açıklama Güncelle" [(visible)]="visible" [modal]="true"
+        [style]="{ width: '80vw' }" [draggable]="false" [resizable]="false">
         <div class="row mb-3">
           <div class="col-md-12">
             <div class="form-group">
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Başlık"
-                [(ngModel)]="updateTask_Header"
-              />
+              <input type="text" class="form-control" placeholder="Başlık" [(ngModel)]="updateTask_Header" />
             </div>
           </div>
         </div>
         <div class="row mb-3">
           <div class="col-md-12">
-            <p-editor
-              [(ngModel)]="description"
-              [style]="{ height: '320px' }"
-            ></p-editor>
+            <p-editor [(ngModel)]="description" [style]="{ height: '320px' }"></p-editor>
           </div>
         </div>
         <div class="row">
@@ -264,23 +198,12 @@
         </div>
       </p-dialog>
 
-      <p-dialog
-        header="Başlık Ekle"
-        [(visible)]="addZoneVisible"
-        [modal]="true"
-        [style]="{ width: '50vw' }"
-        [draggable]="false"
-        [resizable]="false"
-      >
+      <p-dialog header="Başlık Ekle" [(visible)]="addZoneVisible" [modal]="true" [style]="{ width: '50vw' }"
+        [draggable]="false" [resizable]="false">
         <div class="row mb-3">
           <div class="col-md-12">
-            <input
-              type="search"
-              class="form-control"
-              placeholder="Başlık Ekle"
-              [(ngModel)]="zone"
-              (keyup.enter)="addZone()"
-            />
+            <input type="search" class="form-control" placeholder="Başlık Ekle" [(ngModel)]="zone"
+              (keyup.enter)="addZone()" />
           </div>
         </div>
         <div class="row mb-3">
@@ -290,14 +213,8 @@
         </div>
       </p-dialog>
 
-      <p-dialog
-        header="Görev Ekle"
-        [(visible)]="addTaskVisible"
-        [modal]="true"
-        [style]="{ width: '80vw' }"
-        [draggable]="false"
-        [resizable]="false"
-      >
+      <p-dialog header="Görev Ekle" [(visible)]="addTaskVisible" [modal]="true" [style]="{ width: '80vw' }"
+        [draggable]="false" [resizable]="false">
         <div class="row mb-3">
           <div class="col-md-12">
             <div class="form-group">
@@ -312,23 +229,15 @@
         <div class="row mb-3">
           <div class="col-md-12">
             <div class="form-group">
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Başlık"
-                [(ngModel)]="addTask_Header"
-                (keyup.enter)="addTask()"
-              />
+              <input type="text" class="form-control" placeholder="Başlık" [(ngModel)]="addTask_Header"
+                (keyup.enter)="addTask()" />
             </div>
           </div>
         </div>
         <div class="row mb-3">
           <div class="form-group">
-            <p-editor
-              [(ngModel)]="addTask_Description"
-              [style]="{ height: '200px' }"
-              (keyup.enter)="addTask()"
-            ></p-editor>
+            <p-editor [(ngModel)]="addTask_Description" [style]="{ height: '200px' }" (keyup.enter)="addTask()">
+            </p-editor>
           </div>
         </div>
 

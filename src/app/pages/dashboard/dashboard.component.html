@@ -153,30 +153,43 @@
                   <h5 class="card-title">
                     En Çok Satanlar <span>| 7 Gün</span>
                   </h5>
-                  <table class="table table-striped">
-                    <thead>
+                  <p-table [value]="raportData.raport_4" class="table table-striped" [paginator]="true" [rows]="10"
+                    [responsiveLayout]="'scroll'">
+                    <ng-template pTemplate="header">
                       <tr>
-                        <th scope="col">Önizleme</th>
-                        <th scope="col">Ürün</th>
-                        <th scope="col">Fiyat</th>
-                        <th scope="col">Satıldı</th>
-                        <th scope="col">Gelir</th>
+                        <th>Önizleme</th>
+                        <th pSortableColumn="product">
+                          Ürün
+                          <p-sortIcon field="product"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="price">
+                          Fiyat
+                          <p-sortIcon field="price"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="saleCount">
+                          Satıldı
+                          <p-sortIcon field="saleCount"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="revenue">
+                          Gelir
+                          <p-sortIcon field="revenue"></p-sortIcon>
+                        </th>
                       </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let product of this.raportData.raport_4">
+                    </ng-template>
+                    <ng-template pTemplate="body" let-product>
+                      <tr>
                         <td>
                           <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true" appendTo="body">
                           </p-image>
                         </td>
                         <td>{{ product.product }}</td>
-
-                        <td>{{ product.price | currency : "₺" : true }}</td>
+                        <td>{{ product.price | currency: '₺' : true }}</td>
                         <td>{{ product.saleCount }}</td>
-                        <td>{{ product.revenue | currency : "₺" : true }}</td>
+                        <td>{{ product.revenue | currency: '₺' : true }}</td>
                       </tr>
-                    </tbody>
-                  </table>
+                    </ng-template>
+                  </p-table>
+
                 </div>
               </div>
             </div>

@@ -57,7 +57,9 @@
               <td>{{ transaction.invoiceNumber }}</td>
               <td>{{ transaction.currAccDescription }}</td>
               <td>
-                <p-button icon="pi pi-send" (onClick)="sendTransfer( transaction.invoiceNumber)" />
+                <button class="btn btn-primary" icon="pi pi-send" (click)="sendTransfer( transaction.invoiceNumber)">
+                  <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                </button>
               </td>
             </tr>
           </ng-template>

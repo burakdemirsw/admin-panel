@@ -38,7 +38,11 @@ export class SidebarComponent implements OnInit {
       for (const item of data) {
         if (item.label === 'Ayarlar') {
           ayarlarItem = item;
-        } else {
+        }
+        else if (item.label === 'Anasayfa') {
+          continue;
+        }
+        else {
           otherItems.push(item);
         }
       }

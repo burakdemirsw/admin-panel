@@ -13,6 +13,23 @@ th {
   /* Veri hücrelerinin iç boşluklarını azalt */
 }
 
+::ng-deep .p-datatable-header {
+  padding: 0rem;
+}
+
+
+::ng-deep .p-button {
+
+  line-height: 1;
+
+
+  /* height: 4rem; */
+}
+
+::ng-deep .p-inputtext {
+  height: 2.5rem !important;
+
+}
 
 @media only screen and (max-width: 768px) {
 
@@ -20,6 +37,12 @@ th {
   ::ng-deep .p-datatable .p-datatable-table {
     width: auto !important;
   }
+}
+
+
+
+.p-sidebar {
+  width: 20rem !important;
 }
 
 .country-column {
@@ -35,5 +58,8 @@ th {
 ul {
   padding-left: 0px !important
 }
+
+
+
 
 /* Diğer kolonlar için de benzer şekilde sınıflar tanımlayabilirsiniz */

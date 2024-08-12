@@ -20,6 +20,7 @@ import { CreateBarcodeFromOrder_RM } from '../../Product/create-barcode/models/c
 export class WarehouseTransferListComponent implements OnInit {
   currentPage: number = 1;
   warehouseTransferListModels: WarehosueTransferListModel[]
+  selectedTransfers: WarehosueTransferListModel[]
   filterForm: FormGroup
   constructor(
     private hs: HeaderService,

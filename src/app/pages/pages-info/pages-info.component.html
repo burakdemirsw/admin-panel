@@ -136,40 +136,52 @@
           <button type="submit" class="btn btn-primary" [disabled]="mailInfoForm.invalid">Güncelle</button>
         </form>
 
-        <table class="table mt-3">
-          <thead>
+        <p-table [value]="mailInfos" class="mt-3" [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'">
+          <ng-template pTemplate="header">
             <tr>
-              <th scope="col">Aktif Mi</th>
-
-              <th scope="col">Mail</th>
-              <th scope="col">Şifre</th>
-              <th scope="col">SMTP Adres</th>
-              <th scope="col">SMTP Port</th>
-              <th scope="col">Uygulama Şifresi</th>
-              <th scope="col">İşlemler</th>
+              <th pSortableColumn="isFirst">
+                Aktif Mi
+                <p-sortIcon field="isFirst"></p-sortIcon>
+              </th>
+              <th pSortableColumn="userName">
+                Mail
+                <p-sortIcon field="userName"></p-sortIcon>
+              </th>
+              <th>Şifre</th>
+              <th pSortableColumn="smtpAddress">
+                SMTP Adres
+                <p-sortIcon field="smtpAddress"></p-sortIcon>
+              </th>
+              <th pSortableColumn="smtpPort">
+                SMTP Port
+                <p-sortIcon field="smtpPort"></p-sortIcon>
+              </th>
+              <th>Uygulama Şifresi</th>
+              <th>İşlemler</th>
             </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let mail of mailInfos">
+          </ng-template>
+          <ng-template pTemplate="body" let-mail>
+            <tr>
               <td>{{ mail.isFirst }}</td>
-
               <td>{{ mail.userName }}</td>
               <td>{{ mail.password }}</td>
               <td>{{ mail.smtpAddress }}</td>
               <td>{{ mail.smtpPort }}</td>
               <td>{{ mail.applicationPassword }}</td>
               <td>
-                <button *ngIf="mail.isFirst == true" (click)="openDialog(mail)" class="btn btn-primary btn-sm"><i
-                    class="fa fa-paper-plane" aria-hidden="true"></i>
+                <button *ngIf="mail.isFirst == true" (click)="openDialog(mail)" class="btn btn-primary">
+                  <i class="fa fa-paper-plane" aria-hidden="true"></i>
                 </button>
-                <button (click)="onEditMailInfo(mail)" class="btn btn-primary btn-sm"><i class="fa fa-refresh"
-                    aria-hidden="true"></i></button>
-                <button (click)="onDeleteMailInfo(mail.id)" class="btn btn-danger btn-sm"><i class="fa fa-trash"
-                    aria-hidden="true"></i></button>
+                <button (click)="onEditMailInfo(mail)" class="btn btn-primary">
+                  <i class="fa fa-refresh" aria-hidden="true"></i>
+                </button>
+                <button (click)="onDeleteMailInfo(mail.id)" class="btn btn-danger">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
               </td>
             </tr>
-          </tbody>
-        </table>
+          </ng-template>
+        </p-table>
 
 
 
@@ -232,37 +244,56 @@
           <button type="submit" class="btn btn-primary"
             [disabled]="paymentInfoForm.invalid">{{this.updatedPaymentInfo ? 'Güncelle' : 'Ekle'}}</button>
         </form>
-        <table class="table mt-3">
-          <thead>
+        <p-table [value]="paymentInfos" class="mt-3" [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'">
+          <ng-template pTemplate="header">
             <tr>
-              <th scope="col">Açıklama</th>
-
-              <th scope="col">Merchant ID</th>
-              <th scope="col">API Key</th>
-              <th scope="col">API Secret Key</th>
-              <th scope="col">Ok URL</th>
-              <th scope="col">Fail URL</th>
-              <th scope="col">İşlemler</th>
+              <th pSortableColumn="description">
+                Açıklama
+                <p-sortIcon field="description"></p-sortIcon>
+              </th>
+              <th pSortableColumn="merchantId">
+                Merchant ID
+                <p-sortIcon field="merchantId"></p-sortIcon>
+              </th>
+              <th pSortableColumn="apiKey">
+                API Key
+                <p-sortIcon field="apiKey"></p-sortIcon>
+              </th>
+              <th pSortableColumn="apiSecretKey">
+                API Secret Key
+                <p-sortIcon field="apiSecretKey"></p-sortIcon>
+              </th>
+              <th pSortableColumn="okUrl">
+                Ok URL
+                <p-sortIcon field="okUrl"></p-sortIcon>
+              </th>
+              <th pSortableColumn="failUrl">
+                Fail URL
+                <p-sortIcon field="failUrl"></p-sortIcon>
+              </th>
+              <th>İşlemler</th>
             </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let paymentInfo of paymentInfos">
+          </ng-template>
+          <ng-template pTemplate="body" let-paymentInfo>
+            <tr>
               <td>{{ paymentInfo.description }}</td>
-
               <td>{{ paymentInfo.merchantId }}</td>
               <td>{{ paymentInfo.apiKey }}</td>
               <td>{{ paymentInfo.apiSecretKey }}</td>
               <td>{{ paymentInfo.okUrl }}</td>
               <td>{{ paymentInfo.failUrl }}</td>
               <td>
-                <button (click)="onEditPaymentInfo(paymentInfo)" class="btn btn-primary btn-sm"><i class="fa fa-refresh"
-                    aria-hidden="true"></i></button>
-                <button (click)="onDeletePaymentInfo(paymentInfo.merchantId)" class="btn btn-danger btn-sm"><i
-                    class="fa fa-trash" aria-hidden="true"></i></button>
+                <button (click)="onEditPaymentInfo(paymentInfo)" class="btn btn-primary">
+                  <i class="fa fa-refresh" aria-hidden="true"></i>
+                </button>
+                <button (click)="onDeletePaymentInfo(paymentInfo.merchantId)" class="btn btn-danger">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
               </td>
             </tr>
-          </tbody>
-        </table>
+          </ng-template>
+        </p-table>
+
       </p-tabPanel>
 
       <p-tabPanel header="Kargo Bilgileri">
@@ -293,21 +324,35 @@
           </div>
           <button type="submit" class="btn btn-primary" [disabled]="cargoInfoForm.invalid">Kaydet</button>
         </form>
-        <table class="table mt-3">
-          <thead>
+        <p-table [value]="cargoInfos" class="mt-3" [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'">
+          <ng-template pTemplate="header">
             <tr>
-              <th scope="col">Açıklama</th>
-
-              <th scope="col">Kullanıcı Adı</th>
-              <th scope="col">Şifre</th>
-              <th scope="col">Müşteri Kodu</th>
-              <th scope="col">API Anahtarı</th>
-              <th scope="col">API Gizli Anahtarı</th>
-              <th scope="col">İşlemler</th>
+              <th pSortableColumn="description">
+                Açıklama
+                <p-sortIcon field="description"></p-sortIcon>
+              </th>
+              <th pSortableColumn="userName">
+                Kullanıcı Adı
+                <p-sortIcon field="userName"></p-sortIcon>
+              </th>
+              <th>Şifre</th>
+              <th pSortableColumn="customerCode">
+                Müşteri Kodu
+                <p-sortIcon field="customerCode"></p-sortIcon>
+              </th>
+              <th pSortableColumn="apiKey">
+                API Anahtarı
+                <p-sortIcon field="apiKey"></p-sortIcon>
+              </th>
+              <th pSortableColumn="apiSecret">
+                API Gizli Anahtarı
+                <p-sortIcon field="apiSecret"></p-sortIcon>
+              </th>
+              <th>İşlemler</th>
             </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let cargo of cargoInfos">
+          </ng-template>
+          <ng-template pTemplate="body" let-cargo>
+            <tr>
               <td>{{ cargo.description }}</td>
               <td>{{ cargo.userName }}</td>
               <td>{{ cargo.password }}</td>
@@ -315,14 +360,17 @@
               <td>{{ cargo.apiKey }}</td>
               <td>{{ cargo.apiSecret }}</td>
               <td>
-                <button (click)="onEditCargoInfo(cargo)" class="btn btn-primary btn-sm"><i class="fa fa-refresh"
-                    aria-hidden="true"></i></button>
-                <button (click)="onDeleteCargoInfo(cargo.id)" class="btn btn-danger btn-sm"><i class="fa fa-trash"
-                    aria-hidden="true"></i></button>
+                <button (click)="onEditCargoInfo(cargo)" class="btn btn-primary">
+                  <i class="fa fa-refresh" aria-hidden="true"></i>
+                </button>
+                <button (click)="onDeleteCargoInfo(cargo.id)" class="btn btn-danger">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
               </td>
             </tr>
-          </tbody>
-        </table>
+          </ng-template>
+        </p-table>
+
       </p-tabPanel>
       <p-tabPanel header="Nebim">
 
@@ -369,20 +417,39 @@
             </form>
 
             <!-- Nebim Bilgileri Tablosu -->
-            <table class="table mt-3 mb-3">
-              <thead>
+            <p-table [value]="nebimInfos" class="mt-3 mb-3" [paginator]="true" [rows]="10"
+              [responsiveLayout]="'scroll'">
+              <ng-template pTemplate="header">
                 <tr>
-                  <th scope="col">Açıklama</th>
-                  <th scope="col">Ofis Kodu</th>
-                  <th scope="col">Mağaza Kodu</th>
-                  <th scope="col">POS Terminal ID</th>
-                  <th scope="col">Kargo Metodu Kodu</th>
-                  <th scope="col">Teslimat Şirketi Kodu</th>
-                  <th scope="col">İşlemler</th>
+                  <th pSortableColumn="description">
+                    Açıklama
+                    <p-sortIcon field="description"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="officeCode">
+                    Ofis Kodu
+                    <p-sortIcon field="officeCode"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="storeCode">
+                    Mağaza Kodu
+                    <p-sortIcon field="storeCode"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="posTerminalID">
+                    POS Terminal ID
+                    <p-sortIcon field="posTerminalID"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="shipmentMethodCode">
+                    Kargo Metodu Kodu
+                    <p-sortIcon field="shipmentMethodCode"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="deliveryCompanyCode">
+                    Teslimat Şirketi Kodu
+                    <p-sortIcon field="deliveryCompanyCode"></p-sortIcon>
+                  </th>
+                  <th>İşlemler</th>
                 </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let nebim of nebimInfos">
+              </ng-template>
+              <ng-template pTemplate="body" let-nebim>
+                <tr>
                   <td>{{ nebim.description }}</td>
                   <td>{{ nebim.officeCode }}</td>
                   <td>{{ nebim.storeCode }}</td>
@@ -390,14 +457,17 @@
                   <td>{{ nebim.shipmentMethodCode }}</td>
                   <td>{{ nebim.deliveryCompanyCode }}</td>
                   <td>
-                    <button (click)="onEditNebimInfo(nebim)" class="btn btn-primary btn-sm"><i class="fa fa-refresh"
-                        aria-hidden="true"></i></button>
-                    <button (click)="onDeleteNebimInfo(nebim.id)" class="btn btn-danger btn-sm"><i class="fa fa-trash"
-                        aria-hidden="true"></i></button>
+                    <button (click)="onEditNebimInfo(nebim)" class="btn btn-primary">
+                      <i class="fa fa-refresh" aria-hidden="true"></i>
+                    </button>
+                    <button (click)="onDeleteNebimInfo(nebim.id)" class="btn btn-danger">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
                   </td>
                 </tr>
-              </tbody>
-            </table>
+              </ng-template>
+            </p-table>
+
           </p-tabPanel>
           <p-tabPanel header="Nebim Kullanıcıları">
             <form [formGroup]="nebimUserInfoForm" (ngSubmit)="onSubmitNebimUserInfo()">
@@ -419,29 +489,38 @@
               </div>
               <button type="submit" class="btn btn-primary" [disabled]="nebimUserInfoForm.invalid">Kaydet</button>
             </form>
-            <table class="table mt-3">
-              <thead>
+            <p-table [value]="nebimUserInfos" class="mt-3" [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'">
+              <ng-template pTemplate="header">
                 <tr>
-                  <th scope="col">Kullanıcı Grup Kodu</th>
-                  <th scope="col">Kullanıcı Adı</th>
-                  <th scope="col">Şifre</th>
-                  <th scope="col">İşlemler</th>
+                  <th pSortableColumn="userGroupCode">
+                    Kullanıcı Grup Kodu
+                    <p-sortIcon field="userGroupCode"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="userName">
+                    Kullanıcı Adı
+                    <p-sortIcon field="userName"></p-sortIcon>
+                  </th>
+                  <th>Şifre</th>
+                  <th>İşlemler</th>
                 </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let nebimUser of nebimUserInfos">
+              </ng-template>
+              <ng-template pTemplate="body" let-nebimUser>
+                <tr>
                   <td>{{ nebimUser.userGroupCode }}</td>
                   <td>{{ nebimUser.userName }}</td>
                   <td>{{ nebimUser.password }}</td>
                   <td>
-                    <button (click)="onEditNebimUserInfo(nebimUser)" class="btn btn-primary btn-sm"> <i
-                        class="fa fa-refresh" aria-hidden="true"></i></button>
-                    <button (click)="onDeleteNebimUserInfo(nebimUser.id)" class="btn btn-danger btn-sm"><i
-                        class="fa fa-trash" aria-hidden="true"></i></button>
+                    <button (click)="onEditNebimUserInfo(nebimUser)" class="btn btn-primary">
+                      <i class="fa fa-refresh" aria-hidden="true"></i>
+                    </button>
+                    <button (click)="onDeleteNebimUserInfo(nebimUser.id)" class="btn btn-danger">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
                   </td>
                 </tr>
-              </tbody>
-            </table>
+              </ng-template>
+            </p-table>
+
           </p-tabPanel>
 
         </p-tabView>
@@ -492,20 +571,38 @@
         </form>
 
         <!-- MarketPlace Bilgileri Tablosuuu -->
-        <table class="table mt-3">
-          <thead>
+        <p-table [value]="marketPlaceInfos" class="mt-3" [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'">
+          <ng-template pTemplate="header">
             <tr>
-              <th scope="col">Açıklama</th>
-              <th scope="col">Müşteri ID</th>
-              <th scope="col">Müşteri Gizli Anahtarı</th>
-              <th scope="col">Yönlendirme URI</th>
-              <th scope="col">Temel URL</th>
-              <th scope="col">Satıcı ID</th>
-              <th scope="col">İşlemler</th>
+              <th pSortableColumn="description">
+                Açıklama
+                <p-sortIcon field="description"></p-sortIcon>
+              </th>
+              <th pSortableColumn="clientId">
+                Müşteri ID
+                <p-sortIcon field="clientId"></p-sortIcon>
+              </th>
+              <th pSortableColumn="clientSecret">
+                Müşteri Gizli Anahtarı
+                <p-sortIcon field="clientSecret"></p-sortIcon>
+              </th>
+              <th pSortableColumn="redirectUri">
+                Yönlendirme URI
+                <p-sortIcon field="redirectUri"></p-sortIcon>
+              </th>
+              <th pSortableColumn="baseUrl">
+                Temel URL
+                <p-sortIcon field="baseUrl"></p-sortIcon>
+              </th>
+              <th pSortableColumn="sellerId">
+                Satıcı ID
+                <p-sortIcon field="sellerId"></p-sortIcon>
+              </th>
+              <th>İşlemler</th>
             </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let marketPlace of marketPlaceInfos">
+          </ng-template>
+          <ng-template pTemplate="body" let-marketPlace>
+            <tr>
               <td>{{ marketPlace.description }}</td>
               <td>{{ marketPlace.clientId }}</td>
               <td>{{ marketPlace.clientSecret }}</td>
@@ -513,14 +610,17 @@
               <td>{{ marketPlace.baseUrl }}</td>
               <td>{{ marketPlace.sellerId }}</td>
               <td>
-                <button (click)="onEditMarketPlaceInfo(marketPlace)" class="btn btn-primary btn-sm"><i
-                    class="fa fa-refresh" aria-hidden="true"></i></button>
-                <button (click)="onDeleteMarketPlaceInfo(marketPlace.id)" class="btn btn-danger btn-sm"><i
-                    class="fa fa-trash" aria-hidden="true"></i></button>
+                <button (click)="onEditMarketPlaceInfo(marketPlace)" class="btn btn-primary">
+                  <i class="fa fa-refresh" aria-hidden="true"></i>
+                </button>
+                <button (click)="onDeleteMarketPlaceInfo(marketPlace.id)" class="btn btn-danger">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
               </td>
             </tr>
-          </tbody>
-        </table>
+          </ng-template>
+        </p-table>
+
       </p-tabPanel>
       <p-tabPanel header="Menü Bilgileri">
         <form [formGroup]="menuInfoForm" (ngSubmit)="onSubmitMenuInfo()">
@@ -557,47 +657,71 @@
           </div>
           <button type="submit" class="btn btn-primary" [disabled]="menuInfoForm.invalid">Kaydet</button>
         </form>
-
-        <table class="table mt-3">
-          <thead>
+        <p-table [value]="menuInfos" class="mt-3" [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'">
+          <ng-template pTemplate="header">
             <tr>
-              <th scope="col">Id</th>
-
-              <th scope="col">Etiket</th>
-              <th scope="col">Rota</th>
-              <th scope="col">Aksiyon</th>
-              <th scope="col">Simge</th>
-              <th scope="col">Aktif</th>
-              <th scope="col">Üst Menü ID</th>
-              <th scope="col">İşlemler</th>
+              <th pSortableColumn="id">
+                Id
+                <p-sortIcon field="id"></p-sortIcon>
+              </th>
+              <th pSortableColumn="label">
+                Etiket
+                <p-sortIcon field="label"></p-sortIcon>
+              </th>
+              <th pSortableColumn="route">
+                Rota
+                <p-sortIcon field="route"></p-sortIcon>
+              </th>
+              <th pSortableColumn="action">
+                Aksiyon
+                <p-sortIcon field="action"></p-sortIcon>
+              </th>
+              <th pSortableColumn="icon">
+                Simge
+                <p-sortIcon field="icon"></p-sortIcon>
+              </th>
+              <th pSortableColumn="isActive">
+                Aktif
+                <p-sortIcon field="isActive"></p-sortIcon>
+              </th>
+              <th pSortableColumn="parentId">
+                Üst Menü ID
+                <p-sortIcon field="parentId"></p-sortIcon>
+              </th>
+              <th>İşlemler</th>
             </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let menuInfo of menuInfos">
+          </ng-template>
+          <ng-template pTemplate="body" let-menuInfo>
+            <tr>
               <td>{{ menuInfo.id }}</td>
               <td>{{ menuInfo.label }}</td>
               <td>{{ menuInfo.route }}</td>
               <td>{{ menuInfo.action }}</td>
               <td>{{ menuInfo.icon }}</td>
               <td>
-                <div *ngIf="!menuInfo.isActive" class="btn btn-danger"> <i class="fa fa-ban" aria-hidden="true"></i>
-                </div>
-                <div *ngIf="menuInfo.isActive" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i>
-                </div>
+                <button *ngIf="!menuInfo.isActive" class="btn btn-danger">
+                  <i class="fa fa-ban" aria-hidden="true"></i>
+                </button>
+                <button *ngIf="menuInfo.isActive" class="btn btn-success">
+                  <i class="fa fa-check" aria-hidden="true"></i>
+                </button>
               </td>
               <td>{{ menuInfo.parentId }}</td>
               <td>
-                <button class="btn btn-primary btn-sm" (click)="onEditMenuInfo(menuInfo)"><i class="fa fa-refresh"
-                    aria-hidden="true"></i></button>
-                <button class="btn btn-danger btn-sm" (click)="onDeleteMenuInfo(menuInfo.id)"><i class="fa fa-trash"
-                    aria-hidden="true"></i></button>
-                <button class="btn btn-secondary btn-sm" (click)="onToggleActive(menuInfo)">
+                <button class="btn btn-primary" (click)="onEditMenuInfo(menuInfo)">
+                  <i class="fa fa-refresh" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-danger" (click)="onDeleteMenuInfo(menuInfo.id)">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-secondary" (click)="onToggleActive(menuInfo)">
                   <i class="fa fa-toggle-on" aria-hidden="true"></i>
                 </button>
               </td>
             </tr>
-          </tbody>
-        </table>
+          </ng-template>
+        </p-table>
+
       </p-tabPanel>
     </p-tabView>
     <p-dialog header="Test Maili" [(visible)]="testMailDialog" [style]="{ width: '80vw' }">

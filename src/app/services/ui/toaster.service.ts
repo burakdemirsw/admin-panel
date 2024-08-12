@@ -10,7 +10,7 @@ export class ToasterService {
 
   constructor(private messageService: MessageService) { }
   success(message: string) {
-    this.messageService.add({ severity: 'success', summary: 'İşlem Başarılı', detail: message, life: 15000, key: 'tr' });
+    this.messageService.add({ severity: 'success', summary: 'İşlem Başarılı', detail: message, life: 1500, key: 'tr' });
   }
   error(message: string) {
     this.messageService.add({ severity: 'error', summary: 'İşlem Başarısız', detail: message, life: 1500, key: 'tr' });

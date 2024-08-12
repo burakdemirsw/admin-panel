@@ -21,20 +21,19 @@
 
             "assets": ["src/favicon.ico", "src/assets", "src/web.config"],
             "styles": [
-              "src/styles.css",
-              "./node_modules/alertifyjs/build/css/alertify.min.css",
-              "./node_modules/ngx-spinner/animations/ball-scale-multiple.css",
-              "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeicons/primeicons.css"
+              "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+              "node_modules/primeicons/primeicons.css",
+              "src/assets/css/style.css",
+              "src/styles.css"
             ],
             "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
               "src/assets/js/main.js",
-              "./node_modules/popper.js/dist/umd/popper.min.js",
-              "./node_modules/alertifyjs/build/alertify.min.js"
+              "node_modules/popper.js/dist/umd/popper.min.js"
             ]
           },
-          "allowedCommonJsDependencies": ["crypto-browserify"],
           "configurations": {
             "production": {
               "budgets": [
@@ -66,7 +65,7 @@
               "namedChunks": true
             }
           },
-          "allowedCommonJsDependencies": ["crypto-browserify"],
+
           "defaultConfiguration": "production"
         },
         "serve": {

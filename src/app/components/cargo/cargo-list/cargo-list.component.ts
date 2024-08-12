@@ -24,6 +24,18 @@ export class CargoListComponent implements OnInit {
   visible: boolean = false;
   items: MenuItem[] = [
     {
+      label: 'Yazdırılan Kargolar',
+      command: () => {
+        this.getCargos(true)
+      }
+    },
+    {
+      label: 'Yazdırılmayan Kargolar',
+      command: () => {
+        this.getCargos(false)
+      }
+    },
+    {
       label: 'Yazdır (ZPL) | MNG',
       command: () => {
         this.createBarcode()
@@ -46,7 +58,8 @@ export class CargoListComponent implements OnInit {
       command: () => {
         this.deleteCargoBulk(this.selectedCargos)
       }
-    }
+    },
+
 
   ];
   cargoState: boolean = false;

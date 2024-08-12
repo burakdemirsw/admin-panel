@@ -125,52 +125,25 @@
                 </div>
               </div>
             </form>
-          </div>
-        </div>
-        <div class="card" *ngIf="productsToCollect.length > 0">
-          <div class="card-body">
-            <div class="row mb-3">
-              <div class="col-md-12">
-                <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 1%"
-                  (click)="onSubmit(checkForm.value)">
+
+            <div class="row " *ngIf="productsToCollect.length > 0">
+              <div class="col-md-6">
+                <button type="button" class="btn btn-primary" style="width: 100%" (click)="onSubmit(checkForm.value)">
                   Ekle
                 </button>
               </div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-body" *ngIf="isInvoice === false">
-            <div class="row mt-3 mb-3">
-              <div class="col-md-12">
+              <div class="col-md-6">
                 <button type="button" class="btn btn-primary" (click)="collectAndPack(this.collectedProducts)"
                   style="width: 100%">
                   {{ operation }}
                 </button>
               </div>
             </div>
-
-            <div class="row mb-3" *ngIf="this.currentOrderNo.includes('BP')">
-              <div class="col-md-12">
-                <button type="button" class="btn btn-primary" (click)="showDialog2()" style="width: 100%">
-                  Fatura Bul
-                  <i class="fa fa-search" aria-hidden="true"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="form-group col" *ngIf="infoProducts.length > 0">
-              <div class="btn-group" role="group" aria-label="Basic example" style="width: 100%">
-                <button type="button" class="btn btn-primary" (click)="showCountPage()" style="width: 100%">
-                  {{ addedProductCount }}
-                </button>
-                <button type="button" class="btn btn-primary" (click)="showModal2()">
-                  <i class="fa fa-angle-down" aria-hidden="true"></i>
-                </button>
-              </div>
-            </div>
           </div>
+
+
         </div>
+
         <div class="card" *ngIf="productsToCollect.length > 0">
           <div class="card-body">
             <h5 class="card-title">Toplanacak Ürünler</h5>

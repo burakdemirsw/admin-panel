@@ -110,6 +110,21 @@ export class RetailOrderManagementComponent implements OnInit {
       command: () => {
         this.deleteNebimOrder();
       }
+    },
+
+    {
+      label: 'Faturalaştırılan Siparişler',
+      command: () => {
+        this.getOrders(1, 1);
+      }
+    }
+    ,
+
+    {
+      label: 'Faturalaştırılmayan Siparişler',
+      command: () => {
+        this.getOrders(1, 2);
+      }
     }
   ];
   //#endregion

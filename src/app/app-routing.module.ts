@@ -67,6 +67,7 @@ import { ProposalListComponent } from './components/Product/proposal-list/propos
 import { IdeasoftOffersComponent } from './components/special-panels/ideasoft-offers/ideasoft-offers.component';
 import { AuthorizationComponent } from './components/auth/authorization/authorization.component';
 import { RoleListComponent } from './components/User/user-list/role/role-list/role-list.component';
+import { PagesUnauthorizedComponent } from './pages/pages-unauthorized/pages-unauthorized.component';
 
 
 const routes: Routes = [
@@ -329,6 +330,7 @@ const routes: Routes = [
   { path: 'retail-orders-managament/:status/:invoiceStatus', component: RetailOrderManagementComponent, canActivate: [AuthGuard] },
   { path: 'retail-orders-collected-packages', component: CollectedPackagesComponent2, canActivate: [AuthGuard] },
   { path: 'infos', component: PagesInfoComponent, canActivate: [AuthGuard] },
+  { path: 'unauthorized', component: PagesUnauthorizedComponent },
 
   //-------------------------------------------------------------------------
   { path: '**', component: PagesError404Component },

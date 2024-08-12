@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, Route } from '@angular/router';
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 import { UserRegister_VM, UserLoginCommandModel, RefreshTokenCommandModel, GetUserFilter, UserClientInfoResponse, UserList_VM, Token, PasswordRequest_CM } from 'src/app/models/model/user/userRegister_VM';
@@ -341,5 +341,13 @@ export class UserService {
     } catch (error) {
       return null;
     }
+  }
+  async isUserAuthorized(userId: number, route: string): Promise<any> {
+    route = route.includes('/') ? route.split('/')[1] : route
+    var query = `${userId}/${route}`
+    const response = await this.client
+      .get<boolean>({ controller: "users/is-user-authorized" }, query)
+      .toPromise();
+    return response;
   }
 }

@@ -2,69 +2,80 @@
   <section class="section">
     <div class="card custom-card mb-3">
       <div class="card-body d-flex justify-content-start mt-3" style="overflow-x: auto">
-        <button type="button" class="btn custom-btn-primary" routerLink="/register">
+        <button type="button" class="btn btn-success" routerLink="/register">
           <i class="fas fa-plus"></i> Kullanıcı Ekle
         </button>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-body">
-        <div class="table-responsive-lg">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Ad</th>
-                <th scope="col">Soy Ad</th>
-                <th scope="col">Satış Elemanı Kodu</th>
-                <th scope="col">Email</th>
-                <th scope="col">Şifre</th>
-                <th scope="col">Telefon Numarası</th>
-                <th scope="col">Rol Ata</th>
+      <p-table [value]="users" [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'">
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="id">
+              Id
+              <p-sortIcon field="id"></p-sortIcon>
+              <p-columnFilter type="numeric" field="id"></p-columnFilter>
+            </th>
+            <th pSortableColumn="firstName">
+              Ad
+              <p-sortIcon field="firstName"></p-sortIcon>
+              <p-columnFilter type="text" field="firstName"></p-columnFilter>
+            </th>
+            <th pSortableColumn="lastName">
+              Soy Ad
+              <p-sortIcon field="lastName"></p-sortIcon>
+              <p-columnFilter type="text" field="lastName"></p-columnFilter>
+            </th>
+            <th pSortableColumn="salesPersonCode">
+              Satış Elemanı Kodu
+              <p-sortIcon field="salesPersonCode"></p-sortIcon>
+              <p-columnFilter type="text" field="salesPersonCode"></p-columnFilter>
+            </th>
+            <th pSortableColumn="email">
+              Email
+              <p-sortIcon field="email"></p-sortIcon>
+              <p-columnFilter type="text" field="email"></p-columnFilter>
+            </th>
+            <th>Şifre</th>
+            <th pSortableColumn="phoneNumber">
+              Telefon Numarası
+              <p-sortIcon field="phoneNumber"></p-sortIcon>
+              <p-columnFilter type="text" field="phoneNumber"></p-columnFilter>
+            </th>
+            <th>Rol Ata</th>
+            <th>İşlemler</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-user let-i="index">
+          <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.firstName }}</td>
+            <td>{{ user.lastName }}</td>
+            <td>{{ user.salesPersonCode }}</td>
+            <td>{{ user.email }}</td>
+            <td>****</td>
+            <td>{{ user.phoneNumber }}</td>
+            <td>
+              <button class="btn btn-primary" (click)="openModalForUser(user)">
+                <i class="fas fa-user"></i>
+              </button>
+            </td>
+            <td>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button class="btn btn-primary" [routerLink]="['/user-update', user.id]">
+                  <i class="fa fa-pencil" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-danger" (click)="deleteUser(user.id)">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+              </div>
 
-                <th scope="col">İşlemler</th>
-                <!-- <th scope="col">Bildirim Açık</th> -->
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let user of users; let i = index">
-                <!-- <td>
-              <p-image
-              src="{{ personal.photoUrl }}"
-              previewImageSrc="{{ personal.photoUrl }}"
-              alt="Image"
-              width="40"
-              [preview]="true"
-              ></p-image>
-            </td> -->
-                <td>{{ user.id }}</td>
-                <td>{{ user.firstName }}</td>
-                <td>{{ user.lastName }}</td>
-                <td>{{ user.salesPersonCode }}</td>
-                <td>{{ user.email }}</td>
-                <td>****</td>
-                <td>{{ user.phoneNumber }}</td>
-                <td> <button pButton pRipple class="p-button-success" label="Rol Ata" (click)="openModalForUser(user)">
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
 
-                  </button></td>
-                <!-- <td>{{ user.SubscribeToPromotions }}</td> -->
-                <!--  -->
-                <td>
-                  <button class="btn btn-primary" status="primary" routerLink="/user-update/{{ user.id }}">
-                    <i class="fa-solid fa-pencil"></i>
-                  </button>
-                  <div class="btn-group" role="group" aria-label="Basic example">
-                    <button class="btn btn-danger" status="danger" (click)="deleteUser(user.id)">
-                      <i class="fa-solid fa-trash"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
 
     <p-dialog header="{{ listHeader }} Kullanıcısına Rol Ata" [(visible)]="visible2" [style]="{ width: '50vw' }">
@@ -77,8 +88,7 @@
         </div>
         <nb-card>
           <nb-card-body>
-            <button pButton pRipple label="Seçili Rolleri Kaydet" class="p-button-success"
-              (click)="assignRoleToUser()"></button>
+            <button class="btn btn-primary" (click)="assignRoleToUser()"></button>
           </nb-card-body>
         </nb-card>
       </div>

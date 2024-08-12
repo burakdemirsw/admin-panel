@@ -3,39 +3,6 @@
   <section class="section">
     <div class="row">
       <div style="width: 100%">
-        <!-- <div class="card" *ngIf="shelves2.length > 0">
-          <div class="card-body">
-            <h5 class="card-title">Raflar</h5>
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                  <th scope="col">Id</th>
-                    <th scope="col">Raf</th>
-                     <th scope="col">İşlem</th>
-                </thead>
-                <tbody>
-                  <tr
-                    *ngFor="let shelve of shelves2; let i = index">
-                    <td>{{ i + 1 }}</td>
-
-                    <td>{{ shelve.description }}</td>
-                     <td>
-
-                      <div class="btn-group" role="group" aria-label="Basic example">
-
-                        <button class="btn btn-primary" type="submit" (click)="goDown2(shelve.description)">
-                          <i class="fa fa-angle-down"> </i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div> -->
-        <!-- RAFLAR KALDIRILDI -->
 
         <div class="card" *ngIf="!blocked">
           <div class="card-body">
