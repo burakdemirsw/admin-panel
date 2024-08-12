@@ -13,7 +13,7 @@ import { ProductService } from 'src/app/services/admin/product.service';
 import { OrderService } from '../../../services/admin/order.service';
 
 import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
-import { BrowserMultiFormatReader } from '@zxing/library';
+import { BrowserMultiFormatReader, Exception } from '@zxing/library';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
 import { OrderStatus } from 'src/app/models/model/order/orderStatus';
@@ -956,6 +956,8 @@ export class OrderOperationComponent implements OnInit {
 
       this.productShelves = shelves;
       this.productShelvesDialog = true;
+    } else {
+      throw new Exception('Ürün Rafları Bulunamadı')
     }
 
   }

@@ -5,60 +5,53 @@
         <div class="card" *ngIf="_inventoryItems.length > 0">
           <div class="card-body">
             <h5 class="card-title">Transfer Edilecek Ürünler</h5>
-            <div class="table-responsive">
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th *ngFor="let item of _inventoryItemColums" scope="col">
-                      {{ item }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let item of _inventoryItems; let i = index">
-                    <td>
-                      <p-image src="{{ item.photoUrl }}" alt="Image" width="50" [preview]="true"></p-image>
-                    </td>
-                    <td>{{ item.shelfNo }}</td>
-                    <td>{{ item.itemCode }}</td>
-                    <td>{{ item.transferQty }}</td>
-                    <td>{{ item.uD_Stock }}</td>
-                    <td>{{ item.mD_Stock }}</td>
+            <p-table [value]="_inventoryItems" class="table table-striped" [paginator]="true" [rows]="10"
+              [responsiveLayout]="'scroll'">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th *ngFor="let item of _inventoryItemColums">
+                    {{ item }}
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item let-i="index">
+                <tr>
+                  <td>
+                    <p-image src="{{ item.photoUrl }}" alt="Image" width="50" [preview]="true"></p-image>
+                  </td>
+                  <td>{{ item.shelfNo }}</td>
+                  <td>{{ item.itemCode }}</td>
+                  <td>{{ item.transferQty }}</td>
+                  <td>{{ item.uD_Stock }}</td>
+                  <td>{{ item.mD_Stock }}</td>
+                  <td>{{ item.itemDescription }}</td>
+                  <td>{{ item.barcode }}</td>
+                  <td>
+                    <div class="btn-group" role="group">
+                      <button class="btn btn-primary" type="submit"
+                        (click)="goDown2(item.barcode, item.shelfNo, item.itemCode, item.transferQty)">
+                        <i class="fa fa-angle-down"></i>
+                      </button>
 
-                    <td>{{ item.itemDescription }}</td>
-                    <td>{{ item.barcode }}</td>
-                    <td>
-                      <div class="btn-group" role="group">
-                        <button class="btn btn-primary" type="submit" (click)="
-                            goDown2(
-                              item.barcode,
-                              item.shelfNo,
-                              item.itemCode,
-                              item.transferQty
-                            )
-                          ">
-                          <i class="fa fa-angle-down"></i>
-                        </button>
+                      <button data-toggle="tooltip" data-placement="right" title="Raflar" class="btn btn-primary"
+                        type="submit" (click)="getShelves(item.barcode)">
+                        <i class="fa-solid fa-bars"></i>
+                      </button>
 
-                        <button data-toggle="tooltip" data-placement="right" title="Raflar" class="btn btn-primary"
-                          type="submit" (click)="getShelves(item.barcode)">
-                          <i class="fa-solid fa-bars"></i>
-                        </button>
+                      <button data-toggle="tooltip" data-placement="right" title="Raflar" class="btn btn-primary"
+                        type="submit" (click)="pasteItemToForm(item)">
+                        <i class="fa-solid fa-file"></i>
+                      </button>
 
-                        <button data-toggle="tooltip" data-placement="right" title="Raflar" class="btn btn-primary"
-                          type="submit" (click)="pasteItemToForm(item)">
-                          <i class="fa-solid fa-file"></i>
-                        </button>
+                      <button class="btn btn-primary" type="submit" (click)="addDeletedItemList(item)">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
 
-                        <button class="btn btn-primary" type="submit" (click)="addDeletedItemList(item)">
-                          <i class="fa fa-trash"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
           </div>
         </div>
 
@@ -167,112 +160,79 @@
         <div class="card" *ngIf="inventoryItems.length > 0">
           <div class="card-body">
             <h5 class="card-title">Transfer Edilecek Ürünler</h5>
-            <div class="table-responsive">
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th *ngFor="let item of inventoryItemColums" scope="col">
-                      {{ item }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let item of inventoryItems; let i = index">
-                    <td>{{ i + 1 }}</td>
-                    <td>
-                      <p-image src="{{ item.photoUrl }}" alt="Image" width="50" [preview]="true"></p-image>
-                    </td>
-                    <td>{{ item.shelfNo }}</td>
-                    <td>{{ item.itemCode }}</td>
-                    <td>{{ item.transferQty }}</td>
-                    <td>{{ item.uD_Stock }}</td>
-                    <td>{{ item.mD_Stock }}</td>
+            <p-table [value]="inventoryItems" class="table table-striped" [paginator]="true" [rows]="10"
+              [responsiveLayout]="'scroll'">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th *ngFor="let item of inventoryItemColums">
+                    {{ item }}
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item let-i="index">
+                <tr>
+                  <td>{{ i + 1 }}</td>
+                  <td>
+                    <p-image src="{{ item.photoUrl }}" alt="Image" width="50" [preview]="true"></p-image>
+                  </td>
+                  <td>{{ item.shelfNo }}</td>
+                  <td>{{ item.itemCode }}</td>
+                  <td>{{ item.transferQty }}</td>
+                  <td>{{ item.uD_Stock }}</td>
+                  <td>{{ item.mD_Stock }}</td>
+                  <td>{{ item.itemDescription }}</td>
+                  <td>{{ item.barcode }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
 
-                    <td>{{ item.itemDescription }}</td>
-                    <td>{{ item.barcode }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
           </div>
         </div>
         <div class="card" *ngIf="warehouseTransferForms.length > 0">
           <div class="card-body">
             <h5 class="card-title">Eklenen Ürünler</h5>
-            <div class="table-responsive">
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Resim</th>
-                    <th scope="col">Raf</th>
-                    <th scope="col">Ürün Kodu</th>
-                    <th scope="col">Parti</th>
-                    <th scope="col">Barkod</th>
-                    <th scope="col">Stok Miktarı</th>
-                    <th scope="col">Gönderen Depo</th>
-                    <th scope="col">Hedef Depo</th>
-                    <!-- <th scope="col">Güncel Stok Adedi</th>
-                    <th scope="col">Durum</th> -->
-                    <th scope="col">İşlemler</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="
-                      let warehousePackageDetail of warehouseTransferForms;
-                      let a = index
-                    ">
-                    <td>{{ a + 1 }}</td>
-                    <td>
-                      <p-image src="{{ warehousePackageDetail.photoUrl }}" alt="Image" width="50" [preview]="true">
-                      </p-image>
-                    </td>
-                    <td>{{ warehousePackageDetail.shelfNo }}</td>
-                    <td>{{ warehousePackageDetail.itemCode }}</td>
-                    <td>{{ warehousePackageDetail.batchCode }}</td>
-                    <td>{{ warehousePackageDetail.barcode }}</td>
-                    <td>{{ warehousePackageDetail.quantity }}</td>
-                    <td>{{ warehousePackageDetail.warehouseCode }}</td>
-                    <td>{{ warehousePackageDetail.toWarehouseCode }}</td>
-                    <!-- <td>{{ warehousePackageDetail.availableQty }}</td>
+            <p-table [value]="warehouseTransferForms" class="table table-striped" [paginator]="true" [rows]="10"
+              [responsiveLayout]="'scroll'">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th scope="col">Id</th>
+                  <th scope="col">Resim</th>
+                  <th scope="col">Raf</th>
+                  <th scope="col">Ürün Kodu</th>
+                  <th scope="col">Parti</th>
+                  <th scope="col">Barkod</th>
+                  <th scope="col">Stok Miktarı</th>
+                  <th scope="col">Gönderen Depo</th>
+                  <th scope="col">Hedef Depo</th>
+                  <th scope="col">İşlemler</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-warehousePackageDetail let-a="index">
+                <tr>
+                  <td>{{ a + 1 }}</td>
+                  <td>
+                    <p-image src="{{ warehousePackageDetail.photoUrl }}" alt="Image" width="50" [preview]="true">
+                    </p-image>
+                  </td>
+                  <td>{{ warehousePackageDetail.shelfNo }}</td>
+                  <td>{{ warehousePackageDetail.itemCode }}</td>
+                  <td>{{ warehousePackageDetail.batchCode }}</td>
+                  <td>{{ warehousePackageDetail.barcode }}</td>
+                  <td>{{ warehousePackageDetail.quantity }}</td>
+                  <td>{{ warehousePackageDetail.warehouseCode }}</td>
+                  <td>{{ warehousePackageDetail.toWarehouseCode }}</td>
+                  <td>
+                    <div class="btn-group">
+                      <button class="btn btn-primary" type="submit"
+                        (click)="deleteOrderProduct(this.currentOrderNo, warehousePackageDetail)">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
 
-                    <td>
-                      <span [ngClass]="
-                          warehousePackageDetail.availableQty >=
-                          warehousePackageDetail.quantity
-                            ? 'badge badge-success'
-                            : 'badge badge-danger'
-                        ">
-                        {{
-                          warehousePackageDetail.availableQty >=
-                          warehousePackageDetail.quantity
-                            ? "Başarılı"
-                            : "Başarısız"
-                        }}
-                      </span>
-                    </td> -->
-                    <td>
-                      <div class="btn-group">
-                        <button class="btn btn-primary" type="submit" (click)="
-                            deleteOrderProduct(
-                              this.currentOrderNo,
-                              warehousePackageDetail
-                            )
-                          ">
-                          <i class="fa fa-trash" aria-hidden="true"></i>
-                        </button>
-                        <!-- *ngIf="warehousePackageDetail.availableQty <= warehousePackageDetail.quantity" -->
-                        <!-- <button
-
-                                                    class="btn btn-warning" type="submit" (click)="updateItemStock()"><i class="fa-solid fa-arrows-rotate" style="color: white;"></i>
-                                                </button> -->
-
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
           </div>
         </div>
         <!-- Yeni kart: Toplanan Ürünler -->

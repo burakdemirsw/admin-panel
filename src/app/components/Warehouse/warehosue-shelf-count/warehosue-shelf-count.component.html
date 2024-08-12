@@ -98,94 +98,78 @@
         <div class="card" *ngIf="infoProducts.length > 0">
           <div class="card-body">
             <h5 class="card-title">Bilgilendirme Alanı</h5>
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col" *ngFor="let header of tableHeaders">
-                      {{ header }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let product of infoProducts; let i = index">
-                    <td>
-                      <img src="{{ product.photoUrl }}" alt="Resim" width="50" height="50"
-                        (click)="openImageModal(product.photoUrl)" />
-                    </td>
-                    <td>{{ product.shelfNo }}</td>
-                    <td>{{ product.itemCode }}</td>
+            <p-table [value]="infoProducts" class="table table-striped" [paginator]="true" [rows]="10"
+              [responsiveLayout]="'scroll'">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th *ngFor="let header of tableHeaders" class="text-center">
+                    {{ header }}
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-product let-i="index">
+                <tr>
+                  <td class="text-center">
+                    <p-image src="{{ product.photoUrl }}" previewImageSrc="{{ product.photoUrl }}" alt="Resim"
+                      width="50" height="50" [preview]="true"></p-image>
+                  </td>
+                  <td class="text-center">{{ product.shelfNo }}</td>
+                  <td class="text-center">{{ product.itemCode }}</td>
+                  <td class="text-center">{{ product.quantity }}</td>
+                  <td class="text-center">{{ product.batchCode }}</td>
+                  <td class="text-center">{{ product.barcode }}</td>
+                  <td class="text-center">{{ product.currAccCode }}</td>
+                  <td class="text-center">{{ product.warehouseCode }}</td>
+                  <td class="text-center">{{ product.officeCode }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
 
-                    <td>{{ product.quantity }}</td>
-                    <td>{{ product.batchCode }}</td>
-                    <td>{{ product.barcode }}</td>
-                    <td>{{ product.currAccCode }}</td>
-                    <td>{{ product.warehouseCode }}</td>
-                    <td>{{ product.officeCode }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+
           </div>
         </div>
 
         <div class="card" *ngIf="lastCollectedProducts.length > 0">
           <div class="card-body">
             <h5 class="card-title">Sayılan Ürünler</h5>
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col" *ngFor="let header of _tableHeaders">
-                      {{ header }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="
-                      let product of lastCollectedProducts
-                        | paginate
-                          : { itemsPerPage: 10, currentPage: currentPage };
-                      let i = index
-                    ">
-                    <!-- <td>{{ i + 1 }}</td> -->
-                    <td>
+            <p-table [value]="lastCollectedProducts" class="table" [paginator]="true" [rows]="10"
+              [responsiveLayout]="'scroll'">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th *ngFor="let header of _tableHeaders">
+                    {{ header }}
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-product let-i="index">
+                <tr>
+                  <td>
+                    <p-image src="{{ photoUrl + product.itemCode + '.jpg' }}"
+                      previewImageSrc="{{ photoUrl + product.itemCode + '.jpg' }}" alt="Image" width="30"
+                      [preview]="true"></p-image>
+                  </td>
+                  <td>{{ product.shelfNo }}</td>
+                  <td>{{ product.itemCode }}</td>
+                  <td>{{ product.quantity }}</td>
+                  <td>{{ product.batchCode }}</td>
+                  <td>{{ product.barcode }}</td>
+                  <td>
+                    <div class="btn-group">
+                      <button class="btn btn-danger" type="submit" (click)="deleteOrderProduct(orderNo, product)">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                      <!--
+          <button class="btn btn-primary" type="submit"
+                  (click)="change(product.barcode, product.quantity, product.batchCode)">
+            <i class="fa fa-print"></i>
+          </button>
+          -->
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
 
-                      <p-image src="{{ photoUrl + product.itemCode + '.jpg' }}" previewImageSrc="{{
-                          photoUrl + product.itemCode + '.jpg'
-                        }}" alt="Image" width="30" [preview]="true" />
-                    </td>
-                    <td>{{ product.shelfNo }}</td>
-                    <td>{{ product.itemCode }}</td>
-                    <td>{{ product.quantity }}</td>
-                    <td>{{ product.batchCode }}</td>
-                    <td>{{ product.barcode }}</td>
-                    <td>
-                      <div class="btn-group">
-                        <button class="btn btn-danger" type="submit" (click)="deleteOrderProduct(orderNo, product)">
-                          <i class="fa fa-trash"></i>
-                        </button>
-
-                        <!-- <button
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="
-                            change(
-                              product.barcode,
-                              product.quantity,
-                              product.batchCode
-                            )
-                          "
-                        >
-                          <i class="fa fa-print"></i>
-                        </button> -->
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
-            </div>
           </div>
         </div>
 

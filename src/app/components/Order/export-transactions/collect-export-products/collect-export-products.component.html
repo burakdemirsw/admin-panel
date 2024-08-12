@@ -5,21 +5,21 @@
         <div class="card" *ngIf="_productsToCollect.length > 0">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table" #bilgilendirmeAlanı>
-                <thead>
+              <p-table [value]="_productsToCollect" class="table" #bilgilendirmeAlanı [paginator]="true" [rows]="10"
+                [responsiveLayout]="'scroll'">
+                <ng-template pTemplate="header">
                   <tr>
-                    <th scope="col" *ngFor="let header of tableHeaders">
+                    <th *ngFor="let header of tableHeaders">
                       {{ header }}
                     </th>
                   </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let product of _productsToCollect; let i = index"
-                    [ngClass]="{ 'green-row': product.colorDescription == '1' }"
-                    [ngClass]="{ 'success-row': product.quantity === 0 }">
+                </ng-template>
+                <ng-template pTemplate="body" let-product let-i="index">
+                  <tr
+                    [ngClass]="{ 'green-row': product.colorDescription == '1', 'success-row': product.quantity === 0 }">
                     <td>
                       <p-image src="{{ product.photoUrl }}" previewImageSrc="{{ product.photoUrl }}" alt="Image"
-                        width="30" [preview]="true" />
+                        width="30" [preview]="true"></p-image>
                     </td>
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.itemCode }}</td>
@@ -30,28 +30,23 @@
                     <td>{{ product.colorDescription }}</td>
                     <td>{{ product.itemDim1Code }}</td>
                     <td>{{ product.currentQty }}</td>
-
                     <td>
                       <div class="btn-group" role="group" aria-label="Basic example">
-                        <button class="btn btn-primary" type="submit" (click)="
-                            goDown2(
-                              product.barcode,
-                              product.shelfNo,
-                              product.itemCode
-                            )
-                          ">
-                          <i class="fa fa-angle-down"> </i>
+                        <button class="btn btn-primary" type="submit"
+                          (click)="goDown2(product.barcode, product.shelfNo, product.itemCode)">
+                          <i class="fa fa-angle-down"></i>
                         </button>
 
-                        <button data-toggle="tooltip" data-placement="right" title="Raflar" class="btn btn-primary"
-                          type="submit" (click)="getShelves(product.barcode)">
+                        <button class="btn btn-primary" type="submit" data-toggle="tooltip" data-placement="right"
+                          title="Raflar" (click)="getShelves(product.barcode)">
                           <i class="fa-solid fa-bars"></i>
                         </button>
                       </div>
                     </td>
                   </tr>
-                </tbody>
-              </table>
+                </ng-template>
+              </p-table>
+
             </div>
           </div>
         </div>
@@ -131,25 +126,21 @@
           <div class="card-body">
             <h5 class="card-title">Toplanacak Ürünler</h5>
             <div class="table-responsive">
-              <table class="table">
-                <thead>
+              <p-table [value]="productsToCollect" class="table" [paginator]="true" [rows]="5"
+                [responsiveLayout]="'scroll'">
+                <ng-template pTemplate="header">
                   <tr>
-                    <th scope="col" *ngFor="let header of tableHeaders">
+                    <th *ngFor="let header of tableHeaders">
                       {{ header }}
                     </th>
                   </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="
-                      let product of productsToCollect
-                        | paginate
-                          : { itemsPerPage: 5, currentPage: currentPage };
-                      let i = index
-                    " [ngClass]="{ 'green-row': product.colorDescription == '1' }"
-                    [ngClass]="{ 'success-row': product.quantity === 0 }">
+                </ng-template>
+                <ng-template pTemplate="body" let-product let-i="index">
+                  <tr
+                    [ngClass]="{ 'green-row': product.colorDescription == '1', 'success-row': product.quantity === 0 }">
                     <td>
                       <p-image src="{{ product.photoUrl }}" previewImageSrc="{{ product.photoUrl }}" alt="Image"
-                        width="30" [preview]="true" />
+                        width="30" [preview]="true"></p-image>
                     </td>
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.itemCode }}</td>
@@ -160,59 +151,20 @@
                     <td>{{ product.itemDim1Code }}</td>
                     <td>{{ product.colorDescription }}</td>
                     <td>{{ product.currentQty }}</td>
-
                     <td>
                       <div class="btn-group" role="group" aria-label="Basic example">
-                        <!-- <button
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="deleteOrderProduct(orderNo, product)"
-                        >
-                          <i class="fa fa-trash"></i>
-                        </button> -->
-                        <!-- <button class="btn btn-primary" type="submit" (click)="goDown(product.packageNo)">
-                          <i class="fa fa-angle-down"> </i>
-                        </button> -->
-                        <!-- <button class="btn btn-primary" type="submit" (click)="dropItem( product)">
-                          <i class="fa fa-angle-down"> </i>
-                        </button> -->
-                        <!-- <button
-                          data-toggle="tooltip"
-                          data-placement="right"
-                          title="Eksik Ürün"
-                          *ngIf="
-                            this.currentOrderNo.includes('WS') &&
-                            !_pageDescription
-                          "
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="addMissingProduct([product])"
-                        >
-                          <i class="fa-solid fa-minus"></i>
-                        </button> -->
-                        <!-- <button
-                          data-toggle="tooltip"
-                          data-placement="right"
-                          title="Raflar"
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="getShelves(product.barcode)"
-                        >
-                          <i class="fa-solid fa-bars"></i>
-                        </button>
-                        <button
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="change(product.barcode, product.quantity)"
-                        >
-                          <i class="fas fa-print"></i>
-                        </button> -->
+                        <!-- Burada işlem butonları yer alabilir -->
+                        <!-- Örnek:
+          <button class="btn btn-primary" type="submit" (click)="deleteOrderProduct(orderNo, product)">
+            <i class="fa fa-trash"></i>
+          </button>
+          -->
                       </div>
                     </td>
-                    <!-- <td>{{ product.lineId }}</td> -->
                   </tr>
-                </tbody>
-              </table>
+                </ng-template>
+              </p-table>
+
               <pagination-controls #id1 (pageChange)="currentPage = $event"></pagination-controls>
             </div>
           </div>
@@ -222,8 +174,9 @@
           <div class="card-body">
             <h5 class="card-title">Toplanan Ürünler</h5>
             <div class="table-responsive">
-              <table class="table">
-                <thead>
+              <p-table [value]="lastCollectedProducts" class="table" [paginator]="true" [rows]="10"
+                [responsiveLayout]="'scroll'">
+                <ng-template pTemplate="header">
                   <tr>
                     <th scope="col">Id</th>
                     <th scope="col">Fotoğraf</th>
@@ -231,82 +184,33 @@
                     <th scope="col">Ürün Kodu</th>
                     <th scope="col">Rafa Giren Miktar</th>
                     <th scope="col">Barkod</th>
-
-                    <!-- <th scope="col">Durum</th> -->
-
                     <th scope="col">İşlemler</th>
                   </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let product of lastCollectedProducts; let i = index">
-                    <td>
-                      {{ i + 1 }}
-                    </td>
-
+                </ng-template>
+                <ng-template pTemplate="body" let-product let-i="index">
+                  <tr>
+                    <td>{{ i + 1 }}</td>
                     <td>
                       <p-image src="{{ product.photoUrl }}" previewImageSrc="{{ product.photoUrl }}" alt="Image"
-                        width="30" [preview]="true" />
+                        width="30" [preview]="true"></p-image>
                     </td>
                     <td>{{ product.shelfNo }}</td>
                     <td>{{ product.itemCode }}</td>
                     <td>{{ product.quantity }}</td>
                     <td>{{ product.barcode }}</td>
-
-                    <!-- <td>
-                      <span
-                        [ngClass]="
-                          product.availableQty >= product.quantity
-                            ? 'btn btn-success'
-                            : 'btn btn-primary'
-                        "
-                      >
-                        {{
-                          product.availableQty >= product.quantity
-                            ? "Başarılı"
-                            : "Başarısız"
-                        }}
-                      </span>
-                    </td> -->
                     <td>
                       <div class="btn-group">
                         <button class="btn btn-primary" type="submit"
-                          (click)="deleteOrderProduct(this.currentOrderNo,product)">
-                          <i class="fas fa-trash"> </i>
+                          (click)="deleteOrderProduct(this.currentOrderNo, product)">
+                          <i class="fas fa-trash"></i>
                         </button>
-
-
-                        <!-- <button
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="
-                            createJson(
-                              product.barcode,
-                              product.shelfNo,
-                              product.itemCode
-                            )
-                          "
-                        >
-                          <i class="fas fa-print"> </i>
-                        </button> -->
-                        <!-- <button
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="getShelves(product.barcode)"
-                        >
-                          <i class="fa-solid fa-bars"></i>
-                        </button>
-                        <button
-                          class="btn btn-primary"
-                          type="submit"
-                          (click)="change(product.barcode, product.quantity)"
-                        >
-                          <i class="fas fa-print"></i>
-                        </button> -->
+                        <!-- İsteğe bağlı ek işlemler için butonlar buraya eklenebilir -->
                       </div>
                     </td>
                   </tr>
-                </tbody>
-              </table>
+                </ng-template>
+              </p-table>
+
             </div>
           </div>
         </div>

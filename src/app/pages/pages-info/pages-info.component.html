@@ -657,36 +657,56 @@
           </div>
           <button type="submit" class="btn btn-primary" [disabled]="menuInfoForm.invalid">Kaydet</button>
         </form>
-        <p-table [value]="menuInfos" class="mt-3" [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'">
+        <p-table #dt [value]="menuInfos" class="mt-3" [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'"
+          [globalFilterFields]="['id', 'label', 'route', 'action', 'icon', 'parentId']">
+          <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-end">
+              <span class="p-mr-2">Ara:</span>
+              <input pInputText type="text" placeholder="Filtre..."
+                (input)="dt.filterGlobal($event.target, 'contains')" />
+            </div>
+          </ng-template>
           <ng-template pTemplate="header">
             <tr>
               <th pSortableColumn="id">
                 Id
                 <p-sortIcon field="id"></p-sortIcon>
+                <p-columnFilter field="id" matchMode="contains"></p-columnFilter>
               </th>
               <th pSortableColumn="label">
                 Etiket
                 <p-sortIcon field="label"></p-sortIcon>
+                <p-columnFilter field="label" matchMode="contains"></p-columnFilter>
               </th>
               <th pSortableColumn="route">
                 Rota
                 <p-sortIcon field="route"></p-sortIcon>
+                <p-columnFilter field="route" matchMode="contains"></p-columnFilter>
               </th>
               <th pSortableColumn="action">
                 Aksiyon
                 <p-sortIcon field="action"></p-sortIcon>
+                <p-columnFilter field="action" matchMode="contains"></p-columnFilter>
               </th>
               <th pSortableColumn="icon">
                 Simge
                 <p-sortIcon field="icon"></p-sortIcon>
+                <p-columnFilter field="icon" matchMode="contains"></p-columnFilter>
               </th>
               <th pSortableColumn="isActive">
                 Aktif
                 <p-sortIcon field="isActive"></p-sortIcon>
+                <p-columnFilter field="isActive" matchMode="equals">
+                  <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                    <p-dropdown [options]="[{label: 'Aktif', value: true}, {label: 'Pasif', value: false}]"
+                      [ngModel]="value" (onChange)="filter($event.value)" placeholder="Seçiniz"></p-dropdown>
+                  </ng-template>
+                </p-columnFilter>
               </th>
               <th pSortableColumn="parentId">
                 Üst Menü ID
                 <p-sortIcon field="parentId"></p-sortIcon>
+                <p-columnFilter field="parentId" matchMode="contains"></p-columnFilter>
               </th>
               <th>İşlemler</th>
             </tr>
@@ -721,6 +741,7 @@
             </tr>
           </ng-template>
         </p-table>
+
 
       </p-tabPanel>
     </p-tabView>
