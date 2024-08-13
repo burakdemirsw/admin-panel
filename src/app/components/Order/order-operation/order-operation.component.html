@@ -4,7 +4,7 @@
       <div style="width: 100%">
         <div class="card" *ngIf="_productsToCollect.length > 0">
           <p-table [value]="_productsToCollect" class="table" #bilgilendirmeAlanı [rows]="1"
-            [responsiveLayout]="'scroll'">
+            [tableStyle]="{ 'min-width': '50rem' }">
             <ng-template pTemplate="header">
               <tr>
                 <th *ngFor="let header of tableHeaders">
@@ -43,7 +43,7 @@
             </ng-template>
           </p-table>
         </div>
-        <div div class="card text-center" *ngIf="productsToCollect.length <= 0">
+        <!-- <div div class="card text-center" *ngIf="productsToCollect.length <= 0">
           <div class="card-body">
             <h5 class="card-title">TÜM ÜRÜNLER TOPLANMIŞTIR</h5>
 
@@ -57,9 +57,9 @@
               Siparişi Kargolayabilirsiniz
             </p>
           </div>
-        </div>
+        </div> -->
 
-        <div class="card mobile" *ngIf="productsToCollect.length > 0">
+        <div class="card mobile">
           <div class="card-body">
             <h5 class="card-title">
               {{ pageDescription
@@ -74,7 +74,7 @@
                       formControlName="shelfNo" (keydown.enter)="focusNextInput('barcode')" />
                     <div class="input-group-append">
                       <button type="button" style="height: 100%" (click)="clearShelfNumbers()" class="btn btn-primary">
-                        Formu Temizle
+                        <i class="fa-solid fa-broom"></i>
                       </button>
                     </div>
                   </div>
@@ -114,8 +114,8 @@
               </div>
             </form>
 
-            <div class="row " *ngIf="productsToCollect.length > 0">
-              <div class="col-md-6">
+            <div class="row ">
+              <div class="col-md-6 mb-3">
                 <button type="button" class="btn btn-primary" style="width: 100%" (click)="onSubmit(checkForm.value)">
                   Ekle
                 </button>
@@ -136,8 +136,8 @@
           <div class="card-body">
             <h5 class="card-title">Toplanacak Ürünler</h5>
             <div class="table-responsive">
-              <p-table [value]="productsToCollect" class="table" [paginator]="true" [rows]="5"
-                [responsiveLayout]="'scroll'">
+              <p-table [tableStyle]="{ 'min-width': '50rem' }" [value]="productsToCollect" class="table"
+                [paginator]="true" [rows]="10">
                 <ng-template pTemplate="header">
                   <tr>
                     <th *ngFor="let header of tableHeaders">
@@ -181,7 +181,7 @@
             <h5 class="card-title">Toplanan Ürünler</h5>
             <div class="table-responsive">
               <p-table [value]="lastCollectedProducts" class="table" [paginator]="true" [rows]="10"
-                [responsiveLayout]="'scroll'">
+                [tableStyle]="{ 'min-width': '50rem' }">
                 <ng-template pTemplate="header">
                   <tr>
                     <th scope="col">Id</th>

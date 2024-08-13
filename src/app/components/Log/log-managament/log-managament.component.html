@@ -114,7 +114,7 @@
 
         <ng-template pTemplate="body" let-log>
           <tr>
-            <td>{{ log.id }}</td>
+            <td style="max-width: 100px !important;">{{ log.id }}</td>
             <td>{{ log.messageHeader }}</td>
             <td>
               <div class="btn" [ngClass]="{
@@ -128,10 +128,10 @@
             </td>
             <td>{{ log.exceptionText }}</td>
             <td>
-              <textarea rows="5" cols="50" [(ngModel)]="log.request" *ngIf="log.request" readonly></textarea>
+              <textarea rows="5" cols="10" [(ngModel)]="log.request" *ngIf="log.request" readonly></textarea>
             </td>
             <td>
-              <textarea rows="5" cols="50" [(ngModel)]="log.logEvent" readonly></textarea>
+              <textarea rows="5" cols="10" [(ngModel)]="log.logEvent" readonly></textarea>
             </td>
             <td>{{ log.createdDate }}</td>
           </tr>

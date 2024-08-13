@@ -368,7 +368,7 @@ export class CollectExportProductsComponent {
       return;
     }
 
-    //satış faturası alanı------------------------------------------------------------------------ ES
+    //satış faturası alanı ------------------------------------------------------------------------ ES
 
     if (this.checkForm.valid) {
 
