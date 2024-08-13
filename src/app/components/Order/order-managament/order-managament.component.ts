@@ -386,6 +386,7 @@ export class OrderManagamentComponent implements OnInit {
     }
   }
 
+
   getCargoImage(name: string): string {
     switch (name) {
       case 'MNG':
@@ -394,6 +395,10 @@ export class OrderManagamentComponent implements OnInit {
         return '../../../../assets/img/cargo/araslogo.png';
       case 'Yurtiçi':
         return '../../../../assets/img/cargo/yurticilogo.png';
+      case 'Arşın':
+        return '../../../../assets/img/cargo/arsinlogo2.png';
+      case 'Kargola':
+        return '../../../../assets/img/cargo/kargolalogo.png';
       default:
         return '';
     }

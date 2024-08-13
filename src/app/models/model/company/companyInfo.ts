@@ -130,3 +130,16 @@ export class MenuItem {
   permittedRoleIds?: number[]
 
 }
+export interface CargoCompanyInfo {
+  id: number;
+  companyName: string;
+  createdDate: Date;
+  updatedDate: Date;
+}
+
+export interface MarketplaceCompanyInfo {
+  id: number;
+  companyName: string;
+  createdDate: Date;
+  updatedDate: Date;
+}

@@ -3,7 +3,10 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
-import { CompanyInfo, CargoInfo, DatabaseInfo, NebimInfo, MarketPlaceInfo, ReportInfo, MailInfo, PaymentInfo, Info, NebimUserInfo, MenuItem, MenuInfo } from 'src/app/models/model/company/companyInfo';
+import {
+  CompanyInfo, CargoInfo, DatabaseInfo, NebimInfo, MarketPlaceInfo,
+  ReportInfo, MailInfo, PaymentInfo, Info, NebimUserInfo, MenuItem, MenuInfo, CargoCompanyInfo, MarketplaceCompanyInfo
+} from 'src/app/models/model/company/companyInfo';
 
 @Injectable({
   providedIn: 'root'
@@ -245,9 +248,52 @@ export class InfoService {
   }
 
   //-----
+  async addCargoCompanyInfo(model: CargoCompanyInfo): Promise<any> {
+    const response = await this.httpClientService.post<any>({ controller: 'Infos/add-cargo-company' }, model).toPromise();
+    return response;
+  }
+
+  async updateCargoCompanyInfo(model: CargoCompanyInfo): Promise<any> {
+    const response = await this.httpClientService.post<any>({ controller: 'Infos/update-cargo-company' }, model).toPromise();
+    return response;
+  }
+
+  async deleteCargoCompanyInfo(id: number): Promise<any> {
+    const response = await this.httpClientService.get<any>({ controller: `Infos/delete-cargo-company/${id}` }).toPromise();
+    return response;
+  }
+
+  async getCargoCompanyInfos(): Promise<any> {
+    const response: CargoCompanyInfo[] = await this.httpClientService.get_new<CargoCompanyInfo[]>({ controller: 'Infos/get-cargo-companies' }).toPromise();
+    return response;
+  }
+
+  //-----
+  async addMarketPlaceCompanyInfo(model: MarketplaceCompanyInfo): Promise<any> {
+    const response = await this.httpClientService.post<any>({ controller: 'Infos/add-marketplace-company' }, model).toPromise();
+    return response;
+  }
+
+  async updateMarketPlaceCompanyInfo(model: MarketplaceCompanyInfo): Promise<any> {
+    const response = await this.httpClientService.post<any>({ controller: 'Infos/update-marketplace-company' }, model).toPromise();
+    return response;
+  }
+
+  async deleteMarketPlaceCompanyInfo(id: number): Promise<any> {
+    const response = await this.httpClientService.get<any>({ controller: `Infos/delete-marketplace-company/${id}` }).toPromise();
+    return response;
+  }
+
+  async getMarketPlaceCompanyInfos(filter: boolean, isActive?: boolean): Promise<any> {
+    const response: MarketplaceCompanyInfo[] = await this.httpClientService.get_new<MarketplaceCompanyInfo[]>({ controller: 'Infos/get-marketplace-companies' }).toPromise();
+    return response;
+  }
+
+  //----
   async sendTestMail(request: any): Promise<any> {
     const response = await this.httpClientService.post<any>({ controller: 'direct-request/send-mail' }, request).toPromise();
     return response;
   }
+
 }
 

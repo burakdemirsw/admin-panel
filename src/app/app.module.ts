@@ -129,6 +129,7 @@ import { AlertifyService } from './services/ui/alertify.service';
 import { HttpErrorInterceptor } from './services/ui/http-error-interceptor.service';
 import { ListboxModule } from 'primeng/listbox';
 import { NgxPopperjsModule } from 'ngx-popperjs';
+import { ShelfComponent } from './components/Warehouse/shelf/shelf.component';
 
 @NgModule({
 
@@ -212,7 +213,8 @@ import { NgxPopperjsModule } from 'ngx-popperjs';
     ProposalListComponent,
     IdeasoftOffersComponent,
     AuthorizationComponent,
-    RoleListComponent
+    RoleListComponent,
+    ShelfComponent
 
   ],
 

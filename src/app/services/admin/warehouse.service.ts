@@ -10,7 +10,7 @@ import { CountedProduct, CountedProductControl } from 'src/app/models/model/prod
 import {
   ProductCountModel
 } from 'src/app/models/model/shelfNameModel';
-import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
+import { AvailableShelf, Shelf } from 'src/app/models/model/warehouse/availableShelf';
 import { FastTransferListModel, FastTransferModel, FastTransferModel2, WarehouseTransferModel } from 'src/app/models/model/warehouse/fastTransferModel';
 import { TransferModel } from 'src/app/models/model/warehouse/transferModel';
 import { TransferRequestListModel } from 'src/app/models/model/warehouse/transferRequestListModel';
@@ -508,5 +508,35 @@ export class WarehouseService {
   }
 
   //---------------------------------------------------------------------------
+  //RAFLAR----------------------------------------------------
 
+  async getShelves(): Promise<Shelf[]> {
+    const data = await this.httpClientService
+      .get_new<Shelf[]>({ controller: 'Order/get-shelves' })
+      .toPromise();
+    return data;
+  }
+
+  async addShelf(request: Shelf): Promise<boolean> {
+    const result = await this.httpClientService
+      .post<boolean>({ controller: 'Order/add-shelf' }, request)
+      .toPromise();
+    return result;
+  }
+
+  async updateShelf(request: Shelf): Promise<boolean> {
+    const result = await this.httpClientService
+      .post<boolean>({ controller: 'Order/update-shelf' }, request)
+      .toPromise();
+    return result;
+  }
+
+  async removeShelf(id: string): Promise<boolean> {
+    const result = await this.httpClientService
+      .get_new<boolean>({ controller: 'Order/remove-Shelf' }, id)
+      .toPromise();
+    return result;
+  }
+
+  //----------------------------------------------------
 }

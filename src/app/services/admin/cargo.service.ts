@@ -62,7 +62,26 @@ export class CargoService {
       return null;
     }
   }
+  async createBarcode2(request: string[]): Promise<any> {
+    try {
+      var response = await this.httpClientService.post<any>({ controller: "cargos/create-arsin-barcode", responseType: 'arraybuffer' }, request).toPromise();
 
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+  async createBarcode3(request: string[]): Promise<any> {
+    try {
+      var response = await this.httpClientService.post<any>({ controller: "cargos/create-kargola-barcode", responseType: 'arraybuffer' }, request).toPromise();
+
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
 
   async printSingleBarcode(request: string): Promise<any> {
     try {

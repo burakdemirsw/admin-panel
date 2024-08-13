@@ -266,7 +266,7 @@ export class WarehosueShelfCountComponent implements OnInit {
 
     try {
 
-      var result: string[] = await this.productService.countProductByBarcode(
+      var result: string[] = await this.productService.getShelvesOfProduct(
         product.barcode
       );
       if (result) {
@@ -292,7 +292,7 @@ export class WarehosueShelfCountComponent implements OnInit {
   }
 
   async getQuantity(barcode: string): Promise<string> {
-    var result: string[] = await this.productService.countProductByBarcode(
+    var result: string[] = await this.productService.getShelvesOfProduct(
       barcode
     );
 

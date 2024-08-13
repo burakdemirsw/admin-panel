@@ -1085,7 +1085,7 @@ export class CreateOrderComponent implements OnInit {
 
 
         }
-        var result: string[] = await this.productService.countProductByBarcode(
+        var result: string[] = await this.productService.getShelvesOfProduct(
           request.barcode
         );
         this.shelfNumbers += result[0];

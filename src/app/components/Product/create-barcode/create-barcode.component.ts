@@ -111,7 +111,7 @@ export class CreateBarcodeComponent implements OnInit {
 
         return result[1];
       } else {
-        var result: string[] = await this.productService.countProductByBarcode(
+        var result: string[] = await this.productService.getShelvesOfProduct(
           barcode
         );
         this.shelfNumbers += result[0];

@@ -131,7 +131,7 @@ export class BoxCountComponent implements OnInit {
 
         return result[1];
       } else {
-        var result: string[] = await this.productService.countProductByBarcode(
+        var result: string[] = await this.productService.getShelvesOfProduct(
           barcode
         );
         this.shelfNumbers += result[0];
@@ -144,7 +144,7 @@ export class BoxCountComponent implements OnInit {
   }
 
   async getQuantity(barcode: string): Promise<string> {
-    var result: string[] = await this.productService.countProductByBarcode(
+    var result: string[] = await this.productService.getShelvesOfProduct(
       barcode
     );
 
@@ -216,7 +216,7 @@ export class BoxCountComponent implements OnInit {
       const url = ClientUrls.baseUrl + '/Order/CountProduct3';
 
       try {
-        var newResponse = await this.productService.countProductByBarcode(
+        var newResponse = await this.productService.getShelvesOfProduct(
           countProductRequestModel.barcode
         );
         const shelves = newResponse[0]

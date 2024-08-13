@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import TypedRegistry from 'chart.js/dist/core/core.typedRegistry';
-import { CargoInfo, MailInfo, MarketPlaceInfo, MenuInfo, NebimInfo, NebimUserInfo, PaymentInfo } from 'src/app/models/model/company/companyInfo';
+import { CargoCompanyInfo, CargoInfo, MailInfo, MarketplaceCompanyInfo, MarketPlaceInfo, MenuInfo, NebimInfo, NebimUserInfo, PaymentInfo } from 'src/app/models/model/company/companyInfo';
 import { InfoService } from 'src/app/services/admin/info.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 
@@ -21,15 +20,19 @@ export class PagesInfoComponent implements OnInit {
   cargoInfoForm: FormGroup;
   nebimUserInfoForm: FormGroup;
   menuInfoForm: FormGroup;
+  cargoCompanyInfoForm: FormGroup;
+  marketPlaceCompanyInfoForm: FormGroup;
+  marketPlaceCompanies: MarketplaceCompanyInfo[] = [];
+
   menuInfos: MenuInfo[] = [];
   nebimInfos: NebimInfo[] = [];
   marketPlaceInfos: MarketPlaceInfo[] = [];
   cargoInfos: CargoInfo[] = [];
-
   nebimUserInfos: NebimUserInfo[] = [];
-
+  cargoCompanies: CargoCompanyInfo[] = [];
   paymentInfos: PaymentInfo[] = [];
   mailInfos: MailInfo[] = [];
+
   constructor(
     private fb: FormBuilder,
     private infoService: InfoService,
@@ -47,8 +50,10 @@ export class PagesInfoComponent implements OnInit {
     this.createCargoInfoForm();
     this.createNebimUserInfoForm();
     this.createMenuInfoForm();
+    this.createCargoCompanyInfoForm();
+    this.createMarketPlaceCompanyInfoForm();
 
-
+    this.loadMarketPlaceCompanyInfos();
     this.loadMenuInfos();
     this.loadCompanyInfo();
     this.loadNebimInfos();
@@ -59,6 +64,7 @@ export class PagesInfoComponent implements OnInit {
     this.loadCargoInfos();
     this.loadNebimUserInfos();
     this.createTestMailForm();
+    this.loadCargoCompanyInfos();
   }
   testMailDialog: boolean = false;
   testMailForm: FormGroup;
@@ -70,6 +76,18 @@ export class PagesInfoComponent implements OnInit {
     });
   }
 
+  createMarketPlaceCompanyInfoForm() {
+    this.marketPlaceCompanyInfoForm = this.fb.group({
+      companyName: [null, Validators.required],
+      id: [0]
+    });
+  }
+  createCargoCompanyInfoForm() {
+    this.cargoCompanyInfoForm = this.fb.group({
+      id: [0],
+      companyName: [null, Validators.required]
+    });
+  }
   createCompanyInfoForm() {
     this.companyInfoForm = this.fb.group({
       companyName: [null, Validators.required],
@@ -634,7 +652,7 @@ export class PagesInfoComponent implements OnInit {
     }
   }
   //-----------------------------------------------------------------------------
-  updatedMenuInfo: MenuInfo;
+  updatedMenuInfo: MenuInfo; selectedMenus: any[] = [];
   async onSubmitMenuInfo() {
     if (this.menuInfoForm.invalid) {
       this.toasterService.error('Lütfen tüm gerekli alanları doldurun');
@@ -702,6 +720,152 @@ export class PagesInfoComponent implements OnInit {
   }
 
   //-------------------------------------;
+
+  updatedCargoCompanyInfo: CargoCompanyInfo;
+
+
+  async loadCargoCompanyInfos() {
+    try {
+      const data = await this.infoService.getCargoCompanyInfos();
+      this.cargoCompanies = data;
+    } catch (error) {
+      this.toasterService.error('Kargo şirketleri yüklenirken bir hata oluştu');
+    }
+  }
+
+  async onSubmitCargoCompanyInfo() {
+    if (this.cargoCompanyInfoForm.invalid) {
+      this.toasterService.error('Lütfen tüm gerekli alanları doldurun');
+      return;
+    }
+
+    try {
+      if (this.updatedCargoCompanyInfo) {
+        var result = await this.infoService.updateCargoCompanyInfo(this.cargoCompanyInfoForm.value);
+      } else {
+        this.cargoCompanyInfoForm.value.id = 0;
+        var result = await this.infoService.addCargoCompanyInfo(this.cargoCompanyInfoForm.value);
+      }
+
+      if (result) {
+        this.toasterService.success('Kargo şirketi başarıyla kaydedildi');
+        this.loadCargoCompanyInfos();
+        this.updatedCargoCompanyInfo = null;
+        this.cargoCompanyInfoForm.reset();
+      } else {
+        this.toasterService.error('Kargo şirketi kaydedilemedi');
+      }
+    } catch (error) {
+      this.toasterService.error('Kargo şirketi kaydedilirken bir hata oluştu');
+    }
+  }
+
+  onEditCargoCompanyInfo(cargoCompany: CargoCompanyInfo) {
+    this.updatedCargoCompanyInfo = cargoCompany;
+    this.cargoCompanyInfoForm.patchValue(cargoCompany);
+  }
+
+  async onDeleteCargoCompanyInfo(id: number) {
+    try {
+      const result = await this.infoService.deleteCargoCompanyInfo(id);
+      if (result) {
+        this.toasterService.success('Kargo şirketi başarıyla silindi');
+        this.loadCargoCompanyInfos();
+      } else {
+        this.toasterService.error('Kargo şirketi silinemedi');
+      }
+    } catch (error) {
+      this.toasterService.error('Kargo şirketi silinirken bir hata oluştu');
+    }
+  }
+
+  async onToggleCargoCompanyStatus(cargoCompany: CargoCompanyInfo) {
+    try {
+      const result = await this.infoService.updateCargoCompanyInfo(cargoCompany);
+      if (result) {
+        this.toasterService.success('Kargo şirketi durumu başarıyla güncellendi');
+        this.loadCargoCompanyInfos();
+      } else {
+        this.toasterService.error('Kargo şirketi durumu güncellenemedi');
+      }
+    } catch (error) {
+      this.toasterService.error('Kargo şirketi durumu güncellenirken bir hata oluştu');
+    }
+  }
+  //---------------------------------------;
+  updatedMarketPlaceCompanyInfo: MarketplaceCompanyInfo;
+  async loadMarketPlaceCompanyInfos() {
+    try {
+      const data = await this.infoService.getMarketPlaceCompanyInfos(false);
+      this.marketPlaceCompanies = data;
+    } catch (error) {
+      this.toasterService.error('Pazar yeri şirketleri yüklenirken bir hata oluştu');
+    }
+  }
+
+  async onSubmitMarketPlaceCompanyInfo() {
+    if (this.marketPlaceCompanyInfoForm.invalid) {
+      this.toasterService.error('Lütfen tüm gerekli alanları doldurun');
+      return;
+    }
+
+    try {
+      let result;
+      if (this.updatedMarketPlaceCompanyInfo) {
+        result = await this.infoService.updateMarketPlaceCompanyInfo(this.marketPlaceCompanyInfoForm.value);
+      } else {
+        this.marketPlaceCompanyInfoForm.value.id = 0;
+        result = await this.infoService.addMarketPlaceCompanyInfo(this.marketPlaceCompanyInfoForm.value);
+      }
+
+      if (result) {
+        this.toasterService.success('Pazar yeri şirketi başarıyla kaydedildi');
+        this.loadMarketPlaceCompanyInfos();
+        this.updatedMarketPlaceCompanyInfo = null;
+        this.marketPlaceCompanyInfoForm.reset();
+      } else {
+        this.toasterService.error('Pazar yeri şirketi kaydedilemedi');
+      }
+    } catch (error) {
+      this.toasterService.error('Pazar yeri şirketi kaydedilirken bir hata oluştu');
+    }
+  }
+
+  onEditMarketPlaceCompanyInfo(marketPlaceCompany: MarketplaceCompanyInfo) {
+    this.updatedMarketPlaceCompanyInfo = marketPlaceCompany;
+    this.marketPlaceCompanyInfoForm.patchValue(marketPlaceCompany);
+  }
+
+  async onDeleteMarketPlaceCompanyInfo(id: number) {
+    try {
+      const result = await this.infoService.deleteMarketPlaceCompanyInfo(id);
+      if (result) {
+        this.toasterService.success('Pazar yeri şirketi başarıyla silindi');
+        this.loadMarketPlaceCompanyInfos();
+      } else {
+        this.toasterService.error('Pazar yeri şirketi silinemedi');
+      }
+    } catch (error) {
+      this.toasterService.error('Pazar yeri şirketi silinirken bir hata oluştu');
+    }
+  }
+
+  async onToggleMarketPlaceCompanyStatus(marketPlaceCompany: MarketplaceCompanyInfo) {
+    try {
+      const result = await this.infoService.updateMarketPlaceCompanyInfo(marketPlaceCompany);
+      if (result) {
+        this.toasterService.success('Pazar yeri şirketi durumu başarıyla güncellendi');
+        this.loadMarketPlaceCompanyInfos();
+      } else {
+        this.toasterService.error('Pazar yeri şirketi durumu güncellenemedi');
+      }
+    } catch (error) {
+      this.toasterService.error('Pazar yeri şirketi durumu güncellenirken bir hata oluştu');
+    }
+  }
+  //-------------------------------------------;
+
+
   async onSubmitTestMail() {
     try {
 

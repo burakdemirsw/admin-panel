@@ -267,7 +267,7 @@ export class FastTransferComponent implements OnInit {
   async setFormValues(product: FastTransferModel2): Promise<FastTransferModel2> {
 
     try {
-      var result: string[] = await this.productService.countProductByBarcode(
+      var result: string[] = await this.productService.getShelvesOfProduct(
         product.barcode
       );
       this.shelfNumbers = result[0];

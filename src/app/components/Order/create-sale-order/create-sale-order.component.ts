@@ -428,7 +428,7 @@ export class CreateSaleOrderComponent implements OnInit {
 
         return updated_product;
       } else {
-        var result: string[] = await this.productService.countProductByBarcode(
+        var result: string[] = await this.productService.getShelvesOfProduct(
           model.barcode
         );
         this.shelfNumbers = result[0];

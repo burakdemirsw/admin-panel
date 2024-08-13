@@ -590,7 +590,7 @@ export class OrderOperationComponent implements OnInit {
 
   async setShelves(barcode: string) {
 
-    var result: string[] = await this.productService.countProductByBarcode(
+    var result: string[] = await this.productService.getShelvesOfProduct(
       barcode
     );
     this.shelfNumbers = result[0];
@@ -600,7 +600,7 @@ export class OrderOperationComponent implements OnInit {
   async setFormValues(barcode: string): Promise<CountProduct> {
 
     try {
-      var result: string[] = await this.productService.countProductByBarcode(
+      var result: string[] = await this.productService.getShelvesOfProduct(
         barcode
       );
       this.shelfNumbers = result[0];

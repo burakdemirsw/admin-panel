@@ -52,7 +52,7 @@ export class HttpClientService {
   post<T>(
     requestParameter: Partial<RequestParameters>,
     body: Partial<any>
-  ): any {
+  ): Observable<any> {
     let url: string = '';
     if (requestParameter.fullEndPoint) url = requestParameter.fullEndPoint;
     else

@@ -67,7 +67,7 @@ export class ProductService {
   }
 
   //create_order - fast_Trasfer - shelf_count
-  async countProductByBarcode(barcode: string): Promise<string[]> {
+  async getShelvesOfProduct(barcode: string): Promise<string[]> {
     try {
       if (barcode.includes('/')) {
         barcode = barcode.replace(/\//g, '-');

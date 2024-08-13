@@ -68,6 +68,7 @@ import { IdeasoftOffersComponent } from './components/special-panels/ideasoft-of
 import { AuthorizationComponent } from './components/auth/authorization/authorization.component';
 import { RoleListComponent } from './components/User/user-list/role/role-list/role-list.component';
 import { PagesUnauthorizedComponent } from './pages/pages-unauthorized/pages-unauthorized.component';
+import { ShelfComponent } from './components/Warehouse/shelf/shelf.component';
 
 
 const routes: Routes = [
@@ -325,6 +326,7 @@ const routes: Routes = [
 
   //------------------------------------------------------------------------- PERAKENDE
   { path: 'ideasoft/auth', component: IdeasoftComponent, pathMatch: 'prefix', runGuardsAndResolvers: 'always' },
+  { path: 'shelf', component: ShelfComponent, canActivate: [AuthGuard] },
 
   { path: 'retail-invoice-list', component: RetailInvoiceListComponent, canActivate: [AuthGuard] },
   { path: 'retail-orders-managament/:status/:invoiceStatus', component: RetailOrderManagementComponent, canActivate: [AuthGuard] },

@@ -216,7 +216,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
     this.shelfNumbers = 'RAFLAR:';
 
     if (barcode.length > 20) {
-      this.shelfNumbers += await this.productService.countProductByBarcode(
+      this.shelfNumbers += await this.productService.getShelvesOfProduct(
         barcode
       );
     }
@@ -268,7 +268,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
 
         return updated_product;
       } else {
-        var result: string[] = await this.productService.countProductByBarcode(
+        var result: string[] = await this.productService.getShelvesOfProduct(
           product.barcode
         );
         this.shelfNumbers = result[0];

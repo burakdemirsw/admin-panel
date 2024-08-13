@@ -160,7 +160,7 @@ export class ShelfTransferRequestComponent implements OnInit {
 
   //-------------------
   async getShelves(barcode: string) {
-    var newResponse = await this.productService.countProductByBarcode(barcode);
+    var newResponse = await this.productService.getShelvesOfProduct(barcode);
     const shelves = newResponse[0]
       .split(',')
       .filter((raflar) => raflar.trim() !== '');
@@ -449,7 +449,7 @@ export class ShelfTransferRequestComponent implements OnInit {
         updatedProduct.quantity = Number(result[1]);
         return updatedProduct;
       } else {
-        var result: string[] = await this.productService.countProductByBarcode(
+        var result: string[] = await this.productService.getShelvesOfProduct(
           product.barcode
         );
         var updatedProduct: FastTransferModel2 = product;
@@ -669,7 +669,7 @@ export class ShelfTransferRequestComponent implements OnInit {
     this.shelfNumbers = 'RAFLAR:';
 
     if (barcode.length > 20) {
-      var result: string[] = await this.productService.countProductByBarcode(
+      var result: string[] = await this.productService.getShelvesOfProduct(
         barcode
       );
 
@@ -684,7 +684,7 @@ export class ShelfTransferRequestComponent implements OnInit {
   async getQuantity(barcode: string): Promise<string> {
     this.shelfNumbers = 'RAFLAR:';
 
-    var result: string[] = await this.productService.countProductByBarcode(
+    var result: string[] = await this.productService.getShelvesOfProduct(
       barcode
     );
 

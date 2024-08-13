@@ -580,7 +580,7 @@ export class WarehouseOperationComponent implements OnInit {
   }
   async setShelfNo(barcode: string): Promise<string> {
     if (barcode) {
-      var result: string[] = await this.productService.countProductByBarcode(
+      var result: string[] = await this.productService.getShelvesOfProduct(
         barcode
       );
       this.shelfNumbers += result[0];
@@ -595,7 +595,7 @@ export class WarehouseOperationComponent implements OnInit {
 
     product: WarehouseTransferModel
   ): Promise<WarehouseTransferModel> {
-    var result: string[] = await this.productService.countProductByBarcode(
+    var result: string[] = await this.productService.getShelvesOfProduct(
       product.barcode
     );
     this.shelfNumbers = result[0];
@@ -811,7 +811,7 @@ export class WarehouseOperationComponent implements OnInit {
   //--------------------------------------------------------------------
 
   async getShelves(barcode: string) {
-    var newResponse = await this.productService.countProductByBarcode(barcode);
+    var newResponse = await this.productService.getShelvesOfProduct(barcode);
     const shelves = newResponse[0]
       .split(',')
       .filter((raflar) => raflar.trim() !== '');

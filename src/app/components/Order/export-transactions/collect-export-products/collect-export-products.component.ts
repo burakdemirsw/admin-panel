@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Exception } from '@zxing/library';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { CountProductRequestModel } from 'src/app/models/model/order/countProductRequestModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
@@ -299,7 +300,7 @@ export class CollectExportProductsComponent {
 
   async setShelves(barcode: string) {
 
-    var result: string[] = await this.productService.countProductByBarcode(
+    var result: string[] = await this.productService.getShelvesOfProduct(
       barcode
     );
     this.shelfNumbers = result[0];
@@ -309,7 +310,7 @@ export class CollectExportProductsComponent {
   async setFormValues(barcode: string): Promise<CountProduct> {
 
     try {
-      var result: string[] = await this.productService.countProductByBarcode(
+      var result: string[] = await this.productService.getShelvesOfProduct(
         barcode
       );
       this.shelfNumbers = result[0];
@@ -328,125 +329,82 @@ export class CollectExportProductsComponent {
 
   async onSubmit(productModel: CountProduct): Promise<any> {
 
-    var operationType = this.currentOrderNo.split('-')[1]
+    try {
+      var operationType = this.currentOrderNo.split('-')[1]
 
-    // = işareti varsa - yap
-    if (productModel.barcode.includes("=")) {
-      productModel.barcode = productModel.barcode.replace(/=/g, "-");
+      // = işareti varsa - yap
+      if (productModel.barcode.includes("=")) {
+        productModel.barcode = productModel.barcode.replace(/=/g, "-");
 
-    }
-    //RAF MI BARKOD MU KONTROLÜ
-    var response = await this.warehouseService.countProductRequest2(
-      productModel.barcode,
-      productModel.shelfNo,
-      productModel.quantity,
-      null,
-      this.warehouseCode,
-      null,
-      productModel.batchCode,
-      'Order/CountProductControl',
-      this.currentOrderNo,
-      null,
-      lineId
-    );
-    if (response.status == "RAF") {
-      this.checkForm.reset();
-      this.checkForm.get('shelfNo').setValue(productModel.barcode);
-      return;
-    }
-
-    if (!this.checkForm.valid) {
-
-      var updated_product = await this.setFormValues(
-
-        productModel.barcode
+      }
+      //RAF MI BARKOD MU KONTROLÜ
+      var response = await this.warehouseService.countProductRequest2(
+        productModel.barcode,
+        productModel.shelfNo,
+        productModel.quantity,
+        null,
+        this.warehouseCode,
+        null,
+        productModel.batchCode,
+        'Order/CountProductControl',
+        this.currentOrderNo,
+        null,
+        lineId
       );
-      productModel = updated_product;
-
-      await this.onSubmit(productModel);
-      // this.toasterService.success("Formu Verileri Dolduruldu.")
-      return;
-    }
-
-    //satış faturası alanı ------------------------------------------------------------------------ ES
-
-    if (this.checkForm.valid) {
-
-      if (this.gs.isNullOrEmpty(this.shelfNumbers)) {
-        await this.getShelves(productModel.barcode);
+      if (response.status == "RAF") {
+        this.checkForm.reset();
+        this.checkForm.get('shelfNo').setValue(productModel.barcode);
+        return;
       }
 
-      var foundModel = this.productsToCollect.find(
-        (o) => o.barcode == productModel.barcode
-      );
+      if (!this.checkForm.valid) {
 
-      //↑↑↑↑↑↑↑↑↑ EŞLEŞEN ÜRÜN BULUNDU ↑↑↑↑↑↑↑↑↑
+        var updated_product = await this.setFormValues(
 
-      if (true) {
-        var newResponse = this.shelfNumbers;
-        const shelves = newResponse
-          .split(',')
-          .filter((raflar) => raflar.trim() !== '')
-          .map((raflar) => raflar.toLowerCase());
+          productModel.barcode
+        );
+        productModel = updated_product;
 
-        const foundProduct = this.productsToCollect.find(
+        await this.onSubmit(productModel);
+        // this.toasterService.success("Formu Verileri Dolduruldu.")
+        return;
+      }
+
+      // ------------------------------------------------------------------------ ES
+
+      if (this.checkForm.valid) {
+        if (this.gs.isNullOrEmpty(this.shelfNumbers) || this.shelfNumbers == 'Raf No') {
+          await this.setShelves(productModel.barcode);
+          // await this.getShelves(productModel.barcode); 13.08
+
+        }
+
+        var foundModel = this.productsToCollect.find(
           (o) => o.barcode == productModel.barcode
-
         );
 
-        if (
-          shelves.find(
-            (s) => s.toLowerCase() == productModel.shelfNo.toLowerCase()
-          ) &&
-          (foundProduct != null || foundProduct != undefined)
-        ) {
+        //↑↑↑↑↑↑↑↑↑ EŞLEŞEN ÜRÜN BULUNDU ↑↑↑↑↑↑↑↑↑
 
+        if (foundModel) {
+          var newResponse = this.shelfNumbers;
+          const shelves = newResponse
+            .split(',')
+            .filter((raflar) => raflar.trim() !== '')
+            .map((raflar) => raflar.toLowerCase());
 
+          const foundProduct = this.productsToCollect.find(
+            (o) => o.barcode == productModel.barcode
 
-          if (foundProduct.quantity - productModel.quantity >= 0) {
-            var lineId = this.productsToCollect.find(p => p.barcode == productModel.barcode
-            ).lineId
-            if (!lineId) {
-              this.toasterService.error("lineId bulunamadı")
-            }
-
-            var response = await this.warehouseService.countProductRequest2(
-              productModel.barcode,
-              productModel.shelfNo,
-              productModel.quantity,
-              null,
-              this.warehouseCode,
-              null,
-              productModel.batchCode,
-              'Order/CountProduct',
-              this.currentOrderNo,
-              null,
-              lineId
-            );
-
-            //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
-            if (response.status.includes('Error')) {
-              this.toasterService.error("Sayım Sırasında Hata Alındı : " + response.status)
-              return;
-
-            }
-
-            await this.getAllProducts();
-            this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
-            this.clearBarcodeAndQuantity();
-
-          } else {
-            this.toasterService.warn('Stok Hatası.');
-          }
-        } else {
-          const confirmDelete = window.confirm(
-            'Raf Numarası Eşleşmedi Yine De Eklemek İstiyor Musunuz?'
           );
 
-          if (confirmDelete) {
+          if (
+            shelves.find(
+              (s) => s.toLowerCase() == productModel.shelfNo.toLowerCase()
+            ) &&
+            (foundProduct != null || foundProduct != undefined)
+          ) {
 
-            productModel.quantity =
-              productModel.quantity;
+
 
             if (foundProduct.quantity - productModel.quantity >= 0) {
               var lineId = this.productsToCollect.find(p => p.barcode == productModel.barcode
@@ -456,7 +414,7 @@ export class CollectExportProductsComponent {
               }
 
               var response = await this.warehouseService.countProductRequest2(
-                this.checkForm.get('barcode').value,
+                productModel.barcode,
                 productModel.shelfNo,
                 productModel.quantity,
                 null,
@@ -468,6 +426,7 @@ export class CollectExportProductsComponent {
                 null,
                 lineId
               );
+
               //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
               if (response.status.includes('Error')) {
                 this.toasterService.error("Sayım Sırasında Hata Alındı : " + response.status)
@@ -476,32 +435,78 @@ export class CollectExportProductsComponent {
               }
 
               await this.getAllProducts();
-
-              //↑↑↑↑↑↑↑↑↑ TOPLANAN ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
               this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
               this.clearBarcodeAndQuantity();
 
             } else {
               this.toasterService.warn('Stok Hatası.');
             }
-
           } else {
-            this.toasterService.error("Eklenmedi")
+            const confirmDelete = window.confirm(
+              'Raf Numarası Eşleşmedi Yine De Eklemek İstiyor Musunuz?'
+            );
+
+            if (confirmDelete) {
+
+              productModel.quantity =
+                productModel.quantity;
+
+              if (foundProduct.quantity - productModel.quantity >= 0) {
+                var lineId = this.productsToCollect.find(p => p.barcode == productModel.barcode
+                ).lineId
+                if (!lineId) {
+                  this.toasterService.error("lineId bulunamadı")
+                }
+
+                var response = await this.warehouseService.countProductRequest2(
+                  this.checkForm.get('barcode').value,
+                  productModel.shelfNo,
+                  productModel.quantity,
+                  null,
+                  this.warehouseCode,
+                  null,
+                  productModel.batchCode,
+                  'Order/CountProduct',
+                  this.currentOrderNo,
+                  null,
+                  lineId
+                );
+                //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
+                if (response.status.includes('Error')) {
+                  this.toasterService.error("Sayım Sırasında Hata Alındı : " + response.status)
+                  return;
+
+                }
+
+                await this.getAllProducts();
+
+                //↑↑↑↑↑↑↑↑↑ TOPLANAN ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
+                this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
+                this.clearBarcodeAndQuantity();
+
+              } else {
+                this.toasterService.warn('Stok Hatası.');
+              }
+
+            } else {
+              this.toasterService.error("Eklenmedi")
+            }
           }
         }
       }
+    } catch (error) {
+      this.toasterService.error(error.message)
     }
-
-
   }
 
 
-
+  //rafları butondan getirir
   async getShelves(barcode: string) {
-    var newResponse = await this.productService.countProductByBarcode2(
+    var newResponse = await this.productService.getShelvesOfProduct(
       barcode
     );
     if (newResponse != null) {
+
       const shelves = newResponse[0]
         .split(',')
         .filter((raflar) => raflar.trim() !== '')
@@ -509,6 +514,8 @@ export class CollectExportProductsComponent {
 
       this.productShelves = shelves;
       this.productShelvesDialog = true;
+    } else {
+      throw new Exception('Ürünün Rafı Bulunamadı')
     }
 
   }

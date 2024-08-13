@@ -295,7 +295,7 @@ export class CreateQrComponent implements OnInit, OnChanges {
           return;
         }
       } else {
-        var result: string[] = await this.productService.countProductByBarcode(
+        var result: string[] = await this.productService.getShelvesOfProduct(
           m.barcode
         );
         if (result && result[3] != '' && result[3] != undefined) {

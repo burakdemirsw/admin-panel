@@ -2,7 +2,7 @@
   <section class="section">
     <div class="card ">
       <p-table [value]="cargos" [paginator]="true" [(selection)]="selectedCargos" dataKey="referenceId" [rows]="50"
-          [tableStyle]="{ 'min-width': '75rem' }">
+        [tableStyle]="{ 'min-width': '75rem' }">
         <ng-template pTemplate="caption">
           <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
             <p-splitButton label="İşlemler" [model]="items" appendTo="body" />
@@ -87,10 +87,13 @@
             <td>
               {{
                   cargo.cargoFirmId === 1
-                    ? "MNG"
+                    ? "Mng"
                     : cargo.cargoFirmId === 2
-                    ? "ARAS"
-                    : "YURTICI"
+                    ? "Aras"
+                     : cargo.cargoFirmId ===3
+                     ? "Yurtiçi"
+                     : cargo.cargoFirmId ===4
+                     ? "Arşın" : "Kargola"
                 }}
             </td>
             <td>{{ cargo.customer }}</td>

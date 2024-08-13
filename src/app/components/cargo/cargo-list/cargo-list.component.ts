@@ -42,6 +42,19 @@ export class CargoListComponent implements OnInit {
       }
     },
     {
+      label: 'Yazdır (ZPL) | Arşın',
+      command: () => {
+        this.createBarcode2()
+      }
+    },
+    {
+      label: 'Yazdır (ZPL) | Kargola',
+      command: () => {
+        this.createBarcode3()
+      }
+    }
+    ,
+    {
       label: 'Yazdır (ZPL) | YK',
       command: () => {
         this.createYurticiBarcode()
@@ -135,6 +148,114 @@ export class CargoListComponent implements OnInit {
     }
     if (window.confirm("Barkodları yazdırmak istediğinize emin misiniz?")) {
       var data = await this.cargoService.createBarcode(referenceIdList);
+      if (data) {
+
+
+        const file = new Blob([data], { type: 'application/pdf' });
+        const fileURL = URL.createObjectURL(file);
+
+        // Create a temporary link element
+        const downloadLink = document.createElement('a');
+        downloadLink.href = fileURL;
+        downloadLink.download = "marketplace-order-cargo-barcode.pdf";  // Set the filename for the download
+        document.body.appendChild(downloadLink); // Append to body
+        downloadLink.click();  // Trigger the download
+        document.body.removeChild(downloadLink); // Remove the link after triggering the download
+        URL.revokeObjectURL(fileURL); // Clean up the URL object
+
+
+
+        const _file = new Blob([data], { type: 'application/pdf' });
+        const _fileURL = URL.createObjectURL(_file);
+
+        // Create an iframe element
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';  // Hide the iframe
+        iframe.src = _fileURL;
+
+        // Append the iframe to the body
+        document.body.appendChild(iframe);
+
+        // Wait until the iframe is loaded, then call print
+        iframe.onload = () => {
+          iframe.contentWindow?.print();
+        };
+        this.toasterService.success("BARKOD YAZDIRILDI");
+
+        this.getCargos(this.cargoState);
+      } else {
+        this.toasterService.error("BARKOD YAZDIRILAMADI");
+      }
+
+
+
+
+
+    }
+  }
+  async createBarcode2() {
+
+    var referenceIdList: string[] = this.selectedCargos.filter(x => x.cargoFirmId === 4).map(x => x.referenceId);
+    if (referenceIdList.length <= 0) {
+      this.toasterService.info("Bu Alandan Sadece ARŞIN Gönderileri Yazdırılabilir");
+      return;
+    }
+    if (window.confirm("Barkodları yazdırmak istediğinize emin misiniz?")) {
+      var data = await this.cargoService.createBarcode2(referenceIdList);
+      if (data) {
+
+
+        const file = new Blob([data], { type: 'application/pdf' });
+        const fileURL = URL.createObjectURL(file);
+
+        // Create a temporary link element
+        const downloadLink = document.createElement('a');
+        downloadLink.href = fileURL;
+        downloadLink.download = "marketplace-order-cargo-barcode.pdf";  // Set the filename for the download
+        document.body.appendChild(downloadLink); // Append to body
+        downloadLink.click();  // Trigger the download
+        document.body.removeChild(downloadLink); // Remove the link after triggering the download
+        URL.revokeObjectURL(fileURL); // Clean up the URL object
+
+
+
+        const _file = new Blob([data], { type: 'application/pdf' });
+        const _fileURL = URL.createObjectURL(_file);
+
+        // Create an iframe element
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';  // Hide the iframe
+        iframe.src = _fileURL;
+
+        // Append the iframe to the body
+        document.body.appendChild(iframe);
+
+        // Wait until the iframe is loaded, then call print
+        iframe.onload = () => {
+          iframe.contentWindow?.print();
+        };
+        this.toasterService.success("BARKOD YAZDIRILDI");
+
+        this.getCargos(this.cargoState);
+      } else {
+        this.toasterService.error("BARKOD YAZDIRILAMADI");
+      }
+
+
+
+
+
+    }
+  }
+  async createBarcode3() {
+
+    var referenceIdList: string[] = this.selectedCargos.filter(x => x.cargoFirmId === 5).map(x => x.referenceId);
+    if (referenceIdList.length <= 0) {
+      this.toasterService.info("Bu Alandan Sadece Kargola Gönderileri Yazdırılabilir");
+      return;
+    }
+    if (window.confirm("Barkodları yazdırmak istediğinize emin misiniz?")) {
+      var data = await this.cargoService.createBarcode3(referenceIdList);
       if (data) {
 
 
