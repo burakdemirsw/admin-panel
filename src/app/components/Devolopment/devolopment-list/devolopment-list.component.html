@@ -96,81 +96,99 @@
             <div class="card-body">
               <!-- <h5 class="card-title">Geliştirmeler</h5> -->
 
-              <div style="overflow-x: auto">
-                <table class="table table-striped">
-                  <thead class="">
-                    <tr>
-                      <th scope="col">Id</th>
+              <p-table [tableStyle]="{ 'min-width': '60rem' }" [value]="tasks" class="table table-striped"
+                [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th pSortableColumn="id">
+                      Id
+                      <p-sortIcon field="id"></p-sortIcon>
+                      <p-columnFilter field="id" matchMode="contains"></p-columnFilter>
+                    </th>
+                    <th pSortableColumn="zone">
+                      Sayfa
+                      <p-sortIcon field="zone"></p-sortIcon>
+                      <p-columnFilter field="zone" matchMode="contains"></p-columnFilter>
+                    </th>
+                    <th pSortableColumn="header">
+                      Başlık
+                      <p-sortIcon field="header"></p-sortIcon>
+                      <p-columnFilter field="header" matchMode="contains"></p-columnFilter>
+                    </th>
+                    <th pSortableColumn="description">
+                      Açıklama
+                      <p-sortIcon field="description"></p-sortIcon>
+                      <p-columnFilter field="description" matchMode="contains"></p-columnFilter>
+                    </th>
+                    <th pSortableColumn="isCompleted">
+                      Sonuç
+                      <p-sortIcon field="isCompleted"></p-sortIcon>
+                      <p-columnFilter field="isCompleted" matchMode="equals">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                          <p-dropdown
+                            [options]="[{label: 'Tamamlandı', value: true}, {label: 'Tamamlanmadı', value: false}]"
+                            [ngModel]="value" (onChange)="filter($event.value)" placeholder="Seçiniz"></p-dropdown>
+                        </ng-template>
+                      </p-columnFilter>
+                    </th>
+                    <th pSortableColumn="createdDate">
+                      Oluşturulma Zamanı
+                      <p-sortIcon field="createdDate"></p-sortIcon>
+                      <p-columnFilter field="createdDate" matchMode="contains"></p-columnFilter>
+                    </th>
+                    <th pSortableColumn="finishedDate">
+                      Tamamlanma Zamanı
+                      <p-sortIcon field="finishedDate"></p-sortIcon>
+                      <p-columnFilter field="finishedDate" matchMode="contains"></p-columnFilter>
+                    </th>
+                    <th>İşlemler</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-task let-i="index">
+                  <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ task.zone }}</td>
+                    <td>{{ task.header }}</td>
+                    <td>
+                      <p-editor [(ngModel)]="task.description" [readonly]="true" [style]="{ height: '200px' }"
+                        *ngIf="task.description">
+                        <p-header hidden>
+                          <span class="ql-formats"></span>
+                        </p-header>
+                      </p-editor>
+                    </td>
+                    <td>
+                      <span class="btn" [ngClass]="{
+            'btn-success': task.isCompleted,
+            'btn-warning': !task.isCompleted,
+            blinking: !task.isCompleted
+          }">
+                        <i *ngIf="task.isCompleted" class="fa fa-check"></i>
+                        <i *ngIf="!task.isCompleted" class="fa fa-exclamation"></i>
+                      </span>
+                    </td>
+                    <td>{{ task.createdDate | date : "dd.MM.YYYY HH:mm" }}</td>
+                    <td>{{ task.finishedDate | date : "dd.MM.YYYY HH:mm" }}</td>
+                    <td>
+                      <div class="btn-group">
+                        <button class="btn btn-success" (click)="updateTaskStatus(task, true)">
+                          <i class="fa fa-check"></i>
+                        </button>
+                        <button class="btn btn-success" (click)="updateTaskStatus(task, false)">
+                          <i class="fa fa-cancel"></i>
+                        </button>
+                        <button class="btn btn-success" (click)="openModal(task)">
+                          <i class="fa fa-pencil"></i>
+                        </button>
+                        <button class="btn btn-success" (click)="deleteTask(task)">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
 
-                      <th scope="col">Sayfa</th>
-                      <th scope="col">Başlık</th>
-                      <th scope="col">Açıklama</th>
-                      <th scope="col">Sonuç</th>
-                      <th scope="col">Oluşturulma Zamanı</th>
-                      <th scope="col">Tamamlanma Zamanı</th>
-
-                      <th scope="col">İşlemler</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="
-                        let task of tasks
-                          | paginate
-                            : { itemsPerPage: 10, currentPage: currentPage };
-                        let i = index
-                      ">
-                      <td>{{ i + 1 }}</td>
-                      <td>{{ task.zone }}</td>
-                      <td>{{ task.header }}</td>
-
-                      <td>
-                        <p-editor [(ngModel)]="task.description" [readonly]="true" [style]="{ height: '200px' }"
-                          *ngIf="task.description">
-                          <p-header hidden>
-                            <span class="ql-formats"></span>
-                          </p-header>
-                        </p-editor>
-                      </td>
-                      <td>
-                        <span class="btn" [ngClass]="{
-                            'btn-success': task.isCompleted,
-                            'btn-warning': !task.isCompleted,
-                            blinking: !task.isCompleted
-                          }">
-                          <i *ngIf="task.isCompleted" class="fa fa-check"></i>
-                          <i *ngIf="!task.isCompleted" class="fa fa-exclamation"></i>
-                        </span>
-                      </td>
-
-                      <td>
-                        {{ task.createdDate | date : "dd.MM.YYYY HH:mm" }}
-                      </td>
-                      <td>
-                        {{ task.finishedDate | date : "dd.MM.YYYY HH:mm" }}
-                      </td>
-
-                      <td>
-                        <div class="btn-group">
-                          <button class="btn btn-success" (click)="updateTaskStatus(task, true)">
-                            <i class="fa fa-check"></i>
-                          </button>
-
-                          <button class="btn btn-success" (click)="updateTaskStatus(task, false)">
-                            <i class="fa fa-cancel"></i>
-                          </button>
-                          <button class="btn btn-success" (click)="openModal(task)">
-                            <i class="fa fa-pencil"></i>
-                          </button>
-                          <button class="btn btn-success" (click)="deleteTask(task)">
-                            <i class="fa fa-trash"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
-              </div>
             </div>
           </div>
         </div>

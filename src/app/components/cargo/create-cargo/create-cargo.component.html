@@ -406,7 +406,7 @@
         <div class="mb-3"></div>
 
         <p-table
-          [scrollable]="true"
+          [scrollable]="true"     [tableStyle]="{ 'min-width': '75rem' }"
           [value]="this.orderDetail?.products"
           *ngIf="this.orderDetail?.products"
         >

@@ -29,7 +29,8 @@
 
     <div class="card">
       <div class="card-body p-4">
-        <p-table [value]="warehouseTransferListModels" [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'">
+        <p-table [value]="warehouseTransferListModels" [paginator]="true" [rows]="10"
+          [tableStyle]="{ 'min-width': '50rem' }">
           <ng-template pTemplate="header">
             <tr>
               <th pSortableColumn="createdDate">

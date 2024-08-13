@@ -36,8 +36,7 @@
     <div class="card">
       <div class="card-body p-4">
         <p-table #dt2 [value]="offers" [(selection)]="selectedOffers" dataKey="orderNo" [paginator]="true"
-          [rowsPerPageOptions]="[5, 10, 20]" [rows]="10" [resizableColumns]="true" styleClass="p-datatable-gridlines"
-          [tableStyle]="{ 'min-width': '70rem' }">
+          [rowsPerPageOptions]="[5, 10, 20]" [rows]="10" [tableStyle]="{ 'min-width': '45rem' }">
 
           <ng-template pTemplate="header">
             <tr>
@@ -87,13 +86,15 @@
               <td>{{ offer.childSurname }}</td>
               <td>{{ offer.childBornDate | date: 'dd/MM/yyyy' }}</td>
               <td>
-                <div class="p-d-flex">
+
+                <div class="btn-group" role="group" aria-label="Basic example">
                   <button class="btn btn-primary" (click)="viewDetails(offer)"
                     [disabled]="offer.ideasoftOfferDetails.length < 1"> <i class="fa fa-pencil"
                       aria-hidden="true"></i></button>
                   <button class="btn btn-danger" (click)="deleteOffer(offer.id)"><i class="fa fa-trash"
                       aria-hidden="true"></i></button>
                 </div>
+
               </td>
             </tr>
           </ng-template>

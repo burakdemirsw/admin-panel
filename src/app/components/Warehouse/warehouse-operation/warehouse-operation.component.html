@@ -6,7 +6,7 @@
           <div class="card-body">
             <h5 class="card-title">Transfer Edilecek Ürünler</h5>
             <p-table [value]="_inventoryItems" class="table table-striped" [paginator]="true" [rows]="10"
-              [responsiveLayout]="'scroll'">
+              [tableStyle]="{ 'min-width': '20rem' }" [responsiveLayout]="'scroll'">
               <ng-template pTemplate="header">
                 <tr>
                   <th *ngFor="let item of _inventoryItemColums">

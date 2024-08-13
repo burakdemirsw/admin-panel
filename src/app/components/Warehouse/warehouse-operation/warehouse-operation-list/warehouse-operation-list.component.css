@@ -1,0 +1,10 @@
+::ng-deep .p-column-filter-row .p-columnfilterformelement,
+::ng-deep .p-column-filter-row .p-columnfilterformelement .p-calendar,
+::ng-deep .p-column-filter-row .p-columnfilterformelement .p-calendar .p-inputtext {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  /* Kenar taşmalarını önlemek için */
+  display: block;
+  /* Genişliğin tam olarak uygulanmasını sağlamak için */
+}

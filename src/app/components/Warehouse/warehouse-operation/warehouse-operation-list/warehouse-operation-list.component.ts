@@ -37,7 +37,7 @@ export class WarehouseOperationListComponent implements OnInit {
     this.formGenerator();
     await this.getWarehouseOperations('0');
     this.spinnerService.hide();
-    this.headerService.updatePageTitle("Havuzda Kalan Transfer Paneli")
+    this.headerService.updatePageTitle("Havuzda Kalan Transferler")
   }
 
   //---------------------------------------------------------------------------------------------

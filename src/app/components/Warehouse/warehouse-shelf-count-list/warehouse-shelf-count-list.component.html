@@ -10,7 +10,7 @@
       </div>
     </div>
     <div class="card">
-      <p-table [value]="countList" [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'">
+      <p-table [value]="countList" [paginator]="true" [rows]="10" [tableStyle]="{ 'min-width': '25rem' }">
         <ng-template pTemplate="header">
           <tr>
             <th pSortableColumn="lastUpdateDate">

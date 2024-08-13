@@ -3,8 +3,7 @@
 
     <div class="card">
       <p-table #dt2 [value]="saleOrderModels" [(selection)]="selectedOrders" dataKey="orderNumber" [paginator]="true"
-        [rowsPerPageOptions]="[5, 10, 20]" [resizableColumns]="true" expandableRows="true" columnResizeMode="expand"
-        [rows]="50" [tableStyle]="{ 'min-width': '50rem' }"
+        [rowsPerPageOptions]="[5, 10, 20]" [rows]="50"     [tableStyle]="{ 'min-width': '75rem' }"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
         <ng-template pTemplate="caption">
           <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">

@@ -15,40 +15,46 @@
     </div>
 
     <div class="card">
-      <div class="card-body">
-        <div class="table-responsive-lg">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Rol</th>
+      <p-table [tableStyle]="{ 'min-width': '20rem' }" [value]="roles" class="table table-striped" [paginator]="true"
+        [rows]="10" [responsiveLayout]="'scroll'">
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="id">
+              Id
+              <p-sortIcon field="id"></p-sortIcon>
+              <p-columnFilter field="id" matchMode="contains"></p-columnFilter>
+            </th>
+            <th pSortableColumn="roleName">
+              Rol
+              <p-sortIcon field="roleName"></p-sortIcon>
+              <p-columnFilter field="roleName" matchMode="contains"></p-columnFilter>
+            </th>
+            <th>İşlemler</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-role let-i="index">
+          <tr>
+            <td>{{ role.id }}</td>
+            <td>{{ role.roleName }}</td>
+            <td>
 
-                <th scope="col">İşlemler</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let role of roles; let i = index">
-                <td>{{ role.id }}</td>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button class="btn btn-success" (click)="openModalForRole(role)">
+                  <i class="fa-solid fa-bars"></i>
+                </button>
+                <button class="btn btn-primary" (click)="updateRoleModal(role)">
+                  <i class="fa-solid fa-pencil"></i>
+                </button>
+                <button class="btn btn-danger" (click)="deleteRole(role.id)">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
 
-                <td>{{ role.roleName }}</td>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
 
-                <td>
-                  <button button class="btn btn-success" (click)="openModalForRole(role)">
-                    <i class="fa-solid fa-bars"></i>
-                  </button>
-
-                  <button button class="btn btn-primary" (click)="updateRoleModal(role)">
-                    <i class="fa-solid fa-pencil"></i>
-                  </button>
-                  <button class="btn btn-danger" (click)="deleteRole(role.id)">
-                    <i class="fa-solid fa-trash"></i>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
 
     <p-dialog header="{{ roleModel ? 'Rol Güncelle' : 'Rol Ekle' }}" [(visible)]="visible" [style]="{ width: '50vw' }">

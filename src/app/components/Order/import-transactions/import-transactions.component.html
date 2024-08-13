@@ -3,8 +3,8 @@
 
     <div class="card">
       <p-table [value]="importTransactions" [(selection)]="selectedTransactions" dataKey="invoiceNumber"
-        [paginator]="true" [rowsPerPageOptions]="[5, 10, 20]" [resizableColumns]="true" columnResizeMode="expand"
-        styleClass="p-datatable-striped" [rows]="10" [tableStyle]="{ 'min-width': '50rem' }"
+        [paginator]="true" [rowsPerPageOptions]="[5, 10, 20]" [tableStyle]="{ 'min-width': '20rem' }"
+        styleClass="p-datatable-striped" [rows]="10"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
         <ng-template pTemplate="caption">
           <div class="card-body d-flex justify-content-start" style="overflow-x: auto">
