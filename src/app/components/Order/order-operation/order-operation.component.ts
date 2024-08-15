@@ -671,8 +671,8 @@ export class OrderOperationComponent implements OnInit {
 
       if (this.checkForm.valid) {
 
-        if (this.gs.isNullOrEmpty(this.shelfNumbers)) {
-          await this.getShelves(productModel.barcode);
+        if (this.gs.isNullOrEmpty(this.shelfNumbers) || this.shelfNumbers == "Raf No") {
+          await this.setShelves(productModel.barcode);
         }
 
         var foundModel = this.productsToCollect.find(
@@ -945,8 +945,8 @@ export class OrderOperationComponent implements OnInit {
 
 
   async getShelves(barcode: string) {
-    var newResponse = await this.productService.countProductByBarcode4(
-      barcode, this.warehouseCode
+    var newResponse = await this.productService.getShelvesOfProduct(
+      barcode
     );
     if (newResponse != null) {
       const shelves = newResponse[0]
@@ -1096,9 +1096,34 @@ export class OrderOperationComponent implements OnInit {
           this._productsToCollect.push(this.productsToCollect[0]);
         }
         // this.productsToCollect.splice(index, 1);
+        this.checkForm.get('shelfNo').setValue(this.lastCollectedProduct.shelfNo) //14.08
 
         // // Ürünü dizinin sonuna ekleyin
         // this.productsToCollect.push(matchingProduct);
+      }
+    }
+  }
+  setToTop(barcode: string, shelfNo: string, itemCode: string) {
+    const matchingProduct = this.productsToCollect.find(
+      (product) =>
+        product.barcode === barcode &&
+        product.shelfNo == shelfNo &&
+        product.itemCode == itemCode
+    );
+
+    // Eğer eşleşen bir ürün bulunduysa
+    if (matchingProduct) {
+      // Ürünü diziden çıkarın
+      const index = this.productsToCollect.indexOf(matchingProduct);
+      if (index !== -1) {
+        if (this.productsToCollect.length - 1 >= index + 1) {
+          this._productsToCollect = [];
+          this._productsToCollect.push(this.productsToCollect[index]);
+          this.lastCollectedProduct = this.productsToCollect[index];
+        }
+        this.checkForm.get('shelfNo').setValue(this.lastCollectedProduct.shelfNo) //14.08
+
+
       }
     }
   }

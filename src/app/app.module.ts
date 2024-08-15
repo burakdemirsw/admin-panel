@@ -130,6 +130,7 @@ import { HttpErrorInterceptor } from './services/ui/http-error-interceptor.servi
 import { ListboxModule } from 'primeng/listbox';
 import { NgxPopperjsModule } from 'ngx-popperjs';
 import { ShelfComponent } from './components/Warehouse/shelf/shelf.component';
+import { ProductStockReportComponent } from './components/Product/product-stock-report/product-stock-report.component';
 
 @NgModule({
 
@@ -214,7 +215,8 @@ import { ShelfComponent } from './components/Warehouse/shelf/shelf.component';
     IdeasoftOffersComponent,
     AuthorizationComponent,
     RoleListComponent,
-    ShelfComponent
+    ShelfComponent,
+    ProductStockReportComponent
 
   ],
 

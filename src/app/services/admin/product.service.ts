@@ -606,6 +606,13 @@ export class ProductService {
   }
   //
 
+  async getProductStockDetail(itemCodeOrBarcode: string): Promise<StockDetail[]> {
+    const response = await this.httpClientService
+      .get<StockDetail>({ controller: 'Products/get-product-stock-detail' }, itemCodeOrBarcode)
+      .toPromise();
+
+    return response;
+  }
 }
 export class BarcodeSearch_RM {
   barcode!: string;
@@ -615,4 +622,22 @@ export class BarcodeSearch_RM {
 
   }
 }
-
+export interface StockDetail {
+  itemCode?: string;
+  colorCode?: string;
+  color?: string;
+  size?: string;
+  process?: string;
+  incomingQuantity: number;
+  outgoingQuantity: number;
+  date: Date;
+  time?: string;
+  shelfNumber?: string;
+  batchCode?: string;
+  warehouse?: string;
+  lineId: string; // Guid type in C# translates to string in TypeScript
+  orderNumber?: string;
+  shelfId?: string; // Nullable Guid in C# translates to optional string in TypeScript
+  createdDate: Date;
+  id: string; // Guid type in C# translates to string in TypeScript
+}

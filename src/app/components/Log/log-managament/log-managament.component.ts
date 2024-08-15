@@ -9,7 +9,6 @@ import { HeaderService } from 'src/app/services/admin/header.service';
 import { LogService } from 'src/app/services/admin/log.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
-
 @Component({
   selector: 'app-log-managament',
   templateUrl: './log-managament.component.html',

@@ -69,6 +69,7 @@ import { AuthorizationComponent } from './components/auth/authorization/authoriz
 import { RoleListComponent } from './components/User/user-list/role/role-list/role-list.component';
 import { PagesUnauthorizedComponent } from './pages/pages-unauthorized/pages-unauthorized.component';
 import { ShelfComponent } from './components/Warehouse/shelf/shelf.component';
+import { ProductStockReportComponent } from './components/Product/product-stock-report/product-stock-report.component';
 
 
 const routes: Routes = [
@@ -333,6 +334,7 @@ const routes: Routes = [
   { path: 'retail-orders-collected-packages', component: CollectedPackagesComponent2, canActivate: [AuthGuard] },
   { path: 'infos', component: PagesInfoComponent, canActivate: [AuthGuard] },
   { path: 'unauthorized', component: PagesUnauthorizedComponent },
+  { path: 'product-stock-report', component: ProductStockReportComponent },
 
   //-------------------------------------------------------------------------
   { path: '**', component: PagesError404Component },

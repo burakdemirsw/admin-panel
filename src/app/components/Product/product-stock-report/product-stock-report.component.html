@@ -1,0 +1,184 @@
+<main id="main" class="main">
+  <section class="section">
+    <div class="card mb-3">
+      <div class="card-body p-4">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Ürün Kodu / Barkod" [(ngModel)]="text"
+            aria-label="Search">
+          <button class="btn btn-primary" type="button" (click)="search()">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" *ngIf="this.stockDetails.length>0">
+      <p-table #dt [value]="stockDetails" dataKey="id" [paginator]="true" [rowsPerPageOptions]="[5, 10, 20]" [rows]="10"
+        [tableStyle]="{ 'min-width': '50rem' }"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+
+
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="itemCode">
+              Ürün Kodu
+              <p-sortIcon field="itemCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="colorCode">
+              Renk Kodu
+              <p-sortIcon field="colorCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="color">
+              Renk
+              <p-sortIcon field="color"></p-sortIcon>
+            </th>
+            <th pSortableColumn="size">
+              Beden
+              <p-sortIcon field="size"></p-sortIcon>
+            </th>
+            <th pSortableColumn="process">
+              İşlem
+              <p-sortIcon field="process"></p-sortIcon>
+            </th>
+            <th pSortableColumn="incomingQuantity">
+              Giriş Miktarı
+              <p-sortIcon field="incomingQuantity"></p-sortIcon>
+            </th>
+            <th pSortableColumn="outgoingQuantity">
+              Çıkış Miktarı
+              <p-sortIcon field="outgoingQuantity"></p-sortIcon>
+            </th>
+            <th pSortableColumn="date">
+              Tarih
+              <p-sortIcon field="date"></p-sortIcon>
+            </th>
+            <th pSortableColumn="time">
+              Saat
+              <p-sortIcon field="time"></p-sortIcon>
+            </th>
+            <th pSortableColumn="shelfNumber">
+              Raf Numarası
+              <p-sortIcon field="shelfNumber"></p-sortIcon>
+            </th>
+            <th pSortableColumn="batchCode">
+              Parti Kodu
+              <p-sortIcon field="batchCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="warehouse">
+              Depo
+              <p-sortIcon field="warehouse"></p-sortIcon>
+            </th>
+            <th pSortableColumn="lineId">
+              Satır ID
+              <p-sortIcon field="lineId"></p-sortIcon>
+            </th>
+            <th pSortableColumn="orderNumber">
+              Sipariş Numarası
+              <p-sortIcon field="orderNumber"></p-sortIcon>
+            </th>
+            <th pSortableColumn="shelfId">
+              Raf ID
+              <p-sortIcon field="shelfId"></p-sortIcon>
+            </th>
+            <th pSortableColumn="createdDate">
+              Oluşturulma Tarihi
+              <p-sortIcon field="createdDate"></p-sortIcon>
+            </th>
+
+          </tr>
+          <tr>
+            <th>
+              <p-columnFilter type="text" field="itemCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="colorCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="color" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="size" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="process" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="incomingQuantity" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="outgoingQuantity" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="date" field="date" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="time" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="shelfNumber" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="batchCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="warehouse" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="lineId" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="orderNumber" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="shelfId" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="date" field="createdDate" [showClearButton]="false"></p-columnFilter>
+            </th>
+
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-stock>
+          <tr>
+            <td>{{ stock.itemCode }}</td>
+            <td>{{ stock.colorCode }}</td>
+            <td>{{ stock.color }}</td>
+            <td>{{ stock.size }}</td>
+            <td>{{ stock.process }}</td>
+            <td>{{ stock.incomingQuantity }}</td>
+            <td>{{ stock.outgoingQuantity }}</td>
+            <td>{{ stock.date | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ stock.time }}</td>
+            <td>{{ stock.shelfNumber }}</td>
+            <td>{{ stock.batchCode }}</td>
+            <td>{{ stock.warehouse }}</td>
+            <td>{{ stock.lineId }}</td>
+            <td>{{ stock.orderNumber }}</td>
+            <td>{{ stock.shelfId }}</td>
+            <td>{{ stock.createdDate | date: 'dd/MM/yyyy HH:mm' }}</td>
+
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr>
+            <td colspan="5" style="text-align: right; font-weight: bold">Toplam:</td>
+            <td>{{ sumIncoms()}}</td>
+            <td>{{  sumIOutGoing()  }}</td>
+            <td style="text-align: right; font-weight: bold">{{ sumIncoms()-  sumIOutGoing() }}</td>
+            <td colspan="8"></td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+    </div>
+
+    <div class="card" *ngIf="this.stockDetails.length<=0">
+      <div class="card-body">
+        <h5 class="card-title">Lütfen Ürün Aratınız</h5>
+
+      </div>
+    </div>
+  </section>
+</main>
