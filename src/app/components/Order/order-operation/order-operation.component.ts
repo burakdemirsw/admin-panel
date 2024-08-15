@@ -644,10 +644,12 @@ export class OrderOperationComponent implements OnInit {
       this.checkForm.reset();
       this.checkForm.get('shelfNo').setValue(productModel.barcode);
       return;
-    } else if (response.status == "Error:Ürün Rafta Bulunmamaktadır") {
-      alert("Ürün Rafta Bulunmamaktadır, Ürüne Sayım Giriniz");
-      return;
     }
+
+    // else if (response.  status == "Error:Ürün Rafta Bulunmamaktadır") {
+    //   alert("Ürün Rafta Bulunmamaktadır, Ürüne Sayım Giriniz");
+    //   return;
+    // }
 
     if (!this.checkForm.valid) {
 
@@ -656,8 +658,8 @@ export class OrderOperationComponent implements OnInit {
         productModel.barcode
       );
       productModel = updated_product;
-
-      if (this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-') || this.currentOrderNo.includes('R-')) {
+      // this.toasterService.error(this.currentOrderNo);
+      if (this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-') || this.currentOrderNo.includes('R-') || this.currentOrderNo.includes('S-') || this.currentOrderNo.includes('WT-')) {
         await this.onSubmit(productModel);
       }
       // this.toasterService.success("Formu Verileri Dolduruldu.")

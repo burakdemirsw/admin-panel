@@ -137,14 +137,85 @@
             <h5 class="card-title">Toplanacak Ürünler</h5>
             <div class="table-responsive">
               <p-table [tableStyle]="{ 'min-width': '50rem' }" [value]="productsToCollect" class="table"
-                [paginator]="true" [rows]="10">
+                [paginator]="true" [rows]="10"
+                [globalFilterFields]="['shelfNo', 'itemCode', 'itemDescription', 'barcode', 'itemDim1Code', 'colorDescription', 'currentQty']">
+
+
+
                 <ng-template pTemplate="header">
                   <tr>
-                    <th *ngFor="let header of tableHeaders">
-                      {{ header }}
+                    <th></th> <!-- Fotoğraf için boş başlık -->
+                    <th pSortableColumn="shelfNo">
+                      Raf Numarası
+                      <p-sortIcon field="shelfNo"></p-sortIcon>
                     </th>
+                    <th pSortableColumn="itemCode">
+                      Ürün Kodu
+                      <p-sortIcon field="itemCode"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="itemDescription">
+                      Ürün Açıklaması
+                      <p-sortIcon field="itemDescription"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="barcode">
+                      Barkod
+                      <p-sortIcon field="barcode"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="quantity">
+                      Miktar
+                      <p-sortIcon field="quantity"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="countedQty">
+                      Sayılan Miktar
+                      <p-sortIcon field="countedQty"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="itemDim1Code">
+                      Boyut Kodu
+                      <p-sortIcon field="itemDim1Code"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="colorDescription">
+                      Renk Açıklaması
+                      <p-sortIcon field="colorDescription"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="currentQty">
+                      Güncel Miktar
+                      <p-sortIcon field="currentQty"></p-sortIcon>
+                    </th>
+                    <th>İşlemler</th>
+                  </tr>
+                  <tr>
+                    <th></th> <!-- Fotoğraf için boş başlık -->
+                    <th>
+                      <p-columnFilter type="text" field="shelfNo" [showClearButton]="true"></p-columnFilter>
+                    </th>
+                    <th>
+                      <p-columnFilter type="text" field="itemCode" [showClearButton]="true"></p-columnFilter>
+                    </th>
+                    <th>
+                      <p-columnFilter type="text" field="itemDescription" [showClearButton]="true"></p-columnFilter>
+                    </th>
+                    <th>
+                      <p-columnFilter type="text" field="barcode" [showClearButton]="true"></p-columnFilter>
+                    </th>
+                    <th>
+                      <p-columnFilter type="numeric" field="quantity" [showClearButton]="true"></p-columnFilter>
+                    </th>
+                    <th>
+                      <p-columnFilter type="numeric" field="countedQty" [showClearButton]="true"></p-columnFilter>
+                    </th>
+                    <th>
+                      <p-columnFilter type="text" field="itemDim1Code" [showClearButton]="true"></p-columnFilter>
+                    </th>
+                    <th>
+                      <p-columnFilter type="text" field="colorDescription" [showClearButton]="true"></p-columnFilter>
+                    </th>
+                    <th>
+                      <p-columnFilter type="numeric" field="currentQty" [showClearButton]="true"></p-columnFilter>
+                    </th>
+                    <th></th>
                   </tr>
                 </ng-template>
+
                 <ng-template pTemplate="body" let-product let-i="index">
                   <tr
                     [ngClass]="{ 'green-row': product.colorDescription == '1', 'success-row': product.quantity === 0 }">
@@ -163,9 +234,6 @@
                     <td>{{ product.currentQty }}</td>
                     <td>
                       <div class="btn-group" role="group" aria-label="Basic example">
-                        <!-- <button class="btn btn-primary" type="submit" (click)="dropItem(product)">
-                          <i class="fa fa-minus"></i>
-                        </button> --ass   -->
                         <button class="btn btn-primary" type="submit"
                           (click)="setToTop(product.barcode, product.shelfNo, product.itemCode)">
                           <i class="fa fa-angle-up"></i>
@@ -179,6 +247,7 @@
                 </ng-template>
               </p-table>
 
+
             </div>
           </div>
         </div>
@@ -188,18 +257,55 @@
             <h5 class="card-title">Toplanan Ürünler</h5>
             <div class="table-responsive">
               <p-table [value]="lastCollectedProducts" class="table" [paginator]="true" [rows]="10"
-                [tableStyle]="{ 'min-width': '50rem' }">
+                [tableStyle]="{ 'min-width': '50rem' }"
+                [globalFilterFields]="['shelfNo', 'itemCode', 'quantity', 'barcode']">
+
+
+
                 <ng-template pTemplate="header">
                   <tr>
-                    <th scope="col">Id</th>
+                    <th pSortableColumn="id">
+                      Id
+                      <p-sortIcon field="id"></p-sortIcon>
+                    </th>
                     <th scope="col">Fotoğraf</th>
-                    <th scope="col">Raf</th>
-                    <th scope="col">Ürün Kodu</th>
-                    <th scope="col">Rafa Giren Miktar</th>
-                    <th scope="col">Barkod</th>
+                    <th pSortableColumn="shelfNo">
+                      Raf
+                      <p-sortIcon field="shelfNo"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="itemCode">
+                      Ürün Kodu
+                      <p-sortIcon field="itemCode"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="quantity">
+                      Rafa Giren Miktar
+                      <p-sortIcon field="quantity"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="barcode">
+                      Barkod
+                      <p-sortIcon field="barcode"></p-sortIcon>
+                    </th>
                     <th scope="col">İşlemler</th>
                   </tr>
+                  <tr>
+                    <th></th> <!-- Id sütunu için filtre yok -->
+                    <th></th> <!-- Fotoğraf sütunu için filtre yok -->
+                    <th>
+                      <p-columnFilter type="text" field="shelfNo" [showClearButton]="true"></p-columnFilter>
+                    </th>
+                    <th>
+                      <p-columnFilter type="text" field="itemCode" [showClearButton]="true"></p-columnFilter>
+                    </th>
+                    <th>
+                      <p-columnFilter type="numeric" field="quantity" [showClearButton]="true"></p-columnFilter>
+                    </th>
+                    <th>
+                      <p-columnFilter type="text" field="barcode" [showClearButton]="true"></p-columnFilter>
+                    </th>
+                    <th></th> <!-- İşlemler sütunu için filtre yok -->
+                  </tr>
                 </ng-template>
+
                 <ng-template pTemplate="body" let-product let-i="index">
                   <tr>
                     <td>{{ i + 1 }}</td>
@@ -221,7 +327,6 @@
                   </tr>
                 </ng-template>
               </p-table>
-
             </div>
           </div>
         </div>
