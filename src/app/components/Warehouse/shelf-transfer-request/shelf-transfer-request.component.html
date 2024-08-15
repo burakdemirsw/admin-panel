@@ -357,6 +357,7 @@
               <ng-template pTemplate="header">
 
                 <tr>
+                  <th> Ekle</th>
                   <th>Fotoğraf</th>
                   <th pSortableColumn="brand">
                     Marka <p-sortIcon field="brand"></p-sortIcon>
@@ -408,6 +409,7 @@
                   </th>
                 </tr>
                 <tr>
+                  <th></th>
                   <th></th>
                   <!-- <th>
                     <p-columnFilter type="text" field="barcode" [showClearButton]="false"></p-columnFilter>
@@ -531,6 +533,10 @@
                 <tr>
                   <!-- <td>{{ product.barcode }}</td> -->
                   <td>
+                    <button class="btn btn-primary" (click)="addProduct(product)"><i class="fa fa-plus"
+                        aria-hidden="true"></i></button>
+                  </td>
+                  <td>
                     <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true">
                     </p-image>
                   </td>
@@ -592,13 +598,15 @@
                     <th scope="col">Fotoğraf</th>
                     <th scope="col">Ürün</th>
                     <th scope="col">Stok Kodu</th>
-
                     <th scope="col">Raf Numarası</th>
                     <th scope="col">Barkod</th>
                     <!-- <th scope="col">Miktar</th> -->
-                    <th scope="col">Parti</th>
+                    <th scope="col">Miktar</th>
+                    <th scope="col">Lot</th>
+
                     <th scope="col">Hedef Raf</th>
-                    <th scope="col">Sil</th>
+                    <th scope="col">İşlemler</th>
+
                   </tr>
                 </thead>
                 <tbody>

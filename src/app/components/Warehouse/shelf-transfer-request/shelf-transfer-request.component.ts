@@ -694,6 +694,23 @@ export class ShelfTransferRequestComponent implements OnInit {
     }
   }
 
+
+  async addProduct(product: FastTransfer_VM) {
+
+
+    this.checkForm.get('barcode').setValue(product.itemCode.toUpperCase());
+    this.checkForm.get('shelfNo').setValue(product.shelfNo.toUpperCase());
+    this.checkForm.get('targetShelfNo').setValue(product.targetShelf.toUpperCase());
+    this.checkForm.get('quantity').setValue(product.transferQuantity);
+
+    if (this.checkForm.valid) {
+      await this.onSubmit(this.checkForm.value);
+    } else {
+      this.toasterService.error("Form Geçerli Değil")
+    }
+
+
+  }
   async setFormValues(
     product: FastTransferModel2
   ): Promise<FastTransferModel2> {
@@ -789,6 +806,13 @@ export class ShelfTransferRequestComponent implements OnInit {
     if (this.checkForm.valid === true) {
       transferModel = await this.setCheckBarcode(transferModel);
       transferModel.operationId = this.currentOrderNo;
+      console.log(this.shelfNumbers);
+      if (this.shelfNumbers == undefined || this.shelfNumbers == null || this.shelfNumbers == "RAFLAR:") {
+        var result: string[] = await this.productService.countProductByBarcode(
+          transferModel.barcode);
+
+        this.shelfNumbers = result[0];
+      }
       const shelves = this.shelfNumbers
         .split(',')
         .filter((raflar) => raflar.trim() !== '')
@@ -819,9 +843,12 @@ export class ShelfTransferRequestComponent implements OnInit {
 
           this.collectedProducts.push(transferModel);
           this.collectedProducts.reverse();
-          await this.getTransferRequestListModel(
-            this.selectedButton.toString()
-          );
+          if (this.selectedButton != 4) {
+            await this.getTransferRequestListModel(
+              this.selectedButton.toString()
+            );
+          }
+
           this.toasterService.success('Okutma Başarılı');
         } else {
           this.toasterService.error('Ekleme Yapılmadı');
@@ -868,10 +895,11 @@ export class ShelfTransferRequestComponent implements OnInit {
             }
             this.collectedProducts.push(transferModel);
             this.collectedProducts.reverse();
-            await this.getTransferRequestListModel(
-              this.selectedButton.toString()
-            );
-
+            if (this.selectedButton != 4) {
+              await this.getTransferRequestListModel(
+                this.selectedButton.toString()
+              );
+            }
             this.toasterService.success('Okutma Başarılı');
             this.generalService.beep();
           } else {
@@ -921,13 +949,13 @@ export class ShelfTransferRequestComponent implements OnInit {
         );
         if (qrOperationResponse) {
           // //console.log(this.qrOperationModels);
-          this.generalService.beep3();
-          this.toasterService.success('Qr Operasyonu Geri Alındı');
+          //this.generalService.beep3();
+          //this.toasterService.success('Qr Operasyonu Geri Alındı');
         } else {
-          this.toasterService.error('Qr Operasyonu Geri Alınamadı');
+          // this.toasterService.error('Qr Operasyonu Geri Alınamadı');
         }
       } else {
-        this.toasterService.error('Qr Operasyonu Geri Alınamadı');
+        //  this.toasterService.error('Qr Operasyonu Geri Alınamadı');
       }
     }
   }

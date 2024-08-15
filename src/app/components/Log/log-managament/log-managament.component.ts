@@ -5,16 +5,16 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { LogFilterModel } from 'src/app/models/model/log/logFilterModel ';
 import { Log_VM } from 'src/app/models/model/log/log_VM';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
-import { HeaderService } from 'src/app/services/admin/header.service';
+import { HeaderService } from 'src/app/services/admin/header.service'; 
 import { LogService } from 'src/app/services/admin/log.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { AlertifyService } from 'src/app/services/ui/alertify.service';
 
-@Component({
+@Component({ 
   selector: 'app-log-managament',
   templateUrl: './log-managament.component.html',
   styleUrls: ['./log-managament.component.css']
-})
+}) 
 export class LogManagamentComponent implements OnInit {
 
 
