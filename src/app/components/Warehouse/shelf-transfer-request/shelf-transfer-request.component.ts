@@ -697,18 +697,25 @@ export class ShelfTransferRequestComponent implements OnInit {
 
   async addProduct(product: FastTransfer_VM) {
 
+    //sladkaslşdkaşld
+    var response = await this.productService.searchProduct3(product.barcode, null, product.shelfNo);
+    if (response) {
+      this.checkForm.get('barcode').setValue(product.itemCode.toUpperCase());
+      this.checkForm.get('shelfNo').setValue(product.shelfNo.toUpperCase());
+      this.checkForm.get('targetShelfNo').setValue(product.targetShelf.toUpperCase());
+      this.checkForm.get('quantity').setValue(product.transferQuantity);
+      this.checkForm.get('batchCode').setValue(response[0].batchCode);
 
-    this.checkForm.get('barcode').setValue(product.itemCode.toUpperCase());
-    this.checkForm.get('shelfNo').setValue(product.shelfNo.toUpperCase());
-    this.checkForm.get('targetShelfNo').setValue(product.targetShelf.toUpperCase());
-    this.checkForm.get('quantity').setValue(product.transferQuantity);
+      if (this.checkForm.valid) {
+        await this.onSubmit(this.checkForm.value);
+      } else {
+        this.toasterService.error("Form Geçerli Değil")
+      }
 
-    if (this.checkForm.valid) {
-      await this.onSubmit(this.checkForm.value);
+
     } else {
-      this.toasterService.error("Form Geçerli Değil")
+      this.toasterService.error("Yanıt Alınamadı")
     }
-
 
   }
   async setFormValues(

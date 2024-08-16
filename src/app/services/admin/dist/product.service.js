@@ -553,6 +553,7 @@ var ProductService = /** @class */ (function () {
                         if (batchCode === '0') {
                             batchCode = null;
                         }
+                        shelfNo = shelfNo.toUpperCase();
                         return [4 /*yield*/, this.httpClientService
                                 .get({ controller: 'Products/SearchProduct3/' + barcode + "/" + batchCode }, shelfNo)
                                 .toPromise()];

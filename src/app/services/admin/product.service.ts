@@ -392,6 +392,7 @@ export class ProductService {
     if (batchCode === '0') {
       batchCode = null;
     }
+    shelfNo = shelfNo.toUpperCase();
     const response = await this.httpClientService
       .get<BarcodeSearch_RM>({ controller: 'Products/SearchProduct3/' + barcode + "/" + batchCode }, shelfNo)
       .toPromise();

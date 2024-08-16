@@ -751,22 +751,31 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
     };
     ShelfTransferRequestComponent.prototype.addProduct = function (product) {
         return __awaiter(this, void 0, void 0, function () {
+            var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
+                    case 0: return [4 /*yield*/, this.productService.searchProduct3(product.barcode, null, product.shelfNo)];
+                    case 1:
+                        response = _a.sent();
+                        if (!response) return [3 /*break*/, 5];
                         this.checkForm.get('barcode').setValue(product.itemCode.toUpperCase());
                         this.checkForm.get('shelfNo').setValue(product.shelfNo.toUpperCase());
                         this.checkForm.get('targetShelfNo').setValue(product.targetShelf.toUpperCase());
                         this.checkForm.get('quantity').setValue(product.transferQuantity);
-                        if (!this.checkForm.valid) return [3 /*break*/, 2];
+                        this.checkForm.get('batchCode').setValue(response[0].batchCode);
+                        if (!this.checkForm.valid) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.onSubmit(this.checkForm.value)];
-                    case 1:
-                        _a.sent();
-                        return [3 /*break*/, 3];
                     case 2:
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
                         this.toasterService.error("Form Geçerli Değil");
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
+                        _a.label = 4;
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        this.toasterService.error("Yanıt Alınamadı");
+                        _a.label = 6;
+                    case 6: return [2 /*return*/];
                 }
             });
         });
