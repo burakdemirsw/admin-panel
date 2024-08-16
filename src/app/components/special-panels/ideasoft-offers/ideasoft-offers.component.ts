@@ -5,7 +5,7 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
-import { IdeasoftOffer, IdeasoftOfferDetail } from '../../../special-panels/models/ideasoftOfferDetail';
+import { IdeasoftOffer, IdeasoftOfferDetail } from '../models/ideasoftOfferDetail';
 import { HeaderService } from 'src/app/services/admin/header.service';
 
 @Component({

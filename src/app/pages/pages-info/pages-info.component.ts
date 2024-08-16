@@ -3,41 +3,24 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CargoCompanyInfo, CargoInfo, MailInfo, MarketplaceCompanyInfo, MarketPlaceInfo, MenuInfo, NebimInfo, NebimUserInfo, PaymentInfo } from 'src/app/models/model/company/companyInfo';
 import { InfoService } from 'src/app/services/admin/info.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { ProductPriceList_VM } from '../../models/model/company/companyInfo';
 
 @Component({
   selector: 'app-pages-info',
   templateUrl: './pages-info.component.html',
   styleUrls: ['./pages-info.component.css']
 })
+
+
+
 export class PagesInfoComponent implements OnInit {
-  companyInfoForm: FormGroup;
-  nebimInfoForm: FormGroup;
-  mailInfoForm: FormGroup;
-  reportInfoForm: FormGroup;
-  databaseInfoForm: FormGroup;
-  marketPlaceInfoForm: FormGroup;
-  paymentInfoForm: FormGroup;
-  cargoInfoForm: FormGroup;
-  nebimUserInfoForm: FormGroup;
-  menuInfoForm: FormGroup;
-  cargoCompanyInfoForm: FormGroup;
-  marketPlaceCompanyInfoForm: FormGroup;
-  marketPlaceCompanies: MarketplaceCompanyInfo[] = [];
-
-  menuInfos: MenuInfo[] = [];
-  nebimInfos: NebimInfo[] = [];
-  marketPlaceInfos: MarketPlaceInfo[] = [];
-  cargoInfos: CargoInfo[] = [];
-  nebimUserInfos: NebimUserInfo[] = [];
-  cargoCompanies: CargoCompanyInfo[] = [];
-  paymentInfos: PaymentInfo[] = [];
-  mailInfos: MailInfo[] = [];
-
   constructor(
     private fb: FormBuilder,
     private infoService: InfoService,
     private toasterService: ToasterService
   ) { }
+
+
 
   ngOnInit(): void {
     this.createCompanyInfoForm();
@@ -65,15 +48,46 @@ export class PagesInfoComponent implements OnInit {
     this.loadNebimUserInfos();
     this.createTestMailForm();
     this.loadCargoCompanyInfos();
+    this.loadBasePriceCodes()
   }
+
+
+  companyInfoForm: FormGroup;
+  nebimInfoForm: FormGroup;
+  mailInfoForm: FormGroup;
+  reportInfoForm: FormGroup;
+  databaseInfoForm: FormGroup;
+  marketPlaceInfoForm: FormGroup;
+  paymentInfoForm: FormGroup;
+  cargoInfoForm: FormGroup;
+  nebimUserInfoForm: FormGroup;
+  menuInfoForm: FormGroup;
+  cargoCompanyInfoForm: FormGroup;
+  marketPlaceCompanyInfoForm: FormGroup;
+  marketPlaceCompanies: MarketplaceCompanyInfo[] = [];
+  menuInfos: MenuInfo[] = [];
+  nebimInfos: NebimInfo[] = [];
+  marketPlaceInfos: MarketPlaceInfo[] = [];
+  cargoInfos: CargoInfo[] = [];
+  nebimUserInfos: NebimUserInfo[] = [];
+  cargoCompanies: CargoCompanyInfo[] = [];
+  paymentInfos: PaymentInfo[] = [];
+  mailInfos: MailInfo[] = [];
+
   testMailDialog: boolean = false;
   testMailForm: FormGroup;
+
   createTestMailForm() {
     this.testMailForm = this.fb.group({
       mail: ['', [Validators.required, Validators.email]],
       nameSurname: ['Peter Parker', Validators.required],
       body: ['This is a test mail from RTS.', Validators.required]
     });
+  }
+
+  productPriceList: ProductPriceList_VM[] = []
+  async loadBasePriceCodes() {
+    this.productPriceList = await this.infoService.getProductPriceList();
   }
 
   createMarketPlaceCompanyInfoForm() {
@@ -127,7 +141,8 @@ export class PagesInfoComponent implements OnInit {
       storeCode: [null],
       posTerminalID: [null],
       shipmentMethodCode: [null],
-      deliveryCompanyCode: [null]
+      deliveryCompanyCode: [null],
+      basePriceCode: [null]
     });
   }
   createMailInfoForm() {

@@ -25,21 +25,37 @@ export class InvoiceProcess {
   isCompleted: boolean;
   officeCode: string;
   warehouseCode: string;
+  discountRate1: number;
+  discountRate2: number;
   createdDate?: Date;
   updatedDate?: Date;
 
 }
 export class CollectedInvoiceProduct {
-  id: string; // Guid in TypeScript is represented as a string
+  id: string;
   shelfNo: string;
   barcode: string;
   quantity?: number;
   batchCode?: string;
   itemCode: string;
   processId: string;
-  // isCompleted: boolean;
+  photoUrl: string;
+  price: number;
+  discountedPrice: number;
+  totalPrice: number;
+  totalTaxedPrice: number;
+  taxRate: number;
+  discountRate1: number;
+  discountRate2: number;
   createdDate?: Date;
   updatedDate?: Date;
-
-
+}
+export class ProductDetail_VM {
+  photoUrl: string;
+  itemCode: string;
+  barcode: string;
+  quantity: number;
+  description: string;
+  price: number;
+  taxRate: number;
 }

@@ -8,16 +8,10 @@ import { Payment } from 'src/app/models/model/order/nebimOrder';
 import { ProductList_VM } from 'src/app/models/model/product/productList_VM';
 import { ZTMSG_Proposal, ZTMSG_ProposalProduct } from 'src/app/models/model/product/proposalProduct';
 import { FastTransfer_VM } from 'src/app/models/model/warehouse/transferRequestListModel';
-import { AddressService } from 'src/app/services/admin/address.service';
-import { CargoService } from 'src/app/services/admin/cargo.service';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { OrderService } from 'src/app/services/admin/order.service';
-import { PaymentService } from 'src/app/services/admin/payment.service';
 import { BarcodeSearch_RM, ProductService } from 'src/app/services/admin/product.service';
-import { WarehouseService } from 'src/app/services/admin/warehouse.service';
-import { GoogleDriveService } from 'src/app/services/common/google-drive.service';
-import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 @Component({
@@ -56,12 +50,15 @@ export class CreateProposalComponent implements OnInit {
   updateProductForm: FormGroup;
   discountForm: FormGroup;
   getProductsForm: FormGroup;
-  constructor(private headerService: HeaderService, private warehouseService: WarehouseService, private paymentService: PaymentService, private toasterService: ToasterService, private activatedRoute: ActivatedRoute,
-    private router: Router, private httpClientService: HttpClientService,
-    private generalService: GeneralService, private addressService: AddressService,
-    private googleDriveService: GoogleDriveService, private productService: ProductService,
-    private formBuilder: FormBuilder, private orderService: OrderService,
-    private cargoService: CargoService) { }
+  constructor(private headerService: HeaderService,
+    private toasterService: ToasterService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private generalService: GeneralService,
+    private productService: ProductService,
+    private formBuilder: FormBuilder,
+    private orderService: OrderService,
+  ) { }
 
   async ngOnInit() {
     this.createUpdateProductForm()
@@ -84,8 +81,6 @@ export class CreateProposalComponent implements OnInit {
     })
     this.headerService.updatePageTitle(this.pageTitle);
     this.createDiscountForm();
-
-
   }
   createUpdateProductForm() {
     this.updateProductForm = this.formBuilder.group({
@@ -295,7 +290,7 @@ export class CreateProposalComponent implements OnInit {
     const productDetail = await this.productService._searchProduct(request);
     product.brand = "Polar";
     if (productDetail) {
-      product.price = '1';
+
       const proposalProduct = new ZTMSG_ProposalProduct();
       proposalProduct.id = 0; // Varsayılan bir değer, ya da uygun bir değer belirleyin
       proposalProduct.proposalId = this.proposalId; // Uygun bir GUID değeri be  lirleyin
@@ -318,13 +313,6 @@ export class CreateProposalComponent implements OnInit {
         (
           (proposalProduct.discountedPrice * ((100 - proposalProduct.discountRate1) / 100)) - proposalProduct.discountRate2
         )
-
-      proposalProduct.totalTaxedPrice = proposalProduct.quantity *
-        (
-          (proposalProduct.totalTaxedPrice * ((100 - proposalProduct.discountRate1) / 100)) - proposalProduct.discountRate2
-        )
-
-      proposalProduct.totalTaxedPrice = 1;
       var response = await this.productService.addProposalProduct(proposalProduct);
     }
 

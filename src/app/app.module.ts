@@ -130,7 +130,7 @@ import { ShelfComponent } from './components/Warehouse/shelf/shelf.component';
 import { ProductStockReportComponent } from './components/Product/product-stock-report/product-stock-report.component';
 import { AddProductToShelfComponent } from './components/Warehouse/warehosue-shelf-count/add-product-to-shelf/add-product-to-shelf.component';
 import { AddProductToShelfListComponent } from './components/Warehouse/warehosue-shelf-count/add-product-to-shelf-list/add-product-to-shelf-list.component';
-import { IdeasoftOffersComponent } from './components/marketplace/ideasoft/ideasoft-offers/ideasoft-offers.component';
+import { IdeasoftOffersComponent } from './components/special-panels/ideasoft-offers/ideasoft-offers.component';
 
 @NgModule({
 

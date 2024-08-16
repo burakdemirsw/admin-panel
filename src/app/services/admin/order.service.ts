@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { InvocieFilterModel } from 'src/app/models/model/filter/invoiceFilterModel';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
-import { CollectedInvoiceProduct, CreatePurchaseInvoice, InvoiceProcess } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { CollectedInvoiceProduct, CreatePurchaseInvoice, InvoiceProcess, ProductDetail_VM } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
 import { OrderBillingRequestModel } from 'src/app/models/model/invoice/orderBillingRequestModel';
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
@@ -350,37 +350,34 @@ export class OrderService {
       this.toasterService.warn('Lütfen Ürün EKleyiniz.');
       return;
     }
+    try {
+      var model: OrderBillingRequestModel = new OrderBillingRequestModel();
+      model.orderNo = orderNo;
+      model.invoiceType = isReturn;
+      model.invoiceModel = 3; //satış faturası
+      model.salesPersonCode = salesPersonCode;
+      model.currency = currency;
 
-    else {
-      try {
-        var model: OrderBillingRequestModel = new OrderBillingRequestModel();
-        model.orderNo = orderNo;
-        model.invoiceType = isReturn;
-        model.invoiceModel = 3; //satış faturası
-        model.salesPersonCode = salesPersonCode;
-        model.currency = currency;
+      const data = await this.httpClientService
+        .post<OrderBillingRequestModel>(
+          {
+            controller: 'Order/CollectAndPack/' + model,
+          },
+          model
+        )
+        .toPromise();
+      if (data) {
+        this.router.navigate(['orders-managament']);
 
-        const data = await this.httpClientService
-          .post<OrderBillingRequestModel>(
-            {
-              controller: 'Order/CollectAndPack/' + model,
-            },
-            model
-          )
-          .toPromise();
-        if (data) {
-          this.router.navigate(['orders-managament']);
+        return data;
 
-          return data;
-
-        } else {
-          this.toasterService.error("İşlem Başarısız")
-          return null;
-        }
-      } catch (error: any) {
-
+      } else {
+        this.toasterService.error("İşlem Başarısız")
         return null;
       }
+    } catch (error: any) {
+
+      return null;
     }
   }
   // alış fatura doğrulama
@@ -875,7 +872,16 @@ export class OrderService {
 
 
   //------------------------------------------------------------------------------------------  CollectedInvoiceProduct WS_B_R Faturaları (YENİ*)
+  async getProductDetailByPriceCode(processCode: string, barcode: string): Promise<ProductDetail_VM> {
+    const response = await this.httpClientService
+      .get_new<ProductDetail_VM>(
+        { controller: 'Order/get-product-detail' }, //Get_ProductOfInvoice
+        processCode + '/' + barcode
+      )
+      .toPromise();
 
+    return response;
+  }
   async getCollectedInvoiceProducts(orderNo: string): Promise<CollectedInvoiceProduct[]> {
     const response = await this.httpClientService
       .get<CollectedInvoiceProduct>(
@@ -890,6 +896,16 @@ export class OrderService {
     const response = await this.httpClientService
       .post<boolean>(
         { controller: 'Order/add-collected-invoice-product' }, //Get_ProductOfInvoice
+        request
+      )
+      .toPromise();
+
+    return response;
+  }
+  async updateCollectedInvoiceProduct(request: CollectedInvoiceProduct): Promise<boolean> {
+    const response = await this.httpClientService
+      .post<boolean>(
+        { controller: 'Order/update-collected-invoice-product' }, //Get_ProductOfInvoice
         request
       )
       .toPromise();

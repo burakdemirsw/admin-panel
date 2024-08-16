@@ -51,6 +51,7 @@ export class NebimInfo extends BaseEntity {
   posTerminalID?: string;
   shipmentMethodCode?: string;
   deliveryCompanyCode?: string;
+  basePriceCode: string
 }
 
 export class MarketPlaceInfo extends BaseEntity {
@@ -142,4 +143,8 @@ export interface MarketplaceCompanyInfo {
   companyName: string;
   createdDate: Date;
   updatedDate: Date;
+}
+export interface ProductPriceList_VM {
+  code: string;
+  description: Date;
 }

@@ -29,6 +29,7 @@ import { GeneralService } from './general.service';
 import { CreateBarcodeFromOrder_RM, CreateBarcodeModel } from 'src/app/components/Product/create-barcode/models/createBarcode';
 import { ZTMSG_ProposalProduct, Proposal_VM, ZTMSG_Proposal } from 'src/app/models/model/product/proposalProduct';
 import { FastTransfer_VM } from 'src/app/models/model/warehouse/transferRequestListModel';
+import { ProductList_VM } from 'src/app/models/model/product/productList_VM';
 
 @Injectable({
   providedIn: 'root',
@@ -320,8 +321,8 @@ export class ProductService {
 
 
 
-  async searchProduct(model: BarcodeSearch_RM): Promise<any> {
-    const response = await this.httpClientService
+  async searchProduct(model: BarcodeSearch_RM): Promise<ProductList_VM[]> {
+    const response: ProductList_VM[] = await this.httpClientService
       .post<BarcodeSearch_RM>({ controller: 'Products/SearchProduct' }, model)
       .toPromise();
 

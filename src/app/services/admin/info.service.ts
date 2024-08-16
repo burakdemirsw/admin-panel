@@ -294,6 +294,9 @@ export class InfoService {
     const response = await this.httpClientService.post<any>({ controller: 'direct-request/send-mail' }, request).toPromise();
     return response;
   }
-
+  async getProductPriceList(): Promise<any> {
+    const response = await this.httpClientService.get<any>({ controller: 'Infos/get-product-price-list' }).toPromise();
+    return response;
+  }
 }
 
