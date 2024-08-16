@@ -25,7 +25,7 @@ export class ZTMSG_CountedProduct {
   isCompleted?: boolean
 
 }
-export class ZTMSG_ProductOnShelf {
+export class ProductOnShelf {
   id: string;
   createdDate?: Date;
   updatedDate: Date = new Date();
@@ -38,6 +38,16 @@ export class ZTMSG_ProductOnShelf {
   price?: number;
   warehouseCode?: string;
   itemCode?: string;
+  isCompleted?: boolean
 
+}
+export class ProductOnShelf_VM {
+
+  createdDate?: Date;
+  updatedDate: Date;
+  count: number;
+  type: boolean;
+  operationNumber: string;
+  isCompleted?: boolean
 
 }

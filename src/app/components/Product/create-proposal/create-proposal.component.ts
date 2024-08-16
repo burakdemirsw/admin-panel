@@ -292,9 +292,10 @@ export class CreateProposalComponent implements OnInit {
     //toptan fiyat ve tr giyat alıncak
     //buradada db ye ekle sonra çek
     var request: BarcodeSearch_RM = new BarcodeSearch_RM(product.barcode);
-    const productDetail = await this.productService.searchProduct(request);
+    const productDetail = await this.productService._searchProduct(request);
+    product.brand = "Polar";
     if (productDetail) {
-      product.price = productDetail[0].basePrice;
+      product.price = '1';
       const proposalProduct = new ZTMSG_ProposalProduct();
       proposalProduct.id = 0; // Varsayılan bir değer, ya da uygun bir değer belirleyin
       proposalProduct.proposalId = this.proposalId; // Uygun bir GUID değeri be  lirleyin
@@ -323,7 +324,7 @@ export class CreateProposalComponent implements OnInit {
           (proposalProduct.totalTaxedPrice * ((100 - proposalProduct.discountRate1) / 100)) - proposalProduct.discountRate2
         )
 
-
+      proposalProduct.totalTaxedPrice = 1;
       var response = await this.productService.addProposalProduct(proposalProduct);
     }
 
@@ -509,16 +510,20 @@ export class CreateProposalComponent implements OnInit {
   phones: any[] = [];
   _descriptions: any[] = [];
   docCurrencyCodes: any[] = [];
-
   mapCustomers(data: CustomerList_VM[]) {
     const uniqueMap = (array, key) => {
       const map = new Map();
       array.forEach(item => {
-        if (!map.has(item[key])) {
-          map.set(item[key], { label: item[key], value: item[key] });
+        const value = item[key];
+        if (value !== null && value !== undefined && !map.has(value)) {
+          map.set(value, { label: value, value: value });
         }
       });
-      return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label));
+      return Array.from(map.values()).sort((a, b) => {
+        if (a.label === null || a.label === undefined) return 1;
+        if (b.label === null || b.label === undefined) return -1;
+        return a.label.localeCompare(b.label);
+      });
     };
 
     this.customerNames = uniqueMap(data, 'currAccCode');

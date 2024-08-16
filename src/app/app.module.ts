@@ -55,19 +55,17 @@ import { CategoryOperationComponent } from './components/Category/category-opera
 import { AddCustomerComponent } from './components/Customer/add-customer/add-customer.component';
 import { CustomerListComponent } from './components/Customer/customer-list/customer-list.component';
 import { DevolopmentListComponent } from './components/Devolopment/devolopment-list/devolopment-list.component';
-import { HomepageComponent } from './components/Homepage/homepage.component';
 import { LogManagamentComponent } from './components/Log/log-managament/log-managament.component';
 import { CollectedPackageDetailComponent } from './components/Order/collected-package-detail/collected-package-detail.component';
 import { CollectedPackagesComponent } from './components/Order/collected-packages/collected-packages.component';
 import { CreateOrderComponent } from './components/Order/create-order/create-order.component';
-import { CreatePurchaseOrderComponent } from './components/Order/create-purchase-order/create-purchase-order.component';
-import { CreateQrComponent } from './components/Order/create-qr/create-qr.component';
-import { CreateSaleOrderComponent } from './components/Order/create-sale-order/create-sale-order.component';
+import { CreatePurchaseOrderComponent } from './components/Invoice/create-purchase-order/create-purchase-order.component';
+import { CreateQrComponent } from './components/Product/create-qr/create-qr.component';
+import { CreateSaleOrderComponent } from './components/Invoice/create-sale-order/create-sale-order.component';
 import { CollectExportProductsComponent } from './components/Order/export-transactions/collect-export-products/collect-export-products.component';
 import { ExportTransactionsComponent } from './components/Order/export-transactions/export-transactions.component';
 import { ImportTransactionsComponent } from './components/Order/import-transactions/import-transactions.component';
-import { InvoiceListComponent } from './components/Order/invoice-list/invoice-list.component';
-import { TestComponent } from './components/Order/invoice-list/test/test.component';
+import { InvoiceListComponent } from './components/Invoice/invoice-list/invoice-list.component';
 import { MarketplaceInvoicesComponent } from './components/Order/marketplace-invoices/marketplace-invoices.component';
 import { NebimGetOrdersComponent } from './components/Order/nebim-get-orders/nebim-get-orders.component';
 import { OrderBillingOperationComponent } from './components/Order/order-billing-operation/order-billing-operation.component';
@@ -89,7 +87,6 @@ import { SearchQrComponent } from './components/Product/search-qr/search-qr.comp
 import { SearchShelfComponent } from './components/Product/search-shelf/search-shelf.component';
 import { ShelveOperationComponent } from './components/Shelf/shelve-operation/shelve-operation.component';
 import { ShelvesManagamentComponent } from './components/Shelf/shelves-managament/shelves-managament.component';
-import { IdeasoftOffersComponent } from './components/special-panels/ideasoft-offers/ideasoft-offers.component';
 import { RoleListComponent } from './components/User/user-list/role/role-list/role-list.component';
 import { UserListComponent } from './components/User/user-list/user-list.component';
 import { BoxCountComponent } from './components/Warehouse/box-count/box-count.component';
@@ -131,6 +128,9 @@ import { ListboxModule } from 'primeng/listbox';
 import { NgxPopperjsModule } from 'ngx-popperjs';
 import { ShelfComponent } from './components/Warehouse/shelf/shelf.component';
 import { ProductStockReportComponent } from './components/Product/product-stock-report/product-stock-report.component';
+import { AddProductToShelfComponent } from './components/Warehouse/warehosue-shelf-count/add-product-to-shelf/add-product-to-shelf.component';
+import { AddProductToShelfListComponent } from './components/Warehouse/warehosue-shelf-count/add-product-to-shelf-list/add-product-to-shelf-list.component';
+import { IdeasoftOffersComponent } from './components/marketplace/ideasoft/ideasoft-offers/ideasoft-offers.component';
 
 @NgModule({
 
@@ -149,7 +149,6 @@ import { ProductStockReportComponent } from './components/Product/product-stock-
     PagesBlankComponent,
     ProductManagementComponent,
     ProductOperationComponent,
-    HomepageComponent,
     OrderOperationComponent,
     CategoryOperationComponent,
     OrderManagamentComponent,
@@ -181,7 +180,7 @@ import { ProductStockReportComponent } from './components/Product/product-stock-
     BoxCountComponent,
     CreateOrderComponent,
     ReferrerPolicyDirective,
-    TestComponent,
+
     PagesLoginv2Component,
     UserListComponent,
     CustomerListComponent,
@@ -216,7 +215,9 @@ import { ProductStockReportComponent } from './components/Product/product-stock-
     AuthorizationComponent,
     RoleListComponent,
     ShelfComponent,
-    ProductStockReportComponent
+    ProductStockReportComponent,
+    AddProductToShelfComponent,
+    AddProductToShelfListComponent
 
   ],
 

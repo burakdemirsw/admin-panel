@@ -1,0 +1,220 @@
+<main id="main" class="main">
+  <section class="section">
+    <div class="row">
+
+      <div class="card">
+        <p-tabView [activeIndex]="activeIndex" (onChange)="logger($event)">
+          <!-- FATURA BLİGİLERİ ------------------------------------------------------------------------------------------------>
+
+          <p-tabPanel header="Fatura Bilgileri">
+            <form [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
+              <div class="row mb-3">
+                <div class="form-group col-md-6">
+                  <p-dropdown formControlName="officeCode" [options]="offices" [showClear]="true" placeholder="Ofis">
+                  </p-dropdown>
+                </div>
+                <div class="form-group col-md-6">
+                  <p-dropdown formControlName="warehouse" [options]="warehouses" [showClear]="true" placeholder="Depo"
+                    optionLabel="name" formControlName="warehouseCode" className="mobile-spacing"></p-dropdown>
+                </div>
+
+              </div>
+              <div class="row mb-3">
+                <div class="form-group col-md-6">
+                  <p-dropdown placeholder="Müşteri" formControlName="currAccCode" [options]="customerList2"
+                    virtualScroll="true" virtualScrollItemSize="50" optionLabel="name" [(ngModel)]="selectedCustomer"
+                    [filter]="true"></p-dropdown>
+                </div>
+                <div class="form-group col-md-6">
+                  <p-dropdown formControlName="taxTypeCode" [options]="taxTypeCodeList" [showClear]="true"
+                    optionLabel="name" placeholder="Fatura Tipi"></p-dropdown>
+                </div>
+
+
+
+              </div>
+
+              <div class="row mb-3">
+                <p-dropdown placeholder="Satış Elemanı" formControlName="salesPersonCode"
+                  [options]="salesPersonModelList" optionLabel="name" [filter]="true">
+                </p-dropdown>
+              </div>
+
+
+
+              <div class="form-group col mb-3">
+                <div class="form-group">
+                  <label for="isReturn">İade Faturası</label>
+
+                  <p-inputSwitch id="isReturn" class="form-control" formControlName="isReturn">
+                  </p-inputSwitch>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <button type="button" class="btn btn-primary" style="width: 100%"
+                    (click)="updateInvocieProcess(this.productForm.value)">
+                    Kaydet
+                  </button>
+                </div>
+              </div>
+
+            </form>
+          </p-tabPanel>
+          <p-tabPanel header="Fatura Ürünleri" *ngIf="this.invoiceProcess">
+            <!-- FATURA ÜRÜN FORMU------------------------------------------------------------------------------------------------>
+
+            <form [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
+              <div class="row mb-3">
+                <div class="form-group">
+                  <div class="input-group">
+                    <input pInputText placeholder="Müşteri Kodu" type="text" id="shelfNo" class="form-control"
+                      style="height: 100%" formControlName="shelfNo" placeholder="{{
+                            shelfNumbers != 'RAFLAR:' ? shelfNumbers : 'Raf No'
+                          }}" (keydown.enter)="focusNextInput('barcode')" />
+                    <div class="input-group-append">
+                      <button pButton type="button" (click)="clearShelfNumbers()" class="btn btn-primary"
+                        style="height:  100%;">
+                        <i class="fa fa-eraser" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- <div *ngIf="shelfNumbers !== 'RAFLAR:'" class="text">
+                    {{ shelfNumbers }}
+                  </div> -->
+              <div class="row mb-3">
+                <div class="form-group">
+                  <input pInputText placeholder="Barkod" type="text" id="barcode" class="form-control"
+                    formControlName="barcode" (keydown.enter)="onSubmit(productForm.value)" />
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <input pInputText placeholder="Miktar" type="number" id="quantity" class="form-control"
+                    formControlName="quantity" (keydown.enter)="onSubmit(productForm.value)" />
+                </div>
+                <div class="form-group col">
+                  <input pInputText placeholder="Parti" type="text" id="batchCode" class="form-control"
+                    formControlName="batchCode" (keydown.enter)="focusNextInput('quantity')" />
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <button type="button" class="btn btn-primary" (click)="onSubmit(productForm.value)"
+                    style="width: 100%">
+                    Ekle
+                  </button>
+                </div>
+
+
+
+              </div>
+            </form>
+
+
+          </p-tabPanel>
+
+          <!-- FATURA KONTROL ------------------------------------------------------------------------------------------------>
+          <p-tabPanel header="Faturayı Kes" *ngIf="this.invoiceProcess && this.invoiceProducts.length>0">
+            <div class="text-center">
+              <h3>Fatura Bilgileri</h3>
+
+              <p><strong>Fatura Numarası:</strong> {{ invoiceNumber }}</p>
+
+              <p><strong>Ofis Kodu:</strong> {{ productForm.get('officeCode').value || 'Belirtilmemiş' }}</p>
+              <p><strong>Depo Kodu:</strong> {{ productForm.get('warehouseCode').value?.name || 'Belirtilmemiş' }}</p>
+              <p><strong>Müşteri Kodu:</strong> {{ productForm.get('currAccCode').value?.name || 'Belirtilmemiş' }}</p>
+              <p><strong>Satış Elemanı Kodu:</strong>
+                {{ productForm.get('salesPersonCode').value?.name || 'Belirtilmemiş' }}</p>
+              <p><strong>Fatura Tipi:</strong> {{ productForm.get('taxTypeCode').value?.name || 'Belirtilmemiş' }}</p>
+              <p><strong>İade Faturası:</strong> {{ productForm.get('isReturn').value ? 'Evet' : 'Hayır' }}</p>
+
+              <button type="button" class="btn btn-primary" (click)="createSaleInvoice()">
+                Faturayı Kes
+              </button>
+            </div>
+          </p-tabPanel>
+
+        </p-tabView>
+      </div>
+      <!-- ÜRÜN LİSTESİ ------------------------------------------------------------------------------------------------>
+
+      <div class="card" *ngIf="invoiceProducts.length > 0 && activeIndex==1">
+        <p-table [value]="invoiceProducts" class="table" [paginator]="true" [rows]="10"
+          [tableStyle]="{ 'min-width': '50rem' }">
+          <ng-template pTemplate="header">
+            <tr>
+              <th scope="col">Fotoğraf</th>
+              <th pSortableColumn="shelfNo">
+                Raf
+                <p-sortIcon field="shelfNo"></p-sortIcon>
+                <p-columnFilter type="text" field="shelfNo" [showClearButton]="true"></p-columnFilter>
+              </th>
+              <th pSortableColumn="itemCode">
+                Ürün Kodu
+                <p-sortIcon field="itemCode"></p-sortIcon>
+                <p-columnFilter type="text" field="itemCode" [showClearButton]="true"></p-columnFilter>
+              </th>
+              <th pSortableColumn="quantity">
+                Miktar
+                <p-sortIcon field="quantity"></p-sortIcon>
+                <p-columnFilter type="numeric" field="quantity" [showClearButton]="true"></p-columnFilter>
+              </th>
+              <th pSortableColumn="batchCode">
+                Parti
+                <p-sortIcon field="batchCode"></p-sortIcon>
+                <p-columnFilter type="text" field="batchCode" [showClearButton]="true"></p-columnFilter>
+              </th>
+              <th pSortableColumn="barcode">
+                Barkod
+                <p-sortIcon field="barcode"></p-sortIcon>
+                <p-columnFilter type="text" field="barcode" [showClearButton]="true"></p-columnFilter>
+              </th>
+              <th scope="col">İşlemler</th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-product let-i="index">
+            <tr>
+              <td>
+                <p-image src="{{ product.photoUrl }}" [preview]="true" alt="Image" width="30px">
+                  <ng-template pTemplate="indicator">
+                    <i class="pi pi-check"></i>
+                  </ng-template>
+                </p-image>
+              </td>
+              <td>{{ product.shelfNo }}</td>
+              <td>{{ product.itemCode }}</td>
+              <td>{{ product.quantity }}</td>
+              <td>{{ product.batchCode }}</td>
+              <td>{{ product.barcode }}</td>
+              <td>
+                <button class="btn btn-primary" type="submit" (click)="deleteOrderProduct(product.id)">
+                  <i class="fa fa-trash"></i>
+                </button>
+
+                <button *ngIf="product.quantity > product.quantity" class="btn btn-primary" style="margin-left: 1rem"
+                  type="submit">
+                  <i class="fa fa-refresh" aria-hidden="true"></i>
+                </button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+      </div>
+      <!-- TOPLANAN ÜRÜNLER ------------------------------------------------------------------------------------------------>
+
+      <div class="card text-center" *ngIf="activeIndex==1">
+        <div class="card-body">
+          <h5 class="card-title">Toplanan Ürünler</h5>
+          <h1 class="display-1">{{ totalCount }}</h1>
+          <p class="card-text">Adet Ürün Toplandı</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

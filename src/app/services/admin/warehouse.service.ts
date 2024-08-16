@@ -20,7 +20,7 @@ import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/w
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 import { GeneralService } from './general.service';
-import { ZTMSG_CountedProduct } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
+import { ProductOnShelf, ProductOnShelf_VM, ZTMSG_CountedProduct } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 
 @Injectable({
   providedIn: 'root',
@@ -539,4 +539,43 @@ export class WarehouseService {
   }
 
   //----------------------------------------------------
+
+  // ProductOnShelf -----------------------------------------------------------
+
+
+  async completeProductOnShelfOperation(opetationId: string): Promise<boolean> {
+    const response = await this.httpClientService
+      .get_new<boolean>({ controller: 'Warehouse/complete-product-on-shelf-operation' }, opetationId)
+      .toPromise();
+    return response;
+  }
+  async getProductOnShelfOperationList(): Promise<ProductOnShelf_VM[]> {
+    const response = await this.httpClientService
+      .get<ProductOnShelf_VM>({ controller: 'Warehouse/get-products-on-shelf-operation-list' })
+      .toPromise();
+    return response;
+  }
+
+  async addProductOnShelf(request: ProductOnShelf): Promise<boolean> {
+    const response = await this.httpClientService
+      .post<any>({ controller: 'Warehouse/add-product-to-shelf' }, request)
+      .toPromise();
+    return response;
+  }
+
+  async getProductOnShelf(request: string): Promise<ProductOnShelf[]> {
+    const response = await this.httpClientService
+      .get<ProductOnShelf>({ controller: 'Warehouse/get-products-on-shelves' }, request)
+      .toPromise();
+    return response;
+  }
+
+  async deleteProductOnShelf(request: string): Promise<any> {
+
+    const response = await this.httpClientService
+      .get<any>({ controller: 'Warehouse/delete-product-on-shelf' }, request)
+      .toPromise();
+    return response;
+  }
+  //---------------------------------------------------------------------------
 }

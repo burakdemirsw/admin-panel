@@ -7,7 +7,7 @@ import {
   BarcodeModel_A,
 } from 'src/app/models/model/barcode/barcodeModel_A';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
-import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { CollectedInvoiceProduct, CreatePurchaseInvoice, InvoiceProcess } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
 import { GetProductExtract_RM, GetProductStock_RM } from 'src/app/models/model/product/getProductStock';
 import { ProductCountModel2 } from 'src/app/models/model/product/productCountModel2';
@@ -322,7 +322,7 @@ export class ProductService {
 
   async searchProduct(model: BarcodeSearch_RM): Promise<any> {
     const response = await this.httpClientService
-      .post<BarcodeSearch_RM>({ controller: 'Products/SearchProduct2' }, model)
+      .post<BarcodeSearch_RM>({ controller: 'Products/SearchProduct' }, model)
       .toPromise();
 
     return response;
@@ -560,7 +560,7 @@ export class ProductService {
   }
   async createProposalReport(request: number): Promise<any> {
     try {
-      var response: any = await this.httpClientService.get<any>({ controller: "Warehouse/create-proposal-report", responseType: 'arraybuffer' }, request.toString()).toPromise();
+      var response: any = await this.httpClientService.get<any>({ controller: "Products/create-proposal-report", responseType: 'arraybuffer' }, request.toString()).toPromise();
       if (response) {
 
 
@@ -593,10 +593,9 @@ export class ProductService {
         iframe.onload = () => {
           iframe.contentWindow?.print();
         };
-        alert("Teklif YAZDIRILDI");
-
+        this.toasterService.success("Teklifiniz Gönderildi")
       } else {
-        alert("Teklif YAZDIRILAMADI");
+        this.toasterService.error("Hata Alındı ")
       }
       return response;
     } catch (error: any) {
@@ -613,6 +612,8 @@ export class ProductService {
 
     return response;
   }
+
+
 }
 export class BarcodeSearch_RM {
   barcode!: string;

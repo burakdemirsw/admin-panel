@@ -1,0 +1,178 @@
+<main id="main" class="main">
+  <section class="section">
+    <div class="row" *ngIf="this.isCompleted === false">
+      <div style="width: 100%">
+
+        <div class="card">
+          <div class="card-body">
+            <form [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)">
+              <div class="row mb-3 mt-3">
+                <div class="form-group col-md-6 mt-3">
+                  <p-dropdown formControlName="office" [options]="offices" [showClear]="true" placeholder="Ofis">
+                  </p-dropdown>
+                </div>
+
+                <div class="form-group col-md-6 mt-3">
+                  <p-dropdown formControlName="warehouse" [options]="warehouses" [showClear]="true" placeholder="Depo"
+                    optionLabel="name" formControlName="warehouseCode" className="mobile-spacing"></p-dropdown>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="form-group">
+                  <div class="input-group">
+                    <input pInputText placeholder="{{
+                        shelfNumbers != 'RAFLAR:' ? shelfNumbers : 'Raf No'
+                      }}" type="text" id="shelfNo" class="form-control" formControlName="shelfNo"
+                      (keydown.enter)="focusNextInput('countPageBarcode')" />
+                    <div class="input-group-append">
+                      <button type="button" style="height: 100%" (click)="clearShelfNumbers()" class="btn btn-primary">
+                        <i class="fa-solid fa-broom"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="form-group">
+                  <input pInputText type="search" placeholder="Barkod" id="countPageBarcode" class="form-control"
+                    formControlName="barcode" [disabled]="checkForm.disabled" [(ngModel)]="currentbarcode"
+                    (keydown.enter)="onSubmit(checkForm.value)" />
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <div class="form-group">
+                    <input pInputText placeholder="Miktar" type="number" id="quantity" class="form-control"
+                      formControlName="quantity" [disabled]="checkForm.disabled" />
+                  </div>
+                </div>
+                <div class="form-group col">
+                  <div class="form-group">
+                    <input placeholder="Parti" pInputText input type="text" id="batchCode" class="form-control"
+                      formControlName="batchCode" (keydown.enter)="onSubmit(checkForm.value)"
+                      [disabled]="checkForm.disabled" />
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="row mb-1">
+                <div class="form-group col">
+                  <button type="button" class="btn btn-primary" (click)="onSubmit(checkForm.value)" style="width: 100%">
+                    Ekle
+                  </button>
+                </div>
+                <div class="form-group col">
+                  <button type="button" class="btn btn-primary" style="margin-left: 10px; color: white"
+                    (click)="completeCountFromService(currentOrderNo)" style="width: 100%">
+                    Tamamla
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="card" *ngIf="infoProducts.length > 0">
+          <div class="card-body">
+            <h5 class="card-title">Bilgilendirme Alanı</h5>
+            <p-table [value]="infoProducts" class="table table-striped" [paginator]="true" [rows]="10"
+              [responsiveLayout]="'scroll'">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th *ngFor="let header of tableHeaders" class="text-center">
+                    {{ header }}
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-product let-i="index">
+                <tr>
+                  <td class="text-center">
+                    <p-image src="{{ product.photoUrl }}" previewImageSrc="{{ product.photoUrl }}" alt="Resim"
+                      width="50" height="50" [preview]="true"></p-image>
+                  </td>
+                  <td class="text-center">{{ product.shelfNo }}</td>
+                  <td class="text-center">{{ product.itemCode }}</td>
+                  <td class="text-center">{{ product.quantity }}</td>
+                  <td class="text-center">{{ product.batchCode }}</td>
+                  <td class="text-center">{{ product.barcode }}</td>
+                  <td class="text-center">{{ product.currAccCode }}</td>
+                  <td class="text-center">{{ product.warehouseCode }}</td>
+                  <td class="text-center">{{ product.officeCode }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+
+
+          </div>
+        </div>
+
+        <div class="card" *ngIf="lastCollectedProducts.length > 0">
+          <div class="card-body">
+            <h5 class="card-title">Sayılan Ürünler</h5>
+            <p-table [value]="lastCollectedProducts" class="table" [paginator]="true" [rows]="10"
+              [responsiveLayout]="'scroll'">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th *ngFor="let header of _tableHeaders">
+                    {{ header }}
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-product let-i="index">
+                <tr>
+
+                  <td>{{ product.itemCode }}</td>
+                  <td>{{ product.barcode }}</td>
+                  <td>{{ product.shelfNo }}</td>
+                  <td>{{ product.in_Quantity }}</td>
+                  <td>{{ product.out_Quantity }}</td>
+                  <td>{{ product.is_inQty }}</td>
+
+                  <td>{{ product.warehouseCode }}</td>
+                  <td>
+                    <div class="btn-group">
+                      <button class="btn btn-danger" type="submit" (click)="deleteOrderProduct(product.id)">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                      <!--
+          <button class="btn btn-primary" type="submit"
+                  (click)="change(product.barcode, product.quantity, product.batchCode)">
+            <i class="fa fa-print"></i>
+          </button>
+          -->
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+
+          </div>
+        </div>
+
+        <!-- Yeni kart: Toplanan Ürünler -->
+        <div class="card text-center">
+          <div class="card-body">
+            <h5 class="card-title">Toplanan Ürünler</h5>
+            <h1 class="display-1">{{ totalCount }}</h1>
+            <p class="card-text">Adet Ürün Toplandı</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container d-flex align-items-center justify-content-center min-vh-100 bg-light"
+      *ngIf="this.isCompleted == true">
+      <div class="card text-center shadow-lg p-4" style="max-width: 400px; border: none;">
+        <div class="card-body">
+          <h1 class="card-title text-primary">İşlem Tamamlanmış</h1>
+          <p class="card-text mb-4 text-muted">Bu Operasyon Tamamlanmıştır.Lütfen İşleminize Yeni Bir Sayafadan Devam
+            Ediniz</p>
+
+          <button class="btn btn-primary btn-lg  mt-3" (click)="goBack()">Önceki Sayfaya Dön</button>
+        </div>
+        <p class="text-muted mt-4">Eğer bir hata olduğunu düşünüyorsanız lütfen sistem yöneticinize başvurunuz.</p>
+      </div>
+    </div>
+  </section>
+</main>

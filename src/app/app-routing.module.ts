@@ -5,16 +5,15 @@ import { CategoryOperationComponent } from './components/Category/category-opera
 import { AddCustomerComponent } from './components/Customer/add-customer/add-customer.component';
 import { CustomerListComponent } from './components/Customer/customer-list/customer-list.component';
 import { DevolopmentListComponent } from './components/Devolopment/devolopment-list/devolopment-list.component';
-import { HomepageComponent } from './components/Homepage/homepage.component';
 import { LogManagamentComponent } from './components/Log/log-managament/log-managament.component';
 import { CollectProductOfOrderComponent } from './components2/order/collect-product-of-order/collect-product-of-order.component';
 import { CollectedPackageDetailComponent } from './components/Order/collected-package-detail/collected-package-detail.component';
 import { CollectedPackagesComponent } from './components/Order/collected-packages/collected-packages.component';
 import { CreateOrderComponent } from './components/Order/create-order/create-order.component';
-import { CreatePurchaseOrderComponent } from './components/Order/create-purchase-order/create-purchase-order.component';
-import { CreateQrComponent } from './components/Order/create-qr/create-qr.component';
-import { CreateSaleOrderComponent } from './components/Order/create-sale-order/create-sale-order.component';
-import { InvoiceListComponent } from './components/Order/invoice-list/invoice-list.component';
+import { CreatePurchaseOrderComponent } from './components/Invoice/create-purchase-order/create-purchase-order.component';
+import { CreateQrComponent } from './components/Product/create-qr/create-qr.component';
+import { CreateSaleOrderComponent } from './components/Invoice/create-sale-order/create-sale-order.component';
+import { InvoiceListComponent } from './components/Invoice/invoice-list/invoice-list.component';
 import { NebimGetOrdersComponent } from './components/Order/nebim-get-orders/nebim-get-orders.component';
 import { OrderBillingOperationComponent } from './components/Order/order-billing-operation/order-billing-operation.component';
 import { OrderManagamentComponent } from './components/Order/order-managament/order-managament.component';
@@ -64,12 +63,14 @@ import { CollectExportProductsComponent } from './components/Order/export-transa
 import { PagesInfoComponent } from './pages/pages-info/pages-info.component';
 import { CreateProposalComponent } from './components/Product/create-proposal/create-proposal.component';
 import { ProposalListComponent } from './components/Product/proposal-list/proposal-list.component';
-import { IdeasoftOffersComponent } from './components/special-panels/ideasoft-offers/ideasoft-offers.component';
 import { AuthorizationComponent } from './components/auth/authorization/authorization.component';
 import { RoleListComponent } from './components/User/user-list/role/role-list/role-list.component';
 import { PagesUnauthorizedComponent } from './pages/pages-unauthorized/pages-unauthorized.component';
 import { ShelfComponent } from './components/Warehouse/shelf/shelf.component';
 import { ProductStockReportComponent } from './components/Product/product-stock-report/product-stock-report.component';
+import { AddProductToShelfComponent } from './components/Warehouse/warehosue-shelf-count/add-product-to-shelf/add-product-to-shelf.component';
+import { AddProductToShelfListComponent } from './components/Warehouse/warehosue-shelf-count/add-product-to-shelf-list/add-product-to-shelf-list.component';
+import { IdeasoftOffersComponent } from './components/marketplace/ideasoft/ideasoft-offers/ideasoft-offers.component';
 
 
 const routes: Routes = [
@@ -119,7 +120,6 @@ const routes: Routes = [
     component: CustomerListComponent,
     canActivate: [AuthGuard],
   },
-  { path: 'home', component: HomepageComponent, canActivate: [AuthGuard] },
   {
     path: 'category-operation',
     component: CategoryOperationComponent,
@@ -218,7 +218,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'create-sale-order/:orderNo',
+    path: 'create-sale-order/:activeIndex',
+    component: CreateSaleOrderComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'create-sale-order/:activeIndex/:processId',
     component: CreateSaleOrderComponent,
     canActivate: [AuthGuard],
   },
@@ -335,6 +340,8 @@ const routes: Routes = [
   { path: 'infos', component: PagesInfoComponent, canActivate: [AuthGuard] },
   { path: 'unauthorized', component: PagesUnauthorizedComponent },
   { path: 'product-stock-report', component: ProductStockReportComponent },
+  { path: 'add-product-to-shelf/:type/:isCompleted/:id', component: AddProductToShelfComponent },
+  { path: 'add-product-to-shelf-list', component: AddProductToShelfListComponent },
 
   //-------------------------------------------------------------------------
   { path: '**', component: PagesError404Component },

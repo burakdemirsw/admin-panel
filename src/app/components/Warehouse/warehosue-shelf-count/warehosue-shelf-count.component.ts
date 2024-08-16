@@ -17,7 +17,7 @@ import {
 } from 'src/app/models/model/shelfNameModel';
 import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
-import { ZTMSG_CountedProduct, ZTMSG_ProductOnShelf } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
+import { ZTMSG_CountedProduct, ProductOnShelf } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
@@ -208,7 +208,7 @@ export class WarehosueShelfCountComponent implements OnInit {
       barcode: [null, Validators.required],
       shelfNo: [null, Validators.required],
       quantity: [null, Validators.required],
-      office: [null, Validators.required],
+      officeCode: [null, Validators.required],
       warehouseCode: [null, Validators.required],
       batchCode: [null],
       isShelfBased: [false],
@@ -226,7 +226,7 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.totalCount = totalQty;
   }
   lastCollectedProducts: ZTMSG_CountedProduct[] = [];
-  lastCollectedProducts2: ZTMSG_ProductOnShelf[] = [];
+  lastCollectedProducts2: ProductOnShelf[] = [];
   async getProductOfCount(orderNo: string): Promise<any> {
     this.lastCollectedProducts = await this.warehouseService.getCountsOfOperation(
       orderNo
@@ -344,23 +344,6 @@ export class WarehosueShelfCountComponent implements OnInit {
         request.operationType = this.checkForm.get("isShelfBased").value == true ? this.checkForm.get("isShelfBased").value : this.checkForm.get("isShelfBased2").value
 
         var _response = await this.warehouseService.addCount(request);
-
-
-        // var response: ProductCountModel =
-        //   await this.warehouseService.countProductRequest2(
-        //     countProductRequestModel.barcode,
-        //     countProductRequestModel.shelfNo,
-        //     countProductRequestModel.quantity,
-        //     countProductRequestModel.office,
-        //     countProductRequestModel.warehouseCode.code,
-        //     null,
-        //     countProductRequestModel.batchCode,
-        //     'Order/CountProduct',
-        //     this.currentOrderNo,
-        //     null,
-        //     null
-        //   );
-
         if (_response)
           // SAYIM YAPILDI -------------------------------------------
           this.generalService.beep();

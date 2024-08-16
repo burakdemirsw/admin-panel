@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { InvocieFilterModel } from 'src/app/models/model/filter/invoiceFilterModel';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
-import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { CollectedInvoiceProduct, CreatePurchaseInvoice, InvoiceProcess } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
 import { OrderBillingRequestModel } from 'src/app/models/model/invoice/orderBillingRequestModel';
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
@@ -874,5 +874,70 @@ export class OrderService {
   }
 
 
-  //ExecuteSqlRawAsync
+  //------------------------------------------------------------------------------------------  CollectedInvoiceProduct WS_B_R Faturaları (YENİ*)
+
+  async getCollectedInvoiceProducts(orderNo: string): Promise<CollectedInvoiceProduct[]> {
+    const response = await this.httpClientService
+      .get<CollectedInvoiceProduct>(
+        { controller: 'Order/get-collected-invoice-product' }, //Get_ProductOfInvoice
+        orderNo
+      )
+      .toPromise();
+
+    return response;
+  }
+  async addCollectedInvoiceProduct(request: CollectedInvoiceProduct): Promise<boolean> {
+    const response = await this.httpClientService
+      .post<boolean>(
+        { controller: 'Order/add-collected-invoice-product' }, //Get_ProductOfInvoice
+        request
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async deleteCollectedInvoiceProduct(id: string): Promise<boolean> {
+    const response = await this.httpClientService
+      .get_new<boolean>(
+        { controller: 'Order/delete-collected-invoice-product' }, //Get_ProductOfInvoice
+        id
+      )
+      .toPromise();
+
+    return response;
+  }
+  async getInvoiceProcessList(processCode: string): Promise<InvoiceProcess[]> {
+    const response = await this.httpClientService
+      .get<InvoiceProcess>(
+        { controller: 'Order/get-invoice-process' },
+        processCode
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async editInvoiceProcess(request: InvoiceProcess): Promise<InvoiceProcess> {
+    const response = await this.httpClientService
+      .post<InvoiceProcess>(
+        { controller: 'Order/edit-invoice-process' },
+        request
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async deleteInvoiceProcess(id: string): Promise<boolean> {
+    const response = await this.httpClientService
+      .delete<boolean>(
+        { controller: 'Order/delete-invoice-process' },
+        id
+      )
+      .toPromise();
+
+    return response;
+  }
+  //------------------------------------------------------------
 }

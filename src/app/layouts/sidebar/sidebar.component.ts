@@ -134,4 +134,15 @@ export class SidebarComponent implements OnInit {
 
     ])
   }
+
+  async routeNewPage8(isInQty: boolean) {
+    const result = await this.generalService.generateGUID()
+
+    if (isInQty) {
+      this.router.navigate(["/add-product-to-shelf/true/" + result])
+    } else {
+      this.router.navigate(["/add-product-to-shelf/false/" + result])
+    }
+
+  }
 }

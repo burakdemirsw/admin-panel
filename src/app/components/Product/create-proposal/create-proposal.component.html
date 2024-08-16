@@ -9,20 +9,22 @@
         <div class="p-inputgroup p-4 justify-content-start" style="overflow-x: auto; white-space: nowrap;">
 
           <div style="text-align: left">
-            <button pButton pRipple class="p-button-rounded p-button-primary" icon="pi pi-search" label="Ürün Ara"
-              type="button" (click)="getAllProducts()"></button>
+            <button class="btn btn-primary" icon="pi pi-search" label="" type="button" (click)="getAllProducts()"> <i
+                class="fa fa-search" aria-hidden="true"></i> Ürün Ara</button>
           </div>
           <div style="text-align: left">
-            <button pButton pRipple class="p-button-rounded p-button-primary" icon="pi pi-search" label="Müşteri Ara"
-              type="button" (click)="getAllCustomers()"></button>
+            <button class="btn btn-primary" type="button" (click)="getAllCustomers()"> <i class="fa fa-search"
+                aria-hidden="true"></i> Müşteri Ara</button>
           </div>
           <div style="text-align: left">
-            <button *ngIf="addedProducts.length>0" pButton pRipple class="p-button-rounded p-button-danger"
-              (click)="deleteAllPRoduct()" icon="pi pi-trash" label="Tüm Ürünleri Sil" type="button"></button>
+            <button class="btn btn-danger" (click)="deleteAllPRoduct()" type="button"> <i class="fa fa-search"
+                aria-hidden="true"></i>
+              Tüm Ürünleri Sil</button>
           </div>
           <div style="text-align: left">
-            <button *ngIf="this.proposal" pButton pRipple class="p-button-rounded p-button-danger"
-              (click)="deleteProposal(this.proposal.id)" icon="pi pi-trash" label="Teklifi Sil" type="button"></button>
+            <button *ngIf="this.proposal" class="btn btn-danger" (click)="deleteProposal(this.proposal.id)"
+              type="button"><i class="fa fa-search" aria-hidden="true"></i>
+              Teklifi Sil</button>
           </div>
 
 
@@ -127,12 +129,12 @@
 
               <td>
                 <div class="p-inputgroup">
-                  <button pButton pRipple icon="pi pi-trash" type="button" class="p-button-rounded p-button-danger"
-                    (click)="deleteProposalProduct(product.id)"></button>
-                  <button pButton pRipple icon="pi pi-pencil" type="button" class="p-button-rounded p-button-peimary"
-                    (click)="openUpdateDialog(product)"></button>
-                  <button pButton pRipple icon="pi pi-refresh" type="button" class="p-button-rounded p-button-text"
-                    (click)="refreshProposalProduct(product)"></button>
+                  <button type="button" class="btn btn-danger" (click)="deleteProposalProduct(product.id)"> <i
+                      class="fa fa-trash" aria-hidden="true"></i></button>
+                  <button type="button" class="btn btn-primary" (click)="openUpdateDialog(product)"><i
+                      class="fa fa-pencil" aria-hidden="true"></i></button>
+                  <button type="button" class="btn btn-primary" (click)="refreshProposalProduct(product)"> <i
+                      class="fa fa-refresh" aria-hidden="true"></i></button>
                 </div>
               </td>
 
@@ -152,7 +154,6 @@
         </p-table>
 
         <!-- Ürün Güncelle----------------------------------------------------------------------------------------------------->
-
         <p-dialog header="Ürün Güncelle" [(visible)]="updateProductDialog" [modal]="true" [closable]="false"
           [style]="{width: '300px'}" (ngSubmit)="updateProposalProduct(this.selectedProduct)">
           <form [formGroup]="updateProductForm">
@@ -347,8 +348,8 @@
             <td>{{ product.inventory }}</td>
             <td>{{ product.price }}</td>
             <td>
-              <button pButton pRipple icon="pi pi-plus" type="button" class="p-button-rounded p-button-text "
-                (click)="addProduct(product)"></button>
+              <button type="button" class="btn btn-primary" (click)="addProduct(product)"> <i class="fa fa-plus"
+                  aria-hidden="true"></i></button>
             </td>
           </tr>
         </ng-template>
@@ -455,8 +456,8 @@
             <td>{{ customer.phone }}</td>
             <td>{{ customer.docCurrencyCode }}</td>
             <td>
-              <button pButton pRipple icon="pi pi-plus" type="button" class="p-button-rounded p-button-text"
-                (click)="addCustomer(customer)"></button>
+              <button type="button" class="btn btn-primary" (click)="addCustomer(customer)"><i class="fa fa-plus"
+                  aria-hidden="true"></i></button>
             </td>
           </tr>
         </ng-template>
@@ -511,9 +512,9 @@
             <div class="col-md-4  mb-3">
               <div class="input-group">
                 <div class="input-group-prepend">
-                  <button pButton pRipple icon="pi pi-check" class="p-button-rounded p-button-success" (click)="
+                  <button class="btn btn-primary" (click)="
                       discount(this.discountForm.value.percentDiscountRate)
-                    " type="button"></button>
+                    " type="button"><i class="fa fa-check" aria-hidden="true"></i></button>
                 </div>
                 <input type="number" class="form-control" id="percentDiscountRate" placeholder="Yüzde İndirim Oranı"
                   formControlName="percentDiscountRate" (keydown.enter)="
@@ -524,9 +525,9 @@
             <div class="col-md-4 mb-3">
               <div class="input-group ">
                 <div class="input-group-append">
-                  <button pButton pRipple class="p-button-rounded p-button-success" icon="pi pi-check" (click)="
+                  <button class="btn btn-primary" icon="pi pi-check" (click)="
                       cashDiscount(this.discountForm.value.cashDiscountRate)
-                    " type="button"></button>
+                    " type="button"> <i class="fa fa-check" aria-hidden="true"></i></button>
                 </div>
                 <input type="number" class="form-control" id="cashDiscountRate" placeholder="Nakit İndirim Tutarı"
                   formControlName="cashDiscountRate" (keydown.enter)="
@@ -535,8 +536,8 @@
               </div>
             </div>
             <div class="col-md-4">
-              <button pButton pRipple style="width: 100%" class="p-button p-button-danger" label="İndirimi Sıfırla"
-                (click)="resetDiscount()" type="button"></button>
+              <button style="width: 100%" class="btn btn-danger" (click)="resetDiscount()" type="button"> İndirimi
+                Sıfırla</button>
             </div>
           </div>
 
@@ -548,9 +549,9 @@
         <div>
           <div class="row">
             <div class="col-md-12">
-              <button pButton pRipple style="width: 100%" class="p-button p-button-success" label="Teklifi Oluştur"
-                (click)="createProposalReport()" type="button" [disabled]="this.addedProducts.length<=0 ||
-                !this.proposal.currAccDescription"></button>
+              <button style="width: 100%" class="btn btn-primary" (click)="createProposalReport()" type="button"
+                [disabled]="this.addedProducts.length<=0 ||
+                !this.proposal.currAccDescription"> Teklifi Oluştur</button>
             </div>
           </div>
         </div>
