@@ -6,8 +6,8 @@
         <p-tabView [activeIndex]="activeIndex" (onChange)="logger($event)">
           <!-- FATURA BLİGİLERİ ------------------------------------------------------------------------------------------------>
 
-          <p-tabPanel header="Fatura Bilgileri">
-            <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit(productForm.value)">
+          <p-tabPanel header="Fatura Bilgileri" *ngIf="this.processCode == 'R'">
+            <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit(invoiceForm.value)">
               <div class="row mb-3">
                 <div class="form-group col-md-6">
                   <p-dropdown formControlName="officeCode" [options]="offices" [showClear]="true" placeholder="Ofis">
@@ -54,7 +54,63 @@
               <div class="row mb-3">
                 <div class="form-group col">
                   <button type="button" class="btn btn-primary" style="width: 100%"
-                    (click)="updateInvocieProcess(this.productForm.value)">
+                    (click)="updateInvocieProcess(this.invoiceForm.value)">
+                    Kaydet
+                  </button>
+                </div>
+              </div>
+
+            </form>
+          </p-tabPanel>
+          <p-tabPanel header="Fatura Bilgileri" *ngIf="this.processCode == 'BP'">
+            <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit(invoiceForm.value)">
+              <div class="row mb-3">
+                <div class="form-group col-md-6">
+                  <p-dropdown formControlName="officeCode" [options]="offices" [showClear]="true" placeholder="Ofis">
+                  </p-dropdown>
+                </div>
+                <div class="form-group col-md-6">
+                  <p-dropdown formControlName="warehouse" [options]="warehouses" [showClear]="true" placeholder="Depo"
+                    optionLabel="name" formControlName="warehouseCode" className="mobile-spacing"></p-dropdown>
+                </div>
+
+              </div>
+              <div class="row mb-3">
+                <div class="form-group col-md-6">
+                  <p-dropdown placeholder="Tedarikçi" formControlName="vendorCode" [options]="customerList2"
+                    virtualScroll="true" virtualScrollItemSize="50" optionLabel="name" [(ngModel)]="selectedCustomer"
+                    [filter]="true"></p-dropdown>
+                </div>
+                <div class="form-group col-md-6">
+                  <p-dropdown formControlName="taxTypeCode" [options]="taxTypeCodeList" [showClear]="true"
+                    optionLabel="name" placeholder="Fatura Tipi"></p-dropdown>
+                </div>
+
+
+
+              </div>
+
+              <div class="row mb-3">
+                <p-dropdown placeholder="Satış Elemanı" formControlName="salesPersonCode"
+                  [options]="salesPersonModelList" optionLabel="name" [filter]="true">
+                </p-dropdown>
+              </div>
+
+
+
+              <div class="form-group col mb-3">
+                <div class="form-group">
+                  <label for="isReturn">İade Faturası</label>
+
+                  <p-inputSwitch id="isReturn" class="form-control" formControlName="isReturn">
+                  </p-inputSwitch>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <button type="button" class="btn btn-primary" style="width: 100%"
+                    (click)="updateInvocieProcess(this.invoiceForm.value)">
                     Kaydet
                   </button>
                 </div>
@@ -144,30 +200,16 @@
                       Fiyat
                       <p-sortIcon field="price"></p-sortIcon>
                     </th>
-                    <th pSortableColumn="discountedPrice">
-                      İndirimli Fiyat
-                      <p-sortIcon field="discountedPrice"></p-sortIcon>
+                    <th pSortableColumn="priceVI">
+                      Fiyat (VD)
+                      <p-sortIcon field="priceVI"></p-sortIcon>
                     </th>
-                    <th pSortableColumn="totalPrice">
-                      Toplam Fiyat
-                      <p-sortIcon field="totalPrice"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="totalTaxedPrice">
-                      Vergili Toplam Fiyat
-                      <p-sortIcon field="totalTaxedPrice"></p-sortIcon>
-                    </th>
+
                     <th pSortableColumn="taxRate">
                       Vergi Oranı
                       <p-sortIcon field="taxRate"></p-sortIcon>
                     </th>
-                    <th pSortableColumn="discountRate1">
-                      İndirim Oranı 1
-                      <p-sortIcon field="discountRate1"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="discountRate2">
-                      İndirim Oranı 2
-                      <p-sortIcon field="discountRate2"></p-sortIcon>
-                    </th>
+
                     <th scope="col">İşlemler</th>
                   </tr>
                 </ng-template>
@@ -185,12 +227,12 @@
                     <td>{{ product.quantity }}</td>
                     <td>{{ product.barcode }}</td>
                     <td>{{ product.price | currency }}</td>
-                    <td>{{ product.discountedPrice | currency }}</td>
-                    <td>{{ product.totalPrice | currency }}</td>
-                    <td>{{ product.totalTaxedPrice | currency }}</td>
+                    <td>{{ product.priceVI | currency }}</td>
+                    <!-- <td>{{ product.totalPrice | currency }}</td>
+                    <td>{{ product.totalTaxedPrice | currency }}</td> -->
                     <td>{{ product.taxRate }}%</td>
-                    <td>{{ product.discountRate1 }}%</td>
-                    <td>{{ product.discountRate2 }}%</td>
+                    <!-- <td>{{ product.discountRate1 }}%</td>
+                    <td>{{ product.discountRate2 }}₺</td> -->
                     <td>
 
                       <div class="btn-group" role="group" aria-label="Basic example">
@@ -212,7 +254,7 @@
                   <tr>
                     <td colspan="2" class="text-right"><strong>Toplam:</strong></td>
                     <td>{{ getTotalQuantity() }}</td>
-                    <td colspan="2"></td>
+                    <td colspan="1"></td>
                     <td>{{  getTotal() | currency}}</td>
                     <td>{{ getTotalTaxedPrice() | currency }}
                     </td>
@@ -224,17 +266,21 @@
 
             <table class="table table-bordered">
               <tbody>
-                <tr>
+                <tr *ngIf="this.processCode =='R' ">
                   <th scope="row" class="text-left">Müşteri:</th>
                   <td class="text-left">{{ invoiceForm.get('currAccCode').value?.name || 'Belirtilmemiş' }}</td>
                 </tr>
+                <tr *ngIf="this.processCode =='BP' ">
+                  <th scope="row" class="text-left">Tedarikçi:</th>
+                  <td class="text-left">{{ invoiceForm.get('vendorCode').value?.name || 'Belirtilmemiş' }}</td>
+                </tr>
                 <tr>
                   <th scope="row" class="text-left">Dip İskonto (%) :</th>
-                  <td class="text-left">{{ this.invoiceProcess.discountRate1 || 'Belirtilmemiş' }}</td>
+                  <td class="text-left">{{ this.invoiceProcess?.discountRate1 || 'Belirtilmemiş' }}</td>
                 </tr>
                 <tr>
                   <th scope="row" class="text-left">Dip İskonto (₺) :</th>
-                  <td class="text-left">{{ this.invoiceProcess.discountRate2 || 'Belirtilmemiş' }}</td>
+                  <td class="text-left">{{ this.invoiceProcess?.discountRate2 || 'Belirtilmemiş' }}</td>
                 </tr>
                 <tr>
                   <th scope="row">Toplam (KDV Hariç)</th>
@@ -400,19 +446,13 @@
               <label for="price">Fiyat</label>
               <input id="price" type="number" pInputText formControlName="price">
             </div>
+            <div class="p-field">
+              <label for="priceVI">Fiyat (VD)</label>
+              <input id="priceVI" type="number" pInputText formControlName="priceVI">
+            </div>
             <div class="p-field mb-3">
               <label for="quantity">Adet</label>
               <input id="quantity" type="number" pInputText formControlName="quantity">
-            </div>
-
-            <div class="p-field mb-3">
-              <label for="discountRate1">Yüzde İndirim</label>
-              <input id="discountRate1" type="number" pInputText formControlName="discountRate1">
-            </div>
-
-            <div class="p-field mb-3">
-              <label for="discountRate2">Nakit İndirim</label>
-              <input id="discountRate2" type="number" pInputText formControlName="discountRate2">
             </div>
             <div class="p-field mb-3">
               <button type="submit" pButton label="Güncelle" (click)="updateProduct(this.selectedProduct)"></button>

@@ -429,7 +429,15 @@
             <form [formGroup]="nebimInfoForm" (ngSubmit)="onSubmitNebimInfo()">
               <div class="form-group">
                 <label for="description">Tür</label>
-                <input type="text" id="description" class="form-control" formControlName="description">
+
+                <select id="description" class="form-control" formControlName="description">
+                  <option value="Perakende Sipariş">Perakende Sipariş</option>
+                  <option value="Toptan Sipariş">Toptan Sipariş</option>
+                  <option value="R">Perakende Fatura</option>
+                  <option value="WS">Toptan Fatura</option>
+                  <option value="BP">Alış Faturası</option>
+
+                </select>
               </div>
               <div class="form-group">
                 <label for="officeCode">Ofis Kodu</label>

@@ -8,7 +8,7 @@ import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { OrderService } from 'src/app/services/admin/order.service';
-import { BarcodeSearch_RM, ProductService } from 'src/app/services/admin/product.service';
+import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { HeaderService } from '../../../services/admin/header.service';
@@ -19,7 +19,6 @@ declare var window: any;
   styleUrls: ['./create-sale-order.component.css'],
 })
 export class CreateSaleOrderComponent implements OnInit {
-
   totalCount: number;
   visible2: boolean = false;
   shelfNumbers: string = 'RAFLAR:';
@@ -27,7 +26,6 @@ export class CreateSaleOrderComponent implements OnInit {
   salesPersonModelList: any[] = [];
   selectedPerson: any;
   customerList2: any[] = [];
-  addedProductCount: string = 'Sayım Paneli';
   newOrderNumber: string;
   customerList: CustomerModel[] = [];
   officeModels: OfficeModel[] = [];
@@ -51,37 +49,113 @@ export class CreateSaleOrderComponent implements OnInit {
   ) { }
   async ngOnInit() {
 
-    this.headerService.updatePageTitle('Satış Faturası Oluştur');
-
-    // this.isReturnInvoice = false;
-    this.formGenerator();
-    this.formGenerator2();
-    this.createDiscountForm();
-
-    this.createUpdateProductForm();
-    await this.getCustomerList(); //müşteriler kodu
-    await this.getWarehouseAndOffices();
     this.activatedRoute.params.subscribe(async (params) => {
       if (this.processCodes.includes(params["processCode"])) {
         this.processCode = params["processCode"].toUpperCase();
-        if (params['processId']) {
-          this.newOrderNumber = params['processId'];
-          await this.getInvoiceProcess();
-          if (this.invoiceProcess) {
-            await this.getProductOfInvoice();
+        if (this.processCode == "R") {
+          this.headerService.updatePageTitle('Satış Faturası (R)');
+          this.product_formGenerator();
+          this.ws_formGenerator();
+          await this.getWarehouseAndOffices();
+          await this.getCustomerList('4'); //Perakende Müşterileri Çeker
+          this.createDiscountForm();
+          this.createUpdateProductForm();
+
+          if (params['processId']) {
+            this.newOrderNumber = params['processId'];
+            await this.getInvoiceProcess();
+            if (this.invoiceProcess) {
+              await this.getProductOfInvoice();
+            }
           }
+          this.activeIndex = Number(params['activeIndex'])
+        } else if (this.processCode == "BP") {
+          this.headerService.updatePageTitle('Alış Faturası (BP)');
+          this.product_formGenerator();
+          this.bp_formGenerator();
+          await this.getWarehouseAndOffices();
+          await this.getCustomerList('1'); //Tedarikçileri Çeker
+          this.createDiscountForm();
+          this.createUpdateProductForm();
+
+          if (params['processId']) {
+            this.newOrderNumber = params['processId'];
+            await this.getInvoiceProcess();
+            if (this.invoiceProcess) {
+              await this.getProductOfInvoice();
+            }
+          }
+          this.activeIndex = Number(params['activeIndex'])
         }
-        this.activeIndex = Number(params['activeIndex'])
       } else {
         location.href = "/dashboard"
       }
 
     });
 
-  } addToList(model: any) {
-    this.toasterService.success(model.itemCode + ' Eklendi');
-    this.infoProducts.push(model);
-    this.addedProductCount = 'Sayım Paneli(' + this.infoProducts.length + ')';
+  }
+  //-------------------------------------------DETAY KODLARI
+  updateProductForm: FormGroup;
+  discountForm: FormGroup;
+  selectedProduct: CollectedInvoiceProduct;
+  updateProductDialog: boolean = false;
+  getTotalQuantity(): number {
+    return this.invoiceProducts.reduce((sum, product) => sum + product.quantity, 0);
+  }
+  getTotalPrice(): number {
+    return this.invoiceProducts.reduce((sum, product) => sum + (product.quantity * product.price), 0);
+  }
+  getTotalTaxedPrice(): number {
+    return this.invoiceProducts.reduce((sum, product) => sum + (product.quantity * product.priceVI), 0);
+  }
+
+  openUpdateDialog(product: CollectedInvoiceProduct) {
+    this.selectedProduct = product;
+    this.updateProductForm.get('price').setValue(this.selectedProduct.price)
+    this.updateProductForm.get('priceVI').setValue(this.selectedProduct.priceVI)
+    this.updateProductForm.get('quantity').setValue(this.selectedProduct.quantity)
+    // this.updateProductForm.get('discountRate1').setValue(this.selectedProduct.discountRate1)
+    // this.updateProductForm.get('discountRate2').setValue(this.selectedProduct.discountRate2)
+
+    this.updateProductDialog = true;
+  }
+
+  createUpdateProductForm() {
+    this.updateProductForm = this.formBuilder.group({
+      price: [null, Validators.required],
+      priceVI: [null, Validators.required],
+      quantity: [null, Validators.required],
+      discountRate1: [null, Validators.required],
+      discountRate2: [null, Validators.required],
+    });
+
+    // price değiştiğinde priceVI değerini güncelle
+    this.updateProductForm.get('price').valueChanges.subscribe(value => {
+      if (value !== null) {
+        const taxRate = this.selectedProduct.taxRate / 100;
+        const priceVI = parseFloat((value * (1 + taxRate)).toFixed(2));
+        this.updateProductForm.get('priceVI').setValue(priceVI, { emitEvent: false });
+      }
+    });
+
+    // priceVI değiştiğinde price değerini güncelle
+    this.updateProductForm.get('priceVI').valueChanges.subscribe(value => {
+      if (value !== null) {
+        const taxRate = this.selectedProduct.taxRate / 100;
+        const price = parseFloat((value / (1 + taxRate)).toFixed(2));
+        this.updateProductForm.get('price').setValue(price, { emitEvent: false });
+      }
+    });
+
+
+  }
+
+  createDiscountForm() {
+
+    this.discountForm = this.formBuilder.group({
+      cashDiscountRate: [null, Validators.required],
+      percentDiscountRate: [null, Validators.required]
+    });
   }
   currentDiscountRate: number = 0;
   percentDiscountRate: number;
@@ -137,7 +211,7 @@ export class CreateSaleOrderComponent implements OnInit {
 
   }
   getFinalTotalPrice() {
-    var number = this.invoiceProducts.reduce((acc, product) => acc + product.totalPrice, 0);
+    var number = this.invoiceProducts?.reduce((acc, product) => acc + product.quantity * (product.price), 0);
     if (number.toString().includes('.')) {
       return Number(number.toString().split('.')[0])
     } else {
@@ -146,61 +220,24 @@ export class CreateSaleOrderComponent implements OnInit {
   }
   //dip iskonto uygulandıktan sonraki fiyatı çeker
   getFinalTotalPrice2() {
-    return this.invoiceProducts.reduce((acc, product) => acc + product.totalTaxedPrice, 0) *
-      ((100 - this.invoiceProcess.discountRate1) / 100) - this.invoiceProcess.discountRate2;
+
+    var p = this.invoiceProducts?.reduce((acc, product) => acc + product.quantity * (product.priceVI), 0);
+    p = (p * ((100 - this.invoiceProcess?.discountRate1) / 100)) - this.invoiceProcess?.discountRate2;
+    return p;
+
 
   }
   getTotalTax(): number {
-    return this.invoiceProducts.reduce((acc, product) => acc + (product.totalPrice * (product.taxRate / 100)), 0);
+    return this.invoiceProducts?.reduce((acc, product) => {
+      const productTotalWithoutTax = product.quantity * product.priceVI / (1 + (product.taxRate / 100));
+      const productTax = (product.quantity * product.priceVI) - productTotalWithoutTax;
+      return acc + productTax;
+    }, 0);
   }
 
   getTotal(): number {
-    return this.invoiceProducts.reduce((acc, product) => acc + product.totalPrice, 0);
+    return this.invoiceProducts?.reduce((acc, product) => acc + (product.quantity * product.price), 0);
   }
-
-
-  //-------------------------------------------DETAY KODLARI
-  updateProductForm: FormGroup;
-  discountForm: FormGroup;
-  selectedProduct: CollectedInvoiceProduct;
-  updateProductDialog: boolean = false;
-  getTotalQuantity(): number {
-    return this.invoiceProducts.reduce((sum, product) => sum + product.quantity, 0);
-  }
-  getTotalPrice(): number {
-    return this.invoiceProducts.reduce((sum, product) => sum + product.totalPrice, 0);
-  }
-  getTotalTaxedPrice(): number {
-    return this.invoiceProducts.reduce((sum, product) => sum + product.totalTaxedPrice, 0);
-  }
-
-  openUpdateDialog(product: CollectedInvoiceProduct) {
-    this.selectedProduct = product;
-    this.updateProductForm.get('price').setValue(this.selectedProduct.discountedPrice)
-    this.updateProductForm.get('quantity').setValue(this.selectedProduct.quantity)
-    this.updateProductForm.get('discountRate1').setValue(this.selectedProduct.discountRate1)
-    this.updateProductForm.get('discountRate2').setValue(this.selectedProduct.discountRate2)
-
-    this.updateProductDialog = true;
-  }
-
-  createUpdateProductForm() {
-    this.updateProductForm = this.formBuilder.group({
-      price: [null, Validators.required],
-      quantity: [null, Validators.required],
-      discountRate1: [null, Validators.required],
-      discountRate2: [null, Validators.required],
-    });
-  }
-
-  createDiscountForm() {
-
-    this.discountForm = this.formBuilder.group({
-      cashDiscountRate: [null, Validators.required],
-      percentDiscountRate: [null, Validators.required]
-    });
-  }
-
 
   //-------------------------------------------YENI KODLAR
   processCode: string;
@@ -247,21 +284,23 @@ export class CreateSaleOrderComponent implements OnInit {
 
   async updateProduct(product: CollectedInvoiceProduct) {
     console.log(product);
-    product.discountedPrice = this.updateProductForm.get('price').value;
+    product.price = this.updateProductForm.get('price').value;
+    product.price = (
+      (product.price * ((100 - product.discountRate1) / 100)) - product.discountRate2
+    )
+    product.priceVI = this.updateProductForm.get('priceVI').value;
+    product.priceVI = (
+      (product.priceVI * ((100 - product.discountRate1) / 100)) - product.discountRate2
+    )
     product.quantity = this.updateProductForm.get('quantity').value;
     product.discountRate1 = this.updateProductForm.get('discountRate1').value; //yüzde
     product.discountRate2 = this.updateProductForm.get('discountRate2').value;
-    product.totalPrice =
-      product.quantity *
-      (
-        (product.discountedPrice * ((100 - product.discountRate1) / 100)) - product.discountRate2
-      )
+    // product.totalPrice =
+    //   product.quantity * product.price
 
-    product.totalTaxedPrice =
-      product.quantity *
-      (
-        ((product.discountedPrice * (1 + (product.taxRate / 100))) * ((100 - product.discountRate1) / 100)) - product.discountRate2
-      )
+    // product.totalTaxedPrice =
+    //   product.quantity * product.priceVI
+
     var response = await this.orderService.updateCollectedInvoiceProduct(product);
     if (response) {
       // this.getTotalPrice2();
@@ -274,13 +313,18 @@ export class CreateSaleOrderComponent implements OnInit {
     }
   }
   async updateInvocieProcess(formValue: any) {
+
+    if (!this.invoiceProcess) {
+      await this.addInvocieProcess(formValue);
+    }
     var request: InvoiceProcess = new InvoiceProcess();
     request.id = this.invoiceProcess.id;
-    request.processCode = "WS";
+    request.processCode = this.processCode;
     request.salesPersonCode = null;
     request.isReturn = formValue.isReturn;
     request.invoiceNumber = this.invoiceNumber;
-    request.currAccCode = formValue.currAccCode.code;
+    request.currAccCode = this.processCode == 'R' ? formValue.currAccCode.code : null;
+    request.vendorCode = this.processCode == 'BP' ? formValue.vendorCode.code : null;
     request.officeCode = formValue.officeCode;
     request.warehouseCode = formValue.warehouseCode.code;
     request.taxTypeCode = formValue.taxTypeCode.code;
@@ -300,12 +344,13 @@ export class CreateSaleOrderComponent implements OnInit {
   }
   async addInvocieProcess(formValue: any) {
     var request: InvoiceProcess = new InvoiceProcess();
-    request.processCode = "WS";
+    request.processCode = this.processCode;
     request.salesPersonCode = null;
     request.isReturn = formValue.isReturn;
     request.invoiceNumber = this.invoiceNumber;
     request.officeCode = formValue.officeCode;
-    request.currAccCode = formValue.currAccCode.code;
+    request.currAccCode = this.processCode == 'R' ? formValue.currAccCode.code : null;
+    request.vendorCode = this.processCode == 'BP' ? formValue.vendorCode.code : null;
     request.warehouseCode = formValue.warehouseCode.code;
     request.taxTypeCode = formValue.taxTypeCode.code;
     request.isCompleted = false;
@@ -326,6 +371,7 @@ export class CreateSaleOrderComponent implements OnInit {
     const warehouseCode = this.warehouses.find(o => o.code == v.warehouseCode);
     const salesPersonCode = this.salesPersonModelList.find(o => o.code == v.salesPersonCode);
     const currAccCode = this.customerList2.find(o => o.code == v.currAccCode);
+    const vendorCode = this.customerList2.find(o => o.code == v.vendorCode);
     const taxTypeCode = this.taxTypeCodeList.find(o => o.code == v.taxTypeCode);
     const isReturn = v.isReturn;
 
@@ -334,7 +380,13 @@ export class CreateSaleOrderComponent implements OnInit {
     this.invoiceForm.get('warehouseCode').setValue(warehouseCode);
     this.invoiceForm.get('salesPersonCode').setValue(salesPersonCode);
     this.selectedCustomer = currAccCode
-    this.invoiceForm.get('currAccCode').setValue(currAccCode);
+    if (this.processCode == 'R') {
+
+      this.invoiceForm.get('currAccCode').setValue(currAccCode);
+    } else {
+      this.invoiceForm.get('vendorCode').setValue(vendorCode);
+
+    }
     this.invoiceForm.get('taxTypeCode').setValue(taxTypeCode);
     this.invoiceForm.get('isReturn').setValue(isReturn);
 
@@ -358,8 +410,8 @@ export class CreateSaleOrderComponent implements OnInit {
     }
   }
 
-  async getCustomerList(): Promise<void> {
-    this.customerList = await this.warehouseService.getCustomerList('3');
+  async getCustomerList(request: string): Promise<void> {
+    this.customerList = await this.warehouseService.getCustomerList(request);
 
     // customerList2'yi Set yapısını kullanarak güncelliyoruz
     const updatedCustomerList = new Set(this.customerList.map(c => ({
@@ -416,7 +468,7 @@ export class CreateSaleOrderComponent implements OnInit {
     }
   }
 
-  formGenerator() {
+  product_formGenerator() {
     this.productForm = this.formBuilder.group({
       shelfNo: [null, [Validators.required, Validators.maxLength(10)]],
       barcode: [null, [Validators.required, Validators.minLength(5)]],
@@ -426,7 +478,7 @@ export class CreateSaleOrderComponent implements OnInit {
 
 
   }
-  formGenerator2() {
+  ws_formGenerator() {
     this.invoiceForm = this.formBuilder.group({
       officeCode: [null],
       warehouseCode: [null],
@@ -436,9 +488,19 @@ export class CreateSaleOrderComponent implements OnInit {
       taxTypeCode: [null],
 
     });
-
-
   }
+  bp_formGenerator() {
+    this.invoiceForm = this.formBuilder.group({
+      officeCode: [null],
+      warehouseCode: [null],
+      vendorCode: [null],
+      salesPersonCode: [null],
+      isReturn: [false],
+      taxTypeCode: [null],
+
+    });
+  }
+
   whichRowIsInvalid() {
     this.generalService.whichRowIsInvalid(this.productForm);
   }
@@ -560,19 +622,16 @@ export class CreateSaleOrderComponent implements OnInit {
         request.processId = this.newOrderNumber;
         request.itemCode = product_detail.itemCode;
         request.photoUrl = product_detail.photoUrl;
-        request.price = product_detail.price * ((100 - product_detail.taxRate) / 100);
-        request.discountedPrice = product_detail.price * ((100 - product_detail.taxRate) / 100);
+        request.price = product_detail.price
+        request.priceVI = product_detail.priceVI
         request.discountRate1 = 0;
         request.discountRate2 = 0;
         request.taxRate = product_detail.taxRate;
 
         // var mult = (1 + (request.taxRate / 100));
-        // var taxed_price = (request.discountedPrice * mult);
-        request.totalTaxedPrice = request.quantity * product_detail.price;
-        request.totalPrice = request.quantity *
-          (
-            (request.discountedPrice * ((100 - request.discountRate1) / 100)) - request.discountRate2
-          )
+        // var taxed_price = (request.priceVI * mult);
+        // request.totalTaxedPrice = request.quantity * product_detail.priceVI;
+        // request.totalPrice = request.quantity * product_detail.price
         var response = await this.orderService.addCollectedInvoiceProduct(request)
         if (response) {
           this.responseHandler(true, "Eklendi")
@@ -600,18 +659,16 @@ export class CreateSaleOrderComponent implements OnInit {
           request.processId = this.newOrderNumber;
           request.itemCode = product_detail.itemCode;
           request.photoUrl = product_detail.photoUrl;
-          request.price = product_detail.price;
-          request.discountedPrice = product_detail.price;
+          request.price = product_detail.price
+          request.priceVI = product_detail.priceVI
           request.discountRate1 = 0;
           request.discountRate2 = 0;
-          request.taxRate = 10;
+          request.taxRate = product_detail.taxRate;
 
-          var taxed_price = (request.discountedPrice * (1 + (request.taxRate / 100)));
-          request.totalTaxedPrice = request.quantity * taxed_price;
-          request.totalPrice = request.quantity *
-            (
-              (request.discountedPrice * ((100 - request.discountRate1) / 100)) - request.discountRate2
-            )
+          // var mult = (1 + (request.taxRate / 100));
+          // var taxed_price = (request.priceVI * mult);
+          // request.totalTaxedPrice = request.quantity * product_detail.priceVI;
+          // request.totalPrice = request.quantity * product_detail.price
           var response = await this.orderService.addCollectedInvoiceProduct(request)
           if (response) {
             this.responseHandler(true, "Eklendi")

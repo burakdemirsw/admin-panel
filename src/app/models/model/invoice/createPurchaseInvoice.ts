@@ -18,6 +18,7 @@ export class InvoiceProcess {
   id: string; // Guid in TypeScript is represented as a string
   processCode: string;
   currAccCode: string;
+  vendorCode: string;
   salesPersonCode: string;
   isReturn?: boolean;
   invoiceNumber?: string;
@@ -41,9 +42,9 @@ export class CollectedInvoiceProduct {
   processId: string;
   photoUrl: string;
   price: number;
-  discountedPrice: number;
-  totalPrice: number;
-  totalTaxedPrice: number;
+  priceVI: number;
+  // totalPrice: number;
+  // totalTaxedPrice: number;
   taxRate: number;
   discountRate1: number;
   discountRate2: number;
@@ -57,5 +58,7 @@ export class ProductDetail_VM {
   quantity: number;
   description: string;
   price: number;
+  priceVI: number;
+
   taxRate: number;
 }
