@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { OverlayOptions } from 'primeng/api';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
 import { CountProductRequestModel } from 'src/app/models/model/order/countProductRequestModel';
@@ -695,7 +696,7 @@ export class ShelfTransferRequestComponent implements OnInit {
   }
 
 
-  async addProduct(product: FastTransfer_VM) {
+  async addProduct(product) {
 
     //sladkaslşdkaşld
     var response = await this.productService.searchProduct3(product.barcode, null, product.shelfNo);
@@ -850,7 +851,7 @@ export class ShelfTransferRequestComponent implements OnInit {
 
           this.collectedProducts.push(transferModel);
           this.collectedProducts.reverse();
-          if (this.selectedButton != 4) {
+          if (true) {
             await this.getTransferRequestListModel(
               this.selectedButton.toString()
             );
@@ -902,7 +903,7 @@ export class ShelfTransferRequestComponent implements OnInit {
             }
             this.collectedProducts.push(transferModel);
             this.collectedProducts.reverse();
-            if (this.selectedButton != 4) {
+            if (true) {
               await this.getTransferRequestListModel(
                 this.selectedButton.toString()
               );
@@ -1031,15 +1032,25 @@ export class ShelfTransferRequestComponent implements OnInit {
     this.checkForm.get('shelfNo').setValue(null);
     this.checkForm.get('batchCode').setValue(null);
     this.checkForm.get('targetShelfNo').setValue(null);
-    if (this.currentPageType == "2") {//sadece çanta için
-      this.checkForm.get('shelfNo').setValue(this.lastCollectedProduct.shelfNo);
-      this.focusNextInput('barcode');
-    } else {
-      this.focusNextInput('shelfNo');
+
+    if (this.selectedButton != 4) {
+      if (this.currentPageType == "2") {//sadece çanta için
+        this.checkForm.get('shelfNo').setValue(this.lastCollectedProduct.shelfNo);
+        this.focusNextInput('barcode');
+      } else {
+        this.focusNextInput('shelfNo');
+      }
     }
+
     this.qrBarcodeUrl = null;
     this.shelfNumbers = 'RAFLAR:';
     this.calculateTotalQty();
   }
-
+  overlayOptions: OverlayOptions = {
+    appendTo: 'body',  // Example of setting where the overlay should be appended
+    autoZIndex: true,
+    baseZIndex: 1000,
+    style: { 'min-width': '400px' },  // Custom styles
+    styleClass: 'custom-overlay-class' // Custom CSS class
+  };
 }

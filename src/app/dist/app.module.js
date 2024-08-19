@@ -125,6 +125,7 @@ var shelf_component_1 = require("./components/Warehouse/shelf/shelf.component");
 var splitbutton_1 = require("primeng/splitbutton");
 var service_management_component_1 = require("./components/service-management/service-management.component");
 var pages_info_component_1 = require("./pages/pages-info/pages-info.component");
+var multiselect_1 = require("primeng/multiselect");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -230,6 +231,7 @@ var AppModule = /** @class */ (function () {
                 blockui_1.BlockUIModule,
                 radiobutton_1.RadioButtonModule,
                 panel_1.PanelModule,
+                multiselect_1.MultiSelectModule,
                 tabview_1.TabViewModule,
                 card_1.CardModule,
                 button_1.ButtonModule,

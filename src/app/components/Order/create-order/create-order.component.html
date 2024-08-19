@@ -91,20 +91,27 @@
                 type="button" (click)="getAllProducts()"></button>
               <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-refresh" label="Muadil Bul"
                 type="button" (click)="getsuggestedProducts(this.getProductsForm.value.barcode,true)"></button>
-              <button pButton pRipple class="p-button-rounded p-button-text" (onClick)="resetProductForm()"
-                icon="pi pi-trash" label="Barkodu Sil" type="reset"></button>
-              <button pButton pRipple class="p-button-rounded p-button-text" (click)="deleteAllPRoduct()"
-                icon="pi pi-trash" label="Formu Sil" type="button"></button>
+
+
             </p-inputGroup>
 
 
           </div>
         </form>
         <p-dialog header="Bulunan Ürünler" [(visible)]="findProductDialog" [style]="{ width: '100vw' }">
-          <p-table [styleClass]="'p-datatable-striped'" [value]="allProducts" [paginator]="true" [rows]="10"
-            (onFilter)="logFilteredData($event)" [tableStyle]="{ 'min-width': '50rem' }">
+          <p-table #dt2 [styleClass]="'p-datatable-striped'" [value]="allProducts" [paginator]="true" [rows]="10"
+            (onFilter)="logFilteredData($event)" [tableStyle]="{ 'min-width': '50rem' }"
+            [globalFilterFields]="['description','itemCode']">
 
+            <ng-template pTemplate="caption">
+              <div class="flex">
+                <p-iconField iconPosition="left" class="ml-auto">
 
+                  <input pInputText type="text" (input)="dt2.filterGlobal($any($event).target.value, 'contains')"
+                    placeholder="Ürün Adı / Stok Kodu" />
+                </p-iconField>
+              </div>
+            </ng-template>
             <ng-template pTemplate="header">
 
               <tr>
@@ -338,8 +345,8 @@
               <th scope="col">Envanter</th>
               <th scope="col">Ürün</th>
 
-              <th scope="col" style="cursor: pointer" (click)="deleteAllPRoduct()">
-                Tümünü Sil
+              <th scope="col">
+                Sil
               </th>
             </tr>
           </ng-template>
@@ -392,6 +399,7 @@
               <td>
                 <button pButton pRipple icon="pi pi-trash" type="button"
                   class="p-button-rounded p-button-text p-button-danger" (click)="deleteProduct(product)"></button>
+
               </td>
             </tr>
 
@@ -557,6 +565,10 @@
               <button pButton pRipple style="width: 100%" class="p-button p-button-text" label="İndirimi Sıfırla"
                 (click)="resetDiscount()" type="button"></button>
             </div>
+            <div class="col-md-6">
+              <button pButton pRipple style="width: 100%" class="p-button p-button-danger" label="Tüm Ürünleri Sil"
+                (click)="deleteAllPRoduct()" type="button"></button>
+            </div>
           </div>
         </form>
 
@@ -612,10 +624,11 @@
                 <form [formGroup]="createCustomerForm" (ngSubmit)="submitAddressForm(createCustomerForm.value)">
                   <div class="row mb-3">
                     <div class="col-md-6">
-                      <p-dropdown [virtualScroll]="true" [itemSize]="50" [style]="{'width': '100%'}"
-                        #currAccDescription_dropdown optionLabel="name" filter="true" filterBy="name"
-                        formControlName="currAccDescription" [options]="_selectableCustomers" placeholder="Müşteri"
-                        [showClear]="true" (onChange)="onDropdownChange($event.value)" [filterFunction]="customFilter">
+                      <p-dropdown scrollHeight="350px" [virtualScroll]="true" [itemSize]="50"
+                        [style]="{'width': '100%'}" #currAccDescription_dropdown optionLabel="name" filter="true"
+                        filterBy="name" formControlName="currAccDescription" [options]="_selectableCustomers"
+                        placeholder="Müşteri" [showClear]="true" (onChange)="onDropdownChange($event.value)"
+                        [filterFunction]="customFilter">
                       </p-dropdown>
 
                     </div>
@@ -833,10 +846,11 @@
                     <p-inputGroupAddon>
                       <!-- <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text" type="button"
       (click)=" this.subCustomerDialog = !this.subCustomerDialog "></button> -->
-                      <p-dropdown [virtualScroll]="true" [itemSize]="50" [style]="{'width': '50%'}"
+                      <p-dropdown scrollHeight="350px" [virtualScroll]="true" [itemSize]="50" [style]="{'width': '50%'}"
                         #subCurrAccDescription_dropdown formControlName="sc_Description" (click)="showPanel(3)"
-                        [options]="selectableSubCustomers" placeholder="Müşteri" [editable]="true" optionLabel="name"
-                        [showClear]="true" filterBy="name" filter="true">
+                        [options]="selectableSubCustomers" placeholder="Alt Müşteri" [editable]="true"
+                        optionLabel="name" [showClear]="true" filterBy="name" filter="true">
+
                       </p-dropdown>
 
                     </p-inputGroupAddon>

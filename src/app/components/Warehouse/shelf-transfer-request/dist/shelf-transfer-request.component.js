@@ -137,6 +137,13 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
         this.baglist = ['2', '4', '5', '6', '7', '8', '0'];
         this.qrBarcodeUrl = null;
         this.qrOperationModels = [];
+        this.overlayOptions = {
+            appendTo: 'body',
+            autoZIndex: true,
+            baseZIndex: 1000,
+            style: { 'min-width': '400px' },
+            styleClass: 'custom-overlay-class' // Custom CSS class
+        };
     }
     ShelfTransferRequestComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -912,7 +919,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
                         this.collectedProducts.push(transferModel);
                         this.collectedProducts.reverse();
-                        if (!(this.selectedButton != 4)) return [3 /*break*/, 12];
+                        if (!true) return [3 /*break*/, 12];
                         return [4 /*yield*/, this.getTransferRequestListModel(this.selectedButton.toString())];
                     case 11:
                         _a.sent();
@@ -954,7 +961,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         }
                         this.collectedProducts.push(transferModel);
                         this.collectedProducts.reverse();
-                        if (!(this.selectedButton != 4)) return [3 /*break*/, 19];
+                        if (!true) return [3 /*break*/, 19];
                         return [4 /*yield*/, this.getTransferRequestListModel(this.selectedButton.toString())];
                     case 18:
                         _a.sent();
@@ -1098,12 +1105,14 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
         this.checkForm.get('shelfNo').setValue(null);
         this.checkForm.get('batchCode').setValue(null);
         this.checkForm.get('targetShelfNo').setValue(null);
-        if (this.currentPageType == "2") { //sadece çanta için
-            this.checkForm.get('shelfNo').setValue(this.lastCollectedProduct.shelfNo);
-            this.focusNextInput('barcode');
-        }
-        else {
-            this.focusNextInput('shelfNo');
+        if (this.selectedButton != 4) {
+            if (this.currentPageType == "2") { //sadece çanta için
+                this.checkForm.get('shelfNo').setValue(this.lastCollectedProduct.shelfNo);
+                this.focusNextInput('barcode');
+            }
+            else {
+                this.focusNextInput('shelfNo');
+            }
         }
         this.qrBarcodeUrl = null;
         this.shelfNumbers = 'RAFLAR:';

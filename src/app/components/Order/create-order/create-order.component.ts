@@ -1095,7 +1095,9 @@ export class CreateOrderComponent implements OnInit {
 
 
   }
-
+  log(style) {
+    console.log(style)
+  }
   async addSubCustomer() {
     console.log(this.addSubCustomerForm.value);
     if (this.selectedCustomers.length === 0) {

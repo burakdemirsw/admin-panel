@@ -14,3 +14,7 @@
     overflow: auto;
     white-space: normal;
   }
+
+  ::ng-deep .p-multiselect {
+    max-width: 200px !important;
+  }

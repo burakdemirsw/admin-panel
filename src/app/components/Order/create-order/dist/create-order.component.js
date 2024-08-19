@@ -1274,6 +1274,9 @@ var CreateOrderComponent = /** @class */ (function () {
             });
         });
     };
+    CreateOrderComponent.prototype.log = function (style) {
+        console.log(style);
+    };
     CreateOrderComponent.prototype.addSubCustomer = function () {
         var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function () {

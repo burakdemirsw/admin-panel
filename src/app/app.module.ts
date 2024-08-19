@@ -116,6 +116,7 @@ import { ShelfComponent } from './components/Warehouse/shelf/shelf.component';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { ServiceManagementComponent } from './components/service-management/service-management.component';
 import { PagesInfoComponent } from './pages/pages-info/pages-info.component';
+import { MultiSelectModule } from 'primeng/multiselect';
 @NgModule({
 
   declarations: [
@@ -220,6 +221,7 @@ import { PagesInfoComponent } from './pages/pages-info/pages-info.component';
     BlockUIModule,
     RadioButtonModule,
     PanelModule,
+    MultiSelectModule,
     TabViewModule,
     CardModule,
     ButtonModule,
