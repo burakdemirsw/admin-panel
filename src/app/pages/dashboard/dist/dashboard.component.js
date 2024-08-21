@@ -45,7 +45,8 @@ exports.__esModule = true;
 exports.DashboardComponent = void 0;
 var core_1 = require("@angular/core");
 var DashboardComponent = /** @class */ (function () {
-    function DashboardComponent(headerService, elementRef, orderService) {
+    function DashboardComponent(generalService, headerService, elementRef, orderService) {
+        this.generalService = generalService;
         this.headerService = headerService;
         this.elementRef = elementRef;
         this.orderService = orderService;
@@ -218,6 +219,21 @@ var DashboardComponent = /** @class */ (function () {
                                 }
                             }
                         };
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    //------------------------- 21.08
+    DashboardComponent.prototype.routePage = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.generalService.generateGUID()];
+                    case 1:
+                        result = _a.sent();
+                        location.href = location.origin + "/create-order/quick-order/" + result;
                         return [2 /*return*/];
                 }
             });

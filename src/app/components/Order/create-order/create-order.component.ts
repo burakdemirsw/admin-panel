@@ -63,11 +63,19 @@ export class CreateOrderComponent implements OnInit {
   exchangeRate: ExchangeRate;
   isCollapsed: boolean = false;
   isCollapsed_2: boolean = false;
-  constructor(private headerService: HeaderService, private warehouseService: WarehouseService, private paymentService: PaymentService, private toasterService: ToasterService, private activatedRoute: ActivatedRoute,
-    private router: Router, private httpClientService: HttpClientService,
-    private generalService: GeneralService, private addressService: AddressService,
-    private googleDriveService: GoogleDriveService, private productService: ProductService,
-    private formBuilder: FormBuilder, private orderService: OrderService,
+  constructor(private headerService: HeaderService,
+    private warehouseService: WarehouseService,
+    private paymentService: PaymentService,
+    private toasterService: ToasterService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private httpClientService: HttpClientService,
+    private generalService: GeneralService,
+    private addressService: AddressService,
+    private googleDriveService: GoogleDriveService,
+    private productService: ProductService,
+    private formBuilder: FormBuilder,
+    private orderService: OrderService,
     private cargoService: CargoService) { }
 
   async ngOnInit() {
@@ -532,15 +540,18 @@ export class CreateOrderComponent implements OnInit {
     if (to === "bussinesCardPhotoUrl") {
 
       this.addSubCustomerForm.get("bussinesCardPhotoUrl").setValue(response.url);
+      this.createCustomerForm.get("bussinesCardPhotoUrl").setValue(response.url);
 
     } if (to === "stampPhotoUrl") {
 
       this.addSubCustomerForm.get("stampPhotoUrl").setValue(response.url);
+      this.createCustomerForm.get("stampPhotoUrl").setValue(response.url);
 
     }
     if (to === "cargoAddressPhotoUrl") {
 
       this.addSubCustomerForm.get("cargoAddressPhotoUrl").setValue(response.url);
+      this.createCustomerForm.get("stampPhotoUrl").setValue(response.url);
 
     }
 
@@ -641,7 +652,7 @@ export class CreateOrderComponent implements OnInit {
     }
 
   }
-
+  createCustomerDialog: boolean = false;
   updateProductDialog: boolean = false;
   suggestedProductsDialog: boolean = false;
   getCustomerDialog: boolean = false;
@@ -668,6 +679,9 @@ export class CreateOrderComponent implements OnInit {
     }
     if (dialogName === "updateProductDialog") {
       this.updateProductDialog = !this.updateProductDialog
+    }
+    if (dialogName === "createCustomerDialog") {
+      this.createCustomerDialog = !this.createCustomerDialog
     }
   }
   goToPage(index: number) {
@@ -927,11 +941,11 @@ export class CreateOrderComponent implements OnInit {
     });
 
 
-    this.createCustomerForm.get('phoneNumber').valueChanges.subscribe(async (value) => { //illeri getir
-      if (this.generalService.isNullOrEmpty(value)) {
-        this.createCustomerForm.get('phoneNumber').setValue('05')
-      }
-    });
+    // this.createCustomerForm.get('phoneNumber').valueChanges.subscribe(async (value) => { //illeri getir
+    //   if (this.generalService.isNullOrEmpty(value)) {
+    //     this.createCustomerForm.get('phoneNumber').setValue('05')
+    //   }
+    // });
 
 
     this.createCustomerForm.get('address_region').valueChanges.subscribe(async (value) => { //illeri getir

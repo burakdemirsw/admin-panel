@@ -4,31 +4,30 @@
     <!-- HEADER----------------------------------------------------------------------------------------------------->
 
     <div class="card mb-3">
-      <div class="card-body">
+      <div class="card-body p-4">
 
-        <div class="p-inputgroup p-4 justify-content-start" style="overflow-x: auto; white-space: nowrap;">
+        <div class="row mb-3">
 
-          <div style="text-align: left">
-            <button pButton pRipple class="p-button-rounded p-button-primary" icon="pi pi-search" label="Ürün Ara"
-              type="button" (click)="getAllProducts()"></button>
-          </div>
-          <div style="text-align: left">
+          <p-inputGroup>
+            <input pInputText type="search" id="barcode_product" placeholder="Barkod" [(ngModel)]="barcode"
+              (keydown.enter)="addProductFromInput(barcode)" />
+            <button pButton pRipple class="p-button-rounded p-button-primary" icon="pi pi-plus" label="Ekle"
+              type="button" (click)="addProductFromInput(barcode)"></button>
             <button pButton pRipple class="p-button-rounded p-button-primary" icon="pi pi-search" label="Müşteri Ara"
               type="button" (click)="getAllCustomers()"></button>
-          </div>
-          <div style="text-align: left">
+            <button pButton pRipple class="p-button-rounded p-button-primary" icon="pi pi-search" label="Müşteri Ekle"
+              type="button" (click)="createCustomerDialog =true"></button>
             <button *ngIf="addedProducts.length>0" pButton pRipple class="p-button-rounded p-button-danger"
               (click)="deleteAllPRoduct()" icon="pi pi-trash" label="Tüm Ürünleri Sil" type="button"></button>
-          </div>
-          <div style="text-align: left">
+
+            <button pButton pRipple class="p-button-rounded p-button-primary" icon="pi pi-search" label="Ürün Ara"
+              type="button" (click)="getAllProducts(true)"></button>
             <button *ngIf="this.proposal" pButton pRipple class="p-button-rounded p-button-danger"
               (click)="deleteProposal(this.proposal.id)" icon="pi pi-trash" label="Teklifi Sil" type="button"></button>
-          </div>
-
+          </p-inputGroup>
 
 
         </div>
-
 
 
 
@@ -113,16 +112,16 @@
 
               <td class="scrollable-td">{{ product.description.substring(0,15) }}</td>
 
-              <td>{{ product.quantity }}</td>
-              <td>{{ product.price }}</td>
+              <td style="cursor: pointer;" (click)="openUpdateDialog(product)">{{ product.quantity }} </td>
+              <td style="cursor: pointer;" (click)="openUpdateDialog(product)">{{ product.price }}</td>
 
-              <td>{{ product.discountRate1 }}</td>
-              <td>{{ product.discountRate2 }}</td>
+              <td style="cursor: pointer;" (click)="openUpdateDialog(product)">{{ product.discountRate1 }}</td>
+              <td style="cursor: pointer;" (click)="openUpdateDialog(product)">{{ product.discountRate2 }}</td>
 
-              <td>{{ product.discountedPrice }}</td>
-              <td>{{ product.totalPrice }}</td>
-              <td>{{ product.taxRate }}</td>
-              <td>{{ product.totalTaxedPrice }}</td>
+              <td style="cursor: pointer;" (click)="openUpdateDialog(product)">{{ product.discountedPrice }}</td>
+              <td style="cursor: pointer;" (click)="openUpdateDialog(product)">{{ product.totalPrice }}</td>
+              <td style="cursor: pointer;" (click)="openUpdateDialog(product)">{{ product.taxRate }}</td>
+              <td style="cursor: pointer;" (click)="openUpdateDialog(product)">{{ product.totalTaxedPrice }}</td>
 
 
               <td>
@@ -133,6 +132,10 @@
                     (click)="openUpdateDialog(product)"></button>
                   <button pButton pRipple icon="pi pi-refresh" type="button" class="p-button-rounded p-button-text"
                     (click)="refreshProposalProduct(product)"></button>
+                  <p-fileUpload mode="basic" chooseIcon="pi pi-upload" name="demo[]" accept="image/*"
+                    (onSelect)="onUpload_2($event,product)" maxFileSize="1000000" />
+                  <!-- <button pButton pRipple icon="pi pi-plus" type="button" class="p-button-rounded p-button-text"
+                       (click)="uploadProductPhoto(product)"></button> -->
                 </div>
               </td>
 
@@ -157,6 +160,10 @@
           [style]="{width: '300px'}" (ngSubmit)="updateProposalProduct(this.selectedProduct)">
           <form [formGroup]="updateProductForm">
             <div class="p-fluid">
+              <div class="p-field">
+                <label for="price">Ürün Adı</label>
+                <input id="price" type="text" pInputText formControlName="description">
+              </div>
               <div class="p-field">
                 <label for="price">Fiyat</label>
                 <input id="price" type="number" pInputText formControlName="price">
@@ -332,7 +339,8 @@
           <tr>
 
             <td>
-              <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true">
+              <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true"
+                appReferrerPolicy="no-referrer">
               </p-image>
             </td>
             <td>{{ product.brand }}</td>
@@ -354,7 +362,186 @@
         </ng-template>
       </p-table>
     </p-dialog>
+    <!-- MÜŞTERİ EKLE----------------------------------------------------------------------------------------------------->
+
+    <p-dialog header="Müşteri Ekle" [(visible)]="createCustomerDialog" [style]="{ width: '80vw' }">
+      <form [formGroup]="createCustomerForm">
+        <div class="row mb-3">
+          <div class="col-md-12">
+
+            <input pInputText type="text" class="form-control" id="currAccDescription" placeholder="Firma"
+              formControlName="currAccDescription" />
+
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <input maxlength="11" pInputText placeholder="Telefon Numarası *" type="text" class="form-control"
+              id="phoneNumber" placeholder="(05XX XXX XX XX)" formControlName="phoneNumber" />
+          </div>
+        </div>
+        <div>
+          <div class="row mb-3" *ngIf="this.createCustomerForm.value.stampPhotoUrl">
+            <p-image src="{{ this.createCustomerForm.value.stampPhotoUrl }}" alt="Image" width="350" [preview]="true" />
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-12">
+              <div class="form-group">
+                <input pInputText placeholder="Kaşe Fotoğraf Yolu" type="text" class="form-control" style="width: 100%"
+                  id="stampPhotoUrl" formControlName="stampPhotoUrl" hidden />
+              </div>
+              <div class="input-group mb-3">
+                <div class="fileUpload">
+                  <input type="file" class="upload" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01"
+                    (change)="onUpload($event, 'stampPhotoUrl')" />
+                  <span> <i class="fas fa-camera"></i></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="form-group">
+                <input type="text" pInputText placeholder="Kartvizit Fotoğraf Yolu" class="form-control"
+                  id="bussinesCardPhotoUrl" formControlName="bussinesCardPhotoUrl" hidden />
+              </div>
+              <div class="input-group mb-3">
+                <div class="fileUpload">
+                  <input type="file" class="upload" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01"
+                    (change)="onUpload($event, 'bussinesCardPhotoUrl')" />
+                  <span> <i class="fas fa-camera"></i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-3" *ngIf="this.createCustomerForm.value.stampPhotoUrl">
+            <div class="col-md-12">
+              <div class="row mb-3">
+                <p-image [appendTo]="'body'" src="{{ this.createCustomerForm.value.stampPhotoUrl }}" alt="Image"
+                  width="100%" height="100%" [preview]="true" />
+              </div>
+
+
+            </div>
+
+            <div class="col-md-12" *ngIf="this.createCustomerForm.value.bussinesCardPhotoUrl">
+              <div class="row mb-3">
+                <p-image [appendTo]="'body'" src="{{ this.createCustomerForm.value.bussinesCardPhotoUrl }}" alt="Image"
+                  width="100%" height="100%" [preview]="true" />
+              </div>
+            </div>
+          </div>
+
+
+          <div class="row mb-3">
+            <div class="col-md-12">
+              <label for="exampleInputEmail1">Mail</label>
+              <input type="text" class="form-control" id="mail" placeholder="Mail" formControlName="mail" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="address_country" class="label">Ülke</label>
+                <select class="form-select" id="address_country" formControlName="address_country" class="form-control">
+                  <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                  <option *ngFor="let country of _countries" value="{{ country.code }}">
+                    {{ country.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="address_region" class="label">Bölge</label>
+                <select class="form-select" id="address_region" formControlName="address_region" class="form-control">
+                  <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                  <option *ngFor="let region of _regions" value="{{ region.code }}">
+                    {{ region.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="address_province" class="label">il</label>
+                <select class="form-select" id="address_province" formControlName="address_province">
+                  <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                  <option *ngFor="let province of _provinces" value="{{ province.code }}">
+                    {{ province.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="address_district" class="label">Vergi Dairesi</label>
+                <select class="form-select" id="address_taxOffice" formControlName="address_taxOffice">
+                  <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                  <option *ngFor="let taxOffice of _taxOffices" value="{{ taxOffice.code }}">
+                    {{ taxOffice.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="address_district" class="label">ilçe</label>
+                <select class="form-select" id="address_district" formControlName="address_district">
+                  <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                  <option *ngFor="let district of _districts" value="{{ district.code }}">
+                    {{ district.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="address_description" class="label">Adres (ZORUNLUDUR)</label>
+                <input type="text" class="form-control" id="address_description" name="address_description" fullWidth
+                  formControlName="address_description" />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group mb-3">
+                <label for="address_postalCode" class="label">Posta Kodu</label>
+                <input type="text" id="address_postalCode" name="address_postalCode" fullWidth
+                  formControlName="address_postalCode" class="form-control" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <div class="form-group">
+              <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus" type="submit"
+                style="width: 100%" label="Müşteri Ekle" (click)="submitAddressForm(createCustomerForm.value)"></button>
+
+            </div>
+          </div>
+        </div>
+      </form>
+    </p-dialog>
     <!-- BULUNAN MÜŞTERİLER----------------------------------------------------------------------------------------------------->
+
     <p-dialog header="Bulunan Müşteriler" [(visible)]="findCustomerDialog" [style]="{ width: '100vw' }" modal="true">
       <p-table [styleClass]="'p-datatable-striped'" [value]="_selectableCustomers" [paginator]="true" [rows]="10"
         (onFilter)="logFilteredData($event)" [tableStyle]="{ 'min-width': '50rem' , 'minheight' : '100vw' }">
@@ -479,6 +666,13 @@
                   {{ this.proposal.currAccDescription == null ? 'MÜŞTERİ SEÇİNİZ' : this.proposal.currAccDescription.substring(0,15)}}
                 </td>
               </tr>
+
+              <tr>
+                <th scope="row">Ara Toplam</th>
+                <td>
+                  {{getTotal() }}
+                </td>
+              </tr>
               <tr>
                 <th scope="row">Dip İskonto (%)</th>
                 <td>%{{ this.proposal.discountRate1}}</td>
@@ -489,7 +683,7 @@
               </tr>
               <tr>
                 <th scope="row">Toplam</th>
-                <td>{{ getTotalPrice() | currency : "₺" }}</td>
+                <td>{{ getTotalPrice3() | currency : "₺" }}</td>
               </tr>
               <tr>
                 <th scope="row">KDV</th>
@@ -559,9 +753,11 @@
     </div>
     <div class="card" *ngIf="addedProducts.length<=0">
       <div class="card-body" style="text-align: center;">
-        @if(!this.proposal.currAccDescription && this.addedProducts.length <= 0){ <h1 class="card-title"> Lütfen Ürün ve
+        @if(!this.proposal.currAccDescription && this.addedProducts.length <= 0){ <h1 class="card-title"> Lütfen Ürün
+          ve
           Müşteri Seçiniz</h1>
-          }@else if (this.proposal.currAccDescription && this.addedProducts.length <= 0){ <h1 class="card-title"> Lütfen
+          }@else if (this.proposal.currAccDescription && this.addedProducts.length <= 0){ <h1 class="card-title">
+            Lütfen
             Ürün Ekleyiniz</h1>
 
             }@else if (!this.proposal.currAccDescription && this.addedProducts.length > 0){ <h1 class="card-title">

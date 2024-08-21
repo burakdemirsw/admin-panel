@@ -36,21 +36,26 @@
           style="width: 100%; height: 10%; margin-bottom: 20px"
         /> -->
           <div class="row">
+            <div class="col-md-6">
+              <div class="card shadow-sm">
+                <div class="card-body text-center">
+                  <h5 class="card-title">Sipariş Ver</h5>
+                  <a class="btn btn-primary" (click)="routePage()"> Sipariş Oluştur</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card shadow-sm">
+                <div class="card-body text-center">
+                  <h5 class="card-title">Teklif Ver</h5>
+                  <a [routerLink]="['/create-proposal']" class="btn btn-primary">Teklif Oluştur</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
             <div class="col-xxl-4 col-md-6">
               <div class="card info-card sales-card">
-                <!-- <div class="filter">
-                <a class="icon" data-bs-toggle="dropdown"
-                  ><i class="bi bi-three-dots"></i
-                ></a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                  <li class="dropdown-header text-start">
-                    <h6>Filtrele</h6>
-                  </li>
-                  <li><a class="dropdown-item">7 Gün</a></li>
-                  <li><a class="dropdown-item">Bu Ay</a></li>
-                  <li><a class="dropdown-item">Bu Yıl</a></li>
-                </ul>
-              </div> -->
                 <div class="card-body">
                   <h5 class="card-title">Satışlar <span>| 7 Gün</span></h5>
                   <div class="d-flex align-items-center">

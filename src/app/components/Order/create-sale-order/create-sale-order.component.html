@@ -32,7 +32,8 @@
                   </div>
                   <div class="row mb-3">
                     <p-dropdown placeholder="Müşteri" formControlName="currAccCode" [options]="customerList2"
-                      [(ngModel)]="selectedCustomer" optionLabel="name" [filter]="true"></p-dropdown>
+                      [(ngModel)]="selectedCustomer" optionLabel="name" [filter]="true" virtualScroll="true"
+                      virtualScrollItemSize="50"></p-dropdown>
                   </div>
                   <div class="row mb-3">
                     <p-dropdown placeholder="Satış Elemanı" formControlName="salesPersonCode"

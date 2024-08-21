@@ -45,26 +45,24 @@ exports.__esModule = true;
 exports.CreateProposalComponent = void 0;
 var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
+var createCustomer_CM_1 = require("src/app/models/model/order/createCustomer_CM");
 var getCustomerList_CM_1 = require("src/app/models/model/order/getCustomerList_CM");
 var nebimOrder_1 = require("src/app/models/model/order/nebimOrder");
 var proposalProduct_1 = require("src/app/models/model/product/proposalProduct");
 var product_service_1 = require("src/app/services/admin/product.service");
 var CreateProposalComponent = /** @class */ (function () {
-    function CreateProposalComponent(headerService, warehouseService, paymentService, toasterService, activatedRoute, router, httpClientService, generalService, addressService, googleDriveService, productService, formBuilder, orderService, cargoService) {
+    function CreateProposalComponent(headerService, warehouseService, toasterService, activatedRoute, router, generalService, googleDriveService, productService, formBuilder, orderService, addressService) {
         this.headerService = headerService;
         this.warehouseService = warehouseService;
-        this.paymentService = paymentService;
         this.toasterService = toasterService;
         this.activatedRoute = activatedRoute;
         this.router = router;
-        this.httpClientService = httpClientService;
         this.generalService = generalService;
-        this.addressService = addressService;
         this.googleDriveService = googleDriveService;
         this.productService = productService;
         this.formBuilder = formBuilder;
         this.orderService = orderService;
-        this.cargoService = cargoService;
+        this.addressService = addressService;
         this.selectedCustomers = [];
         this.selectedProducts = [];
         this.selectedAddresses = [];
@@ -103,6 +101,22 @@ var CreateProposalComponent = /** @class */ (function () {
         this.phones = [];
         this._descriptions = [];
         this.docCurrencyCodes = [];
+        //------------------------------FOTOĞRAF EKLEME KODLARI
+        this.selectedFiles_2 = [];
+        this.createCustomerDialog = false;
+        this.selectedFiles = [];
+        this.countries = [];
+        this.provinces = [];
+        this.districts = [];
+        this.regions = [];
+        this.taxOffices = [];
+        this.updated_districts = [];
+        this._regions = [];
+        this._taxOffices = [];
+        this._countries = [];
+        this._provinces = [];
+        this._districts = [];
+        this._neighborhoods = [];
     }
     CreateProposalComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -111,8 +125,8 @@ var CreateProposalComponent = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         this.createUpdateProductForm();
-                        // this.createGetCustomerForm();
-                        // this.createGetProductForm();
+                        this.createCustomerFormMethod();
+                        this.getAddresses();
                         this.orderType = true;
                         this.pageTitle = "Teklif Oluştur";
                         return [4 /*yield*/, this.getProposalProducts()];
@@ -148,6 +162,7 @@ var CreateProposalComponent = /** @class */ (function () {
     };
     CreateProposalComponent.prototype.createUpdateProductForm = function () {
         this.updateProductForm = this.formBuilder.group({
+            description: [null, forms_1.Validators.required],
             price: [null, forms_1.Validators.required],
             quantity: [null, forms_1.Validators.required],
             discountRate1: [null, forms_1.Validators.required],
@@ -220,7 +235,7 @@ var CreateProposalComponent = /** @class */ (function () {
             this.toasterService.error(error.message);
         }
     };
-    CreateProposalComponent.prototype.getAllProducts = function () {
+    CreateProposalComponent.prototype.getAllProducts = function (showDialog) {
         return __awaiter(this, void 0, void 0, function () {
             var _a;
             return __generator(this, function (_b) {
@@ -235,7 +250,9 @@ var CreateProposalComponent = /** @class */ (function () {
                     case 2:
                         this.toasterService.success('Tüm Ürünler Getirildi');
                         this.mapProducts(this.allProducts);
-                        this.openDialog('findProductDialog');
+                        if (showDialog) {
+                            this.openDialog('findProductDialog');
+                        }
                         return [2 /*return*/];
                 }
             });
@@ -397,6 +414,27 @@ var CreateProposalComponent = /** @class */ (function () {
             });
         });
     };
+    CreateProposalComponent.prototype.addProductFromInput = function (barcode) {
+        return __awaiter(this, void 0, void 0, function () {
+            var product;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!(this.allProducts.length <= 0)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.getAllProducts(false)];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        product = this.allProducts.find(function (p) { return p.barcode == barcode || p.itemCode == barcode; });
+                        return [4 /*yield*/, this.addProduct(product)];
+                    case 3:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     CreateProposalComponent.prototype.deleteProposalProduct = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             var response;
@@ -426,6 +464,7 @@ var CreateProposalComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        product.description = this.updateProductForm.get('description').value;
                         product.discountedPrice = this.updateProductForm.get('price').value;
                         product.quantity = this.updateProductForm.get('quantity').value;
                         product.discountRate1 = this.updateProductForm.get('discountRate1').value; //yüzde
@@ -511,6 +550,7 @@ var CreateProposalComponent = /** @class */ (function () {
     };
     CreateProposalComponent.prototype.openUpdateDialog = function (product) {
         this.selectedProduct = product;
+        this.updateProductForm.get('description').setValue(this.selectedProduct.description);
         this.updateProductForm.get('price').setValue(this.selectedProduct.discountedPrice);
         this.updateProductForm.get('quantity').setValue(this.selectedProduct.quantity);
         this.updateProductForm.get('discountRate1').setValue(this.selectedProduct.discountRate1);
@@ -692,6 +732,7 @@ var CreateProposalComponent = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         this.proposal.currAccDescription = customer.currAccDescription;
+                        this.proposal.currAccCode = customer.currAccCode;
                         return [4 /*yield*/, this.updatePropoosal(this.proposal)];
                     case 1:
                         _a.sent();
@@ -713,10 +754,20 @@ var CreateProposalComponent = /** @class */ (function () {
         // }
     };
     //---------------------------------------------------- TOTAL FUNCS
+    CreateProposalComponent.prototype.getTotalPrice3 = function () {
+        var number = this.addedProducts.reduce(function (acc, product) { return acc + product.totalPrice; }, 0);
+        number = ((number * ((100 - this.proposal.discountRate1) / 100)) - this.proposal.discountRate2);
+        if (number.toString().includes('.')) {
+            return Number(number);
+        }
+        else {
+            return number;
+        }
+    };
     CreateProposalComponent.prototype.getTotalPrice = function () {
         var number = this.addedProducts.reduce(function (acc, product) { return acc + product.totalPrice; }, 0);
         if (number.toString().includes('.')) {
-            return Number(number.toString().split('.')[0]);
+            return Number(number);
         }
         else {
             return number;
@@ -730,6 +781,7 @@ var CreateProposalComponent = /** @class */ (function () {
         return this.addedProducts.reduce(function (acc, product) { return acc + product.quantity; }, 0);
     };
     CreateProposalComponent.prototype.getTotalTax = function () {
+        return this.getTotalPrice2() - this.getTotalPrice3();
         return this.addedProducts.reduce(function (acc, product) { return acc + (product.totalPrice * (product.taxRate / 100)); }, 0);
     };
     CreateProposalComponent.prototype.getTotal = function () {
@@ -748,6 +800,267 @@ var CreateProposalComponent = /** @class */ (function () {
         else {
             return number;
         }
+    };
+    //----------------------------MÜŞTERİ KODLARI
+    CreateProposalComponent.prototype.onUpload_2 = function (event, product) {
+        return __awaiter(this, void 0, void 0, function () {
+            var files, i, selectedFile;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.selectedProduct = product;
+                        this.selectedFiles_2 = [];
+                        files = event.currentFiles;
+                        i = 0;
+                        _a.label = 1;
+                    case 1:
+                        if (!(i < files.length)) return [3 /*break*/, 4];
+                        selectedFile = files[i];
+                        this.selectedFiles.push(selectedFile);
+                        this.toasterService.success("İşlem Başarılı");
+                        return [4 /*yield*/, this.addPicture_2(selectedFile, product)];
+                    case 2:
+                        _a.sent();
+                        _a.label = 3;
+                    case 3:
+                        i++;
+                        return [3 /*break*/, 1];
+                    case 4:
+                        event.target.value = "";
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CreateProposalComponent.prototype.addPicture_2 = function (file, product) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response, _i, _a, p;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, this.googleDriveService.addPicture(file)];
+                    case 1:
+                        response = _b.sent();
+                        _i = 0, _a = this.addedProducts;
+                        _b.label = 2;
+                    case 2:
+                        if (!(_i < _a.length)) return [3 /*break*/, 5];
+                        p = _a[_i];
+                        if (!(p.id === product.id)) return [3 /*break*/, 4];
+                        p.photoUrl = response.url;
+                        return [4 /*yield*/, this.productService.updateProposalProduct(product)];
+                    case 3:
+                        _b.sent();
+                        _b.label = 4;
+                    case 4:
+                        _i++;
+                        return [3 /*break*/, 2];
+                    case 5:
+                        console.log(response);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CreateProposalComponent.prototype.onUpload = function (event, to) {
+        return __awaiter(this, void 0, void 0, function () {
+            var files, i, selectedFile;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.selectedFiles = [];
+                        files = event.target.files;
+                        i = 0;
+                        _a.label = 1;
+                    case 1:
+                        if (!(i < files.length)) return [3 /*break*/, 4];
+                        selectedFile = files[i];
+                        this.selectedFiles.push(selectedFile);
+                        this.toasterService.success("İşlem Başarılı");
+                        return [4 /*yield*/, this.addPicture(selectedFile, to)];
+                    case 2:
+                        _a.sent();
+                        _a.label = 3;
+                    case 3:
+                        i++;
+                        return [3 /*break*/, 1];
+                    case 4:
+                        event.target.value = "";
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CreateProposalComponent.prototype.addPicture = function (file, to) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.googleDriveService.addPicture(file)];
+                    case 1:
+                        response = _a.sent();
+                        if (to === "bussinesCardPhotoUrl") {
+                            this.createCustomerForm.get("bussinesCardPhotoUrl").setValue(response.url);
+                        }
+                        if (to === "stampPhotoUrl") {
+                            this.createCustomerForm.get("stampPhotoUrl").setValue(response.url);
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CreateProposalComponent.prototype.submitAddressForm = function (formValue) {
+        return __awaiter(this, void 0, void 0, function () {
+            var request, response, customer;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.createCustomerForm.valid) return [3 /*break*/, 6];
+                        request = new createCustomer_CM_1.CreateCustomer_CM();
+                        request.currAccDescription = formValue.currAccDescription; //++
+                        request.mail = formValue.mail;
+                        request.phoneNumber = formValue.phoneNumber;
+                        request.firmDescription = formValue.currAccDescription;
+                        request.stampPhotoUrl = formValue.stampPhotoUrl;
+                        request.bussinesCardPhotoUrl = formValue.bussinesCardPhotoUrl;
+                        request.officeCode = 'M';
+                        request.warehouseCode = 'MD';
+                        if (!formValue.address_country) {
+                            request.address = null;
+                        }
+                        else {
+                            request.address.country = formValue.address_country;
+                            request.address.province = formValue.address_province;
+                            request.address.district = formValue.address_district;
+                            request.address.region = formValue.address_region;
+                            request.address.taxOffice = formValue.address_taxOffice;
+                            request.address.description = formValue.address_description;
+                            request.address.postalCode = formValue.address_postalCode;
+                        }
+                        return [4 /*yield*/, this.orderService.createCustomer(request)];
+                    case 1:
+                        response = _a.sent();
+                        if (!response.currAccCode) return [3 /*break*/, 5];
+                        return [4 /*yield*/, this.getAllCustomers()];
+                    case 2:
+                        _a.sent();
+                        customer = this._selectableCustomers.find(function (c) { return c.currAccCode == response.currAccCode; });
+                        if (!customer) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.addCustomer(customer)];
+                    case 3:
+                        _a.sent();
+                        this.toasterService.error("Müşteri Seçildi");
+                        this.createCustomerDialog = false;
+                        return [3 /*break*/, 5];
+                    case 4:
+                        this.toasterService.error("Müşteri Bulunamadı");
+                        _a.label = 5;
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
+                        this.generalService.whichRowIsInvalid(this.createCustomerForm);
+                        _a.label = 7;
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CreateProposalComponent.prototype.getAddresses = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var countries, regions;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.addressService.getAddress(1)];
+                    case 1:
+                        countries = _a.sent();
+                        // Ülkeleri döngüye alarak dönüştür ve _countries dizisine ekle
+                        this._countries = countries.map(function (b) {
+                            return { name: b.description, code: b.code };
+                        });
+                        return [4 /*yield*/, this.addressService.getAddress(2, "TR")];
+                    case 2:
+                        regions = _a.sent();
+                        // Region'ları döngüye alarak dönüştür ve _regions dizisine ekle
+                        this._regions = regions.map(function (b) {
+                            return { name: b.description, code: b.code };
+                        });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CreateProposalComponent.prototype.createCustomerFormMethod = function () {
+        var _this = this;
+        this.createCustomerForm = this.formBuilder.group({
+            office: [null],
+            warehouse: [null],
+            salesPersonCode: [null],
+            currAccDescription: [null, forms_1.Validators.required],
+            mail: [' ', forms_1.Validators.required],
+            phoneNumber: ['05', [forms_1.Validators.required]],
+            stampPhotoUrl: [null],
+            bussinesCardPhotoUrl: [null],
+            cargoAddressPhotoUrl: [null],
+            address_country: [null],
+            address_province: [null],
+            address_district: [null],
+            address_region: [null],
+            taxNumber: [null],
+            address_description: [null],
+            address_postalCode: [' '],
+            address_taxOffice: [null],
+            sc_Description: [null],
+            sc_mode: [false]
+        });
+        this.createCustomerForm.get('address_region').valueChanges.subscribe(function (value) { return __awaiter(_this, void 0, void 0, function () {
+            var _value, response;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _value = this.createCustomerForm.get('address_region').value;
+                        return [4 /*yield*/, this.addressService.getAddress(3, _value)];
+                    case 1:
+                        response = _a.sent();
+                        this.provinces = response;
+                        this._provinces = [];
+                        this.provinces.forEach(function (b) {
+                            var provinces = { name: b.description, code: b.code };
+                            _this._provinces.push(provinces);
+                        });
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        this.createCustomerForm.get('address_province').valueChanges.subscribe(function (value) { return __awaiter(_this, void 0, void 0, function () {
+            var _value, response, _value, response;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _value = this.createCustomerForm.get('address_province').value;
+                        return [4 /*yield*/, this.addressService.getAddress(4, _value)];
+                    case 1:
+                        response = _a.sent();
+                        this.districts = response;
+                        this._districts = [];
+                        this.districts.forEach(function (b) {
+                            var district = { name: b.description, code: b.code };
+                            _this._districts.push(district);
+                        });
+                        _value = this.createCustomerForm.get('address_province').value;
+                        return [4 /*yield*/, this.addressService.getAddress(5, _value)];
+                    case 2:
+                        response = _a.sent();
+                        this.taxOffices = response;
+                        this._taxOffices = [];
+                        this.taxOffices.forEach(function (b) {
+                            var taxOffice = { name: b.description, code: b.code };
+                            _this._taxOffices.push(taxOffice);
+                        });
+                        return [2 /*return*/];
+                }
+            });
+        }); });
     };
     __decorate([
         core_1.ViewChild('findCustomer', { static: false })

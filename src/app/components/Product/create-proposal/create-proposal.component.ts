@@ -3,22 +3,21 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Dropdown } from 'primeng/dropdown';
 import { SubCustomerList_VM } from 'src/app/models/model/customer/subCustomerList_VM';
+import { CreateCustomer_CM } from 'src/app/models/model/order/createCustomer_CM';
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
 import { CustomerAddress_VM, CustomerList_VM, GetCustomerList_CM } from 'src/app/models/model/order/getCustomerList_CM';
 import { Payment } from 'src/app/models/model/order/nebimOrder';
+import { Address_VM } from 'src/app/models/model/order/ViewModel/provinceVM';
 import { ProductList_VM } from 'src/app/models/model/product/productList_VM';
 import { ZTMSG_Proposal, ZTMSG_ProposalProduct } from 'src/app/models/model/product/proposalProduct';
 import { FastTransfer_VM } from 'src/app/models/model/warehouse/transferRequestListModel';
 import { AddressService } from 'src/app/services/admin/address.service';
-import { CargoService } from 'src/app/services/admin/cargo.service';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { OrderService } from 'src/app/services/admin/order.service';
-import { PaymentService } from 'src/app/services/admin/payment.service';
 import { BarcodeSearch_RM, ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { GoogleDriveService } from 'src/app/services/common/google-drive.service';
-import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 @Component({
@@ -58,18 +57,23 @@ export class CreateProposalComponent implements OnInit {
   updateProductForm: FormGroup;
   discountForm: FormGroup;
   getProductsForm: FormGroup;
-  constructor(private headerService: HeaderService, private warehouseService: WarehouseService, private paymentService: PaymentService, private toasterService: ToasterService, private activatedRoute: ActivatedRoute,
-    private router: Router, private httpClientService: HttpClientService,
-    private generalService: GeneralService, private addressService: AddressService,
-    private googleDriveService: GoogleDriveService, private productService: ProductService,
-    private formBuilder: FormBuilder, private orderService: OrderService,
-    private cargoService: CargoService) { }
+  constructor(private headerService: HeaderService,
+    private warehouseService: WarehouseService,
+    private toasterService: ToasterService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private generalService: GeneralService,
+    private googleDriveService: GoogleDriveService,
+    private productService: ProductService,
+    private formBuilder: FormBuilder,
+    private orderService: OrderService,
+    private addressService: AddressService
+  ) { }
 
   async ngOnInit() {
     this.createUpdateProductForm()
-    // this.createGetCustomerForm();
-    // this.createGetProductForm();
-
+    this.createCustomerFormMethod()
+    this.getAddresses();
     this.orderType = true;
     this.pageTitle = "Teklif Oluştur"
 
@@ -91,6 +95,8 @@ export class CreateProposalComponent implements OnInit {
   }
   createUpdateProductForm() {
     this.updateProductForm = this.formBuilder.group({
+      description: [null, Validators.required],
+
       price: [null, Validators.required],
       quantity: [null, Validators.required],
       discountRate1: [null, Validators.required],
@@ -173,7 +179,7 @@ export class CreateProposalComponent implements OnInit {
 
 
   //--------------------------------------------------------------------------- TEKLİF KODLAR
-
+  barcode: string;
   proposalId: number;
   brands: any[] = []
   itemCodes: any[] = []
@@ -202,14 +208,17 @@ export class CreateProposalComponent implements OnInit {
 
   }
 
-  async getAllProducts() {
+  async getAllProducts(showDialog: boolean) {
     if (this.allProducts.length == 0) {
       this.allProducts = await this.productService.searchProduct5();
 
     }
     this.toasterService.success('Tüm Ürünler Getirildi')
     this.mapProducts(this.allProducts);
-    this.openDialog('findProductDialog');
+    if (showDialog) {
+
+      this.openDialog('findProductDialog');
+    }
   }
 
   mapProducts(data: FastTransfer_VM[]) {
@@ -339,6 +348,14 @@ export class CreateProposalComponent implements OnInit {
 
 
   }
+  async addProductFromInput(barcode) {
+
+    if (this.allProducts.length <= 0) {
+      await this.getAllProducts(false);
+    }
+    var product = this.allProducts.find(p => p.barcode == barcode || p.itemCode == barcode)
+    await this.addProduct(product);
+  }
 
   async deleteProposalProduct(id: number) {
 
@@ -352,6 +369,7 @@ export class CreateProposalComponent implements OnInit {
     }
   }
   async updateProposalProduct(product: ZTMSG_ProposalProduct) {
+    product.description = this.updateProductForm.get('description').value;
     product.discountedPrice = this.updateProductForm.get('price').value;
     product.quantity = this.updateProductForm.get('quantity').value;
     product.discountRate1 = this.updateProductForm.get('discountRate1').value; //yüzde
@@ -410,6 +428,7 @@ export class CreateProposalComponent implements OnInit {
   selectedProduct: ZTMSG_ProposalProduct;
   openUpdateDialog(product: ZTMSG_ProposalProduct) {
     this.selectedProduct = product;
+    this.updateProductForm.get('description').setValue(this.selectedProduct.description)
     this.updateProductForm.get('price').setValue(this.selectedProduct.discountedPrice)
     this.updateProductForm.get('quantity').setValue(this.selectedProduct.quantity)
     this.updateProductForm.get('discountRate1').setValue(this.selectedProduct.discountRate1)
@@ -546,6 +565,7 @@ export class CreateProposalComponent implements OnInit {
   }
   async addCustomer(customer: CustomerList_VM) {
     this.proposal.currAccDescription = customer.currAccDescription;
+    this.proposal.currAccCode = customer.currAccCode;
     await this.updatePropoosal(this.proposal);
     this.findCustomerDialog = false;
   }
@@ -568,10 +588,20 @@ export class CreateProposalComponent implements OnInit {
 
   //---------------------------------------------------- TOTAL FUNCS
 
+  getTotalPrice3() {
+    var number = this.addedProducts.reduce((acc, product) => acc + product.totalPrice, 0);
+    number = ((number * ((100 - this.proposal.discountRate1) / 100)) - this.proposal.discountRate2)
+    if (number.toString().includes('.')) {
+      return Number(number)
+    } else {
+      return number
+    }
+  }
+
   getTotalPrice() {
     var number = this.addedProducts.reduce((acc, product) => acc + product.totalPrice, 0);
     if (number.toString().includes('.')) {
-      return Number(number.toString().split('.')[0])
+      return Number(number)
     } else {
       return number
     }
@@ -585,6 +615,9 @@ export class CreateProposalComponent implements OnInit {
   }
 
   getTotalTax(): number {
+
+
+    return this.getTotalPrice2() - this.getTotalPrice3();
     return this.addedProducts.reduce((acc, product) => acc + (product.totalPrice * (product.taxRate / 100)), 0);
   }
   getTotal(): number {
@@ -603,5 +636,207 @@ export class CreateProposalComponent implements OnInit {
     } else {
       return number
     }
+  }
+
+  //------------------------------FOTOĞRAF EKLEME KODLARI
+  selectedFiles_2: File[] = [];
+  //----------------------------MÜŞTERİ KODLARI
+
+  async onUpload_2(event: any, product: ZTMSG_ProposalProduct) {
+    this.selectedProduct = product;
+    this.selectedFiles_2 = [];
+    // this.toasterService.info(to);
+    const files: FileList = event.currentFiles;
+    for (let i = 0; i < files.length; i++) {
+      const selectedFile: File = files[i];
+      this.selectedFiles.push(selectedFile);
+      this.toasterService.success("İşlem Başarılı");
+      await this.addPicture_2(selectedFile, product);
+    }
+    event.target.value = "";
+  }
+
+  async addPicture_2(file: File, product: ZTMSG_ProposalProduct) {
+    const response = await this.googleDriveService.addPicture(file);
+    for (const p of this.addedProducts) {
+      if (p.id === product.id) {
+        p.photoUrl = response.url;
+        await this.productService.updateProposalProduct(product);
+      }
+    }
+    console.log(response);
+  }
+
+  createCustomerDialog: boolean = false;
+  createCustomerForm: FormGroup;
+  selectedFiles: File[] = [];
+
+  addressForm: FormGroup
+  countries: Address_VM[] = []
+  provinces: Address_VM[] = []
+  districts: Address_VM[] = []
+  regions: Address_VM[] = []
+  taxOffices: Address_VM[] = []
+  updated_districts: Address_VM[] = []
+  _regions: any[] = []
+  _taxOffices: any = []
+  _countries: any[] = []
+  _provinces: any[] = []
+  _districts: any[] = []
+  _neighborhoods: any[] = []
+
+
+
+  async onUpload(event: any, to: string) {
+    this.selectedFiles = [];
+    // this.toasterService.info(to);
+    const files: FileList = event.target.files;
+    for (let i = 0; i < files.length; i++) {
+      const selectedFile: File = files[i];
+      this.selectedFiles.push(selectedFile);
+      this.toasterService.success("İşlem Başarılı");
+      await this.addPicture(selectedFile, to);
+    }
+    event.target.value = "";
+  }
+
+  async addPicture(file: File, to: string) {
+    var response = await this.googleDriveService.addPicture(file);
+
+    if (to === "bussinesCardPhotoUrl") {
+
+      this.createCustomerForm.get("bussinesCardPhotoUrl").setValue(response.url);
+
+    } if (to === "stampPhotoUrl") {
+
+      this.createCustomerForm.get("stampPhotoUrl").setValue(response.url);
+
+    }
+  }
+  async submitAddressForm(formValue: any) {
+    // eğer form geçerli ise **
+    if (this.createCustomerForm.valid) {
+      var request: CreateCustomer_CM = new CreateCustomer_CM();
+      request.currAccDescription = formValue.currAccDescription; //++
+      request.mail = formValue.mail;
+      request.phoneNumber = formValue.phoneNumber;
+      request.firmDescription = formValue.currAccDescription;
+      request.stampPhotoUrl = formValue.stampPhotoUrl;
+      request.bussinesCardPhotoUrl = formValue.bussinesCardPhotoUrl;
+      request.officeCode = 'M'
+      request.warehouseCode = 'MD'
+
+      if (!formValue.address_country) {
+        request.address = null
+      } else {
+        request.address.country = formValue.address_country;
+        request.address.province = formValue.address_province;
+        request.address.district = formValue.address_district;
+        request.address.region = formValue.address_region;
+        request.address.taxOffice = formValue.address_taxOffice;
+        request.address.description = formValue.address_description;
+        request.address.postalCode = formValue.address_postalCode;
+      }
+      var response = await this.orderService.createCustomer(request);
+      if (response.currAccCode) {
+        await this.getAllCustomers();
+        var customer = this._selectableCustomers.find(c => c.currAccCode == response.currAccCode);
+
+        if (customer) {
+          await this.addCustomer(customer);
+          this.toasterService.error("Müşteri Seçildi")
+          this.createCustomerDialog = false;
+
+        } else {
+          this.toasterService.error("Müşteri Bulunamadı")
+        }
+
+
+      }
+    } else {
+      this.generalService.whichRowIsInvalid(this.createCustomerForm)
+    }
+
+  }
+
+  async getAddresses() {
+    // Ülkelerin adres bilgilerini al
+    var countries = await this.addressService.getAddress(1);
+    // Ülkeleri döngüye alarak dönüştür ve _countries dizisine ekle
+    this._countries = countries.map((b) => {
+      return { name: b.description, code: b.code };
+    });
+
+    // Region'ların adres bilgilerini al (örneğin Türkiye)
+    var regions = await this.addressService.getAddress(2, "TR");
+    // Region'ları döngüye alarak dönüştür ve _regions dizisine ekle
+    this._regions = regions.map((b) => {
+      return { name: b.description, code: b.code };
+    });
+  }
+
+  createCustomerFormMethod() {
+    this.createCustomerForm = this.formBuilder.group({
+      office: [null],
+      warehouse: [null],
+      salesPersonCode: [null],
+      currAccDescription: [null, Validators.required],
+      mail: [' ', Validators.required],
+      phoneNumber: ['05', [Validators.required]],
+      stampPhotoUrl: [null],
+      bussinesCardPhotoUrl: [null],
+      cargoAddressPhotoUrl: [null],
+      address_country: [null],
+      address_province: [null],
+      address_district: [null],
+      address_region: [null],
+      taxNumber: [null],
+      address_description: [null],
+      address_postalCode: [' '],
+      address_taxOffice: [null],
+      sc_Description: [null],
+      sc_mode: [false],
+    });
+
+
+    this.createCustomerForm.get('address_region').valueChanges.subscribe(async (value) => { //illeri getir
+      var _value = this.createCustomerForm.get('address_region').value;
+      var response = await this.addressService.getAddress(3, _value)
+      this.provinces = response
+
+      this._provinces = [];
+      this.provinces.forEach((b) => {
+        var provinces: any = { name: b.description, code: b.code };
+        this._provinces.push(provinces);
+      });
+    });
+
+    this.createCustomerForm.get('address_province').valueChanges.subscribe(async (value) => { //ilçeleri getir
+      var _value = this.createCustomerForm.get('address_province').value;
+
+      var response = await this.addressService.getAddress(4, _value)
+      this.districts = response
+
+      this._districts = [];
+      this.districts.forEach((b) => {
+        var district: any = { name: b.description, code: b.code };
+        this._districts.push(district);
+      });
+
+
+      var _value = this.createCustomerForm.get('address_province').value;
+
+      var response = await this.addressService.getAddress(5, _value)
+      this.taxOffices = response
+
+      this._taxOffices = [];
+      this.taxOffices.forEach((b) => {
+        var taxOffice: any = { name: b.description, code: b.code };
+        this._taxOffices.push(taxOffice);
+      });
+
+
+    });
+
   }
 }

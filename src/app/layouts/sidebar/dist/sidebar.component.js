@@ -68,7 +68,7 @@ var SidebarComponent = /** @class */ (function () {
     };
     SidebarComponent.prototype.loadMenu = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var data, error_1;
+            var data, otherItems, ayarlarItem, _i, data_1, item, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -76,7 +76,27 @@ var SidebarComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.infoService.getStructuredMenu()];
                     case 1:
                         data = _a.sent();
-                        this.menuItems = data;
+                        otherItems = [];
+                        ayarlarItem = null;
+                        // Separate "Ayarlar" item from the rest
+                        for (_i = 0, data_1 = data; _i < data_1.length; _i++) {
+                            item = data_1[_i];
+                            if (item.label === 'Ayarlar') {
+                                ayarlarItem = item;
+                            }
+                            else if (item.label === 'Anasayfa') {
+                                continue;
+                            }
+                            else {
+                                otherItems.push(item);
+                            }
+                        }
+                        // Add "Ayarlar" item to the end if it exists
+                        if (ayarlarItem) {
+                            otherItems.push(ayarlarItem);
+                        }
+                        // Update menuItems with reordered list
+                        this.menuItems = otherItems;
                         return [3 /*break*/, 3];
                     case 2:
                         error_1 = _a.sent();

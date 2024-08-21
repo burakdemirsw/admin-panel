@@ -623,7 +623,7 @@
                 <hr />
                 <form [formGroup]="createCustomerForm" (ngSubmit)="submitAddressForm(createCustomerForm.value)">
                   <div class="row mb-3">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                       <p-dropdown scrollHeight="350px" [virtualScroll]="true" [itemSize]="50"
                         [style]="{'width': '100%'}" #currAccDescription_dropdown optionLabel="name" filter="true"
                         filterBy="name" formControlName="currAccDescription" [options]="_selectableCustomers"
@@ -633,208 +633,202 @@
 
                     </div>
                   </div>
-
-
-
-                  <div class="row mb-3" *ngIf="false">
-                    <div class="col-md-6">
-                      <input pInputText placeholder="Telefon Numarası *" type="text" class="form-control"
-                        id="phoneNumber" placeholder="(05XX XXX XX XX)" formControlName="phoneNumber" />
-                    </div>
+                  <div class="mt-3 mb-3">
+                    <button label="Yeni Müşteri Oluştur" pButton pRipple icon="pi pi-plus"
+                      class="p-button-rounded p-button-text" type="button"
+                      (click)="openDialog('createCustomerDialog')"></button>
                   </div>
+                  <p-dialog header="Müşteri Ekle" [(visible)]="createCustomerDialog" [style]="{ width: '80vw' }">
+                    <form [formGroup]="createCustomerForm">
+                      <div class="row mb-3">
+                        <div class="col-md-12">
+
+                          <input pInputText type="text" class="form-control" id="currAccDescription" placeholder="Firma"
+                            formControlName="currAccDescription" />
+
+                        </div>
+                      </div>
+                      <div class="row mb-3">
+                        <div class="col-md-12">
+                          <input maxlength="11" pInputText placeholder="Telefon Numarası *" type="text"
+                            class="form-control" id="phoneNumber" placeholder="(05XX XXX XX XX)"
+                            formControlName="phoneNumber" />
+                        </div>
+                      </div>
+                      <div>
+                        <div class="row mb-3" *ngIf="this.createCustomerForm.value.stampPhotoUrl">
+                          <p-image src="{{ this.createCustomerForm.value.stampPhotoUrl }}" alt="Image" width="350"
+                            [preview]="true" />
+                        </div>
+                        <div class="row mb-3">
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              <input pInputText placeholder="Kaşe Fotoğraf Yolu" type="text" class="form-control"
+                                style="width: 100%" id="stampPhotoUrl" formControlName="stampPhotoUrl" hidden />
+                            </div>
+                            <div class="input-group mb-3">
+                              <div class="fileUpload">
+                                <input type="file" class="upload" id="inputGroupFile01"
+                                  aria-describedby="inputGroupFileAddon01"
+                                  (change)="onUpload($event, 'stampPhotoUrl')" />
+                                <span> <i class="fas fa-camera"></i></span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              <input type="text" pInputText placeholder="Kartvizit Fotoğraf Yolu" class="form-control"
+                                id="bussinesCardPhotoUrl" formControlName="bussinesCardPhotoUrl" hidden />
+                            </div>
+                            <div class="input-group mb-3">
+                              <div class="fileUpload">
+                                <input type="file" class="upload" id="inputGroupFile01"
+                                  aria-describedby="inputGroupFileAddon01"
+                                  (change)="onUpload($event, 'bussinesCardPhotoUrl')" />
+                                <span> <i class="fas fa-camera"></i></span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row mb-3" *ngIf="this.createCustomerForm.value.stampPhotoUrl">
+                          <div class="col-md-12">
+                            <div class="row mb-3">
+                              <p-image [appendTo]="'body'" src="{{ this.createCustomerForm.value.stampPhotoUrl }}"
+                                alt="Image" width="100%" height="100%" [preview]="true" />
+                            </div>
+
+
+                          </div>
+
+                          <div class="col-md-12" *ngIf="this.createCustomerForm.value.bussinesCardPhotoUrl">
+                            <div class="row mb-3">
+                              <p-image [appendTo]="'body'"
+                                src="{{ this.createCustomerForm.value.bussinesCardPhotoUrl }}" alt="Image" width="100%"
+                                height="100%" [preview]="true" />
+                            </div>
+                          </div>
+                        </div>
+
+
+                        <div class="row mb-3">
+                          <div class="col-md-12">
+                            <label for="exampleInputEmail1">Mail</label>
+                            <input type="text" class="form-control" id="mail" placeholder="Mail"
+                              formControlName="mail" />
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              <label for="address_country" class="label">Ülke</label>
+                              <select class="form-select" id="address_country" formControlName="address_country"
+                                class="form-control">
+                                <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                                <option *ngFor="let country of _countries" value="{{ country.code }}">
+                                  {{ country.name }}
+                                </option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              <label for="address_region" class="label">Bölge</label>
+                              <select class="form-select" id="address_region" formControlName="address_region"
+                                class="form-control">
+                                <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                                <option *ngFor="let region of _regions" value="{{ region.code }}">
+                                  {{ region.name }}
+                                </option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              <label for="address_province" class="label">il</label>
+                              <select class="form-select" id="address_province" formControlName="address_province">
+                                <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                                <option *ngFor="let province of _provinces" value="{{ province.code }}">
+                                  {{ province.name }}
+                                </option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              <label for="address_district" class="label">Vergi Dairesi</label>
+                              <select class="form-select" id="address_taxOffice" formControlName="address_taxOffice">
+                                <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                                <option *ngFor="let taxOffice of _taxOffices" value="{{ taxOffice.code }}">
+                                  {{ taxOffice.name }}
+                                </option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              <label for="address_district" class="label">ilçe</label>
+                              <select class="form-select" id="address_district" formControlName="address_district">
+                                <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
+                                <option *ngFor="let district of _districts" value="{{ district.code }}">
+                                  {{ district.name }}
+                                </option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              <label for="address_description" class="label">Adres (ZORUNLUDUR)</label>
+                              <input type="text" class="form-control" id="address_description"
+                                name="address_description" fullWidth formControlName="address_description" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="form-group mb-3">
+                              <label for="address_postalCode" class="label">Posta Kodu</label>
+                              <input type="text" id="address_postalCode" name="address_postalCode" fullWidth
+                                formControlName="address_postalCode" class="form-control" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row mb-3">
+                        <div class="col-md-12">
+                          <div class="form-group">
+                            <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus"
+                              type="submit" style="width: 100%" label="Müşteri Ekle"
+                              (click)="submitAddressForm(createCustomerForm.value)"></button>
+
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </p-dialog>
+
+
                 </form>
 
-                <form [formGroup]="createCustomerForm" *ngIf="false">
-                  <div class="row">
-                    <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus" label="Detaylar"
-                      type="button" (click)="isCollapsed = !isCollapsed"></button>
-                  </div>
-                  <div *ngIf="isCollapsed">
-                    <div class="row mb-3" *ngIf="this.createCustomerForm.value.stampPhotoUrl">
-                      <p-image src="{{ this.createCustomerForm.value.stampPhotoUrl }}" alt="Image" width="350"
-                        [preview]="true" />
-                    </div>
-                    <div class="row" *ngIf="!this.createCustomerForm.value.stampPhotoUrl">
-                      <div class="col-md-3">
-                        <div class="input-group mb-3">
-                          <div class="fileUpload">
-                            <input type="file" class="upload" id="inputGroupFile01"
-                              aria-describedby="inputGroupFileAddon01" (change)="onUpload($event, 'stampPhotoUrl')" />
-                            <span> <i class="fas fa-camera"></i></span>
-                          </div>
-                        </div>
-                      </div>
 
-                      <div class="col-md-3">
-                        <div class="form-group">
-                          <input pInputText placeholder="Kaşe Fotoğraf Yolu" type="text" class="form-control"
-                            style="width: 100%" id="stampPhotoUrl" formControlName="stampPhotoUrl" />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row mb-3" *ngIf="this.createCustomerForm.value.bussinesCardPhotoUrl">
-                      <p-image src="{{
-                          this.createCustomerForm.value.bussinesCardPhotoUrl
-                        }}" alt="Image" width="350" [preview]="true" />
-                    </div>
-                    <div class="row" *ngIf="
-                        !this.createCustomerForm.value.bussinesCardPhotoUrl
-                      ">
-                      <div class="col-md-3">
-                        <div class="input-group mb-3">
-                          <div class="fileUpload">
-                            <input type="file" class="upload" id="inputGroupFile01"
-                              aria-describedby="inputGroupFileAddon01" (change)="
-                                onUpload($event, 'bussinesCardPhotoUrl')
-                              " />
-                            <span> <i class="fas fa-camera"></i></span>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <input type="text" pInputText placeholder="Kartvizit Fotoğraf Yolu" class="form-control"
-                          id="bussinesCardPhotoUrl" placeholder="Kartvizit Fotoğraf Yolu"
-                          formControlName="bussinesCardPhotoUrl" />
-                      </div>
-                    </div>
 
-                    <div class="row mb-3" *ngIf="this.createCustomerForm.value.cargoAddressPhotoUrl">
-                      <p-image src="{{
-                          this.createCustomerForm.value.cargoAddressPhotoUrl
-                        }}" alt="Image" width="350" [preview]="true" />
-                    </div>
-
-                    <div class="row" *ngIf="
-                        !this.createCustomerForm.value.cargoAddressPhotoUrl
-                      ">
-                      <div class="col-md-3">
-                        <div class="input-group mb-3">
-                          <div class="fileUpload">
-                            <input type="file" class="upload" id="inputGroupFile01"
-                              aria-describedby="inputGroupFileAddon01" (change)="
-                                onUpload($event, 'cargoAddressPhotoUrl')
-                              " />
-                            <span> <i class="fas fa-camera"></i></span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col-md-3">
-                        <div class="form-group">
-                          <input pInputText placeholder="Kargo Adres Fotoğraf Yolu" type="text" class="form-control"
-                            style="width: 100%" id="cargoAddressPhotoUrl" formControlName="cargoAddressPhotoUrl" />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row mb-3">
-                      <div class="col-md-6">
-                        <label for="exampleInputEmail1">Mail</label>
-                        <input type="text" class="form-control" id="mail" placeholder="Mail" formControlName="mail" />
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="address_country" class="label">Ülke</label>
-                          <select class="form-select" id="address_country" formControlName="address_country"
-                            class="form-control">
-                            <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                            <option *ngFor="let country of _countries" value="{{ country.code }}">
-                              {{ country.name }}
-                            </option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="address_region" class="label">Bölge</label>
-                          <select class="form-select" id="address_region" formControlName="address_region"
-                            class="form-control">
-                            <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                            <option *ngFor="let region of _regions" value="{{ region.code }}">
-                              {{ region.name }}
-                            </option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="address_province" class="label">il</label>
-                          <select class="form-select" id="address_province" formControlName="address_province">
-                            <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                            <option *ngFor="let province of _provinces" value="{{ province.code }}">
-                              {{ province.name }}
-                            </option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="address_district" class="label">Vergi Dairesi</label>
-                          <select class="form-select" id="address_taxOffice" formControlName="address_taxOffice">
-                            <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                            <option *ngFor="let taxOffice of _taxOffices" value="{{ taxOffice.code }}">
-                              {{ taxOffice.name }}
-                            </option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="address_district" class="label">ilçe</label>
-                          <select class="form-select" id="address_district" formControlName="address_district">
-                            <!-- Üst Kategori Seçenekleri Buraya Gelecek  -->
-                            <option *ngFor="let district of _districts" value="{{ district.code }}">
-                              {{ district.name }}
-                            </option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="address_description" class="label">Adres (ZORUNLUDUR)</label>
-                          <input type="text" class="form-control" id="address_description" name="address_description"
-                            fullWidth formControlName="address_description" />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group mb-3">
-                          <label for="address_postalCode" class="label">Posta Kodu</label>
-                          <input type="text" id="address_postalCode" name="address_postalCode" fullWidth
-                            formControlName="address_postalCode" class="form-control" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row mb-3">
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus" type="submit"
-                          style="width: 100%" label="Müşteri Ekle" [disabled]="selectedCustomers.length > 0"
-                          (click)="submitAddressForm(createCustomerForm.value)"></button>
-
-                      </div>
-                    </div>
-                  </div>
-                </form>
               </div>
             </div>
             <div class="row mb-3" *ngIf="invoiceType==true">
@@ -1034,8 +1028,8 @@
             </div>
             <div class="row mb-3">
               <div class="form-group">
-                <input pInputText class="form-control" type="text" placeholder="Telefon" id="phone" name="phone"
-                  fullWidth formControlName="phone" />
+                <input maxlength="11" pInputText class="form-control" type="text" placeholder="Telefon" id="phone"
+                  name="phone" fullWidth formControlName="phone" />
               </div>
             </div>
             <div class="row mb-3">
@@ -1228,7 +1222,7 @@
           </div>
           <div class="row">
             <div class="col-md-6 form-group">
-              <input pInputText placeholder="Alıcı Telefon Numarası" type="text" class="form-control"
+              <input maxlength="11" pInputText placeholder="Alıcı Telefon Numarası" type="text" class="form-control"
                 id="address_phoneNumber" name="address_phoneNumber" placeholder="(05XX XXX XX XX)" fullWidth
                 formControlName="address_phoneNumber" />
               <!-- <p style="font-weight: bold">

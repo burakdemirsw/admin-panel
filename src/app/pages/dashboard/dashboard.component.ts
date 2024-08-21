@@ -3,6 +3,7 @@ import { OrderService } from 'src/app/services/admin/order.service';
 import { Raport_CR } from '../../models/model/raport/raport_CR';
 import { HeaderService } from '../../services/admin/header.service';
 import { UserClientInfoResponse } from 'src/app/models/model/user/userRegister_VM';
+import { GeneralService } from 'src/app/services/admin/general.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,7 +12,7 @@ import { UserClientInfoResponse } from 'src/app/models/model/user/userRegister_V
 })
 export class DashboardComponent implements OnInit {
 
-  constructor(private headerService: HeaderService, private elementRef: ElementRef, private orderService: OrderService) { }
+  constructor(private generalService: GeneralService, private headerService: HeaderService, private elementRef: ElementRef, private orderService: OrderService) { }
   data: any;
 
   options: any;
@@ -181,4 +182,11 @@ export class DashboardComponent implements OnInit {
     };
 
   }
+
+  //------------------------- 21.08
+  async routePage() {
+    const result = await this.generalService.generateGUID()
+    location.href = location.origin + "/create-order/quick-order/" + result;
+  }
+
 }

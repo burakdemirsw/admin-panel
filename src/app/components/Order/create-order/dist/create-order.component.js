@@ -119,6 +119,7 @@ var CreateOrderComponent = /** @class */ (function () {
         //---------------------------------------------------- TEXT OKUMA
         this.extractedText = null;
         this.imageData = null;
+        this.createCustomerDialog = false;
         this.updateProductDialog = false;
         this.suggestedProductsDialog = false;
         this.getCustomerDialog = false;
@@ -692,12 +693,15 @@ var CreateOrderComponent = /** @class */ (function () {
                         response = _a.sent();
                         if (to === "bussinesCardPhotoUrl") {
                             this.addSubCustomerForm.get("bussinesCardPhotoUrl").setValue(response.url);
+                            this.createCustomerForm.get("bussinesCardPhotoUrl").setValue(response.url);
                         }
                         if (to === "stampPhotoUrl") {
                             this.addSubCustomerForm.get("stampPhotoUrl").setValue(response.url);
+                            this.createCustomerForm.get("stampPhotoUrl").setValue(response.url);
                         }
                         if (to === "cargoAddressPhotoUrl") {
                             this.addSubCustomerForm.get("cargoAddressPhotoUrl").setValue(response.url);
+                            this.createCustomerForm.get("stampPhotoUrl").setValue(response.url);
                         }
                         return [2 /*return*/];
                 }
@@ -782,6 +786,9 @@ var CreateOrderComponent = /** @class */ (function () {
         }
         if (dialogName === "updateProductDialog") {
             this.updateProductDialog = !this.updateProductDialog;
+        }
+        if (dialogName === "createCustomerDialog") {
+            this.createCustomerDialog = !this.createCustomerDialog;
         }
     };
     CreateOrderComponent.prototype.goToPage = function (index) {
@@ -1070,14 +1077,11 @@ var CreateOrderComponent = /** @class */ (function () {
                 }
             });
         }); });
-        this.createCustomerForm.get('phoneNumber').valueChanges.subscribe(function (value) { return __awaiter(_this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                if (this.generalService.isNullOrEmpty(value)) {
-                    this.createCustomerForm.get('phoneNumber').setValue('05');
-                }
-                return [2 /*return*/];
-            });
-        }); });
+        // this.createCustomerForm.get('phoneNumber').valueChanges.subscribe(async (value) => { //illeri getir
+        //   if (this.generalService.isNullOrEmpty(value)) {
+        //     this.createCustomerForm.get('phoneNumber').setValue('05')
+        //   }
+        // });
         this.createCustomerForm.get('address_region').valueChanges.subscribe(function (value) { return __awaiter(_this, void 0, void 0, function () {
             var _value, response;
             var _this = this;

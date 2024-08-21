@@ -29,6 +29,8 @@ export class ZTMSG_Proposal {
   createdDate?: Date; // Optional property
   updatedDate?: Date; // Optional property
   currAccDescription: string
+  currAccCode: string
+
   constructor() {
     this.discountRate1 = 0;
     this.discountRate2 = 0;
