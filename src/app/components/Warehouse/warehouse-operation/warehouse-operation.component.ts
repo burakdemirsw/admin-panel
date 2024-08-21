@@ -610,6 +610,13 @@ export class WarehouseOperationComponent implements OnInit {
     updated_product.barcode = result[3];
     return updated_product;
   }
+  async setShelves(barcode: string) {
+
+    var result: string[] = await this.productService.getShelvesOfProduct(
+      barcode
+    );
+    this.shelfNumbers = result[0];
+  }
 
   async onSubmit(formValue: WarehouseTransferModel): Promise<any> {
 
@@ -631,7 +638,9 @@ export class WarehouseOperationComponent implements OnInit {
 
     if (this.warehouseForm.valid) {
 
-
+      if (this.generalService.isNullOrEmpty(this.shelfNumbers) || this.shelfNumbers == "Raf No") {
+        await this.setShelves(formValue.barcode);
+      }
       const shelves = this.shelfNumbers
         .split(',')
         .filter((raflar) => raflar.trim() !== '')

@@ -1,13 +1,9 @@
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { InvocieFilterModel } from 'src/app/models/model/filter/invoiceFilterModel';
-import { CountListModel } from 'src/app/models/model/product/countListModel';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Invoice_VM } from 'src/app/models/model/product/countListModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { OrderService } from 'src/app/services/admin/order.service';
-import { WarehouseService } from 'src/app/services/admin/warehouse.service';
-import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { HeaderService } from '../../../services/admin/header.service';
 
@@ -16,50 +12,46 @@ import { HeaderService } from '../../../services/admin/header.service';
   templateUrl: './invoice-list.component.html',
   styleUrls: ['./invoice-list.component.css']
 })
-export class InvoiceListComponent implements OnInit, OnChanges {
+export class InvoiceListComponent implements OnInit {
   constructor(
     private headerService: HeaderService,
-    private httpClientService: HttpClientService,
     private toasterService: ToasterService,
-    private spinnerService: NgxSpinnerService,
     private router: Router,
-    private warehouseService: WarehouseService,
     private generalService: GeneralService,
     private formBuilder: FormBuilder,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private activatedRoute: ActivatedRoute
 
   ) { }
   offices: any[] = ["Alış", "Satış"]
   barcode: string = null;
   quantity: string = null;
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes["barcode"] && !changes["barcode"].isFirstChange()) {
-      console.log("Barkod değişti:", changes["barcode"].currentValue);
-    }
-
-    if (changes["quantity"] && !changes["quantity"].isFirstChange()) {
-      console.log("Quantity değişti:", changes["quantity"].currentValue);
-    }
-  }
-  change() {
-    this.barcode = Math.floor(Math.random() * 101).toString();
-    this.quantity = Math.floor(Math.random() * 101).toString();
-    console.log(this.barcode, this.barcode)
-  }
-  async ngOnInit() {
-    this.barcode = "aklsdasasdkas"
-    //this.spinnerService.show();
-    this.formGenerator();
-    await this.getInvoiceList();
-    this.headerService.updatePageTitle("Faturalar Alış/Satış");
-
-    //this.spinnerService.hide();
-
-  }
   currentPage: number = 1; // Başlangıçta ilk sayfayı göster
-
   innerNumberList: string[] = [];
   filterForm: FormGroup;
+  invoices: Invoice_VM[]
+  selectedInvoices: Invoice_VM[]
+  processCode: string;
+  async ngOnInit() {
+
+    this.activatedRoute.params.subscribe(async params => {
+
+      if (params["processCode"]) {
+        this.processCode = params["processCode"].toUpperCase();
+        if (this.processCode == 'R') {
+          this.headerService.updatePageTitle("Faturalar (R))");
+          await this.getInvoiceList('R');
+        } else {
+          this.headerService.updatePageTitle("Faturalar (BP))");
+          await this.getInvoiceList('BP');
+        }
+      }
+
+    })
+
+    this.formGenerator();
+
+  }
 
   formGenerator() {
     this.filterForm = this.formBuilder.group({
@@ -71,10 +63,6 @@ export class InvoiceListComponent implements OnInit, OnChanges {
     });
   }
 
-  async onSubmit(model: InvocieFilterModel) {
-    this.countList = await this.orderService.getInvoiceListByFilter(model);
-
-  }
 
   addInnerNumberToList(innerNumber: string) {
     if (!this.innerNumberList.includes(innerNumber)) {
@@ -85,23 +73,12 @@ export class InvoiceListComponent implements OnInit, OnChanges {
     }
   }
   async newPurchaseInvoice() {
-    try {
-      const orderNo: string = await this.generalService.generateGUID();
-      this.router.navigate(['/create-purchase-order/' + orderNo]);
-    } catch (error: any) {
-      console.log(error.message);
-    }
+    this.router.navigate(['/create-invoice/0/bp']);
 
   }
 
   async newSaleInvoice() {
-    try {
-      const orderNo: string = await this.generalService.generateGUID();
-      this.router.navigate(['/create-sale-order/' + orderNo]);
-    } catch (error: any) {
-      console.log(error.message);
-    }
-
+    this.router.navigate(['/create-invoice/0/r']);
   }
   routeToPage(orderNo: string) {
     if (orderNo.startsWith('BPI')) {
@@ -111,11 +88,9 @@ export class InvoiceListComponent implements OnInit, OnChanges {
     }
   }
 
-  countList: CountListModel[]
-
-  async getInvoiceList(): Promise<any> {
+  async getInvoiceList(processCode: string): Promise<any> {
     try {
-      this.countList = await this.orderService.getInvoiceList();
+      this.invoices = await this.orderService.getInvoiceList(processCode);
     } catch (error: any) {
       console.log(error.message);
     }
@@ -126,21 +101,19 @@ export class InvoiceListComponent implements OnInit, OnChanges {
       this.toasterService.success("İşlem Başarılı")
     }
   }
-  async deleteInvoiceProducts(orderNumber: string) {
-
-    const confirmDelete = window.confirm("Bu transferi silmek istediğinizden emin misiniz?");
-    if (confirmDelete) {
-      // Kullanıcı onayladıysa silme işlemini gerçekleştir
-      const response = await this.orderService.deleteInvoiceProducts(orderNumber);
-      if (response === true) {
-        location.reload();
-        this.toasterService.success("İşlem Başarılı")
-      } else {
-        this.toasterService.error("İşlem Başarısız")
-
-      }
-    }
-
-
+  goPage(id: string) {
+    var url = `/create-invoice/0/${this.processCode == 'R' ? 'r' : 'bp'}`;
+    this.router.navigate([url, id])
   }
+
+  async deleteInvoice(id: string) {
+    var response = await this.orderService.deleteInvoiceProcess(id);
+    if (response) {
+      this.toasterService.success("Fatura Silindi");
+      this.getInvoiceList(this.processCode);
+    } else {
+      this.toasterService.error("Fatura Silinemedi");
+    }
+  }
+
 }

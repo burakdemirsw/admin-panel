@@ -61,8 +61,8 @@ import { ImportTransactionsComponent } from './components/Order/import-transacti
 import { ExportTransactionsComponent } from './components/Order/export-transactions/export-transactions.component';
 import { CollectExportProductsComponent } from './components/Order/export-transactions/collect-export-products/collect-export-products.component';
 import { PagesInfoComponent } from './pages/pages-info/pages-info.component';
-import { CreateProposalComponent } from './components/Product/create-proposal/create-proposal.component';
-import { ProposalListComponent } from './components/Product/proposal-list/proposal-list.component';
+import { CreateProposalComponent } from './components/proposal/create-proposal/create-proposal.component';
+import { ProposalListComponent } from './components/proposal/proposal-list/proposal-list.component';
 import { AuthorizationComponent } from './components/auth/authorization/authorization.component';
 import { RoleListComponent } from './components/User/user-list/role/role-list/role-list.component';
 import { PagesUnauthorizedComponent } from './pages/pages-unauthorized/pages-unauthorized.component';
@@ -218,12 +218,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'create-sale-order/:activeIndex/:processCode',
+    path: 'create-invoice/:activeIndex/:processCode',
     component: CreateSaleOrderComponent,
     canActivate: [AuthGuard],
   },
   {
-    path: 'create-sale-order/:activeIndex/:processCode/:processId',
+    path: 'create-invoice/:activeIndex/:processCode/:processId',
     component: CreateSaleOrderComponent,
     canActivate: [AuthGuard],
   },
@@ -280,7 +280,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'invoice-list',
+    path: 'invoice-list/:processCode',
     component: InvoiceListComponent,
     canActivate: [AuthGuard],
   },

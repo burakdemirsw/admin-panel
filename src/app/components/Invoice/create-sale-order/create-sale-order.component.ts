@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
 import { CollectedInvoiceProduct, CreatePurchaseInvoice, InvoiceProcess } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
@@ -31,6 +31,7 @@ export class CreateSaleOrderComponent implements OnInit {
   officeModels: OfficeModel[] = [];
   productForm: FormGroup;
   invoiceForm: FormGroup;
+  proposalForm: FormGroup;
   warehouseModels: WarehouseOfficeModel[] = [];
   visible: boolean = false;
   infoProducts: CreatePurchaseInvoice[] = [];
@@ -46,47 +47,47 @@ export class CreateSaleOrderComponent implements OnInit {
     private generalService: GeneralService,
     private activatedRoute: ActivatedRoute,
     private headerService: HeaderService,
+    private routerService: Router
   ) { }
   async ngOnInit() {
+
 
     this.activatedRoute.params.subscribe(async (params) => {
       if (this.processCodes.includes(params["processCode"])) {
         this.processCode = params["processCode"].toUpperCase();
-        if (this.processCode == "R") {
+        this.product_formGenerator();
+        this.createUpdateProductForm();
+
+        this.createDiscountForm();
+        if (this.processCode == "R" || this.processCode == "r") {
           this.headerService.updatePageTitle('Satış Faturası (R)');
-          this.product_formGenerator();
-          this.ws_formGenerator();
+          this.invoice_r_formGenerator();
           await this.getWarehouseAndOffices();
+
           await this.getCustomerList('4'); //Perakende Müşterileri Çeker
-          this.createDiscountForm();
-          this.createUpdateProductForm();
-
-          if (params['processId']) {
-            this.newOrderNumber = params['processId'];
-            await this.getInvoiceProcess();
-            if (this.invoiceProcess) {
-              await this.getProductOfInvoice();
-            }
-          }
-          this.activeIndex = Number(params['activeIndex'])
-        } else if (this.processCode == "BP") {
+        } else if (this.processCode == "BP" || this.processCode == "bp") {
           this.headerService.updatePageTitle('Alış Faturası (BP)');
-          this.product_formGenerator();
-          this.bp_formGenerator();
+          this.invoice_bp_formGenerator();
           await this.getWarehouseAndOffices();
-          await this.getCustomerList('1'); //Tedarikçileri Çeker
-          this.createDiscountForm();
-          this.createUpdateProductForm();
 
-          if (params['processId']) {
-            this.newOrderNumber = params['processId'];
-            await this.getInvoiceProcess();
-            if (this.invoiceProcess) {
-              await this.getProductOfInvoice();
-            }
-          }
-          this.activeIndex = Number(params['activeIndex'])
+          await this.getCustomerList('1'); //Tedarikçileri Çeker
+        } else if (this.processCode == "prws" || this.processCode == "prb") {
+          this.headerService.updatePageTitle('Teklif Oluştur');
+          this.proposal_formGenerator();
+          await this.getWarehouseAndOffices();
+          await this.getCustomerList('1');
         }
+
+
+
+        if (params['processId']) {
+          this.newOrderNumber = params['processId'];
+          await this.getInvoiceProcess();
+          if (this.invoiceProcess) {
+            await this.getProductOfProcess();
+          }
+        }
+        this.activeIndex = Number(params['activeIndex'])
       } else {
         location.href = "/dashboard"
       }
@@ -124,9 +125,7 @@ export class CreateSaleOrderComponent implements OnInit {
     this.updateProductForm = this.formBuilder.group({
       price: [null, Validators.required],
       priceVI: [null, Validators.required],
-      quantity: [null, Validators.required],
-      discountRate1: [null, Validators.required],
-      discountRate2: [null, Validators.required],
+      quantity: [null, Validators.required]
     });
 
     // price değiştiğinde priceVI değerini güncelle
@@ -253,11 +252,20 @@ export class CreateSaleOrderComponent implements OnInit {
     this.activeIndex = e.index
   }
   async getInvoiceProcess() {
-    var response = await this.orderService.getInvoiceProcessList(this.newOrderNumber);
-    if (response) {
-      this.invoiceProcess = response[0];
-      this.setFormValueFromProcess(this.invoiceProcess);
+
+    if (this.generalService.isGuid(this.newOrderNumber)) {
+      var response = await this.orderService.getInvoiceProcessList(this.processCode, this.newOrderNumber);
+      if (response.length > 0) {
+        this.invoiceProcess = response[0];
+        this.setFormValueFromProcess(this.invoiceProcess);
+      } else {
+        this.routerService.navigate([`/create-invoice/0/${this.processCode}`]);
+        this.toasterService.error("İşlem Bulunamadı")
+      }
+    } else {
+      this.routerService.navigate([`/create-invoice/0/${this.processCode}`]);
     }
+
   }
   async getWarehouseAndOffices() {
     var response = await this.warehouseService.getWarehouseAndOffices();
@@ -285,21 +293,10 @@ export class CreateSaleOrderComponent implements OnInit {
   async updateProduct(product: CollectedInvoiceProduct) {
     console.log(product);
     product.price = this.updateProductForm.get('price').value;
-    product.price = (
-      (product.price * ((100 - product.discountRate1) / 100)) - product.discountRate2
-    )
-    product.priceVI = this.updateProductForm.get('priceVI').value;
-    product.priceVI = (
-      (product.priceVI * ((100 - product.discountRate1) / 100)) - product.discountRate2
-    )
-    product.quantity = this.updateProductForm.get('quantity').value;
-    product.discountRate1 = this.updateProductForm.get('discountRate1').value; //yüzde
-    product.discountRate2 = this.updateProductForm.get('discountRate2').value;
-    // product.totalPrice =
-    //   product.quantity * product.price
 
-    // product.totalTaxedPrice =
-    //   product.quantity * product.priceVI
+    product.priceVI = this.updateProductForm.get('priceVI').value;
+
+    product.quantity = this.updateProductForm.get('quantity').value;
 
     var response = await this.orderService.updateCollectedInvoiceProduct(product);
     if (response) {
@@ -315,7 +312,7 @@ export class CreateSaleOrderComponent implements OnInit {
   async updateInvocieProcess(formValue: any) {
 
     if (!this.invoiceProcess) {
-      await this.addInvocieProcess(formValue);
+      await this.addInvoiceProcess(formValue);
     }
     var request: InvoiceProcess = new InvoiceProcess();
     request.id = this.invoiceProcess.id;
@@ -325,6 +322,9 @@ export class CreateSaleOrderComponent implements OnInit {
     request.invoiceNumber = this.invoiceNumber;
     request.currAccCode = this.processCode == 'R' ? formValue.currAccCode.code : null;
     request.vendorCode = this.processCode == 'BP' ? formValue.vendorCode.code : null;
+    request.eInvoiceNumber = this.processCode == 'BP' ? formValue.eInvoiceNumber : null;
+    request.description = formValue.description;
+    request.internalDescription = formValue.internalDescription;
     request.officeCode = formValue.officeCode;
     request.warehouseCode = formValue.warehouseCode.code;
     request.taxTypeCode = formValue.taxTypeCode.code;
@@ -342,7 +342,8 @@ export class CreateSaleOrderComponent implements OnInit {
 
 
   }
-  async addInvocieProcess(formValue: any) {
+  async addInvoiceProcess(formValue: any) {
+    this.toasterService.info(this.processCode + "Faturası Oluşturuluyor...")
     var request: InvoiceProcess = new InvoiceProcess();
     request.processCode = this.processCode;
     request.salesPersonCode = null;
@@ -351,22 +352,31 @@ export class CreateSaleOrderComponent implements OnInit {
     request.officeCode = formValue.officeCode;
     request.currAccCode = this.processCode == 'R' ? formValue.currAccCode.code : null;
     request.vendorCode = this.processCode == 'BP' ? formValue.vendorCode.code : null;
+    request.eInvoiceNumber = this.processCode == 'BP' ? formValue.eInvoiceNumber : null;
+    request.description = formValue.description;
+    request.internalDescription = formValue.internalDescription;
+
     request.warehouseCode = formValue.warehouseCode.code;
     request.taxTypeCode = formValue.taxTypeCode.code;
     request.isCompleted = false;
 
     var response = await this.orderService.editInvoiceProcess(request);
     if (response) {
-      this.responseHandler(true, "Eklendi")
-      this.setFormValueFromProcess(response);
+      // Handle success response
+      this.responseHandler(true, "Eklendi");
+      // Navigate to the desired URL using response.id
+      this.routerService.navigate([`/create-invoice/1/${this.processCode}/${response.id}`]);
+      // // Set form values from the process
+      // this.setFormValueFromProcess(response);
       return;
     } else {
-      this.responseHandler(false, "Eklenmedi")
+      // Handle failure response
+      this.responseHandler(false, "Eklenmedi");
       return;
     }
   }
   setFormValueFromProcess(v: InvoiceProcess) {
-    // İlk olarak gerekli değerleri değişkenlere atıyoruz
+    this.invoiceProcess = v;
     const officeCode = v.officeCode;
     const warehouseCode = this.warehouses.find(o => o.code == v.warehouseCode);
     const salesPersonCode = this.salesPersonModelList.find(o => o.code == v.salesPersonCode);
@@ -374,6 +384,9 @@ export class CreateSaleOrderComponent implements OnInit {
     const vendorCode = this.customerList2.find(o => o.code == v.vendorCode);
     const taxTypeCode = this.taxTypeCodeList.find(o => o.code == v.taxTypeCode);
     const isReturn = v.isReturn;
+    const eInvoiceNumber = v.eInvoiceNumber;
+    const internalDescription = v.internalDescription;
+    const description = v.description;
 
     // Sonra bu değerleri forma atıyoruz
     this.invoiceForm.get('officeCode').setValue(officeCode);
@@ -389,6 +402,9 @@ export class CreateSaleOrderComponent implements OnInit {
     }
     this.invoiceForm.get('taxTypeCode').setValue(taxTypeCode);
     this.invoiceForm.get('isReturn').setValue(isReturn);
+    this.invoiceForm.get('eInvoiceNumber').setValue(eInvoiceNumber);
+    this.invoiceForm.get('description').setValue(description);
+    this.invoiceForm.get('internalDescription').setValue(internalDescription);
 
     this.discountForm.get('percentDiscountRate').setValue(v.discountRate1);
     this.discountForm.get('cashDiscountRate').setValue(v.discountRate2);
@@ -397,7 +413,7 @@ export class CreateSaleOrderComponent implements OnInit {
     this.newOrderNumber = v.id;
     this.invoiceNumber = v.invoiceNumber;
   }
-  async getProductOfInvoice(): Promise<void> {
+  async getProductOfProcess(): Promise<void> {
     try {
       const response = await this.orderService.getCollectedInvoiceProducts(
         this.newOrderNumber
@@ -472,32 +488,51 @@ export class CreateSaleOrderComponent implements OnInit {
     this.productForm = this.formBuilder.group({
       shelfNo: [null, [Validators.required, Validators.maxLength(10)]],
       barcode: [null, [Validators.required, Validators.minLength(5)]],
-      quantity: [null, Validators.required],
-      batchCode: [null],
+      quantity: [null, Validators.required]
     });
 
 
   }
-  ws_formGenerator() {
+  invoice_r_formGenerator() {
     this.invoiceForm = this.formBuilder.group({
-      officeCode: [null],
-      warehouseCode: [null],
-      currAccCode: [null],
+      officeCode: [null, Validators.required],
+      warehouseCode: [null, Validators.required],
+      currAccCode: [null, Validators.required],
       salesPersonCode: [null],
-      isReturn: [false],
-      taxTypeCode: [null],
+      isReturn: [false, Validators.required],
+      description: [null],
+      internalDescription: [null],
+      taxTypeCode: [null, Validators.required],
+      eInvoiceNumber: [
+        null
+      ],
 
     });
   }
-  bp_formGenerator() {
+  invoice_bp_formGenerator() {
     this.invoiceForm = this.formBuilder.group({
-      officeCode: [null],
-      warehouseCode: [null],
-      vendorCode: [null],
+      officeCode: [null, Validators.required],
+      warehouseCode: [null, Validators.required],
+      vendorCode: [null, Validators.required],
       salesPersonCode: [null],
-      isReturn: [false],
-      taxTypeCode: [null],
-
+      description: [null],
+      internalDescription: [null],
+      eInvoiceNumber: [
+        null, Validators.required
+      ],
+      isReturn: [false, Validators.required],
+      taxTypeCode: [null, Validators.required],
+    });
+  }
+  proposal_formGenerator() {
+    this.proposalForm = this.formBuilder.group({
+      officeCode: [null, Validators.required],
+      warehouseCode: [null, Validators.required],
+      vendorCode: [null, Validators.required],
+      salesPersonCode: [null],
+      description: [null],
+      internalDescription: [null],
+      taxTypeCode: [null, Validators.required]
     });
   }
 
@@ -524,7 +559,7 @@ export class CreateSaleOrderComponent implements OnInit {
       );
       if (response) {
         this.calculateTotalQty();
-        await this.getProductOfInvoice();
+        await this.getProductOfProcess();
         this.toasterService.success('Silme İşlemi Başarılı.');
       } else {
         this.toasterService.error('Silme İşlemi Başarısız.');
@@ -543,25 +578,21 @@ export class CreateSaleOrderComponent implements OnInit {
     }
   }
 
-  async createSaleInvoice(): Promise<any> {
+  async createInvoice(): Promise<any> {
     var confirmation = window.confirm(
-      'İşlem Nebime Aktarılacaktır.Devam Etmek istiyor musunuz?'
+      'Fatura kesilecektir, devam edilsin mi?'
     );
 
     if (confirmation) {
-      //this.spinnerService.show();
-      try {
+      var response = await this.orderService.createInvoice_New(this.processCode, this.invoiceProcess.id);
+      if (response) {
+        this.toasterService.success('Faturalaştırma Başarılı.');
+        this.routerService.navigate([`/create-invoice/0/${this.processCode}/${this.invoiceProcess.id}`]);
 
-        //OTOMATIK SAYIM YAPMA KODU ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-        const data = await this.orderService.createSaleInvoice(
-          this.invoiceProducts,
-          this.newOrderNumber,
-          this.productForm.get('isReturn').value,
-          this.productForm.get('salesPersonCode').value.code,
-          this.productForm.get('currency').value.code
-        );
-      } catch (error: any) { }
-
+        // this.routerService.navigate(["/dashboard"])
+      } else {
+        this.toasterService.error('Faturalaştırma Başarısız.');
+      }
     }
     //this.spinnerService.hide();
   }
@@ -592,7 +623,7 @@ export class CreateSaleOrderComponent implements OnInit {
   async onSubmit(model: CreatePurchaseInvoice): Promise<any> {
 
     if (!this.invoiceProcess) {
-      await this.addInvocieProcess(this.productForm.value);
+      await this.addInvoiceProcess(this.productForm.value);
       return;
     }
     if (!this.productForm.valid) {
@@ -635,7 +666,7 @@ export class CreateSaleOrderComponent implements OnInit {
         var response = await this.orderService.addCollectedInvoiceProduct(request)
         if (response) {
           this.responseHandler(true, "Eklendi")
-          this.getProductOfInvoice()
+          this.getProductOfProcess()
           return;
         } else {
           this.responseHandler(false, "Eklenmedi")
@@ -672,7 +703,7 @@ export class CreateSaleOrderComponent implements OnInit {
           var response = await this.orderService.addCollectedInvoiceProduct(request)
           if (response) {
             this.responseHandler(true, "Eklendi")
-            this.getProductOfInvoice()
+            this.getProductOfProcess()
             return;
           } else {
             this.responseHandler(false, "Eklenmedi")
@@ -705,6 +736,23 @@ export class CreateSaleOrderComponent implements OnInit {
     });
     this.totalCount = totalQty;
   }
+  async deleteInvoice() {
+    if (this.invoiceProcess.id) {
+      var response = await this.orderService.deleteInvoiceProcess(this.invoiceProcess.id);
+      if (response) {
+        this.toasterService.success("Fatura Silindi");
+        this.routerService.navigate([`/create-invoice/0/${this.processCode}`]);
 
+      } else {
+        this.toasterService.error("Fatura Silinemedi");
+      }
+    } else {
+      this.toasterService.error("Fatura Silinemedi");
 
+    }
+  }
+  goPage() {
+    this.routerService.navigate([`/create-invoice/0/${this.processCode}`]);
+
+  }
 }

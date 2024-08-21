@@ -2,70 +2,91 @@
   <section class="section">
     <div class="card custom-card mb-3">
       <div class="card-body d-flex justify-content-start mt-3" style="overflow-x: auto">
-        <!-- <button type="button" class="btn btn-primary" (click)="newPurchaseInvoice()">
-          <i class="fas fa-check"></i> Alış Faturası Oluştur
-        </button> -->
-        <button type="button" class="btn btn-primary" (click)="newSaleInvoice()">
+        <button type="button" class="btn btn-primary" (click)="newSaleInvoice()" *ngIf="  this.processCode=='R'">
           <i class="fas fa-check"></i> Satış Faturası Oluştur
+        </button>
+        <button type="button" class="btn btn-primary" (click)="newPurchaseInvoice()" *ngIf="  this.processCode=='BP'">
+          <i class="fas fa-check"></i> Alış Faturası Oluştur
         </button>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-body">
-        <div style="overflow-x: auto">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <!-- <th scope="col">Seç</th> -->
+      <p-table #dt2 [value]="invoices" [(selection)]="selectedInvoices" dataKey="id" [paginator]="true"
+        [rowsPerPageOptions]="[5, 10, 20]" [rows]="10" [tableStyle]="{ 'min-width': '70rem' }"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <!-- <ng-template pTemplate="caption">
+          <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
+            <p-splitButton label="İşlemler" [model]="items" appendTo="body"></p-splitButton>
+          </div>
+          <h5 *ngIf="selectedInvoices.length > 0" style="text-align: left">
+            {{ selectedInvoices.length }}/{{ invoices.length }} Adet Fatura Seçildi
+          </h5>
+        </ng-template> -->
 
-                <th scope="col">İşlem Tarihi</th>
-                <th scope="col">Toplam Sayılan Ürün Sayısı</th>
-                <!-- <th scope="col">Sipariş Numarası</th> -->
-                <th scope="col">Fatura Tipi</th>
-                <th scope="col">Müşteri</th>
-                <th scope="col">İşlemler</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="
-                  let count of countList
-                    | paginate : { itemsPerPage: 10, currentPage: currentPage }
-                ">
-                <!-- <td><input class="form-check-input" type="checkbox" value=""
-                    (click)="addInnerNumberToList(count.orderNo)"></td> -->
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Seç</th>
+            <th pSortableColumn="currAccDescription">Müşteri <p-sortIcon field="currAccDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="eInvoiceNumber">Fatura Numarası <p-sortIcon field="eInvoiceNumber"></p-sortIcon>
+            </th>
+            <th pSortableColumn="amount">Tutar <p-sortIcon field="amount"></p-sortIcon>
+            </th>
+            <th pSortableColumn="totalProduct">Toplam Ürün Sayısı <p-sortIcon field="totalProduct"></p-sortIcon>
+            </th>
+            <th pSortableColumn="lastUpdateDate">Tarih <p-sortIcon field="lastUpdateDate"></p-sortIcon>
+            </th>
+            <th>İşlemler</th>
+          </tr>
+          <tr>
+            <th style="width: 4rem">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="currAccDescription" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="eInvoiceNumber" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="amount" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="totalProduct" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="date" field="lastUpdateDate" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th></th>
+          </tr>
+        </ng-template>
 
-                <td>
-                  {{ count.lastUpdateDate | date : "dd.MM.yyyy HH:mm:ss" }}
-                </td>
-                <td>{{ count.totalProduct }}</td>
-                <!-- <td>{{ count.orderNo }}</td> -->
-                <td>
-                  {{ count.orderNo.includes("WS") ? "Satış " : "Alış "
-                  }}{{ count.isReturn == true ? "İade" : "" }}
-                </td>
-                <td>{{ count.salesPersonCode }}</td>
-                <td>
-                  <div class="btn-group">
-                    <button class="btn btn-success" data-text="İşlemler" (click)="routeToPage(count.orderNo)">
-                      <i class="fas fa-sliders-h"></i>
-                    </button>
+        <ng-template pTemplate="body" let-invoice>
+          <tr>
+            <td>
+              <p-tableCheckbox [value]="invoice"></p-tableCheckbox>
+            </td>
+            <td>{{ invoice.currAccDescription }}</td>
+            <td>{{ invoice.eInvoiceNumber }}</td>
+            <td>{{ invoice.amount | currency : "₺" }}</td>
+            <td>{{ invoice.totalProduct }}</td>
+            <td>{{ invoice.createdDate | date : "dd.MM.yyyy HH:mm:ss" }}</td>
+            <td>
+              <div class="btn-group">
+                <button class="btn btn-success" (click)="goPage(invoice.id)">
+                  <i class="fas fa-sliders-h"></i>
+                </button>
+                <button class="btn btn-danger" title="Sil" (click)="deleteInvoice(invoice.id)">
+                  <i class="fas fa-trash"></i>
+                </button>
 
-                    <button class="btn btn-success" data-text="Sil" (click)="deleteInvoiceProducts(count.orderNo)">
-                      <i class="fas fa-trash"></i>
-                    </button>
-                    <button class="btn btn-success" data-text="İade Faturası Kes"
-                      (click)="deleteInvoiceProducts(count.orderNo)">
-                      <i class="fas fa-refresh"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
-        </div>
-      </div>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
     </div>
   </section>
 </main>

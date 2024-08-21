@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Dropdown } from 'primeng/dropdown';
+import { InvoiceProcess } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
 import { CustomerAddress_VM, CustomerList_VM, GetCustomerList_CM } from 'src/app/models/model/order/getCustomerList_CM';
 import { Payment } from 'src/app/models/model/order/nebimOrder';
@@ -62,9 +63,6 @@ export class CreateProposalComponent implements OnInit {
 
   async ngOnInit() {
     this.createUpdateProductForm()
-    // this.createGetCustomerForm();
-    // this.createGetProductForm();
-
     this.orderType = true;
     this.pageTitle = "Teklif Oluştur"
 
@@ -97,9 +95,7 @@ export class CreateProposalComponent implements OnInit {
       percentDiscountRate: [null, Validators.required]
     });
   }
-  async routeGetProduct(request: string) {
 
-  }
 
   //---------------------------------------------------- Dialog değişkenleri ve metodları
 
@@ -135,10 +131,7 @@ export class CreateProposalComponent implements OnInit {
   updateProductDialog: boolean = false;
   getCustomerDialog: boolean = false;
   findProductDialog: boolean = false;
-  selectAddressDialog: boolean = false;
-  subCustomerDialog: boolean = false;
-  addSubCustomerDialog: boolean = false;
-  quantityListDialog: boolean = false;
+
   openDialog(dialogName: string) {
     if (dialogName === "getCustomerDialog") {
       this.getCustomerDialog = !this.getCustomerDialog
@@ -146,13 +139,6 @@ export class CreateProposalComponent implements OnInit {
     if (dialogName === "findProductDialog") {
       this.findProductDialog = !this.findProductDialog
     }
-    if (dialogName === "addSubCustomerDialog") {
-      this.addSubCustomerDialog = !this.addSubCustomerDialog
-    }
-    if (dialogName === "quantityListDialog") {
-      this.quantityListDialog = !this.quantityListDialog
-    }
-
     if (dialogName === "updateProductDialog") {
       this.updateProductDialog = !this.updateProductDialog
     }
@@ -162,16 +148,17 @@ export class CreateProposalComponent implements OnInit {
     // this.toasterService.info(this.activeIndex.toString())
   }
 
+  //--------------------------------------------------------------------------- TEKLİF KODLAR YENİ***
 
+  invoiceProcess: InvoiceProcess;
+  processId: string;
+  processCode: string;
 
-
-  //--------------------------------------------------------------------------- TEKLİF KODLAR
-
+  //--------------------------------------------------------------------------- TEKLİF KODLARI ESKİ**
   proposalId: number;
   brands: any[] = []
   itemCodes: any[] = []
   shelfNos: any[] = []
-  // targetShelfs: any[] = []
   descriptions: any[] = []
   productHierarchyLevel01s: any[] = []
   productHierarchyLevel02s: any[] = []
@@ -236,7 +223,6 @@ export class CreateProposalComponent implements OnInit {
     request.discountRate1 = 0;
     request.discountRate2 = 0;
     request.userId = Number(localStorage.getItem('userId'));
-
 
     var response: ZTMSG_Proposal = await this.productService.addProposal(request);
 

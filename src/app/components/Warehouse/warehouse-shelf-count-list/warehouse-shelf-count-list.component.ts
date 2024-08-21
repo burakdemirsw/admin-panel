@@ -59,7 +59,7 @@ export class WarehouseShelfCountListComponent implements OnInit {
   async newCount() {
     try {
       const orderNo: string = await this.generalService.generateGUID();
-      this.router.navigate(['/warehouse-shelf-count/count/' + orderNo]);
+      this.router.navigate(['/warehouse-shelf-count', orderNo]);
     } catch (error: any) {
       console.log(error.message);
     }

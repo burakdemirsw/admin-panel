@@ -19,7 +19,7 @@ import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
 import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
 import { BarcodeAddModel } from 'src/app/models/model/product/barcodeAddModel';
 import { CountConfirmData } from 'src/app/models/model/product/countConfirmModel';
-import { CountListModel } from 'src/app/models/model/product/countListModel';
+import { CountListModel, Invoice_VM } from 'src/app/models/model/product/countListModel';
 import { InventoryItem } from 'src/app/models/model/product/inventoryItemModel';
 import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 import { ClientCustomer } from '../../components/Customer/customer-list/customer-list.component';
@@ -79,9 +79,9 @@ export class OrderService {
   }
 
   //fatura listesini çeker
-  async getInvoiceList(): Promise<CountListModel[]> {
+  async getInvoiceList(processCode: string): Promise<Invoice_VM[]> {
     const data = await this.httpClientService
-      .get<CountListModel>({ controller: 'Order/GetInvoiceList' }) //Get_InvoicesList
+      .get<Invoice_VM>({ controller: 'Order/GetInvoiceList' }, processCode) //Get_InvoicesList
       .toPromise();
     return data;
   }
@@ -923,11 +923,11 @@ export class OrderService {
 
     return response;
   }
-  async getInvoiceProcessList(processCode: string): Promise<InvoiceProcess[]> {
+  async getInvoiceProcessList(processCode: string, processId: string): Promise<InvoiceProcess[]> {
     const response = await this.httpClientService
       .get<InvoiceProcess>(
         { controller: 'Order/get-invoice-process' },
-        processCode
+        processCode + '/' + processId
       )
       .toPromise();
 
@@ -947,9 +947,20 @@ export class OrderService {
 
   async deleteInvoiceProcess(id: string): Promise<boolean> {
     const response = await this.httpClientService
-      .delete<boolean>(
+      .get_new<boolean>(
         { controller: 'Order/delete-invoice-process' },
         id
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async createInvoice_New(processCode: string, processId: string) {
+    const response = await this.httpClientService
+      .get_new<boolean>(
+        { controller: 'Order/create-invoice' },
+        processCode + "/" + processId
       )
       .toPromise();
 

@@ -76,12 +76,12 @@ import { PurchaseOrderManagamentComponent } from './components/Order/purchase-or
 import { SaleOrderManagamentComponent } from './components/Order/sale-order-managament/sale-order-managament.component';
 import { UnfinishedOrderComponent } from './components/Order/unfinished-order/unfinished-order.component';
 import { CreateBarcodeComponent } from './components/Product/create-barcode/create-barcode.component';
-import { CreateProposalComponent } from './components/Product/create-proposal/create-proposal.component';
+import { CreateProposalComponent } from './components/proposal/create-proposal/create-proposal.component';
 import { NebimProductExtractComponent } from './components/Product/nebim-product-extract/nebim-product-extract.component';
 import { NebimStockControlComponent } from './components/Product/nebim-stock-control/nebim-stock-control.component';
 import { ProductManagementComponent } from './components/Product/product-management/product-management.component';
 import { ProductOperationComponent } from './components/Product/product-operation/product-operation.component';
-import { ProposalListComponent } from './components/Product/proposal-list/proposal-list.component';
+import { ProposalListComponent } from './components/proposal/proposal-list/proposal-list.component';
 import { ReadBarcodeComponent } from './components/Product/read-barcode/read-barcode.component';
 import { SearchQrComponent } from './components/Product/search-qr/search-qr.component';
 import { SearchShelfComponent } from './components/Product/search-shelf/search-shelf.component';
@@ -131,7 +131,7 @@ import { ProductStockReportComponent } from './components/Product/product-stock-
 import { AddProductToShelfComponent } from './components/Warehouse/warehosue-shelf-count/add-product-to-shelf/add-product-to-shelf.component';
 import { AddProductToShelfListComponent } from './components/Warehouse/warehosue-shelf-count/add-product-to-shelf-list/add-product-to-shelf-list.component';
 import { IdeasoftOffersComponent } from './components/special-panels/ideasoft-offers/ideasoft-offers.component';
-
+import { FloatLabelModule } from 'primeng/floatlabel';
 @NgModule({
 
   declarations: [
@@ -229,6 +229,7 @@ import { IdeasoftOffersComponent } from './components/special-panels/ideasoft-of
     FormsModule,
     ReactiveFormsModule,
     BrowserModule,
+    FloatLabelModule,
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,

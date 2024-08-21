@@ -25,9 +25,13 @@ export class InvoiceProcess {
   taxTypeCode?: string;
   isCompleted: boolean;
   officeCode: string;
+  eInvoiceNumber: string;
   warehouseCode: string;
   discountRate1: number;
   discountRate2: number;
+  description: string;
+  internalDescription: string;
+  eInvoiceUrl: string;
   createdDate?: Date;
   updatedDate?: Date;
 
