@@ -45,20 +45,18 @@ exports.__esModule = true;
 exports.ServiceManagementComponent = void 0;
 var core_1 = require("@angular/core");
 var ServiceManagementComponent = /** @class */ (function () {
-    function ServiceManagementComponent(headerService, httpClientService, toasterService, spinnerService, router, warehouseService, generalService, formBuilder) {
+    function ServiceManagementComponent(headerService, toasterService, warehouseService, directRequest) {
         this.headerService = headerService;
-        this.httpClientService = httpClientService;
         this.toasterService = toasterService;
-        this.spinnerService = spinnerService;
-        this.router = router;
         this.warehouseService = warehouseService;
-        this.generalService = generalService;
-        this.formBuilder = formBuilder;
+        this.directRequest = directRequest;
         this.services = [
             { header: 'Sayım Ekle', desc: 'Sayım Ekleme Operasyonunu yapar', action: this.addCount.bind(this) },
             { header: 'Sayım Çıkar', desc: 'Sayım Çıkarma Operasyonunu yapar', action: this.removeCount.bind(this) },
             { header: 'Sayım Eşitle', desc: 'Sayım Çıkarma Operasyonunu yapar', action: this.removeCount.bind(this) },
-            { header: 'Sayım Ekle-Çıkar-Eşitle', desc: 'Tüm Sayım Operasyonunu yapar', action: this.doAllCount.bind(this) }
+            { header: 'Sayım Ekle-Çıkar-Eşitle', desc: 'Tüm Sayım Operasyonunu yapar', action: this.doAllCount.bind(this) },
+            { header: 'Fotoğraf Eşitle', desc: 'Sunucunuzdaki Eksik Fotoğrafları Çeker', action: this.syncPhoto.bind(this) },
+            { header: 'Fotoğraf Güncelle', desc: 'Ürün Koduna Göre Güncelle', action: this.updatePhoto.bind(this) }
         ];
     }
     ServiceManagementComponent.prototype.ngOnInit = function () {
@@ -117,6 +115,60 @@ var ServiceManagementComponent = /** @class */ (function () {
                             this.toasterService.error("İşlem Başarısız");
                         }
                         return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ServiceManagementComponent.prototype.syncPhoto = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.directRequest.syncPhoto()];
+                    case 1:
+                        response = _a.sent();
+                        if (response) {
+                            this.toasterService.success('Fotoğraf eşitleme işlemi gerçekleştirildi.');
+                        }
+                        else {
+                            this.toasterService.error("İşlem Başarısız");
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ServiceManagementComponent.prototype.updatePhoto = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _itemCodes, _itemCodes, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!(this.itemCodes != undefined || this.itemCodes != null || this.itemCodes != '' || this.itemCodes.length <= 3)) return [3 /*break*/, 1];
+                        this.toasterService.error("Geçersiz Ürün Kodu");
+                        return [2 /*return*/];
+                    case 1:
+                        if (this.itemCodes.includes(',')) {
+                            _itemCodes = this.itemCodes.split(',');
+                            this.toasterService.success("Ürünler Bulundu");
+                            alert("Bu Ürünler Güncellenecektir: " + _itemCodes);
+                        }
+                        else {
+                            _itemCodes = [this.itemCodes];
+                            this.toasterService.success("Ürünler Bulundu");
+                            alert("Bu Ürünler Güncellenecektir: " + _itemCodes);
+                        }
+                        return [4 /*yield*/, this.directRequest.updatePhoto(_itemCodes)];
+                    case 2:
+                        response = _a.sent();
+                        if (response) {
+                            this.toasterService.success('Fotoğraf eşitleme işlemi gerçekleştirildi.');
+                        }
+                        else {
+                            this.toasterService.error("İşlem Başarısız");
+                        }
+                        _a.label = 3;
+                    case 3: return [2 /*return*/];
                 }
             });
         });

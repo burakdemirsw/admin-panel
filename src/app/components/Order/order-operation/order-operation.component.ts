@@ -762,7 +762,7 @@ export class OrderOperationComponent implements OnInit {
 
 
         if ((this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-')) && this.checkForm.valid) {
-          await this.onSubmit(productModel);
+          await this.onSubmit(updated_product);
         }
       }
 

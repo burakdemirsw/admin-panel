@@ -42,97 +42,58 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.GeneralService = void 0;
+exports.DirectServiceService = void 0;
 var core_1 = require("@angular/core");
-var GeneralService = /** @class */ (function () {
-    function GeneralService(spinnerService, router, toasterService, datePipe, httpClientService) {
-        this.spinnerService = spinnerService;
-        this.router = router;
-        this.toasterService = toasterService;
-        this.datePipe = datePipe;
+var DirectServiceService = /** @class */ (function () {
+    function DirectServiceService(httpClientService) {
         this.httpClientService = httpClientService;
+        this.controller = "direct-request";
     }
-    GeneralService.prototype.focusNextInput = function (nextInputId) {
-        var nextInput = document.getElementById(nextInputId);
-        if (nextInput) {
-            nextInput.focus();
-        }
-    };
-    GeneralService.prototype.isNullOrEmpty = function (value) {
-        if (typeof value === 'object') {
-            return value === null || value === undefined;
-        }
-        else {
-            return value === null || value === undefined || value.trim() === '';
-        }
-    };
-    GeneralService.prototype.beep = function () {
-        var audio = new Audio('assets/music/qrSound.mp3');
-        audio.play();
-    };
-    GeneralService.prototype.beep2 = function () {
-        var audio = new Audio('assets/music/qrSound.mp3');
-        audio.play();
-    };
-    GeneralService.prototype.beep3 = function () {
-        var audio = new Audio('assets/music/delete.mp3');
-        audio.play();
-    };
-    GeneralService.prototype.beep4 = function () {
-        var audio = new Audio('assets/music/congra.mp3');
-        audio.play();
-    };
-    GeneralService.prototype.waitAndNavigate = function (message, url) {
-        var _this = this;
-        this.beep();
-        this.spinnerService.show();
-        setTimeout(function () {
-            _this.spinnerService.hide();
-            _this.router.navigate(['/' + url]);
-            _this.toasterService.success(message);
-        }, 1000);
-    };
-    GeneralService.prototype.generateGUID = function () {
+    DirectServiceService.prototype.syncPhoto = function () {
         return __awaiter(this, void 0, Promise, function () {
-            var dt, uuid;
+            var response, error_1;
             return __generator(this, function (_a) {
-                dt = new Date().getTime();
-                uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-                    var r = (dt + Math.random() * 16) % 16 | 0;
-                    dt = Math.floor(dt / 16);
-                    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
-                });
-                return [2 /*return*/, uuid.toUpperCase()];
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.httpClientService.get({ controller: this.controller + "/fetch-missing-files" }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                    case 2:
+                        error_1 = _a.sent();
+                        console.log(error_1.message);
+                        return [2 /*return*/, null];
+                    case 3: return [2 /*return*/];
+                }
             });
         });
     };
-    GeneralService.prototype.isGuid = function (text) {
-        // Bir GUID'nin genellikle belirli bir deseni vardır
-        var guidPattern = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
-        // Metni belirtilen desenle karşılaştırarak kontrol et
-        return guidPattern.test(text);
-    };
-    GeneralService.prototype.whichRowIsInvalid = function (form) {
-        var invalidFields = '';
-        Object.keys(form.controls).forEach(function (controlName) {
-            var control = form.get(controlName);
-            if (control && control.invalid) {
-                invalidFields += controlName + "\n";
-            }
+    DirectServiceService.prototype.updatePhoto = function (itemCodes) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response, error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.httpClientService.post({ controller: this.controller + "/update-product-images" }, itemCodes).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                    case 2:
+                        error_2 = _a.sent();
+                        console.log(error_2.message);
+                        return [2 /*return*/, null];
+                    case 3: return [2 /*return*/];
+                }
+            });
         });
-        if (invalidFields) {
-            this.toasterService.error("Form Alan\u0131 Ge\u00E7ersiz:\n" + invalidFields);
-        }
     };
-    GeneralService.prototype.getCurrentDatetime = function () {
-        var datetime = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss');
-        return datetime;
-    };
-    GeneralService = __decorate([
+    DirectServiceService = __decorate([
         core_1.Injectable({
             providedIn: 'root'
         })
-    ], GeneralService);
-    return GeneralService;
+    ], DirectServiceService);
+    return DirectServiceService;
 }());
-exports.GeneralService = GeneralService;
+exports.DirectServiceService = DirectServiceService;

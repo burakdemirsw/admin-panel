@@ -805,7 +805,7 @@ var OrderOperationComponent = /** @class */ (function () {
                         updated_product = _a.sent();
                         if (!(this.checkForm.get('quantity').value == null || this.checkForm.get('quantity').value == 1)) return [3 /*break*/, 3];
                         if (!((this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-')) && this.checkForm.valid)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.onSubmit(productModel)];
+                        return [4 /*yield*/, this.onSubmit(updated_product)];
                     case 2:
                         _a.sent();
                         _a.label = 3;

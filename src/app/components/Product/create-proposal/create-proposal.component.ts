@@ -175,9 +175,6 @@ export class CreateProposalComponent implements OnInit {
     // this.toasterService.info(this.activeIndex.toString())
   }
 
-
-
-
   //--------------------------------------------------------------------------- TEKLİF KODLAR
   barcode: string;
   proposalId: number;
@@ -321,7 +318,7 @@ export class CreateProposalComponent implements OnInit {
       proposalProduct.discountRate1 = 0;
       proposalProduct.discountRate2 = 0;
 
-      proposalProduct.taxRate = 10;
+      proposalProduct.taxRate = productDetail[0].taxRate;
       var taxed_price = (proposalProduct.discountedPrice * (1 + (proposalProduct.taxRate / 100)));
       proposalProduct.totalTaxedPrice = proposalProduct.quantity * taxed_price;
       proposalProduct.totalPrice = proposalProduct.quantity *
@@ -333,7 +330,7 @@ export class CreateProposalComponent implements OnInit {
         (
           (proposalProduct.totalTaxedPrice * ((100 - proposalProduct.discountRate1) / 100)) - proposalProduct.discountRate2
         )
-
+      proposalProduct.totalTaxedPrice = parseFloat(proposalProduct.totalTaxedPrice.toFixed(2));
 
       var response = await this.productService.addProposalProduct(proposalProduct);
     }
@@ -588,6 +585,9 @@ export class CreateProposalComponent implements OnInit {
 
   //---------------------------------------------------- TOTAL FUNCS
 
+
+
+
   getTotalPrice3() {
     var number = this.addedProducts.reduce((acc, product) => acc + product.totalPrice, 0);
     number = ((number * ((100 - this.proposal.discountRate1) / 100)) - this.proposal.discountRate2)
@@ -612,6 +612,19 @@ export class CreateProposalComponent implements OnInit {
 
   } getTotalQuantity(): number {
     return this.addedProducts.reduce((acc, product) => acc + product.quantity, 0);
+  }
+
+  calculateNetTaxedPrice(product: ZTMSG_ProposalProduct, proposal: ZTMSG_Proposal): number {
+    const lineDiscountedPrice = (product.price || 0) * (1 - product.discountRate1 / 100) - product.discountRate2;
+    const generalDiscountedPrice = lineDiscountedPrice * (1 - (proposal.discountRate1 || 0) / 100) - (proposal.discountRate2 || 0);
+    const totalPrice = generalDiscountedPrice * product.quantity;
+    const totalTaxedPrice = totalPrice * (1 + product.taxRate / 100);
+    return parseFloat(totalTaxedPrice.toFixed(2));
+  }
+
+
+  getTotalTax_2(): number {
+    return this.addedProducts.reduce((acc, product) => acc + ((product.totalPrice * (product.taxRate / 100))), 0);
   }
 
   getTotalTax(): number {

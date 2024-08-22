@@ -4,6 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToasterService } from '../ui/toaster.service';
+import { HttpClientService } from '../http-client.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,8 @@ export class GeneralService {
     private spinnerService: NgxSpinnerService,
     private router: Router,
     private toasterService: ToasterService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private httpClientService: HttpClientService
   ) { }
 
   focusNextInput(nextInputId: string) {
@@ -98,4 +100,7 @@ export class GeneralService {
     const datetime = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss');
     return datetime;
   }
+
+
+
 }

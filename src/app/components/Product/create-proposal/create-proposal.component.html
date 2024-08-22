@@ -88,6 +88,9 @@
               <th pSortableColumn="taxRate">
                 KDV <p-sortIcon field="taxRate"></p-sortIcon>
               </th>
+              <th>
+                KDV (₺)
+              </th>
 
               <th pSortableColumn="totalTaxedPrice">
                 K.Total <p-sortIcon field="totalTaxedPrice"></p-sortIcon>
@@ -121,6 +124,10 @@
               <td style="cursor: pointer;" (click)="openUpdateDialog(product)">{{ product.discountedPrice }}</td>
               <td style="cursor: pointer;" (click)="openUpdateDialog(product)">{{ product.totalPrice }}</td>
               <td style="cursor: pointer;" (click)="openUpdateDialog(product)">{{ product.taxRate }}</td>
+              <td style="cursor: pointer;" (click)="openUpdateDialog(product)">
+                {{ ((product.taxRate/100)* product.totalPrice).toFixed(2) }}
+              </td>
+
               <td style="cursor: pointer;" (click)="openUpdateDialog(product)">{{ product.totalTaxedPrice }}</td>
 
 
@@ -148,8 +155,11 @@
               <td colspan="5" class="text-right">
                 {{getTotalQuantity() }} Adet
               </td>
+
               <td colspan="2" class="text-right"> {{getTotal() }} </td>
-              <td colspan="2" class="text-right"> {{getTotalTaxedPrice() }}</td>
+              <td class="text-right"> {{getTotalTax_2().toFixed(2) }} </td>
+
+              <td colspan="2" class="text-right"> {{getTotalTaxedPrice()}}</td>
             </tr>
           </ng-template>
         </p-table>
@@ -650,9 +660,6 @@
       </p-table>
     </p-dialog>
 
-
-
-
     <!-- TOPLAM------------------------------------------------------------------------------------------------------------>
     <div class="card mb-3" *ngIf="addedProducts.length>0">
       <div class="card-body">
@@ -668,30 +675,36 @@
               </tr>
 
               <tr>
-                <th scope="row">Ara Toplam</th>
+                <th scope="row">Ara Toplam <small class="text-muted">KDVSİZ</small>
+                </th>
                 <td>
                   {{getTotal() }}
                 </td>
               </tr>
               <tr>
-                <th scope="row">Dip İskonto (%)</th>
-                <td>%{{ this.proposal.discountRate1}}</td>
+                <th scope="row">Dip İskonto (%)
+                </th>
+                <td>%{{ this.proposal.discountRate1}} <span style="color: red" *ngIf=" this.proposal.discountRate1">|
+                    {{(getTotal()*this.proposal.discountRate1/100).toFixed(2)}}₺ </span></td>
               </tr>
               <tr>
                 <th scope="row">Dip İskonto (₺)</th>
-                <td>₺{{ this.proposal.discountRate2}}</td>
+                <td>₺{{ this.proposal.discountRate2}}
+                </td>
               </tr>
               <tr>
-                <th scope="row">Toplam</th>
+                <th scope="row">Toplam <small class="text-muted">KDVSİZ</small></th>
                 <td>{{ getTotalPrice3() | currency : "₺" }}</td>
               </tr>
               <tr>
                 <th scope="row">KDV</th>
-                <td>{{ getTotalTax() | currency : "₺" }}</td>
+                <td>{{ ((getTotalPrice3() /getTotal() )*getTotalTax_2() ).toFixed(2)| currency : "₺" }}</td>
               </tr>
               <tr>
                 <th scope="row">Genel Toplam</th>
-                <td>{{ getTotalPrice2() | currency : "₺" }}</td>
+                <td>
+                  {{ ((getTotalPrice3() /getTotal() )*getTotalTax_2() ) +  getTotalPrice3()   | currency : "₺" }}
+                </td>
               </tr>
             </tbody>
           </table>

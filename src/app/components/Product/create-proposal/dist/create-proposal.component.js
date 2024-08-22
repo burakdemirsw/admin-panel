@@ -387,13 +387,14 @@ var CreateProposalComponent = /** @class */ (function () {
                         proposalProduct.description = product.description;
                         proposalProduct.discountRate1 = 0;
                         proposalProduct.discountRate2 = 0;
-                        proposalProduct.taxRate = 10;
+                        proposalProduct.taxRate = productDetail[0].taxRate;
                         taxed_price = (proposalProduct.discountedPrice * (1 + (proposalProduct.taxRate / 100)));
                         proposalProduct.totalTaxedPrice = proposalProduct.quantity * taxed_price;
                         proposalProduct.totalPrice = proposalProduct.quantity *
                             ((proposalProduct.discountedPrice * ((100 - proposalProduct.discountRate1) / 100)) - proposalProduct.discountRate2);
                         proposalProduct.totalTaxedPrice = proposalProduct.quantity *
                             ((proposalProduct.totalTaxedPrice * ((100 - proposalProduct.discountRate1) / 100)) - proposalProduct.discountRate2);
+                        proposalProduct.totalTaxedPrice = parseFloat(proposalProduct.totalTaxedPrice.toFixed(2));
                         return [4 /*yield*/, this.productService.addProposalProduct(proposalProduct)];
                     case 2:
                         response = _a.sent();
@@ -779,6 +780,16 @@ var CreateProposalComponent = /** @class */ (function () {
     };
     CreateProposalComponent.prototype.getTotalQuantity = function () {
         return this.addedProducts.reduce(function (acc, product) { return acc + product.quantity; }, 0);
+    };
+    CreateProposalComponent.prototype.calculateNetTaxedPrice = function (product, proposal) {
+        var lineDiscountedPrice = (product.price || 0) * (1 - product.discountRate1 / 100) - product.discountRate2;
+        var generalDiscountedPrice = lineDiscountedPrice * (1 - (proposal.discountRate1 || 0) / 100) - (proposal.discountRate2 || 0);
+        var totalPrice = generalDiscountedPrice * product.quantity;
+        var totalTaxedPrice = totalPrice * (1 + product.taxRate / 100);
+        return parseFloat(totalTaxedPrice.toFixed(2));
+    };
+    CreateProposalComponent.prototype.getTotalTax_2 = function () {
+        return this.addedProducts.reduce(function (acc, product) { return acc + ((product.totalPrice * (product.taxRate / 100))); }, 0);
     };
     CreateProposalComponent.prototype.getTotalTax = function () {
         return this.getTotalPrice2() - this.getTotalPrice3();
