@@ -559,41 +559,41 @@ export class ProductService {
 
     return response;
   }
-  async createProposalReport(request: number): Promise<any> {
+  async createProposalReport(request: string, sendMail: boolean): Promise<any> {
     try {
-      var response: any = await this.httpClientService.get<any>({ controller: "Products/create-proposal-report", responseType: 'arraybuffer' }, request.toString()).toPromise();
+      var response: any = await this.httpClientService.get<any>({ controller: "Products/create-proposal-report", responseType: 'arraybuffer' }, request.toString() + "/" + sendMail).toPromise();
       if (response) {
 
 
-        const file = new Blob([response], { type: 'application/pdf' });
-        const fileURL = URL.createObjectURL(file);
+        // const file = new Blob([response], { type: 'application/pdf' });
+        // const fileURL = URL.createObjectURL(file);
 
-        // Create a temporary link element
-        const downloadLink = document.createElement('a');
-        downloadLink.href = fileURL;
-        downloadLink.download = "marketplace-order-cargo-barcode.pdf";  // Set the filename for the download
-        document.body.appendChild(downloadLink); // Append to body
-        downloadLink.click();  // Trigger the download
-        document.body.removeChild(downloadLink); // Remove the link after triggering the download
-        URL.revokeObjectURL(fileURL); // Clean up the URL object
+        // // Create a temporary link element
+        // const downloadLink = document.createElement('a');
+        // downloadLink.href = fileURL;
+        // downloadLink.download = "marketplace-order-cargo-barcode.pdf";  // Set the filename for the download
+        // document.body.appendChild(downloadLink); // Append to body
+        // downloadLink.click();  // Trigger the download
+        // document.body.removeChild(downloadLink); // Remove the link after triggering the download
+        // URL.revokeObjectURL(fileURL); // Clean up the URL object
 
 
 
-        const _file = new Blob([response], { type: 'application/pdf' });
-        const _fileURL = URL.createObjectURL(_file);
+        // const _file = new Blob([response], { type: 'application/pdf' });
+        // const _fileURL = URL.createObjectURL(_file);
 
-        // Create an iframe element
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';  // Hide the iframe
-        iframe.src = _fileURL;
+        // // Create an iframe element
+        // const iframe = document.createElement('iframe');
+        // iframe.style.display = 'none';  // Hide the iframe
+        // iframe.src = _fileURL;
 
-        // Append the iframe to the body
-        document.body.appendChild(iframe);
+        // // Append the iframe to the body
+        // document.body.appendChild(iframe);
 
-        // Wait until the iframe is loaded, then call print
-        iframe.onload = () => {
-          iframe.contentWindow?.print();
-        };
+        // // Wait until the iframe is loaded, then call print
+        // iframe.onload = () => {
+        //   iframe.contentWindow?.print();
+        // };
         this.toasterService.success("Teklifiniz Gönderildi")
       } else {
         this.toasterService.error("Hata Alındı ")

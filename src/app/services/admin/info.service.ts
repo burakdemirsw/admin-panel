@@ -5,7 +5,8 @@ import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 import {
   CompanyInfo, CargoInfo, DatabaseInfo, NebimInfo, MarketPlaceInfo,
-  ReportInfo, MailInfo, PaymentInfo, Info, NebimUserInfo, MenuItem, MenuInfo, CargoCompanyInfo, MarketplaceCompanyInfo
+  ReportInfo, MailInfo, PaymentInfo, Info, NebimUserInfo, MenuItem, MenuInfo, CargoCompanyInfo, MarketplaceCompanyInfo,
+  InvoiceIntegratorInfo
 } from 'src/app/models/model/company/companyInfo';
 
 @Injectable({
@@ -290,6 +291,29 @@ export class InfoService {
   }
 
   //----
+
+
+  // InvoiceIntegratorInfo methods
+  async addInvoiceEntegratorInfo(model: InvoiceIntegratorInfo): Promise<any> {
+    const response = await this.httpClientService.post<any>({ controller: 'Infos/add-invoice-integrator-info' }, model).toPromise();
+    return response;
+  }
+
+  async updateInvoiceEntegratorInfo(model: InvoiceIntegratorInfo): Promise<any> {
+    const response = await this.httpClientService.post<any>({ controller: 'Infos/update-invoice-integrator-info' }, model).toPromise();
+    return response;
+  }
+
+  async deleteInvoiceEntegratorInfo(id: number): Promise<any> {
+    const response = await this.httpClientService.get<any>({ controller: `Infos/delete-invoice-integrator-info/${id}` }).toPromise();
+    return response;
+  }
+
+  async getInvoiceEntegratorInfos(): Promise<any> {
+    const response: InvoiceIntegratorInfo[] = await this.httpClientService.get_new<InvoiceIntegratorInfo[]>({ controller: 'Infos/get-invoice-integrator-infos' }).toPromise();
+    return response;
+  }
+
   async sendTestMail(request: any): Promise<any> {
     const response = await this.httpClientService.post<any>({ controller: 'direct-request/send-mail' }, request).toPromise();
     return response;

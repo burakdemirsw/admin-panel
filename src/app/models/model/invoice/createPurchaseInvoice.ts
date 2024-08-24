@@ -16,6 +16,8 @@ export class CreatePurchaseInvoice {
 }
 export class InvoiceProcess {
   id: string; // Guid in TypeScript is represented as a string
+  processType: string;
+  userId: number;
   processCode: string;
   currAccCode: string;
   vendorCode: string;

@@ -13,7 +13,8 @@ import { ProductService } from 'src/app/services/admin/product.service';
 import { OrderService } from '../../../services/admin/order.service';
 
 import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
-import { BrowserMultiFormatReader, Exception } from '@zxing/library';
+import { Exception } from '@zxing/library';
+import { MenuItem } from 'primeng/api';
 import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
 import { OrderStatus } from 'src/app/models/model/order/orderStatus';
@@ -41,6 +42,7 @@ export class OrderOperationComponent implements OnInit {
   infoProducts: CreatePurchaseInvoice[] = [];
   lastCollectedProducts: CollectedProduct[] = [];
   productsToCollect: ProductOfOrder[] = [];
+  selectedProducts: ProductOfOrder[] = [];
   _productsToCollect: ProductOfOrder[] = [];
   collectedProducts: ProductOfOrder[] = [];
   process: boolean = false;
@@ -64,9 +66,19 @@ export class OrderOperationComponent implements OnInit {
   ];
   _pageDescription: boolean = false;
   selectedInvoiceType: any;
-  private codeReader: BrowserMultiFormatReader;
   _visible: boolean;
   _visible2: boolean;
+
+  items: MenuItem[] = [
+    {
+      label: 'Seçilenleri Topla',
+      command: () => {
+        this.collectSelectedProducts();
+      }
+    }
+  ];
+
+
   showDialog() {
     this._visible = true;
   }
@@ -85,7 +97,7 @@ export class OrderOperationComponent implements OnInit {
     private title: Title,
     private sanitizer: DomSanitizer,
   ) {
-    this.codeReader = new BrowserMultiFormatReader();
+
   }
   //#region  params
   isBPTransferForm: boolean = false;
@@ -617,6 +629,17 @@ export class OrderOperationComponent implements OnInit {
     }
   }
 
+  async collectSelectedProducts() {
+    for (var product of this.selectedProducts) {
+      this.checkForm.reset();
+      this.checkForm.get('shelfNo').setValue(product.shelfNo);
+      this.checkForm.get('barcode').setValue(product.barcode);
+      this.checkForm.get('quantity').setValue(product.quantity);
+
+      await this.onSubmit(this.checkForm.value);
+
+    }
+  }
   async onSubmit(productModel: CountProduct): Promise<any> {
 
     var operationType = this.orderNo.split('-')[1]

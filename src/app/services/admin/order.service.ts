@@ -79,9 +79,9 @@ export class OrderService {
   }
 
   //fatura listesini çeker
-  async getInvoiceList(processCode: string): Promise<Invoice_VM[]> {
+  async getInvoiceList(processType: string, processCode: string): Promise<Invoice_VM[]> {
     const data = await this.httpClientService
-      .get<Invoice_VM>({ controller: 'Order/GetInvoiceList' }, processCode) //Get_InvoicesList
+      .get<Invoice_VM>({ controller: 'Order/get-process-list' }, processType + '/' + processCode,) //Get_InvoicesList
       .toPromise();
     return data;
   }

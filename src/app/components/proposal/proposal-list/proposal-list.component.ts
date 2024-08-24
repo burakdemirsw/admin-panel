@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Proposal_VM } from 'src/app/models/model/product/proposalProduct';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
@@ -52,47 +52,47 @@ export class ProposalListComponent implements OnInit {
   }
   async createProposalReport(proposal: Proposal_VM) {
 
-    if (window.confirm("Teklifi Oluşturmak İstediğinize Emin Misiniz?")) {
-      var data = await this.productService.createProposalReport(proposal.id);
-      if (data) {
+    // if (window.confirm("Teklifi Oluşturmak İstediğinize Emin Misiniz?")) {
+    //   var data = await this.productService.createProposalReport(proposal.id);
+    //   if (data) {
 
 
-        const file = new Blob([data], { type: 'application/pdf' });
-        const fileURL = URL.createObjectURL(file);
+    //     const file = new Blob([data], { type: 'application/pdf' });
+    //     const fileURL = URL.createObjectURL(file);
 
-        // Create a temporary link element
-        const downloadLink = document.createElement('a');
-        downloadLink.href = fileURL;
-        downloadLink.download = "marketplace-order-cargo-barcode.pdf";  // Set the filename for the download
-        document.body.appendChild(downloadLink); // Append to body
-        downloadLink.click();  // Trigger the download
-        document.body.removeChild(downloadLink); // Remove the link after triggering the download
-        URL.revokeObjectURL(fileURL); // Clean up the URL object
+    //     // Create a temporary link element
+    //     const downloadLink = document.createElement('a');
+    //     downloadLink.href = fileURL;
+    //     downloadLink.download = "marketplace-order-cargo-barcode.pdf";  // Set the filename for the download
+    //     document.body.appendChild(downloadLink); // Append to body
+    //     downloadLink.click();  // Trigger the download
+    //     document.body.removeChild(downloadLink); // Remove the link after triggering the download
+    //     URL.revokeObjectURL(fileURL); // Clean up the URL object
 
 
 
-        const _file = new Blob([data], { type: 'application/pdf' });
-        const _fileURL = URL.createObjectURL(_file);
+    //     const _file = new Blob([data], { type: 'application/pdf' });
+    //     const _fileURL = URL.createObjectURL(_file);
 
-        // Create an iframe element
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';  // Hide the iframe
-        iframe.src = _fileURL;
+    //     // Create an iframe element
+    //     const iframe = document.createElement('iframe');
+    //     iframe.style.display = 'none';  // Hide the iframe
+    //     iframe.src = _fileURL;
 
-        // Append the iframe to the body
-        document.body.appendChild(iframe);
+    //     // Append the iframe to the body
+    //     document.body.appendChild(iframe);
 
-        // Wait until the iframe is loaded, then call print
-        iframe.onload = () => {
-          iframe.contentWindow?.print();
-        };
-        this.toasterService.success("Teklif YAZDIRILDI");
+    //     // Wait until the iframe is loaded, then call print
+    //     iframe.onload = () => {
+    //       iframe.contentWindow?.print();
+    //     };
+    //     this.toasterService.success("Teklif YAZDIRILDI");
 
-      } else {
-        this.toasterService.error("Teklif YAZDIRILAMADI");
-      }
+    //   } else {
+    //     this.toasterService.error("Teklif YAZDIRILAMADI");
+    //   }
 
-    }
+    // }
   }
   async routeNewPage() {
     var uuid = await this.generalService.generateGUID();

@@ -4,6 +4,7 @@ import { CargoService } from './cargo.service';
 import { ToasterService } from '../ui/toaster.service';
 import { HttpClientService } from '../http-client.service';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
+import { TransferredOrder } from '../../models/model/marketplace/transferredOrder';
 
 @Injectable({
   providedIn: 'root'
@@ -47,4 +48,10 @@ export class MarketplaceService {
 
   }
 
+  async getTransferredOrders(): Promise<TransferredOrder[]> {
+    return await this.httpClientService.get<TransferredOrder>({ controller: "Marketplaces/get-transferred-orders" }).toPromise();
+  }
+  async changeTransferredOrderStatus(id: string, status: boolean): Promise<boolean> {
+    return await this.httpClientService.get_new<boolean>({ controller: "Marketplaces/change-transferred-order-status" + "/" + id + "/" + status }).toPromise();
+  }
 }

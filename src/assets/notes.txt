@@ -1,0 +1,43 @@
+RTS Sistemi güncellemeler
+PROCESS
+20.Process’e userID ekle
+1.Teklif , fatura , sipariş irsaliye bu alanlar yeni tanlolara aktarılcak
+2.İhracat ,havuzda kalan, raflar arası transfer sipariş toplama  bu gibi alanlar yeni modüler sisteme geçicek ilk önce ofis ve depo seçicek daha sonra sadece toplama işlemleri yapıcak
+5.create invoice -> create process olacak tablo yapısı değişcek processes tablosu eklencek
+15.Teklif panelinde yapılan teklifi nebime at
+16.Teklifi Siparişe Çevir
+17.Teklifi Faturaya Çevir kodları yazılcak
+ANASAYFA
+3.Anasayfaya aktarılan aktarılmayan fatura bilgileri getirilcek , sorgular yeniden yazılcak.
+RAPORLAR
+4.Raporlar Eklencek (Ürün envanter sorgula , en çok satanlar vs.)
+YENİ EKRANLAR
+6.Gider Pusulası Ekranı Yazılcak
+7.Ödeme Operasyonları test edilcek daha sonra canlıca denencek
+9.Panel Dökümantasyonları yazılcak
+10.Sms atma modülü yazılabilri
+KULLANICILAR
+8.Kullanıcı şifre yenileme kodları yazılcak mail ile
+TASARIM
+11.Menülere Sıra Eklencek
+12.User-list de filtrelerken hata alıyotr
+18.Sayfaların üstünde toolbar kullan
+1.Login ekranındayken menü çekme sorgusunu kullanma ya da oradaki sorguya eğer user id yoksa çekme dencek
+2.Kaydırma esnasında kapanma sorununa bakılcak
+AYARLAR
+13.Beymen InvoiceUrl’i ayarlara çek ordan kullan
+14.Backend controller ı da temize çek
+19.Sayım Ekle Çıkar ve process olaylarını kadir abiye takip ettir
+1.Ayarlara E-Arşiv Entegratör Bilgileri Çekilcek
+2.Sabit tablolar yapılcak ve bunlardan veri çekilcek
+3.Ofis ve Depo alanları  , döviz kuru , satış fiyat tipleri bu alanlar db den gelicek
+KARGO
+1.Kargo güncel verilerini çeken metodlar yazılcak
+2.Create-cargo’ya yeni tüm kargolar eklencek
+3.Servisler sayfası yapılcak daha sorna burdan kontrol edilcek
+Genel Ayarlar
+
+
+
+
+

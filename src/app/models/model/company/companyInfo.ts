@@ -24,6 +24,8 @@ export class CompanyInfo extends BaseEntity {
   documentsFolderPath?: string;
   invoiceFolderPath?: string;
   nebimUrl?: string;
+  photoFolderUrl?: string;
+  googleDriveFolderId?: string;
 }
 
 export class CargoInfo {
@@ -147,4 +149,10 @@ export interface MarketplaceCompanyInfo {
 export interface ProductPriceList_VM {
   code: string;
   description: Date;
+}
+export class InvoiceIntegratorInfo {
+  id: number;
+  description?: string;
+  userName?: string;
+  password?: string;
 }

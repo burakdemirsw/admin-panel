@@ -132,6 +132,7 @@ import { AddProductToShelfComponent } from './components/Warehouse/warehosue-she
 import { AddProductToShelfListComponent } from './components/Warehouse/warehosue-shelf-count/add-product-to-shelf-list/add-product-to-shelf-list.component';
 import { IdeasoftOffersComponent } from './components/special-panels/ideasoft-offers/ideasoft-offers.component';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { TransferredOrdersComponent } from './components/marketplace/transferred-orders/transferred-orders.component';
 @NgModule({
 
   declarations: [
@@ -217,7 +218,8 @@ import { FloatLabelModule } from 'primeng/floatlabel';
     ShelfComponent,
     ProductStockReportComponent,
     AddProductToShelfComponent,
-    AddProductToShelfListComponent
+    AddProductToShelfListComponent,
+    TransferredOrdersComponent
 
   ],
 

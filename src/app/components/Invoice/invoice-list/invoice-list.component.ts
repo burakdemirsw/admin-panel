@@ -24,6 +24,8 @@ export class InvoiceListComponent implements OnInit {
 
   ) { }
   offices: any[] = ["Alış", "Satış"]
+  processCodes: string[] = ["WS", "BP", "R", "ws", "bp", "r", "prws"]
+  processTypes: string[] = ["invoice", "order", "proposal"]
   barcode: string = null;
   quantity: string = null;
   currentPage: number = 1; // Başlangıçta ilk sayfayı göster
@@ -32,18 +34,24 @@ export class InvoiceListComponent implements OnInit {
   invoices: Invoice_VM[]
   selectedInvoices: Invoice_VM[]
   processCode: string;
+  processType: string;
   async ngOnInit() {
 
     this.activatedRoute.params.subscribe(async params => {
 
-      if (params["processCode"]) {
+      if (this.processCodes.includes(params["processCode"]) && this.processTypes.includes(params["processType"])) {
         this.processCode = params["processCode"].toUpperCase();
-        if (this.processCode == 'R') {
-          this.headerService.updatePageTitle("Faturalar (R))");
-          await this.getInvoiceList('R');
-        } else {
-          this.headerService.updatePageTitle("Faturalar (BP))");
-          await this.getInvoiceList('BP');
+        this.processType = params["processType"];
+
+        if (this.processCode == 'R' && this.processType == 'invoice') {
+          this.headerService.updatePageTitle("Faturalar (R)");
+          await this.getInvoiceList();
+        } else if ((this.processCode == 'BP' && this.processType == 'invoice')) {
+          this.headerService.updatePageTitle("Faturalar (BP)");
+          await this.getInvoiceList();
+        } else if ((this.processCode == 'R' && this.processType == 'proposal')) {
+          this.headerService.updatePageTitle("Teklifler (R)");
+          await this.getInvoiceList();
         }
       }
 
@@ -78,7 +86,7 @@ export class InvoiceListComponent implements OnInit {
   }
 
   async newSaleInvoice() {
-    this.router.navigate(['/create-invoice/0/r']);
+    this.router.navigate([`/create-process/${this.processType}/${this.processCode}/0`]);
   }
   routeToPage(orderNo: string) {
     if (orderNo.startsWith('BPI')) {
@@ -88,9 +96,9 @@ export class InvoiceListComponent implements OnInit {
     }
   }
 
-  async getInvoiceList(processCode: string): Promise<any> {
+  async getInvoiceList(): Promise<any> {
     try {
-      this.invoices = await this.orderService.getInvoiceList(processCode);
+      this.invoices = await this.orderService.getInvoiceList(this.processType, this.processCode);
     } catch (error: any) {
       console.log(error.message);
     }
@@ -102,15 +110,15 @@ export class InvoiceListComponent implements OnInit {
     }
   }
   goPage(id: string) {
-    var url = `/create-invoice/0/${this.processCode == 'R' ? 'r' : 'bp'}`;
-    this.router.navigate([url, id])
+    this.router.navigate([`/create-process/${this.processType}/${this.processCode}/0/${id}`]);
+
   }
 
   async deleteInvoice(id: string) {
     var response = await this.orderService.deleteInvoiceProcess(id);
     if (response) {
       this.toasterService.success("Fatura Silindi");
-      this.getInvoiceList(this.processCode);
+      this.getInvoiceList();
     } else {
       this.toasterService.error("Fatura Silinemedi");
     }

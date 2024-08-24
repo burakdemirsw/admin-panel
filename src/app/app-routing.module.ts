@@ -71,6 +71,7 @@ import { ProductStockReportComponent } from './components/Product/product-stock-
 import { AddProductToShelfComponent } from './components/Warehouse/warehosue-shelf-count/add-product-to-shelf/add-product-to-shelf.component';
 import { AddProductToShelfListComponent } from './components/Warehouse/warehosue-shelf-count/add-product-to-shelf-list/add-product-to-shelf-list.component';
 import { IdeasoftOffersComponent } from './components/special-panels/ideasoft-offers/ideasoft-offers.component';
+import { TransferredOrdersComponent } from './components/marketplace/transferred-orders/transferred-orders.component';
 
 
 const routes: Routes = [
@@ -218,12 +219,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'create-invoice/:activeIndex/:processCode',
+    path: 'create-process/:processType/:processCode/:activeIndex',
     component: CreateSaleOrderComponent,
     canActivate: [AuthGuard],
   },
   {
-    path: 'create-invoice/:activeIndex/:processCode/:processId',
+    path: 'create-process/:processType/:processCode/:activeIndex/:processId',
     component: CreateSaleOrderComponent,
     canActivate: [AuthGuard],
   },
@@ -280,7 +281,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'invoice-list/:processCode',
+    path: 'process-list/:processType/:processCode',
     component: InvoiceListComponent,
     canActivate: [AuthGuard],
   },
@@ -329,6 +330,7 @@ const routes: Routes = [
   { path: 'ideasoft-offers', component: IdeasoftOffersComponent, canActivate: [AuthGuard] },
   { path: 'authorization', component: AuthorizationComponent, canActivate: [AuthGuard] },
   { path: 'role-list', component: RoleListComponent, canActivate: [AuthGuard] },
+  { path: 'transferred-orders', component: TransferredOrdersComponent, canActivate: [AuthGuard] },
 
   //------------------------------------------------------------------------- PERAKENDE
   { path: 'ideasoft/auth', component: IdeasoftComponent, pathMatch: 'prefix', runGuardsAndResolvers: 'always' },

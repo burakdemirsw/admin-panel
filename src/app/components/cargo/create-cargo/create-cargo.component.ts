@@ -67,7 +67,7 @@ export class CreateCargoComponent implements OnInit {
   cargoForm: FormGroup
   packagingTypes: any[] = [{ name: 'DOSYA', code: '1' }, { name: 'PAKET', code: '3' }, { name: 'KOLİ', code: '4' }]
   shipmentServiceTypes: any[] = [{ name: 'GÖNDERİCİ ÖDEMELİ', code: '1' }, { name: 'ALICI ÖDEMELİ', code: '2' }]
-  cargoFirms: any[] = [{ name: 'Mng', code: 1 }, { name: 'Aras', code: 2 }, { name: 'Yurtiçi', code: 3 }]
+  cargoFirms: any[] = [{ name: 'Mng', code: 1 }, { name: 'Aras', code: 2 }, { name: 'Yurtiçi', code: 3 }, { name: 'Arşın', code: 4 }, { name: 'Kargola', code: 45 }]
 
 
   generateRandomNumber(): number {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CargoCompanyInfo, CargoInfo, MailInfo, MarketplaceCompanyInfo, MarketPlaceInfo, MenuInfo, NebimInfo, NebimUserInfo, PaymentInfo } from 'src/app/models/model/company/companyInfo';
+import { CargoCompanyInfo, CargoInfo, InvoiceIntegratorInfo, MailInfo, MarketplaceCompanyInfo, MarketPlaceInfo, MenuInfo, MenuItem, NebimInfo, NebimUserInfo, PaymentInfo } from 'src/app/models/model/company/companyInfo';
 import { InfoService } from 'src/app/services/admin/info.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { ProductPriceList_VM } from '../../models/model/company/companyInfo';
@@ -35,6 +35,7 @@ export class PagesInfoComponent implements OnInit {
     this.createMenuInfoForm();
     this.createCargoCompanyInfoForm();
     this.createMarketPlaceCompanyInfoForm();
+    this.createInvoiceEntegratorInfoForm();
 
     this.loadMarketPlaceCompanyInfos();
     this.loadMenuInfos();
@@ -48,6 +49,7 @@ export class PagesInfoComponent implements OnInit {
     this.loadNebimUserInfos();
     this.createTestMailForm();
     this.loadCargoCompanyInfos();
+    this.loadInvoiceEntegratorInfos();
     this.loadBasePriceCodes()
   }
 
@@ -64,6 +66,11 @@ export class PagesInfoComponent implements OnInit {
   menuInfoForm: FormGroup;
   cargoCompanyInfoForm: FormGroup;
   marketPlaceCompanyInfoForm: FormGroup;
+  invoiceEntegratorInfoForm: FormGroup;
+
+  invoiceEntegratorInfos: InvoiceIntegratorInfo[] = [];
+  updatedInvoiceEntegratorInfo: InvoiceIntegratorInfo;
+
   marketPlaceCompanies: MarketplaceCompanyInfo[] = [];
   menuInfos: MenuInfo[] = [];
   nebimInfos: NebimInfo[] = [];
@@ -73,10 +80,15 @@ export class PagesInfoComponent implements OnInit {
   cargoCompanies: CargoCompanyInfo[] = [];
   paymentInfos: PaymentInfo[] = [];
   mailInfos: MailInfo[] = [];
-
   testMailDialog: boolean = false;
   testMailForm: FormGroup;
 
+  integrators: string[] = [
+    "E-Finans E-Arşiv",
+    "E-Finans E-Fatura",
+    "Doğan E-Arşiv",
+    "Doğam E-Fatura"
+  ]
   createTestMailForm() {
     this.testMailForm = this.fb.group({
       mail: ['', [Validators.required, Validators.email]],
@@ -131,6 +143,8 @@ export class PagesInfoComponent implements OnInit {
       isOrderBase: [null],
       isCreditSale: [null],
       warehouseCode: [null],
+      photoFolderUrl: [null],
+      googleDriveFolderId: [null]
     });
   }
   createNebimInfoForm() {
@@ -226,6 +240,15 @@ export class PagesInfoComponent implements OnInit {
       isActive: [true]
     });
   }
+  createInvoiceEntegratorInfoForm() {
+    this.invoiceEntegratorInfoForm = this.fb.group({
+      id: [0],
+      description: [null, Validators.required],
+      userName: [null, Validators.required],
+      password: [null, Validators.required]
+    });
+  }
+
   async loadCompanyInfo() {
     try {
       const data = await this.infoService.getCompanyInfos();
@@ -880,6 +903,63 @@ export class PagesInfoComponent implements OnInit {
   }
   //-------------------------------------------;
 
+  async loadInvoiceEntegratorInfos() {
+    try {
+      this.invoiceEntegratorInfos = await this.infoService.getInvoiceEntegratorInfos();
+    } catch (error) {
+      this.toasterService.error('Fatura entegratör bilgileri yüklenirken bir hata oluştu');
+    }
+  }
+
+  async onSubmitInvoiceEntegratorInfo() {
+    if (this.invoiceEntegratorInfoForm.invalid) {
+      this.toasterService.error('Lütfen tüm gerekli alanları doldurun');
+      return;
+    }
+
+    try {
+      let result;
+      if (this.updatedInvoiceEntegratorInfo) {
+        // Update existing record
+        result = await this.infoService.updateInvoiceEntegratorInfo(this.invoiceEntegratorInfoForm.value);
+      } else {
+        // Add new record
+        this.invoiceEntegratorInfoForm.value.id = 0; // ensure ID is set to 0 for new entries
+        result = await this.infoService.addInvoiceEntegratorInfo(this.invoiceEntegratorInfoForm.value);
+      }
+
+      if (result) {
+        this.toasterService.success('Fatura entegratör bilgisi başarıyla kaydedildi');
+        this.loadInvoiceEntegratorInfos();
+        this.updatedInvoiceEntegratorInfo = null;
+        this.invoiceEntegratorInfoForm.reset();
+      } else {
+        this.toasterService.error('Fatura entegratör bilgisi kaydedilemedi');
+      }
+    } catch (error) {
+      this.toasterService.error('Fatura entegratör bilgisi kaydedilirken bir hata oluştu');
+    }
+  }
+
+  onEditInvoiceEntegratorInfo(invoiceEntegrator: InvoiceIntegratorInfo) {
+    this.updatedInvoiceEntegratorInfo = invoiceEntegrator;
+    this.invoiceEntegratorInfoForm.patchValue(invoiceEntegrator);
+  }
+
+  async onDeleteInvoiceEntegratorInfo(id: number) {
+    try {
+      const result = await this.infoService.deleteInvoiceEntegratorInfo(id);
+      if (result) {
+        this.toasterService.success('Fatura entegratör bilgisi başarıyla silindi');
+        this.loadInvoiceEntegratorInfos();
+      } else {
+        this.toasterService.error('Fatura entegratör bilgisi silinemedi');
+      }
+    } catch (error) {
+      this.toasterService.error('Fatura entegratör bilgisi silinirken bir hata oluştu');
+    }
+  }
+  //-------------------------------------------
 
   async onSubmitTestMail() {
     try {

@@ -1,0 +1,77 @@
+<main id="main" class="main">
+  <section class="section">
+    <div class="card">
+      <p-table #dt2 [value]="orders" [(selection)]="orders" dataKey="id" [paginator]="true"
+        [rowsPerPageOptions]="[5, 10, 20]" [rows]="10" [tableStyle]="{ 'min-width': '70rem' }"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="currAccCode">Müşteri Kodu <p-sortIcon field="currAccCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="orderNumber">Sipariş Numarası <p-sortIcon field="orderNumber"></p-sortIcon>
+            </th>
+            <th pSortableColumn="description">Açıklama <p-sortIcon field="description"></p-sortIcon>
+            </th>
+            <th pSortableColumn="internalDescription">İç Açıklama <p-sortIcon field="internalDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="isBlocked">Bloke Edildi <p-sortIcon field="isBlocked"></p-sortIcon>
+            </th>
+            <th pSortableColumn="createdDate">Oluşturma Tarihi <p-sortIcon field="createdDate"></p-sortIcon>
+            </th>
+
+            <th>İşlemler</th>
+          </tr>
+          <tr>
+
+            <th>
+              <p-columnFilter type="text" field="currAccCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="orderNumber" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="description" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="internalDescription" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="boolean" field="isBlocked" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="date" field="createdDate" [showClearButton]="false"></p-columnFilter>
+            </th>
+
+            <th></th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-order>
+          <tr>
+
+            <td>{{ order.currAccCode }}</td>
+            <td>{{ order.orderNumber }}</td>
+            <td>{{ order.description }}</td>
+            <td>{{ order.internalDescription }}</td>
+            <td>
+              <button class="btn" [ngClass]="order.isBlocked ? 'btn-success' : 'btn-danger'">
+                <i [ngClass]="order.isBlocked ? 'fas fa-check' : 'fas fa-times'"></i>
+              </button>
+            </td>
+            <td>{{ order.createdDate | date : "dd.MM.yyyy HH:mm:ss" }}</td>
+            <td>
+              <div class="btn-group">
+
+                <button class="btn btn-danger" title="Siparişi Tekrar Aktarmayı Engelle"
+                  (click)="changeTransferredOrderStatus(order)">
+                  <i class="fa fa-ban" aria-hidden="true"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </section>
+</main>

@@ -462,11 +462,11 @@ export class CreateProposalComponent implements OnInit {
 
   async createProposalReport() {
 
-    if (window.confirm("Teklifi Oluşturmak İstediğinize Emin Misiniz?")) {
-      var data = await this.productService.createProposalReport(this.proposal.id);
+    // if (window.confirm("Teklifi Oluşturmak İstediğinize Emin Misiniz?")) {
+    //   var data = await this.productService.createProposalReport(this.proposal.id);
 
 
-    }
+    // }
   }
   async deleteAllPRoduct() {
     if (confirm("Tüm Ürünleri Silmek İstediğinize Emin Misiniz?")) {

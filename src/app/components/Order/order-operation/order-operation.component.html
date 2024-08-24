@@ -136,14 +136,25 @@
           <div class="card-body">
             <h5 class="card-title">Toplanacak Ürünler</h5>
             <div class="table-responsive">
-              <p-table [tableStyle]="{ 'min-width': '50rem' }" [value]="productsToCollect" class="table"
-                [paginator]="true" [rows]="10"
-                [globalFilterFields]="['shelfNo', 'itemCode', 'itemDescription', 'barcode', 'itemDim1Code', 'colorDescription', 'currentQty']">
+              <p-table #dt2 [value]="productsToCollect" [(selection)]="selectedProducts" dataKey="itemCode"
+                [paginator]="true" [rowsPerPageOptions]="[5, 10, 20]" [rows]="10"
+                [tableStyle]="{ 'min-width': '50rem' }"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+                <ng-template pTemplate="caption">
+                  <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
+                    <p-splitButton label="İşlemler" [model]="items" appendTo="body" />
 
 
-
+                  </div>
+                  <h5 *ngIf="selectedProducts.length > 0" style="text-align: left">
+                    {{ selectedProducts.length }}/{{ productsToCollect.length }} Adet
+                    Sipariş Seçildi
+                  </h5>
+                </ng-template>
                 <ng-template pTemplate="header">
                   <tr>
+                    <th>
+                    </th>
                     <th></th> <!-- Fotoğraf için boş başlık -->
                     <th pSortableColumn="shelfNo">
                       Raf Numarası
@@ -184,41 +195,46 @@
                     <th>İşlemler</th>
                   </tr>
                   <tr>
+                    <th style="width: 4rem">
+                      <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                    </th>
                     <th></th> <!-- Fotoğraf için boş başlık -->
                     <th>
-                      <p-columnFilter type="text" field="shelfNo" [showClearButton]="true"></p-columnFilter>
+                      <p-columnFilter type="text" field="shelfNo" [showClearButton]="false"></p-columnFilter>
                     </th>
                     <th>
-                      <p-columnFilter type="text" field="itemCode" [showClearButton]="true"></p-columnFilter>
+                      <p-columnFilter type="text" field="itemCode" [showClearButton]="false"></p-columnFilter>
                     </th>
                     <th>
-                      <p-columnFilter type="text" field="itemDescription" [showClearButton]="true"></p-columnFilter>
+                      <p-columnFilter type="text" field="itemDescription" [showClearButton]="false"></p-columnFilter>
                     </th>
                     <th>
-                      <p-columnFilter type="text" field="barcode" [showClearButton]="true"></p-columnFilter>
+                      <p-columnFilter type="text" field="barcode" [showClearButton]="false"></p-columnFilter>
                     </th>
                     <th>
-                      <p-columnFilter type="numeric" field="quantity" [showClearButton]="true"></p-columnFilter>
+                      <p-columnFilter type="numeric" field="quantity" [showClearButton]="false"></p-columnFilter>
                     </th>
                     <th>
-                      <p-columnFilter type="numeric" field="countedQty" [showClearButton]="true"></p-columnFilter>
+                      <p-columnFilter type="numeric" field="countedQty" [showClearButton]="false"></p-columnFilter>
                     </th>
                     <th>
-                      <p-columnFilter type="text" field="itemDim1Code" [showClearButton]="true"></p-columnFilter>
+                      <p-columnFilter type="text" field="itemDim1Code" [showClearButton]="false"></p-columnFilter>
                     </th>
                     <th>
-                      <p-columnFilter type="text" field="colorDescription" [showClearButton]="true"></p-columnFilter>
+                      <p-columnFilter type="text" field="colorDescription" [showClearButton]="false"></p-columnFilter>
                     </th>
                     <th>
-                      <p-columnFilter type="numeric" field="currentQty" [showClearButton]="true"></p-columnFilter>
+                      <p-columnFilter type="numeric" field="currentQty" [showClearButton]="false"></p-columnFilter>
                     </th>
                     <th></th>
                   </tr>
                 </ng-template>
 
-                <ng-template pTemplate="body" let-product let-i="index">
-                  <tr
-                    [ngClass]="{ 'green-row': product.colorDescription == '1', 'success-row': product.quantity === 0 }">
+                <ng-template pTemplate="body" let-product>
+                  <tr>
+                    <td>
+                      <p-tableCheckbox [value]="product"></p-tableCheckbox>
+                    </td>
                     <td>
                       <p-image src="{{ product.photoUrl }}" previewImageSrc="{{ product.photoUrl }}" alt="Image"
                         width="30" [preview]="true"></p-image>
@@ -246,6 +262,7 @@
                   </tr>
                 </ng-template>
               </p-table>
+
 
 
             </div>

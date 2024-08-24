@@ -8,7 +8,7 @@
           <!-- FATURA BİLGİLERİ (R) ------------------------------------------------------------------------------------------------>
 
           <p-tabPanel header="Fatura Başlığı"
-            *ngIf="(this.processCode == 'R' || this.processCode == 'r' )&& !this.invoiceProcess?.isCompleted">
+            *ngIf="(this.processCode == 'R' && this.processType=='invoice')&& !this.invoiceProcess?.isCompleted">
             <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit(invoiceForm.value)">
               <div class="row mb-3">
                 <div class="form-group col-md-6">
@@ -81,8 +81,10 @@
               </div>
             </form>
           </p-tabPanel>
+          <!-- FATURA BİLGİLERİ (BP) ------------------------------------------------------------------------------------------------>
 
-          <p-tabPanel header="Fatura Başlığı" *ngIf="this.processCode == 'BP' && !this.invoiceProcess?.isCompleted">
+          <p-tabPanel header="Fatura Başlığı"
+            *ngIf="(this.processCode == 'BP' && this.processType=='invoice') && !this.invoiceProcess?.isCompleted">
             <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit(invoiceForm.value)">
               <div class="row mb-3">
                 <div class="form-group col-md-6">
@@ -154,8 +156,11 @@
               </div>
             </form>
           </p-tabPanel>
-          <p-tabPanel header="Teklif Başlığı" *ngIf="this.processCode == 'prb' && !this.invoiceProcess?.isCompleted">
-            <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit(invoiceForm.value)">
+          <!-- TEKLİF BİLGİLERİ (BP)------------------------------------------------------------------------------------------------>
+
+          <p-tabPanel header="Alış Teklif Başlığı"
+            *ngIf="(this.processCode == 'BP' && this.processType=='proposal') && !this.invoiceProcess?.isCompleted">
+            <form [formGroup]="proposal_bp_form" (ngSubmit)="onSubmit(proposal_bp_form.value)">
               <div class="row mb-3">
                 <div class="form-group col-md-6">
                   <label for="officeCode">Ofis</label>
@@ -206,14 +211,78 @@
               <div class="row mb-3">
                 <div class="form-group col">
                   <button type="button" class="btn btn-primary" style="width: 100%"
-                    (click)="updateInvocieProcess(this.invoiceForm.value)">
+                    (click)="updateInvocieProcess(this.proposal_bp_form.value)">
                     Kaydet
                   </button>
                 </div>
               </div>
             </form>
           </p-tabPanel>
-          <p-tabPanel header="Fatura Satırları" *ngIf="this.invoiceProcess && !this.invoiceProcess?.isCompleted ">
+
+          <!-- TEKLİF BİLGİLERİ (R) ------------------------------------------------------------------------------------------------>
+
+          <p-tabPanel header="Satış Teklif Başlığı"
+            *ngIf="(this.processCode == 'R' && this.processType=='proposal')&& !this.invoiceProcess?.isCompleted">
+            <form [formGroup]="proposal_r_form" (ngSubmit)="onSubmit(proposal_r_form.value)">
+              <div class="row mb-3">
+                <div class="form-group col-md-6">
+                  <label for="officeCode">Ofis</label>
+                  <p-dropdown formControlName="officeCode" [options]="offices" [showClear]="true" placeholder="Ofis">
+                  </p-dropdown>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="warehouseCode">Depo</label>
+                  <p-dropdown formControlName="warehouse" [options]="warehouses" [showClear]="true" placeholder="Depo"
+                    optionLabel="name" formControlName="warehouseCode" className="mobile-spacing"></p-dropdown>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="form-group col-md-6">
+                  <label for="currAccCode">Müşteri</label>
+                  <p-dropdown placeholder="Müşteri" formControlName="currAccCode" [options]="customerList2"
+                    virtualScroll="true" virtualScrollItemSize="50" optionLabel="name" [(ngModel)]="selectedCustomer"
+                    [filter]="true"></p-dropdown>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="taxTypeCode">Fatura Tipi</label>
+                  <p-dropdown formControlName="taxTypeCode" [options]="taxTypeCodeList" [showClear]="true"
+                    optionLabel="name" placeholder="Fatura Tipi"></p-dropdown>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label for="salesPersonCode">Satış Elemanı</label>
+                <p-dropdown placeholder="Satış Elemanı" formControlName="salesPersonCode"
+                  [options]="salesPersonModelList" optionLabel="name" [filter]="true">
+                </p-dropdown>
+              </div>
+
+              <div class="row mb-3">
+                <label for="description">Açıklama</label>
+                <textarea pInputText type="text" class="form-control" id="description" placeholder="Açıklama" rows="5"
+                  cols="30" formControlName="description" maxlength="200"></textarea>
+              </div>
+
+              <div class="row mb-3">
+                <label for="internalDescription">Dahili Açıklama</label>
+                <textarea pInputText type="text" class="form-control" id="internalDescription" rows="5" cols="30"
+                  placeholder="Dahili Açıklama" formControlName="internalDescription" maxlength="200"></textarea>
+              </div>
+
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <button type="button" class="btn btn-primary" style="width: 100%"
+                    (click)="updateInvocieProcess(this.proposal_r_form.value)" [disabled]="
+                    this.invoiceProcess?.isCompleted">
+                    Kaydet
+                  </button>
+                </div>
+              </div>
+            </form>
+          </p-tabPanel>
+
+          <p-tabPanel header="{{lineHeading}}" *ngIf="this.invoiceProcess && !this.invoiceProcess?.isCompleted ">
             <!-- FATURA ÜRÜN FORMU------------------------------------------------------------------------------------------------>
 
             <form [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
@@ -265,7 +334,7 @@
 
           </p-tabPanel>
           <!-- FATURA KONTROL  *ngIf="this.invoiceProcess && this.invoiceProducts.length>0"------------------------------------------------------------------------------------------------>
-          <p-tabPanel header="Fatura Detay" *ngIf="this.invoiceProcess && invoiceProducts.length > 0 ">
+          <p-tabPanel header="{{detailHeading}}" *ngIf="this.invoiceProcess && invoiceProducts.length > 0 ">
             <div class="card" *ngIf="invoiceProducts.length > 0">
               <p-table [value]="invoiceProducts" [scrollable]="true" scrollHeight="600px"
                 [tableStyle]="{ 'min-width': '50rem' }">
@@ -358,32 +427,45 @@
 
             <table class="table table-bordered">
               <tbody>
-                <tr>
+
+
+                <tr *ngIf="this.invoiceProcess?.isCompleted">
                   <th scope="row" class="text-left">Ofis Kodu:</th>
-                  <td class="text-left">{{ invoiceForm.get('officeCode').value || 'Belirtilmemiş' }}</td>
+                  <td class="text-left">{{ this.invoiceProcess?.officeCode || 'Belirtilmemiş' }}</td>
                 </tr>
-                <tr>
+                <tr *ngIf="this.invoiceProcess?.isCompleted">
                   <th scope="row" class="text-left">Depo Kodu:</th>
-                  <td class="text-left">{{ invoiceForm.get('warehouseCode').value?.name || 'Belirtilmemiş' }}</td>
+                  <td class="text-left">{{ this.invoiceProcess?.warehouseCode || 'Belirtilmemiş' }}</td>
                 </tr>
 
-                <tr>
+                <tr *ngIf="this.invoiceProcess?.isCompleted">
                   <th scope="row" class="text-left">Satış Elemanı Kodu:</th>
-                  <td class="text-left">{{ invoiceForm.get('salesPersonCode').value?.name || 'Belirtilmemiş' }}</td>
+                  <td class="text-left">{{ this.invoiceProcess?.salesPersonCode || 'Belirtilmemiş' }}</td>
                 </tr>
-                <tr>
+                <tr *ngIf="this.invoiceProcess?.isCompleted">
                   <th scope="row" class="text-left"> Vergi Tipi:</th>
                   <td class="text-left">{{  this.invoiceProcess?.taxTypeCode|| 'Belirtilmemiş' }}
                   </td>
                 </tr>
-                <tr>
-                  <th scope="row" class="text-left">İade Faturası:</th>
-                  <td class="text-left">{{  this.invoiceProcess?.isReturn ? 'Evet' : 'Hayır' }}</td>
+                <tr *ngIf="this.invoiceProcess?.isCompleted && this.processType=='invoice'">
+                  <th scope="row" class="text-left">İade
+                    Faturası:</th>
+                  <td class=" text-left">{{  this.invoiceProcess?.isReturn ? 'Evet' : 'Hayır' }}</td>
                 </tr>
-                <tr>
-                  <th scope="row" class="text-left">E-Fatura Numarası</th>
+                <tr *ngIf="this.invoiceProcess?.isCompleted && (this.processCode =='R' &&this.processType=='invoice' )">
+                  <th scope="row" class="text-left">
+                    E-Fatura Numarası</th>
                   <td class="text-left">{{ this.invoiceProcess?.eInvoiceNumber || 'Belirtilmemiş' }}</td>
                 </tr>
+                <tr
+                  *ngIf="this.invoiceProcess?.isCompleted && (this.processCode =='R' &&this.processType=='proposal' )">
+                  <th scope="row" class="text-left">
+                    Teklif Numarası</th>
+                  <td class="text-left">{{ this.invoiceProcess?.eInvoiceNumber || 'Belirtilmemiş' }}</td>
+                </tr>
+
+
+
                 <tr *ngIf="this.processCode =='R' ">
                   <th scope="row" class="text-left">Müşteri:</th>
                   <td class="text-left">{{  this.invoiceProcess?.currAccCode || 'Belirtilmemiş' }}
@@ -463,11 +545,16 @@
 
             </form>
 
-            <button type="button" class="btn btn-primary" (click)="createInvoice()" style="width: 100%;" [disabled]="
+            <button *ngIf="this.processType=='invoice'" type="button" class="btn btn-primary" (click)="createInvoice()"
+              style="width: 100%;" [disabled]="
                     this.invoiceProcess?.isCompleted || invoiceProducts.length <= 0 ">
               Faturayı Kes
             </button>
-
+            <button *ngIf="this.processType=='proposal'" type="button" class="btn btn-primary"
+              (click)="createProposalReport()" style="width: 100%;" [disabled]="
+                    this.invoiceProcess?.isCompleted || invoiceProducts.length <= 0 ">
+              Teklifi Oluştur
+            </button>
           </p-tabPanel>
           }
 
@@ -576,10 +663,11 @@
             <i class="fas fa-exclamation-circle fa-3x text-danger"></i>
           </div>
           <h5 class="card-title text-uppercase font-weight-bold">Önemli</h5>
-          <p class="card-text text-muted">Bu Fatura Kesilmiştir. Değişiklik Yapılamaz.</p>
+          <p class="card-text text-muted">Bu {{this.processType == 'invoice' ? 'Fatura'  : 'Teklif'}} Kesilmiştir.
+            Değişiklik Yapılamaz.</p>
           <a class="btn btn-primary mt-3" href="{{this.invoiceProcess.eInvoiceUrl}}" target="_blank"
-            *ngIf="this.invoiceProcess.eInvoiceUrl && this.processCode =='R'">
-            <i class="fas fa-file-invoice"></i> Faturaya Git
+            *ngIf="this.invoiceProcess.eInvoiceUrl && (this.processCode =='R' || this.processType== 'proposal')">
+            {{this.processType == 'invoice' ? 'Faturaya Git'  : 'Teklife Git'}}
           </a>
         </div>
       </div>
@@ -598,10 +686,10 @@
         <div class="card-body p-4">
           <div class="row">
             <div class="col-md-6">
-              <button class="btn btn-primary" style="width: 100%;" (click)="goPage()">Yeni Fatura Oluştur </button>
+              <button class="btn btn-primary" style="width: 100%;" (click)="goPage()">Yeni Oluştur </button>
             </div>
             <div class="col-md-6">
-              <button class="btn btn-danger" style="width: 100%;" (click)="deleteInvoice()"> Faturayı Sil </button>
+              <button class="btn btn-danger" style="width: 100%;" (click)="deleteInvoice()"> Sil </button>
             </div>
           </div>
         </div>
@@ -612,7 +700,7 @@
         <div class="card-body p-4">
           <div class="row">
             <div class="col-md-12">
-              <button class="btn btn-primary" style="width: 100%;" (click)="goPage()">Yeni Fatura Oluştur </button>
+              <button class="btn btn-primary" style="width: 100%;" (click)="goPage()">Yeni Oluştur </button>
             </div>
 
           </div>
