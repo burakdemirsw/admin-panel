@@ -209,3 +209,26 @@ input[type="file"] {
   overflow: auto;
   white-space: normal;
 }
+
+.price-list-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.price-item {
+  flex: 1 1 calc(33.333% - 1rem);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.price-button {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.2rem;
+
+  transition: background-color 0.3s, border-color 0.3s;
+}

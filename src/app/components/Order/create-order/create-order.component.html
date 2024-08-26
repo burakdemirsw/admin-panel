@@ -155,9 +155,9 @@
                 <th>
                   <p-columnFilter field="brand" matchMode="equals" [showMenu]="false">
                     <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                      <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="brands"
-                        (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
-                        filterBy="label">
+                      <p-dropdown [overlayOptions]="overlayOptions" virtualScroll="true" virtualScrollItemSize="50"
+                        [options]="brands" (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true"
+                        filter="true" filterBy="label">
                         <ng-template let-option pTemplate="item">
                           <span class="ml-1 mt-1">{{ option.label }}</span>
                         </ng-template>
@@ -168,9 +168,9 @@
                 <th>
                   <p-columnFilter field="itemCode" matchMode="equals" [showMenu]="false">
                     <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                      <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="itemCodes"
-                        (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
-                        filterBy="label">
+                      <p-dropdown [overlayOptions]="overlayOptions" virtualScroll="true" virtualScrollItemSize="50"
+                        [options]="itemCodes" (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true"
+                        filter="true" filterBy="label">
                         <ng-template let-option pTemplate="item">
                           <span class="ml-1 mt-1">{{ option.label }}</span>
                         </ng-template>
@@ -182,9 +182,9 @@
                 <th>
                   <p-columnFilter field="description" matchMode="equals" [showMenu]="false">
                     <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                      <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="descriptions"
-                        (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
-                        filterBy="label">
+                      <p-dropdown [overlayOptions]="overlayOptions" virtualScroll="true" virtualScrollItemSize="50"
+                        [options]="descriptions" (onChange)="filter($event.value)" placeholder="Seçiniz"
+                        [showClear]="true" filter="true" filterBy="label">
                         <ng-template let-option pTemplate="item">
                           <span class="ml-1 mt-1">{{ option.label }}</span>
                         </ng-template>
@@ -195,8 +195,9 @@
                 <th>
                   <p-columnFilter field="productHierarchyLevel01" matchMode="equals" [showMenu]="false">
                     <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                      <p-dropdown [options]="productHierarchyLevel01s" (onChange)="filter($event.value)"
-                        placeholder="Seçiniz" [showClear]="true" filter="true" filterBy="label">
+                      <p-dropdown [overlayOptions]="overlayOptions" [options]="productHierarchyLevel01s"
+                        (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                        filterBy="label">
                         <ng-template let-option pTemplate="item">
                           <span class="ml-1 mt-1">{{ option.label }}</span>
                         </ng-template>
@@ -207,9 +208,9 @@
                 <th>
                   <p-columnFilter field="productHierarchyLevel02" matchMode="equals" [showMenu]="false">
                     <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                      <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="productHierarchyLevel02s"
-                        (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
-                        filterBy="label">
+                      <p-dropdown [overlayOptions]="overlayOptions" virtualScroll="true" virtualScrollItemSize="50"
+                        [options]="productHierarchyLevel02s" (onChange)="filter($event.value)" placeholder="Seçiniz"
+                        [showClear]="true" filter="true" filterBy="label">
                         <ng-template let-option pTemplate="item">
                           <span class="ml-1 mt-1">{{ option.label }}</span>
                         </ng-template>
@@ -220,9 +221,9 @@
                 <th>
                   <p-columnFilter field="productHierarchyLevel03" matchMode="equals" [showMenu]="false">
                     <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                      <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="productHierarchyLevel03s"
-                        (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
-                        filterBy="label">
+                      <p-dropdown [overlayOptions]="overlayOptions" virtualScroll="true" virtualScrollItemSize="50"
+                        [options]="productHierarchyLevel03s" (onChange)="filter($event.value)" placeholder="Seçiniz"
+                        [showClear]="true" filter="true" filterBy="label">
                         <ng-template let-option pTemplate="item">
                           <span class="ml-1 mt-1">{{ option.label }}</span>
                         </ng-template>
@@ -403,37 +404,14 @@
               </td>
             </tr>
 
-            <style>
-              .price-list-container {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 1rem;
-                padding: 1rem;
-              }
-
-              .price-item {
-                flex: 1 1 calc(33.333% - 1rem);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-              }
-
-              .price-button {
-                width: 100%;
-                padding: 1rem;
-                font-size: 1.2rem;
-
-                transition: background-color 0.3s, border-color 0.3s;
-              }
-
-            </style>
-            <p-dialog header="Stok Miktarı Yetersiz! Eğer Birinci Seçeneği Seçerseniz Eksik Gönderilcek Ürünler Olacaktır. İkince Seçenek Stoktaki Ürünler
-            " [(visible)]="quantityListDialog" [style]="{ width: '80vw' }" modal="true" [dismissableMask]="true">
+            <p-dialog id="p-{ri}" header="Stok Miktarı Yetersiz! Eğer Birinci Seçeneği Seçerseniz Eksik Gönderilcek Ürünler Olacaktır. İkince Seçenek Stoktaki Ürünler
+             " [(visible)]="visibleDialogs[ri]" [style]="{ width: '80vw' }" modal="true" [dismissableMask]="true">
               <div class="price-list-container">
-                <div *ngFor="let quantity of quantityList" class="price-item">
+                <div *ngFor="let quantity of quantityList;let i = index" class="price-item">
                   <button (click)="selectQuantity(product,ri,quantity)" pButton pRipple icon="pi pi-check"
-                    class="p-button-rounded p-button-text price-button" type="button">{{quantity}}</button>
+                    class="p-button-rounded p-button-text price-button" type="button">{{quantity}} <span
+                      *ngIf="i % 2 === 1">
+                      {{' (Terminli)'}}</span></button>
                 </div>
               </div>
 

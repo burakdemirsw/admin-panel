@@ -184,6 +184,15 @@ var CreateOrderComponent = /** @class */ (function () {
             { id: 2, name: 'Nakit İle Öde' },
             { id: 4, name: 'Cari Ödeme' }
         ];
+        //----------------------------------------------------
+        this.visibleDialogs = {}; // ri'ye göre dialog görünürlük durumu
+        this.overlayOptions = {
+            appendTo: 'body',
+            autoZIndex: true,
+            baseZIndex: 1000,
+            style: { 'min-width': '400px' },
+            styleClass: 'custom-overlay-class' // Custom CSS class
+        };
     }
     CreateOrderComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -1792,10 +1801,11 @@ var CreateOrderComponent = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         this.getProductsForm.get('barcode').setValue(request);
-                        return [4 /*yield*/, this.getProducts(this.getProductsForm.value, this.orderType)];
+                        return [4 /*yield*/, this.getProducts(this.getProductsForm.value, this.orderType)
+                            // this.suggestedProductsDialog = false;
+                        ];
                     case 1:
                         _a.sent();
-                        this.suggestedProductsDialog = false;
                         return [2 /*return*/];
                 }
             });
@@ -1946,7 +1956,8 @@ var CreateOrderComponent = /** @class */ (function () {
                             this.resetDiscount();
                             this.getClientOrder(1);
                         }
-                        this.quantityListDialog = false;
+                        this.closeDialog(index);
+                        this.updateProductDialog = false;
                         delete this.clonedProducts[product.lineId];
                         this.cancelRowEdit(product, 0);
                         return [2 /*return*/];
@@ -1966,13 +1977,15 @@ var CreateOrderComponent = /** @class */ (function () {
                         if (!(product.price > 0)) return [3 /*break*/, 4];
                         findedProduct = this.selectedProducts
                             .find(function (p) { return p.itemCode == product.itemCode; });
-                        this.quantityList.push(product.quantity);
                         this.quantityList.push((Number(product.uD_Stock) + Number(product.mD_Stock)));
+                        this.quantityList.push(product.quantity);
                         if (!(Number(findedProduct.quantity) > (Number(product.uD_Stock) + Number(product.mD_Stock)))) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.getsuggestedProducts(product.itemCode, false)];
                     case 1:
                         _a.sent();
-                        this.openDialog('quantityListDialog');
+                        this.visibleDialogs[index] = true;
+                        // Sadece ilgili ri için dialog'u açar
+                        // this.openDialog('quantityListDialog');
                         return [2 /*return*/];
                     case 2:
                         this.toasterService.success(product.quantity.toString());
@@ -2784,6 +2797,9 @@ var CreateOrderComponent = /** @class */ (function () {
                 }
             });
         });
+    };
+    CreateOrderComponent.prototype.closeDialog = function (ri) {
+        this.visibleDialogs[ri] = false; // Dialog'u kapatır
     };
     __decorate([
         core_1.ViewChild('findCustomer', { static: false })

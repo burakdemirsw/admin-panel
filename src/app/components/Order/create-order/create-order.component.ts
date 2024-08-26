@@ -30,6 +30,7 @@ import { GoogleDriveService } from '../../../services/common/google-drive.servic
 import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from '../../cargo/create-cargo/models/models';
 import { SuggestedProduct } from 'src/app/models/model/order/suggestedProduct';
 import { FastTransfer_VM } from '../../../models/model/warehouse/transferRequestListModel';
+import { OverlayOptions } from 'primeng/api';
 
 @Component({
   selector: 'app-create-order',
@@ -1641,7 +1642,7 @@ export class CreateOrderComponent implements OnInit {
   async routeGetProduct(request: string) {
     this.getProductsForm.get('barcode').setValue(request);
     await this.getProducts(this.getProductsForm.value, this.orderType)
-    this.suggestedProductsDialog = false;
+    // this.suggestedProductsDialog = false;
   }
   async getsuggestedProducts(itemCode: string, openDialog: boolean) {
     if (!this.generalService.isNullOrEmpty(itemCode)) {
@@ -1650,7 +1651,6 @@ export class CreateOrderComponent implements OnInit {
       this.suggestedProducts = response
       if (openDialog) {
         this.openDialog("suggestedProductsDialog");
-
       }
     } else {
       this.toasterService.error("Barkod Giriniz")
@@ -1741,8 +1741,8 @@ export class CreateOrderComponent implements OnInit {
       this.getClientOrder(1);
     }
 
-    this.quantityListDialog = false;
-
+    this.closeDialog(index)
+    this.updateProductDialog = false;
     delete this.clonedProducts[product.lineId as string];
     this.cancelRowEdit(product, 0);
   }
@@ -1756,11 +1756,13 @@ export class CreateOrderComponent implements OnInit {
       var findedProduct = this.selectedProducts
         .find(p => p.itemCode == product.itemCode)
 
-      this.quantityList.push(product.quantity);
       this.quantityList.push((Number(product.uD_Stock) + Number(product.mD_Stock)));
+      this.quantityList.push(product.quantity);
       if (Number(findedProduct.quantity) > (Number(product.uD_Stock) + Number(product.mD_Stock))) {
         await this.getsuggestedProducts(product.itemCode, false)
-        this.openDialog('quantityListDialog');
+        this.visibleDialogs[index] = true;
+        // Sadece ilgili ri için dialog'u açar
+        // this.openDialog('quantityListDialog');
         return;
       }
 
@@ -2649,4 +2651,19 @@ export class CreateOrderComponent implements OnInit {
 
 
   //----------------------------------------------------
+  visibleDialogs: { [key: number]: boolean } = {}; // ri'ye göre dialog görünürlük durumu
+
+
+  closeDialog(ri: number): void {
+    this.visibleDialogs[ri] = false; // Dialog'u kapatır
+  }
+  overlayOptions: OverlayOptions = {
+    appendTo: 'body',  // Example of setting where the overlay should be appended
+    autoZIndex: true,
+    baseZIndex: 1000,
+    style: { 'min-width': '400px' },  // Custom styles
+    styleClass: 'custom-overlay-class' // Custom CSS class
+  };
+
+
 }
