@@ -1413,7 +1413,6 @@ export class CreateOrderComponent implements OnInit {
       packagingType: [null], //select
       shipmentServiceType: [null], //select
       isCOD: [false],
-      kg: [1],
       desi: [1],
       isActive: [false],
       cargoFirm: [null],
