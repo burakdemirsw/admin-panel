@@ -17,7 +17,6 @@ import { MessageService } from 'primeng/api';
 import { BlockUIModule } from 'primeng/blockui';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { ChartModule } from 'primeng/chart';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { DialogModule } from 'primeng/dialog';
@@ -133,6 +132,8 @@ import { AddProductToShelfListComponent } from './components/Warehouse/warehosue
 import { IdeasoftOffersComponent } from './components/special-panels/ideasoft-offers/ideasoft-offers.component';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { TransferredOrdersComponent } from './components/marketplace/transferred-orders/transferred-orders.component';
+import { ChartModule } from 'primeng/chart';
+
 @NgModule({
 
   declarations: [
@@ -241,6 +242,7 @@ import { TransferredOrdersComponent } from './components/marketplace/transferred
     NgSelectModule,
     QRCodeModule,
     NgxPrintModule,
+    ChartModule,
     ListboxModule,
     CommonModule,
     DialogModule,
