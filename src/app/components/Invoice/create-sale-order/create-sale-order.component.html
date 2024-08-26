@@ -5,10 +5,94 @@
       <div class="card">
         <p-tabView [activeIndex]="activeIndex" (onChange)="logger($event)">
           @if(true){
-          <!-- FATURA BİLGİLERİ (R) ------------------------------------------------------------------------------------------------>
+          <!-- Sipariş BİLGİLERİ (R-WS) ------------------------------------------------------------------------------------------------>
+
+          <p-tabPanel header="Sipariş Başlığı" *ngIf="((this.processCode == 'R'||this.processCode == 'WS') && this.processType=='order')&&
+            !this.invoiceProcess?.isCompleted">
+            <form [formGroup]="order_r_form" (ngSubmit)="onSubmit(order_r_form.value)">
+              <div class="row mb-3">
+                <div class="form-group col-md-6">
+                  <label for="officeCode">Ofis</label>
+                  <p-dropdown formControlName="officeCode" [options]="offices" [showClear]="true" placeholder="Ofis">
+                  </p-dropdown>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="warehouseCode">Depo</label>
+                  <p-dropdown formControlName="warehouse" [options]="warehouses" [showClear]="true" placeholder="Depo"
+                    optionLabel="name" formControlName="warehouseCode" className="mobile-spacing"></p-dropdown>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="form-group col-md-6">
+                  <label for="currAccCode">Müşteri</label>
+                  <p-dropdown placeholder="Müşteri" formControlName="currAccCode" [options]="customerList2"
+                    virtualScroll="true" virtualScrollItemSize="50" optionLabel="name" [(ngModel)]="selectedCustomer"
+                    [filter]="true"></p-dropdown>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="taxTypeCode">Fatura Tipi</label>
+                  <p-dropdown formControlName="taxTypeCode" [options]="taxTypeCodeList" [showClear]="true"
+                    optionLabel="name" placeholder="Fatura Tipi"></p-dropdown>
+                </div>
+
+
+              </div>
+
+              <div class="row mb-3">
+                <div class="form-group col-md-6">
+                  <label for="taxTypeCode">Fatura Adresi</label>
+                  <p-dropdown formControlName="billingPostalAddressId" [options]="addresses_vm" [showClear]="true"
+                    optionLabel="name" placeholder="Fatura Adresi"></p-dropdown>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="taxTypeCode">Teslimat Adresi</label>
+                  <p-dropdown formControlName="shippingPostalAddressId" [options]="addresses_vm" [showClear]="true"
+                    optionLabel="name" placeholder="Teslimat Adresi"></p-dropdown>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label for="salesPersonCode">Satış Elemanı</label>
+                <p-dropdown placeholder="Satış Elemanı" formControlName="salesPersonCode"
+                  [options]="salesPersonModelList" optionLabel="name" [filter]="true">
+                </p-dropdown>
+              </div>
+
+
+
+              <div class="row mb-3">
+                <div class="form-group col-md-6">
+                  <label for="description">Açıklama</label>
+                  <textarea pInputText type="text" class="form-control" id="description" placeholder="Açıklama" rows="5"
+                    cols="30" formControlName="description" maxlength="200"></textarea>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="internalDescription">Dahili Açıklama</label>
+                  <textarea pInputText type="text" class="form-control" id="internalDescription" rows="5" cols="30"
+                    placeholder="Dahili Açıklama" formControlName="internalDescription" maxlength="200"></textarea>
+                </div>
+              </div>
+
+
+
+
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <button type="button" class="btn btn-primary" style="width: 100%"
+                    (click)="updateInvocieProcess(this.order_r_form.value)" [disabled]="
+                    this.invoiceProcess?.isCompleted">
+                    Kaydet
+                  </button>
+                </div>
+              </div>
+            </form>
+          </p-tabPanel>
+
+          <!-- FATURA BİLGİLERİ (R-WS) ------------------------------------------------------------------------------------------------>
 
           <p-tabPanel header="Fatura Başlığı"
-            *ngIf="(this.processCode == 'R' && this.processType=='invoice')&& !this.invoiceProcess?.isCompleted">
+            *ngIf="((this.processCode == 'R'||'WS') && this.processType=='invoice')&& !this.invoiceProcess?.isCompleted">
             <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit(invoiceForm.value)">
               <div class="row mb-3">
                 <div class="form-group col-md-6">
@@ -36,6 +120,20 @@
                     optionLabel="name" placeholder="Fatura Tipi"></p-dropdown>
                 </div>
               </div>
+
+              <div class="row mb-3">
+                <div class="form-group col-md-6">
+                  <label for="taxTypeCode">Fatura Adresi</label>
+                  <p-dropdown formControlName="billingPostalAddressId" [options]="addresses_vm" [showClear]="true"
+                    optionLabel="name" placeholder="Fatura Adresi"></p-dropdown>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="taxTypeCode">Teslimat Adresi</label>
+                  <p-dropdown formControlName="shippingPostalAddressId" [options]="addresses_vm" [showClear]="true"
+                    optionLabel="name" placeholder="Teslimat Adresi"></p-dropdown>
+                </div>
+              </div>
+
 
               <div class="row mb-3">
                 <label for="salesPersonCode">Satış Elemanı</label>
@@ -81,6 +179,7 @@
               </div>
             </form>
           </p-tabPanel>
+
           <!-- FATURA BİLGİLERİ (BP) ------------------------------------------------------------------------------------------------>
 
           <p-tabPanel header="Fatura Başlığı"
@@ -110,6 +209,18 @@
                   <label for="taxTypeCode">Fatura Tipi</label>
                   <p-dropdown formControlName="taxTypeCode" [options]="taxTypeCodeList" [showClear]="true"
                     optionLabel="name" placeholder="Fatura Tipi"></p-dropdown>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="form-group col-md-6">
+                  <label for="taxTypeCode">Fatura Adresi</label>
+                  <p-dropdown formControlName="billingPostalAddressId" [options]="addresses_vm" [showClear]="true"
+                    optionLabel="name" placeholder="Fatura Adresi"></p-dropdown>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="taxTypeCode">Teslimat Adresi</label>
+                  <p-dropdown formControlName="shippingPostalAddressId" [options]="addresses_vm" [showClear]="true"
+                    optionLabel="name" placeholder="Teslimat Adresi"></p-dropdown>
                 </div>
               </div>
 
@@ -187,6 +298,18 @@
                     optionLabel="name" placeholder="Fatura Tipi"></p-dropdown>
                 </div>
               </div>
+              <div class="row mb-3">
+                <div class="form-group col-md-6">
+                  <label for="taxTypeCode">Fatura Adresi</label>
+                  <p-dropdown formControlName="billingPostalAddressId" [options]="addresses_vm" [showClear]="true"
+                    optionLabel="name" placeholder="Fatura Adresi"></p-dropdown>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="taxTypeCode">Teslimat Adresi</label>
+                  <p-dropdown formControlName="shippingPostalAddressId" [options]="addresses_vm" [showClear]="true"
+                    optionLabel="name" placeholder="Teslimat Adresi"></p-dropdown>
+                </div>
+              </div>
 
               <div class="row mb-3">
                 <label for="salesPersonCode">Satış Elemanı</label>
@@ -238,19 +361,33 @@
               </div>
 
               <div class="row mb-3">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-12">
                   <label for="currAccCode">Müşteri</label>
                   <p-dropdown placeholder="Müşteri" formControlName="currAccCode" [options]="customerList2"
                     virtualScroll="true" virtualScrollItemSize="50" optionLabel="name" [(ngModel)]="selectedCustomer"
                     [filter]="true"></p-dropdown>
                 </div>
+
+              </div>
+
+              <div class="row mb-3">
                 <div class="form-group col-md-6">
-                  <label for="taxTypeCode">Fatura Tipi</label>
-                  <p-dropdown formControlName="taxTypeCode" [options]="taxTypeCodeList" [showClear]="true"
-                    optionLabel="name" placeholder="Fatura Tipi"></p-dropdown>
+                  <label for="taxTypeCode">Fatura Adresi</label>
+                  <p-dropdown formControlName="billingPostalAddressId" [options]="addresses_vm" [showClear]="true"
+                    optionLabel="name" placeholder="Fatura Adresi"></p-dropdown>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="taxTypeCode">Teslimat Adresi</label>
+                  <p-dropdown formControlName="shippingPostalAddressId" [options]="addresses_vm" [showClear]="true"
+                    optionLabel="name" placeholder="Teslimat Adresi"></p-dropdown>
                 </div>
               </div>
 
+              <div class="row mb-3">
+                <label for="taxTypeCode">Fatura Tipi</label>
+                <p-dropdown formControlName="taxTypeCode" [options]="taxTypeCodeList" [showClear]="true"
+                  optionLabel="name" placeholder="Fatura Tipi"></p-dropdown>
+              </div>
               <div class="row mb-3">
                 <label for="salesPersonCode">Satış Elemanı</label>
                 <p-dropdown placeholder="Satış Elemanı" formControlName="salesPersonCode"
@@ -259,17 +396,17 @@
               </div>
 
               <div class="row mb-3">
-                <label for="description">Açıklama</label>
-                <textarea pInputText type="text" class="form-control" id="description" placeholder="Açıklama" rows="5"
-                  cols="30" formControlName="description" maxlength="200"></textarea>
+                <div class="form-group col-md-6">
+                  <label for="description">Açıklama</label>
+                  <textarea pInputText type="text" class="form-control" id="description" placeholder="Açıklama" rows="5"
+                    cols="30" formControlName="description" maxlength="200"></textarea>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="internalDescription">Dahili Açıklama</label>
+                  <textarea pInputText type="text" class="form-control" id="internalDescription" rows="5" cols="30"
+                    placeholder="Dahili Açıklama" formControlName="internalDescription" maxlength="200"></textarea>
+                </div>
               </div>
-
-              <div class="row mb-3">
-                <label for="internalDescription">Dahili Açıklama</label>
-                <textarea pInputText type="text" class="form-control" id="internalDescription" rows="5" cols="30"
-                  placeholder="Dahili Açıklama" formControlName="internalDescription" maxlength="200"></textarea>
-              </div>
-
               <div class="row mb-3">
                 <div class="form-group col">
                   <button type="button" class="btn btn-primary" style="width: 100%"
@@ -281,7 +418,72 @@
               </div>
             </form>
           </p-tabPanel>
+          <!-- İRSALİYE BİLGİLERİ (WS) ------------------------------------------------------------------------------------------------>
 
+          <p-tabPanel header="İrsaliye Başlığı"
+            *ngIf="(this.processCode == 'WS' && this.processType=='shipment')&& !this.invoiceProcess?.isCompleted">
+            <form [formGroup]="shipment_ws_form" (ngSubmit)="onSubmit(shipment_ws_form.value)">
+              <div class="row mb-3">
+                <div class="form-group col-md-6">
+                  <label for="officeCode">Ofis</label>
+                  <p-dropdown formControlName="officeCode" [options]="offices" [showClear]="true" placeholder="Ofis">
+                  </p-dropdown>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="warehouseCode">Depo</label>
+                  <p-dropdown formControlName="warehouse" [options]="warehouses" [showClear]="true" placeholder="Depo"
+                    optionLabel="name" formControlName="warehouseCode" className="mobile-spacing"></p-dropdown>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="form-group col-md-12">
+                  <label for="currAccCode">Müşteri</label>
+                  <p-dropdown placeholder="Müşteri" formControlName="currAccCode" [options]="customerList2"
+                    virtualScroll="true" virtualScrollItemSize="50" optionLabel="name" [(ngModel)]="selectedCustomer"
+                    [filter]="true"></p-dropdown>
+                </div>
+
+              </div>
+
+              <div class="row mb-3">
+                <div class="form-group col-md-6">
+                  <label for="taxTypeCode">Fatura Adresi</label>
+                  <p-dropdown formControlName="billingPostalAddressId" [options]="addresses_vm" [showClear]="true"
+                    optionLabel="name" placeholder="Fatura Adresi"></p-dropdown>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="taxTypeCode">Teslimat Adresi</label>
+                  <p-dropdown formControlName="shippingPostalAddressId" [options]="addresses_vm" [showClear]="true"
+                    optionLabel="name" placeholder="Teslimat Adresi"></p-dropdown>
+                </div>
+              </div>
+
+
+
+              <div class="row mb-3">
+                <div class="form-group col-md-6">
+                  <label for="description">Açıklama</label>
+                  <textarea pInputText type="text" class="form-control" id="description" placeholder="Açıklama" rows="5"
+                    cols="30" formControlName="description" maxlength="200"></textarea>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="internalDescription">Dahili Açıklama</label>
+                  <textarea pInputText type="text" class="form-control" id="internalDescription" rows="5" cols="30"
+                    placeholder="Dahili Açıklama" formControlName="internalDescription" maxlength="200"></textarea>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <button type="button" class="btn btn-primary" style="width: 100%"
+                    (click)="updateInvocieProcess(this.shipment_ws_form.value)" [disabled]="
+                    this.invoiceProcess?.isCompleted">
+                    Kaydet
+                  </button>
+                </div>
+              </div>
+            </form>
+          </p-tabPanel>
           <p-tabPanel header="{{lineHeading}}" *ngIf="this.invoiceProcess && !this.invoiceProcess?.isCompleted ">
             <!-- FATURA ÜRÜN FORMU------------------------------------------------------------------------------------------------>
 
@@ -452,6 +654,11 @@
                     Faturası:</th>
                   <td class=" text-left">{{  this.invoiceProcess?.isReturn ? 'Evet' : 'Hayır' }}</td>
                 </tr>
+                <tr *ngIf="this.invoiceProcess?.isCompleted && (this.processCode =='R' &&this.processType=='order' )">
+                  <th scope="row" class="text-left">
+                    E-Fatura Numarası</th>
+                  <td class="text-left">{{ this.invoiceProcess?.eInvoiceNumber || 'Belirtilmemiş' }}</td>
+                </tr>
                 <tr *ngIf="this.invoiceProcess?.isCompleted && (this.processCode =='R' &&this.processType=='invoice' )">
                   <th scope="row" class="text-left">
                     E-Fatura Numarası</th>
@@ -554,6 +761,11 @@
               (click)="createProposalReport()" style="width: 100%;" [disabled]="
                     this.invoiceProcess?.isCompleted || invoiceProducts.length <= 0 ">
               Teklifi Oluştur
+            </button>
+            <button *ngIf="this.processType=='order'" type="button" class="btn btn-primary" (click)="createOrder()"
+              style="width: 100%;" [disabled]="
+                    this.invoiceProcess?.isCompleted || invoiceProducts.length <= 0 ">
+              Siparişi Oluştur
             </button>
           </p-tabPanel>
           }

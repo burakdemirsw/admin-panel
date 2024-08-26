@@ -966,5 +966,26 @@ export class OrderService {
 
     return response;
   }
+  async createOrder_New(processCode: string, processId: string) {
+    const response = await this.httpClientService
+      .get_new<boolean>(
+        { controller: 'Order/create-order' },
+        processCode + "/" + processId
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async convertWSProposalToWSOrder(processType: string, processCode: string, id: string) {
+    const response = await this.httpClientService
+      .get_new<boolean>(
+        { controller: 'Order/convert-ws-proposal-to-ws-order' },
+        processType + "/" + processCode + "/" + id
+      )
+      .toPromise();
+
+    return response;
+  }
   //------------------------------------------------------------
 }

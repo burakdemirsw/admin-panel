@@ -12,6 +12,7 @@ import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { HeaderService } from '../../../services/admin/header.service';
+import { CustomerAddress_VM, GetCustomerAddress_CM } from 'src/app/models/model/order/getCustomerList_CM';
 declare var window: any;
 @Component({
   selector: 'app-create-sale-order',
@@ -21,7 +22,7 @@ declare var window: any;
 export class CreateSaleOrderComponent implements OnInit {
   //----------
   processCodes: string[] = ["WS", "BP", "R", "ws", "bp", "r", "prws"]
-  processTypes: string[] = ["invoice", "order", "proposal"]
+  processTypes: string[] = ["invoice", "order", "proposal", "shipment"]
   taxTypeCodeList: any[] = [{ name: 'Vergili', code: '0' }, { name: 'Vergisiz', code: '4' }]; //vergi tipi
   processCode: string;
   processType: string;
@@ -41,11 +42,6 @@ export class CreateSaleOrderComponent implements OnInit {
   newOrderNumber: string;
   customerList: CustomerModel[] = [];
   officeModels: OfficeModel[] = [];
-  productForm: FormGroup;
-  invoiceForm: FormGroup;
-  proposal_bp_form: FormGroup;
-  proposal_r_form: FormGroup;
-
   warehouseModels: WarehouseOfficeModel[] = [];
   visible: boolean = false;
   infoProducts: CreatePurchaseInvoice[] = [];
@@ -74,8 +70,8 @@ export class CreateSaleOrderComponent implements OnInit {
         this.createUpdateProductForm();
 
         this.createDiscountForm();
-        if (this.processCode == "R" && this.processType == "invoice") {
-          this.headerService.updatePageTitle('Satış Faturası (R)');
+        if ((this.processCode == "R" || this.processCode == "WS") && this.processType == "invoice") {
+          this.headerService.updatePageTitle(`Satış Faturası ${this.processCode}`);
           this.invoice_r_formGenerator();
           await this.getWarehouseAndOffices();
 
@@ -98,7 +94,24 @@ export class CreateSaleOrderComponent implements OnInit {
           await this.getWarehouseAndOffices();
           await this.getCustomerList('1');
         }
-
+        else if (this.processCode == "R" && this.processType == "order") {//sipariş paneli
+          this.headerService.updatePageTitle('Peşin Satış Oluştur');
+          this.order_r_formGenerator();
+          await this.getWarehouseAndOffices();
+          await this.getCustomerList('4');
+        }
+        else if (this.processCode == "WS" && this.processType == "order") {//sipariş paneli
+          this.headerService.updatePageTitle('Toptan Satış Oluştur');
+          this.order_r_formGenerator();
+          await this.getWarehouseAndOffices();
+          await this.getCustomerList('3');
+        }
+        else if (this.processCode == "WS" && this.processType == "shipment") {//sipariş paneli
+          this.headerService.updatePageTitle('Toptan Satış Oluştur');
+          this.order_r_formGenerator();
+          await this.getWarehouseAndOffices();
+          await this.getCustomerList('3');
+        }
         this.setHeaders();
         if (params['processId']) {
           this.newOrderNumber = params['processId'];
@@ -116,6 +129,29 @@ export class CreateSaleOrderComponent implements OnInit {
     });
 
   }
+  async getWarehouseAndOffices() {
+    var response = await this.warehouseService.getWarehouseAndOffices();
+    this.warehouseModels = response;
+
+    const officeSet = new Set();
+    const warehouseSet = new Set();
+
+    this.warehouseModels.forEach(model => {
+      officeSet.add(model.officeCode);
+      warehouseSet.add(model.warehouseCode);
+    });
+
+    this.offices = Array.from(officeSet);
+    this.warehouses = Array.from(warehouseSet).map(code => {
+      const model = this.warehouseModels.find(warehouse => warehouse.warehouseCode === code);
+      return {
+        code: model.warehouseCode,
+        name: model.warehouseDescription
+      };
+    });
+  }
+
+
   //-------------------------------------------DETAY KODLARI
   updateProductForm: FormGroup;
   discountForm: FormGroup;
@@ -305,28 +341,6 @@ export class CreateSaleOrderComponent implements OnInit {
     }
 
   }
-  async getWarehouseAndOffices() {
-    var response = await this.warehouseService.getWarehouseAndOffices();
-    this.warehouseModels = response;
-
-    const officeSet = new Set();
-    const warehouseSet = new Set();
-
-    this.warehouseModels.forEach(model => {
-      officeSet.add(model.officeCode);
-      warehouseSet.add(model.warehouseCode);
-    });
-
-    this.offices = Array.from(officeSet);
-    this.warehouses = Array.from(warehouseSet).map(code => {
-      const model = this.warehouseModels.find(warehouse => warehouse.warehouseCode === code);
-      return {
-        code: model.warehouseCode,
-        name: model.warehouseDescription
-      };
-    });
-  }
-
 
   async updateProduct(product: CollectedInvoiceProduct) {
     console.log(product);
@@ -360,14 +374,16 @@ export class CreateSaleOrderComponent implements OnInit {
     request.salesPersonCode = null;
     request.isReturn = formValue.isReturn;
     request.invoiceNumber = this.invoiceNumber;
-    request.currAccCode = this.processCode == 'R' ? formValue.currAccCode.code : null;
+    request.currAccCode = ((this.processCode == 'R' || this.processCode == 'WS') || (this.processType == 'order')) ? formValue.currAccCode.code : null;
     request.vendorCode = this.processCode == 'BP' ? formValue.vendorCode.code : null;
-    request.eInvoiceNumber = (this.processCode == 'BP' && this.processType == 'invoice') ? formValue.eInvoiceNumber : null;
+    request.eInvoiceNumber = formValue.eInvoiceNumber;
     request.description = formValue.description;
     request.internalDescription = formValue.internalDescription;
     request.officeCode = formValue.officeCode;
     request.warehouseCode = formValue.warehouseCode.code;
     request.taxTypeCode = formValue.taxTypeCode.code;
+    request.shippingPostalAddressId = formValue.shippingPostalAddressId.code
+    request.billingPostalAddressId = formValue.billingPostalAddressId.code
     request.isCompleted = false;
 
     var response = await this.orderService.editInvoiceProcess(request);
@@ -383,7 +399,7 @@ export class CreateSaleOrderComponent implements OnInit {
 
   }
   async addInvoiceProcess(formValue: any) {
-    this.toasterService.info(this.processCode + "Faturası Oluşturuluyor...")
+    // this.toasterService.info(this.processCode + "Faturası Oluşturuluyor...")
     var request: InvoiceProcess = new InvoiceProcess();
     request.userId = this.userId;
     request.processCode = this.processCode
@@ -392,14 +408,17 @@ export class CreateSaleOrderComponent implements OnInit {
     request.isReturn = formValue.isReturn;
     request.invoiceNumber = this.invoiceNumber;
     request.officeCode = formValue.officeCode;
-    request.currAccCode = this.processCode == 'R' ? formValue.currAccCode.code : null;
+    request.currAccCode = ((this.processCode == 'R' || this.processCode == 'WS') || (this.processType == 'order')) ? formValue.currAccCode.code : null;
     request.vendorCode = this.processCode == 'BP' ? formValue.vendorCode.code : null;
-    request.eInvoiceNumber = (this.processCode == 'BP' && this.processType == 'invoice') ? formValue.eInvoiceNumber : null;
+    request.eInvoiceNumber = formValue.eInvoiceNumber;
     request.description = formValue.description;
     request.internalDescription = formValue.internalDescription;
 
     request.warehouseCode = formValue.warehouseCode.code;
     request.taxTypeCode = formValue.taxTypeCode.code;
+    request.shippingPostalAddressId = formValue.shippingPostalAddressId?.code
+    request.billingPostalAddressId = formValue.billingPostalAddressId?.code
+
     request.isCompleted = false;
 
     var response = await this.orderService.editInvoiceProcess(request);
@@ -417,14 +436,22 @@ export class CreateSaleOrderComponent implements OnInit {
       return;
     }
   }
-  setFormValueFromProcess(v: InvoiceProcess) {
+  async setFormValueFromProcess(v: InvoiceProcess) {
     this.invoiceProcess = v;
     const officeCode = v.officeCode;
     const warehouseCode = this.warehouses.find(o => o.code == v.warehouseCode);
     const salesPersonCode = this.salesPersonModelList.find(o => o.code == v.salesPersonCode);
     const currAccCode = this.customerList2.find(o => o.code == v.currAccCode);
     const vendorCode = this.customerList2.find(o => o.code == v.vendorCode);
+
+    //eğer müşteri varsa bu müşteriye ait adresleri getir
+    if (currAccCode || vendorCode) {
+      await this.getCustomerAddresses(currAccCode?.code ? currAccCode?.code : vendorCode?.code);
+    }
+
     const taxTypeCode = this.taxTypeCodeList.find(o => o.code == v.taxTypeCode);
+    const shippingPostalAddressId = this.addresses_vm.find(o => o.code == v.shippingPostalAddressId);
+    const billingPostalAddressId = this.addresses_vm.find(o => o.code == v.billingPostalAddressId);
     const isReturn = v.isReturn;
     const eInvoiceNumber = v.eInvoiceNumber;
     const internalDescription = v.internalDescription;
@@ -435,7 +462,7 @@ export class CreateSaleOrderComponent implements OnInit {
       this.invoiceForm.get('warehouseCode').setValue(warehouseCode);
       this.invoiceForm.get('salesPersonCode').setValue(salesPersonCode);
       this.selectedCustomer = currAccCode
-      if (this.processCode == 'R') {
+      if (this.processCode == 'R' || 'WS') {
 
         this.invoiceForm.get('currAccCode').setValue(currAccCode);
       } else {
@@ -447,6 +474,12 @@ export class CreateSaleOrderComponent implements OnInit {
       this.invoiceForm.get('eInvoiceNumber').setValue(eInvoiceNumber);
       this.invoiceForm.get('description').setValue(description);
       this.invoiceForm.get('internalDescription').setValue(internalDescription);
+      if (shippingPostalAddressId) {
+        this.invoiceForm.get('shippingPostalAdressId').setValue(shippingPostalAddressId);
+      }
+      if (billingPostalAddressId) {
+        this.invoiceForm.get('billingPostalAddressId').setValue(billingPostalAddressId);
+      }
       this.discountForm.get('percentDiscountRate').setValue(v.discountRate1);
       this.discountForm.get('cashDiscountRate').setValue(v.discountRate2);
 
@@ -463,6 +496,13 @@ export class CreateSaleOrderComponent implements OnInit {
       this.proposal_bp_form.get('taxTypeCode').setValue(taxTypeCode);
       this.proposal_bp_form.get('description').setValue(description);
       this.proposal_bp_form.get('internalDescription').setValue(internalDescription);
+      if (shippingPostalAddressId) {
+        this.proposal_bp_form.get('shippingPostalAddressId').setValue(shippingPostalAddressId);
+      }
+      if (billingPostalAddressId) {
+        this.proposal_bp_form.get('billingPostalAddressId').setValue(billingPostalAddressId);
+      }
+
       this.discountForm.get('percentDiscountRate').setValue(v.discountRate1);
       this.discountForm.get('cashDiscountRate').setValue(v.discountRate2);
 
@@ -473,16 +513,52 @@ export class CreateSaleOrderComponent implements OnInit {
       this.proposal_r_form.get('officeCode').setValue(officeCode);
       this.proposal_r_form.get('warehouseCode').setValue(warehouseCode);
       this.proposal_r_form.get('salesPersonCode').setValue(salesPersonCode);
-      this.selectedCustomer = currAccCode
+      this.selectedCustomer = currAccCode;
       this.proposal_r_form.get('currAccCode').setValue(currAccCode);
       this.proposal_r_form.get('taxTypeCode').setValue(taxTypeCode);
       this.proposal_r_form.get('description').setValue(description);
       this.proposal_r_form.get('internalDescription').setValue(internalDescription);
+      if (shippingPostalAddressId) {
+        this.proposal_r_form.get('shippingPostalAddressId').setValue(shippingPostalAddressId);
+      }
+      if (billingPostalAddressId) {
+        this.proposal_r_form.get('billingPostalAddressId').setValue(billingPostalAddressId);
+      }
+
       this.discountForm.get('percentDiscountRate').setValue(v.discountRate1);
       this.discountForm.get('cashDiscountRate').setValue(v.discountRate2);
       this.newOrderNumber = v.id;
       this.invoiceNumber = v.invoiceNumber;
-    } else {
+
+      //eğer müşteri varsa bu müşteriye ait adresleri getir
+      if (currAccCode) {
+        await this.getCustomerAddresses(currAccCode.code);
+      }
+    } else if (this.processType == 'order' && (this.processCode == 'R' || this.processCode == 'WS')) {
+      this.order_r_form.get('officeCode').setValue(officeCode);
+      this.order_r_form.get('warehouseCode').setValue(warehouseCode);
+      this.order_r_form.get('salesPersonCode').setValue(salesPersonCode);
+      this.selectedCustomer = currAccCode;
+      this.order_r_form.get('currAccCode').setValue(currAccCode);
+      this.order_r_form.get('taxTypeCode').setValue(taxTypeCode);
+      this.order_r_form.get('description').setValue(description);
+      this.order_r_form.get('internalDescription').setValue(internalDescription);
+      if (shippingPostalAddressId) {
+        this.order_r_form.get('shippingPostalAddressId').setValue(shippingPostalAddressId);
+      }
+      if (billingPostalAddressId) {
+        this.order_r_form.get('billingPostalAddressId').setValue(billingPostalAddressId);
+      }
+
+      this.discountForm.get('percentDiscountRate').setValue(v.discountRate1);
+      this.discountForm.get('cashDiscountRate').setValue(v.discountRate2);
+      this.newOrderNumber = v.id;
+      this.invoiceNumber = v.invoiceNumber;
+
+
+    }
+
+    else {
       this.toasterService.error("Form Verileri Yerleştirilemedi")
     }
 
@@ -500,6 +576,7 @@ export class CreateSaleOrderComponent implements OnInit {
     }
   }
 
+  //--------------------------------------------------------------CUSTOMER
   async getCustomerList(request: string): Promise<void> {
     this.customerList = await this.warehouseService.getCustomerList(request);
 
@@ -535,29 +612,84 @@ export class CreateSaleOrderComponent implements OnInit {
   //-----------------------------------------------------
 
 
+  //------------------------------------------------------- SİPARİŞ
+  async createOrder(): Promise<any> {
+    var confirmation = window.confirm(
+      'Sipariş tamamlanacaktır, devam edilsin mi?'
+    );
 
+    if (confirmation) {
+      var response = await this.orderService.createOrder_New(this.processCode, this.invoiceProcess.id);
+      if (response) {
+        this.toasterService.success('Sipariş Oluşturuldu.');
+        this.routerService.navigate([`/create-process/0/${this.processCode}/${this.invoiceProcess.id}`]);
 
-  clearShelfNumbers() {
-    this.productForm.get('shelfNo').setValue(null);
-    this.productForm.get('barcode').setValue(null);
-    this.productForm.get('quantity').setValue(null);
-    this.productForm.get('batchCode').setValue(null);
+        // this.routerService.navigate(["/dashboard"])
+      } else {
+        this.toasterService.error('Sipariş Oluşturulamadı.');
+      }
+    }
+    //this.spinnerService.hide();
+  }
 
-    if (this.productForm.get('isReturn').value === false) {
-      this.focusNextInput('shelfNo');
+  //------------------------------------------------------- FATURA
+  async deleteInvoice() {
+    if (this.invoiceProcess.id) {
+      var response = await this.orderService.deleteInvoiceProcess(this.invoiceProcess.id);
+      if (response) {
+        this.toasterService.success("Fatura Silindi");
+        this.routerService.navigate([`/create-process/0/${this.processCode}`]);
+
+      } else {
+        this.toasterService.error("Fatura Silinemedi");
+      }
     } else {
-      this.focusNextInput('barcode');
-    }
-    this.shelfNumbers = 'RAFLAR:';
-  }
+      this.toasterService.error("Fatura Silinemedi");
 
-  focusNextInput(nextInputId: string) {
-    const nextInput = document.getElementById(nextInputId) as HTMLInputElement;
-    if (nextInput) {
-      nextInput.focus();
     }
   }
 
+  async createInvoice(): Promise<any> {
+    var confirmation = window.confirm(
+      'Fatura kesilecektir, devam edilsin mi?'
+    );
+
+    if (confirmation) {
+      var response = await this.orderService.createInvoice_New(this.processCode, this.invoiceProcess.id);
+      if (response) {
+        this.toasterService.success('Faturalaştırma Başarılı.');
+        this.routerService.navigate([`/create-process/0/${this.processCode}/${this.invoiceProcess.id}`]);
+
+        // this.routerService.navigate(["/dashboard"])
+      } else {
+        this.toasterService.error('Faturalaştırma Başarısız.');
+      }
+    }
+    //this.spinnerService.hide();
+  }
+
+
+  //-----------------------------------------------------------FORMS
+  productForm: FormGroup;
+  invoiceForm: FormGroup;
+  proposal_bp_form: FormGroup;
+  proposal_r_form: FormGroup;
+  order_r_form: FormGroup;
+  shipment_ws_form: FormGroup;
+  trackChanges(form: FormGroup, isCustomer: boolean) {
+    var customer_vendor = isCustomer ? 'currAccCode' : 'vendorCode';
+    form.get(customer_vendor).valueChanges.subscribe(async newVal => {
+      await this.getCustomerAddresses(newVal.code)
+    });
+    form.get('billingPostalAddressId').valueChanges.subscribe(async newVal => {
+      if (!form.value.shippingPostalAddressId) {
+        var fa = this.addresses_vm.find(a => a.code == form.get('billingPostalAddressId').value.code);
+        if (fa) {
+          form.get('shippingPostalAddressId').setValue(fa);
+        }
+      }
+    });
+  }
   product_formGenerator() {
     this.productForm = this.formBuilder.group({
       shelfNo: [null, [Validators.required, Validators.maxLength(10)]],
@@ -566,6 +698,20 @@ export class CreateSaleOrderComponent implements OnInit {
     });
 
 
+  }
+  order_r_formGenerator() {
+    this.order_r_form = this.formBuilder.group({
+      officeCode: [null, Validators.required],
+      warehouseCode: [null, Validators.required],
+      currAccCode: [null, Validators.required],
+      salesPersonCode: [null],
+      description: [null],
+      internalDescription: [null],
+      taxTypeCode: [null, Validators.required],
+      shippingPostalAddressId: [null],
+      billingPostalAddressId: [null],
+    });
+    this.trackChanges(this.order_r_form, true);
   }
   invoice_r_formGenerator() {
     this.invoiceForm = this.formBuilder.group({
@@ -577,11 +723,14 @@ export class CreateSaleOrderComponent implements OnInit {
       description: [null],
       internalDescription: [null],
       taxTypeCode: [null, Validators.required],
+      shippingPostalAddressId: [null],
+      billingPostalAddressId: [null],
       eInvoiceNumber: [
         null
       ],
-
     });
+    this.trackChanges(this.invoiceForm, true);
+
   }
   invoice_bp_formGenerator() {
     this.invoiceForm = this.formBuilder.group({
@@ -596,7 +745,11 @@ export class CreateSaleOrderComponent implements OnInit {
       ],
       isReturn: [false, Validators.required],
       taxTypeCode: [null, Validators.required],
+      shippingPostalAddressId: [null],
+      billingPostalAddressId: [null],
     });
+    this.trackChanges(this.invoiceForm, false);
+
   }
   proposal_bp_formGenerator() {
     this.proposal_bp_form = this.formBuilder.group({
@@ -606,8 +759,12 @@ export class CreateSaleOrderComponent implements OnInit {
       salesPersonCode: [null],
       description: [null],
       internalDescription: [null],
-      taxTypeCode: [null, Validators.required]
+      taxTypeCode: [null, Validators.required],
+      shippingPostalAddressId: [null],
+      billingPostalAddressId: [null],
     });
+    this.trackChanges(this.proposal_bp_form, false);
+
   }
   proposal_r_formGenerator() {
     this.proposal_r_form = this.formBuilder.group({
@@ -618,9 +775,103 @@ export class CreateSaleOrderComponent implements OnInit {
       description: [null],
       internalDescription: [null],
       taxTypeCode: [null],
+      shippingPostalAddressId: [null],
+      billingPostalAddressId: [null],
     });
+    this.trackChanges(this.proposal_r_form, true);
+
+  }
+  shipment_ws_formGenerator() {
+    this.shipment_ws_form = this.formBuilder.group({
+      officeCode: [null, Validators.required],
+      warehouseCode: [null, Validators.required],
+      currAccCode: [null, Validators.required],
+      description: [null],
+      internalDescription: [null],
+      shippingPostalAddressId: [null],
+      billingPostalAddressId: [null],
+    });
+    this.trackChanges(this.order_r_form, true);
+  }
+  //------------------------------------------------------------- TEKLİF
+
+  async createProposalReport() {
+
+    if (window.confirm("Mail Gönderilsin mi?")) {
+      var data = await this.productService.createProposalReport(this.invoiceProcess.id, true);
+    } else {
+      var data = await this.productService.createProposalReport(this.invoiceProcess.id, false);
+    }
+
+    this.routerService.navigate([`/create-process/${this.processType}/${this.processCode}/0/${this.invoiceProcess.id}`]);
+
   }
 
+
+  //----------------------------------------------------------- ADRES
+  addresses: CustomerAddress_VM[] = []
+  addresses_vm: any[] = []
+  selectedAddresses: CustomerAddress_VM[] = []
+  selectAddressDialog: boolean = false;
+
+
+  async getCustomerAddresses(currAccCode: string) {
+
+    var request: GetCustomerAddress_CM = new GetCustomerAddress_CM();
+    request.currAccCode = currAccCode;
+    this.addresses = await this.orderService.getCustomerAddress(request)
+    if (this.addresses.length > 0) {
+      const addressSet = new Set();
+      this.addresses.forEach(model => {
+        addressSet.add(model.postalAddressID);
+      });
+      this.addresses_vm = Array.from(addressSet).map(code => {
+        const model = this.addresses.find(a => a.postalAddressID === code);
+        return {
+          code: model.postalAddressID,
+          name: model.address
+        };
+      });
+
+      console.log(this.addresses_vm)
+
+      // this.selectCurrentAddress(this.addresses[0])
+      // this.selectAddressDialog = false;
+      // this.activeIndex = 2;
+    }
+
+    if (this.addresses.length === 0) {
+
+      this.toasterService.error("Adres Bulunamadı Adres Ekleyiniz")
+    }
+    this.selectAddressDialog = true;
+
+  }
+  async selectCurrentAddress(request: CustomerAddress_VM) {
+
+  }
+
+
+  //------------------------------------------------------------- OTHERS
+  clearShelfNumbers() {
+    this.productForm.get('shelfNo').setValue(null);
+    this.productForm.get('barcode').setValue(null);
+    this.productForm.get('quantity').setValue(null);
+    this.productForm.get('batchCode').setValue(null);
+
+    if (this.productForm.get('isReturn').value === false) {
+      this.focusNextInput('shelfNo');
+    } else {
+      this.focusNextInput('barcode');
+    }
+    this.shelfNumbers = 'RAFLAR:';
+  }
+  focusNextInput(nextInputId: string) {
+    const nextInput = document.getElementById(nextInputId) as HTMLInputElement;
+    if (nextInput) {
+      nextInput.focus();
+    }
+  }
   whichRowIsInvalid() {
     this.generalService.whichRowIsInvalid(this.productForm);
   }
@@ -662,26 +913,6 @@ export class CreateSaleOrderComponent implements OnInit {
       this.visible2 = true;
     }
   }
-
-  async createInvoice(): Promise<any> {
-    var confirmation = window.confirm(
-      'Fatura kesilecektir, devam edilsin mi?'
-    );
-
-    if (confirmation) {
-      var response = await this.orderService.createInvoice_New(this.processCode, this.invoiceProcess.id);
-      if (response) {
-        this.toasterService.success('Faturalaştırma Başarılı.');
-        this.routerService.navigate([`/create-process/0/${this.processCode}/${this.invoiceProcess.id}`]);
-
-        // this.routerService.navigate(["/dashboard"])
-      } else {
-        this.toasterService.error('Faturalaştırma Başarısız.');
-      }
-    }
-    //this.spinnerService.hide();
-  }
-
   async setFormValues(model: CreatePurchaseInvoice): Promise<CreatePurchaseInvoice> {
 
     try {
@@ -704,7 +935,6 @@ export class CreateSaleOrderComponent implements OnInit {
       return null;
     }
   }
-
   async onSubmit(model: CreatePurchaseInvoice): Promise<any> {
 
     if (!this.invoiceProcess) {
@@ -802,7 +1032,6 @@ export class CreateSaleOrderComponent implements OnInit {
       }
     }
   }
-
   responseHandler(response: boolean, message: string) {
     if (response == true) {
 
@@ -821,34 +1050,9 @@ export class CreateSaleOrderComponent implements OnInit {
     });
     this.totalCount = totalQty;
   }
-  async deleteInvoice() {
-    if (this.invoiceProcess.id) {
-      var response = await this.orderService.deleteInvoiceProcess(this.invoiceProcess.id);
-      if (response) {
-        this.toasterService.success("Fatura Silindi");
-        this.routerService.navigate([`/create-process/0/${this.processCode}`]);
 
-      } else {
-        this.toasterService.error("Fatura Silinemedi");
-      }
-    } else {
-      this.toasterService.error("Fatura Silinemedi");
-
-    }
-  }
   goPage() {
     this.routerService.navigate([`/create-process/${this.processType}/${this.processCode}/0`]);
-
-  }
-  async createProposalReport() {
-
-    if (window.confirm("Mail Gönderilsin mi?")) {
-      var data = await this.productService.createProposalReport(this.invoiceProcess.id, true);
-    } else {
-      var data = await this.productService.createProposalReport(this.invoiceProcess.id, false);
-    }
-
-    this.routerService.navigate([`/create-process/${this.processType}/${this.processCode}/0/${this.invoiceProcess.id}`]);
 
   }
 

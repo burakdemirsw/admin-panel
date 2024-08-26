@@ -2,12 +2,10 @@
   <section class="section">
     <div class="card custom-card mb-3">
       <div class="card-body d-flex justify-content-start mt-3" style="overflow-x: auto">
-        <button type="button" class="btn btn-primary" (click)="newSaleInvoice()" *ngIf="  this.processCode=='R'">
-          <i class="fas fa-check"></i> Satış Faturası Oluştur
+        <button type="button" class="btn btn-primary" (click)="newSaleInvoice()">
+          <i class=" fas fa-check"></i> Oluştur
         </button>
-        <button type="button" class="btn btn-primary" (click)="newPurchaseInvoice()" *ngIf="  this.processCode=='BP'">
-          <i class="fas fa-check"></i> Alış Faturası Oluştur
-        </button>
+
       </div>
     </div>
 
@@ -74,9 +72,13 @@
             <td>{{ invoice.createdDate | date : "dd.MM.yyyy HH:mm:ss" }}</td>
             <td>
               <div class="btn-group">
+
                 <button class="btn btn-success" (click)="goPage(invoice.id)">
                   <i class="fas fa-sliders-h"></i>
                 </button>
+                <button *ngIf="this.processType =='proposal'" class="btn btn-primary"
+                  (click)="convertWSProposalToWSOrder(invoice.processCode,invoice.id)">
+                  <i class="fas fa-receipt    "></i> </button>
                 <button class="btn btn-danger" title="Sil" (click)="deleteInvoice(invoice.id)">
                   <i class="fas fa-trash"></i>
                 </button>

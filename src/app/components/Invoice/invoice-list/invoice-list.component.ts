@@ -25,7 +25,7 @@ export class InvoiceListComponent implements OnInit {
   ) { }
   offices: any[] = ["Alış", "Satış"]
   processCodes: string[] = ["WS", "BP", "R", "ws", "bp", "r", "prws"]
-  processTypes: string[] = ["invoice", "order", "proposal"]
+  processTypes: string[] = ["invoice", "order", "proposal", "shipment"]
   barcode: string = null;
   quantity: string = null;
   currentPage: number = 1; // Başlangıçta ilk sayfayı göster
@@ -44,15 +44,26 @@ export class InvoiceListComponent implements OnInit {
         this.processType = params["processType"];
 
         if (this.processCode == 'R' && this.processType == 'invoice') {
-          this.headerService.updatePageTitle("Faturalar (R)");
+          this.headerService.updatePageTitle("Peşin Satış Faturaları");
           await this.getInvoiceList();
         } else if ((this.processCode == 'BP' && this.processType == 'invoice')) {
-          this.headerService.updatePageTitle("Faturalar (BP)");
+          this.headerService.updatePageTitle("Alış Faturaları");
           await this.getInvoiceList();
         } else if ((this.processCode == 'R' && this.processType == 'proposal')) {
-          this.headerService.updatePageTitle("Teklifler (R)");
+          this.headerService.updatePageTitle("Peşin Satış Teklifleri");
+          await this.getInvoiceList();
+        } else if ((this.processCode == 'R' && this.processType == 'order')) {
+          this.headerService.updatePageTitle("Peşin Satışlar");
+          await this.getInvoiceList();
+        } else if ((this.processCode == 'WS' && this.processType == 'order')) {
+          this.headerService.updatePageTitle("Toptan Satışlar");
           await this.getInvoiceList();
         }
+        else if ((this.processCode == 'WS' && this.processType == 'shipment')) {
+          this.headerService.updatePageTitle("İrsaliyeler");
+          await this.getInvoiceList();
+        }
+
       }
 
     })
@@ -113,7 +124,18 @@ export class InvoiceListComponent implements OnInit {
     this.router.navigate([`/create-process/${this.processType}/${this.processCode}/0/${id}`]);
 
   }
+  async convertWSProposalToWSOrder(processCode: string, id: string) {
+    if (window.confirm("Teklifi faturalalaşacaktır . Devam edilsin mi?")) {
+      var response = await this.orderService.convertWSProposalToWSOrder(this.processType, processCode, id);
+      if (response) {
+        this.toasterService.success("Teklif, Siparişe Dönüştürüldü");
+        this.getInvoiceList();
+      } else {
+        this.toasterService.error("Teklif, Siparişe Dönüştürülemedi");
+      }
+    }
 
+  }
   async deleteInvoice(id: string) {
     var response = await this.orderService.deleteInvoiceProcess(id);
     if (response) {

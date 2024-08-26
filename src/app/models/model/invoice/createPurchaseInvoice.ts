@@ -34,6 +34,9 @@ export class InvoiceProcess {
   description: string;
   internalDescription: string;
   eInvoiceUrl: string;
+  shippingPostalAddressId: string;
+  billingPostalAddressId: string;
+  subCurrAccId: string;
   createdDate?: Date;
   updatedDate?: Date;
 
