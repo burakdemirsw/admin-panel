@@ -125,6 +125,8 @@ export class OrderOperationComponent implements OnInit {
       if (orderNumberType === 'BP') {
         await this.getAllProducts(params['orderNumber'], 'BP'); //toplanan ve toplanacak ürünleri çeker
       } else if (orderNumberType === 'WS') {
+        await this.checkClientOrderByOrderNumber(params['orderNumber']);
+
         await this.addOperationStatus();
         var response = await this.orderService.getOrderDetail(params['orderNumber']);
         this.customerName = response.description;
@@ -149,7 +151,7 @@ export class OrderOperationComponent implements OnInit {
       //this.spinnerService.hide();
       this.setPageDescription(orderNumberType);
     });
-    this.toasterService.info(this.currentOrderNo)
+    // this.toasterService.info(this.currentOrderNo)
   }
   //selam ben burak
   async addOperationStatus() {
@@ -160,11 +162,11 @@ export class OrderOperationComponent implements OnInit {
     request.warehousePerson = localStorage.getItem('name') + ' ' + localStorage.getItem('surname');
     request.createdDate = new Date();
     const response = await this.orderService.addOrderStatus(request);
-    if (response) {
-      this.toasterService.success('Durum Güncellendi');
-    } else {
-      this.toasterService.error('Durum Güncellenemedi');
-    }
+    // if (response) {
+    //   this.toasterService.success('Durum Güncellendi');
+    // } else {
+    //   this.toasterService.error('Durum Güncellenemedi');
+    // }
   }
 
   //-----------------------------------------------------EKSIK URUNLER İŞLEMLERİ
@@ -518,7 +520,18 @@ export class OrderOperationComponent implements OnInit {
     }
   }
 
+  cancelStatus: boolean = false;
+  async checkClientOrderByOrderNumber(orderNumber: string) {
+    var response = await this.orderService.checkClientOrderByOrderNumber(orderNumber)
+    if (response) {
+      this.cancelStatus = true;
+      this.toasterService.error('Bu Sipariş İptal Edilmiştir Lütfen Ürünleri Yerine Yerleştiriniz');
+
+    }
+  }
   async collectAndPack_WS(products: ProductOfOrder[]) {
+
+
     if (!this.selectedInvoiceType) {
       this.toasterService.error("Vergi Tipi Seçiniz");
       return;
@@ -732,7 +745,7 @@ export class OrderOperationComponent implements OnInit {
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
   async onSubmit(productModel: CountProduct): Promise<any> {
-
+    this.toasterService.success(productModel.barcode);
     // = işareti varsa - yap
     if (productModel.barcode.includes("=")) {
       productModel.barcode = productModel.barcode.replace(/=/g, "-");
@@ -829,6 +842,8 @@ export class OrderOperationComponent implements OnInit {
 
                 var qrResponse: QrOperationResponseModel =
                   await this.productService.qrOperationMethod(
+                    foundModel.lineId,
+                    this.currentOrderNo,
                     this.qrBarcodeUrl,
                     this.checkForm,
                     productModel,
@@ -962,6 +977,8 @@ export class OrderOperationComponent implements OnInit {
                 //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
                 var qrResponse: QrOperationResponseModel =
                   await this.productService.qrOperationMethod(
+                    foundModel.lineId,
+                    this.currentOrderNo,
                     this.qrBarcodeUrl,
                     this.checkForm,
                     productModel,
@@ -1061,6 +1078,8 @@ export class OrderOperationComponent implements OnInit {
             if (response && response != null && response != undefined) {
               var qrResponse: QrOperationResponseModel =
                 await this.productService.qrOperationMethod(
+                  foundModel.lineId,
+                  this.currentOrderNo,
                   this.qrBarcodeUrl,
                   this.checkForm,
                   productModel,

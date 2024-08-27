@@ -344,6 +344,7 @@ export class FastTransferComponent implements OnInit {
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
   async onSubmit(transferModel: FastTransferModel2): Promise<any> {
+    var uuuid = await this.generalService.generateGUID()
 
 
     // = işareti varsa - yap
@@ -399,6 +400,8 @@ export class FastTransferComponent implements OnInit {
           //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
           var qrResponse: QrOperationResponseModel =
             await this.productService.qrOperationMethod(
+              uuuid,
+              this.currentOrderNo,
               this.qrBarcodeUrl,
               this.checkForm,
               transferModel,

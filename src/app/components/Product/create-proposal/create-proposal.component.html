@@ -694,16 +694,26 @@
               </tr>
               <tr>
                 <th scope="row">Toplam <small class="text-muted">KDVSİZ</small></th>
-                <td>{{ getTotalPrice3() | currency : "₺" }}</td>
+                <td>{{ getUnTaxedTotalAfterDiscount() | currency : "₺" }}</td>
+              </tr>
+
+              <tr *ngIf="findVatRate(10)">
+                <th scope="row">%10 KDV</th>
+                <td>{{calculateVatAmount(10)| currency : "₺"}}</td>
+              </tr>
+              <tr *ngIf="findVatRate(20)">
+                <th scope="row">%20 KDV</th>
+                <td>{{calculateVatAmount(20)| currency : "₺"}}</td>
               </tr>
               <tr>
                 <th scope="row">KDV</th>
-                <td>{{ ((getTotalPrice3() /getTotal() )*getTotalTax_2() ).toFixed(2)| currency : "₺" }}</td>
+                <td>{{ ((getUnTaxedTotalAfterDiscount() /getTotal() )*getTotalTax_2() ).toFixed(2)| currency : "₺" }}
+                </td>
               </tr>
               <tr>
                 <th scope="row">Genel Toplam</th>
                 <td>
-                  {{ ((getTotalPrice3() /getTotal() )*getTotalTax_2() ) +  getTotalPrice3()   | currency : "₺" }}
+                  {{ ((getUnTaxedTotalAfterDiscount() /getTotal() )*getTotalTax_2() ) +  getUnTaxedTotalAfterDiscount()   | currency : "₺" }}
                 </td>
               </tr>
             </tbody>

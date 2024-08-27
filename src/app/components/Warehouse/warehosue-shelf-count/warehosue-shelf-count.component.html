@@ -130,68 +130,89 @@
         </div>
 
         <div class="card" *ngIf="lastCollectedProducts.length > 0 && this.countType==='count'">
-          <div class="card-body">
-            <h5 class="card-title">Sayılan Ürünler</h5>
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col" *ngFor="let header of _tableHeaders">
-                      {{ header }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="
-                      let product of lastCollectedProducts
-                        | paginate
-                          : { itemsPerPage: 10, currentPage: currentPage };
-                      let i = index
-                    ">
-                    <!-- <td>{{ i + 1 }}</td> -->
-                    <td>
-                      <!-- <img
-                        src="{{ photoUrl + product.itemCode + '.jpg' }}"
-                        alt="Resim"
-                        width="50"
-                        height="50"
-                        (click)="
-                          openImageModal(photoUrl + product.itemCode + '.jpg')
-                        "
-                      /> -->
+          <p-table [value]="lastCollectedProducts" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
+            [responsiveLayout]="'scroll'" [filterDelay]="500" [styleClass]="'p-datatable-striped'">
+            <ng-template pTemplate="caption">
+              <div class="flex align-items-center justify-content-between">
+                Toplanan Ürünler
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Resim</th>
+                <th pSortableColumn="shelfNo">
+                  Raf No
+                  <p-sortIcon field="shelfNo"></p-sortIcon>
+                </th>
+                <th pSortableColumn="itemCode">
+                  Ürün Kodu
+                  <p-sortIcon field="itemCode"></p-sortIcon>
+                </th>
+                <th pSortableColumn="quantity">
+                  Miktar
+                  <p-sortIcon field="quantity"></p-sortIcon>
+                </th>
+                <th pSortableColumn="batchCode">
+                  Parti Kodu
+                  <p-sortIcon field="batchCode"></p-sortIcon>
+                </th>
+                <th pSortableColumn="barcode">
+                  Barkod
+                  <p-sortIcon field="barcode"></p-sortIcon>
+                </th>
+                <th>İşlemler</th>
+              </tr>
+              <tr>
+                <th>
+                  <!-- Resim sütunu için filtre eklemiyoruz -->
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="shelfNo" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="itemCode" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="numeric" field="quantity" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="batchCode" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="barcode" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <!-- İşlemler sütunu için filtre eklemiyoruz -->
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-product let-i="rowIndex">
+              <tr>
+                <td>
+                  <p-image src="{{ photoUrl + product.itemCode + '.jpg' }}"
+                    previewImageSrc="{{ photoUrl + product.itemCode + '.jpg' }}" alt="Image" width="30"
+                    [preview]="true">
+                  </p-image>
+                </td>
+                <td>{{ product.shelfNo }}</td>
+                <td>{{ product.itemCode }}</td>
+                <td>{{ product.quantity }}</td>
+                <td>{{ product.batchCode }}</td>
+                <td>{{ product.barcode }}</td>
+                <td>
+                  <div class="btn-group">
+                    <button pButton type="button" icon="pi pi-trash" class="p-button-danger"
+                      (click)="deleteOrderProduct(orderNo, product)">
+                    </button>
+                    <button pButton type="button" icon="pi pi-print" class="p-button-primary"
+                      (click)="change(product.barcode, product.quantity, product.batchCode)">
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
 
-                      <p-image src="{{ photoUrl + product.itemCode + '.jpg' }}" previewImageSrc="{{
-                          photoUrl + product.itemCode + '.jpg'
-                        }}" alt="Image" width="30" [preview]="true" />
-                    </td>
-                    <td>{{ product.shelfNo }}</td>
-                    <td>{{ product.itemCode }}</td>
-                    <td>{{ product.quantity }}</td>
-                    <td>{{ product.batchCode }}</td>
-                    <td>{{ product.barcode }}</td>
-                    <td>
-                      <div class="btn-group">
-                        <button class="btn btn-danger" type="submit" (click)="deleteOrderProduct(orderNo, product)">
-                          <i class="fa fa-trash"></i>
-                        </button>
-
-                        <button class="btn btn-primary" type="submit" (click)="
-                            change(
-                              product.barcode,
-                              product.quantity,
-                              product.batchCode
-                            )
-                          ">
-                          <i class="fa fa-print"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
-            </div>
-          </div>
         </div>
         <div class="card" *ngIf="lastCollectedProducts2.length > 0 && this.countType!='count'">
           <div class="card-body">

@@ -1,77 +1,23 @@
 @import "../node_modules/ngx-spinner/animations/ball-scale-multiple.css";
 @import "../node_modules/ngx-spinner/animations/line-scale-pulse-out.css";
-@import "primeng/resources/themes/lara-light-blue/theme.css";
-@import "primeng/resources/primeng.css";
-@import "../node_modules/primeicons/primeicons.css";
-@import "../node_modules/@ng-select/ng-select/themes/default.theme.css";
+@import "../node_modules/quill/dist/quill.core.css";
+@import "../node_modules/quill/dist/quill.snow.css";
 
-/* @import "../node_modules/@ng-select/ng-select/themes/material.theme.css"; */
 
-.custom-card {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border: none;
+* {
+  text-decoration: none !important;
 }
 
-.custom-btn-primary,
-.custom-btn-danger,
-.custom-btn-warning {
-  color: white;
-  margin-right: 1rem;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-
-  i {
-    margin-right: 5px;
-  }
-
-  &:hover {
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
+td {
+  border: 1px solid #e2e8f0;
+  border-width: 0 0 1px 0;
+  max-width: 200px !important;
+  text-overflow: ellipsis;
+  /* Taşan içeriği "..." olarak gösterir */
 }
 
-/*
-.card-title {
-  padding: 5px !important;
-} */
-
-
-
-/* Özel Renkler (Ornek) */
-.custom-btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
-}
-
-.custom-btn-danger {
-  background-color: #dc3545;
-  border-color: #dc3545;
-}
-
-.custom-btn-warning {
-  background-color: #ffc107;
-  border-color: #ffc107;
-}
-
-.p-button {
-  transition: all 0.3s ease;
-  border: none;
-  font-weight: bold;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.p-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-}
-
-.p-button:active {
-  transform: translateY(1px);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
-}
-
-.p-sidebar {
-  width: 20rem !important;
+thead {
+  max-width: 200px !important;
+  border: 1px solid #e2e8f0;
+  border-width: 0 0 1px 0;
 }

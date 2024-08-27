@@ -210,11 +210,11 @@ export class WarehosueShelfCountComponent implements OnInit {
     request.warehousePerson = localStorage.getItem('name') + ' ' + localStorage.getItem('surname');
     request.createdDate = new Date();
     const response = await this.orderService.addOrderStatus(request);
-    if (response) {
-      this.toasterService.success('Durum Güncellendi');
-    } else {
-      this.toasterService.error('Durum Güncellenemedi');
-    }
+    // if (response) {
+    //   this.toasterService.success('Durum Güncellendi');
+    // } else {
+    //   this.toasterService.error('Durum Güncellenemedi');
+    // }
   }
 
 
@@ -464,6 +464,8 @@ export class WarehosueShelfCountComponent implements OnInit {
   async onSubmit(
     countProductRequestModel: CountProduct3
   ): Promise<any> {
+    var uuuid = await this.generalService.generateGUID()
+
     var _isUUID = this.generalService.isGuid(countProductRequestModel.barcode);
     // EĞER BARKODTA = VARSA - İLE DEĞİŞTİR
     if (countProductRequestModel.barcode.includes('=')) {
@@ -539,6 +541,8 @@ export class WarehosueShelfCountComponent implements OnInit {
 
               var qrResponse: QrOperationResponseModel =
                 await this.productService.qrOperationMethod(
+                  uuuid,
+                  this.currentOrderNo,
                   this.qrBarcodeUrl,
                   this.checkForm,
                   countProductRequestModel,
@@ -587,6 +591,8 @@ export class WarehosueShelfCountComponent implements OnInit {
 
                 var qrResponse: QrOperationResponseModel =
                   await this.productService.qrOperationMethod(
+                    uuuid,
+                    this.currentOrderNo,
                     this.qrBarcodeUrl,
                     this.checkForm,
                     countProductRequestModel,
@@ -627,6 +633,7 @@ export class WarehosueShelfCountComponent implements OnInit {
   async onSubmit2(
     countProductRequestModel: CountProduct3, isInQty: boolean
   ): Promise<any> {
+    var uuuid = await this.generalService.generateGUID()
 
     // EĞER BARKODTA = VARSA - İLE DEĞİŞTİR
     if (countProductRequestModel.barcode.includes('=')) {
@@ -695,6 +702,8 @@ export class WarehosueShelfCountComponent implements OnInit {
 
               var qrResponse: QrOperationResponseModel =
                 await this.productService.qrOperationMethod(
+                  uuuid,
+                  this.currentOrderNo,
                   this.qrBarcodeUrl,
                   this.checkForm,
                   countProductRequestModel,
@@ -741,6 +750,8 @@ export class WarehosueShelfCountComponent implements OnInit {
 
                 var qrResponse: QrOperationResponseModel =
                   await this.productService.qrOperationMethod(
+                    uuuid,
+                    this.currentOrderNo,
                     this.qrBarcodeUrl,
                     this.checkForm,
                     countProductRequestModel,

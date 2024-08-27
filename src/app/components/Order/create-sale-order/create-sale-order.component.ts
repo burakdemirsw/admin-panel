@@ -472,6 +472,7 @@ export class CreateSaleOrderComponent implements OnInit {
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
   async onSubmit(model: CreatePurchaseInvoice): Promise<any> {
+    var uuuid = await this.generalService.generateGUID()
 
     if (model.barcode.includes("=")) {
       model.barcode = model.barcode.replace(/=/g, "-");
@@ -548,6 +549,8 @@ export class CreateSaleOrderComponent implements OnInit {
 
           var qrResponse: QrOperationResponseModel =
             await this.productService.qrOperationMethod(
+              uuuid,
+              this.newOrderNumber,
               this.qrBarcodeUrl,
               this.productForm,
               model,
@@ -600,6 +603,8 @@ export class CreateSaleOrderComponent implements OnInit {
 
             var qrResponse: QrOperationResponseModel =
               await this.productService.qrOperationMethod(
+                uuuid,
+                this.newOrderNumber,
                 this.qrBarcodeUrl,
                 this.productForm,
                 model,

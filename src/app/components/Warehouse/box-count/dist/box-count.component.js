@@ -238,43 +238,45 @@ var BoxCountComponent = /** @class */ (function () {
     BoxCountComponent.prototype.onSubmit = function (countProductRequestModel) {
         var _a;
         return __awaiter(this, void 0, Promise, function () {
-            var number, url, newResponse, shelves, response, qrResponse, data, error_2;
+            var uuuid, number, url, newResponse, shelves, response, qrResponse, data, error_2;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0:
-                        if (!!this.checkForm.valid) return [3 /*break*/, 4];
-                        if (!countProductRequestModel.barcode) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.setFormValues(countProductRequestModel.barcode, true)];
+                    case 0: return [4 /*yield*/, this.generalService.generateGUID()];
                     case 1:
+                        uuuid = _b.sent();
+                        if (!!this.checkForm.valid) return [3 /*break*/, 5];
+                        if (!countProductRequestModel.barcode) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.setFormValues(countProductRequestModel.barcode, true)];
+                    case 2:
                         number = _b.sent();
                         (_a = this.checkForm.get('quantity')) === null || _a === void 0 ? void 0 : _a.setValue(Number(number)); //quantity alanı dolduruldu
                         this.toasterService.success('Raflar Getirildi Ve Miktar Alanı Dolduruldu.');
-                        return [3 /*break*/, 3];
-                    case 2:
+                        return [3 /*break*/, 4];
+                    case 3:
                         this.toasterService.warn('Barkod Alanı Boş.');
-                        _b.label = 3;
-                    case 3: return [2 /*return*/];
-                    case 4:
-                        url = ClientUrls_1.ClientUrls.baseUrl + '/Order/CountProduct3';
-                        _b.label = 5;
+                        _b.label = 4;
+                    case 4: return [2 /*return*/];
                     case 5:
-                        _b.trys.push([5, 10, , 11]);
-                        return [4 /*yield*/, this.productService.countProductByBarcode(countProductRequestModel.barcode)];
+                        url = ClientUrls_1.ClientUrls.baseUrl + '/Order/CountProduct3';
+                        _b.label = 6;
                     case 6:
+                        _b.trys.push([6, 11, , 12]);
+                        return [4 /*yield*/, this.productService.countProductByBarcode(countProductRequestModel.barcode)];
+                    case 7:
                         newResponse = _b.sent();
                         shelves = newResponse[0]
                             .split(',')
                             .filter(function (raflar) { return raflar.trim() !== ''; })
                             .map(function (raflar) { return raflar.toLowerCase(); });
-                        if (!this.state) return [3 /*break*/, 9];
+                        if (!this.state) return [3 /*break*/, 10];
                         this.state = false;
                         return [4 /*yield*/, this.warehouseService.countProductRequest(countProductRequestModel.barcode, countProductRequestModel.shelfNo, countProductRequestModel.quantity == null
                                 ? Number(newResponse[1])
                                 : countProductRequestModel.quantity, countProductRequestModel.office, countProductRequestModel.warehouseCode, countProductRequestModel.batchCode, 'Order/CountProduct3', this.currentOrderNo, '')];
-                    case 7:
-                        response = _b.sent();
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, countProductRequestModel, Number(newResponse[1]), false, 'CO')];
                     case 8:
+                        response = _b.sent();
+                        return [4 /*yield*/, this.productService.qrOperationMethod(uuuid, this.currentOrderNo, this.qrBarcodeUrl, this.checkForm, countProductRequestModel, Number(newResponse[1]), false, 'CO')];
+                    case 9:
                         qrResponse = _b.sent();
                         if (qrResponse != null && qrResponse.state === true) {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
@@ -296,14 +298,14 @@ var BoxCountComponent = /** @class */ (function () {
                             this.clearQrAndBatchCode();
                             this.state = true;
                         }
-                        _b.label = 9;
-                    case 9: return [3 /*break*/, 11];
-                    case 10:
+                        _b.label = 10;
+                    case 10: return [3 /*break*/, 12];
+                    case 11:
                         error_2 = _b.sent();
                         this.toasterService.error(error_2.message);
                         this.state = true;
-                        return [3 /*break*/, 11];
-                    case 11: return [2 /*return*/];
+                        return [3 /*break*/, 12];
+                    case 12: return [2 /*return*/];
                 }
             });
         });

@@ -192,11 +192,15 @@
                 Kargo
                 <p-sortIcon field="isShipped"></p-sortIcon>
               </th>
+
               <th pSortableColumn="invoiceStatus">
                 Fatura
                 <p-sortIcon field="invoiceStatus"></p-sortIcon>
               </th>
-
+              <th pSortableColumn="isCancelled">
+                İptal
+                <p-sortIcon field="isCancelled"></p-sortIcon>
+              </th>
             </tr>
             <tr>
 
@@ -240,13 +244,18 @@
               <th>
                 <p-columnFilter type="boolean" field="isShipped" [showClearButton]="false"></p-columnFilter>
               </th>
-              <th></th>
 
+              <th></th>
+              <th>
+
+              </th>
             </tr>
           </ng-template>
 
           <ng-template pTemplate="body" let-order>
-            <tr>
+            <tr [ngClass]="{
+                    'default-row': order.isCancelled
+                  }">
               <td>
                 <p-tableCheckbox [value]="order" />
               </td>
@@ -329,7 +338,15 @@
                 </button>
               </td>
 
-
+              <td>
+                <button class="btn" [ngClass]="{
+                    'btn-success': order.isCancelled,
+                    'btn-danger': !order.isCancelled
+                  }">
+                  <i *ngIf="order.isCancelled" class="fa fa-check" aria-hidden="true"></i>
+                  <i *ngIf="!order.isCancelled" class="fa-solid fa-ban" aria-hidden="true"></i>
+                </button>
+              </td>
             </tr>
           </ng-template>
         </p-table>

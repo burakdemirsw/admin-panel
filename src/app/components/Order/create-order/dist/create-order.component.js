@@ -45,7 +45,6 @@ exports.__esModule = true;
 exports.CreateOrderComponent = void 0;
 var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
-var subCustomerList_VM_1 = require("src/app/models/model/customer/subCustomerList_VM");
 var getCustomerList_CM_1 = require("src/app/models/model/order/getCustomerList_CM");
 var payment_CR_1 = require("src/app/models/model/payment/payment_CR");
 var productList_VM_1 = require("src/app/models/model/product/productList_VM");
@@ -55,6 +54,7 @@ var createCustomer_CM_1 = require("../../../models/model/order/createCustomer_CM
 var getCustomerList_CM_2 = require("../../../models/model/order/getCustomerList_CM");
 var nebimOrder_1 = require("../../../models/model/order/nebimOrder");
 var models_1 = require("../../cargo/create-cargo/models/models");
+var subCustomerList_VM_1 = require("src/app/models/model/customer/subCustomerList_VM");
 var CreateOrderComponent = /** @class */ (function () {
     function CreateOrderComponent(headerService, warehouseService, paymentService, toasterService, activatedRoute, router, httpClientService, generalService, addressService, googleDriveService, productService, formBuilder, orderService, cargoService) {
         this.headerService = headerService;
@@ -84,6 +84,7 @@ var CreateOrderComponent = /** @class */ (function () {
         //--------------------------------------------------------------------------- CLIENT ORDER
         this.stateOptions = [{ label: 'Standart', value: '0' }, { label: 'Vergisiz', value: '4' }, { label: 'Standart Kdv Düş', value: '5' }];
         this.isCompleted = false;
+        this.isCancelled = false;
         this.orderNumber = "";
         this.orderDescription = "burak demir";
         //---------------------------------------------------------------------------
@@ -286,7 +287,10 @@ var CreateOrderComponent = /** @class */ (function () {
                         if (!response.clientOrder) return [3 /*break*/, 7];
                         order = response;
                         this.orderNo = order.clientOrder.orderNo;
-                        this.isCompleted = order.clientOrder.isCompleted;
+                        this.isCompleted = order.clientOrder.isCompleted != null ? order.clientOrder.isCompleted : false;
+                        this.toasterService.success(this.isCompleted.toString());
+                        this.isCancelled = order.clientOrder.isCancelled != null ? order.clientOrder.isCancelled : false;
+                        this.toasterService.success(this.isCancelled.toString());
                         this.currAccCode = order.clientOrder.customerCode;
                         this.orderNumber = order.clientOrder.orderNumber;
                         customer_request = new getCustomerList_CM_2.GetCustomerList_CM();
@@ -444,6 +448,7 @@ var CreateOrderComponent = /** @class */ (function () {
             request.paymentDescription = this.payment.creditCardTypeCode;
             request.subCurrAccId = (_c = this.selectedSubCustomers[0]) === null || _c === void 0 ? void 0 : _c.subCurrAccId;
             request.subCustomerDescription = (_d = this.selectedSubCustomers[0]) === null || _d === void 0 ? void 0 : _d.companyName;
+            request.isCancelled = false;
             if (this.payment) {
                 request.paymentType = this.payment.creditCardTypeCode;
             }
@@ -482,6 +487,10 @@ var CreateOrderComponent = /** @class */ (function () {
             request.discountedPrice = newLine.discountedPrice;
             request.taxRate = newLine.taxRate;
             request.priceWs = newLine.priceWs;
+            request.discountRate1 = 0;
+            request.discountRate2 = 0;
+            request.totalPrice = 0;
+            request.totalTaxedPrice = 0;
             return request;
         }
         catch (error) {
@@ -2397,6 +2406,25 @@ var CreateOrderComponent = /** @class */ (function () {
                         }
                         _a.label = 2;
                     case 2: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CreateOrderComponent.prototype.updateClientOrderCancelStatus = function (id, status) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        status = status == null ? false : status;
+                        return [4 /*yield*/, this.orderService.updateClientOrderCancelStatus(id, status)];
+                    case 1:
+                        response = _a.sent();
+                        if (response) {
+                            this.toasterService.success("Sipariş İptal Edildi");
+                            this.getClientOrder(0);
+                        }
+                        return [2 /*return*/];
                 }
             });
         });

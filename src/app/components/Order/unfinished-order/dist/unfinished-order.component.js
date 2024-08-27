@@ -108,6 +108,25 @@ var UnfinishedOrderComponent = /** @class */ (function () {
             });
         });
     };
+    UnfinishedOrderComponent.prototype.updateClientOrderCancelStatus = function (id, status) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        status = status == null ? false : status;
+                        return [4 /*yield*/, this.orderService.updateClientOrderCancelStatus(id, status)];
+                    case 1:
+                        response = _a.sent();
+                        if (response) {
+                            this.toasterService.success("Sipariş İptal Edildi");
+                            this.getOrders(this.currentOrderState);
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     UnfinishedOrderComponent.prototype.updateCargoStatus = function (order) {
         return __awaiter(this, void 0, void 0, function () {
             var order_response, update_response;

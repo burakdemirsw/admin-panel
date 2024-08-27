@@ -2,22 +2,11 @@
   <section class="section">
     <div class="card custom-card mb-3">
       <div class="card-body">
-        <div
-          class="card-body d-flex justify-content-start mt-3"
-          style="overflow-x: auto"
-        >
-          <button
-            type="button"
-            class="btn custom-btn-primary mt-3"
-            (click)="getCargos(true)"
-          >
+        <div class="card-body d-flex justify-content-start mt-3" style="overflow-x: auto">
+          <button type="button" class="btn btn-primary" (click)="getCargos(true)">
             <i class="fas fa-check"></i> Yazdırılan Kargolar
           </button>
-          <button
-            type="button"
-            class="btn custom-btn-primary mt-3"
-            (click)="getCargos(false)"
-          >
+          <button type="button" class="btn btn-primary" (click)="getCargos(false)">
             <i class="fas fa-times"></i> Yazdırılmayan Kargolar
           </button>
         </div>
@@ -25,135 +14,129 @@
     </div>
 
     <div class="card">
-      <div class="card-body">
-        <div style="overflow-x: auto">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Kargo Şirketi</th>
-                <th scope="col">Müşteri</th>
-                <th scope="col">Sipariş Numarası</th>
-                <th scope="col">Referans Id</th>
-                <th scope="col">Gönderi Id</th>
-
-                <th scope="col">Oluşturulma Zamanı</th>
-                <th scope="col">Paketleme Türü</th>
-                <th scope="col">Yazdırma Durumu</th>
-                <!-- <th scope="col">Desi</th>
-                <th scope="col">Kg</th> -->
-                <th scope="col">İşlemler</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                *ngFor="
-                  let cargo of cargos
-                    | paginate : { itemsPerPage: 50, currentPage: currentPage }
-                "
-              >
-                <td>{{ cargo.cargoFirmId === 1 ? "MNG" : "ARAS" }}</td>
-
-                <td>{{ cargo.customer }}</td>
-                <td>{{ cargo.orderNo }}</td>
-                <td>{{ cargo.referenceId }}</td>
-                <td>{{ cargo.shipmentId }}</td>
-                <td>{{ cargo.createdDate | date : "dd.MM.yyyy HH:mm" }}</td>
-                <td>
-                  {{
+      <p-table [value]="cargos" [paginator]="true" [rows]="50" [tableStyle]="{'min-width': '50rem'}"
+        [responsiveLayout]="'scroll'" [filterDelay]="500">
+        <ng-template pTemplate="caption">
+          <div class="flex align-items-center justify-content-between">
+            Kargo Listesi
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="cargoFirmId">
+              Kargo Şirketi
+              <p-sortIcon field="cargoFirmId"></p-sortIcon>
+            </th>
+            <th pSortableColumn="customer">
+              Müşteri
+              <p-sortIcon field="customer"></p-sortIcon>
+            </th>
+            <th pSortableColumn="orderNo">
+              Sipariş Numarası
+              <p-sortIcon field="orderNo"></p-sortIcon>
+            </th>
+            <th pSortableColumn="referenceId">
+              Referans Id
+              <p-sortIcon field="referenceId"></p-sortIcon>
+            </th>
+            <th pSortableColumn="shipmentId">
+              Gönderi Id
+              <p-sortIcon field="shipmentId"></p-sortIcon>
+            </th>
+            <th pSortableColumn="createdDate">
+              Oluşturulma Zamanı
+              <p-sortIcon field="createdDate"></p-sortIcon>
+            </th>
+            <th pSortableColumn="packagingType">
+              Paketleme Türü
+              <p-sortIcon field="packagingType"></p-sortIcon>
+            </th>
+            <th pSortableColumn="isPrinted">
+              Yazdırma Durumu
+              <p-sortIcon field="isPrinted"></p-sortIcon>
+            </th>
+            <th>İşlemler</th>
+          </tr>
+          <tr>
+            <th>
+              <p-columnFilter type="text" field="cargoFirmId" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="customer" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="orderNo" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="referenceId" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="shipmentId" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="date" field="createdDate" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="packagingType" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="boolean" field="isPrinted" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <!-- İşlemler sütunu için filtre eklemiyoruz -->
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-cargo let-i="rowIndex">
+          <tr>
+            <td>{{ cargo.cargoFirmId === 1 ? "MNG" : "ARAS" }}</td>
+            <td>{{ cargo.customer }}</td>
+            <td>{{ cargo.orderNo }}</td>
+            <td>{{ cargo.referenceId }}</td>
+            <td>{{ cargo.shipmentId }}</td>
+            <td>{{ cargo.createdDate | date : "dd.MM.yyyy HH:mm" }}</td>
+            <td>
+              {{
                     cargo.packagingType === 1
                       ? "DOSYA"
                       : cargo.packagingType === 3
                       ? "PAKET"
                       : "KOLİ"
-                  }}
-                </td>
-                <!-- <td>{{ cargo.desi }}</td>
-                <td>{{ cargo.kg }}</td> -->
+                }}
+            </td>
+            <td>
+              <button class="btn" [ngClass]="{
+                    'btn-success': cargo.isPrinted === true,
+                    'btn-danger': cargo.isPrinted === false
+                }">
+                <i *ngIf="cargo.isPrinted === true" class="fa fa-check" aria-hidden="true"></i>
+                <i *ngIf="cargo.isPrinted === false" class="fa-solid fa-ban" aria-hidden="true"></i>
+              </button>
+            </td>
+            <td>
+              <div class="btn-group">
+                <button class="btn btn-success" data-text="Kargo" (click)="getCargoDetail(cargo, false)">
+                  <i class="fa fa-truck" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-success ml-2" data-text="Kargo" (click)="createBarcode(cargo.referenceId)">
+                  <i class="fa fa-print" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-success ml-2" data-text="Kargo" (click)="getCargoDetail(cargo, true)">
+                  <i class="fa fa-bars" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-danger ml-2" data-text="Kargo" (click)="deleteCargo(cargo, cargo.cargoFirmId)">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
 
-                <!-- <td>
-                  <div
-                    [ngClass]="
-                      cargo.barcodeZplCode
-                        ? 'btn btn-success'
-                        : 'btn btn-danger'
-                    "
-                  >
-                    {{ cargo.barcodeZplCode ? "Başarılı" : "Başarısız" }}
-                  </div>
-                </td> -->
-                <td>
-                  <button
-                    class="btn"
-                    [ngClass]="{
-                      'btn-success': cargo.isPrinted === true,
-                      'btn-danger': cargo.isPrinted === false
-                    }"
-                  >
-                    <i
-                      *ngIf="cargo.isPrinted === true"
-                      class="fa fa-check"
-                      aria-hidden="true"
-                    ></i>
-                    <i
-                      *ngIf="cargo.isPrinted === false"
-                      class="fa-solid fa-ban"
-                      aria-hidden="true"
-                    ></i>
-                  </button>
-                </td>
-
-                <td>
-                  <div class="btn-group">
-                    <div
-                      class="btn btn-success"
-                      data-text="Kargo"
-                      (click)="getCargoDetail(cargo, false)"
-                    >
-                      <i class="fa fa-truck" aria-hidden="true"></i>
-                    </div>
-
-                    <div
-                      class="btn btn-success ml-2"
-                      data-text="Kargo"
-                      (click)="createBarcode(cargo.referenceId)"
-                    >
-                      <i class="fa fa-print" aria-hidden="true"></i>
-                    </div>
-
-                    <div
-                      class="btn btn-success ml-2"
-                      data-text="Kargo"
-                      (click)="getCargoDetail(cargo, true)"
-                    >
-                      <i class="fa fa-bars" aria-hidden="true"></i>
-                    </div>
-                    <div
-                      class="btn btn-success"
-                      data-text="Kargo"
-                      (click)="deleteCargo(cargo, cargo.cargoFirmId)"
-                    >
-                      <i class="fa fa-trash" aria-hidden="true"></i>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <pagination-controls
-            (pageChange)="currentPage = $event"
-          ></pagination-controls>
-        </div>
-      </div>
     </div>
 
-    <p-dialog
-      header="Kargo Detayı"
-      [(visible)]="visible"
-      [modal]="true"
-      [style]="{ width: '80vw' }"
-      [draggable]="false"
-      [resizable]="false"
-    >
+    <p-dialog header="Kargo Detayı" [(visible)]="visible" [modal]="true" [style]="{ width: '80vw' }" [draggable]="false"
+      [resizable]="false">
       <div class="container mt-4">
         <div class="card">
           <div class="card-header">Kargo Detayı</div>
@@ -191,9 +174,7 @@
               </li>
               <li class="list-group-item">
                 MNG Takip Linki:
-                <a href="{{ packageStatus?.trackingUrl }}" target="_blank"
-                  >Takip Sayfası</a
-                >
+                <a href="{{ packageStatus?.trackingUrl }}" target="_blank">Takip Sayfası</a>
               </li>
               <!-- <li class="list-group-item">
                 Is Delivered: {{ packageStatus?.isDelivered ? "Yes" : "No" }}

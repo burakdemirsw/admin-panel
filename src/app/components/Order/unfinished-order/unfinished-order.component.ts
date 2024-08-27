@@ -54,6 +54,17 @@ export class UnfinishedOrderComponent implements OnInit {
     }
   }
 
+
+  async updateClientOrderCancelStatus(id: string, status: boolean) {
+    status = status == null ? false : status;
+    var response = await this.orderService.updateClientOrderCancelStatus(id, status);
+    if (response) {
+      this.toasterService.success("Sipariş İptal Edildi")
+      this.getOrders(this.currentOrderState)
+    }
+  }
+
+
   async updateCargoStatus(order: ClientOrder) {
     var order_response = await this.orderService.getClientOrder(order.id);
     if (order_response) {

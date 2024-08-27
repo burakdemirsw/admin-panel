@@ -64,10 +64,10 @@
 
         <div class="card custom-card mb-3">
           <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
-            <button type="button" class="btn custom-btn-primary" (click)="goPage('0')">
+            <button type="button" class="btn btn-primary" (click)="goPage('0')">
               Standart
             </button>
-            <button type="button" class="btn custom-btn-primary" style="margin-right: 1rem" (click)="goPage('1')">
+            <button type="button" class="btn btn-primary" style="margin-right: 1rem" (click)="goPage('1')">
               Raf Fulle
             </button>
           </div>
@@ -156,122 +156,230 @@
           </div>
         </div>
         <div class="card" *ngIf="inventoryItems.length > 0">
-          <div class="card-body">
-            <h5 class="card-title">Transfer Edilecek Ürünler</h5>
-            <div class="table-responsive">
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th *ngFor="let item of inventoryItemColums" scope="col">
-                      {{ item }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let item of inventoryItems; let i = index">
-                    <td>{{ i + 1 }}</td>
-                    <td>
-                      <p-image src="{{ item.photoUrl }}" alt="Image" width="50" [preview]="true"></p-image>
-                    </td>
-                    <td>{{ item.shelfNo }}</td>
-                    <td>{{ item.itemCode }}</td>
-                    <td>{{ item.transferQty }}</td>
-                    <td>{{ item.uD_Stock }}</td>
-                    <td>{{ item.mD_Stock }}</td>
+          <p-table [value]="inventoryItems" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
+            [responsiveLayout]="'scroll'" [filterDelay]="500">
+            <ng-template pTemplate="caption">
+              <div class="flex align-items-center justify-content-between">
+                Transfer Edilcek Ürünler
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th pSortableColumn="index">
+                  #
+                  <p-sortIcon field="index"></p-sortIcon>
+                </th>
+                <th>Resim</th>
+                <th pSortableColumn="shelfNo">
+                  Raf No
+                  <p-sortIcon field="shelfNo"></p-sortIcon>
+                </th>
+                <th pSortableColumn="itemCode">
+                  Ürün Kodu
+                  <p-sortIcon field="itemCode"></p-sortIcon>
+                </th>
+                <th pSortableColumn="transferQty">
+                  Transfer Miktarı
+                  <p-sortIcon field="transferQty"></p-sortIcon>
+                </th>
+                <th pSortableColumn="uD_Stock">
+                  UD Stok
+                  <p-sortIcon field="uD_Stock"></p-sortIcon>
+                </th>
+                <th pSortableColumn="mD_Stock">
+                  MD Stok
+                  <p-sortIcon field="mD_Stock"></p-sortIcon>
+                </th>
+                <th pSortableColumn="itemDescription">
+                  Ürün Açıklaması
+                  <p-sortIcon field="itemDescription"></p-sortIcon>
+                </th>
+                <th pSortableColumn="barcode">
+                  Barkod
+                  <p-sortIcon field="barcode"></p-sortIcon>
+                </th>
+              </tr>
+              <tr>
+                <th>
+                  <!-- Index sütunu için filtre eklemiyoruz -->
+                </th>
+                <th>
+                  <!-- Resim sütunu için filtre eklemiyoruz -->
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="shelfNo" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="itemCode" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="numeric" field="transferQty" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="numeric" field="uD_Stock" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="numeric" field="mD_Stock" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="itemDescription" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="barcode" [showClearButton]="false"></p-columnFilter>
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item let-i="rowIndex">
+              <tr>
+                <td>{{ i + 1 }}</td>
+                <td>
+                  <p-image src="{{ item.photoUrl }}" alt="Image" width="50" [preview]="true"></p-image>
+                </td>
+                <td>{{ item.shelfNo }}</td>
+                <td>{{ item.itemCode }}</td>
+                <td>{{ item.transferQty }}</td>
+                <td>{{ item.uD_Stock }}</td>
+                <td>{{ item.mD_Stock }}</td>
+                <td>{{ item.itemDescription }}</td>
+                <td>{{ item.barcode }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
 
-                    <td>{{ item.itemDescription }}</td>
-                    <td>{{ item.barcode }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
         </div>
         <div class="card" *ngIf="warehouseTransferForms.length > 0">
-          <div class="card-body">
-            <h5 class="card-title">Eklenen Ürünler</h5>
-            <div class="table-responsive">
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Resim</th>
-                    <th scope="col">Raf</th>
-                    <th scope="col">Ürün Kodu</th>
-                    <th scope="col">Parti</th>
-                    <th scope="col">Barkod</th>
-                    <th scope="col">Stok Miktarı</th>
-                    <th scope="col">Gönderen Depo</th>
-                    <th scope="col">Hedef Depo</th>
-                    <th scope="col">Güncel Stok Adedi</th>
-                    <th scope="col">Durum</th>
-                    <th scope="col">İşlemler</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="
-                      let warehousePackageDetail of warehouseTransferForms;
-                      let a = index
+          <p-table [value]="warehouseTransferForms" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
+            [responsiveLayout]="'scroll'" [filterDelay]="500">
+            <ng-template pTemplate="caption">
+              <div class="flex align-items-center justify-content-between">
+                Eklenen Ürünler
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th pSortableColumn="id">
+                  Id
+                  <p-sortIcon field="id"></p-sortIcon>
+                </th>
+                <th>Resim</th>
+                <th pSortableColumn="shelfNo">
+                  Raf
+                  <p-sortIcon field="shelfNo"></p-sortIcon>
+                </th>
+                <th pSortableColumn="itemCode">
+                  Ürün Kodu
+                  <p-sortIcon field="itemCode"></p-sortIcon>
+                </th>
+                <th pSortableColumn="batchCode">
+                  Parti
+                  <p-sortIcon field="batchCode"></p-sortIcon>
+                </th>
+                <th pSortableColumn="barcode">
+                  Barkod
+                  <p-sortIcon field="barcode"></p-sortIcon>
+                </th>
+                <th pSortableColumn="quantity">
+                  Stok Miktarı
+                  <p-sortIcon field="quantity"></p-sortIcon>
+                </th>
+                <th pSortableColumn="warehouse">
+                  Gönderen Depo
+                  <p-sortIcon field="warehouse"></p-sortIcon>
+                </th>
+                <th pSortableColumn="warehouseTo">
+                  Hedef Depo
+                  <p-sortIcon field="warehouseTo"></p-sortIcon>
+                </th>
+                <th pSortableColumn="availableQty">
+                  Güncel Stok Adedi
+                  <p-sortIcon field="availableQty"></p-sortIcon>
+                </th>
+                <th>Durum</th>
+                <th>İşlemler</th>
+              </tr>
+              <tr>
+                <th>
+                  <p-columnFilter type="numeric" field="id" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <!-- Resim sütunu için filtre eklemiyoruz -->
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="shelfNo" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="itemCode" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="batchCode" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="barcode" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="numeric" field="quantity" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="warehouse" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="warehouseTo" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="numeric" field="availableQty" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <!-- Durum sütunu için filtre eklemiyoruz -->
+                </th>
+                <th>
+                  <!-- İşlemler sütunu için filtre eklemiyoruz -->
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-warehousePackageDetail let-a="rowIndex">
+              <tr>
+                <td>{{ a + 1 }}</td>
+                <td>
+                  <p-image src="{{ warehousePackageDetail.photoUrl }}" alt="Image" width="50" [preview]="true">
+                  </p-image>
+                </td>
+                <td>{{ warehousePackageDetail.shelfNo }}</td>
+                <td>{{ warehousePackageDetail.itemCode }}</td>
+                <td>{{ warehousePackageDetail.batchCode }}</td>
+                <td>{{ warehousePackageDetail.barcode }}</td>
+                <td>{{ warehousePackageDetail.quantity }}</td>
+                <td>{{ warehousePackageDetail.warehouse }}</td>
+                <td>{{ warehousePackageDetail.warehouseTo }}</td>
+                <td>{{ warehousePackageDetail.availableQty }}</td>
+                <td>
+                  <span [ngClass]="
+                    warehousePackageDetail.availableQty >= warehousePackageDetail.quantity
+                        ? 'badge badge-success'
+                        : 'badge badge-danger'
                     ">
-                    <td>{{ a + 1 }}</td>
-                    <td>
-                      <p-image src="{{ warehousePackageDetail.photoUrl }}" alt="Image" width="50" [preview]="true">
-                      </p-image>
-                    </td>
-                    <td>{{ warehousePackageDetail.shelfNo }}</td>
-                    <td>{{ warehousePackageDetail.itemCode }}</td>
-                    <td>{{ warehousePackageDetail.batchCode }}</td>
-                    <td>{{ warehousePackageDetail.barcode }}</td>
-                    <td>{{ warehousePackageDetail.quantity }}</td>
-                    <td>{{ warehousePackageDetail.warehouse }}</td>
-                    <td>{{ warehousePackageDetail.warehouseTo }}</td>
-                    <td>{{ warehousePackageDetail.availableQty }}</td>
+                    {{
+                        warehousePackageDetail.availableQty >= warehousePackageDetail.quantity
+                            ? 'Başarılı'
+                            : 'Başarısız : Stok Hatası'
+                    }}
+                  </span>
+                </td>
+                <td>
+                  <div class="btn-group">
+                    <button class="btn btn-primary" type="submit"
+                      (click)="deleteOrderProduct(currentOrderNo, warehousePackageDetail)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                    <button class="btn btn-primary" type="submit"
+                      (click)="change(warehousePackageDetail.barcode, warehousePackageDetail.quantity)">
+                      <i class="fa fa-print"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
 
-                    <td>
-                      <span [ngClass]="
-                          warehousePackageDetail.availableQty >=
-                          warehousePackageDetail.quantity
-                            ? 'badge badge-success'
-                            : 'badge badge-danger'
-                        ">
-                        {{
-                          warehousePackageDetail.availableQty >=
-                          warehousePackageDetail.quantity
-                            ? "Başarılı"
-                            : "Başarısız : Stok Hatası"
-                        }}
-                      </span>
-                    </td>
-                    <td>
-                      <div class="btn-group">
-                        <button class="btn btn-primary" type="submit" (click)="
-                            deleteOrderProduct(
-                              this.currentOrderNo,
-                              warehousePackageDetail
-                            )
-                          ">
-                          <i class="fa fa-trash" aria-hidden="true"></i>
-                        </button>
-                        <!-- *ngIf="warehousePackageDetail.availableQty <= warehousePackageDetail.quantity" -->
-                        <!-- <button
-
-                                                    class="btn btn-warning" type="submit" (click)="updateItemStock()"><i class="fa-solid fa-arrows-rotate" style="color: white;"></i>
-                                                </button> -->
-                        <button class="btn btn-primary" type="submit" (click)="
-                            change(
-                              warehousePackageDetail.barcode,
-                              warehousePackageDetail.quantity
-                            )
-                          ">
-                          <i class="fa fa-print"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
         </div>
         <!-- Yeni kart: Toplanan Ürünler -->
         <div class="card text-center">

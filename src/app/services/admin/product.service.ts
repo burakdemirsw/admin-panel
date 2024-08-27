@@ -475,6 +475,8 @@ export class ProductService {
   }
 
   async qrOperationMethod(
+    lineId: string,
+    operationId: string,
     qrBarcodeUrl: string,
     form: FormGroup,
     formValue: any,
@@ -489,6 +491,8 @@ export class ProductService {
       qrModel.qr = qrBarcodeUrl;
 
       var qrOperationModel: QrOperationModel = new QrOperationModel();
+      qrOperationModel.lineId = lineId;
+      qrOperationModel.operationId = operationId;
       qrOperationModel.barcode = form.get('barcode').value;
       qrOperationModel.batchCode = formValue.batchCode;
       qrOperationModel.isReturn = isReturn;
@@ -505,8 +509,6 @@ export class ProductService {
       if (qrOperationResponse) {
         this.generalService.beep2();
         this.toasterService.success('Qr Operasyonu Başarılı');
-
-
         response.state = true;
         response.qrOperationModel = qrOperationModel;
         return response;

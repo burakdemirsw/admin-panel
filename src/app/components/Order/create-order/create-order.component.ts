@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Dropdown } from 'primeng/dropdown';
 import { Table } from 'primeng/table';
-import { SubCustomerList_VM } from 'src/app/models/model/customer/subCustomerList_VM';
 import { Address_VM } from 'src/app/models/model/order/ViewModel/provinceVM';
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
 import { GetCustomerAddress_CM } from 'src/app/models/model/order/getCustomerList_CM';
@@ -31,6 +30,7 @@ import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePa
 import { SuggestedProduct } from 'src/app/models/model/order/suggestedProduct';
 import { FastTransfer_VM } from '../../../models/model/warehouse/transferRequestListModel';
 import { OverlayOptions } from 'primeng/api';
+import { SubCustomerList_VM } from 'src/app/models/model/customer/subCustomerList_VM';
 
 @Component({
   selector: 'app-create-order',
@@ -152,6 +152,7 @@ export class CreateOrderComponent implements OnInit {
   stateOptions: any[] = [{ label: 'Standart', value: '0' }, { label: 'Vergisiz', value: '4' }, { label: 'Standart Kdv Düş', value: '5' }];
   taxTypeCode: any;
   isCompleted: boolean = false;
+  isCancelled: boolean = false;
   orderNumber: string = "";
   orderDescription: string = "burak demir"
   async getClientOrder(state: number) {
@@ -161,7 +162,10 @@ export class CreateOrderComponent implements OnInit {
       if (response.clientOrder) {
         var order = response;
         this.orderNo = order.clientOrder.orderNo
-        this.isCompleted = order.clientOrder.isCompleted
+        this.isCompleted = order.clientOrder.isCompleted != null ? order.clientOrder.isCompleted : false;
+        this.toasterService.success(this.isCompleted.toString());
+        this.isCancelled = order.clientOrder.isCancelled != null ? order.clientOrder.isCancelled : false;
+        this.toasterService.success(this.isCancelled.toString());
         this.currAccCode = order.clientOrder.customerCode;
         this.orderNumber = order.clientOrder.orderNumber
         var customer_request = new GetCustomerList_CM();
@@ -318,6 +322,7 @@ export class CreateOrderComponent implements OnInit {
       request.paymentDescription = this.payment.creditCardTypeCode;
       request.subCurrAccId = this.selectedSubCustomers[0]?.subCurrAccId;
       request.subCustomerDescription = this.selectedSubCustomers[0]?.companyName;
+      request.isCancelled = false;
 
       if (this.payment) {
         request.paymentType = this.payment.creditCardTypeCode;
@@ -360,6 +365,11 @@ export class CreateOrderComponent implements OnInit {
       request.discountedPrice = newLine.discountedPrice;
       request.taxRate = newLine.taxRate;
       request.priceWs = newLine.priceWs
+      request.discountRate1 = 0;
+      request.discountRate2 = 0;
+      request.totalPrice = 0;
+      request.totalTaxedPrice = 0;
+
       return request;
     } catch (error) {
       this.toasterService.error(error.message)
@@ -2193,6 +2203,15 @@ export class CreateOrderComponent implements OnInit {
 
 
   }
+  async updateClientOrderCancelStatus(id: string, status: boolean) {
+    status = status == null ? false : status;
+    var response = await this.orderService.updateClientOrderCancelStatus(id, status);
+    if (response) {
+      this.toasterService.success("Sipariş İptal Edildi")
+      this.getClientOrder(0)
+    }
+  }
+
   generateRandomNumber(): string {
     let result = '';
     const characters = '0123456789';

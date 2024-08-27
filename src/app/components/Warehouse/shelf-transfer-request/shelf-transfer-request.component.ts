@@ -44,7 +44,7 @@ export class ShelfTransferRequestComponent implements OnInit {
   currentOrderNo: string;
   selectedFilter: string = '';
   product: any;
-
+  photoUrl: string = ClientUrls.photoUrl;
   constructor(
     private formBuilder: FormBuilder,
     private toasterService: ToasterService,
@@ -788,6 +788,8 @@ export class ShelfTransferRequestComponent implements OnInit {
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
   async onSubmit(transferModel: FastTransferModel2): Promise<any> {
+    var uuuid = await this.generalService.generateGUID()
+
     if (transferModel.barcode.includes('=')) {
       transferModel.barcode = transferModel.barcode.replace(/=/g, '-');
     }
@@ -835,6 +837,8 @@ export class ShelfTransferRequestComponent implements OnInit {
         if (response == true) {
           var qrResponse: QrOperationResponseModel =
             await this.productService.qrOperationMethod(
+              uuuid,
+              this.currentOrderNo,
               this.qrBarcodeUrl,
               this.checkForm,
               transferModel,
@@ -883,6 +887,8 @@ export class ShelfTransferRequestComponent implements OnInit {
             //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
             var qrResponse: QrOperationResponseModel =
               await this.productService.qrOperationMethod(
+                uuuid,
+                this.currentOrderNo,
                 this.qrBarcodeUrl,
                 this.checkForm,
                 transferModel,

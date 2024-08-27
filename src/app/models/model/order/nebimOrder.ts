@@ -332,7 +332,6 @@ export class ClientOrder {
   orderNo?: string;
   paymentType: string
   paymentDescription: string;
-  isCompleted: boolean
   orderNumber: string
   createdDate: Date;
   paymentDate: Date
@@ -341,6 +340,8 @@ export class ClientOrder {
   recepientPhone: string;
   orderDescription: string;
   subCurrAccId: string;
+  isCompleted: boolean
+  isCancelled: boolean;
   subCustomerDescription?: string;
 
   constructor() {
@@ -372,6 +373,11 @@ export class ClientOrderBasketItem {
   discountedPrice: number;
   basePrice: number;
   taxRate: number;
+  discountRate1: number
+  discountRate2: number
+  totalPrice: number
+  totalTaxedPrice: number
+
   constructor() {
     this.createdDate = new Date();
   }

@@ -46,7 +46,7 @@ export class OrderService {
   async getOrders(type: number, invoiceStatus: number): Promise<SaleOrderModel[]> {
 
     var query: string = `${type}/${invoiceStatus}`
-    const response = this.httpClientService
+    const response = await this.httpClientService
       .get<SaleOrderModel>({
         controller: 'order/get-sale-orders',
       }, query)
@@ -574,7 +574,16 @@ export class OrderService {
     }
   }
 
+  //yanıt true ise sipariş iptal edilmşitir
+  async checkClientOrderByOrderNumber(orderNumber: string): Promise<any> {
+    try {
+      var response = await this.httpClientService.get<any>({ controller: "order/check-client-order-by-order-number" + "/" + orderNumber }).toPromise();
 
+      return response;
+    } catch (error: any) {
+      return null;
+    }
+  }
   async getClientOrder(id: string): Promise<any> {
     try {
       var response = await this.httpClientService.get<any>({ controller: "order/get-client-order" + "/" + id }).toPromise();
@@ -688,6 +697,18 @@ export class OrderService {
     try {
 
       var response = await this.httpClientService.get<any>({ controller: "order/delete-client-order" + "/" + id }).toPromise();
+
+      return response;
+    } catch (error: any) {
+      // console.log(error.message);
+      return null;
+    }
+  }
+
+  async updateClientOrderCancelStatus(orderId: string, status: boolean): Promise<any> {
+    try {
+
+      var response = await this.httpClientService.get<any>({ controller: "order/update-client-order-cancel-status" + "/" + orderId + "/" + status }).toPromise();
 
       return response;
     } catch (error: any) {

@@ -507,6 +507,8 @@ export class WarehouseOperationComponent implements OnInit {
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
   async onSubmit(formValue: CountProduct2): Promise<any> {
+    var uuuid = await this.generalService.generateGUID()
+
     // = işareti varsa - yap
     if (formValue.barcode.includes('=')) {
       formValue.barcode = formValue.barcode.replace(/=/g, '-');
@@ -560,6 +562,8 @@ export class WarehouseOperationComponent implements OnInit {
         if (response != undefined) {
           var qrResponse: QrOperationResponseModel =
             await this.productService.qrOperationMethod(
+              uuuid,
+              this.currentOrderNo,
               this.qrBarcodeUrl,
               this.warehouseForm,
               formValue,
@@ -634,6 +638,8 @@ export class WarehouseOperationComponent implements OnInit {
 
             var qrResponse: QrOperationResponseModel =
               await this.productService.qrOperationMethod(
+                uuuid,
+                this.currentOrderNo,
                 this.qrBarcodeUrl,
                 this.warehouseForm,
                 formValue,

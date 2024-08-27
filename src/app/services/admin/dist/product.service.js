@@ -688,7 +688,7 @@ var ProductService = /** @class */ (function () {
             });
         });
     };
-    ProductService.prototype.qrOperationMethod = function (qrBarcodeUrl, form, formValue, numberParameter, isReturn, processCode) {
+    ProductService.prototype.qrOperationMethod = function (lineId, operationId, qrBarcodeUrl, form, formValue, numberParameter, isReturn, processCode) {
         return __awaiter(this, void 0, Promise, function () {
             var response, qrModel, qrOperationModel, qrOperationResponse;
             return __generator(this, function (_a) {
@@ -699,6 +699,8 @@ var ProductService = /** @class */ (function () {
                         qrModel = new qrControlModel_1.QrControlCommandModel();
                         qrModel.qr = qrBarcodeUrl;
                         qrOperationModel = new qrOperationModel_1.QrOperationModel();
+                        qrOperationModel.lineId = lineId;
+                        qrOperationModel.operationId = operationId;
                         qrOperationModel.barcode = form.get('barcode').value;
                         qrOperationModel.batchCode = formValue.batchCode;
                         qrOperationModel.isReturn = isReturn;

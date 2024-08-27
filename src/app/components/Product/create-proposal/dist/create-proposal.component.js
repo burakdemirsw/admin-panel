@@ -480,7 +480,7 @@ var CreateProposalComponent = /** @class */ (function () {
                     case 1:
                         response = _a.sent();
                         if (!response) return [3 /*break*/, 3];
-                        this.getTotalPrice2();
+                        this.getTaxedTotalAfterDiscount();
                         return [4 /*yield*/, this.getProposalProducts()];
                     case 2:
                         _a.sent();
@@ -557,8 +557,8 @@ var CreateProposalComponent = /** @class */ (function () {
         this.updateProductForm.get('discountRate1').setValue(this.selectedProduct.discountRate1);
         this.updateProductForm.get('discountRate2').setValue(this.selectedProduct.discountRate2);
         this.openDialog('updateProductDialog');
-        this.getTotalPrice();
-        this.getTotalPrice2();
+        this.getUntaxedTotal();
+        this.getTaxedTotalAfterDiscount();
     };
     CreateProposalComponent.prototype.discount = function (discountAmount) {
         return __awaiter(this, void 0, void 0, function () {
@@ -603,7 +603,7 @@ var CreateProposalComponent = /** @class */ (function () {
                         if (response) {
                             this.proposal = response;
                             // await this.getProposalProducts();
-                            this.getTotalPrice2();
+                            this.getTaxedTotalAfterDiscount();
                             this.toasterService.success('Güncellendi');
                             this.generalService.beep();
                         }
@@ -628,7 +628,7 @@ var CreateProposalComponent = /** @class */ (function () {
                         response = _a.sent();
                         if (response) {
                             this.proposal = response;
-                            this.getTotalPrice2();
+                            this.getTaxedTotalAfterDiscount();
                             this.toasterService.success('Güncellendi');
                             this.generalService.beep();
                         }
@@ -679,8 +679,8 @@ var CreateProposalComponent = /** @class */ (function () {
                         });
                     }); });
                 }
-                this.getTotalPrice();
-                this.getTotalPrice2();
+                this.getUntaxedTotal();
+                this.getTaxedTotalAfterDiscount();
                 return [2 /*return*/];
             });
         });
@@ -755,7 +755,27 @@ var CreateProposalComponent = /** @class */ (function () {
         // }
     };
     //---------------------------------------------------- TOTAL FUNCS
-    CreateProposalComponent.prototype.getTotalPrice3 = function () {
+    CreateProposalComponent.prototype.findVatRate = function (vatRate) {
+        return this.addedProducts.some(function (p) { return p.taxRate == vatRate; });
+    };
+    CreateProposalComponent.prototype.calculateVatAmount = function (vatRate) {
+        var _this = this;
+        // First, calculate the total discount rate to apply to each product
+        var totalDiscountRate = this.proposal.discountRate1 || 0; // percentage discount
+        var cashDiscount = this.proposal.discountRate2 || 0; // cash discount
+        return Number(this.addedProducts
+            .filter(function (p) { return p.taxRate === vatRate; }) // Filter products with the specified VAT rate
+            .reduce(function (total, product) {
+            // Apply percentage discount
+            var discountedPrice = product.totalPrice * (1 - totalDiscountRate / 100);
+            // Apply cash discount proportionally based on product price
+            discountedPrice -= cashDiscount * (product.totalPrice / _this.getUntaxedTotal());
+            // Calculate VAT based on the final discounted price
+            return total + (discountedPrice * product.taxRate / 100);
+        }, 0).toFixed(2)); // Sum the VAT amounts and round to 2 decimal places sadas
+    };
+    //vergisiz tutarların iskontodan sonraki hali
+    CreateProposalComponent.prototype.getUnTaxedTotalAfterDiscount = function () {
         var number = this.addedProducts.reduce(function (acc, product) { return acc + product.totalPrice; }, 0);
         number = ((number * ((100 - this.proposal.discountRate1) / 100)) - this.proposal.discountRate2);
         if (number.toString().includes('.')) {
@@ -765,7 +785,8 @@ var CreateProposalComponent = /** @class */ (function () {
             return number;
         }
     };
-    CreateProposalComponent.prototype.getTotalPrice = function () {
+    //vergisiz tutarların toplamı
+    CreateProposalComponent.prototype.getUntaxedTotal = function () {
         var number = this.addedProducts.reduce(function (acc, product) { return acc + product.totalPrice; }, 0);
         if (number.toString().includes('.')) {
             return Number(number);
@@ -775,7 +796,7 @@ var CreateProposalComponent = /** @class */ (function () {
         }
     };
     //dip iskonto uygulandıktan sonraki fiyatı çeker
-    CreateProposalComponent.prototype.getTotalPrice2 = function () {
+    CreateProposalComponent.prototype.getTaxedTotalAfterDiscount = function () {
         return this.addedProducts.reduce(function (acc, product) { return acc + product.totalTaxedPrice; }, 0) * ((100 - this.proposal.discountRate1) / 100) - this.proposal.discountRate2;
     };
     CreateProposalComponent.prototype.getTotalQuantity = function () {
@@ -792,7 +813,7 @@ var CreateProposalComponent = /** @class */ (function () {
         return this.addedProducts.reduce(function (acc, product) { return acc + ((product.totalPrice * (product.taxRate / 100))); }, 0);
     };
     CreateProposalComponent.prototype.getTotalTax = function () {
-        return this.getTotalPrice2() - this.getTotalPrice3();
+        return this.getTaxedTotalAfterDiscount() - this.getUnTaxedTotalAfterDiscount();
         return this.addedProducts.reduce(function (acc, product) { return acc + (product.totalPrice * (product.taxRate / 100)); }, 0);
     };
     CreateProposalComponent.prototype.getTotal = function () {
@@ -803,7 +824,7 @@ var CreateProposalComponent = /** @class */ (function () {
         var total = this.addedProducts.reduce(function (acc, product) { return acc + product.totalTaxedPrice; }, 0);
         return parseFloat(total.toFixed(2));
     };
-    CreateProposalComponent.prototype.getTotalPriceWithTax = function () {
+    CreateProposalComponent.prototype.getUntaxedTotalWithTax = function () {
         var number = this.selectedProducts.reduce(function (acc, product) { return acc + (product.quantity * product.discountedPrice * (product.taxRate / 100)); }, 0);
         if (number.toString().includes('.')) {
             return Number(number.toString().split('.')[0]);

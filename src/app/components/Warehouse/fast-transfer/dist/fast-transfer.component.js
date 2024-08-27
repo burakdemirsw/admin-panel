@@ -416,10 +416,14 @@ var FastTransferComponent = /** @class */ (function () {
     };
     FastTransferComponent.prototype.onSubmit = function (transferModel) {
         return __awaiter(this, void 0, Promise, function () {
-            var updated_product, qrmodelResponse, shelves, response, qrResponse, response;
+            var uuuid, updated_product, qrmodelResponse, shelves, response, qrResponse, response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
+                    case 0: return [4 /*yield*/, this.generalService.generateGUID()
+                        // = işareti varsa - yap
+                    ];
+                    case 1:
+                        uuuid = _a.sent();
                         // = işareti varsa - yap
                         if (transferModel.barcode.includes("=")) {
                             transferModel.barcode = transferModel.barcode.replace(/=/g, "-");
@@ -428,22 +432,22 @@ var FastTransferComponent = /** @class */ (function () {
                             this.generalService.isGuid(transferModel.barcode)) {
                             this.qrBarcodeUrl = transferModel.barcode;
                         }
-                        if (!!this.checkForm.valid) return [3 /*break*/, 2];
+                        if (!!this.checkForm.valid) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.setFormValues(transferModel)];
-                    case 1:
+                    case 2:
                         updated_product = _a.sent();
                         transferModel.barcode = updated_product.barcode;
                         this.toasterService.success("Form Değerleri Güncellendi");
                         return [2 /*return*/];
-                    case 2:
-                        if (!this.checkForm.valid) return [3 /*break*/, 11];
-                        return [4 /*yield*/, this.setCheckBarcode(transferModel)];
                     case 3:
+                        if (!this.checkForm.valid) return [3 /*break*/, 12];
+                        return [4 /*yield*/, this.setCheckBarcode(transferModel)];
+                    case 4:
                         //yinede barkod doğrulaması yap
                         transferModel = _a.sent();
                         transferModel.operationId = this.currentOrderNo;
                         return [4 /*yield*/, this.productService.qrControl(transferModel.barcode)];
-                    case 4:
+                    case 5:
                         qrmodelResponse = _a.sent();
                         if (qrmodelResponse.batchCode) {
                             if (transferModel.batchCode == null || transferModel.batchCode === '') {
@@ -454,14 +458,14 @@ var FastTransferComponent = /** @class */ (function () {
                             .split(',')
                             .filter(function (raflar) { return raflar.trim() !== ''; })
                             .map(function (raflar) { return raflar.toLowerCase(); });
-                        if (!shelves.includes(transferModel.shelfNo.toLowerCase())) return [3 /*break*/, 9];
+                        if (!shelves.includes(transferModel.shelfNo.toLowerCase())) return [3 /*break*/, 10];
                         transferModel.quantity;
                         return [4 /*yield*/, this.addFastTransferModel(transferModel)];
-                    case 5:
-                        response = _a.sent();
-                        if (!(response === true)) return [3 /*break*/, 7];
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, transferModel, transferModel.quantity, false, 'FT')];
                     case 6:
+                        response = _a.sent();
+                        if (!(response === true)) return [3 /*break*/, 8];
+                        return [4 /*yield*/, this.productService.qrOperationMethod(uuuid, this.currentOrderNo, this.qrBarcodeUrl, this.checkForm, transferModel, transferModel.quantity, false, 'FT')];
+                    case 7:
                         qrResponse = _a.sent();
                         if (qrResponse != null && qrResponse.state === true) {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
@@ -471,17 +475,17 @@ var FastTransferComponent = /** @class */ (function () {
                         }
                         //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
                         this.generalService.beep();
-                        return [3 /*break*/, 8];
-                    case 7:
-                        this.toasterService.error('Ekleme Yapılmadı');
-                        _a.label = 8;
+                        return [3 /*break*/, 9];
                     case 8:
-                        this.clearForm();
-                        return [3 /*break*/, 11];
+                        this.toasterService.error('Ekleme Yapılmadı');
+                        _a.label = 9;
                     case 9:
-                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 11];
-                        return [4 /*yield*/, this.addFastTransferModel(transferModel)];
+                        this.clearForm();
+                        return [3 /*break*/, 12];
                     case 10:
+                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 12];
+                        return [4 /*yield*/, this.addFastTransferModel(transferModel)];
+                    case 11:
                         response = _a.sent();
                         //RAFLAR ARASI TRANSFER YAPILDI----------------------------------
                         if (response == true) {
@@ -491,8 +495,8 @@ var FastTransferComponent = /** @class */ (function () {
                             this.toasterService.error('Ekleme Yapılmadı');
                         }
                         this.clearForm();
-                        _a.label = 11;
-                    case 11: return [2 /*return*/];
+                        _a.label = 12;
+                    case 12: return [2 /*return*/];
                 }
             });
         });

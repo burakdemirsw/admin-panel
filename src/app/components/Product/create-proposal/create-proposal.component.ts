@@ -282,6 +282,7 @@ export class CreateProposalComponent implements OnInit {
     }
   }
 
+
   async updatePropoosal(request: ZTMSG_Proposal) {
     var response: ZTMSG_Proposal = await this.productService.updateProposal(request);
 
@@ -384,7 +385,7 @@ export class CreateProposalComponent implements OnInit {
       )
     var response = await this.productService.updateProposalProduct(product);
     if (response) {
-      this.getTotalPrice2();
+      this.getTaxedTotalAfterDiscount();
       await this.getProposalProducts();
       this.toasterService.success('Güncellendi')
       this.generalService.beep();
@@ -432,8 +433,8 @@ export class CreateProposalComponent implements OnInit {
     this.updateProductForm.get('discountRate2').setValue(this.selectedProduct.discountRate2)
 
     this.openDialog('updateProductDialog');
-    this.getTotalPrice();
-    this.getTotalPrice2();
+    this.getUntaxedTotal();
+    this.getTaxedTotalAfterDiscount();
   }
 
   currentDiscountRate: number = 0;
@@ -471,7 +472,7 @@ export class CreateProposalComponent implements OnInit {
       this.proposal = response;
 
       // await this.getProposalProducts();
-      this.getTotalPrice2();
+      this.getTaxedTotalAfterDiscount();
       this.toasterService.success('Güncellendi')
       this.generalService.beep();
     } else {
@@ -486,7 +487,7 @@ export class CreateProposalComponent implements OnInit {
     if (response) {
       this.proposal = response;
 
-      this.getTotalPrice2();
+      this.getTaxedTotalAfterDiscount();
       this.toasterService.success('Güncellendi')
       this.generalService.beep();
     } else {
@@ -517,8 +518,8 @@ export class CreateProposalComponent implements OnInit {
         await this.deleteProposalProduct(p.id);
       });
     }
-    this.getTotalPrice();
-    this.getTotalPrice2();
+    this.getUntaxedTotal();
+    this.getTaxedTotalAfterDiscount();
 
   }
   findCustomerDialog = false;
@@ -585,10 +586,30 @@ export class CreateProposalComponent implements OnInit {
 
   //---------------------------------------------------- TOTAL FUNCS
 
+  findVatRate(vatRate: number): boolean {
+    return this.addedProducts.some(p => p.taxRate == vatRate)
+  }
+  calculateVatAmount(vatRate: number): number {
+    // First, calculate the total discount rate to apply to each product
+    const totalDiscountRate = this.proposal.discountRate1 || 0; // percentage discount
+    const cashDiscount = this.proposal.discountRate2 || 0; // cash discount
 
+    return Number(this.addedProducts
+      .filter(p => p.taxRate === vatRate) // Filter products with the specified VAT rate
+      .reduce((total, product) => {
+        // Apply percentage discount
+        let discountedPrice = product.totalPrice * (1 - totalDiscountRate / 100);
 
+        // Apply cash discount proportionally based on product price
+        discountedPrice -= cashDiscount * (product.totalPrice / this.getUntaxedTotal());
 
-  getTotalPrice3() {
+        // Calculate VAT based on the final discounted price
+        return total + (discountedPrice * product.taxRate / 100);
+      }, 0).toFixed(2)); // Sum the VAT amounts and round to 2 decimal places sadas
+  }
+
+  //vergisiz tutarların iskontodan sonraki hali
+  getUnTaxedTotalAfterDiscount() {
     var number = this.addedProducts.reduce((acc, product) => acc + product.totalPrice, 0);
     number = ((number * ((100 - this.proposal.discountRate1) / 100)) - this.proposal.discountRate2)
     if (number.toString().includes('.')) {
@@ -598,7 +619,8 @@ export class CreateProposalComponent implements OnInit {
     }
   }
 
-  getTotalPrice() {
+  //vergisiz tutarların toplamı
+  getUntaxedTotal() {
     var number = this.addedProducts.reduce((acc, product) => acc + product.totalPrice, 0);
     if (number.toString().includes('.')) {
       return Number(number)
@@ -607,7 +629,7 @@ export class CreateProposalComponent implements OnInit {
     }
   }
   //dip iskonto uygulandıktan sonraki fiyatı çeker
-  getTotalPrice2() {
+  getTaxedTotalAfterDiscount() {
     return this.addedProducts.reduce((acc, product) => acc + product.totalTaxedPrice, 0) * ((100 - this.proposal.discountRate1) / 100) - this.proposal.discountRate2;
 
   } getTotalQuantity(): number {
@@ -630,7 +652,7 @@ export class CreateProposalComponent implements OnInit {
   getTotalTax(): number {
 
 
-    return this.getTotalPrice2() - this.getTotalPrice3();
+    return this.getTaxedTotalAfterDiscount() - this.getUnTaxedTotalAfterDiscount();
     return this.addedProducts.reduce((acc, product) => acc + (product.totalPrice * (product.taxRate / 100)), 0);
   }
   getTotal(): number {
@@ -641,7 +663,7 @@ export class CreateProposalComponent implements OnInit {
     var total = this.addedProducts.reduce((acc, product) => acc + product.totalTaxedPrice, 0);
     return parseFloat(total.toFixed(2));
   }
-  getTotalPriceWithTax() {
+  getUntaxedTotalWithTax() {
 
     var number = this.selectedProducts.reduce((acc, product) => acc + (product.quantity * product.discountedPrice * (product.taxRate / 100)), 0);
     if (number.toString().includes('.')) {

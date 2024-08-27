@@ -9,9 +9,8 @@
 }
 
 ul {
-  padding-left: 0px;
+  padding-left: 0px !important
 }
-
 
 body {
   font-family: "Open Sans", sans-serif;
@@ -1251,4 +1250,76 @@ h6 {
   text-align: center;
   font-size: 13px;
   color: #012970;
+}
+
+/*--------------------------------------------------------------
+  # Buttons
+  --------------------------------------------------------------*/
+
+.btn {
+  border-radius: 0rem;
+  font-weight: 550;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Primary Button */
+.btn-primary {
+  background-color: #3B82F6 !important;
+  border-color: #3B82F6;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #2563eb !important;
+  /* Bir ton koyu mavi */
+  border-color: #2563eb;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+/* Success Button */
+.btn-success {
+  background-color: #22c55e !important;
+  border-color: #22c55e;
+}
+
+.btn-success:hover,
+.btn-success:focus {
+  background-color: #16a34a !important;
+  /* Bir ton koyu yeşil */
+  border-color: #16a34a;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+/* Danger Button */
+.btn-danger {
+  background-color: #ef4444 !important;
+  border-color: #ef4444;
+}
+
+.btn-danger:hover,
+.btn-danger:focus {
+  background-color: #dc2626 !important;
+  /* Bir ton koyu kırmızı */
+  border-color: #dc2626;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+/* Warning Button */
+.btn-warning {
+  color: white;
+  background-color: #f97316 !important;
+  border-color: #f97316;
+}
+
+.btn-warning:hover,
+.btn-warning:focus {
+  color: white;
+  background-color: #ea580c !important;
+  /* Bir ton koyu turuncu */
+  border-color: #ea580c;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  outline: none;
 }

@@ -13,16 +13,16 @@ var ToasterService = /** @class */ (function () {
         this.messageService = messageService;
     }
     ToasterService.prototype.success = function (message) {
-        this.messageService.add({ severity: 'success', summary: 'İşlem Başarılı', detail: message, life: 1000, key: 'bc' });
+        this.messageService.add({ severity: 'success', summary: 'İşlem Başarılı', detail: message, life: 1250, key: 'bc' });
     };
     ToasterService.prototype.error = function (message) {
-        this.messageService.add({ severity: 'error', summary: 'İşlem Başarısız', detail: message, life: 1000, key: 'bc' });
+        this.messageService.add({ severity: 'error', summary: 'İşlem Başarısız', detail: message, life: 1250, key: 'bc' });
     };
     ToasterService.prototype.warn = function (message) {
-        this.messageService.add({ severity: 'error', summary: 'Kontrol Ediniz', detail: message, life: 1000, key: 'bc' });
+        this.messageService.add({ severity: 'error', summary: 'Kontrol Ediniz', detail: message, life: 1250, key: 'bc' });
     };
     ToasterService.prototype.info = function (message) {
-        this.messageService.add({ severity: 'info', summary: 'Bilgilendirme', detail: message, life: 1000, key: 'bc' });
+        this.messageService.add({ severity: 'info', summary: 'Bilgilendirme', detail: message, life: 1250, key: 'bc' });
     };
     ToasterService = __decorate([
         core_1.Injectable({

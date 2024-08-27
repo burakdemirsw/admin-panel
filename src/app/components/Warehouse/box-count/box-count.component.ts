@@ -196,6 +196,7 @@ export class BoxCountComponent implements OnInit {
   async onSubmit(
     countProductRequestModel: CountProductRequestModel2
   ): Promise<any> {
+    var uuuid = await this.generalService.generateGUID()
 
 
     if (!this.checkForm.valid) {
@@ -248,6 +249,8 @@ export class BoxCountComponent implements OnInit {
           //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
           var qrResponse: QrOperationResponseModel =
             await this.productService.qrOperationMethod(
+              uuuid,
+              this.currentOrderNo,
               this.qrBarcodeUrl,
               this.checkForm,
               countProductRequestModel,

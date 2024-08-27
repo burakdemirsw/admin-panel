@@ -1,13 +1,15 @@
 <main id="main" class="main">
   <section class="section">
-    <div class="card custom-card mb-3  p-2 ">
+    <div class="card mb-3  p-4 ">
       <div class="card-body">
-        <button type="button" class="btn custom-btn-primary mt-3" (click)="getOrders(true)">
-          <i class="fas fa-check"></i> Tamamlanmış Siparişler
-        </button>
-        <button type="button" class="btn custom-btn-primary mt-3" (click)="getOrders(false)">
-          <i class="fas fa-times-circle"></i> Tamamlanmamış Siparişler
-        </button>
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button type="button" class="btn btn-primary" (click)="getOrders(true)">
+            <i class="fas fa-check"></i> Tamamlanmış Siparişler
+          </button>
+          <button type="button" class="btn btn-primary " (click)="getOrders(false)">
+            <i class="fas fa-times-circle"></i> Tamamlanmamış Siparişler
+          </button>
+        </div>
       </div>
     </div>
 
@@ -25,6 +27,7 @@
               <th>Alt Müşteri</th>
               <th>Sipariş No</th>
               <th>Kargo Durumu</th>
+              <th>İptal Durumu</th>
               <th>Oluşturulma Zamanı</th>
               <th>İşlemler</th>
             </tr>
@@ -40,6 +43,10 @@
               <th>
                 <p-columnFilter type="text" field="orderNo" placeholder="Sipariş No'ya göre ara"
                   ariaLabel="Sipariş No filtresi" />
+              </th>
+              <th>
+                <p-columnFilter type="text" field="isCancelled" placeholder="İptal Durumu"
+                  ariaLabel="İptal Durumu filtresi" />
               </th>
               <th>
                 <p-columnFilter type="text" field="cargoStatus" placeholder="Kargo Durumuna göre ara"
@@ -58,12 +65,25 @@
               <td>{{ order.customerDescription }}</td>
               <td>{{ order.subCustomerDescription }}</td>
               <td>{{ order.orderNo }}</td>
+
               <td>{{ order.cargoStatus }}</td>
+              <td>
+                <button class="btn {{ order.isCancelled ? 'btn-danger' : 'btn-success' }}">
+                  <i class="fa {{ order.isCancelled ? 'fa-ban' : 'fa-check' }}"></i>
+                </button>
+              </td>
+
               <td>{{ order.createdDate | date : "dd.MM.yyyy HH:mm" }}</td>
               <td>
                 <div class="btn-group">
-                  <div class="btn btn-success" data-text="Kargo" (click)="route(order)">
+
+
+                  <div class="btn btn-success" data-text="Siparişe Git" (click)="route(order)">
                     <i class="fa fa-bars" aria-hidden="true"></i>
+                  </div>
+                  <div class="btn btn-success" data-text="İptal" *ngIf="order.isCompleted"
+                    (click)="updateClientOrderCancelStatus(order.id, order.isCancelled)">
+                    <i class="fa fa-ban" aria-hidden="true"></i>
                   </div>
                   <div class="btn btn-success" data-text="Kargo" (click)="deleteClientOrder(order.id)">
                     <i class="fa fa-trash" aria-hidden="true"></i>

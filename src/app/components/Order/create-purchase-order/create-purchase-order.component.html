@@ -103,60 +103,112 @@
         </div>
         <div class="card" *ngIf="invoiceProducts2.length > 0">
           <div class="card-body">
-            <h5 class="card-title">Eklenen Ürünler</h5>
-            <div class="table-responsive">
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th scope="col">Fotoğraf</th>
-                    <th scope="col">Raf</th>
-                    <th scope="col">Ürün Kodu</th>
-                    <th scope="col">Miktar</th>
-                    <th scope="col">Parti</th>
-                    <th scope="col">Barkod</th>
-                    <th scope="col">Müşteri Kodu</th>
-                    <th scope="col">Depo</th>
-                    <th scope="col">Ofis</th>
-                    <th scope="col">İşlemler</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="
-                      let product of invoiceProducts2
-                        | paginate
-                          : { itemsPerPage: 10, currentPage: currentPage };
-                      let i = index
-                    ">
-                    <td>
-                      <img src="{{ product.photoUrl }}" alt="Resim" width="50" height="50"
-                        (click)="openImageModal(product.photoUrl)" />
-                    </td>
-                    <td>{{ product.shelfNo }}</td>
-                    <td>{{ product.itemCode }}</td>
-                    <td>{{ product.quantity }}</td>
-                    <td>{{ product.batchCode }}</td>
-                    <td>{{ product.barcode }}</td>
-                    <td>{{ product.currAccCode }}</td>
-                    <td>{{ product.warehouseCode }}</td>
-                    <td>{{ product.officeCode }}</td>
-                    <td>
-                      <div class="btn btn-group">
-                        <button class="btn btn-danger" type="submit"
-                          (click)="deleteOrderProduct(newOrderNumber, product)">
-                          <i class="fas fa-trash"></i>
-                        </button>
-                      </div>
-
-                      <!-- Yeni -->
-                      <button class="btn btn-primary" type="submit" (click)="change(product.barcode, product.quantity)">
+            <p-table [value]="invoiceProducts2" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
+              [responsiveLayout]="'scroll'" [filterDelay]="500">
+              <ng-template pTemplate="caption">
+                <div class="flex align-items-center justify-content-between">
+                  Fatura Ürünleri
+                </div>
+              </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Fotoğraf</th>
+                  <th pSortableColumn="shelfNo">
+                    Raf
+                    <p-sortIcon field="shelfNo"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="itemCode">
+                    Ürün Kodu
+                    <p-sortIcon field="itemCode"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="quantity">
+                    Miktar
+                    <p-sortIcon field="quantity"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="batchCode">
+                    Parti
+                    <p-sortIcon field="batchCode"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="barcode">
+                    Barkod
+                    <p-sortIcon field="barcode"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="currAccCode">
+                    Müşteri Kodu
+                    <p-sortIcon field="currAccCode"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="warehouseCode">
+                    Depo
+                    <p-sortIcon field="warehouseCode"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="officeCode">
+                    Ofis
+                    <p-sortIcon field="officeCode"></p-sortIcon>
+                  </th>
+                  <th>İşlemler</th>
+                </tr>
+                <tr>
+                  <th>
+                    <!-- Fotoğraf sütunu için filtre eklemiyoruz -->
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="shelfNo" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="itemCode" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="numeric" field="quantity" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="batchCode" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="barcode" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="currAccCode" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="warehouseCode" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="officeCode" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <!-- İşlemler sütunu için filtre eklemiyoruz -->
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-product let-i="rowIndex">
+                <tr>
+                  <td>
+                    <img src="{{ product.photoUrl }}" alt="Resim" width="50" height="50"
+                      (click)="openImageModal(product.photoUrl)" />
+                  </td>
+                  <td>{{ product.shelfNo }}</td>
+                  <td>{{ product.itemCode }}</td>
+                  <td>{{ product.quantity }}</td>
+                  <td>{{ product.batchCode }}</td>
+                  <td>{{ product.barcode }}</td>
+                  <td>{{ product.currAccCode }}</td>
+                  <td>{{ product.warehouseCode }}</td>
+                  <td>{{ product.officeCode }}</td>
+                  <td>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                      <button type="button" class="btn btn-danger"
+                        (click)="deleteOrderProduct(newOrderNumber, product)">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                      <button type="button" class="btn btn-primary" (click)="change(product.barcode, product.quantity)">
                         <i class="fas fa-print"></i>
                       </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
-            </div>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+
           </div>
         </div>
         <!-- Yeni kart: Toplanan Ürünler -->

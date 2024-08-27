@@ -578,10 +578,14 @@ var WarehouseOperationComponent = /** @class */ (function () {
     WarehouseOperationComponent.prototype.onSubmit = function (formValue) {
         var _a, _b;
         return __awaiter(this, void 0, Promise, function () {
-            var _i, _c, product, updated_product, shelves, response, qrResponse, data, raflar, number, response, qrResponse, data, number;
+            var uuuid, _i, _c, product, updated_product, shelves, response, qrResponse, data, raflar, number, response, qrResponse, data, number;
             return __generator(this, function (_d) {
                 switch (_d.label) {
-                    case 0:
+                    case 0: return [4 /*yield*/, this.generalService.generateGUID()
+                        // = işareti varsa - yap
+                    ];
+                    case 1:
+                        uuuid = _d.sent();
                         // = işareti varsa - yap
                         if (formValue.barcode.includes('=')) {
                             formValue.barcode = formValue.barcode.replace(/=/g, '-');
@@ -604,15 +608,15 @@ var WarehouseOperationComponent = /** @class */ (function () {
                             this.generalService.isGuid(formValue.barcode)) {
                             this.qrBarcodeUrl = formValue.barcode;
                         }
-                        if (!!this.warehouseForm.valid) return [3 /*break*/, 2];
+                        if (!!this.warehouseForm.valid) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.setFormValues(formValue)];
-                    case 1:
+                    case 2:
                         updated_product = _d.sent();
                         formValue = updated_product;
                         this.toasterService.success('Formu Verileri Dolduruldu.');
                         return [2 /*return*/];
-                    case 2:
-                        if (!this.warehouseForm.valid) return [3 /*break*/, 22];
+                    case 3:
+                        if (!this.warehouseForm.valid) return [3 /*break*/, 23];
                         shelves = this.shelfNumbers
                             .split(',')
                             .filter(function (raflar) { return raflar.trim() !== ''; })
@@ -620,13 +624,13 @@ var WarehouseOperationComponent = /** @class */ (function () {
                         shelves.forEach(function (s) {
                             s = s.toLowerCase();
                         });
-                        if (!shelves.includes(formValue.shelfNo.toLowerCase())) return [3 /*break*/, 13];
+                        if (!shelves.includes(formValue.shelfNo.toLowerCase())) return [3 /*break*/, 14];
                         return [4 /*yield*/, this.productService.countTransferProduct(formValue)];
-                    case 3:
-                        response = _d.sent();
-                        if (!(response != undefined)) return [3 /*break*/, 12];
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.warehouseForm, formValue, formValue.quantity, false, 'WT')];
                     case 4:
+                        response = _d.sent();
+                        if (!(response != undefined)) return [3 /*break*/, 13];
+                        return [4 /*yield*/, this.productService.qrOperationMethod(uuuid, this.currentOrderNo, this.qrBarcodeUrl, this.warehouseForm, formValue, formValue.quantity, false, 'WT')];
+                    case 5:
                         qrResponse = _d.sent();
                         if (qrResponse != null && qrResponse.state === true) {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
@@ -645,46 +649,46 @@ var WarehouseOperationComponent = /** @class */ (function () {
                             .split(',')
                             .filter(function (raflar) { return raflar.trim() !== ''; })
                             .map(function (raflar) { return raflar.toLowerCase(); });
-                        if (!(raflar.length > 0)) return [3 /*break*/, 10];
-                        if (!raflar.includes(formValue.shelfNo.toLowerCase())) return [3 /*break*/, 6];
+                        if (!(raflar.length > 0)) return [3 /*break*/, 11];
+                        if (!raflar.includes(formValue.shelfNo.toLowerCase())) return [3 /*break*/, 7];
                         return [4 /*yield*/, this.getProductOfCount(this.currentOrderNo)];
-                    case 5:
-                        _d.sent(); //this.list.push(formValue);
-                        this.generalService.beep();
-                        this.clearQrAndBatchCode();
-                        return [3 /*break*/, 9];
                     case 6:
-                        if (!confirm('Raf Bulunamadı! Eklensin mi(1)?')) return [3 /*break*/, 8];
-                        return [4 /*yield*/, this.getProductOfCount(this.currentOrderNo)];
-                    case 7:
                         _d.sent(); //this.list.push(formValue);
                         this.generalService.beep();
                         this.clearQrAndBatchCode();
-                        return [3 /*break*/, 9];
+                        return [3 /*break*/, 10];
+                    case 7:
+                        if (!confirm('Raf Bulunamadı! Eklensin mi(1)?')) return [3 /*break*/, 9];
+                        return [4 /*yield*/, this.getProductOfCount(this.currentOrderNo)];
                     case 8:
+                        _d.sent(); //this.list.push(formValue);
+                        this.generalService.beep();
+                        this.clearQrAndBatchCode();
+                        return [3 /*break*/, 10];
+                    case 9:
                         this.toasterService.warn('Ekleme Yapılmadı!');
-                        _d.label = 9;
-                    case 9: return [3 /*break*/, 12];
-                    case 10:
+                        _d.label = 10;
+                    case 10: return [3 /*break*/, 13];
+                    case 11:
                         this.generalService.beep();
                         return [4 /*yield*/, this.getProductOfCount(this.currentOrderNo)];
-                    case 11:
+                    case 12:
                         _d.sent();
                         this.clearQrAndBatchCode();
-                        _d.label = 12;
-                    case 12: return [3 /*break*/, 21];
-                    case 13:
-                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 19];
-                        return [4 /*yield*/, this.setShelfNo(formValue.barcode)];
+                        _d.label = 13;
+                    case 13: return [3 /*break*/, 22];
                     case 14:
+                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 20];
+                        return [4 /*yield*/, this.setShelfNo(formValue.barcode)];
+                    case 15:
                         number = _d.sent();
                         (_a = this.warehouseForm.get('quantity')) === null || _a === void 0 ? void 0 : _a.setValue(Number(number));
                         return [4 /*yield*/, this.productService.countTransferProduct(formValue)];
-                    case 15:
-                        response = _d.sent();
-                        if (!(response != undefined)) return [3 /*break*/, 18];
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.warehouseForm, formValue, formValue.quantity, false, 'WT')];
                     case 16:
+                        response = _d.sent();
+                        if (!(response != undefined)) return [3 /*break*/, 19];
+                        return [4 /*yield*/, this.productService.qrOperationMethod(uuuid, this.currentOrderNo, this.qrBarcodeUrl, this.warehouseForm, formValue, formValue.quantity, false, 'WT')];
+                    case 17:
                         qrResponse = _d.sent();
                         if (qrResponse != null && qrResponse.state === true) {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
@@ -700,23 +704,23 @@ var WarehouseOperationComponent = /** @class */ (function () {
                             formValue.barcode = response.description;
                         }
                         return [4 /*yield*/, this.getProductOfCount(this.currentOrderNo)];
-                    case 17:
+                    case 18:
                         _d.sent(); //this.list.push(formValue);
                         this.generalService.beep();
                         this.clearQrAndBatchCode();
-                        _d.label = 18;
-                    case 18: return [3 /*break*/, 21];
-                    case 19: return [4 /*yield*/, this.setShelfNo(formValue.barcode)];
-                    case 20:
+                        _d.label = 19;
+                    case 19: return [3 /*break*/, 22];
+                    case 20: return [4 /*yield*/, this.setShelfNo(formValue.barcode)];
+                    case 21:
                         number = _d.sent();
                         (_b = this.warehouseForm.get('quantity')) === null || _b === void 0 ? void 0 : _b.setValue(Number(number));
                         this.toasterService.success('Raflar Getirildi Ve Miktar Alanı Dolduruldu.');
-                        _d.label = 21;
-                    case 21: return [3 /*break*/, 23];
-                    case 22:
+                        _d.label = 22;
+                    case 22: return [3 /*break*/, 24];
+                    case 23:
                         this.toasterService.error('Form Geçersiz');
-                        _d.label = 23;
-                    case 23: return [2 /*return*/];
+                        _d.label = 24;
+                    case 24: return [2 /*return*/];
                 }
             });
         });

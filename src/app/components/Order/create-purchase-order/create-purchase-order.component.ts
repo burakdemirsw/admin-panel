@@ -30,7 +30,6 @@ export class CreatePurchaseOrderComponent implements OnInit {
   officeModels: OfficeModel[] = [];
   invoiceProducts: CreatePurchaseInvoice[] = [];
   invoiceProducts2: CreatePurchaseInvoice[] = [];
-  zz
   activeTab = 1;
   productForm: FormGroup;
   warehouseModels: WarehouseOfficeModel[] = [];
@@ -303,6 +302,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
   async onSubmit(model: CreatePurchaseInvoice): Promise<any> {
+    var uuuid = await this.generalService.generateGUID()
 
     if (model.barcode.includes('=')) {
       model.barcode = model.barcode.replace(/=/g, '-');
@@ -349,9 +349,10 @@ export class CreatePurchaseOrderComponent implements OnInit {
           );
         if (response != undefined) {
 
-
           var qrResponse: QrOperationResponseModel =
             await this.productService.qrOperationMethod(
+              uuuid,
+              this.newOrderNumber,
               this.qrBarcodeUrl,
               this.productForm,
               model,
@@ -394,6 +395,8 @@ export class CreatePurchaseOrderComponent implements OnInit {
 
             var qrResponse: QrOperationResponseModel =
               await this.productService.qrOperationMethod(
+                uuuid,
+                this.newOrderNumber,
                 this.qrBarcodeUrl,
                 this.productForm,
                 model,

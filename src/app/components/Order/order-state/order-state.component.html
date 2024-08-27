@@ -16,8 +16,9 @@
                   <thead>
                     <tr>
                       <th scope="col" style="font-weight: bold">Sipariş No.</th>
-                      <th scope="col">Müşteri</th>
-                      <th scope="col">Satış Sorumlusu</th>
+                      <th scope="col">Kullanıcı</th>
+                      <th scope="col">Bayi</th>
+                      <th scope="col">Alt Müşteri</th>
 
                       <th scope="col">Depo Sorumlusu</th>
                       <th scope="col">Durum</th>
@@ -40,6 +41,11 @@
                       <td>
                         {{
                           order.salespersonCode?.toUpperCase().substring(0, 10)
+                        }}
+                      </td>
+                      <td>
+                        {{
+                          order.subCurrAccDescription?.toUpperCase().substring(0, 10)
                         }}
                       </td>
                       <td>
@@ -81,8 +87,9 @@
                     <tr>
                       <!-- <th scope="col">Sipariş Tarihi</th> -->
                       <th scope="col" style="font-weight: bold">Sipariş No.</th>
-                      <th scope="col">Müşteri</th>
-                      <th scope="col">Satış Sorumlusu</th>
+                      <th scope="col">Kullanıcı</th>
+                      <th scope="col">Bayi</th>
+                      <th scope="col">Alt Müşteri</th>
 
                       <th scope="col">Depo Sorumlusu</th>
                       <th scope="col">Durum</th>
@@ -106,6 +113,11 @@
                       <td>
                         {{
                           order.salespersonCode?.toUpperCase().substring(0, 10)
+                        }}
+                      </td>
+                      <td>
+                        {{
+                          order.subCurrAccDescription?.toUpperCase().substring(0, 10)
                         }}
                       </td>
                       <td>

@@ -2,73 +2,73 @@
   <section class="section">
     <div class="card custom-card mb-3">
       <div class="card-body d-flex justify-content-start mt-3" style="overflow-x: auto">
-        <button type="button" class="btn custom-btn-primary" (click)="routeNewPage6()">
+        <button type="button" class="btn btn-primary" (click)="routeNewPage6()">
           <i class="fas fa-plus"></i> Raflar Arası Transfer
         </button>
-        <button type="button" class="btn custom-btn-primary" routerLink="/fast-transfer-list/true">
+        <button type="button" class="btn btn-primary" routerLink="/fast-transfer-list/true">
           <i class="fas fa-plus"></i> Raflar Aktarma İsteği
         </button>
       </div>
     </div>
     <div class="card custom-card mb-3" *ngIf="pageType == 'true'">
       <div class="card-body d-flex justify-content-start mt-3" style="overflow-x: auto">
-        <button type="button" class="btn custom-btn-primary" (click)="goPage('0')">
+        <button type="button" class="btn btn-primary" (click)="goPage('0')">
           Varsayılan
         </button>
-        <button type="button" class="btn custom-btn-primary" (click)="goPage('1')">
+        <button type="button" class="btn btn-primary" (click)="goPage('1')">
           Rafları Fulle
         </button>
-        <button type="button" class="btn custom-btn-primary" (click)="goPage('2')">
+        <button type="button" class="btn btn-primary" (click)="goPage('2')">
           Çanta
         </button>
-        <button type="button" class="btn custom-btn-primary" (click)="goPage('3')">
+        <button type="button" class="btn btn-primary" (click)="goPage('3')">
           Çantadan Rafa
         </button>
         <p-dropdown appendTo="body" placeholder="Raflar" [options]="userShelves" [(ngModel)]="shelf"
           optionLabel="shelfNo" [filter]="true">
         </p-dropdown>
-        <button type="button" class="btn custom-btn-primary" (click)="goPage('4')">
+        <button type="button" class="btn btn-primary" (click)="goPage('4')">
           <i class="fa fa-search" aria-hidden="true"></i>
         </button>
         <!--
         <button
           type="button"
-          class="btn custom-btn-primary"
+          class="btn btn-primary"
           (click)="goPage('4')"
         >
           Çanta 1_A
         </button>
         <button
           type="button"
-          class="btn custom-btn-primary"
+          class="btn btn-primary"
           (click)="goPage('5')"
         >
           Çanta 1_Z
         </button>
         <button
           type="button"
-          class="btn custom-btn-primary"
+          class="btn btn-primary"
           (click)="goPage('6')"
         >
           Çanta 2_A
         </button>
         <button
           type="button"
-          class="btn custom-btn-primary"
+          class="btn btn-primary"
           (click)="goPage('7')"
         >
           Çanta 2_Z
         </button>
         <button
           type="button"
-          class="btn custom-btn-primary"
+          class="btn btn-primary"
           (click)="goPage('8')"
         >
           Çanta 3_A
         </button>
         <button
           type="button"
-          class="btn custom-btn-primary"
+          class="btn btn-primary"
           (click)="goPage('9')"
         >
           Çanta 3_Z

@@ -1,22 +1,28 @@
 export class QrOperationModel {
-    public qrBarcode: string;
-    public shelfNo: string;
-    public barcode: string;
-    public batchCode: string;
-    public qty: number;
-    public processCode: string;
-    public isReturn: boolean;
+  qrBarcode: string;
+  shelfNo: string;
+  barcode: string;
+  batchCode: string;
+  qty: number;
+  processCode: string;
+  isReturn: boolean;
+  lineId: string;
+  operationId: string;
+
+
 }
-export class QrOperationModel2{
-    public qrBarcode: string;
-    public shelfNo: string;
-    public barcode: string;
-    public batchCode: string;
-    public qty: number;
-    public processCode: string;
-    public isReturn: boolean;
-    public toWarehouseCode :string;
+export class QrOperationModel2 {
+  qrBarcode: string;
+  shelfNo: string;
+  barcode: string;
+  batchCode: string;
+  qty: number;
+  processCode: string;
+  lineId: string;
+  operationId: string;
+  isReturn: boolean;
+  toWarehouseCode: string;
 }
 export class QrOperationResponse {
-    public status:boolean
+  status: boolean
 }

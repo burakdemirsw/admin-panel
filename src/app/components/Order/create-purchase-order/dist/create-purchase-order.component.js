@@ -388,10 +388,12 @@ var CreatePurchaseOrderComponent = /** @class */ (function () {
     };
     CreatePurchaseOrderComponent.prototype.onSubmit = function (model) {
         return __awaiter(this, void 0, Promise, function () {
-            var updated_product, shelves, response, qrResponse, requestModel2, qrResponse;
+            var uuuid, updated_product, shelves, response, qrResponse, requestModel2, qrResponse;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
+                    case 0: return [4 /*yield*/, this.generalService.generateGUID()];
+                    case 1:
+                        uuuid = _a.sent();
                         if (model.barcode.includes('=')) {
                             model.barcode = model.barcode.replace(/=/g, '-');
                         }
@@ -399,27 +401,27 @@ var CreatePurchaseOrderComponent = /** @class */ (function () {
                             this.generalService.isGuid(model.barcode)) {
                             this.qrBarcodeUrl = model.barcode;
                         }
-                        if (!!this.productForm.valid) return [3 /*break*/, 2];
+                        if (!!this.productForm.valid) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.setFormValues(model)];
-                    case 1:
+                    case 2:
                         updated_product = _a.sent();
                         model = updated_product;
                         this.toasterService.success('Form Verileri Güncellendi.');
                         return [2 /*return*/];
-                    case 2:
-                        if (!this.productForm.valid) return [3 /*break*/, 11];
+                    case 3:
+                        if (!this.productForm.valid) return [3 /*break*/, 12];
                         shelves = this.shelfNumbers
                             .split(',')
                             .filter(function (raflar) { return raflar.trim() !== null; });
-                        if (!shelves.find(function (S) { return S.toLowerCase() == model.shelfNo.toLowerCase(); })) return [3 /*break*/, 6];
+                        if (!shelves.find(function (S) { return S.toLowerCase() == model.shelfNo.toLowerCase(); })) return [3 /*break*/, 7];
                         return [4 /*yield*/, this.warehouseService.countProductRequest(
                             //sayım
                             model.barcode, model.shelfNo, model.quantity, model.officeCode, model.warehouseCode, model.batchCode, 'Order/CountProduct3', this.newOrderNumber, model.currAccCode)];
-                    case 3:
-                        response = _a.sent();
-                        if (!(response != undefined)) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.productForm, model, model.quantity, this.productForm.get('isReturn').value, 'BPI')];
                     case 4:
+                        response = _a.sent();
+                        if (!(response != undefined)) return [3 /*break*/, 6];
+                        return [4 /*yield*/, this.productService.qrOperationMethod(uuuid, this.newOrderNumber, this.qrBarcodeUrl, this.productForm, model, model.quantity, this.productForm.get('isReturn').value, 'BPI')];
+                    case 5:
                         qrResponse = _a.sent();
                         if (qrResponse != null && qrResponse.state === true) {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
@@ -427,18 +429,18 @@ var CreatePurchaseOrderComponent = /** @class */ (function () {
                         else {
                             this.qrBarcodeUrl = null;
                         }
-                        _a.label = 5;
-                    case 5: return [3 /*break*/, 11];
-                    case 6:
-                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 10];
+                        _a.label = 6;
+                    case 6: return [3 /*break*/, 12];
+                    case 7:
+                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 11];
                         return [4 /*yield*/, this.warehouseService.countProductRequest(
                             //sayım
                             model.barcode, model.shelfNo, model.quantity, model.officeCode, model.warehouseCode, model.batchCode, 'Order/CountProduct3', this.newOrderNumber, model.currAccCode)];
-                    case 7:
-                        requestModel2 = _a.sent();
-                        if (!(requestModel2 != undefined)) return [3 /*break*/, 9];
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.productForm, model, model.quantity, this.productForm.get('isReturn').value, 'BPI')];
                     case 8:
+                        requestModel2 = _a.sent();
+                        if (!(requestModel2 != undefined)) return [3 /*break*/, 10];
+                        return [4 /*yield*/, this.productService.qrOperationMethod(uuuid, this.newOrderNumber, this.qrBarcodeUrl, this.productForm, model, model.quantity, this.productForm.get('isReturn').value, 'BPI')];
+                    case 9:
                         qrResponse = _a.sent();
                         if (qrResponse != null && qrResponse.state === true) {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
@@ -446,12 +448,12 @@ var CreatePurchaseOrderComponent = /** @class */ (function () {
                         else {
                             this.qrBarcodeUrl = null;
                         }
-                        _a.label = 9;
-                    case 9: return [3 /*break*/, 11];
-                    case 10:
+                        _a.label = 10;
+                    case 10: return [3 /*break*/, 12];
+                    case 11:
                         this.toasterService.warn('Ekleme İşlemi Yapılmadı!');
                         return [2 /*return*/];
-                    case 11:
+                    case 12:
                         if (this.productForm.valid == true) {
                             this.getProductOfInvoice(this.newOrderNumber);
                             this.clearFormFields();

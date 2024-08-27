@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { CustomerModel } from 'src/app/models/model/customer/customerModel';
 import { CountListFilterModel } from 'src/app/models/model/filter/countListFilterModel';
 import { WarehouseOperationListFilterModel } from 'src/app/models/model/filter/warehouseOperationListFilterModel';
 import { WarehouseTransferListFilterModel } from 'src/app/models/model/filter/warehouseTransferListFilterModel';
@@ -19,6 +18,7 @@ import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOf
 import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/warehouseOperationProductModel';
 import { ZTMSG_CountedProduct, ZTMSG_ProductOnShelf } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { HttpClientService } from '../http-client.service';
+import { CustomerModel } from 'src/app/models/model/customer/customerModel';
 
 @Injectable({
   providedIn: 'root',

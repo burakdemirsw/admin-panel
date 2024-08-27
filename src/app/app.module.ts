@@ -42,7 +42,6 @@ import { WarehosueShelfCountComponent } from './components/Warehouse/warehosue-s
 import { SaleOrderManagamentComponent } from './components/Order/sale-order-managament/sale-order-managament.component';
 import { PurchaseOrderManagamentComponent } from './components/Order/purchase-order-managament/purchase-order-managament.component';
 import { CreatePurchaseOrderComponent } from './components/Order/create-purchase-order/create-purchase-order.component';
-import { CreateSaleOrderComponent } from './components/Order/create-sale-order/create-sale-order.component';
 import { ImageModalComponent } from './image-modal/image-modal.component';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { WarehouseShelfCountListComponent } from './components/Warehouse/warehouse-shelf-count-list/warehouse-shelf-count-list.component';
@@ -117,6 +116,7 @@ import { SplitButtonModule } from 'primeng/splitbutton';
 import { ServiceManagementComponent } from './components/service-management/service-management.component';
 import { PagesInfoComponent } from './pages/pages-info/pages-info.component';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { CreateSaleOrderComponent } from './components/Order/create-sale-order/create-sale-order.component';
 @NgModule({
 
   declarations: [
@@ -153,7 +153,6 @@ import { MultiSelectModule } from 'primeng/multiselect';
     SaleOrderManagamentComponent,
     PurchaseOrderManagamentComponent,
     CreatePurchaseOrderComponent,
-    CreateSaleOrderComponent,
     ImageModalComponent,
     WarehouseShelfCountListComponent,
     InvoiceListComponent,
@@ -166,7 +165,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
     BoxCountComponent,
     CreateOrderComponent,
     ReferrerPolicyDirective,
-
+    CreateSaleOrderComponent,
     PagesLoginv2Component,
     UserListComponent,
     CustomerListComponent,

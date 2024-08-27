@@ -226,12 +226,6 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.orderService.addOrderStatus(request)];
                     case 2:
                         response = _b.sent();
-                        if (response) {
-                            this.toasterService.success('Durum Güncellendi');
-                        }
-                        else {
-                            this.toasterService.error('Durum Güncellenemedi');
-                        }
                         return [2 /*return*/];
                 }
             });
@@ -490,10 +484,12 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
     };
     WarehosueShelfCountComponent.prototype.onSubmit = function (countProductRequestModel) {
         return __awaiter(this, void 0, Promise, function () {
-            var _isUUID, updated_product, url, result, shelves, request, _response, qrResponse, request, _response, qrResponse, error_2;
+            var uuuid, _isUUID, updated_product, url, result, shelves, request, _response, qrResponse, request, _response, qrResponse, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
+                    case 0: return [4 /*yield*/, this.generalService.generateGUID()];
+                    case 1:
+                        uuuid = _a.sent();
                         _isUUID = this.generalService.isGuid(countProductRequestModel.barcode);
                         // EĞER BARKODTA = VARSA - İLE DEĞİŞTİR
                         if (countProductRequestModel.barcode.includes('=')) {
@@ -505,9 +501,9 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                             countProductRequestModel.barcode = countProductRequestModel.barcode.replace("Http", "http");
                             this.qrBarcodeUrl = countProductRequestModel.barcode;
                         }
-                        if (!!this.checkForm.valid) return [3 /*break*/, 2];
+                        if (!!this.checkForm.valid) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.setFormValues(countProductRequestModel)];
-                    case 1:
+                    case 2:
                         updated_product = _a.sent();
                         countProductRequestModel = updated_product;
                         if (this.checkForm.valid && !_isUUID) {
@@ -517,27 +513,27 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         }
                         this.toasterService.success("Form Verileri Güncellendi");
                         return [2 /*return*/];
-                    case 2:
-                        if (!this.checkForm.valid) return [3 /*break*/, 18];
-                        url = ClientUrls_1.ClientUrls.baseUrl + '/Order/CountProduct3';
-                        _a.label = 3;
                     case 3:
-                        _a.trys.push([3, 17, , 18]);
-                        console.log("RAF NUMARALARI --> : " + this.shelfNumbers);
-                        if (!(this.generalService.isNullOrEmpty(this.shelfNumbers) || this.shelfNumbers == undefined)) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.productService.countProductByBarcode(countProductRequestModel.barcode)];
+                        if (!this.checkForm.valid) return [3 /*break*/, 19];
+                        url = ClientUrls_1.ClientUrls.baseUrl + '/Order/CountProduct3';
+                        _a.label = 4;
                     case 4:
+                        _a.trys.push([4, 18, , 19]);
+                        console.log("RAF NUMARALARI --> : " + this.shelfNumbers);
+                        if (!(this.generalService.isNullOrEmpty(this.shelfNumbers) || this.shelfNumbers == undefined)) return [3 /*break*/, 6];
+                        return [4 /*yield*/, this.productService.countProductByBarcode(countProductRequestModel.barcode)];
+                    case 5:
                         result = _a.sent();
                         this.shelfNumbers = result[0];
-                        _a.label = 5;
-                    case 5:
+                        _a.label = 6;
+                    case 6:
                         shelves = this.shelfNumbers
                             .split(',')
                             .filter(function (raflar) { return raflar.trim() !== ''; })
                             .map(function (raflar) { return raflar.toLowerCase(); });
-                        if (!this.state) return [3 /*break*/, 16];
+                        if (!this.state) return [3 /*break*/, 17];
                         this.state = false;
-                        if (!shelves.includes(countProductRequestModel.shelfNo.toLowerCase())) return [3 /*break*/, 10];
+                        if (!shelves.includes(countProductRequestModel.shelfNo.toLowerCase())) return [3 /*break*/, 11];
                         request = new ztmsg_CountedProduct_1.ZTMSG_CountedProduct();
                         request.barcode = countProductRequestModel.barcode;
                         request.shelfNo = countProductRequestModel.shelfNo;
@@ -549,11 +545,11 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         request.isCompleted = false;
                         request.operationType = this.checkForm.get("isShelfBased").value == true ? this.checkForm.get("isShelfBased").value : this.checkForm.get("isShelfBased2").value;
                         return [4 /*yield*/, this.warehouseService.addCount(request)];
-                    case 6:
-                        _response = _a.sent();
-                        if (!(_response != undefined)) return [3 /*break*/, 9];
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, countProductRequestModel, countProductRequestModel.quantity, false, 'CO')];
                     case 7:
+                        _response = _a.sent();
+                        if (!(_response != undefined)) return [3 /*break*/, 10];
+                        return [4 /*yield*/, this.productService.qrOperationMethod(uuuid, this.currentOrderNo, this.qrBarcodeUrl, this.checkForm, countProductRequestModel, countProductRequestModel.quantity, false, 'CO')];
+                    case 8:
                         qrResponse = _a.sent();
                         if (qrResponse != null && qrResponse.state === true) {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
@@ -564,14 +560,14 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         // QR İŞLEMLERİ YAPILDI -------------------------------------------
                         this.generalService.beep();
                         return [4 /*yield*/, this.getProductOfCount(this.currentOrderNo)];
-                    case 8:
+                    case 9:
                         _a.sent(); //this.list.push(countProductRequestModel);
                         this.clearQrAndBatchCode();
                         this.state = true;
-                        _a.label = 9;
-                    case 9: return [3 /*break*/, 16];
-                    case 10:
-                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 15];
+                        _a.label = 10;
+                    case 10: return [3 /*break*/, 17];
+                    case 11:
+                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 16];
                         request = new ztmsg_CountedProduct_1.ZTMSG_CountedProduct();
                         request.barcode = countProductRequestModel.barcode;
                         request.shelfNo = countProductRequestModel.shelfNo;
@@ -583,11 +579,11 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         request.isCompleted = false;
                         request.operationType = this.checkForm.get("isShelfBased").value == true ? this.checkForm.get("isShelfBased").value : this.checkForm.get("isShelfBased2").value;
                         return [4 /*yield*/, this.warehouseService.addCount(request)];
-                    case 11:
-                        _response = _a.sent();
-                        if (!(_response != undefined)) return [3 /*break*/, 14];
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, countProductRequestModel, countProductRequestModel.quantity, false, 'CO')];
                     case 12:
+                        _response = _a.sent();
+                        if (!(_response != undefined)) return [3 /*break*/, 15];
+                        return [4 /*yield*/, this.productService.qrOperationMethod(uuuid, this.currentOrderNo, this.qrBarcodeUrl, this.checkForm, countProductRequestModel, countProductRequestModel.quantity, false, 'CO')];
+                    case 13:
                         qrResponse = _a.sent();
                         if (qrResponse != null && qrResponse.state === true) {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
@@ -598,33 +594,37 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         // QR İŞLEMLERİ YAPILDI -------------------------------------------
                         this.generalService.beep();
                         return [4 /*yield*/, this.getProductOfCount(this.currentOrderNo)];
-                    case 13:
+                    case 14:
                         _a.sent(); //this.list.push(countProductRequestModel);
                         this.clearQrAndBatchCode();
                         this.state = true;
-                        _a.label = 14;
-                    case 14: return [3 /*break*/, 16];
-                    case 15:
+                        _a.label = 15;
+                    case 15: return [3 /*break*/, 17];
+                    case 16:
                         this.toasterService.success('Raflar Getirildi Ve Miktar Alanı Dolduruldu.');
                         this.state = true;
-                        _a.label = 16;
-                    case 16: return [3 /*break*/, 18];
-                    case 17:
+                        _a.label = 17;
+                    case 17: return [3 /*break*/, 19];
+                    case 18:
                         error_2 = _a.sent();
                         this.toasterService.error(error_2.message);
                         this.state = true;
-                        return [3 /*break*/, 18];
-                    case 18: return [2 /*return*/];
+                        return [3 /*break*/, 19];
+                    case 19: return [2 /*return*/];
                 }
             });
         });
     };
     WarehosueShelfCountComponent.prototype.onSubmit2 = function (countProductRequestModel, isInQty) {
         return __awaiter(this, void 0, Promise, function () {
-            var updated_product, result, shelves, request, _response, qrResponse, request, _response, qrResponse, error_3;
+            var uuuid, updated_product, result, shelves, request, _response, qrResponse, request, _response, qrResponse, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
+                    case 0: return [4 /*yield*/, this.generalService.generateGUID()
+                        // EĞER BARKODTA = VARSA - İLE DEĞİŞTİR
+                    ];
+                    case 1:
+                        uuuid = _a.sent();
                         // EĞER BARKODTA = VARSA - İLE DEĞİŞTİR
                         if (countProductRequestModel.barcode.includes('=')) {
                             countProductRequestModel.barcode = countProductRequestModel.barcode.replace(/=/g, '-');
@@ -635,9 +635,9 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                             countProductRequestModel.barcode = countProductRequestModel.barcode.replace("Http", "http");
                             this.qrBarcodeUrl = countProductRequestModel.barcode;
                         }
-                        if (!!this.checkForm.valid) return [3 /*break*/, 2];
+                        if (!!this.checkForm.valid) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.setFormValues(countProductRequestModel)];
-                    case 1:
+                    case 2:
                         updated_product = _a.sent();
                         countProductRequestModel = updated_product;
                         if (this.checkForm.valid) {
@@ -645,25 +645,25 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         }
                         this.toasterService.success("Form Verileri Güncellendi");
                         return [2 /*return*/];
-                    case 2:
-                        if (!this.checkForm.valid) return [3 /*break*/, 18];
-                        _a.label = 3;
                     case 3:
-                        _a.trys.push([3, 17, , 18]);
-                        if (!this.generalService.isNullOrEmpty(this.shelfNumbers)) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.productService.countProductByBarcode(countProductRequestModel.barcode)];
+                        if (!this.checkForm.valid) return [3 /*break*/, 19];
+                        _a.label = 4;
                     case 4:
+                        _a.trys.push([4, 18, , 19]);
+                        if (!this.generalService.isNullOrEmpty(this.shelfNumbers)) return [3 /*break*/, 6];
+                        return [4 /*yield*/, this.productService.countProductByBarcode(countProductRequestModel.barcode)];
+                    case 5:
                         result = _a.sent();
                         this.shelfNumbers = result[0];
-                        _a.label = 5;
-                    case 5:
+                        _a.label = 6;
+                    case 6:
                         shelves = this.shelfNumbers
                             .split(',')
                             .filter(function (raflar) { return raflar.trim() !== ''; })
                             .map(function (raflar) { return raflar.toLowerCase(); });
-                        if (!this.state) return [3 /*break*/, 16];
+                        if (!this.state) return [3 /*break*/, 17];
                         this.state = false;
-                        if (!shelves.includes(countProductRequestModel.shelfNo.toLowerCase())) return [3 /*break*/, 10];
+                        if (!shelves.includes(countProductRequestModel.shelfNo.toLowerCase())) return [3 /*break*/, 11];
                         request = new ztmsg_CountedProduct_2.ZTMSG_ProductOnShelf();
                         request.barcode = countProductRequestModel.barcode;
                         request.shelfNo = countProductRequestModel.shelfNo;
@@ -673,11 +673,11 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         request.batchCode = countProductRequestModel.batchCode;
                         request.operationNumber = this.currentOrderNo;
                         return [4 /*yield*/, this.warehouseService.addProductOnShelf(request)];
-                    case 6:
-                        _response = _a.sent();
-                        if (!(_response != undefined)) return [3 /*break*/, 9];
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, countProductRequestModel, countProductRequestModel.quantity, false, 'CO')];
                     case 7:
+                        _response = _a.sent();
+                        if (!(_response != undefined)) return [3 /*break*/, 10];
+                        return [4 /*yield*/, this.productService.qrOperationMethod(uuuid, this.currentOrderNo, this.qrBarcodeUrl, this.checkForm, countProductRequestModel, countProductRequestModel.quantity, false, 'CO')];
+                    case 8:
                         qrResponse = _a.sent();
                         if (qrResponse != null && qrResponse.state === true) {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
@@ -688,14 +688,14 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         // QR İŞLEMLERİ YAPILDI -------------------------------------------
                         this.generalService.beep();
                         return [4 /*yield*/, this.getProductOfCount(this.currentOrderNo)];
-                    case 8:
+                    case 9:
                         _a.sent(); //this.list.push(countProductRequestModel);
                         this.clearQrAndBatchCode();
                         this.state = true;
-                        _a.label = 9;
-                    case 9: return [3 /*break*/, 16];
-                    case 10:
-                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 15];
+                        _a.label = 10;
+                    case 10: return [3 /*break*/, 17];
+                    case 11:
+                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 16];
                         request = new ztmsg_CountedProduct_2.ZTMSG_ProductOnShelf();
                         request.barcode = countProductRequestModel.barcode;
                         request.shelfNo = countProductRequestModel.shelfNo;
@@ -705,11 +705,11 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         request.batchCode = countProductRequestModel.batchCode;
                         request.operationNumber = this.currentOrderNo;
                         return [4 /*yield*/, this.warehouseService.addProductOnShelf(request)];
-                    case 11:
-                        _response = _a.sent();
-                        if (!(_response != undefined)) return [3 /*break*/, 14];
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, countProductRequestModel, countProductRequestModel.quantity, false, 'CO')];
                     case 12:
+                        _response = _a.sent();
+                        if (!(_response != undefined)) return [3 /*break*/, 15];
+                        return [4 /*yield*/, this.productService.qrOperationMethod(uuuid, this.currentOrderNo, this.qrBarcodeUrl, this.checkForm, countProductRequestModel, countProductRequestModel.quantity, false, 'CO')];
+                    case 13:
                         qrResponse = _a.sent();
                         if (qrResponse != null && qrResponse.state === true) {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
@@ -720,23 +720,23 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         // QR İŞLEMLERİ YAPILDI -------------------------------------------
                         this.generalService.beep();
                         return [4 /*yield*/, this.getProductOfCount(this.currentOrderNo)];
-                    case 13:
+                    case 14:
                         _a.sent(); //this.list.push(countProductRequestModel);
                         this.clearQrAndBatchCode();
                         this.state = true;
-                        _a.label = 14;
-                    case 14: return [3 /*break*/, 16];
-                    case 15:
+                        _a.label = 15;
+                    case 15: return [3 /*break*/, 17];
+                    case 16:
                         this.toasterService.success('Raflar Getirildi Ve Miktar Alanı Dolduruldu.');
                         this.state = true;
-                        _a.label = 16;
-                    case 16: return [3 /*break*/, 18];
-                    case 17:
+                        _a.label = 17;
+                    case 17: return [3 /*break*/, 19];
+                    case 18:
                         error_3 = _a.sent();
                         this.toasterService.error(error_3.message);
                         this.state = true;
-                        return [3 /*break*/, 18];
-                    case 18: return [2 /*return*/];
+                        return [3 /*break*/, 19];
+                    case 19: return [2 /*return*/];
                 }
             });
         });

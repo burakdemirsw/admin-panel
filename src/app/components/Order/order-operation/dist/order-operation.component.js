@@ -100,6 +100,7 @@ var OrderOperationComponent = /** @class */ (function () {
         this.stickedProduct = null;
         this.orderBillingList = [];
         this.itemBillingModels = [];
+        this.cancelStatus = false;
         this.qrBarcodeUrl = null;
         this.qrOperationModels = [];
         this.confirmedProductPackageNoList = [];
@@ -156,41 +157,44 @@ var OrderOperationComponent = /** @class */ (function () {
                                         return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'BP')];
                                     case 1:
                                         _a.sent(); //toplanan ve toplanacak ürünleri çeker
-                                        return [3 /*break*/, 13];
+                                        return [3 /*break*/, 14];
                                     case 2:
-                                        if (!(orderNumberType === 'WS')) return [3 /*break*/, 6];
-                                        return [4 /*yield*/, this.addOperationStatus()];
+                                        if (!(orderNumberType === 'WS')) return [3 /*break*/, 7];
+                                        return [4 /*yield*/, this.checkClientOrderByOrderNumber(params['orderNumber'])];
                                     case 3:
                                         _a.sent();
-                                        return [4 /*yield*/, this.orderService.getOrderDetail(params['orderNumber'])];
+                                        return [4 /*yield*/, this.addOperationStatus()];
                                     case 4:
+                                        _a.sent();
+                                        return [4 /*yield*/, this.orderService.getOrderDetail(params['orderNumber'])];
+                                    case 5:
                                         response = _a.sent();
                                         this.customerName = response.description;
                                         return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'WS')];
-                                    case 5:
-                                        _a.sent(); //toplanan ve toplanacak ürünleri çeker
-                                        return [3 /*break*/, 13];
                                     case 6:
-                                        if (!(orderNumberType === 'WT' || orderNumber.startsWith("W-"))) return [3 /*break*/, 11];
-                                        if (!orderNumber.startsWith("W-")) return [3 /*break*/, 8];
+                                        _a.sent(); //toplanan ve toplanacak ürünleri çeker
+                                        return [3 /*break*/, 14];
+                                    case 7:
+                                        if (!(orderNumberType === 'WT' || orderNumber.startsWith("W-"))) return [3 /*break*/, 12];
+                                        if (!orderNumber.startsWith("W-")) return [3 /*break*/, 9];
                                         this.currentOrderNo = params['orderNumber'].split('W-')[1];
                                         return [4 /*yield*/, this.getAllProducts(params['orderNumber'].split('W-')[1], 'WT')];
-                                    case 7:
+                                    case 8:
                                         _a.sent(); //toplanan ve toplanacak ürünleri çeker
-                                        return [3 /*break*/, 10];
-                                    case 8: return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'WT')];
-                                    case 9:
+                                        return [3 /*break*/, 11];
+                                    case 9: return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'WT')];
+                                    case 10:
                                         _a.sent(); //toplanan ve toplanacak ürünleri çeker
-                                        _a.label = 10;
-                                    case 10: return [3 /*break*/, 13];
-                                    case 11:
-                                        if (!orderNumber.includes("MIS")) return [3 /*break*/, 13];
+                                        _a.label = 11;
+                                    case 11: return [3 /*break*/, 14];
+                                    case 12:
+                                        if (!orderNumber.includes("MIS")) return [3 /*break*/, 14];
                                         orderNumberType = "MIS";
                                         return [4 /*yield*/, this.getAllProducts(params['orderNumber'], 'MIS')];
-                                    case 12:
-                                        _a.sent(); //toplanan ve toplanacak ürünleri çeker
-                                        _a.label = 13;
                                     case 13:
+                                        _a.sent(); //toplanan ve toplanacak ürünleri çeker
+                                        _a.label = 14;
+                                    case 14:
                                         if (location.href.includes("MIS")) {
                                             this._pageDescription = true;
                                         }
@@ -203,7 +207,6 @@ var OrderOperationComponent = /** @class */ (function () {
                     case 1:
                         //this.spinnerService.show();
                         _a.sent();
-                        this.toasterService.info(this.currentOrderNo);
                         return [2 /*return*/];
                 }
             });
@@ -228,12 +231,6 @@ var OrderOperationComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.orderService.addOrderStatus(request)];
                     case 2:
                         response = _b.sent();
-                        if (response) {
-                            this.toasterService.success('Durum Güncellendi');
-                        }
-                        else {
-                            this.toasterService.error('Durum Güncellenemedi');
-                        }
                         return [2 /*return*/];
                 }
             });
@@ -584,6 +581,23 @@ var OrderOperationComponent = /** @class */ (function () {
             });
         });
     };
+    OrderOperationComponent.prototype.checkClientOrderByOrderNumber = function (orderNumber) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.orderService.checkClientOrderByOrderNumber(orderNumber)];
+                    case 1:
+                        response = _a.sent();
+                        if (response) {
+                            this.cancelStatus = true;
+                            this.toasterService.error('Bu Sipariş İptal Edilmiştir Lütfen Ürünleri Yerine Yerleştiriniz');
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     OrderOperationComponent.prototype.collectAndPack_WS = function (products) {
         return __awaiter(this, void 0, void 0, function () {
             var response, response2, _response;
@@ -787,6 +801,7 @@ var OrderOperationComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        this.toasterService.success(productModel.barcode);
                         // = işareti varsa - yap
                         if (productModel.barcode.includes("=")) {
                             productModel.barcode = productModel.barcode.replace(/=/g, "-");
@@ -834,7 +849,7 @@ var OrderOperationComponent = /** @class */ (function () {
                     case 5:
                         response = _a.sent();
                         if (!(response && response != null && response != undefined)) return [3 /*break*/, 7];
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, productModel, productModel.quantity, false, 'WS')];
+                        return [4 /*yield*/, this.productService.qrOperationMethod(foundModel.lineId, this.currentOrderNo, this.qrBarcodeUrl, this.checkForm, productModel, productModel.quantity, false, 'WS')];
                     case 6:
                         qrResponse = _a.sent();
                         if (qrResponse != null && qrResponse.state === true) {
@@ -918,7 +933,7 @@ var OrderOperationComponent = /** @class */ (function () {
                     case 21:
                         response2 = _a.sent();
                         if (!(response2 && response2 != null && response2 != undefined)) return [3 /*break*/, 23];
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, productModel, productModel.quantity, false, 'WT')];
+                        return [4 /*yield*/, this.productService.qrOperationMethod(foundModel.lineId, this.currentOrderNo, this.qrBarcodeUrl, this.checkForm, productModel, productModel.quantity, false, 'WT')];
                     case 22:
                         qrResponse = _a.sent();
                         if (qrResponse != null && qrResponse.state === true) {
@@ -977,7 +992,7 @@ var OrderOperationComponent = /** @class */ (function () {
                     case 33:
                         response = _a.sent();
                         if (!(response && response != null && response != undefined)) return [3 /*break*/, 35];
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.checkForm, productModel, productModel.quantity, false, 'BP')];
+                        return [4 /*yield*/, this.productService.qrOperationMethod(foundModel.lineId, this.currentOrderNo, this.qrBarcodeUrl, this.checkForm, productModel, productModel.quantity, false, 'BP')];
                     case 34:
                         qrResponse = _a.sent();
                         if (qrResponse != null && qrResponse.state === true) {

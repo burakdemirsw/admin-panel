@@ -51,7 +51,6 @@ var warehosue_shelf_count_component_1 = require("./components/Warehouse/warehosu
 var sale_order_managament_component_1 = require("./components/Order/sale-order-managament/sale-order-managament.component");
 var purchase_order_managament_component_1 = require("./components/Order/purchase-order-managament/purchase-order-managament.component");
 var create_purchase_order_component_1 = require("./components/Order/create-purchase-order/create-purchase-order.component");
-var create_sale_order_component_1 = require("./components/Order/create-sale-order/create-sale-order.component");
 var image_modal_component_1 = require("./image-modal/image-modal.component");
 var ngx_scanner_1 = require("@zxing/ngx-scanner");
 var warehouse_shelf_count_list_component_1 = require("./components/Warehouse/warehouse-shelf-count-list/warehouse-shelf-count-list.component");
@@ -126,6 +125,7 @@ var splitbutton_1 = require("primeng/splitbutton");
 var service_management_component_1 = require("./components/service-management/service-management.component");
 var pages_info_component_1 = require("./pages/pages-info/pages-info.component");
 var multiselect_1 = require("primeng/multiselect");
+var create_sale_order_component_1 = require("./components/Order/create-sale-order/create-sale-order.component");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -165,7 +165,6 @@ var AppModule = /** @class */ (function () {
                 sale_order_managament_component_1.SaleOrderManagamentComponent,
                 purchase_order_managament_component_1.PurchaseOrderManagamentComponent,
                 create_purchase_order_component_1.CreatePurchaseOrderComponent,
-                create_sale_order_component_1.CreateSaleOrderComponent,
                 image_modal_component_1.ImageModalComponent,
                 warehouse_shelf_count_list_component_1.WarehouseShelfCountListComponent,
                 invoice_list_component_1.InvoiceListComponent,
@@ -178,6 +177,7 @@ var AppModule = /** @class */ (function () {
                 box_count_component_1.BoxCountComponent,
                 create_order_component_1.CreateOrderComponent,
                 referrer_policy_directive_1.ReferrerPolicyDirective,
+                create_sale_order_component_1.CreateSaleOrderComponent,
                 pages_loginv2_component_1.PagesLoginv2Component,
                 user_list_component_1.UserListComponent,
                 customer_list_component_1.CustomerListComponent,

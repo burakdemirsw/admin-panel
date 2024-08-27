@@ -1,5 +1,5 @@
 <main id="main" class="main">
-    <!-- <div class="pagetitle">
+  <!-- <div class="pagetitle">
         <h1>Raf Düzenleme</h1>
         <nav>
             <ol class="breadcrumb">
@@ -10,13 +10,13 @@
         </nav>
     </div> -->
 
-    <section class="section">
-        <div class="row">
-            <div style="width: 100%;">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Raf İçeriği </h5>
-                        <!-- <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
+  <section class="section">
+    <div class="row">
+      <div style="width: 100%;">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Raf İçeriği </h5>
+            <!-- <ul class="nav nav-tabs nav-justified mb-3" id="ex1" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <a class="nav-link active" [class.active]="activeTab === 1" (click)="activeTab = 1">Raf
                                     Düzenleme</a>
@@ -24,60 +24,58 @@
 
                         </ul> -->
 
-                        <div class="tab-content" id="ex2-content">
-                            <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1"
-                                role="tabpanel" aria-labelledby="ex3-tab-1">
-                                <form [formGroup]="shelvesForm" (ngSubmit)="onSubmit(shelvesForm.value)">
+            <div class="tab-content" id="ex2-content">
+              <div class="tab-pane fade show" [class.active]="activeTab === 1" id="ex3-tabs-1" role="tabpanel"
+                aria-labelledby="ex3-tab-1">
+                <form [formGroup]="shelvesForm" (ngSubmit)="onSubmit(shelvesForm.value)">
 
-                                    <div class="row mb-3">
-                                        <div class="form-group">
-                                            <label for="shelfNo">Raf:</label>
-                                            <input type="text" id="shelfNo" class="form-control" formControlName="shelfNo">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="form-group">
-                                            <label for="warehouse">Barkod:</label>
-                                            <input type="text" id="warehouse" class="form-control"
-                                                formControlName="warehouse">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="form-group">
-                                            <label for="itemCode">Ürün Kodu:</label>
-                                            <input type="text" id="itemCode" class="form-control"
-                                                formControlName="itemCode">
-                                        </div>
-                                    </div>
-                                     
-                                    <div class="row mb-3">
-                                        <div class="form-group">
-                                            <label for="party">Parti:</label>
-                                            <input type="text" id="party" class="form-control" formControlName="party">
-                                        </div>
-                                    </div>
-                   
+                  <div class="row mb-3">
+                    <div class="form-group">
+                      <label for="shelfNo">Raf:</label>
+                      <input type="text" id="shelfNo" class="form-control" formControlName="shelfNo">
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="form-group">
+                      <label for="warehouse">Barkod:</label>
+                      <input type="text" id="warehouse" class="form-control" formControlName="warehouse">
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="form-group">
+                      <label for="itemCode">Ürün Kodu:</label>
+                      <input type="text" id="itemCode" class="form-control" formControlName="itemCode">
+                    </div>
+                  </div>
 
-                                    <div class="row mb-3">
-                                        <div class="form-group">
-                                            <label for="inventory">Stok:</label>
-                                            <input type="text" id="inventory" class="form-control"
-                                                formControlName="inventory">
-                                        </div>
-                                    </div>
-                                    
-
-                                    <div class="row mb-3">
-                                        <label for="packageId">Paket Numarası:</label>
-                                        <div class="input-group">
-                                            <input type="text" id="packageId" class="form-control"
-                                                formControlName="packageId" (ngModelChange)="onModelChanged($event)">
-                                                 <button class="btn btn-dark" type="button" (click)="generateAndSetGUID()">Paket Numarası Oluştur</button> 
-                                        </div>
-                                    </div>
+                  <div class="row mb-3">
+                    <div class="form-group">
+                      <label for="party">Parti:</label>
+                      <input type="text" id="party" class="form-control" formControlName="party">
+                    </div>
+                  </div>
 
 
-                                    <!-- <div class="row mb-3">
+                  <div class="row mb-3">
+                    <div class="form-group">
+                      <label for="inventory">Stok:</label>
+                      <input type="text" id="inventory" class="form-control" formControlName="inventory">
+                    </div>
+                  </div>
+
+
+                  <div class="row mb-3">
+                    <label for="packageId">Paket Numarası:</label>
+                    <div class="input-group">
+                      <input type="text" id="packageId" class="form-control" formControlName="packageId"
+                        (ngModelChange)="onModelChanged($event)">
+                      <button class="btn btn-dark" type="button" (click)="generateAndSetGUID()">Paket Numarası
+                        Oluştur</button>
+                    </div>
+                  </div>
+
+
+                  <!-- <div class="row mb-3">
                                         <label for="qrString">Qr:</label>
                                         <div class="input-group">
                                             <input type="text" id="qrString" class="form-control" formControlName="qrString" (ngModelChange)="onModelChanged($event)">
@@ -86,93 +84,134 @@
                                         </div>
                                     </div> -->
 
-                                    <div class="row mb-3">
-                                        <div class="col-md-">
-                    
-                                            <button type="button" style="width: 100%;" class="btn btn-primary" (click) = "addToList(shelvesForm.value)">Ekle</button>
+                  <div class="row mb-3">
+                    <div class="col-md-">
 
-                    
-                                        </div>
-                                      </div>
-
-                                      <div class="row mb-3">
-                                        <div class="col-md-">
-                    
-                                            <button type="button" style="width: 100%;" class="btn btn-dark"  (click) ="clearAllList()">NEBIME
-                                                AKTAR</button>
-                    
-                                        </div>
-                                      </div>
-
-
-                                    
-                                    
-                                </form>
-
-
-
-                            </div>
-                            <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2"
-                                role="tabpanel-2" aria-labelledby="ex3-tab-2">
-
-                            </div>
-                            <div class="tab-pane fade show" [class.active]="activeTab === 3" id="ex3-tabs-3"
-                                role="tabpanel-3" aria-labelledby="ex3-tab-3">
-                                Prices
-                            </div>
-                        </div>
-
+                      <button type="button" style="width: 100%;" class="btn btn-primary"
+                        (click)="addToList(shelvesForm.value)">Ekle</button>
 
 
                     </div>
-                </div>
-                <div class="card" *ngIf="shelfModelList.length > 0">
-                    <div class="card-body">
-                        <h5 class="card-title">Eklenen Ürünler</h5>
-                        <!-- <a class="btn btn-success" data-bs-toggle="dropdown">+İşlemler</a>
-                      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                        <li><a class="dropdown-item">Yeni Ürün Ekle</a></li>
-                        <li><a class="dropdown-item">Excel'e Aktar</a></li>
-                        <li><a class="dropdown-item">Seçilenleri Tümünü Sil</a></li>
-                      </ul> -->
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                  <tr>
-                                    <!-- <th scope="col">ID</th> -->
-                                    <th scope="col">Qr String</th>
-                                    <th scope="col">Depo</th>
-                                    <th scope="col">Raf No</th>
-                                    <th scope="col">Ürün Kodu</th>
-                                    <th scope="col">Parti</th>
-                                    <th scope="col">Stok Miktarı</th>
-                                    <th scope="col">Paket ID</th>
-                                    <th scope="col">İşlemler</th> <!-- Yeni sütun: İşlemler -->
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  <tr *ngFor="let shelfModel of shelfModelList; let i = index">
-                                    <!-- <td>{{ warehousePackageDetail.id }}</td> -->
-                                    <td>{{ shelfModel.qrString }}</td>
-                                    <td>{{ shelfModel.warehouse }}</td>
-                                    <td>{{ shelfModel.shelfNo }}</td>
-                                    <td>{{ shelfModel.itemCode }}</td>
-                                    <td>{{ shelfModel.party }}</td>
-                                    <td>{{ shelfModel.inventory }}</td>
-                                    <td>{{ shelfModel.packageId }}</td>
-                                    <td>
-                                      <button class="btn btn-danger" (click)="deleteRow(i)">Sil</button> <!-- Silme butonu ve tıklama olayı -->
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                              
-                        </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="col-md-">
+
+                      <button type="button" style="width: 100%;" class="btn btn-dark" (click)="clearAllList()">NEBIME
+                        AKTAR</button>
+
                     </div>
-                </div>
+                  </div>
+
+
+
+
+                </form>
+
+
+
+              </div>
+              <div class="tab-pane fade show" [class.active]="activeTab === 2" id="ex3-tabs-2" role="tabpanel-2"
+                aria-labelledby="ex3-tab-2">
+
+              </div>
+              <div class="tab-pane fade show" [class.active]="activeTab === 3" id="ex3-tabs-3" role="tabpanel-3"
+                aria-labelledby="ex3-tab-3">
+                Prices
+              </div>
             </div>
-  
-        </div>
 
-    </section>
+
+
+          </div>
+        </div>
+        <div class="card" *ngIf="shelfModelList.length > 0">
+          <p-table [value]="shelfModelList" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
+            [responsiveLayout]="'scroll'" [filterDelay]="500">
+            <ng-template pTemplate="caption">
+              <div class="flex align-items-center justify-content-between">
+                Raf Model Listesi
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th pSortableColumn="qrString">
+                  Qr String
+                  <p-sortIcon field="qrString"></p-sortIcon>
+                </th>
+                <th pSortableColumn="warehouse">
+                  Depo
+                  <p-sortIcon field="warehouse"></p-sortIcon>
+                </th>
+                <th pSortableColumn="shelfNo">
+                  Raf No
+                  <p-sortIcon field="shelfNo"></p-sortIcon>
+                </th>
+                <th pSortableColumn="itemCode">
+                  Ürün Kodu
+                  <p-sortIcon field="itemCode"></p-sortIcon>
+                </th>
+                <th pSortableColumn="party">
+                  Parti
+                  <p-sortIcon field="party"></p-sortIcon>
+                </th>
+                <th pSortableColumn="inventory">
+                  Stok Miktarı
+                  <p-sortIcon field="inventory"></p-sortIcon>
+                </th>
+                <th pSortableColumn="packageId">
+                  Paket ID
+                  <p-sortIcon field="packageId"></p-sortIcon>
+                </th>
+                <th>İşlemler</th> <!-- Yeni sütun: İşlemler -->
+              </tr>
+              <tr>
+                <th>
+                  <p-columnFilter type="text" field="qrString" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="warehouse" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="shelfNo" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="itemCode" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="party" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="numeric" field="inventory" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter type="text" field="packageId" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
+                  <!-- İşlemler sütunu için filtre eklemiyoruz -->
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-shelfModel let-i="rowIndex">
+              <tr>
+                <td>{{ shelfModel.qrString }}</td>
+                <td>{{ shelfModel.warehouse }}</td>
+                <td>{{ shelfModel.shelfNo }}</td>
+                <td>{{ shelfModel.itemCode }}</td>
+                <td>{{ shelfModel.party }}</td>
+                <td>{{ shelfModel.inventory }}</td>
+                <td>{{ shelfModel.packageId }}</td>
+                <td>
+                  <button class="btn btn-danger" (click)="deleteRow(i)">Sil</button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+
+        </div>
+      </div>
+
+    </div>
+
+  </section>
 </main>

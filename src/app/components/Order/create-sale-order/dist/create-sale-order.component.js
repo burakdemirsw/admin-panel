@@ -535,10 +535,12 @@ var CreateSaleOrderComponent = /** @class */ (function () {
     };
     CreateSaleOrderComponent.prototype.onSubmit = function (model) {
         return __awaiter(this, void 0, Promise, function () {
-            var updated_product, value, currAccCodeValue, shelves, response, data, qrResponse, response, data, qrResponse;
+            var uuuid, updated_product, value, currAccCodeValue, shelves, response, data, qrResponse, response, data, qrResponse;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
+                    case 0: return [4 /*yield*/, this.generalService.generateGUID()];
+                    case 1:
+                        uuuid = _a.sent();
                         if (model.barcode.includes("=")) {
                             model.barcode = model.barcode.replace(/=/g, "-");
                         }
@@ -546,15 +548,15 @@ var CreateSaleOrderComponent = /** @class */ (function () {
                             this.generalService.isGuid(model.barcode)) {
                             this.qrBarcodeUrl = model.barcode;
                         }
-                        if (!!this.productForm.valid) return [3 /*break*/, 2];
+                        if (!!this.productForm.valid) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.setFormValues(model)];
-                    case 1:
+                    case 2:
                         updated_product = _a.sent();
                         model = updated_product;
                         this.toasterService.error('Form Verileri Güncellendi.');
                         return [2 /*return*/];
-                    case 2:
-                        if (!this.productForm.valid) return [3 /*break*/, 11];
+                    case 3:
+                        if (!this.productForm.valid) return [3 /*break*/, 12];
                         if (model.currAccCode) {
                             model.currAccCode = this.productForm.get('currAccCode').value.code;
                         }
@@ -577,41 +579,13 @@ var CreateSaleOrderComponent = /** @class */ (function () {
                         shelves = this.shelfNumbers
                             .split(',')
                             .filter(function (raflar) { return raflar.trim() !== ''; });
-                        if (!shelves.find(function (s) { return s.toLowerCase() == model.shelfNo.toLowerCase(); })) return [3 /*break*/, 6];
+                        if (!shelves.find(function (s) { return s.toLowerCase() == model.shelfNo.toLowerCase(); })) return [3 /*break*/, 7];
                         return [4 /*yield*/, this.warehouseService.countProductRequest(
                             //sayım
                             model.barcode, model.shelfNo, model.quantity, model.officeCode, model.warehouseCode, model.batchCode, 'Order/CountProduct3', this.newOrderNumber, model.currAccCode)];
-                    case 3:
-                        response = _a.sent();
-                        if (!(response != undefined)) return [3 /*break*/, 5];
-                        data = response;
-                        if (data.status == 'RAF') {
-                            model.shelfNo = response.description;
-                        }
-                        else {
-                            model.barcode = response.description;
-                        }
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.productForm, model, model.quantity, this.productForm.get('isReturn').value, 'WSI')];
                     case 4:
-                        qrResponse = _a.sent();
-                        if (qrResponse != null && qrResponse.state === true) {
-                            this.qrOperationModels.push(qrResponse.qrOperationModel);
-                        }
-                        else {
-                            this.qrBarcodeUrl = null;
-                        }
-                        //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
-                        this.generalService.beep();
-                        _a.label = 5;
-                    case 5: return [3 /*break*/, 11];
-                    case 6:
-                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 10];
-                        return [4 /*yield*/, this.warehouseService.countProductRequest(
-                            //sayım
-                            model.barcode, model.shelfNo, model.quantity, model.officeCode, model.warehouseCode, model.batchCode, 'Order/CountProduct3', this.newOrderNumber, model.currAccCode)];
-                    case 7:
                         response = _a.sent();
-                        if (!(response != undefined)) return [3 /*break*/, 9];
+                        if (!(response != undefined)) return [3 /*break*/, 6];
                         data = response;
                         if (data.status == 'RAF') {
                             model.shelfNo = response.description;
@@ -619,8 +593,8 @@ var CreateSaleOrderComponent = /** @class */ (function () {
                         else {
                             model.barcode = response.description;
                         }
-                        return [4 /*yield*/, this.productService.qrOperationMethod(this.qrBarcodeUrl, this.productForm, model, model.quantity, this.productForm.get('isReturn').value, 'WSI')];
-                    case 8:
+                        return [4 /*yield*/, this.productService.qrOperationMethod(uuuid, this.newOrderNumber, this.qrBarcodeUrl, this.productForm, model, model.quantity, this.productForm.get('isReturn').value, 'WSI')];
+                    case 5:
                         qrResponse = _a.sent();
                         if (qrResponse != null && qrResponse.state === true) {
                             this.qrOperationModels.push(qrResponse.qrOperationModel);
@@ -630,10 +604,38 @@ var CreateSaleOrderComponent = /** @class */ (function () {
                         }
                         //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
                         this.generalService.beep();
-                        _a.label = 9;
-                    case 9: return [3 /*break*/, 11];
-                    case 10: return [2 /*return*/];
-                    case 11:
+                        _a.label = 6;
+                    case 6: return [3 /*break*/, 12];
+                    case 7:
+                        if (!confirm('Raf Bulunamadı! Raf Barkod Doğrulaması Yapılmadan Eklensin mi(2)?')) return [3 /*break*/, 11];
+                        return [4 /*yield*/, this.warehouseService.countProductRequest(
+                            //sayım
+                            model.barcode, model.shelfNo, model.quantity, model.officeCode, model.warehouseCode, model.batchCode, 'Order/CountProduct3', this.newOrderNumber, model.currAccCode)];
+                    case 8:
+                        response = _a.sent();
+                        if (!(response != undefined)) return [3 /*break*/, 10];
+                        data = response;
+                        if (data.status == 'RAF') {
+                            model.shelfNo = response.description;
+                        }
+                        else {
+                            model.barcode = response.description;
+                        }
+                        return [4 /*yield*/, this.productService.qrOperationMethod(uuuid, this.newOrderNumber, this.qrBarcodeUrl, this.productForm, model, model.quantity, this.productForm.get('isReturn').value, 'WSI')];
+                    case 9:
+                        qrResponse = _a.sent();
+                        if (qrResponse != null && qrResponse.state === true) {
+                            this.qrOperationModels.push(qrResponse.qrOperationModel);
+                        }
+                        else {
+                            this.qrBarcodeUrl = null;
+                        }
+                        //↑↑↑↑↑↑↑↑↑ EĞER QRURl BOŞ DEĞİLSE KONTROL EDİLCEK ↑↑↑↑↑↑↑↑↑
+                        this.generalService.beep();
+                        _a.label = 10;
+                    case 10: return [3 /*break*/, 12];
+                    case 11: return [2 /*return*/];
+                    case 12:
                         if (this.productForm.valid == true) {
                             this.getProductOfInvoice(this.newOrderNumber);
                             this.clearFormFields();

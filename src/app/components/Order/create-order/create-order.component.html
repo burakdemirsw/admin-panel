@@ -4,69 +4,10 @@
     <li class="breadcrumb-item active">EUR:{{ exchangeRate.eur }}</li>
   </ol> -->
   <section class="section">
+
     <p-tabView id="closableTabView" [scrollable]="true" [(activeIndex)]="activeIndex">
-      <!-- <p-tabPanel
-        header="Satış Elemanı Seç"
-        [rightIcon]="
-          this.createCustomerForm.get('salesPersonCode').value
-            ? 'pi pi-check'
-            : 'pi pi-times'
-        "
-        [selected]="true"
-      >
-        <form [formGroup]="createCustomerForm">
-          <p-dropdown [style]="{'width': '100%'}"
-            formControlName="salesPersonCode"
-            [options]="salesPersonModelList"
-            [(ngModel)]="selectedPerson"
-            optionLabel="name"
-            [filter]="true"
-          ></p-dropdown>
-        </form>
-        <div class="row mt-3">
-          <p-button (onClick)="selectSalesPerson()">Ekle</p-button>
-        </div>
-      </p-tabPanel> -->
-      <!-- <p-tabPanel
-        header="Ofis Depo Seç"
-        [rightIcon]="
-          this.createCustomerForm.get('office').value
-            ? 'pi pi-check'
-            : 'pi pi-times'
-        "
-      >
-        <form [formGroup]="createCustomerForm">
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="office"> Ofis</label>
-              <br />
-              <p-dropdown [style]="{'width': '100%'}"
-                formControlName="office"
-                [options]="offices"
-                optionLabel="name"
-                [filter]="true"
-              ></p-dropdown>
-            </div>
-            <div class="col-md-6">
-              <label for="warehouse">Depo</label>
-              <br />
-              <p-dropdown [style]="{'width': '100%'}"
-                formControlName="warehouse"
-                [options]="warehouses"
-                optionLabel="name"
-                [filter]="true"
-              ></p-dropdown>
-            </div>
-          </div>
-        </form>
-        <div class="row">
-          <p-button
-            (onClick)="selectOfficeAndWarehosue(createCustomerForm.value)"
-            >Ekle</p-button
-          >
-        </div>
-      </p-tabPanel> -->
-      <p-tabPanel header="Ürün & Fiyat" [rightIcon]="
+
+      <p-tabPanel *ngIf="(!this.isCancelled && !this.isCompleted)" header="Ürün & Fiyat" [rightIcon]="
           this.selectedProducts.length > 0
             ? 'pi
         pi-check'
@@ -565,7 +506,8 @@
         </div>
       </p-tabPanel>
 
-      <p-tabPanel header="Müşteri" [rightIcon]="this.currAccCode ? 'pi pi-check' : 'pi pi-times'">
+      <p-tabPanel *ngIf="(!this.isCancelled && !this.isCompleted)" header="Müşteri"
+        [rightIcon]="this.currAccCode ? 'pi pi-check' : 'pi pi-times'">
         <p-tabView>
           <p-tabPanel header="Müşteri Bul">
             <div class="row mb-3" *ngIf="this.invoiceType != undefined">
@@ -1160,7 +1102,7 @@
         </p-dialog>
       </p-tabPanel>
 
-      <p-tabPanel [rightIcon]="
+      <p-tabPanel *ngIf="(!this.isCancelled && !this.isCompleted)" [rightIcon]="
           this.cargoForm.valid == true ? 'pi pi-check' : 'pi pi-times'
         " header="Kargo Oluştur">
         <div class="container mt-5" *ngIf="!showCargo2">
@@ -1369,8 +1311,9 @@
       </p-tabPanel>
 
       <p-tabPanel header="Sipariş Önizleme">
+
         <div class="mb-3"></div>
-        <div #ödemeler>
+        <div *ngIf="(!this.isCancelled && !this.isCompleted)" #ödemeler>
           <form [formGroup]="paymentForm">
             <div *ngIf="
                 this.selectedCustomers.length > 0 &&
@@ -1403,17 +1346,10 @@
                   </h5>
                 </div>
               </div>
-              <div #SPRSONAYLA class="row">
-                <div class="col-md-6 mb-3">
-                  <button (click)="createOrder()" pButton pRipple style="width: 100%" label="Siparişi Onayla"
-                    class="p-button-success"></button>
-                </div>
+              <button (click)="createOrder()" pButton pRipple style="width: 100%" label="Siparişi Onayla"
+                class="p-button-success"></button>
 
-                <div class="col-md-6">
-                  <button pButton pRipple style="width: 100%" label="Sipariş İptal" class="p-button-danger"
-                    (click)="deleteClientOrder()"></button>
-                </div>
-              </div>
+
             </div>
           </form>
         </div>
@@ -1519,7 +1455,8 @@
                 <p class="card-text">
                   Mail: {{ selectedSubCustomers[0]?.mail }}
                 </p>
-                <button class="btn btn-danger" (click)="deleteCurrentCustomer()">
+                <button class="btn btn-danger" (click)="deleteCurrentCustomer()"
+                  *ngIf="(!this.isCancelled && !this.isCompleted)">
                   Müşteriyi Sil
                 </button>
               </div>
@@ -1568,7 +1505,8 @@
                   Alıcı Adı:
                   {{ this.cargoForm.get("address_recepient_name").value }}
                 </p>
-                <button class="btn btn-danger" (click)="deleteCurrentAddress()">
+                <button class="btn btn-danger" (click)="deleteCurrentAddress()"
+                  *ngIf="(!this.isCancelled && !this.isCompleted)">
                   Adresi Sil
                 </button>
               </div>
@@ -1645,8 +1583,42 @@
             </div>
           </div>
         </div>
-        <button (click)="createNewOrder()" pButton pRipple style="width: 100%" label="Yeni Sipariş Oluştur"
-          class="p-button-success"></button>
+
+        <div class="card border-0 shadow-lg text-center mt-4 p-3" *ngIf="this.isCancelled || this.isCompleted  ">
+          <div class="card-body">
+            <div class="d-flex justify-content-center align-items-center mb-3">
+              <i class="fas fa-exclamation-circle fa-3x text-danger"></i>
+            </div>
+            <h5 class="card-title text-uppercase font-weight-bold">Önemli</h5>
+            <p class="card-text text-muted">Bu Sipariş Tamamlanmıştır.
+              Değişiklik Yapılamaz.</p>
+
+          </div>
+        </div>
+
+
+        <div class="card">
+          <div class="card-body p-4">
+            <div class="row">
+              <div class="col-md-6">
+                <button (click)="createNewOrder()" pButton pRipple style="width: 100%" label="Yeni Sipariş Oluştur"
+                  class="p-button-success"></button>
+              </div>
+              <div class="col-md-6" *ngIf="this.isCancelled">
+                <button (click)="updateClientOrderCancelStatus(this.id, this.isCancelled)" pButton pRipple
+                  style="width: 100%" label="Siparişi İptal Kaldır" class="p-button-success"></button>
+              </div>
+              <div class="col-md-6" *ngIf="!this.isCancelled">
+                <button (click)="updateClientOrderCancelStatus(this.id, this.isCancelled)" pButton pRipple
+                  style="width: 100%" label="Siparişi İptal Et" class="p-button-danger"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
       </p-tabPanel>
     </p-tabView>
   </section>

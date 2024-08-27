@@ -14,6 +14,8 @@ export class SaleOrderModel {
   invoiceStatus: number
   isShipped: boolean;
   warehouseCode: string;
+  isCancelled: boolean;
+  subCurrAccDescription: string;
 }
 export class OrderStatusModels {
   warehousePerson: string;
@@ -32,4 +34,6 @@ export class OrderStatusModels {
   invoiceStatus: number
   isShipped: boolean;
   warehouseCode: string;
+  isCancelled: boolean;
+  subCurrAccDescription: string;
 }
