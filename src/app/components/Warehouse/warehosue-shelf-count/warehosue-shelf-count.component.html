@@ -132,6 +132,7 @@
         <div class="card" *ngIf="lastCollectedProducts.length > 0 && this.countType==='count'">
           <p-table [value]="lastCollectedProducts" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
             [responsiveLayout]="'scroll'" [filterDelay]="500" [styleClass]="'p-datatable-striped'">
+
             <ng-template pTemplate="caption">
               <div class="flex align-items-center justify-content-between">
                 Toplanan Ürünler

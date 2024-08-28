@@ -13,9 +13,6 @@ th {
   /* Veri hücrelerinin iç boşluklarını azalt */
 }
 
-::ng-deep .p-datatable-header {
-  padding: 0rem;
-}
 
 
 ::ng-deep .p-button {

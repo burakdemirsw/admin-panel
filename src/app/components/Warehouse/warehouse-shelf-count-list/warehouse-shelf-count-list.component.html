@@ -51,15 +51,15 @@
       </div>
     </div>
 
-    <div class="card custom-card mb-3">
+    <div class="card card mb-3">
       <div class="card-body d-flex justify-content-start mt-3" style="overflow-x: auto">
-        <button type="button" class="btn custom-btn-primary" (click)="newCount()">
+        <button type="button" class="btn btn-primary" (click)="newCount()">
           <i class="fas fa-plus"></i> Yeni Sayım Yap
         </button>
-        <button type="button" class="btn custom-btn-primary" (click)="newCount2()">
+        <button type="button" class="btn btn-primary" (click)="newCount2()">
           <i class="fas fa-plus"></i>Rafa Ürün Ekle
         </button>
-        <button type="button" class="btn custom-btn-primary" (click)="newCount3()">
+        <button type="button" class="btn btn-primary" (click)="newCount3()">
           <i class="fas fa-plus"></i> Raftan Ürün Çıkar
         </button>
       </div>
@@ -130,10 +130,10 @@
 
     <p-dialog header="Barkod Türü Seçiniz - {{ this.selectedOrderNo }}" [(visible)]="visible" [modal]="true"
       [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
-      <button type="button" class="btn custom-btn-primary mt-3" (click)="this.sendBarcodesToNebim(true)">
+      <button type="button" class="btn btn-primary mt-3" (click)="this.sendBarcodesToNebim(true)">
         Koli
       </button>
-      <button type="button" class="btn custom-btn-primary mt-3" (click)="this.sendBarcodesToNebim(false)">
+      <button type="button" class="btn btn-primary mt-3" (click)="this.sendBarcodesToNebim(false)">
         Barkod
       </button>
     </p-dialog>

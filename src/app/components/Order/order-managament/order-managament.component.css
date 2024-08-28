@@ -6,8 +6,7 @@
 }
 
 .default-row {
-  background-color: rgba(206, 0, 0, 0.712);
+  background-color: rgba(206, 0, 0, 0.068);
   /* Set the background color for successful rows */
-  color: rgb(255, 255, 255);
   /* Set the text color */
 }
