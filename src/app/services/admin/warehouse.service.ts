@@ -21,6 +21,7 @@ import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 import { GeneralService } from './general.service';
 import { ProductOnShelf, ProductOnShelf_VM, ZTMSG_CountedProduct } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
+import { CompleteCountOperation_CM } from 'src/app/models/model/warehouse/completeCount_CM';
 
 @Injectable({
   providedIn: 'root',
@@ -479,6 +480,17 @@ export class WarehouseService {
     return response;
   }
   //---------------------------------------------------------------------------
+
+  async completeCountOperation(request: CompleteCountOperation_CM): Promise<boolean> {
+
+    const response = await this.httpClientService
+      .post<any>({ controller: 'Warehouse/complete-count-operation' }, request)
+      .toPromise();
+    return response;
+
+  }
+
+
   //İTHALAT İŞLEMLERİ----------------------------------------------------------
 
   async getImportTransactionList(invoiceNumber?: string): Promise<any> {

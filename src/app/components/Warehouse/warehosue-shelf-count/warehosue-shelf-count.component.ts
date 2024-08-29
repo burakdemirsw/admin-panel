@@ -16,6 +16,7 @@ import {
   ProductCountModel,
 } from 'src/app/models/model/shelfNameModel';
 import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
+import { CompleteCountOperation_CM } from 'src/app/models/model/warehouse/completeCount_CM';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { ZTMSG_CountedProduct, ProductOnShelf } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { GeneralService } from 'src/app/services/admin/general.service';
@@ -413,12 +414,13 @@ export class WarehosueShelfCountComponent implements OnInit {
         return false;
 
       }
-      //this.spinnerService.show();
-      const response = await this.productService.completeCount(
-        this.currentOrderNo +
-        '/' +
-        isShelfBased.value.toString() + '/' + isShelfBased2.value.toString()
-      );
+
+      //YENI KODLAR-------------- 29.08
+      var request: CompleteCountOperation_CM
+      request = new CompleteCountOperation_CM();
+      request.countType = isShelfBased.value === true ? 0 : 1; //0-> raf bazında dayım | 1-> ürün bazında ürün sayım
+      request.operationNo = this.currentOrderNo;
+      const response = await this.warehouseService.completeCountOperation(request)
 
       if (response === true) {
 
