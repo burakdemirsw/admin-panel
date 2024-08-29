@@ -47,6 +47,10 @@
                   Barkod
                   <p-sortIcon field="barcode"></p-sortIcon>
                 </th>
+                <th pSortableColumn="setStatus">
+                  Set Durumu
+                  <p-sortIcon field="setStatus"></p-sortIcon>
+                </th>
                 <th>
                   Değiştir
                 </th>
@@ -67,6 +71,7 @@
                     (click)="openImageModal(product.photoUrl)" />
                 </td>
                 <td>{{ product.barcode }}</td>
+                <td>{{ product.setStatus }}</td>
                 <td>
                   <div class="btn-group" role="group" aria-label="Basic example">
                     <button class="btn btn-primary" type="submit"
@@ -124,9 +129,6 @@
                     </div>
                   </div>
                 </div>
-                <!-- <label *ngIf="shelfNumbers !== 'RAFLAR:'" for="shelfNo">{{
-                  shelfNumbers
-                }}</label> -->
               </div>
 
               <div class="row mb-3">
@@ -230,6 +232,7 @@
                 <th pSortableColumn="totalStock"
                   *ngIf="!this.currentOrderNo.includes('WT') && !this.currentOrderNo.includes('BP')">Toplam Stok</th>
                 <th pSortableColumn="barcode">Barkod</th>
+                <th pSortableColumn="setStatus">Set</th>
                 <th>Sil</th>
               </tr>
               <tr>
@@ -264,6 +267,9 @@
                   <p-columnFilter type="text" field="barcode" [showClearButton]="false"></p-columnFilter>
                 </th>
                 <th>
+                  <p-columnFilter type="text" field="setStatus" [showClearButton]="false"></p-columnFilter>
+                </th>
+                <th>
                   <!-- Sil sütunu için filtre eklemiyoruz -->
                 </th>
               </tr>
@@ -294,6 +300,15 @@
                   {{ +product.itemDim1Code + +product.currentQty }}
                 </td>
                 <td>{{ product.barcode }}</td>
+                <td>
+                  @if(product.setStatus =='HAZIR SET' ||' SET TOPLA'){
+                  <button class="btn btn-success">{{product.setStatus}} </button>
+                  }@else{
+                  <button class="btn btn-danger"><i class="fa fa-ban" aria-hidden="true"></i> </button>
+
+                  }
+
+                </td>
                 <td>
                   <div class="btn-group" role="group" aria-label="Basic example">
                     <button data-toggle="tooltip" data-placement="right" title="Eksik Ürün"

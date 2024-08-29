@@ -17,7 +17,10 @@ export class ProductList_VM {
   basePrice: number;
   discountedPrice: number;
   taxRate: number;
-
+  discountRate1: number;
+  discountRate2: number;
+  totalPrice: number
+  totalTaxedPrice: number
 
 }
 export class ProductList_VM_2 {

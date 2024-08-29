@@ -37,7 +37,7 @@ export class NebimOrder {
   // discounts: Discount[];
   // payments: Payment[];
 
-  constructor(orderNumber: string, exchangeRate: number, discountPercentage: number, discountPercentage2: number, customerDesc: string,
+  constructor(orderNumber: string, exchangeRate: number, discountRate1: number, discountRate2: number, customerDesc: string,
     currAccCode: string, orderNo: string, formValue: any, selectedProducts: any,
     salesPersonCode: string, taxTypeCode: number, subCurrAccId: string) {
     this.orderNumber = orderNumber;
@@ -68,29 +68,29 @@ export class NebimOrder {
 
         if (exchangeRate != 1) { //dövizli ise
           line.priceVI = null;
-          line.price = parseFloat((p.price / exchangeRate).toFixed(2));
+          line.price = parseFloat((p.totalPrice / exchangeRate).toFixed(2));
         } else { //dövizli değilse
           line.priceVI = null;
-          line.price = parseFloat(p.price.toFixed(2));
+          line.price = parseFloat(p.discountedPrice.toFixed(2));
         }
       } else if (this.taxTypeCode == 5) {
 
         if (exchangeRate != 1) { //dövizli ise
-          line.priceVI = parseFloat((p.price / exchangeRate).toFixed(2));
-          line.price = parseFloat((p.price / exchangeRate).toFixed(2));
+          line.priceVI = parseFloat((p.totalPrice / exchangeRate).toFixed(2));
+          line.price = parseFloat((p.totalPrice / exchangeRate).toFixed(2));
         } else { //dövizli değilse
-          line.priceVI = parseFloat((p.price).toFixed(2));
-          line.price = parseFloat((p.price).toFixed(2));
+          line.priceVI = parseFloat((p.totalPrice).toFixed(2));
+          line.price = parseFloat((p.totalPrice).toFixed(2));
         }
       }
       else { //vergisiz ise
 
         if (exchangeRate != 1) { //dövizli ise
-          line.priceVI = parseFloat((p.price / exchangeRate).toFixed(2));
-          line.price = parseFloat((p.price / exchangeRate).toFixed(2));
+          line.priceVI = parseFloat((p.totalPrice / exchangeRate).toFixed(2));
+          line.price = parseFloat((p.totalPrice / exchangeRate).toFixed(2));
         } else { //dövizli değilse
-          line.priceVI = parseFloat((p.price).toFixed(2));
-          line.price = parseFloat((p.price).toFixed(2));
+          line.priceVI = parseFloat((p.totalPrice).toFixed(2));
+          line.price = parseFloat((p.totalPrice).toFixed(2));
         }
       }
 
@@ -107,8 +107,8 @@ export class NebimOrder {
 
     }
     // this.payments = [];
-    this.discounts.push(new Discount(discountPercentage, 1, "1"));
-    this.discounts.push(new Discount(exchangeRate != 1 ? discountPercentage2 / exchangeRate : discountPercentage2, 2, "2"));
+    this.discounts.push(new Discount(discountRate1, 1, "1", true));
+    this.discounts.push(new Discount(discountRate2, 2, "2", false));
   }
 }
 export class NebimOrder_2 {
@@ -155,12 +155,12 @@ export class NebimOrder_2 {
 
     this.documentNumber = orderNo;
     this.description = customerDesc;
-    this.discounts.push(new Discount(discountPercentage, 1, "1"));
+    this.discounts.push(new Discount(discountPercentage, 1, "1", true));
     selectedProducts.forEach(p => {
       var line: Line_2 = new Line_2();
       line.usedBarcode = p.barcode;
       line.salesPersonCode = salesPersonCode;
-      line.priceVI = p.price;
+      line.priceVI = p.totalPrice;
       line.qty1 = p.quantity;
       line.itemCode = p.itemCode;
       line.batchCode = p.batchCode;
@@ -224,16 +224,16 @@ export class NebimInvoice {
     this.invoiceDate = new Date().toUTCString();
     this.officeCode = "M";
     this.warehouseCode = "MD";
-    this.discounts.push(new Discount(discountPercentage, 1, "1"));
-    this.discounts.push(new Discount(discountPercentage2, 2, "2"));
+    this.discounts.push(new Discount(discountPercentage, 1, "1", true));
+    this.discounts.push(new Discount(discountPercentage2, 2, "2", false));
     // this.documentNumber = orderNo;
     selectedProducts.forEach(p => {
       var line: Line_3 = new Line_3();
       if (exchangeRate != 1) {
 
-        line.price = parseFloat((p.price / exchangeRate).toFixed(2));
+        line.price = parseFloat((p.totalPrice / exchangeRate).toFixed(2));
       } else {
-        line.price = parseFloat((p.price).toFixed(2));
+        line.price = parseFloat((p.totalPrice).toFixed(2));
       }
       line.usedBarcode = p.barcode;
       line.salesPersonCode = salesPersonCode;
@@ -262,11 +262,12 @@ export class Discount {
     value: number,
     discountTypeCode: number,
     discountReasonCode: string,
+    isPercemtage: boolean
 
   ) {
     this.discountTypeCode = discountTypeCode;
     this.value = value;
-    this.isPercentage = true;
+    this.isPercentage = isPercemtage;
     this.discountReasonCode = discountReasonCode;
   }
 
@@ -343,7 +344,8 @@ export class ClientOrder {
   isCompleted: boolean
   isCancelled: boolean;
   subCustomerDescription?: string;
-
+  discountRate1: number
+  discountRate2: number
   constructor() {
     this.createdDate = new Date();
     this.isCompleted = false;
@@ -372,9 +374,9 @@ export class ClientOrderBasketItem {
   updatedDate: Date;
   discountedPrice: number;
   basePrice: number;
-  taxRate: number;
   discountRate1: number
   discountRate2: number
+  taxRate: number;
   totalPrice: number
   totalTaxedPrice: number
 

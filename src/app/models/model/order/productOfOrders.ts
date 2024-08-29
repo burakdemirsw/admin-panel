@@ -13,5 +13,6 @@ export class ProductOfOrder {
   countedQty: number
   currentQty: number
   description: string
-  lineId: string
+  lineId: string;
+  setStatus: string;
 }

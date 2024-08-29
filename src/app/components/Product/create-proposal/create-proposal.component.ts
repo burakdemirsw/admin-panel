@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Dropdown } from 'primeng/dropdown';
+import { FileUpload } from 'primeng/fileupload';
 import { SubCustomerList_VM } from 'src/app/models/model/customer/subCustomerList_VM';
 import { CreateCustomer_CM } from 'src/app/models/model/order/createCustomer_CM';
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
@@ -30,7 +31,7 @@ export class CreateProposalComponent implements OnInit {
 
 
   [x: string]: any;
-
+  @ViewChild('fileInput') fileInput: ElementRef;
   selectedCustomers: CustomerList_VM[] = []
   selectedProducts: ProductList_VM[] = []
   selectedAddresses: CustomerAddress_VM[] = []
@@ -84,8 +85,6 @@ export class CreateProposalComponent implements OnInit {
         this.proposalId = params['id']
         await this.addProposal();
         await this.getProposalProducts();
-      } else {
-        await this.addProposal();
       }
     })
     this.headerService.updatePageTitle(this.pageTitle);
@@ -93,14 +92,23 @@ export class CreateProposalComponent implements OnInit {
 
 
   }
+
+  chooseFile() {
+    this.fileInput.nativeElement.click();
+  }
   createUpdateProductForm() {
     this.updateProductForm = this.formBuilder.group({
       description: [null, Validators.required],
-
       price: [null, Validators.required],
+      discountedPrice: [null, Validators.required],
+
       quantity: [null, Validators.required],
       discountRate1: [null, Validators.required],
       discountRate2: [null, Validators.required],
+      brand: [null, Validators.required],
+      itemCode: [null, Validators.required],
+      barcode: [null, Validators.required],
+
     });
   }
   createDiscountForm() {
@@ -245,7 +253,7 @@ export class CreateProposalComponent implements OnInit {
 
 
     var request: ZTMSG_Proposal = new ZTMSG_Proposal();
-    request.id = this.proposalId;
+    request.id = this.proposalId ?? 0;
     request.discountRate1 = 0;
     request.discountRate2 = 0;
     request.userId = Number(localStorage.getItem('userId'));
@@ -258,7 +266,8 @@ export class CreateProposalComponent implements OnInit {
       this.proposalId = response.id;
       // await this.getProposalProducts();
       this.toasterService.success('Oluşturuldu')
-      this.generalService.beep();
+      // //this.generalService.beep();
+      this.router.navigate(["create-proposal", response.id])
     } else {
       this.toasterService.error('Oluşturulamadı')
     }
@@ -292,7 +301,7 @@ export class CreateProposalComponent implements OnInit {
       this.proposalId = response.id;
       // await this.getProposalProducts();
       this.toasterService.success('Güncelleştirildi')
-      this.generalService.beep();
+      //this.generalService.beep();
     } else {
       this.toasterService.error('Güncelleştirilemedi')
     }
@@ -300,6 +309,10 @@ export class CreateProposalComponent implements OnInit {
   async addProduct(product: FastTransfer_VM) {
     //toptan fiyat ve tr giyat alıncak
     //buradada db ye ekle sonra çek
+
+    if (!this.proposalId) {
+      await this.addProposal();
+    }
     var request: BarcodeSearch_RM = new BarcodeSearch_RM(product.barcode);
     const productDetail = await this.productService.searchProduct(request);
     if (productDetail) {
@@ -339,7 +352,7 @@ export class CreateProposalComponent implements OnInit {
     if (response) {
       await this.getProposalProducts();
       this.toasterService.success('Eklendi')
-      this.generalService.beep();
+      //this.generalService.beep();
     } else {
       this.toasterService.error('Eklenmedi')
     }
@@ -361,17 +374,22 @@ export class CreateProposalComponent implements OnInit {
     if (response) {
       await this.getProposalProducts();
       this.toasterService.success('Silindi')
-      this.generalService.beep();
+      //this.generalService.beep();
     } else {
       this.toasterService.error('Silinemedi')
     }
   }
   async updateProposalProduct(product: ZTMSG_ProposalProduct) {
     product.description = this.updateProductForm.get('description').value;
-    product.discountedPrice = this.updateProductForm.get('price').value;
+    product.discountedPrice = this.updateProductForm.get('discountedPrice').value;
+    product.price = this.updateProductForm.get('price').value;
     product.quantity = this.updateProductForm.get('quantity').value;
     product.discountRate1 = this.updateProductForm.get('discountRate1').value; //yüzde
     product.discountRate2 = this.updateProductForm.get('discountRate2').value;
+    product.brand = this.updateProductForm.get('brand').value
+    product.itemCode = this.updateProductForm.get('itemCode').value
+    product.barcode = this.updateProductForm.get('barcode').value
+
     product.totalPrice =
       product.quantity *
       (
@@ -388,7 +406,7 @@ export class CreateProposalComponent implements OnInit {
       this.getTaxedTotalAfterDiscount();
       await this.getProposalProducts();
       this.toasterService.success('Güncellendi')
-      this.generalService.beep();
+      //this.generalService.beep();
       this.updateProductDialog = false
     } else {
       this.toasterService.error('Güncellenmedi')
@@ -406,7 +424,19 @@ export class CreateProposalComponent implements OnInit {
     if (response) {
       await this.getProposalProducts();
       this.toasterService.success('Güncellendi')
-      this.generalService.beep();
+      //this.generalService.beep();
+    } else {
+      this.toasterService.error('Güncellenmedi')
+    }
+  }
+
+  async deletePhoto(product: ZTMSG_ProposalProduct) {
+    product.photoUrl = null;
+    var response = await this.productService.updateProposalProduct(product);
+    if (response) {
+      await this.getProposalProducts();
+      this.toasterService.success('Güncellendi')
+      //this.generalService.beep();
     } else {
       this.toasterService.error('Güncellenmedi')
     }
@@ -427,10 +457,14 @@ export class CreateProposalComponent implements OnInit {
   openUpdateDialog(product: ZTMSG_ProposalProduct) {
     this.selectedProduct = product;
     this.updateProductForm.get('description').setValue(this.selectedProduct.description)
-    this.updateProductForm.get('price').setValue(this.selectedProduct.discountedPrice)
+    this.updateProductForm.get('price').setValue(this.selectedProduct.price)
+    this.updateProductForm.get('discountedPrice').setValue(this.selectedProduct.discountedPrice)
     this.updateProductForm.get('quantity').setValue(this.selectedProduct.quantity)
     this.updateProductForm.get('discountRate1').setValue(this.selectedProduct.discountRate1)
     this.updateProductForm.get('discountRate2').setValue(this.selectedProduct.discountRate2)
+    this.updateProductForm.get('brand').setValue(this.selectedProduct.brand)
+    this.updateProductForm.get('itemCode').setValue(this.selectedProduct.itemCode)
+    this.updateProductForm.get('barcode').setValue(this.selectedProduct.barcode)
 
     this.openDialog('updateProductDialog');
     this.getUntaxedTotal();
@@ -449,11 +483,8 @@ export class CreateProposalComponent implements OnInit {
       var response: ZTMSG_Proposal = await this.productService.updateProposal(this.proposal);
       if (response) {
         this.proposal = response;
-
-        // await this.getProposalProducts();
-        // await this.getProposalProducts();
         this.toasterService.success('Güncellendi')
-        this.generalService.beep();
+        //this.generalService.beep();
       } else {
         this.toasterService.error('Güncellenmedi')
       }
@@ -474,7 +505,7 @@ export class CreateProposalComponent implements OnInit {
       // await this.getProposalProducts();
       this.getTaxedTotalAfterDiscount();
       this.toasterService.success('Güncellendi')
-      this.generalService.beep();
+      //this.generalService.beep();
     } else {
       this.toasterService.error('Güncellenmedi')
     }
@@ -489,7 +520,7 @@ export class CreateProposalComponent implements OnInit {
 
       this.getTaxedTotalAfterDiscount();
       this.toasterService.success('Güncellendi')
-      this.generalService.beep();
+      //this.generalService.beep();
     } else {
       this.toasterService.error('Güncellenmedi')
     }
@@ -506,10 +537,10 @@ export class CreateProposalComponent implements OnInit {
 
   async createProposalReport() {
 
-    if (window.confirm("Teklifi Oluşturmak İstediğinize Emin Misiniz?")) {
-      var data = await this.warehouseService.createProposalReport(this.proposal.id);
-
-
+    if (window.confirm("Mail Gönderilsin mi?")) {
+      var data = await this.orderService.createProposalReport(this.proposal.id, true);
+    } else {
+      var data = await this.orderService.createProposalReport(this.proposal.id, false);
     }
   }
   async deleteAllPRoduct() {
@@ -681,7 +712,7 @@ export class CreateProposalComponent implements OnInit {
     this.selectedProduct = product;
     this.selectedFiles_2 = [];
     // this.toasterService.info(to);
-    const files: FileList = event.currentFiles;
+    const files: FileList = event.target.files;
     for (let i = 0; i < files.length; i++) {
       const selectedFile: File = files[i];
       this.selectedFiles.push(selectedFile);

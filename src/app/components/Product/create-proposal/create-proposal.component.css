@@ -2,3 +2,7 @@
   width: 100% !important;
   height: 35vh !important;
 }
+
+::ng-deep .p-fileUpload {
+  display: none;
+}

@@ -41,5 +41,6 @@ export class Proposal_VM {
   count: number;
   count2: number;
   createdDate: Date;
+  proposalNumber: string;
   user: string;
 }

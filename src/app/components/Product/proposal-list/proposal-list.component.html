@@ -52,6 +52,10 @@
                 Kullanıcı
                 <p-sortIcon field="user"></p-sortIcon>
               </th>
+              <th pSortableColumn="proposalNumber">
+                Teklif Id
+                <p-sortIcon field="proposalNumber"></p-sortIcon>
+              </th>
               <th>İşlemler</th>
             </tr>
             <tr>
@@ -70,6 +74,9 @@
               <th>
                 <p-columnFilter type="text" field="user" [showClearButton]="false"></p-columnFilter>
               </th>
+              <th>
+                <p-columnFilter type="text" field="proposalNumber" [showClearButton]="false"></p-columnFilter>
+              </th>
               <th></th>
             </tr>
           </ng-template>
@@ -81,6 +88,7 @@
               <td>{{ proposal.count2 }}</td>
               <td>{{ proposal.createdDate | date : "dd.MM.yyyy HH:mm" }}</td>
               <td>{{ proposal.user }}</td>
+              <td>{{ proposal.proposalNumber }}</td>
               <td>
                 <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
                   aria-expanded="false">

@@ -11,19 +11,42 @@
           <p-inputGroup>
             <input pInputText type="search" id="barcode_product" placeholder="Barkod" [(ngModel)]="barcode"
               (keydown.enter)="addProductFromInput(barcode)" />
-            <button pButton pRipple class="p-button-rounded p-button-primary" icon="pi pi-plus" label="Ekle"
-              type="button" (click)="addProductFromInput(barcode)"></button>
-            <button pButton pRipple class="p-button-rounded p-button-primary" icon="pi pi-search" label="Müşteri Ara"
-              type="button" (click)="getAllCustomers()"></button>
-            <button pButton pRipple class="p-button-rounded p-button-primary" icon="pi pi-search" label="Müşteri Ekle"
-              type="button" (click)="createCustomerDialog =true"></button>
-            <button *ngIf="addedProducts.length>0" pButton pRipple class="p-button-rounded p-button-danger"
-              (click)="deleteAllPRoduct()" icon="pi pi-trash" label="Tüm Ürünleri Sil" type="button"></button>
+            <button btn class="btn btn-primary" type="button" (click)="addProductFromInput(barcode)"><i
+                class="fa fa-plus" aria-hidden="true"></i></button>
 
-            <button pButton pRipple class="p-button-rounded p-button-primary" icon="pi pi-search" label="Ürün Ara"
-              type="button" (click)="getAllProducts(true)"></button>
-            <button *ngIf="this.proposal" pButton pRipple class="p-button-rounded p-button-danger"
-              (click)="deleteProposal(this.proposal.id)" icon="pi pi-trash" label="Teklifi Sil" type="button"></button>
+            <!-- Dropdown Menu Button -->
+            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              İşlemler
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" (click)="getAllCustomers()">
+                  <i class="fa fa-search" aria-hidden="true"></i> Müşteri Ara
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" (click)="createCustomerDialog = true">
+                  <i class="fa fa-plus" aria-hidden="true"></i> Müşteri Ekle
+                </a>
+              </li>
+              <li *ngIf="addedProducts.length > 0">
+                <a class="dropdown-item" (click)="deleteAllPRoduct()">
+                  <i class="fa fa-trash" aria-hidden="true"></i> Tüm Ürünleri Sil
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" (click)="getAllProducts(true)">
+                  <i class="fa fa-search" aria-hidden="true"></i> Ürün Ara
+                </a>
+              </li>
+              <li *ngIf="this.proposal">
+                <a class="dropdown-item" (click)="deleteProposal(this.proposal.id)">
+                  <i class="fa fa-trash" aria-hidden="true"></i> Teklifi Sil
+                </a>
+              </li>
+            </ul>
+
           </p-inputGroup>
 
 
@@ -35,8 +58,6 @@
     </div>
     <div class="card" *ngIf="addedProducts.length>0">
       <div class="card-body">
-
-
         <!-- EKLENEN ÜRÜNLER----------------------------------------------------------------------------------------------------->
         <p-table id="EKLENEN ÜRÜNLER" [styleClass]="'p-datatable-striped mt-3'" [value]="addedProducts"
           [scrollable]="true" scrollHeight="600px" (onFilter)="logFilteredData($event)" [tableStyle]="{ 'min-width':
@@ -133,15 +154,40 @@
 
               <td>
                 <div class="p-inputgroup">
-                  <button pButton pRipple icon="pi pi-trash" type="button" class="p-button-rounded p-button-danger"
-                    (click)="deleteProposalProduct(product.id)"></button>
-                  <button pButton pRipple icon="pi pi-pencil" type="button" class="p-button-rounded p-button-peimary"
-                    (click)="openUpdateDialog(product)"></button>
-                  <button pButton pRipple icon="pi pi-refresh" type="button" class="p-button-rounded p-button-text"
-                    (click)="refreshProposalProduct(product)"></button>
-                  <p-fileUpload mode="basic" chooseIcon="pi pi-upload" name="demo[]" accept="image/*"
-                    (onSelect)="onUpload_2($event,product)" maxFileSize="1000000" />
-                  <!-- <button pButton pRipple icon="pi pi-plus" type="button" class="p-button-rounded p-button-text"
+
+                  <button type="button" class="btn btn-primary" (click)="openUpdateDialog(product)"><i
+                      class="fa fa-pencil" aria-hidden="true"></i></button>
+
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a class="dropdown-item" data-text="Sıfırla" (click)="deleteProposalProduct(product.id)">
+                        <i class="fa fa-trash" aria-hidden="true"></i> Sil
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" data-text="Sıfırla" (click)="refreshProposalProduct(product)">
+                        <i class="fa fa-refresh" aria-hidden="true"></i> Sıfırla
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" data-text="Sıfırla" (click)="deletePhoto(product)">
+                        <i class="fa fa-image" aria-hidden="true"></i> Fotoğrafı Sil
+                      </a>
+                    </li>
+                    <li class="hidden-upload">
+                      <a class="dropdown-item" data-text="Sıfırla" (click)="chooseFile()">
+                        <i class="fa fa-upload" aria-hidden="true"></i> Resim Yükle
+                      </a>
+                      <input #fileInput type="file" accept="image/*" style="display: none;"
+                        (change)="onUpload_2($event, product)">
+                    </li>
+                  </ul>
+
+
+                  <!-- <button btn icon="pi pi-plus" type="button" class="btn btn-primary"
                        (click)="uploadProductPhoto(product)"></button> -->
                 </div>
               </td>
@@ -165,11 +211,23 @@
         </p-table>
 
         <!-- Ürün Güncelle----------------------------------------------------------------------------------------------------->
-
         <p-dialog header="Ürün Güncelle" [(visible)]="updateProductDialog" [modal]="true" [closable]="false"
           [style]="{width: '300px'}" (ngSubmit)="updateProposalProduct(this.selectedProduct)">
           <form [formGroup]="updateProductForm">
             <div class="p-fluid">
+              <div class="p-field">
+                <label for="price">Marka</label>
+                <input id="brand" type="text" pInputText formControlName="brand">
+              </div>
+              <div class="p-field">
+                <label for="price">Barkod</label>
+                <input id="barcode" type="text" pInputText formControlName="barcode">
+              </div>
+              <div class="p-field">
+                <label for="price">Ürün Kodu</label>
+                <input id="itemCode" type="text" pInputText formControlName="itemCode">
+              </div>
+
               <div class="p-field">
                 <label for="price">Ürün Adı</label>
                 <input id="price" type="text" pInputText formControlName="description">
@@ -177,6 +235,10 @@
               <div class="p-field">
                 <label for="price">Fiyat</label>
                 <input id="price" type="number" pInputText formControlName="price">
+              </div>
+              <div class="p-field">
+                <label for="price">S.Fiyat</label>
+                <input id="discountedPrice" type="number" pInputText formControlName="discountedPrice">
               </div>
               <div class="p-field mb-3">
                 <label for="quantity">Adet</label>
@@ -193,19 +255,18 @@
                 <input id="discountRate2" type="number" pInputText formControlName="discountRate2">
               </div>
               <div class="p-field mb-3">
-                <button type="submit" pButton label="Güncelle"
-                  (click)="updateProposalProduct(this.selectedProduct)"></button>
+                <button type="submit" class="btn btn-primary" style="width: 100%;"
+                  (click)="updateProposalProduct(this.selectedProduct)">
+                  Güncelle</button>
               </div>
 
               <div class="p-field">
-                <button type="button" pButton label="Kapat" (click)="this.updateProductDialog =false"></button>
+                <button type="button" class="btn btn-danger" style="width: 100%;"
+                  (click)="this.updateProductDialog =false"> Kapat</button>
               </div>
             </div>
           </form>
         </p-dialog>
-
-
-
       </div>
     </div>
     <!-- BULUNAN ÜRÜNLER----------------------------------------------------------------------------------------------------->
@@ -365,8 +426,8 @@
             <td>{{ product.inventory }}</td>
             <td>{{ product.price }}</td>
             <td>
-              <button pButton pRipple icon="pi pi-plus" type="button" class="p-button-rounded p-button-text "
-                (click)="addProduct(product)"></button>
+              <button btn icon="pi pi-plus" type="button" class="btn btn-primary" (click)="addProduct(product)"><i
+                  class="fa fa-plus" aria-hidden="true"></i></button>
             </td>
           </tr>
         </ng-template>
@@ -542,8 +603,8 @@
         <div class="row mb-3">
           <div class="col-md-12">
             <div class="form-group">
-              <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus" type="submit"
-                style="width: 100%" label="Müşteri Ekle" (click)="submitAddressForm(createCustomerForm.value)"></button>
+              <button class="btn btn-primary" icon="pi pi-plus" type="submit" style="width: 100%" label=""
+                (click)="submitAddressForm(createCustomerForm.value)"> Müşteri Ekle</button>
 
             </div>
           </div>
@@ -652,8 +713,8 @@
             <td>{{ customer.phone }}</td>
             <td>{{ customer.docCurrencyCode }}</td>
             <td>
-              <button pButton pRipple icon="pi pi-plus" type="button" class="p-button-rounded p-button-text"
-                (click)="addCustomer(customer)"></button>
+              <button icon="pi pi-plus" type="button" class="btn btn-primary" (click)="addCustomer(customer)"> <i
+                  class="fa fa-plus" aria-hidden="true"></i></button>
             </td>
           </tr>
         </ng-template>
@@ -728,9 +789,9 @@
             <div class="col-md-4  mb-3">
               <div class="input-group">
                 <div class="input-group-prepend">
-                  <button pButton pRipple icon="pi pi-check" class="p-button-rounded p-button-success" (click)="
+                  <button class="btn btn-success" (click)="
                       discount(this.discountForm.value.percentDiscountRate)
-                    " type="button"></button>
+                    " type="button"><i class="fa fa-check" aria-hidden="true"></i></button>
                 </div>
                 <input type="number" class="form-control" id="percentDiscountRate" placeholder="Yüzde İndirim Oranı"
                   formControlName="percentDiscountRate" (keydown.enter)="
@@ -741,9 +802,9 @@
             <div class="col-md-4 mb-3">
               <div class="input-group ">
                 <div class="input-group-append">
-                  <button pButton pRipple class="p-button-rounded p-button-success" icon="pi pi-check" (click)="
+                  <button class="btn btn-success" icon="pi pi-check" (click)="
                       cashDiscount(this.discountForm.value.cashDiscountRate)
-                    " type="button"></button>
+                    " type="button"><i class="fa fa-check" aria-hidden="true"></i></button>
                 </div>
                 <input type="number" class="form-control" id="cashDiscountRate" placeholder="Nakit İndirim Tutarı"
                   formControlName="cashDiscountRate" (keydown.enter)="
@@ -752,8 +813,8 @@
               </div>
             </div>
             <div class="col-md-4">
-              <button pButton pRipple style="width: 100%" class="p-button p-button-danger" label="İndirimi Sıfırla"
-                (click)="resetDiscount()" type="button"></button>
+              <button btn style="width: 100%" class="btn btn-danger" (click)="resetDiscount()" type="button"><i
+                  class="fa fa-trash" aria-hidden="true"></i> İndirimi Sıfırla</button>
             </div>
           </div>
 
@@ -765,9 +826,9 @@
         <div>
           <div class="row">
             <div class="col-md-12">
-              <button pButton pRipple style="width: 100%" class="p-button p-button-success" label="Teklifi Oluştur"
-                (click)="createProposalReport()" type="button" [disabled]="this.addedProducts.length<=0 ||
-                !this.proposal.currAccDescription"></button>
+              <button btn style="width: 100%" class="btn btn-success" (click)="createProposalReport()" type="button"
+                [disabled]="this.addedProducts.length<=0 ||
+                !this.proposal.currAccDescription">Teklifi Oluştur</button>
             </div>
           </div>
         </div>

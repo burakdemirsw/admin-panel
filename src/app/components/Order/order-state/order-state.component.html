@@ -54,6 +54,12 @@
                         }}
                       </td>
                       <td>
+                        @if(order.isCancelled){
+                        <a class="btn btn-warning" style="color: #fff; width: 100%">
+                          İPTAL
+                        </a>
+
+                        }@else{
                         <a class="btn btn-success {{
                             order.orderStatus == null ? 'null-status' :
                             order.orderStatus == 'TOPLANAMAZ' ? 'uncollectable-status' : ''
@@ -64,6 +70,8 @@
                               : order.orderStatus.toUpperCase()
                           }}
                         </a>
+                        }
+
                       </td>
 
                     </tr>

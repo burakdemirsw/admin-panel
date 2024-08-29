@@ -43,7 +43,7 @@ export class CreateOrderComponent implements OnInit {
 
   [x: string]: any;
   selectedCustomers: CustomerList_VM[] = []
-  selectedProducts: ProductList_VM[] = []
+  selectedProducts: ClientOrderBasketItem[] = []
   selectedAddresses: CustomerAddress_VM[] = []
   selectedOfficeAndWarehosue: any[] = [];
   selectedSubCustomers: SubCustomerList_VM[] = [];
@@ -106,11 +106,8 @@ export class CreateOrderComponent implements OnInit {
     this.createCargoForm_2()
     this.createsubCustomerForm();
     this.createPaymentForm();
-
     this.createCustomerFormMethod();
-
     this.createDiscountForm();
-
     this.createOfficeWarehouseForm();
     this._createCustomerFormMethod();
     this.getAddresses();
@@ -148,6 +145,97 @@ export class CreateOrderComponent implements OnInit {
     this.getProductsForm.get('barcode').setValue(ev);
     this.getProducts(this.getProductsForm.value, this.orderType);
   }
+
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------- TOTAL FUNCS
+
+  findVatRate(vatRate: number): boolean {
+    return this.selectedProducts.some(p => p.taxRate == vatRate)
+  }
+  calculateVatAmount(vatRate: number): number {
+    // First, calculate the total discount rate to apply to each product
+    const totalDiscountRate = this.discountRate1 || 0; // percentage discount
+    const cashDiscount = this.discountRate2 || 0; // cash discount
+
+    return Number(this.selectedProducts
+      .filter(p => p.taxRate === vatRate) // Filter products with the specified VAT rate
+      .reduce((total, product) => {
+        // Apply percentage discount
+        let discountedPrice = product.totalPrice * (1 - totalDiscountRate / 100);
+
+        // Apply cash discount proportionally based on product price
+        discountedPrice -= cashDiscount * (product.totalPrice / this.getUntaxedTotal());
+
+        // Calculate VAT based on the final discounted price
+        return total + (discountedPrice * product.taxRate / 100);
+      }, 0).toFixed(2)); // Sum the VAT amounts and round to 2 decimal places sadas
+  }
+
+  //vergisiz tutarların iskontodan sonraki hali
+  getUnTaxedTotalAfterDiscount() {
+    var number = this.selectedProducts.reduce((acc, product) => acc + product.totalPrice, 0);
+    number = ((number * ((100 - this.discountRate1) / 100)) - this.discountRate2)
+    if (number.toString().includes('.')) {
+      return Number(number)
+    } else {
+      return number
+    }
+  }
+
+  //vergisiz tutarların toplamı
+  getUntaxedTotal() {
+    var number = this.selectedProducts.reduce((acc, product) => acc + product.totalPrice, 0);
+    if (number.toString().includes('.')) {
+      return Number(number)
+    } else {
+      return number
+    }
+  }
+  //dip iskonto uygulandıktan sonraki fiyatı çeker
+  getTaxedTotalAfterDiscount() {
+    return this.selectedProducts.reduce((acc, product) => acc + product.totalTaxedPrice, 0) * ((100 - this.discountRate1) / 100) - this.discountRate2;
+
+  } getTotalQuantity(): number {
+    return this.selectedProducts.reduce((acc, product) => acc + product.quantity, 0);
+  }
+
+  calculateNetTaxedPrice(product: ClientOrderBasketItem, proposal: ClientOrder): number {
+    const lineDiscountedPrice = (product.price || 0) * (1 - product.discountRate1 / 100) - product.discountRate2;
+    const generalDiscountedPrice = lineDiscountedPrice * (1 - (proposal.discountRate1 || 0) / 100) - (proposal.discountRate2 || 0);
+    const totalPrice = generalDiscountedPrice * product.quantity;
+    const totalTaxedPrice = totalPrice * (1 + product.taxRate / 100);
+    return parseFloat(totalTaxedPrice.toFixed(2));
+  }
+
+
+  getTotalTax_2(): number {
+    return this.selectedProducts.reduce((acc, product) => acc + ((product.totalPrice * (product.taxRate / 100))), 0);
+  }
+
+  getTotalTax(): number {
+
+
+    return this.getTaxedTotalAfterDiscount() - this.getUnTaxedTotalAfterDiscount();
+    return this.selectedProducts.reduce((acc, product) => acc + (product.totalPrice * (product.taxRate / 100)), 0);
+  }
+  getTotal(): number {
+    return this.selectedProducts.reduce((acc, product) => acc + product.totalPrice, 0);
+  }
+  //dip iskonto uygulanmadan önceki fiyatı çeker
+  getTotalTaxedPrice(): number {
+    var total = this.selectedProducts.reduce((acc, product) => acc + product.totalTaxedPrice, 0);
+    return parseFloat(total.toFixed(2));
+  }
+  getUntaxedTotalWithTax() {
+
+    var number = this.selectedProducts.reduce((acc, product) => acc + (product.quantity * product.discountedPrice * (product.taxRate / 100)), 0);
+    if (number.toString().includes('.')) {
+      return Number(number.toString().split('.')[0])
+    } else {
+      return number
+    }
+  }
+
   //--------------------------------------------------------------------------- CLIENT ORDER
   stateOptions: any[] = [{ label: 'Standart', value: '0' }, { label: 'Vergisiz', value: '4' }, { label: 'Standart Kdv Düş', value: '5' }];
   taxTypeCode: any;
@@ -155,17 +243,23 @@ export class CreateOrderComponent implements OnInit {
   isCancelled: boolean = false;
   orderNumber: string = "";
   orderDescription: string = "burak demir"
+  discountRate1: number = 0;
+  discountRate2: number = 0;
+
   async getClientOrder(state: number) {
     var response = await this.orderService.getClientOrder(this.id);
 
     if (state === 0) {
       if (response.clientOrder) {
         var order = response;
+        this.discountRate1 = order.clientOrder.discountRate1;
+        this.discountRate2 = order.clientOrder.discountRate2
+        this.updateProductForm.get('discountRate1').setValue(order.clientOrder.discountRate1);
+        this.updateProductForm.get('discountRate2').setValue(order.clientOrder.discountRate2);
+
         this.orderNo = order.clientOrder.orderNo
         this.isCompleted = order.clientOrder.isCompleted != null ? order.clientOrder.isCompleted : false;
-        this.toasterService.success(this.isCompleted.toString());
         this.isCancelled = order.clientOrder.isCancelled != null ? order.clientOrder.isCancelled : false;
-        this.toasterService.success(this.isCancelled.toString());
         this.currAccCode = order.clientOrder.customerCode;
         this.orderNumber = order.clientOrder.orderNumber
         var customer_request = new GetCustomerList_CM();
@@ -214,7 +308,6 @@ export class CreateOrderComponent implements OnInit {
           scRequest.subCurrAccId = order.clientOrder.subCurrAccId;
           var scResponse = await this.orderService.getSubCustomerList(scRequest);
           if (scResponse) {
-
             this.createCustomerForm.value.sc_Description = scResponse[0]?.companyName;
             this.selectedSubCustomers.push(scResponse[0]);
             console.log("Alt Müşteri Eklendi")
@@ -223,9 +316,6 @@ export class CreateOrderComponent implements OnInit {
         } else {
 
         }
-
-
-
         this.payment.amount = this.selectedProducts.reduce((total, product) => total + product.price, 0);
         // this.selectedAddresses = []; burası
         this.orderNo = order.clientOrder.orderNo;
@@ -238,8 +328,8 @@ export class CreateOrderComponent implements OnInit {
           this.selectedProducts = [];
           order.clientOrderBasketItems.reverse();
           order.clientOrderBasketItems.forEach((basketItem: ClientOrderBasketItem) => {
-            var object = this.convertLineToObject(basketItem);
-            this.selectedProducts.push(object);
+            // var object = this.convertLineToObject(basketItem);
+            this.selectedProducts.push(basketItem);
           });
         }
 
@@ -255,10 +345,11 @@ export class CreateOrderComponent implements OnInit {
         this.selectedProducts = [];
 
         if (order.clientOrderBasketItems.length > 0) {
-          order.clientOrderBasketItems.forEach((basketItem: ClientOrderBasketItem) => {
-            var object = this.convertLineToObject(basketItem);
-            this.selectedProducts.push(object);
-          });
+          this.selectedProducts = order.clientOrderBasketItems;
+          // order.clientOrderBasketItems.forEach((basketItem: ClientOrderBasketItem) => {
+          //   var object = this.convertLineToObject(basketItem);
+          //  .push(object);
+          // });
 
           console.log("Ürünler Eklendi")
         }
@@ -301,6 +392,10 @@ export class CreateOrderComponent implements OnInit {
     object.discountedPrice = line.discountedPrice;
     object.taxRate = line.taxRate;
     object.priceWs = line.priceWs;
+    object.discountRate1 = line.discountRate1;
+    object.discountRate2 = line.discountRate2;
+    object.totalPrice = line.totalPrice;
+    object.totalTaxedPrice = line.totalTaxedPrice;
     return object;
   }
 
@@ -323,6 +418,8 @@ export class CreateOrderComponent implements OnInit {
       request.subCurrAccId = this.selectedSubCustomers[0]?.subCurrAccId;
       request.subCustomerDescription = this.selectedSubCustomers[0]?.companyName;
       request.isCancelled = false;
+      request.discountRate1 = this.discountRate1
+      request.discountRate2 = this.discountRate2
 
       if (this.payment) {
         request.paymentType = this.payment.creditCardTypeCode;
@@ -363,12 +460,12 @@ export class CreateOrderComponent implements OnInit {
       request.mD_Stock = newLine.mD_Stock;
       request.basePrice = newLine.basePrice;
       request.discountedPrice = newLine.discountedPrice;
-      request.taxRate = newLine.taxRate;
       request.priceWs = newLine.priceWs
       request.discountRate1 = 0;
       request.discountRate2 = 0;
-      request.totalPrice = 0;
-      request.totalTaxedPrice = 0;
+      request.taxRate = newLine.taxRate;
+      request.totalPrice = newLine.quantity * newLine.discountedPrice;
+      request.totalTaxedPrice = (newLine.quantity * newLine.discountedPrice) * (1 + (newLine.taxRate / 100));
 
       return request;
     } catch (error) {
@@ -1217,7 +1314,7 @@ export class CreateOrderComponent implements OnInit {
   //---------------------------------------------------- PRODUCTS
 
 
-  selectedProduct: ProductList_VM;
+  selectedProduct: ClientOrderBasketItem;
   selectedIndex: number;
   updateProductForm: FormGroup
   allProducts: FastTransfer_VM[] = [];
@@ -1288,16 +1385,21 @@ export class CreateOrderComponent implements OnInit {
   }
   createUpdateProductForm() {
     this.updateProductForm = this.formBuilder.group({
-      price: [null, Validators.required],
-      quantity: [null, Validators.required]
+      discountedPrice: [null, Validators.required],
+      quantity: [null, Validators.required],
+      discountRate1: [null, Validators.required],
+      discountRate2: [null, Validators.required],
     });
   }
-  openUpdateDialog(product: ProductList_VM, index: number) {
+  openUpdateDialog(product: ClientOrderBasketItem, index: number) {
     this.selectedProduct = product;
     this.selectedIndex = index;
 
-    this.updateProductForm.get('price').setValue(this.selectedProduct.discountedPrice)
+    this.updateProductForm.get('discountedPrice').setValue(this.selectedProduct.discountedPrice)
     this.updateProductForm.get('quantity').setValue(this.selectedProduct.quantity)
+    this.updateProductForm.get('discountRate1').setValue(this.selectedProduct.discountRate1)
+    this.updateProductForm.get('discountRate2').setValue(this.selectedProduct.discountRate2)
+
 
     this.openDialog('updateProductDialog');
 
@@ -1345,65 +1447,54 @@ export class CreateOrderComponent implements OnInit {
   products: ProductList_VM[] = [];
 
   currentDiscountRate: number = 0;
-  discount(discountRate: number) {
-    // this.resetDiscount()
-    this.currentDiscountRate = discountRate;
-    if (discountRate > 0 && discountRate <= 100) {
-      this.selectedProducts.forEach(p => {
-        p.discountedPrice = ((100 - discountRate) / 100) * (p.discountedPrice);
-      });
-      this._discountRate = discountRate
-      this.toasterService.success("İndirim Uygulandı")
-    }
-    var totalPrice = this.getTotalPrice();
-    // this.toasterService.success("Toplam Fiyat : " + totalPrice)
-    // if (totalPrice !== Math.trunc(totalPrice)) {
-    //   const integerPart = Math.trunc(totalPrice);
-    //   const fractionPart = totalPrice - integerPart;
+  async discount(discountAmount: number) {
 
-    //   if (fractionPart !== 0) {
-    //     this.cashDiscount(fractionPart);
-    //     // Burada kesirli değerle ilgili ek işlemler yapabilirsiniz
-    //   }
-    // }
+    if (discountAmount >= 0 && discountAmount <= 100) {
+
+      this.discountRate1 = discountAmount;
+      var r = this.createClientOrder_RM();
+      var response: ClientOrder = await this.orderService.createClientOrder(r);
+      if (response) {
+        this.getClientOrder(0);
+        this.getTaxedTotalAfterDiscount();
+        this.toasterService.success('Güncellendi')
+      } else {
+        this.toasterService.error('Güncellenmedi')
+      }
+    } else {
+      this.toasterService.error('1 ile 100 arasında bir değer giriniz.')
+    }
+
+
   }
   currentCashdiscountRate: number = 0;
-  cashDiscount(discountAmount: number) {
-    // this.resetDiscount();
-    var total = this.selectedProducts.reduce((acc, product) => acc + (product.quantity * product.discountedPrice), 0);
-    var integerPart = Math.floor(total);
-    var fraction = total - integerPart;
+  async cashDiscount(discountAmount: number) {
 
-    discountAmount = discountAmount + fraction;
-    this.currentCashdiscountRate = discountAmount;
-    var value = discountAmount / this.selectedProducts.length
-    this.selectedProducts.forEach(p => {
-      p.discountedPrice = p.discountedPrice - (value / p.quantity)
-    });
-    this.toasterService.success("İndirim Uygulandı")
-    var totalPrice = this.getTotalPrice();
-    // this.toasterService.success("Toplam Fiyat : " + totalPrice)
-
-    // if (totalPrice !== Math.trunc(totalPrice)) {
-    //   const integerPart = Math.trunc(totalPrice);
-    //   const fractionPart = totalPrice - integerPart;
-
-    //   if (fractionPart !== 0) {
-    //     this.cashDiscount(fractionPart);
-    //     // Burada kesirli değerle ilgili ek işlemler yapabilirsiniz
-    //   }
-    // }
-
+    this.discountRate2 = discountAmount;
+    var r = this.createClientOrder_RM();
+    var response: ClientOrder = await this.orderService.createClientOrder(r);
+    if (response) {
+      await this.getClientOrder(0);
+      this.getTaxedTotalAfterDiscount();
+      this.toasterService.success('Güncellendi')
+    } else {
+      this.toasterService.error('Güncellenmedi')
+    }
   }
 
-  resetDiscount() {
-    this.currentCashdiscountRate = 0;
-    this.currentDiscountRate = 0;
-    this.selectedProducts.forEach(p => {
-      p.discountedPrice = p.basePrice;
-    });
-    this.discountForm.reset();
-    this.toasterService.success("İndirim Kaldırıldı")
+  async resetDiscount() {
+    this.discountRate1 = 0;
+
+    this.discountRate2 = 0;
+    var r = this.createClientOrder_RM();
+    var response: ClientOrder = await this.orderService.createClientOrder(r);
+    if (response) {
+      await this.getClientOrder(0);
+      this.getTaxedTotalAfterDiscount();
+      this.toasterService.success('Güncellendi')
+    } else {
+      this.toasterService.error('Güncellenmedi')
+    }
 
   }
 
@@ -1709,7 +1800,7 @@ export class CreateOrderComponent implements OnInit {
     }
 
   }
-  async deleteProduct(product: ProductList_VM) {
+  async deleteProduct(product: ClientOrderBasketItem) {
     var response = await this.orderService.deleteClientOrderBasketItem(this.id, product.lineId);
     if (response) {
       this.toasterService.success("Ürün Silindi")
@@ -1723,13 +1814,12 @@ export class CreateOrderComponent implements OnInit {
   }
 
 
-  async updateQuantity(qty: number, product: ProductList_VM) {
+  async updateQuantity(qty: number, product: ClientOrderBasketItem) {
     if (product.itemCode.startsWith('FG')) {
       qty = qty * 5
     }
     product.quantity += qty
-    var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price,
-      product.discountedPrice, product.basePrice, product.priceWs)
+    var response = await this.orderService.updateClientOrderBasketItem(product)
     if (response) {
       this.toasterService.success("Ürün Güncellendi")
       this.getClientOrder(1);
@@ -1739,11 +1829,10 @@ export class CreateOrderComponent implements OnInit {
   @ViewChild('dt1') myTable: Table;
   quantityList: number[] = []
 
-  async selectQuantity(product: ProductList_VM, index: number, quantity: number) {
+  async selectQuantity(product: ClientOrderBasketItem, index: number, quantity: number) {
     // this.toasterService.success(product.quantity.toString());
     product.quantity = quantity;
-    var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price, product.discountedPrice,
-      product.basePrice, product.priceWs);
+    var response = await this.orderService.updateClientOrderBasketItem(product);
     if (response) {
       this.toasterService.success("Ürün Güncellendi")
       this.focusNextInput('barcode_product')
@@ -1754,12 +1843,25 @@ export class CreateOrderComponent implements OnInit {
     this.closeDialog(index)
     this.updateProductDialog = false;
     delete this.clonedProducts[product.lineId as string];
-    this.cancelRowEdit(product, 0);
   }
-  async onRowEditSave(product: ProductList_VM, index: number) {
-    product.discountedPrice = this.updateProductForm.value.price;
-    product.quantity = this.updateProductForm.value.quantity;
+  async onRowEditSave(product: ClientOrderBasketItem, index: number) {
+    product.discountedPrice = this.updateProductForm.get('discountedPrice').value;
+    product.quantity = this.updateProductForm.get('quantity').value;
+    product.discountRate1 = this.updateProductForm.get('discountRate1').value; //yüzde
+    product.discountRate2 = this.updateProductForm.get('discountRate2').value;
 
+
+    product.totalPrice =
+      product.quantity *
+      (
+        (product.discountedPrice * ((100 - product.discountRate1) / 100)) - product.discountRate2
+      )
+
+    product.totalTaxedPrice =
+      product.quantity *
+      (
+        ((product.discountedPrice * (1 + (product.taxRate / 100))) * ((100 - product.discountRate1) / 100)) - product.discountRate2
+      )
     this.quantityList = [];
     if (product.price > 0) {
 
@@ -1776,33 +1878,21 @@ export class CreateOrderComponent implements OnInit {
         return;
       }
 
-      this.toasterService.success(product.quantity.toString());
-      var response = await this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price,
-        product.discountedPrice, product.basePrice, product.priceWs)
+      var response = await this.orderService.updateClientOrderBasketItem(product)
       if (response) {
         this.toasterService.success("Ürün Güncellendi")
         this.focusNextInput('barcode_product')
-        this.resetDiscount();
         this.getClientOrder(1);
       }
       delete this.clonedProducts[product.lineId as string];
 
     }
-    this.cancelRowEdit(product, 0);
     this.updateProductDialog = false;
   }
 
 
-  cancelRowEdit(product: ProductList_VM, index: number) {
 
-    this.selectedProducts.forEach(product => {
-      this.myTable.cancelRowEdit(product);
-
-    });
-
-
-  }
-  onRowEditCancel(product: ProductList_VM, index: number) {
+  onRowEditCancel(product: ClientOrderBasketItem, index: number) {
     this.products[index] = this.clonedProducts[product.lineId as string];
     delete this.clonedProducts[product.lineId as string];
   }
@@ -1948,7 +2038,7 @@ export class CreateOrderComponent implements OnInit {
       if (this.cargoForm.get('packagingType').value.code === '1') {
 
       }
-      var _product: ProductList_VM = this.selectedProducts.find(p => p.itemCode == 'KARGO');
+      var _product: ClientOrderBasketItem = this.selectedProducts.find(p => p.itemCode == 'KARGO');
       {
         if (!_product) {
 
@@ -1964,21 +2054,19 @@ export class CreateOrderComponent implements OnInit {
 
           }
 
-          var __product: ProductList_VM = this.selectedProducts.find(p => p.itemCode == 'KARGO');
+          var __product: ClientOrderBasketItem = this.selectedProducts.find(p => p.itemCode == 'KARGO');
 
           __product.price = value.code;
           __product.basePrice = value.code;
           __product.discountedPrice = value.code;
-          await this.orderService.updateClientOrderBasketItem(this.id, __product.lineId, __product.quantity,
-            __product.price, __product.discountedPrice, __product.discountedPrice, __product.priceWs);
+          await this.orderService.updateClientOrderBasketItem(__product);
 
         } else {
           _product.price = value.code;
           _product.basePrice = value.code;
 
           _product.discountedPrice = value.code;
-          await this.orderService.updateClientOrderBasketItem(this.id, _product.lineId, _product.quantity,
-            _product.price, _product.discountedPrice, _product.basePrice, _product.priceWs);
+          await this.orderService.updateClientOrderBasketItem(__product);
         }
 
       }
@@ -2425,20 +2513,6 @@ export class CreateOrderComponent implements OnInit {
     var order_request = this.createClientOrder_RM()
     var order_response = await this.orderService.createClientOrder(order_request) //son sipariş güncellendi
 
-    //---------------------------------------------------- DISCOUNT CALCULATION
-    var totalPrice = 0;
-    var discountedPrice = 0
-    for (const _product of this.selectedProducts) {
-      totalPrice += _product.price * _product.quantity;
-      discountedPrice += _product.discountedPrice * _product.quantity;
-    }
-    var after_discountPrice = totalPrice - (totalPrice * this.currentDiscountRate / 100) - this.currentCashdiscountRate;
-    var dif = 0;
-    if (discountedPrice < after_discountPrice) {
-      dif = after_discountPrice - discountedPrice;
-      this.currentCashdiscountRate += dif;
-    }
-    //----------------------------------------------------
     // var discountPercent: number = this.calculateDiscountPercent(this.selectedProducts);
     var addedOrderNumber = null;
     if (this.orderType) {
@@ -2457,8 +2531,8 @@ export class CreateOrderComponent implements OnInit {
         var _request = new NebimOrder(
           (addedOrderNumber != undefined || addedOrderNumber != null) ? addedOrderNumber : null,
           exchangeRate,
-          this.currentDiscountRate,
-          this.currentCashdiscountRate,
+          this.discountRate1,
+          this.discountRate2,
           this.paymentForm.get('orderDescription').value,
           this.currAccCode,
           this.orderNo,
@@ -2493,7 +2567,7 @@ export class CreateOrderComponent implements OnInit {
           this.sendInvoiceToPrinter(addedOrder.orderNumber);
 
         }
-        this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament/1/2");
+        this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "unfinished-orders");
       }
     } else {
 
@@ -2513,8 +2587,8 @@ export class CreateOrderComponent implements OnInit {
         var _request = new NebimOrder(
           (addedOrderNumber != undefined || addedOrderNumber != null) ? addedOrderNumber : null,
           exchangeRate,
-          this.currentDiscountRate,
-          this.currentCashdiscountRate,
+          this.discountRate1,
+          this.discountRate2,
           this.cargoForm.get("address_recepient_name").value,
           this.currAccCode,
           this.orderNo,
@@ -2541,7 +2615,7 @@ export class CreateOrderComponent implements OnInit {
         if (this.cargoForm.get('isActive').value === true) {
           await this.submitCargo(this.cargoForm.value);
         } else {
-          this.toasterService.info('KARGO OLUŞTURULMADI');
+          // this.toasterService.info('KARGO OLUŞTURULMADI');
         }
       }
 
@@ -2557,8 +2631,8 @@ export class CreateOrderComponent implements OnInit {
         let _productBatch = this.selectedProducts.slice(_batchStart, _batchEnd);
 
         var __request: NebimInvoice = new NebimInvoice(
-          this.currentDiscountRate,
-          this.currentCashdiscountRate,
+          this.discountRate1,
+          this.discountRate2,
           exchangeRate,
           this.selectedCustomers[0].docCurrencyCode,
           this.cargoForm.get("address_recepient_name").value,

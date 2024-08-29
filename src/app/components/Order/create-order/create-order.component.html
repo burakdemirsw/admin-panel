@@ -26,12 +26,31 @@
                 }}" formControlName="shelfNo" />
 
 
-              <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus" label="Ürün Ekle"
-                type="submit"></button>
-              <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-search" label="Ürün Ara"
-                type="button" (click)="getAllProducts()"></button>
-              <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-refresh" label="Muadil Bul"
-                type="button" (click)="getsuggestedProducts(this.getProductsForm.value.barcode,true)"></button>
+              <button class="btn btn-primary" type="submit"><i class="fa fa-plus" aria-hidden="true"></i> Ürün
+                Ekle</button>
+              <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Ürün İşlemleri
+              </button>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" (click)="getAllProducts()">
+                    <i class="fa fa-search" aria-hidden="true"></i> Ürün Ara
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="getsuggestedProducts(this.getProductsForm.value.barcode,true)">
+                    <i class="fa fa-refresh" aria-hidden="true"></i> Muadil Bul
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="deleteAllPRoduct()">
+                    <i class="fa fa-trash" aria-hidden="true"></i>Tüm Ürünleri Sil
+                  </a>
+                </li>
+              </ul>
+
+
 
 
             </p-inputGroup>
@@ -203,8 +222,8 @@
                 <td>{{ product.inventory }}</td>
                 <td>{{ product.price }}</td>
                 <td>
-                  <button pButton pRipple icon="pi pi-plus" type="button" class="p-button-rounded p-button-text "
-                    (click)="addProduct(product)"></button>
+                  <button type="button" class="btn btn-primary" (click)="addProduct(product)"><i class="fa fa-plus"
+                      aria-hidden="true"></i></button>
                 </td>
               </tr>
             </ng-template>
@@ -255,6 +274,19 @@
               <td>{{ product.description.substring(0,50)}}</td>
             </tr>
           </ng-template>
+          <ng-template pTemplate="footer">
+            <tr>
+              <td colspan="5" class="text-right">Toplam</td>
+              <td colspan="5" class="text-right">
+                {{getTotalQuantity() }} Adet
+              </td>
+
+              <td colspan="2" class="text-right"> {{getTotal().toFixed(2) }} </td>
+              <td class="text-right"> {{getTotalTax_2().toFixed(2) }} </td>
+
+              <td colspan="2" class="text-right"> {{getTotalTaxedPrice()}}</td>
+            </tr>
+          </ng-template>
         </p-table>
 
         <div class="mb-3"></div>
@@ -272,20 +304,27 @@
           <ng-template pTemplate="header" let-editing="editing">
             <tr>
               <th scope="col">Resim</th>
-              <th scope="col">İşlem</th>
               <th scope="col">Kod</th>
-
+              <th scope="col">Ürün</th>
               <th *ngIf="!this.orderType" scope="col">Raf</th>
               <th *ngIf="!this.orderType" scope="col">Parti</th>
 
+
+              <th scope="col">Toptan Fiyat</th>
               <th scope="col">Miktar</th>
               <th scope="col">Birim Fiyat</th>
-              <th scope="col">Toptan Fiyat</th>
-              <th scope="col">İndirimli Fiyatı</th>
+              <th scope="col">Satış Fiyatı</th>
+              <th scope="col">% İSK</th>
+              <th scope="col">₺ İSK</th>
+
+
               <th scope="col">Toplam Fiyat</th>
+              <th scope="col">% Kdv</th>
+              <th scope="col">₺ Kdv</th>
+              <th scope="col">K. Total</th>
 
               <th scope="col">Envanter</th>
-              <th scope="col">Ürün</th>
+
 
               <th scope="col">
                 Sil
@@ -298,49 +337,74 @@
                 <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true"></p-image>
               </td>
 
-              <td>
-                <button pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
-                  (click)="openUpdateDialog(product,ri)" class="p-button-rounded p-button-text"></button>
-
-              </td>
 
               <td>{{ product.itemCode }}</td>
+              <td class="scrollable-td">
+                {{ product.description}}
+              </td>
               <td *ngIf="!this.orderType">{{ product.shelfNo }}</td>
               <td *ngIf="!this.orderType">{{ product.batchCode }}</td>
 
+
+              <td>
+                {{ product.priceWs}}
+              </td>
               <td style="cursor: pointer;" (click)="openUpdateDialog(product,ri)">
                 {{ product.quantity }}
               </td>
+
               <td>
-                {{ product.price | currency : "₺" }}
-              </td>
-              <td>
-                {{ product.priceWs}}
+                <span *ngIf="product.discountedPrice < product.price; else normalPrice">
+                  <span style="text-decoration: line-through;">
+                    {{ product.price | currency : "₺" }}
+                  </span>
+                  &nbsp;
+                  <span style="color: red;">
+                    -{{ ((product.price*product.quantity) - product.totalPrice) | currency : "₺" }}
+                  </span>
+                </span>
+                <ng-template #normalPrice>
+                  {{ product.price | currency : "₺" }}
+                </ng-template>
               </td>
               <td style="cursor: pointer;" (click)="openUpdateDialog(product,ri)" class="hover-dark">
                 {{ product.discountedPrice | currency : "₺" }}
               </td>
 
               <td>
-                {{
-                  product.price > product.discountedPrice
-                    ? (product.discountedPrice * product.quantity
-                      | currency : "₺")
-                    : (product.price * product.quantity | currency : "₺")
-                }}
+                {{product.discountRate1}}
+              </td>
+              <td>
+                {{product.discountRate2}}
+              </td>
+
+
+              <td>
+                {{product.totalPrice}}
+              </td>
+              <td>
+                {{product.taxRate}}
+              </td>
+              <td>
+                {{((product.taxRate/100)* product.totalPrice).toFixed(2)}}
+              </td>
+              <td>
+                {{ product.totalTaxedPrice }}
               </td>
               <td>
                 {{ product.uD_Stock + product.mD_Stock }}
               </td>
 
 
-              <td class="scrollable-td">
-                {{ product.description}}
-              </td>
 
               <td>
-                <button pButton pRipple icon="pi pi-trash" type="button"
-                  class="p-button-rounded p-button-text p-button-danger" (click)="deleteProduct(product)"></button>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                  <button type="button" class="btn btn-danger" (click)="deleteProduct(product)"> <i class="fa fa-trash"
+                      aria-hidden="true"></i></button>
+                  <button type="button" icon="" (click)="openUpdateDialog(product,ri)" class="btn btn-primary"><i
+                      class="fa fa-pencil" aria-hidden="true"></i></button>
+                </div>
+
 
               </td>
             </tr>
@@ -349,9 +413,8 @@
              " [(visible)]="visibleDialogs[ri]" [style]="{ width: '80vw' }" modal="true" [dismissableMask]="true">
               <div class="price-list-container">
                 <div *ngFor="let quantity of quantityList;let i = index" class="price-item">
-                  <button (click)="selectQuantity(product,ri,quantity)" pButton pRipple icon="pi pi-check"
-                    class="p-button-rounded p-button-text price-button" type="button">{{quantity}} <span
-                      *ngIf="i % 2 === 1">
+                  <button (click)="selectQuantity(product,ri,quantity)" icon="pi pi-check"
+                    class="-rounded -text price-button" type="button">{{quantity}} <span *ngIf="i % 2 === 1">
                       {{' (Terminli)'}}</span></button>
                 </div>
               </div>
@@ -373,7 +436,7 @@
                     <td>{{ product?.suggestedItemInventory }}</td>
 
                     <td>
-                      <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus"
+                      <button class="btn btn-primary" icon="pi pi-plus"
                         (click)="routeGetProduct( product?.suggestedItemCode)" type="submit"></button>
                     </td>
                   </tr>
@@ -381,6 +444,19 @@
               </p-table>
               <h5 *ngIf="suggestedProducts.length<=0">Muadil Ürün Bulunamamıştır</h5>
             </p-dialog>
+          </ng-template>
+          <ng-template pTemplate="footer">
+            <tr>
+              <td colspan="4" class="text-right">Toplam</td>
+              <td colspan="5" class="text-right">
+                {{getTotalQuantity() }} Adet
+              </td>
+
+              <td colspan="2" class="text-right"> {{getTotal().toFixed(2) }} </td>
+              <td class="text-right"> {{getTotalTax_2().toFixed(2) }} </td>
+
+              <td colspan="2" class="text-right"> {{getTotalTaxedPrice()}}</td>
+            </tr>
           </ng-template>
         </p-table>
         <p-dialog header="Muadil Ürün" [(visible)]="suggestedProductsDialog" [modal]="true" [closable]="true"
@@ -402,7 +478,7 @@
                 <td>{{ product?.suggestedItemInventory }}</td>
 
                 <td>
-                  <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus"
+                  <button class="btn btn-primary" icon="pi pi-plus"
                     (click)="routeGetProduct( product?.suggestedItemCode)" type="submit"></button>
                 </td>
               </tr>
@@ -415,12 +491,20 @@
           <form [formGroup]="updateProductForm">
             <div class="p-fluid">
               <div class="p-field">
-                <label for="price">Fiyat</label>
-                <input id="price" type="number" pInputText formControlName="price">
+                <label for="discountedPrice">Fiyat</label>
+                <input id="discountedPrice" type="number" pInputText formControlName="discountedPrice">
               </div>
               <div class="p-field mb-3">
                 <label for="quantity">Adet</label>
                 <input id="quantity" type="number" pInputText formControlName="quantity">
+              </div>
+              <div class="p-field mb-3">
+                <label for="discountRate1">Yüzde İskonto</label>
+                <input id="discountRate1" type="number" pInputText formControlName="discountRate1">
+              </div>
+              <div class="p-field mb-3">
+                <label for="discountRate2">Nakit İskonto</label>
+                <input id="discountRate2" type="number" pInputText formControlName="discountRate2">
               </div>
               <div class="p-field mb-3">
                 <button type="button" pButton label="Güncelle"
@@ -435,73 +519,119 @@
         </p-dialog>
 
 
-        <div class="mb-3"></div>
 
-        <form [formGroup]="discountForm" *ngIf="selectedProducts.length > 0">
-          <div class="row">
-            <div class="col-md-6">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <button pButton pRipple icon="pi pi-check" class="p-button-rounded p-button-text" (click)="
+        <!-- TOPLAM------------------------------------------------------------------------------------------------------------>
+        <div class="card mb-3" *ngIf="selectedProducts.length>0">
+          <div class="card-body">
+            <div class="mt-3">
+              <table class="table table-bordered">
+
+                <tbody>
+                  <tr>
+                    <th scope="row">Sayın</th>
+                    <td style="font-weight: bold;">
+                      {{this.selectedCustomers[0]?.currAccDescription.toUpperCase()}}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <th scope="row">Ara Toplam <small class="text-muted">KDVSİZ</small>
+                    </th>
+                    <td>
+                      {{getTotal().toFixed(2) }}
+                    </td>
+                  </tr>
+                  <tr *ngIf=" this.discountRate1">
+                    <th scope="row">Dip İskonto (%)
+                    </th>
+                    <td>%{{ this.discountRate1}} <span style="color: red" *ngIf=" this.discountRate1">|
+                        {{(getTotal()*this.discountRate1/100).toFixed(2)}}₺ </span></td>
+                  </tr>
+                  <tr *ngIf=" this.discountRate2">
+                    <th scope="row">Dip İskonto (₺)</th>
+                    <td>₺{{ this.discountRate2}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Toplam <small class="text-muted">KDVSİZ</small></th>
+                    <td>{{ getUnTaxedTotalAfterDiscount() | currency : "₺" }}</td>
+                  </tr>
+
+                  <tr *ngIf="findVatRate(10)">
+                    <th scope="row">%10 KDV</th>
+                    <td>{{calculateVatAmount(10)| currency : "₺"}}</td>
+                  </tr>
+                  <tr *ngIf="findVatRate(20)">
+                    <th scope="row">%20 KDV</th>
+                    <td>{{calculateVatAmount(20)| currency : "₺"}}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">KDV</th>
+                    <td>
+                      {{ ((getUnTaxedTotalAfterDiscount() /getTotal() )*getTotalTax_2() ).toFixed(2)| currency : "₺" }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Genel Toplam</th>
+                    <td>
+                      {{ ((getUnTaxedTotalAfterDiscount() /getTotal() )*getTotalTax_2() ) +  getUnTaxedTotalAfterDiscount()   | currency : "₺" }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+
+            <!-- İNDİRİM FORMU----------------------------------------------------------------------------------------------------->
+
+            <form [formGroup]="discountForm" *ngIf="selectedProducts.length > 0" class="mb-3 ">
+              <div class="row">
+                <div class="col-md-4  mb-3">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <button class="btn btn-success" (click)="
                       discount(this.discountForm.value.percentDiscountRate)
-                    " type="button"></button>
-                </div>
-                <input type="number" class="form-control" id="percentDiscountRate" placeholder="Yüzde İndirim Oranı"
-                  formControlName="percentDiscountRate" (keydown.enter)="
+                    " type="button"><i class="fa fa-check" aria-hidden="true"></i></button>
+                    </div>
+                    <input type="number" class="form-control" id="percentDiscountRate" placeholder="Yüzde İndirim Oranı"
+                      formControlName="percentDiscountRate" (keydown.enter)="
                     discount(this.discountForm.value.percentDiscountRate)
                   " />
-              </div>
-            </div>
-          </div>
-          <p *ngIf="this.discountForm.value.percentDiscountRate">
-            Uygulanan İndirim Oranı
-            <span style="color: red">
-              %{{ this.discountForm.value.percentDiscountRate }}
-            </span>
-          </p>
-          <div class="row mb-3" #iskonto>
-            <div class="col-md-6">
-              <div class="input-group mb-3">
-                <div class="input-group-append">
-                  <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-check" (click)="
-                      cashDiscount(this.discountForm.value.cashDiscountRate)
-                    " type="button"></button>
+                  </div>
                 </div>
-                <input type="number" class="form-control" id="cashDiscountRate" placeholder="Nakit İndirim Tutarı"
-                  formControlName="cashDiscountRate" (keydown.enter)="
+                <div class="col-md-4 mb-3">
+                  <div class="input-group ">
+                    <div class="input-group-append">
+                      <button class="btn btn-success" icon="pi pi-check" (click)="
+                      cashDiscount(this.discountForm.value.cashDiscountRate)
+                    " type="button"><i class="fa fa-check" aria-hidden="true"></i></button>
+                    </div>
+                    <input type="number" class="form-control" id="cashDiscountRate" placeholder="Nakit İndirim Tutarı"
+                      formControlName="cashDiscountRate" (keydown.enter)="
                     cashDiscount(this.discountForm.value.cashDiscountRate)
                   " />
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <button btn style="width: 100%" class="btn btn-danger" (click)="resetDiscount()" type="button"><i
+                      class="fa fa-trash" aria-hidden="true"></i> İndirimi Sıfırla</button>
+                </div>
               </div>
-            </div>
-          </div>
-          <p *ngIf="this.discountForm.value.cashDiscountRate">
-            Uygulanan Nakit İndirim Tutarı
-            <span style="color: red">
-              ₺{{ this.discountForm.value.cashDiscountRate }}</span>
-          </p>
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <button pButton pRipple style="width: 100%" class="p-button p-button-text" label="İndirimi Sıfırla"
-                (click)="resetDiscount()" type="button"></button>
-            </div>
-            <div class="col-md-6">
-              <button pButton pRipple style="width: 100%" class="p-button p-button-danger" label="Tüm Ürünleri Sil"
-                (click)="deleteAllPRoduct()" type="button"></button>
-            </div>
-          </div>
-        </form>
 
-        <div class="row mb-3">
-          <div class="col-md-12 mt-3">
-            <div *ngIf="selectedProducts.length > 0">
-              <h1>TOPLAM : {{ getTotalPrice() | currency : "₺" }}</h1>
-            </div>
+
+            </form>
+
+
+
+
+
           </div>
         </div>
+
         <div class="row">
           <div class="col-md">
-            <button *ngIf="this.selectedProducts.length > 0" pButton pRipple style="width: 100%"
-              class="p-button-success" label="Müşteri Bul" (click)="goToPage(1)" type="submit"></button>
+            <button *ngIf="this.selectedProducts.length > 0" style="width: 100%" class="btn btn-success"
+              (click)="goToPage(1)" type="submit">Müşteri Bul</button>
           </div>
         </div>
       </p-tabPanel>
@@ -512,8 +642,8 @@
           <p-tabPanel header="Müşteri Bul">
             <div class="row mb-3" *ngIf="this.invoiceType != undefined">
               <div class="col-md-1">
-                <button pButton pRipple class="p-button-rounded p-button-text" label="Geri"
-                  (click)="changeInvoiceType(undefined)" type="submit" icon="pi pi-arrow-left"></button>
+                <button class="btn btn-primary" (click)="changeInvoiceType(undefined)" type="submit"
+                  icon="pi pi-arrow-left"><i class="fa fa-arrow-left" aria-hidden="true"></i> </button>
               </div>
             </div>
             <div class="container mt-5" *ngIf="invoiceType ==undefined">
@@ -554,9 +684,8 @@
                     </div>
                   </div>
                   <div class="mt-3 mb-3">
-                    <button label="Yeni Müşteri Oluştur" pButton pRipple icon="pi pi-plus"
-                      class="p-button-rounded p-button-text" type="button"
-                      (click)="openDialog('createCustomerDialog')"></button>
+                    <button class="btn btn-primary" type="button" (click)="openDialog('createCustomerDialog')"> Yeni
+                      Müşteri Oluştur</button>
                   </div>
                   <p-dialog header="Müşteri Ekle" [(visible)]="createCustomerDialog" [style]="{ width: '80vw' }">
                     <form [formGroup]="createCustomerForm">
@@ -734,9 +863,8 @@
                       <div class="row mb-3">
                         <div class="col-md-12">
                           <div class="form-group">
-                            <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus"
-                              type="submit" style="width: 100%" label="Müşteri Ekle"
-                              (click)="submitAddressForm(createCustomerForm.value)"></button>
+                            <button class="btn btn-primary" icon="pi pi-plus" type="submit" style="width: 100%"
+                              (click)="submitAddressForm(createCustomerForm.value)">Müşteri Ekle</button>
 
                           </div>
                         </div>
@@ -758,7 +886,7 @@
                 <form [formGroup]="createCustomerForm">
                   <p-inputGroup>
                     <p-inputGroupAddon>
-                      <!-- <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-text" type="button"
+                      <!-- <button  icon="pi pi-eye" class="btn btn-primary" type="button"
       (click)=" this.subCustomerDialog = !this.subCustomerDialog "></button> -->
                       <p-dropdown scrollHeight="350px" [virtualScroll]="true" [itemSize]="50" [style]="{'width': '50%'}"
                         #subCurrAccDescription_dropdown formControlName="sc_Description" (click)="showPanel(3)"
@@ -768,16 +896,15 @@
                       </p-dropdown>
 
                     </p-inputGroupAddon>
-                    <button pButton pRipple icon="pi pi-search" class="p-button-rounded p-button-text" type="button"
-                      (click)="getSubCustomers()"></button>
+                    <button icon="pi pi-search" class="btn btn-primary" type="button" (click)="getSubCustomers()"> <i
+                        class="fa fa-search" aria-hidden="true"></i></button>
 
 
                   </p-inputGroup>
 
                   <div class="mt-3 mb-3">
-                    <button label="Yeni Alt Müşteri Oluştur" pButton pRipple icon="pi pi-plus"
-                      class="p-button-rounded p-button-text" type="button"
-                      (click)="openDialog('addSubCustomerDialog')"></button>
+                    <button class="btn btn-primary" type="button" (click)="openDialog('addSubCustomerDialog')">Yeni Alt
+                      Müşteri Oluştur</button>
                   </div>
                 </form>
               </div>
@@ -785,7 +912,7 @@
 
 
           </p-tabPanel>
-          <p-tabPanel header="Var Olan Müşteri">
+          <p-tabPanel header="Var Olan Müşteri" *ngIf="false">
             <form [formGroup]="getCustomerForm" class="customer-form"
               (ngSubmit)="getCustomers(this.getCustomerForm.value)">
               <div class="input-group mb-3">
@@ -812,8 +939,8 @@
                     <td>{{ address.districtDescription }}</td>
                     <td>{{ address.address.substring(0, 20) }}</td>
                     <td>
-                      <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus"
-                        (click)="selectCurrentAddress(address)" type="submit"></button>
+                      <button class="btn btn-primary" (click)="selectCurrentAddress(address)" type="submit"><i
+                          class="fa fa-plus" aria-hidden="true"></i></button>
                     </td>
                   </tr>
                 </ng-template>
@@ -843,14 +970,14 @@
                     {{ customer.phone }}
                   </td>
                   <td>
-                    <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus"
-                      (click)="selectCurrentCustomer(customer)"></button>
+                    <button class="btn btn-primary" (click)="selectCurrentCustomer(customer)"><i class="fa fa-plus"
+                        aria-hidden="true"></i></button>
                   </td>
                 </tr>
               </ng-template>
             </p-table>
           </p-tabPanel>
-          <p-tabPanel header="Adres Ekle">
+          <p-tabPanel header="Adres Ekle" *ngIf="invoiceType==false">
             <div *ngIf="this.selectedCustomers.length > 0">
               <form [formGroup]="_createCustomerForm" (ngSubmit)="_submitAddressForm(_createCustomerForm.value)">
                 <div class="row">
@@ -906,8 +1033,7 @@
                 </div>
 
                 <div class="col-md-6 form-group mb-3">
-                  <button pButton pRipple class="p-button-success" style="width: 100%" label="Etiket Çıkart"
-                    type="submit" label="Kaydet"></button>
+                  <button class="btn btn-success" style="width: 100%" type="submit">Kaydet</button>
                 </div>
               </form>
             </div>
@@ -930,8 +1056,8 @@
                 <td>{{ subCustomer?.city + ' / ' + subCustomer?.district + ' / ' + subCustomer?.address }}</td>
 
                 <td>
-                  <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus"
-                    (click)="selectCurrentSubCustomer(subCustomer)" type="submit"></button>
+                  <button class="btn btn-primary" icon="pi pi-plus" (click)="selectCurrentSubCustomer(subCustomer)"
+                    type="submit"><i class="fa fa-plus" aria-hidden="true"></i></button>
                 </td>
               </tr>
             </ng-template>
@@ -1007,8 +1133,8 @@
             </div>
 
             <div class="row mb-3">
-              <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus" label="Detaylar"
-                type="button" (click)="isCollapsed_2 = !isCollapsed_2"></button>
+              <button class="btn btn-primary" icon="pi pi-plus" label="Detaylar" type="button"
+                (click)="isCollapsed_2 = !isCollapsed_2"><i class="fa fa-plus" aria-hidden="true"></i>Detaylar</button>
             </div>
 
 
@@ -1093,8 +1219,8 @@
 
             <div class="row mb-3">
               <div class="form-group">
-                <button pButton pRipple class="p-button-rounded p-button-text" icon="pi pi-plus" label="Ekle"
-                  type="submit" (click)="addSubCustomer()"></button>
+                <button class="btn btn-primary" type="submit" (click)="addSubCustomer()"><i class="fa fa-plus"
+                    aria-hidden="true"></i> Ekle</button>
               </div>
             </div>
 
@@ -1127,8 +1253,8 @@
         </div>
         <div class="row mb-3" *ngIf="showCargo2">
           <div class="col-md-1">
-            <button pButton pRipple class="p-button-rounded p-button-text" label="Geri" (click)="goBack()" type="submit"
-              icon="pi pi-arrow-left"></button>
+            <button class="btn btn-primary" (click)="goBack()" type="submit"><i class="fa fa-arrow-left"
+                aria-hidden="true"></i></button>
           </div>
         </div>
 
@@ -1257,8 +1383,8 @@
           </div>
           <div class="row mb-3">
             <div class="col-md">
-              <button *ngIf="this.cargoForm.valid" pButton pRipple style="width: 100%" class="p-button-success"
-                label="Önizleme Sayfasına İlerle" (click)="goToPage(3)" type="submit"></button>
+              <button *ngIf="this.cargoForm.valid" style="width: 100%" class="btn btn-success" (click)="goToPage(3)"
+                type="submit"> Önizleme Sayfasına İlerle</button>
             </div>
           </div>
         </form>
@@ -1297,14 +1423,13 @@
             <div class="col-md-6">
               <button
                 *ngIf="this.cargoForm_2.valid"
-                pButton
-                pRipple
+
                 style="width: 100%"
-                class="p-button-success"
-                label="Önizleme Sayfasına İlerle"
+                class="btn btn-success"
+
                 (click)="goToPage(3)"
                 type="submit"
-              ></button>
+              > Önizleme Sayfasına İlerle</button>
             </div>
           </div>
         </form>-->
@@ -1333,21 +1458,13 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6 mb-3">
+                <div class="col-md-12 mb-3">
                   <input type="text" pInputText style="width: 100%" formControlName="orderDescription"
                     placeholder="Sipariş Açıklaması" />
                 </div>
-                <div class="col-md-3 mb-3">
-                  <h5>Toplam(V.H) : ₺{{ getTotalPrice() }}</h5>
-                </div>
-                <div class="col-md-3 mb-3">
-                  <h5 *ngIf="this.paymentForm.value.taxTypeCode?.value == '0'">
-                    Kdv : ₺{{ getTotalPriceWithTax() }}
-                  </h5>
-                </div>
+
               </div>
-              <button (click)="createOrder()" pButton pRipple style="width: 100%" label="Siparişi Onayla"
-                class="p-button-success"></button>
+              <button (click)="createOrder()" style="width: 100%" class="btn btn-success">Siparişi Onayla</button>
 
 
             </div>
@@ -1363,13 +1480,25 @@
               <tr>
                 <th scope="col">Resim</th>
                 <th scope="col">Kod</th>
-                <th scope="col">Miktar</th>
-
-                <th scope="col">Birim Fiyat</th>
-
-                <th scope="col">İndirimli Fiyat</th>
-                <th scope="col">Toplam Fiyat</th>
                 <th scope="col">Ürün</th>
+                <th *ngIf="!this.orderType" scope="col">Raf</th>
+                <th *ngIf="!this.orderType" scope="col">Parti</th>
+
+
+                <th scope="col">Toptan Fiyat</th>
+                <th scope="col">Miktar</th>
+                <th scope="col">Birim Fiyat</th>
+                <th scope="col">Satış Fiyatı</th>
+                <th scope="col">% İSK</th>
+                <th scope="col">₺ İSK</th>
+
+
+                <th scope="col">Toplam Fiyat</th>
+                <th scope="col">% Kdv</th>
+                <th scope="col">₺ Kdv</th>
+                <th scope="col">K. Total</th>
+
+
                 <!--  <th scope="col">Ekle-Çıkar</th> -->
                 <!-- <th scope="col">Sil</th> -->
               </tr>
@@ -1380,28 +1509,74 @@
                   <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true"></p-image>
                 </td>
 
+
                 <td>{{ product.itemCode }}</td>
+                <td class="scrollable-td">
+                  {{ product.description}}
+                </td>
+                <td *ngIf="!this.orderType">{{ product.shelfNo }}</td>
+                <td *ngIf="!this.orderType">{{ product.batchCode }}</td>
+
 
                 <td>
+                  {{ product.priceWs}}
+                </td>
+                <td style="cursor: pointer;" (click)="openUpdateDialog(product,ri)">
                   {{ product.quantity }}
                 </td>
 
                 <td>
-                  {{ product.price | currency : "₺" }}
+                  <span *ngIf="product.discountedPrice < product.price; else normalPrice">
+                    <span style="text-decoration: line-through;">
+                      {{ product.price | currency : "₺" }}
+                    </span>
+                    &nbsp;
+                    <span style="color: red;">
+                      -{{ ((product.price*product.quantity) - product.totalPrice) | currency : "₺" }}
+                    </span>
+                  </span>
+                  <ng-template #normalPrice>
+                    {{ product.price | currency : "₺" }}
+                  </ng-template>
                 </td>
-                <td>{{ product.discountedPrice | currency : "₺" }}</td>
+                <td style="cursor: pointer;" (click)="openUpdateDialog(product,ri)" class="hover-dark">
+                  {{ product.discountedPrice | currency : "₺" }}
+                </td>
 
                 <td>
-                  {{
-                    product.price > product.discountedPrice
-                      ? (product.discountedPrice * product.quantity
-                        | currency : "₺")
-                      : (product.price * product.quantity | currency : "₺")
-                  }}
+                  {{product.discountRate1}}
                 </td>
                 <td>
-                  {{ product.description.substring(0,50)}}
+                  {{product.discountRate2}}
                 </td>
+
+
+                <td>
+                  {{product.totalPrice}}
+                </td>
+                <td>
+                  {{product.taxRate}}
+                </td>
+                <td>
+                  {{((product.taxRate/100)* product.totalPrice).toFixed(2)}}
+                </td>
+                <td>
+                  {{ product.totalTaxedPrice }}
+                </td>
+
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="footer">
+              <tr>
+                <td colspan="4" class="text-right">Toplam</td>
+                <td colspan="5" class="text-right">
+                  {{getTotalQuantity() }} Adet
+                </td>
+
+                <td colspan="2" class="text-right"> {{getTotal() }} </td>
+                <td class="text-right"> {{getTotalTax_2().toFixed(2) }} </td>
+
+                <td colspan="2" class="text-right"> {{getTotalTaxedPrice()}}</td>
               </tr>
             </ng-template>
           </p-table>
@@ -1426,21 +1601,11 @@
               <div class="card-body">
                 <h5 class="card-title">Müşteri
                 </h5>
-                <!-- <p class="card-text">
-                  Bayi Kodu:
-                  {{
-                    selectedCustomers[0].currAccCode
-                      ? selectedCustomers[0].currAccCode
-                      : this.currAccCode
-                  }}
-                </p> -->
+
                 <p class="card-text">
                   Müşteri: {{ selectedCustomers[0]?.currAccDescription }}
                 </p>
-                <!-- <p class="card-text">Mail: {{ selectedCustomers[0].mail }}</p>
-                <p class="card-text">
-                  Telefon: {{ selectedCustomers[0].phone }}
-                </p> -->
+
                 <p class="card-text">
                   Para Birimi: {{ selectedCustomers[0]?.docCurrencyCode }}
                 </p>
@@ -1601,16 +1766,16 @@
           <div class="card-body p-4">
             <div class="row">
               <div class="col-md-6">
-                <button (click)="createNewOrder()" pButton pRipple style="width: 100%" label="Yeni Sipariş Oluştur"
-                  class="p-button-success"></button>
+                <button (click)="createNewOrder()" style="width: 100%" class="btn btn-success">Yeni Sipariş
+                  Oluştur</button>
               </div>
               <div class="col-md-6" *ngIf="this.isCancelled">
-                <button (click)="updateClientOrderCancelStatus(this.id, this.isCancelled)" pButton pRipple
-                  style="width: 100%" label="Siparişi İptal Kaldır" class="p-button-success"></button>
+                <button (click)="updateClientOrderCancelStatus(this.id, this.isCancelled)" style="width: 100%"> Siparişi
+                  İptal Kaldır</button>
               </div>
               <div class="col-md-6" *ngIf="!this.isCancelled">
-                <button (click)="updateClientOrderCancelStatus(this.id, this.isCancelled)" pButton pRipple
-                  style="width: 100%" label="Siparişi İptal Et" class="p-button-danger"></button>
+                <button (click)="updateClientOrderCancelStatus(this.id, this.isCancelled)" style="width: 100%"
+                  class="btn btn-danger"> Siparişi İptal Et</button>
               </div>
             </div>
           </div>

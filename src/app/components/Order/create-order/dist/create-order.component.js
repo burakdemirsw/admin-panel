@@ -87,6 +87,8 @@ var CreateOrderComponent = /** @class */ (function () {
         this.isCancelled = false;
         this.orderNumber = "";
         this.orderDescription = "burak demir";
+        this.discountRate1 = 0;
+        this.discountRate2 = 0;
         //---------------------------------------------------------------------------
         //--------------------------------------------------------------------------- SATIŞ ELEMANI
         this.salesPersonModels = [];
@@ -273,6 +275,86 @@ var CreateOrderComponent = /** @class */ (function () {
         this.getProductsForm.get('barcode').setValue(ev);
         this.getProducts(this.getProductsForm.value, this.orderType);
     };
+    //---------------------------------------------------------------------------
+    //---------------------------------------------------- TOTAL FUNCS
+    CreateOrderComponent.prototype.findVatRate = function (vatRate) {
+        return this.selectedProducts.some(function (p) { return p.taxRate == vatRate; });
+    };
+    CreateOrderComponent.prototype.calculateVatAmount = function (vatRate) {
+        var _this = this;
+        // First, calculate the total discount rate to apply to each product
+        var totalDiscountRate = this.discountRate1 || 0; // percentage discount
+        var cashDiscount = this.discountRate2 || 0; // cash discount
+        return Number(this.selectedProducts
+            .filter(function (p) { return p.taxRate === vatRate; }) // Filter products with the specified VAT rate
+            .reduce(function (total, product) {
+            // Apply percentage discount
+            var discountedPrice = product.totalPrice * (1 - totalDiscountRate / 100);
+            // Apply cash discount proportionally based on product price
+            discountedPrice -= cashDiscount * (product.totalPrice / _this.getUntaxedTotal());
+            // Calculate VAT based on the final discounted price
+            return total + (discountedPrice * product.taxRate / 100);
+        }, 0).toFixed(2)); // Sum the VAT amounts and round to 2 decimal places sadas
+    };
+    //vergisiz tutarların iskontodan sonraki hali
+    CreateOrderComponent.prototype.getUnTaxedTotalAfterDiscount = function () {
+        var number = this.selectedProducts.reduce(function (acc, product) { return acc + product.totalPrice; }, 0);
+        number = ((number * ((100 - this.discountRate1) / 100)) - this.discountRate2);
+        if (number.toString().includes('.')) {
+            return Number(number);
+        }
+        else {
+            return number;
+        }
+    };
+    //vergisiz tutarların toplamı
+    CreateOrderComponent.prototype.getUntaxedTotal = function () {
+        var number = this.selectedProducts.reduce(function (acc, product) { return acc + product.totalPrice; }, 0);
+        if (number.toString().includes('.')) {
+            return Number(number);
+        }
+        else {
+            return number;
+        }
+    };
+    //dip iskonto uygulandıktan sonraki fiyatı çeker
+    CreateOrderComponent.prototype.getTaxedTotalAfterDiscount = function () {
+        return this.selectedProducts.reduce(function (acc, product) { return acc + product.totalTaxedPrice; }, 0) * ((100 - this.discountRate1) / 100) - this.discountRate2;
+    };
+    CreateOrderComponent.prototype.getTotalQuantity = function () {
+        return this.selectedProducts.reduce(function (acc, product) { return acc + product.quantity; }, 0);
+    };
+    CreateOrderComponent.prototype.calculateNetTaxedPrice = function (product, proposal) {
+        var lineDiscountedPrice = (product.price || 0) * (1 - product.discountRate1 / 100) - product.discountRate2;
+        var generalDiscountedPrice = lineDiscountedPrice * (1 - (proposal.discountRate1 || 0) / 100) - (proposal.discountRate2 || 0);
+        var totalPrice = generalDiscountedPrice * product.quantity;
+        var totalTaxedPrice = totalPrice * (1 + product.taxRate / 100);
+        return parseFloat(totalTaxedPrice.toFixed(2));
+    };
+    CreateOrderComponent.prototype.getTotalTax_2 = function () {
+        return this.selectedProducts.reduce(function (acc, product) { return acc + ((product.totalPrice * (product.taxRate / 100))); }, 0);
+    };
+    CreateOrderComponent.prototype.getTotalTax = function () {
+        return this.getTaxedTotalAfterDiscount() - this.getUnTaxedTotalAfterDiscount();
+        return this.selectedProducts.reduce(function (acc, product) { return acc + (product.totalPrice * (product.taxRate / 100)); }, 0);
+    };
+    CreateOrderComponent.prototype.getTotal = function () {
+        return this.selectedProducts.reduce(function (acc, product) { return acc + product.totalPrice; }, 0);
+    };
+    //dip iskonto uygulanmadan önceki fiyatı çeker
+    CreateOrderComponent.prototype.getTotalTaxedPrice = function () {
+        var total = this.selectedProducts.reduce(function (acc, product) { return acc + product.totalTaxedPrice; }, 0);
+        return parseFloat(total.toFixed(2));
+    };
+    CreateOrderComponent.prototype.getUntaxedTotalWithTax = function () {
+        var number = this.selectedProducts.reduce(function (acc, product) { return acc + (product.quantity * product.discountedPrice * (product.taxRate / 100)); }, 0);
+        if (number.toString().includes('.')) {
+            return Number(number.toString().split('.')[0]);
+        }
+        else {
+            return number;
+        }
+    };
     CreateOrderComponent.prototype.getClientOrder = function (state) {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
@@ -286,11 +368,13 @@ var CreateOrderComponent = /** @class */ (function () {
                         if (!(state === 0)) return [3 /*break*/, 9];
                         if (!response.clientOrder) return [3 /*break*/, 7];
                         order = response;
+                        this.discountRate1 = order.clientOrder.discountRate1;
+                        this.discountRate2 = order.clientOrder.discountRate2;
+                        this.updateProductForm.get('discountRate1').setValue(order.clientOrder.discountRate1);
+                        this.updateProductForm.get('discountRate2').setValue(order.clientOrder.discountRate2);
                         this.orderNo = order.clientOrder.orderNo;
                         this.isCompleted = order.clientOrder.isCompleted != null ? order.clientOrder.isCompleted : false;
-                        this.toasterService.success(this.isCompleted.toString());
                         this.isCancelled = order.clientOrder.isCancelled != null ? order.clientOrder.isCancelled : false;
-                        this.toasterService.success(this.isCancelled.toString());
                         this.currAccCode = order.clientOrder.customerCode;
                         this.orderNumber = order.clientOrder.orderNumber;
                         customer_request = new getCustomerList_CM_2.GetCustomerList_CM();
@@ -355,8 +439,8 @@ var CreateOrderComponent = /** @class */ (function () {
                             this.selectedProducts = [];
                             order.clientOrderBasketItems.reverse();
                             order.clientOrderBasketItems.forEach(function (basketItem) {
-                                var object = _this.convertLineToObject(basketItem);
-                                _this.selectedProducts.push(object);
+                                // var object = this.convertLineToObject(basketItem);
+                                _this.selectedProducts.push(basketItem);
                             });
                         }
                         return [3 /*break*/, 8];
@@ -370,10 +454,11 @@ var CreateOrderComponent = /** @class */ (function () {
                             order = response;
                             this.selectedProducts = [];
                             if (order.clientOrderBasketItems.length > 0) {
-                                order.clientOrderBasketItems.forEach(function (basketItem) {
-                                    var object = _this.convertLineToObject(basketItem);
-                                    _this.selectedProducts.push(object);
-                                });
+                                this.selectedProducts = order.clientOrderBasketItems;
+                                // order.clientOrderBasketItems.forEach((basketItem: ClientOrderBasketItem) => {
+                                //   var object = this.convertLineToObject(basketItem);
+                                //  .push(object);
+                                // });
                                 console.log("Ürünler Eklendi");
                             }
                         }
@@ -428,6 +513,10 @@ var CreateOrderComponent = /** @class */ (function () {
         object.discountedPrice = line.discountedPrice;
         object.taxRate = line.taxRate;
         object.priceWs = line.priceWs;
+        object.discountRate1 = line.discountRate1;
+        object.discountRate2 = line.discountRate2;
+        object.totalPrice = line.totalPrice;
+        object.totalTaxedPrice = line.totalTaxedPrice;
         return object;
     };
     CreateOrderComponent.prototype.createClientOrder_RM = function () {
@@ -449,6 +538,8 @@ var CreateOrderComponent = /** @class */ (function () {
             request.subCurrAccId = (_c = this.selectedSubCustomers[0]) === null || _c === void 0 ? void 0 : _c.subCurrAccId;
             request.subCustomerDescription = (_d = this.selectedSubCustomers[0]) === null || _d === void 0 ? void 0 : _d.companyName;
             request.isCancelled = false;
+            request.discountRate1 = this.discountRate1;
+            request.discountRate2 = this.discountRate2;
             if (this.payment) {
                 request.paymentType = this.payment.creditCardTypeCode;
             }
@@ -485,12 +576,12 @@ var CreateOrderComponent = /** @class */ (function () {
             request.mD_Stock = newLine.mD_Stock;
             request.basePrice = newLine.basePrice;
             request.discountedPrice = newLine.discountedPrice;
-            request.taxRate = newLine.taxRate;
             request.priceWs = newLine.priceWs;
             request.discountRate1 = 0;
             request.discountRate2 = 0;
-            request.totalPrice = 0;
-            request.totalTaxedPrice = 0;
+            request.taxRate = newLine.taxRate;
+            request.totalPrice = newLine.quantity * newLine.discountedPrice;
+            request.totalTaxedPrice = (newLine.quantity * newLine.discountedPrice) * (1 + (newLine.taxRate / 100));
             return request;
         }
         catch (error) {
@@ -1479,15 +1570,19 @@ var CreateOrderComponent = /** @class */ (function () {
     };
     CreateOrderComponent.prototype.createUpdateProductForm = function () {
         this.updateProductForm = this.formBuilder.group({
-            price: [null, forms_1.Validators.required],
-            quantity: [null, forms_1.Validators.required]
+            discountedPrice: [null, forms_1.Validators.required],
+            quantity: [null, forms_1.Validators.required],
+            discountRate1: [null, forms_1.Validators.required],
+            discountRate2: [null, forms_1.Validators.required]
         });
     };
     CreateOrderComponent.prototype.openUpdateDialog = function (product, index) {
         this.selectedProduct = product;
         this.selectedIndex = index;
-        this.updateProductForm.get('price').setValue(this.selectedProduct.discountedPrice);
+        this.updateProductForm.get('discountedPrice').setValue(this.selectedProduct.discountedPrice);
         this.updateProductForm.get('quantity').setValue(this.selectedProduct.quantity);
+        this.updateProductForm.get('discountRate1').setValue(this.selectedProduct.discountRate1);
+        this.updateProductForm.get('discountRate2').setValue(this.selectedProduct.discountRate2);
         this.openDialog('updateProductDialog');
     };
     CreateOrderComponent.prototype.resetProductForm = function () {
@@ -1518,58 +1613,87 @@ var CreateOrderComponent = /** @class */ (function () {
             return number;
         }
     };
-    CreateOrderComponent.prototype.discount = function (discountRate) {
-        // this.resetDiscount()
-        this.currentDiscountRate = discountRate;
-        if (discountRate > 0 && discountRate <= 100) {
-            this.selectedProducts.forEach(function (p) {
-                p.discountedPrice = ((100 - discountRate) / 100) * (p.discountedPrice);
+    CreateOrderComponent.prototype.discount = function (discountAmount) {
+        return __awaiter(this, void 0, void 0, function () {
+            var r, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!(discountAmount >= 0 && discountAmount <= 100)) return [3 /*break*/, 2];
+                        this.discountRate1 = discountAmount;
+                        r = this.createClientOrder_RM();
+                        return [4 /*yield*/, this.orderService.createClientOrder(r)];
+                    case 1:
+                        response = _a.sent();
+                        if (response) {
+                            this.getClientOrder(0);
+                            this.getTaxedTotalAfterDiscount();
+                            this.toasterService.success('Güncellendi');
+                        }
+                        else {
+                            this.toasterService.error('Güncellenmedi');
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        this.toasterService.error('1 ile 100 arasında bir değer giriniz.');
+                        _a.label = 3;
+                    case 3: return [2 /*return*/];
+                }
             });
-            this._discountRate = discountRate;
-            this.toasterService.success("İndirim Uygulandı");
-        }
-        var totalPrice = this.getTotalPrice();
-        // this.toasterService.success("Toplam Fiyat : " + totalPrice)
-        // if (totalPrice !== Math.trunc(totalPrice)) {
-        //   const integerPart = Math.trunc(totalPrice);
-        //   const fractionPart = totalPrice - integerPart;
-        //   if (fractionPart !== 0) {
-        //     this.cashDiscount(fractionPart);
-        //     // Burada kesirli değerle ilgili ek işlemler yapabilirsiniz
-        //   }
-        // }
+        });
     };
     CreateOrderComponent.prototype.cashDiscount = function (discountAmount) {
-        // this.resetDiscount();
-        var total = this.selectedProducts.reduce(function (acc, product) { return acc + (product.quantity * product.discountedPrice); }, 0);
-        var integerPart = Math.floor(total);
-        var fraction = total - integerPart;
-        discountAmount = discountAmount + fraction;
-        this.currentCashdiscountRate = discountAmount;
-        var value = discountAmount / this.selectedProducts.length;
-        this.selectedProducts.forEach(function (p) {
-            p.discountedPrice = p.discountedPrice - (value / p.quantity);
+        return __awaiter(this, void 0, void 0, function () {
+            var r, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.discountRate2 = discountAmount;
+                        r = this.createClientOrder_RM();
+                        return [4 /*yield*/, this.orderService.createClientOrder(r)];
+                    case 1:
+                        response = _a.sent();
+                        if (!response) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.getClientOrder(0)];
+                    case 2:
+                        _a.sent();
+                        this.getTaxedTotalAfterDiscount();
+                        this.toasterService.success('Güncellendi');
+                        return [3 /*break*/, 4];
+                    case 3:
+                        this.toasterService.error('Güncellenmedi');
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
+                }
+            });
         });
-        this.toasterService.success("İndirim Uygulandı");
-        var totalPrice = this.getTotalPrice();
-        // this.toasterService.success("Toplam Fiyat : " + totalPrice)
-        // if (totalPrice !== Math.trunc(totalPrice)) {
-        //   const integerPart = Math.trunc(totalPrice);
-        //   const fractionPart = totalPrice - integerPart;
-        //   if (fractionPart !== 0) {
-        //     this.cashDiscount(fractionPart);
-        //     // Burada kesirli değerle ilgili ek işlemler yapabilirsiniz
-        //   }
-        // }
     };
     CreateOrderComponent.prototype.resetDiscount = function () {
-        this.currentCashdiscountRate = 0;
-        this.currentDiscountRate = 0;
-        this.selectedProducts.forEach(function (p) {
-            p.discountedPrice = p.basePrice;
+        return __awaiter(this, void 0, void 0, function () {
+            var r, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.discountRate1 = 0;
+                        this.discountRate2 = 0;
+                        r = this.createClientOrder_RM();
+                        return [4 /*yield*/, this.orderService.createClientOrder(r)];
+                    case 1:
+                        response = _a.sent();
+                        if (!response) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.getClientOrder(0)];
+                    case 2:
+                        _a.sent();
+                        this.getTaxedTotalAfterDiscount();
+                        this.toasterService.success('Güncellendi');
+                        return [3 /*break*/, 4];
+                    case 3:
+                        this.toasterService.error('Güncellenmedi');
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
+                }
+            });
         });
-        this.discountForm.reset();
-        this.toasterService.success("İndirim Kaldırıldı");
     };
     CreateOrderComponent.prototype.createGetProductForm = function () {
         this.getProductsForm = this.formBuilder.group({
@@ -1936,7 +2060,7 @@ var CreateOrderComponent = /** @class */ (function () {
                             qty = qty * 5;
                         }
                         product.quantity += qty;
-                        return [4 /*yield*/, this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price, product.discountedPrice, product.basePrice, product.priceWs)];
+                        return [4 /*yield*/, this.orderService.updateClientOrderBasketItem(product)];
                     case 1:
                         response = _a.sent();
                         if (response) {
@@ -1956,7 +2080,7 @@ var CreateOrderComponent = /** @class */ (function () {
                     case 0:
                         // this.toasterService.success(product.quantity.toString());
                         product.quantity = quantity;
-                        return [4 /*yield*/, this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price, product.discountedPrice, product.basePrice, product.priceWs)];
+                        return [4 /*yield*/, this.orderService.updateClientOrderBasketItem(product)];
                     case 1:
                         response = _a.sent();
                         if (response) {
@@ -1968,7 +2092,6 @@ var CreateOrderComponent = /** @class */ (function () {
                         this.closeDialog(index);
                         this.updateProductDialog = false;
                         delete this.clonedProducts[product.lineId];
-                        this.cancelRowEdit(product, 0);
                         return [2 /*return*/];
                 }
             });
@@ -1980,8 +2103,16 @@ var CreateOrderComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        product.discountedPrice = this.updateProductForm.value.price;
-                        product.quantity = this.updateProductForm.value.quantity;
+                        product.discountedPrice = this.updateProductForm.get('discountedPrice').value;
+                        product.quantity = this.updateProductForm.get('quantity').value;
+                        product.discountRate1 = this.updateProductForm.get('discountRate1').value; //yüzde
+                        product.discountRate2 = this.updateProductForm.get('discountRate2').value;
+                        product.totalPrice =
+                            product.quantity *
+                                ((product.discountedPrice * ((100 - product.discountRate1) / 100)) - product.discountRate2);
+                        product.totalTaxedPrice =
+                            product.quantity *
+                                (((product.discountedPrice * (1 + (product.taxRate / 100))) * ((100 - product.discountRate1) / 100)) - product.discountRate2);
                         this.quantityList = [];
                         if (!(product.price > 0)) return [3 /*break*/, 4];
                         findedProduct = this.selectedProducts
@@ -1996,31 +2127,21 @@ var CreateOrderComponent = /** @class */ (function () {
                         // Sadece ilgili ri için dialog'u açar
                         // this.openDialog('quantityListDialog');
                         return [2 /*return*/];
-                    case 2:
-                        this.toasterService.success(product.quantity.toString());
-                        return [4 /*yield*/, this.orderService.updateClientOrderBasketItem(this.id, product.lineId, product.quantity, product.price, product.discountedPrice, product.basePrice, product.priceWs)];
+                    case 2: return [4 /*yield*/, this.orderService.updateClientOrderBasketItem(product)];
                     case 3:
                         response = _a.sent();
                         if (response) {
                             this.toasterService.success("Ürün Güncellendi");
                             this.focusNextInput('barcode_product');
-                            this.resetDiscount();
                             this.getClientOrder(1);
                         }
                         delete this.clonedProducts[product.lineId];
                         _a.label = 4;
                     case 4:
-                        this.cancelRowEdit(product, 0);
                         this.updateProductDialog = false;
                         return [2 /*return*/];
                 }
             });
-        });
-    };
-    CreateOrderComponent.prototype.cancelRowEdit = function (product, index) {
-        var _this = this;
-        this.selectedProducts.forEach(function (product) {
-            _this.myTable.cancelRowEdit(product);
         });
     };
     CreateOrderComponent.prototype.onRowEditCancel = function (product, index) {
@@ -2178,7 +2299,7 @@ var CreateOrderComponent = /** @class */ (function () {
                                 __product.price = value.code;
                                 __product.basePrice = value.code;
                                 __product.discountedPrice = value.code;
-                                return [4 /*yield*/, this.orderService.updateClientOrderBasketItem(this.id, __product.lineId, __product.quantity, __product.price, __product.discountedPrice, __product.discountedPrice, __product.priceWs)];
+                                return [4 /*yield*/, this.orderService.updateClientOrderBasketItem(__product)];
                             case 5:
                                 _a.sent();
                                 return [3 /*break*/, 8];
@@ -2186,7 +2307,7 @@ var CreateOrderComponent = /** @class */ (function () {
                                 _product.price = value.code;
                                 _product.basePrice = value.code;
                                 _product.discountedPrice = value.code;
-                                return [4 /*yield*/, this.orderService.updateClientOrderBasketItem(this.id, _product.lineId, _product.quantity, _product.price, _product.discountedPrice, _product.basePrice, _product.priceWs)];
+                                return [4 /*yield*/, this.orderService.updateClientOrderBasketItem(__product)];
                             case 7:
                                 _a.sent();
                                 _a.label = 8;
@@ -2583,21 +2704,21 @@ var CreateOrderComponent = /** @class */ (function () {
     CreateOrderComponent.prototype.createOrder = function () {
         var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function () {
-            var payment_response, formValue, exchangeRate, order_request, order_response, totalPrice, discountedPrice, _i, _e, _product, after_discountPrice, dif, addedOrderNumber, batchSize, totalProducts, batchStart, batchEnd, productBatch, _request, response, addedOrder, batchSize, totalProducts, batchStart, batchEnd, productBatch, _request, response, _batchSize, _totalProducts, _batchStart, invoiceNumber, _batchEnd, _productBatch, __request, __response, addedOrder;
+            var payment_response, formValue, exchangeRate, order_request, order_response, addedOrderNumber, batchSize, totalProducts, batchStart, batchEnd, productBatch, _request, response, addedOrder, batchSize, totalProducts, batchStart, batchEnd, productBatch, _request, response, _batchSize, _totalProducts, _batchStart, invoiceNumber, _batchEnd, _productBatch, __request, __response, addedOrder;
             var _this = this;
-            return __generator(this, function (_f) {
-                switch (_f.label) {
+            return __generator(this, function (_e) {
+                switch (_e.label) {
                     case 0:
                         if (!!this.payment.creditCardTypeCode) return [3 /*break*/, 2];
                         if (!this.paymentForm.get("paymentType").value) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.createPayment(this.paymentForm.get("paymentType").value.id)];
                     case 1:
-                        payment_response = _f.sent();
+                        payment_response = _e.sent();
                         if (!payment_response) {
                             this.toasterService.error("Ödeme Tipi Seçiniz");
                             return [2 /*return*/];
                         }
-                        _f.label = 2;
+                        _e.label = 2;
                     case 2:
                         if (!((_a = this.paymentForm.value.taxTypeCode) === null || _a === void 0 ? void 0 : _a.value)) {
                             this.toasterService.error("Vergi Tipi Seçiniz");
@@ -2632,39 +2753,26 @@ var CreateOrderComponent = /** @class */ (function () {
                         }
                         order_request = this.createClientOrder_RM();
                         return [4 /*yield*/, this.orderService.createClientOrder(order_request)
-                            //---------------------------------------------------- DISCOUNT CALCULATION
+                            // var discountPercent: number = this.calculateDiscountPercent(this.selectedProducts);
                         ]; //son sipariş güncellendi
                     case 3:
-                        order_response = _f.sent() //son sipariş güncellendi
+                        order_response = _e.sent() //son sipariş güncellendi
                         ;
-                        totalPrice = 0;
-                        discountedPrice = 0;
-                        for (_i = 0, _e = this.selectedProducts; _i < _e.length; _i++) {
-                            _product = _e[_i];
-                            totalPrice += _product.price * _product.quantity;
-                            discountedPrice += _product.discountedPrice * _product.quantity;
-                        }
-                        after_discountPrice = totalPrice - (totalPrice * this.currentDiscountRate / 100) - this.currentCashdiscountRate;
-                        dif = 0;
-                        if (discountedPrice < after_discountPrice) {
-                            dif = after_discountPrice - discountedPrice;
-                            this.currentCashdiscountRate += dif;
-                        }
                         addedOrderNumber = null;
                         if (!this.orderType) return [3 /*break*/, 12];
                         batchSize = 50;
                         totalProducts = this.selectedProducts.length;
                         batchStart = 0;
-                        _f.label = 4;
+                        _e.label = 4;
                     case 4:
                         if (!(batchStart < totalProducts)) return [3 /*break*/, 6];
                         batchEnd = Math.min(batchStart + batchSize, totalProducts);
                         productBatch = this.selectedProducts.slice(batchStart, batchEnd);
-                        _request = new nebimOrder_1.NebimOrder((addedOrderNumber != undefined || addedOrderNumber != null) ? addedOrderNumber : null, exchangeRate, this.currentDiscountRate, this.currentCashdiscountRate, this.paymentForm.get('orderDescription').value, this.currAccCode, this.orderNo, formValue, // Ensure this variable supports being split if necessary
+                        _request = new nebimOrder_1.NebimOrder((addedOrderNumber != undefined || addedOrderNumber != null) ? addedOrderNumber : null, exchangeRate, this.discountRate1, this.discountRate2, this.paymentForm.get('orderDescription').value, this.currAccCode, this.orderNo, formValue, // Ensure this variable supports being split if necessary
                         productBatch, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value, (_b = this.selectedSubCustomers[0]) === null || _b === void 0 ? void 0 : _b.subCurrAccId);
                         return [4 /*yield*/, this.orderService.createOrder(_request)];
                     case 5:
-                        response = _f.sent();
+                        response = _e.sent();
                         this.orderNumber = response.orderNumber;
                         addedOrderNumber = response.orderNumber;
                         // Update the start index for the next batch
@@ -2676,61 +2784,58 @@ var CreateOrderComponent = /** @class */ (function () {
                         if (!(this.cargoForm.get('isActive').value === true)) return [3 /*break*/, 8];
                         return [4 /*yield*/, this.submitCargo(this.cargoForm.value)];
                     case 7:
-                        _f.sent();
+                        _e.sent();
                         return [3 /*break*/, 9];
                     case 8:
                         this.toasterService.info('KARGO OLUŞTURULMADI');
-                        _f.label = 9;
+                        _e.label = 9;
                     case 9: return [4 /*yield*/, this.orderService.getOrderDetail(this.orderNumber)];
                     case 10:
-                        addedOrder = _f.sent();
+                        addedOrder = _e.sent();
                         if (addedOrder.orderNumber) {
                             this.sendInvoiceToPrinter(addedOrder.orderNumber);
                         }
-                        this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "orders-managament/1/2");
-                        _f.label = 11;
-                    case 11: return [3 /*break*/, 23];
+                        this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "unfinished-orders");
+                        _e.label = 11;
+                    case 11: return [3 /*break*/, 22];
                     case 12:
                         batchSize = 50;
                         totalProducts = this.selectedProducts.length;
                         batchStart = 0;
-                        _f.label = 13;
+                        _e.label = 13;
                     case 13:
                         if (!(batchStart < totalProducts)) return [3 /*break*/, 15];
                         batchEnd = Math.min(batchStart + batchSize, totalProducts);
                         productBatch = this.selectedProducts.slice(batchStart, batchEnd);
-                        _request = new nebimOrder_1.NebimOrder((addedOrderNumber != undefined || addedOrderNumber != null) ? addedOrderNumber : null, exchangeRate, this.currentDiscountRate, this.currentCashdiscountRate, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, // Ensure this variable supports being split if necessary
+                        _request = new nebimOrder_1.NebimOrder((addedOrderNumber != undefined || addedOrderNumber != null) ? addedOrderNumber : null, exchangeRate, this.discountRate1, this.discountRate2, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, // Ensure this variable supports being split if necessary
                         productBatch, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value, (_c = this.selectedSubCustomers[0]) === null || _c === void 0 ? void 0 : _c.subCurrAccId);
                         return [4 /*yield*/, this.orderService.createOrder(_request)];
                     case 14:
-                        response = _f.sent();
+                        response = _e.sent();
                         addedOrderNumber = response.orderNumber;
                         this.orderNumber = response.orderNumber;
                         // Update the start index for the next batch
                         batchStart += batchSize;
                         return [3 /*break*/, 13];
                     case 15:
-                        if (!(response && response.status === true)) return [3 /*break*/, 18];
+                        if (!(response && response.status === true)) return [3 /*break*/, 17];
                         addedOrderNumber = response.orderNumber;
                         if (!(this.cargoForm.get('isActive').value === true)) return [3 /*break*/, 17];
                         return [4 /*yield*/, this.submitCargo(this.cargoForm.value)];
                     case 16:
-                        _f.sent();
-                        return [3 /*break*/, 18];
+                        _e.sent();
+                        return [3 /*break*/, 17];
                     case 17:
-                        this.toasterService.info('KARGO OLUŞTURULMADI');
-                        _f.label = 18;
-                    case 18:
                         _batchSize = 50;
                         _totalProducts = this.selectedProducts.length;
                         _batchStart = 0;
                         invoiceNumber = "";
-                        _f.label = 19;
-                    case 19:
-                        if (!(_batchStart < _totalProducts)) return [3 /*break*/, 21];
+                        _e.label = 18;
+                    case 18:
+                        if (!(_batchStart < _totalProducts)) return [3 /*break*/, 20];
                         _batchEnd = Math.min(_batchStart + _batchSize, totalProducts);
                         _productBatch = this.selectedProducts.slice(_batchStart, _batchEnd);
-                        __request = new nebimOrder_1.NebimInvoice(this.currentDiscountRate, this.currentCashdiscountRate, exchangeRate, this.selectedCustomers[0].docCurrencyCode, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, _productBatch, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value, this.selectedAddresses[0].postalAddressID, (_d = this.selectedSubCustomers[0]) === null || _d === void 0 ? void 0 : _d.subCurrAccId, invoiceNumber);
+                        __request = new nebimOrder_1.NebimInvoice(this.discountRate1, this.discountRate2, exchangeRate, this.selectedCustomers[0].docCurrencyCode, this.cargoForm.get("address_recepient_name").value, this.currAccCode, this.orderNo, formValue, _productBatch, this.salesPersonCode, this.paymentForm.value.taxTypeCode.value, this.selectedAddresses[0].postalAddressID, (_d = this.selectedSubCustomers[0]) === null || _d === void 0 ? void 0 : _d.subCurrAccId, invoiceNumber);
                         __request.lines.forEach(function (l1) {
                             var fp = response.lines.find(function (p) {
                                 return p.itemCode === l1.itemCode && p.usedBarcode === l1.usedBarcode && p.qty1 === l1.qty1;
@@ -2741,28 +2846,28 @@ var CreateOrderComponent = /** @class */ (function () {
                             }
                         });
                         return [4 /*yield*/, this.orderService.createInvoice(__request)];
-                    case 20:
-                        __response = _f.sent();
+                    case 19:
+                        __response = _e.sent();
                         if (__response.status) {
                             invoiceNumber = __response.invoiceNumber;
                         }
                         else {
                             this.toasterService.error("Faturalaştırma Sırasında Hata Alındı");
-                            return [3 /*break*/, 21];
+                            return [3 /*break*/, 20];
                         }
                         _batchStart += _batchSize;
-                        return [3 /*break*/, 19];
-                    case 21:
-                        if (!__response) return [3 /*break*/, 23];
+                        return [3 /*break*/, 18];
+                    case 20:
+                        if (!__response) return [3 /*break*/, 22];
                         return [4 /*yield*/, this.orderService.getOrderDetail(this.orderNumber)];
-                    case 22:
-                        addedOrder = _f.sent();
+                    case 21:
+                        addedOrder = _e.sent();
                         if (addedOrder.orderNumber) {
                             this.sendInvoiceToPrinter(addedOrder.orderNumber);
                         }
                         this.generalService.waitAndNavigate("Sipariş Oluşturuldu & Faturalaştırıdı", "orders-managament/1/1");
-                        _f.label = 23;
-                    case 23: return [2 /*return*/];
+                        _e.label = 22;
+                    case 22: return [2 /*return*/];
                 }
             });
         });

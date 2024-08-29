@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Proposal_VM } from 'src/app/models/model/product/proposalProduct';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
+import { OrderService } from 'src/app/services/admin/order.service';
 import { ProductService } from 'src/app/services/admin/product.service';
-import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 @Component({
@@ -20,10 +20,9 @@ export class ProposalListComponent implements OnInit {
   constructor(
     private generalService: GeneralService,
     private toasterService: ToasterService,
-    private headerService: HeaderService,
     private router: Router,
     private productService: ProductService,
-    private warehouseService: WarehouseService
+    private orderService: OrderService
   ) {
 
   }
@@ -52,46 +51,10 @@ export class ProposalListComponent implements OnInit {
   }
   async createProposalReport(proposal: Proposal_VM) {
 
-    if (window.confirm("Teklifi Oluşturmak İstediğinize Emin Misiniz?")) {
-      var data = await this.warehouseService.createProposalReport(proposal.id);
-      if (data) {
-
-
-        const file = new Blob([data], { type: 'application/pdf' });
-        const fileURL = URL.createObjectURL(file);
-
-        // Create a temporary link element
-        const downloadLink = document.createElement('a');
-        downloadLink.href = fileURL;
-        downloadLink.download = "marketplace-order-cargo-barcode.pdf";  // Set the filename for the download
-        document.body.appendChild(downloadLink); // Append to body
-        downloadLink.click();  // Trigger the download
-        document.body.removeChild(downloadLink); // Remove the link after triggering the download
-        URL.revokeObjectURL(fileURL); // Clean up the URL object
-
-
-
-        const _file = new Blob([data], { type: 'application/pdf' });
-        const _fileURL = URL.createObjectURL(_file);
-
-        // Create an iframe element
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';  // Hide the iframe
-        iframe.src = _fileURL;
-
-        // Append the iframe to the body
-        document.body.appendChild(iframe);
-
-        // Wait until the iframe is loaded, then call print
-        iframe.onload = () => {
-          iframe.contentWindow?.print();
-        };
-        this.toasterService.success("Teklif YAZDIRILDI");
-
-      } else {
-        this.toasterService.error("Teklif YAZDIRILAMADI");
-      }
-
+    if (window.confirm("Mail Gönderilsin mi?")) {
+      var data = await this.orderService.createProposalReport(proposal.id, true);
+    } else {
+      var data = await this.orderService.createProposalReport(proposal.id, false);
     }
   }
   async routeNewPage() {

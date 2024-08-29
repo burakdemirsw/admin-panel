@@ -45,13 +45,12 @@ exports.__esModule = true;
 exports.ProposalListComponent = void 0;
 var core_1 = require("@angular/core");
 var ProposalListComponent = /** @class */ (function () {
-    function ProposalListComponent(generalService, toasterService, headerService, router, productService, warehouseService) {
+    function ProposalListComponent(generalService, toasterService, router, productService, orderService) {
         this.generalService = generalService;
         this.toasterService = toasterService;
-        this.headerService = headerService;
         this.router = router;
         this.productService = productService;
-        this.warehouseService = warehouseService;
+        this.orderService = orderService;
         this.currentPage = 1;
         this.proposals = [];
     }
@@ -118,43 +117,20 @@ var ProposalListComponent = /** @class */ (function () {
     };
     ProposalListComponent.prototype.createProposalReport = function (proposal) {
         return __awaiter(this, void 0, void 0, function () {
-            var data, file, fileURL, downloadLink, _file, _fileURL, iframe_1;
+            var data, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!window.confirm("Teklifi Oluşturmak İstediğinize Emin Misiniz?")) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.warehouseService.createProposalReport(proposal.id)];
+                        if (!window.confirm("Mail Gönderilsin mi?")) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.orderService.createProposalReport(proposal.id, true)];
                     case 1:
                         data = _a.sent();
-                        if (data) {
-                            file = new Blob([data], { type: 'application/pdf' });
-                            fileURL = URL.createObjectURL(file);
-                            downloadLink = document.createElement('a');
-                            downloadLink.href = fileURL;
-                            downloadLink.download = "marketplace-order-cargo-barcode.pdf"; // Set the filename for the download
-                            document.body.appendChild(downloadLink); // Append to body
-                            downloadLink.click(); // Trigger the download
-                            document.body.removeChild(downloadLink); // Remove the link after triggering the download
-                            URL.revokeObjectURL(fileURL); // Clean up the URL object
-                            _file = new Blob([data], { type: 'application/pdf' });
-                            _fileURL = URL.createObjectURL(_file);
-                            iframe_1 = document.createElement('iframe');
-                            iframe_1.style.display = 'none'; // Hide the iframe
-                            iframe_1.src = _fileURL;
-                            // Append the iframe to the body
-                            document.body.appendChild(iframe_1);
-                            // Wait until the iframe is loaded, then call print
-                            iframe_1.onload = function () {
-                                var _a;
-                                (_a = iframe_1.contentWindow) === null || _a === void 0 ? void 0 : _a.print();
-                            };
-                            this.toasterService.success("Teklif YAZDIRILDI");
-                        }
-                        else {
-                            this.toasterService.error("Teklif YAZDIRILAMADI");
-                        }
-                        _a.label = 2;
-                    case 2: return [2 /*return*/];
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, this.orderService.createProposalReport(proposal.id, false)];
+                    case 3:
+                        data = _a.sent();
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
                 }
             });
         });

@@ -751,53 +751,6 @@ var WarehouseService = /** @class */ (function () {
             });
         });
     };
-    WarehouseService.prototype.createProposalReport = function (request) {
-        return __awaiter(this, void 0, Promise, function () {
-            var response, file, fileURL, downloadLink, _file, _fileURL, iframe_1, error_7;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService.get({ controller: "Warehouse/create-proposal-report", responseType: 'arraybuffer' }, request.toString()).toPromise()];
-                    case 1:
-                        response = _a.sent();
-                        if (response) {
-                            file = new Blob([response], { type: 'application/pdf' });
-                            fileURL = URL.createObjectURL(file);
-                            downloadLink = document.createElement('a');
-                            downloadLink.href = fileURL;
-                            downloadLink.download = "marketplace-order-cargo-barcode.pdf"; // Set the filename for the download
-                            document.body.appendChild(downloadLink); // Append to body
-                            downloadLink.click(); // Trigger the download
-                            document.body.removeChild(downloadLink); // Remove the link after triggering the download
-                            URL.revokeObjectURL(fileURL); // Clean up the URL object
-                            _file = new Blob([response], { type: 'application/pdf' });
-                            _fileURL = URL.createObjectURL(_file);
-                            iframe_1 = document.createElement('iframe');
-                            iframe_1.style.display = 'none'; // Hide the iframe
-                            iframe_1.src = _fileURL;
-                            // Append the iframe to the body
-                            document.body.appendChild(iframe_1);
-                            // Wait until the iframe is loaded, then call print
-                            iframe_1.onload = function () {
-                                var _a;
-                                (_a = iframe_1.contentWindow) === null || _a === void 0 ? void 0 : _a.print();
-                            };
-                            alert("Teklif YAZDIRILDI");
-                        }
-                        else {
-                            alert("Teklif YAZDIRILAMADI");
-                        }
-                        return [2 /*return*/, response];
-                    case 2:
-                        error_7 = _a.sent();
-                        console.log(error_7.message);
-                        return [2 /*return*/, null];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
     WarehouseService = __decorate([
         core_1.Injectable({
             providedIn: 'root'

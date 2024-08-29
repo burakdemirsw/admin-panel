@@ -13,8 +13,6 @@ th {
   /* Veri hücrelerinin iç boşluklarını azalt */
 }
 
-
-
 ::ng-deep .p-button {
 
   line-height: 1;
@@ -55,8 +53,3 @@ th {
 ul {
   padding-left: 0px !important
 }
-
-
-
-
-/* Diğer kolonlar için de benzer şekilde sınıflar tanımlayabilirsiniz */

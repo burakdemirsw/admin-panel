@@ -195,6 +195,12 @@ var OrderService = /** @class */ (function () {
             controller: endpoint + orderNo
         });
     };
+    OrderService.prototype.getSetProductDetailByOrder = function (orderNo, setCode) {
+        var endpoint = 'Order/gget-set-product-detail-by-order/' + orderNo + "/" + setCode;
+        return this.httpClientService.get({
+            controller: endpoint
+        });
+    };
     //transferi onaylama
     OrderService.prototype.confirmTransfer = function (operationNumberList) {
         return __awaiter(this, void 0, Promise, function () {
@@ -800,15 +806,14 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
-    OrderService.prototype.updateClientOrderBasketItem = function (id, lineId, quantity, price, discountedPrice, basePrice, priceWs) {
+    OrderService.prototype.updateClientOrderBasketItem = function (item) {
         return __awaiter(this, void 0, Promise, function () {
-            var query, response, error_21;
+            var response, error_21;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        query = id + "/" + lineId + "/" + quantity + "/" + price + "/" + discountedPrice + "/" + basePrice + "/" + priceWs;
-                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/update-client-order-basket-item" + "/" + query }).toPromise()];
+                        return [4 /*yield*/, this.httpClientService.post({ controller: "order/update-client-order-basket-item" }, item).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];
@@ -1153,6 +1158,53 @@ var OrderService = /** @class */ (function () {
                     case 2:
                         error_33 = _a.sent();
                         // console.log(error.message);
+                        return [2 /*return*/, null];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    OrderService.prototype.createProposalReport = function (request, sendMail) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response, file, fileURL, downloadLink, _file, _fileURL, iframe_1, error_34;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/create-proposal-report", responseType: 'arraybuffer' }, request + "/" + sendMail).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        if (response) {
+                            file = new Blob([response], { type: 'application/pdf' });
+                            fileURL = URL.createObjectURL(file);
+                            downloadLink = document.createElement('a');
+                            downloadLink.href = fileURL;
+                            downloadLink.download = "marketplace-order-cargo-barcode.pdf"; // Set the filename for the download
+                            document.body.appendChild(downloadLink); // Append to body
+                            downloadLink.click(); // Trigger the download
+                            document.body.removeChild(downloadLink); // Remove the link after triggering the download
+                            URL.revokeObjectURL(fileURL); // Clean up the URL object
+                            _file = new Blob([response], { type: 'application/pdf' });
+                            _fileURL = URL.createObjectURL(_file);
+                            iframe_1 = document.createElement('iframe');
+                            iframe_1.style.display = 'none'; // Hide the iframe
+                            iframe_1.src = _fileURL;
+                            // Append the iframe to the body
+                            document.body.appendChild(iframe_1);
+                            // Wait until the iframe is loaded, then call print
+                            iframe_1.onload = function () {
+                                var _a;
+                                (_a = iframe_1.contentWindow) === null || _a === void 0 ? void 0 : _a.print();
+                            };
+                            alert("Teklif YAZDIRILDI");
+                        }
+                        else {
+                            alert("Teklif YAZDIRILAMADI");
+                        }
+                        return [2 /*return*/, response];
+                    case 2:
+                        error_34 = _a.sent();
+                        console.log(error_34.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }

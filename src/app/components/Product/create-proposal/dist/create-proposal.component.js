@@ -144,12 +144,8 @@ var CreateProposalComponent = /** @class */ (function () {
                                         return [4 /*yield*/, this.getProposalProducts()];
                                     case 2:
                                         _a.sent();
-                                        return [3 /*break*/, 5];
-                                    case 3: return [4 /*yield*/, this.addProposal()];
-                                    case 4:
-                                        _a.sent();
-                                        _a.label = 5;
-                                    case 5: return [2 /*return*/];
+                                        _a.label = 3;
+                                    case 3: return [2 /*return*/];
                                 }
                             });
                         }); });
@@ -160,13 +156,20 @@ var CreateProposalComponent = /** @class */ (function () {
             });
         });
     };
+    CreateProposalComponent.prototype.chooseFile = function () {
+        this.fileInput.nativeElement.click();
+    };
     CreateProposalComponent.prototype.createUpdateProductForm = function () {
         this.updateProductForm = this.formBuilder.group({
             description: [null, forms_1.Validators.required],
             price: [null, forms_1.Validators.required],
+            discountedPrice: [null, forms_1.Validators.required],
             quantity: [null, forms_1.Validators.required],
             discountRate1: [null, forms_1.Validators.required],
-            discountRate2: [null, forms_1.Validators.required]
+            discountRate2: [null, forms_1.Validators.required],
+            brand: [null, forms_1.Validators.required],
+            itemCode: [null, forms_1.Validators.required],
+            barcode: [null, forms_1.Validators.required]
         });
     };
     CreateProposalComponent.prototype.createDiscountForm = function () {
@@ -278,25 +281,27 @@ var CreateProposalComponent = /** @class */ (function () {
         this.productHierarchyLevel03s = uniqueMap(data, 'productHierarchyLevel03');
     };
     CreateProposalComponent.prototype.addProposal = function () {
+        var _a;
         return __awaiter(this, void 0, void 0, function () {
             var request, response;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         request = new proposalProduct_1.ZTMSG_Proposal();
-                        request.id = this.proposalId;
+                        request.id = (_a = this.proposalId) !== null && _a !== void 0 ? _a : 0;
                         request.discountRate1 = 0;
                         request.discountRate2 = 0;
                         request.userId = Number(localStorage.getItem('userId'));
                         return [4 /*yield*/, this.productService.addProposal(request)];
                     case 1:
-                        response = _a.sent();
+                        response = _b.sent();
                         if (response) {
                             this.proposal = response;
                             this.proposalId = response.id;
                             // await this.getProposalProducts();
                             this.toasterService.success('Oluşturuldu');
-                            this.generalService.beep();
+                            // //this.generalService.beep();
+                            this.router.navigate(["create-proposal", response.id]);
                         }
                         else {
                             this.toasterService.error('Oluşturulamadı');
@@ -351,7 +356,7 @@ var CreateProposalComponent = /** @class */ (function () {
                             this.proposalId = response.id;
                             // await this.getProposalProducts();
                             this.toasterService.success('Güncelleştirildi');
-                            this.generalService.beep();
+                            //this.generalService.beep();
                         }
                         else {
                             this.toasterService.error('Güncelleştirilemedi');
@@ -367,11 +372,17 @@ var CreateProposalComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        if (!!this.proposalId) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.addProposal()];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
                         request = new product_service_1.BarcodeSearch_RM(product.barcode);
                         return [4 /*yield*/, this.productService.searchProduct(request)];
-                    case 1:
+                    case 3:
                         productDetail = _a.sent();
-                        if (!productDetail) return [3 /*break*/, 3];
+                        if (!productDetail) return [3 /*break*/, 5];
                         product.price = productDetail[0].basePrice;
                         proposalProduct = new proposalProduct_1.ZTMSG_ProposalProduct();
                         proposalProduct.id = 0; // Varsayılan bir değer, ya da uygun bir değer belirleyin
@@ -396,21 +407,20 @@ var CreateProposalComponent = /** @class */ (function () {
                             ((proposalProduct.totalTaxedPrice * ((100 - proposalProduct.discountRate1) / 100)) - proposalProduct.discountRate2);
                         proposalProduct.totalTaxedPrice = parseFloat(proposalProduct.totalTaxedPrice.toFixed(2));
                         return [4 /*yield*/, this.productService.addProposalProduct(proposalProduct)];
-                    case 2:
-                        response = _a.sent();
-                        _a.label = 3;
-                    case 3:
-                        if (!response) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.getProposalProducts()];
                     case 4:
+                        response = _a.sent();
+                        _a.label = 5;
+                    case 5:
+                        if (!response) return [3 /*break*/, 7];
+                        return [4 /*yield*/, this.getProposalProducts()];
+                    case 6:
                         _a.sent();
                         this.toasterService.success('Eklendi');
-                        this.generalService.beep();
-                        return [3 /*break*/, 6];
-                    case 5:
+                        return [3 /*break*/, 8];
+                    case 7:
                         this.toasterService.error('Eklenmedi');
-                        _a.label = 6;
-                    case 6: return [2 /*return*/];
+                        _a.label = 8;
+                    case 8: return [2 /*return*/];
                 }
             });
         });
@@ -449,7 +459,6 @@ var CreateProposalComponent = /** @class */ (function () {
                     case 2:
                         _a.sent();
                         this.toasterService.success('Silindi');
-                        this.generalService.beep();
                         return [3 /*break*/, 4];
                     case 3:
                         this.toasterService.error('Silinemedi');
@@ -466,10 +475,14 @@ var CreateProposalComponent = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         product.description = this.updateProductForm.get('description').value;
-                        product.discountedPrice = this.updateProductForm.get('price').value;
+                        product.discountedPrice = this.updateProductForm.get('discountedPrice').value;
+                        product.price = this.updateProductForm.get('price').value;
                         product.quantity = this.updateProductForm.get('quantity').value;
                         product.discountRate1 = this.updateProductForm.get('discountRate1').value; //yüzde
                         product.discountRate2 = this.updateProductForm.get('discountRate2').value;
+                        product.brand = this.updateProductForm.get('brand').value;
+                        product.itemCode = this.updateProductForm.get('itemCode').value;
+                        product.barcode = this.updateProductForm.get('barcode').value;
                         product.totalPrice =
                             product.quantity *
                                 ((product.discountedPrice * ((100 - product.discountRate1) / 100)) - product.discountRate2);
@@ -485,7 +498,7 @@ var CreateProposalComponent = /** @class */ (function () {
                     case 2:
                         _a.sent();
                         this.toasterService.success('Güncellendi');
-                        this.generalService.beep();
+                        //this.generalService.beep();
                         this.updateProductDialog = false;
                         return [3 /*break*/, 4];
                     case 3:
@@ -515,7 +528,30 @@ var CreateProposalComponent = /** @class */ (function () {
                     case 2:
                         _a.sent();
                         this.toasterService.success('Güncellendi');
-                        this.generalService.beep();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        this.toasterService.error('Güncellenmedi');
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CreateProposalComponent.prototype.deletePhoto = function (product) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        product.photoUrl = null;
+                        return [4 /*yield*/, this.productService.updateProposalProduct(product)];
+                    case 1:
+                        response = _a.sent();
+                        if (!response) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.getProposalProducts()];
+                    case 2:
+                        _a.sent();
+                        this.toasterService.success('Güncellendi');
                         return [3 /*break*/, 4];
                     case 3:
                         this.toasterService.error('Güncellenmedi');
@@ -552,10 +588,14 @@ var CreateProposalComponent = /** @class */ (function () {
     CreateProposalComponent.prototype.openUpdateDialog = function (product) {
         this.selectedProduct = product;
         this.updateProductForm.get('description').setValue(this.selectedProduct.description);
-        this.updateProductForm.get('price').setValue(this.selectedProduct.discountedPrice);
+        this.updateProductForm.get('price').setValue(this.selectedProduct.price);
+        this.updateProductForm.get('discountedPrice').setValue(this.selectedProduct.discountedPrice);
         this.updateProductForm.get('quantity').setValue(this.selectedProduct.quantity);
         this.updateProductForm.get('discountRate1').setValue(this.selectedProduct.discountRate1);
         this.updateProductForm.get('discountRate2').setValue(this.selectedProduct.discountRate2);
+        this.updateProductForm.get('brand').setValue(this.selectedProduct.brand);
+        this.updateProductForm.get('itemCode').setValue(this.selectedProduct.itemCode);
+        this.updateProductForm.get('barcode').setValue(this.selectedProduct.barcode);
         this.openDialog('updateProductDialog');
         this.getUntaxedTotal();
         this.getTaxedTotalAfterDiscount();
@@ -573,10 +613,8 @@ var CreateProposalComponent = /** @class */ (function () {
                         response = _a.sent();
                         if (response) {
                             this.proposal = response;
-                            // await this.getProposalProducts();
-                            // await this.getProposalProducts();
                             this.toasterService.success('Güncellendi');
-                            this.generalService.beep();
+                            //this.generalService.beep();
                         }
                         else {
                             this.toasterService.error('Güncellenmedi');
@@ -605,7 +643,7 @@ var CreateProposalComponent = /** @class */ (function () {
                             // await this.getProposalProducts();
                             this.getTaxedTotalAfterDiscount();
                             this.toasterService.success('Güncellendi');
-                            this.generalService.beep();
+                            //this.generalService.beep();
                         }
                         else {
                             this.toasterService.error('Güncellenmedi');
@@ -630,7 +668,7 @@ var CreateProposalComponent = /** @class */ (function () {
                             this.proposal = response;
                             this.getTaxedTotalAfterDiscount();
                             this.toasterService.success('Güncellendi');
-                            this.generalService.beep();
+                            //this.generalService.beep();
                         }
                         else {
                             this.toasterService.error('Güncellenmedi');
@@ -649,16 +687,20 @@ var CreateProposalComponent = /** @class */ (function () {
     };
     CreateProposalComponent.prototype.createProposalReport = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var data;
+            var data, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!window.confirm("Teklifi Oluşturmak İstediğinize Emin Misiniz?")) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.warehouseService.createProposalReport(this.proposal.id)];
+                        if (!window.confirm("Mail Gönderilsin mi?")) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.orderService.createProposalReport(this.proposal.id, true)];
                     case 1:
                         data = _a.sent();
-                        _a.label = 2;
-                    case 2: return [2 /*return*/];
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, this.orderService.createProposalReport(this.proposal.id, false)];
+                    case 3:
+                        data = _a.sent();
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -842,7 +884,7 @@ var CreateProposalComponent = /** @class */ (function () {
                     case 0:
                         this.selectedProduct = product;
                         this.selectedFiles_2 = [];
-                        files = event.currentFiles;
+                        files = event.target.files;
                         i = 0;
                         _a.label = 1;
                     case 1:
@@ -1094,6 +1136,9 @@ var CreateProposalComponent = /** @class */ (function () {
             });
         }); });
     };
+    __decorate([
+        core_1.ViewChild('fileInput')
+    ], CreateProposalComponent.prototype, "fileInput");
     __decorate([
         core_1.ViewChild('findCustomer', { static: false })
     ], CreateProposalComponent.prototype, "findCustomer");
