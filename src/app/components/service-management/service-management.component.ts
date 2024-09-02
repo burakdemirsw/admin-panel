@@ -9,6 +9,7 @@ import { OrderService } from 'src/app/services/admin/order.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { CreateBarcodeFromOrder_RM } from '../Product/create-barcode/models/createBarcode';
 
 @Component({
   selector: 'app-service-management',
@@ -33,10 +34,12 @@ export class ServiceManagementComponent implements OnInit {
     { header: 'Sayım Eşitle', desc: 'Sayım Çıkarma Operasyonunu yapar', action: this.removeCount.bind(this) },
     { header: 'Sayım Ekle-Çıkar-Eşitle', desc: 'Tüm Sayım Operasyonunu yapar', action: this.doAllCount.bind(this) },
     { header: 'Fotoğraf Eşitle', desc: 'Sunucunuzdaki Eksik Fotoğrafları Çeker', action: this.syncPhoto.bind(this) },
+    { header: 'Raftaki Ürünlere Barkod Bas', desc: 'Raftaki tüm ürünlere barkod oluşturur', action: this.sendNebimBarcodesOfShelfProducts.bind(this) },
     { header: 'Fotoğraf Güncelle', desc: 'Ürün Koduna Göre Güncelle', action: this.updatePhoto.bind(this) }
 
 
   ];
+  //
 
   async addCount() {
     var response = await this.warehouseService.doCount(1);
@@ -101,6 +104,19 @@ export class ServiceManagementComponent implements OnInit {
     }
 
 
+  }
+  shelfNo: string;
+  async sendNebimBarcodesOfShelfProducts() {
+    var request: CreateBarcodeFromOrder_RM = new CreateBarcodeFromOrder_RM(false);
+    request.packageDescription = this.shelfNo;
+    request.operationNo = this.shelfNo;
+    request.from = "services";
+    var response = await this.directRequest.sendNebimBarcodesOfShelfProducts(request);
+    if (response) {
+      this.toasterService.success('Raftaki Ürünlerin Barkodu Nebime Gönderildi.');
+    } else {
+      this.toasterService.error("İşlem Başarısız")
+    }
   }
   async doAllCount() {
     await this.addCount();

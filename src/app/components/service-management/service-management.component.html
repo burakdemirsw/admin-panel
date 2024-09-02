@@ -6,6 +6,8 @@
         <div class="card-body">
           <h5 class="card-title">{{ service.header }}</h5>
           <p class="card-text">
+            <input type="text" pInputText placeholder="Raf" *ngIf="service.header =='Raftaki Ürünlere Barkod Bas'"
+              style="width: 300px;" [(ngModel)]="shelfNo">
             <input type="text" pInputText placeholder="Ürün Kodu (',' kullanınız)."
               *ngIf="service.header =='Fotoğraf Güncelle'" style="width: 300px;" [(ngModel)]="itemCodes">
             <span *ngIf="service.header !='Fotoğraf Güncelle'"> {{ service.desc }}</span>

@@ -42,6 +42,7 @@ declare var window: any;
 })
 export class OrderOperationComponent implements OnInit {
   expandedRows = {};
+  expandedRows_2 = {};
   infoProducts: CreatePurchaseInvoice[] = [];
   lastCollectedProducts: CollectedProduct[] = [];
   productsToCollect: ProductOfOrder[] = [];
@@ -213,13 +214,20 @@ export class OrderOperationComponent implements OnInit {
 
   //-----------------------------------------------------
 
-
+  logger() {
+    console.log(this.lastCollectedProducts);
+  }
   async getCollectedOrderProducts(
     orderNo: string
   ): Promise<CollectedProduct[]> {
     var response = await this.productService.getCollectedOrderProducts(orderNo);
     this.lastCollectedProducts = response;
 
+    this.toasterService.info(this.lastCollectedProducts.length.toString())
+    this.lastCollectedProducts.forEach(p => {
+      var set_products = this.productsToCollect.find(p => p.setProducts.length > 0).setProducts;
+      p.setProducts = set_products;
+    });
     this.calculateTotalQty();
     return response;
   }
@@ -839,17 +847,19 @@ export class OrderOperationComponent implements OnInit {
         //SET ÜRÜNÜ KODLARI
 
 
-        //EĞER KİTLENMEDİYSE VE DİREKT SET ÜRÜNÜ İSE
+        // //EĞER KİTLENMEDİYSE VE DİREKT SET ÜRÜNÜ İSE
 
-        if (!this.isLocked && this.productsToCollect.find(p => p.barcode == productModel.barcode)?.setProducts.length > 0) {
-          this.toasterService.error('Lütfen Ürünü Kitleyiniz Ve Set Ürünlerini Okutunuz');
-          return;
-        }
-        //EĞER KİTLENDİSYE  VE DİREKT SET ÜRÜNÜ İSE
-        else if (this.isLocked && this.productsToCollect.find(p => p.barcode == productModel.barcode)?.setProducts.length > 0) {
-          this.toasterService.error('Lütfen Set Ürünlerini Okutunuz');
-          return;
-        }
+        // if (!this.isLocked && this.productsToCollect.find(p => p.barcode == productModel.barcode)?.setProducts.length > 0) {
+        //   await this.collectSelectedProduct(lp);
+        //   this.toasterService.error('Lütfen Ürünü Kitleyiniz Ve Set Ürünlerini Okutunuz');
+
+        //   return;
+        // }
+        // //EĞER KİTLENDİSYE  VE DİREKT SET ÜRÜNÜ İSE
+        // else if (this.isLocked && this.productsToCollect.find(p => p.barcode == productModel.barcode)?.setProducts.length > 0) {
+        //   this.toasterService.error('Lütfen Set Ürünlerini Okutunuz');
+        //   return;
+        // }
         //EĞER KİTLENDİYSE VE SETİN İÇİNDEKİ ÜRÜN OKUTULDUYSA
         if (this.isLocked && this.lockSetProduct) {
           this.toasterService.info('SET ÜRÜNÜ ALGILANDI');

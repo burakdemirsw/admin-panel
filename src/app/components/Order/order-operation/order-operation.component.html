@@ -305,9 +305,17 @@
                 <td>{{ product.barcode }}</td>
                 <td>
                   <div class="btn-group" role="group" aria-label="Basic example">
+
+                    @if(product.setStatus === 'HAZIR SET'){
                     <button [pRowToggler]="product" (click)="lockSetProduct(product)" *ngIf="(product.setStatus === 'HAZIR SET' || product.setStatus === 'SET TOPLA') &&
-                      !this.lockedSetProduct" class="btn btn-primary"><i class="fa fa-database" aria-hidden="true"></i>
+                      !this.lockedSetProduct" class="btn btn-success"><i class="fa fa-database" aria-hidden="true"></i>
                     </button>
+
+                    }@else if(product.setStatus === 'SET TOPLA'){
+                    <button [pRowToggler]="product" (click)="lockSetProduct(product)" *ngIf="(product.setStatus === 'HAZIR SET' || product.setStatus === 'SET TOPLA') &&
+                      !this.lockedSetProduct" class="btn btn-danger"><i class="fa fa-database" aria-hidden="true"></i>
+                    </button>
+                    }
 
                     <button [pRowToggler]="product"
                       *ngIf="this.isLocked && this.lockedSetProduct?.lineId == product.lineId" type="button"
@@ -376,6 +384,15 @@
                   Durum
                 </th>
                 <th>
+                  Parti
+                </th>
+                <th>
+                  Md Stok
+                </th>
+                <th>
+                  Ud Stok
+                </th>
+                <th>
                   İşlemler
                 </th>
 
@@ -401,6 +418,10 @@
                   }
 
                 </td>
+                <td>{{ setProduct.batchCode }}</td>
+                <td>{{ setProduct.currentQty }}</td>
+                <td>{{ setProduct.itemDim1Code }}</td>
+
                 <td>
                   <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
                     aria-expanded="false">
@@ -433,8 +454,8 @@
       </div>
 
       <div class="card" *ngIf="lastCollectedProducts.length > 0">
-        <p-table [value]="lastCollectedProducts" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
-          [responsiveLayout]="'scroll'" [filterDelay]="500">
+        <p-table [expandedRowKeys]="expandedRows" [value]="lastCollectedProducts" [paginator]="true" [rows]="10"
+          [tableStyle]="{'min-width': '50rem'}" [responsiveLayout]="'scroll'" [filterDelay]="500" dataKey="lineId">
           <ng-template pTemplate="caption">
             <div class="flex align-items-center justify-content-between">
               Toplanan Ürünler
@@ -478,7 +499,7 @@
               </th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-product let-i="rowIndex">
+          <ng-template pTemplate="body" let-expanded="expanded" let-product let-i="rowIndex">
             <tr>
               <td>{{ i + 1 }}</td>
               <td>
@@ -494,6 +515,9 @@
               <td>{{ product.batchCode }}</td>
               <td>
                 <div class="btn-group">
+                  <button [pRowToggler]="product" (click)=" logger()" class="btn btn-danger"><i class="fa fa-database"
+                      aria-hidden="true"></i>
+                  </button>
                   <button pButton type="button" icon="pi pi-trash" class="p-button-danger"
                     (click)="deleteOrderProduct(orderNo, product)">
                   </button>
@@ -507,21 +531,111 @@
               </td>
             </tr>
           </ng-template>
+          <ng-template pTemplate="rowexpansion" let-product>
+            <tr>
+              <td colspan="13">
+                <div class="p-3">
+                  <p-table [value]="product.setProducts" dataKey="lineId">
+                    <ng-template pTemplate="header">
+            <tr>
+              <th>
+                Resim
+              </th>
+
+              <th pSortableColumn="barcode">Barkod
+                <p-sortIcon field="barcode" />
+              </th>
+              <th pSortableColumn="itemCode">Kod
+                <p-sortIcon field="itemCode" />
+              </th>
+              <th pSortableColumn="quantity">Adet
+                <p-sortIcon field="quantity" />
+              </th>
+              <th pSortableColumn="shelfNo">Raf No
+                <p-sortIcon field="shelfNo" />
+              </th>
+              <th>
+                Durum
+              </th>
+              <th>
+                Parti
+              </th>
+              <th>
+                Md Stok
+              </th>
+              <th>
+                Ud Stok
+              </th>
+              <th>
+                İşlemler
+              </th>
+
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-setProduct>
+            <tr>
+              <td>
+
+                <p-image src="{{ setProduct.photoUrl }}" previewImageSrc="{{ setProduct.photoUrl }}" alt="Image"
+                  width="30" [preview]="true" />
+              </td>
+              <td>{{ setProduct.barcode }}</td>
+              <td>{{ setProduct.itemCode }}</td>
+              <td>{{ setProduct.quantity }}</td>
+              <td>{{ setProduct.shelfNo }}</td>
+              <td>
+
+                @if(setProduct.quantity==0){
+                <button class="btn btn-success"> <i class="fa fa-check" aria-hidden="true"></i></button>
+                }@else{
+                <button class="btn btn-danger"> <i class="fa fa-ban" aria-hidden="true"></i></button>
+                }
+
+              </td>
+              <td>{{ setProduct.batchCode }}</td>
+              <td>{{ setProduct.currentQty }}</td>
+              <td>{{ setProduct.itemDim1Code }}</td>
+
+              <td>
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item" *ngIf="this.currentOrderNo.includes('WS')"
+                      (click)="deleteSetProduct(product)">
+                      <i class="fa-solid fa-minus"></i> Sil
+                    </a>
+                  </li>
+
+                </ul>
+              </td>
+
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="4">Bu set için ürün bulunmamaktadır.</td>
+            </tr>
+          </ng-template>
         </p-table>
-
-
       </div>
+      </td>
+      </tr>
+      </ng-template>
+      </p-table>
+    </div>
 
-      <!-- Yeni kart: Toplanan Ürünler -->
-      <div div class="card text-center">
-        <div class="card-body">
-          <h5 class="card-title">Toplanan Ürünler</h5>
-          <h1 class="display-1">{{ totalCount }}</h1>
-          <!--eklenen ürün miktarı yazcak! -->
+    <!-- Yeni kart: Toplanan Ürünler -->
+    <div div class="card text-center">
+      <div class="card-body">
+        <h5 class="card-title">Toplanan Ürünler</h5>
+        <h1 class="display-1">{{ totalCount }}</h1>
+        <!--eklenen ürün miktarı yazcak! -->
 
-          <p class="card-text">Adet Ürün Toplandı</p>
-        </div>
+        <p class="card-text">Adet Ürün Toplandı</p>
       </div>
+    </div>
     </div>
     </div>
     <!-- Yeni -->

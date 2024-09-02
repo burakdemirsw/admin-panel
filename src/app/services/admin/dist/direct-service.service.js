@@ -48,15 +48,17 @@ var DirectServiceService = /** @class */ (function () {
     function DirectServiceService(httpClientService) {
         this.httpClientService = httpClientService;
         this.controller = "direct-request";
+        this.controller_2 = "products";
     }
-    DirectServiceService.prototype.syncPhoto = function () {
+    //sendNebimBarcodesOfShelfProducts
+    DirectServiceService.prototype.sendNebimBarcodesOfShelfProducts = function (request) {
         return __awaiter(this, void 0, Promise, function () {
             var response, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService.get({ controller: this.controller + "/fetch-missing-files" }).toPromise()];
+                        return [4 /*yield*/, this.httpClientService.post({ controller: this.controller_2 + "/send-barcode-models-to-nebim" }, request).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];
@@ -69,9 +71,29 @@ var DirectServiceService = /** @class */ (function () {
             });
         });
     };
-    DirectServiceService.prototype.updatePhoto = function (itemCodes) {
+    DirectServiceService.prototype.syncPhoto = function () {
         return __awaiter(this, void 0, Promise, function () {
             var response, error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.httpClientService.get({ controller: this.controller + "/fetch-missing-files" }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                    case 2:
+                        error_2 = _a.sent();
+                        console.log(error_2.message);
+                        return [2 /*return*/, null];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    DirectServiceService.prototype.updatePhoto = function (itemCodes) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -81,8 +103,8 @@ var DirectServiceService = /** @class */ (function () {
                         response = _a.sent();
                         return [2 /*return*/, response];
                     case 2:
-                        error_2 = _a.sent();
-                        console.log(error_2.message);
+                        error_3 = _a.sent();
+                        console.log(error_3.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }

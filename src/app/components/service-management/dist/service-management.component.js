@@ -44,6 +44,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.ServiceManagementComponent = void 0;
 var core_1 = require("@angular/core");
+var createBarcode_1 = require("../Product/create-barcode/models/createBarcode");
 var ServiceManagementComponent = /** @class */ (function () {
     function ServiceManagementComponent(headerService, toasterService, warehouseService, directRequest) {
         this.headerService = headerService;
@@ -56,12 +57,14 @@ var ServiceManagementComponent = /** @class */ (function () {
             { header: 'Sayım Eşitle', desc: 'Sayım Çıkarma Operasyonunu yapar', action: this.removeCount.bind(this) },
             { header: 'Sayım Ekle-Çıkar-Eşitle', desc: 'Tüm Sayım Operasyonunu yapar', action: this.doAllCount.bind(this) },
             { header: 'Fotoğraf Eşitle', desc: 'Sunucunuzdaki Eksik Fotoğrafları Çeker', action: this.syncPhoto.bind(this) },
+            { header: 'Raftaki Ürünlere Barkod Bas', desc: 'Raftaki tüm ürünlere barkod oluşturur', action: this.sendNebimBarcodesOfShelfProducts.bind(this) },
             { header: 'Fotoğraf Güncelle', desc: 'Ürün Koduna Göre Güncelle', action: this.updatePhoto.bind(this) }
         ];
     }
     ServiceManagementComponent.prototype.ngOnInit = function () {
         this.headerService.updatePageTitle("Servisler");
     };
+    //
     ServiceManagementComponent.prototype.addCount = function () {
         return __awaiter(this, void 0, void 0, function () {
             var response;
@@ -169,6 +172,30 @@ var ServiceManagementComponent = /** @class */ (function () {
                         }
                         _a.label = 3;
                     case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ServiceManagementComponent.prototype.sendNebimBarcodesOfShelfProducts = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var request, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        request = new createBarcode_1.CreateBarcodeFromOrder_RM(false);
+                        request.packageDescription = this.shelfNo;
+                        request.operationNo = this.shelfNo;
+                        request.from = "services";
+                        return [4 /*yield*/, this.directRequest.sendNebimBarcodesOfShelfProducts(request)];
+                    case 1:
+                        response = _a.sent();
+                        if (response) {
+                            this.toasterService.success('Raftaki Ürünlerin Barkodu Nebime Gönderildi.');
+                        }
+                        else {
+                            this.toasterService.error("İşlem Başarısız");
+                        }
+                        return [2 /*return*/];
                 }
             });
         });
