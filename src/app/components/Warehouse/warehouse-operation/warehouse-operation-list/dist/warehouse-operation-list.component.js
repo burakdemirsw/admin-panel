@@ -236,7 +236,7 @@ var WarehouseOperationListComponent = /** @class */ (function () {
                     case 0:
                         request = new createBarcode_1.CreateBarcodeFromOrder_RM(isPackage);
                         request.operationNo = this.selectedOrderNo;
-                        request.from = "order-operation";
+                        request.from = "warehouse-operation";
                         request.products = null;
                         return [4 /*yield*/, this.productService.sendBarcodesToNebim(request)];
                     case 1:

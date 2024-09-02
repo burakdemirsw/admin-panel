@@ -10,7 +10,7 @@ import { LogManagamentComponent } from './components/Log/log-managament/log-mana
 import { CollectProductOfOrderComponent } from './components2/order/collect-product-of-order/collect-product-of-order.component';
 import { CollectedPackageDetailComponent } from './components/Order/collected-package-detail/collected-package-detail.component';
 import { CollectedPackagesComponent } from './components/Order/collected-packages/collected-packages.component';
-import { CreateOrderComponent } from './components/Order/create-order/create-order.component';
+import { CreateOrderComponent } from './components/Order/nebim-get-orders/create-order/create-order.component';
 import { CreatePurchaseOrderComponent } from './components/Order/create-purchase-order/create-purchase-order.component';
 import { CreateQrComponent } from './components/Order/create-qr/create-qr.component';
 import { CreateSaleOrderComponent } from './components/Order/create-sale-order/create-sale-order.component';

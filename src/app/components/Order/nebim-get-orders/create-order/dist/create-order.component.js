@@ -50,10 +50,10 @@ var payment_CR_1 = require("src/app/models/model/payment/payment_CR");
 var productList_VM_1 = require("src/app/models/model/product/productList_VM");
 var nebimCustomer_1 = require("src/app/models/nebim/customer/nebimCustomer");
 var product_service_1 = require("src/app/services/admin/product.service");
-var createCustomer_CM_1 = require("../../../models/model/order/createCustomer_CM");
-var getCustomerList_CM_2 = require("../../../models/model/order/getCustomerList_CM");
-var nebimOrder_1 = require("../../../models/model/order/nebimOrder");
-var models_1 = require("../../cargo/create-cargo/models/models");
+var createCustomer_CM_1 = require("../../../../models/model/order/createCustomer_CM");
+var getCustomerList_CM_2 = require("../../../../models/model/order/getCustomerList_CM");
+var nebimOrder_1 = require("../../../../models/model/order/nebimOrder");
+var models_1 = require("../../../cargo/create-cargo/models/models");
 var subCustomerList_VM_1 = require("src/app/models/model/customer/subCustomerList_VM");
 var CreateOrderComponent = /** @class */ (function () {
     function CreateOrderComponent(headerService, warehouseService, paymentService, toasterService, activatedRoute, router, httpClientService, generalService, addressService, googleDriveService, productService, formBuilder, orderService, cargoService) {
@@ -1312,7 +1312,6 @@ var CreateOrderComponent = /** @class */ (function () {
                 this.selectedCustomers.push(request);
                 this.currAccCode = request.currAccCode;
                 this.openDialog("getCustomerDialog");
-                this.toasterService.success("Müşteri Seçildi");
                 _request = new getCustomerList_CM_1.GetCustomerAddress_CM();
                 _request.currAccCode = request.currAccCode;
                 this.getCustomerAddresses(_request);
@@ -1627,7 +1626,6 @@ var CreateOrderComponent = /** @class */ (function () {
                         response = _a.sent();
                         if (response) {
                             this.getClientOrder(0);
-                            this.getTaxedTotalAfterDiscount();
                             this.toasterService.success('Güncellendi');
                         }
                         else {

@@ -16,7 +16,7 @@ import { TransferModel } from 'src/app/models/model/warehouse/transferModel';
 import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/warehouseOperationProductModel';
-import { ZTMSG_CountedProduct, ZTMSG_ProductOnShelf } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
+import { ZTMSG_CountedProduct, ZTMSG_CountedSetProduct, ZTMSG_ProductOnShelf } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { HttpClientService } from '../http-client.service';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
 
@@ -28,6 +28,54 @@ export class WarehouseService {
     private httpClientService: HttpClientService,
 
   ) { }
+
+  async deleteSetCount(
+    request: string
+  ): Promise<any> {
+
+    var response = await this.httpClientService.get<any>(
+      {
+        controller: "Warehouse/delete-set-count/" + request
+      },
+    ).toPromise();
+
+    return response;
+  }
+
+  async deleteCountedSetProductByOrder(
+    operationNumber: string, setItemCode: string
+  ): Promise<any> {
+
+    var response = await this.httpClientService.get<any>(
+      {
+        controller: "Warehouse/delete-all-set-count-by-operation-number/" + operationNumber + '/' + setItemCode
+      },
+    ).toPromise();
+
+    return response;
+  }
+  async addSetProduct(
+    request: ZTMSG_CountedSetProduct
+  ): Promise<boolean> {
+    if (request.barcode.includes('/')) {
+      request.barcode = request.barcode.replace(/\//g, '-');
+    }
+
+    var response = await this.httpClientService.post<ZTMSG_CountedSetProduct | any>(
+      {
+        controller: "Warehouse/add-set-count",
+      },
+      request
+    )
+      .toPromise();
+
+    if (response == true) {
+      return response;
+    } else {
+      return false;
+    }
+
+  }
 
   async deleteCount(
     request: ZTMSG_CountedProduct
@@ -41,6 +89,7 @@ export class WarehouseService {
 
     return response;
   }
+
 
   async addCount(
     request: ZTMSG_CountedProduct

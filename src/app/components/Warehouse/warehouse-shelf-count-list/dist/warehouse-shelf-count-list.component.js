@@ -219,8 +219,8 @@ var WarehouseShelfCountListComponent = /** @class */ (function () {
             });
         });
     };
-    WarehouseShelfCountListComponent.prototype.showModal = function (operationNo) {
-        this.selectedOrderNo = operationNo;
+    WarehouseShelfCountListComponent.prototype.showModal = function (operation) {
+        this.selectedOperation = operation;
         this.visible = !this.visible;
     };
     WarehouseShelfCountListComponent.prototype.sendBarcodesToNebim = function (isPackage) {
@@ -230,8 +230,16 @@ var WarehouseShelfCountListComponent = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         request = new createBarcode_1.CreateBarcodeFromOrder_RM(isPackage);
-                        request.operationNo = this.selectedOrderNo;
-                        request.from = "warehouse-shelf-count";
+                        if (this.selectedOperation.process == 'C') {
+                            request.from = "warehouse-shelf-count";
+                        }
+                        else if (this.selectedOperation.process == 'CI') {
+                            request.from = "add-product-to-shelf";
+                        }
+                        else if (this.selectedOperation.process == 'CO') {
+                            request.from = "remove-product-to-shelf";
+                        }
+                        request.operationNo = this.selectedOperation.orderNo;
                         request.products = null;
                         return [4 /*yield*/, this.productService.sendBarcodesToNebim(request)];
                     case 1:

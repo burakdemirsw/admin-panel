@@ -67,7 +67,7 @@
                 <td>{{ product.itemDim1Code }}</td>
                 <td>{{ product.currentQty }}</td>
                 <td>
-                  <img src="{{ product.photoUrl }}" alt="Resim" width="50" height="50"
+                  <img src="{{ product.photoUrl }}" alt="Resim" width="30" height="30"
                     (click)="openImageModal(product.photoUrl)" />
                 </td>
                 <td>{{ product.barcode }}</td>
@@ -124,7 +124,7 @@
                       formControlName="shelfNo" (keydown.enter)="focusNextInput('barcode')" />
                     <div class="input-group-append">
                       <button type="button" style="height: 100%" (click)="clearShelfNumbers()" class="btn btn-primary">
-                        Formu Temizle
+                        <i class="fa fa-eraser" aria-hidden="true"></i>
                       </button>
                     </div>
                   </div>
@@ -207,8 +207,8 @@
           </div>
         </div>
         <div class="card" *ngIf="productsToCollect.length > 0">
-          <p-table [value]="productsToCollect" [paginator]="true" [rows]="5" [tableStyle]="{'min-width': '50rem'}"
-            [responsiveLayout]="'scroll'" [filterDelay]="500">
+          <p-table [value]="productsToCollect" [rows]="5" [tableStyle]="{'min-width': '50rem'}"
+            [expandedRowKeys]="expandedRows" dataKey="lineId">
             <ng-template pTemplate="caption">
               <div class="flex align-items-center justify-content-between">
                 Toplanacak Ürünler
@@ -217,8 +217,9 @@
             </ng-template>
             <ng-template pTemplate="header">
               <tr>
+
                 <th pSortableColumn="photoUrl">Fotoğraf</th>
-                <th pSortableColumn="shelfNo">Hedef Raf</th>
+                <th pSortableColumn="shelfNo">Raf</th>
                 <th pSortableColumn="itemCode">Kod</th>
                 <th pSortableColumn="quantity">Sipariş</th>
                 <th pSortableColumn="description"
@@ -233,9 +234,10 @@
                   *ngIf="!this.currentOrderNo.includes('WT') && !this.currentOrderNo.includes('BP')">Toplam Stok</th>
                 <th pSortableColumn="barcode">Barkod</th>
                 <th pSortableColumn="setStatus">Set</th>
-                <th>Sil</th>
+                <th>İşlemler</th>
               </tr>
               <tr>
+
                 <th>
                   <!-- Fotoğraf sütunu için filtre eklemiyoruz -->
                 </th>
@@ -267,7 +269,7 @@
                   <p-columnFilter type="text" field="barcode" [showClearButton]="false"></p-columnFilter>
                 </th>
                 <th>
-                  <p-columnFilter type="text" field="setStatus" [showClearButton]="false"></p-columnFilter>
+
                 </th>
                 <th>
                   <!-- Sil sütunu için filtre eklemiyoruz -->
@@ -275,11 +277,12 @@
               </tr>
             </ng-template>
 
-            <ng-template pTemplate="body" let-product let-i="rowIndex">
+            <ng-template pTemplate="body" let-product let-expanded="expanded">
               <tr>
+
                 <td>
-                  <img src="{{ product.photoUrl }}" alt="Resim" width="50" height="50"
-                    (click)="openImageModal(product.photoUrl)" />
+                  <p-image src="{{ product.photoUrl }}" previewImageSrc="{{ product.photoUrl }}" alt="Image" width="30"
+                    [preview]="true" />
                 </td>
                 <td>{{ product.shelfNo }}</td>
                 <td>{{ product.itemCode }}</td>
@@ -301,129 +304,225 @@
                 </td>
                 <td>{{ product.barcode }}</td>
                 <td>
-                  @if(product.setStatus =='HAZIR SET' ||' SET TOPLA'){
-                  <button class="btn btn-success">{{product.setStatus}} </button>
-                  }@else{
-                  <button class="btn btn-danger"><i class="fa fa-ban" aria-hidden="true"></i> </button>
+                  <div class="btn-group" role="group" aria-label="Basic example">
+                    <button [pRowToggler]="product" (click)="lockSetProduct(product)" *ngIf="(product.setStatus === 'HAZIR SET' || product.setStatus === 'SET TOPLA') &&
+                      !this.lockedSetProduct" class="btn btn-primary"><i class="fa fa-database" aria-hidden="true"></i>
+                    </button>
 
+                    <button [pRowToggler]="product"
+                      *ngIf="this.isLocked && this.lockedSetProduct?.lineId == product.lineId" type="button"
+                      (click)="unlockSetProduct()" class="btn btn-warning"><i class="fa fa-lock-open"
+                        aria-hidden="true"></i></button>
+                  </div>
+
+                </td>
+                <td>
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a class="dropdown-item" *ngIf="this.currentOrderNo.includes('WS') && !_pageDescription"
+                        (click)="addMissingProduct([product])">
+                        <i class="fa-solid fa-minus"></i> Eksik Ürün
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" (click)="getShelves(product.barcode)">
+                        <i class="fa-solid fa-bars"></i> Raflar
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" (click)="change(product.barcode, product.quantity)">
+                        <i class="fas fa-print"></i> Yazdır
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" (click)="stickToTop(product, true)">
+                        <i class="fa fa-thumb-tack" aria-hidden="true"></i> Üste Sabitle
+                      </a>
+                    </li>
+                  </ul>
+                </td>
+
+
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="rowexpansion" let-product>
+              <tr>
+                <td colspan="13">
+                  <div class="p-3">
+                    <p-table [value]="product.setProducts" dataKey="lineId">
+                      <ng-template pTemplate="header">
+              <tr>
+                <th>
+                  Resim
+                </th>
+
+                <th pSortableColumn="barcode">Barkod
+                  <p-sortIcon field="barcode" />
+                </th>
+                <th pSortableColumn="itemCode">Kod
+                  <p-sortIcon field="itemCode" />
+                </th>
+                <th pSortableColumn="quantity">Adet
+                  <p-sortIcon field="quantity" />
+                </th>
+                <th pSortableColumn="shelfNo">Raf No
+                  <p-sortIcon field="shelfNo" />
+                </th>
+                <th>
+                  Durum
+                </th>
+                <th>
+                  İşlemler
+                </th>
+
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-setProduct>
+              <tr>
+                <td>
+
+                  <p-image src="{{ setProduct.photoUrl }}" previewImageSrc="{{ setProduct.photoUrl }}" alt="Image"
+                    width="30" [preview]="true" />
+                </td>
+                <td>{{ setProduct.barcode }}</td>
+                <td>{{ setProduct.itemCode }}</td>
+                <td>{{ setProduct.quantity }}</td>
+                <td>{{ setProduct.shelfNo }}</td>
+                <td>
+
+                  @if(setProduct.quantity==0){
+                  <button class="btn btn-success"> <i class="fa fa-check" aria-hidden="true"></i></button>
+                  }@else{
+                  <button class="btn btn-danger"> <i class="fa fa-ban" aria-hidden="true"></i></button>
                   }
 
                 </td>
                 <td>
-                  <div class="btn-group" role="group" aria-label="Basic example">
-                    <button data-toggle="tooltip" data-placement="right" title="Eksik Ürün"
-                      *ngIf="this.currentOrderNo.includes('WS') && !_pageDescription" class="btn btn-primary"
-                      type="submit" (click)="addMissingProduct([product])">
-                      <i class="fa-solid fa-minus"></i>
-                    </button>
-                    <button data-toggle="tooltip" data-placement="right" title="Raflar" class="btn btn-primary"
-                      type="submit" (click)="getShelves(product.barcode)">
-                      <i class="fa-solid fa-bars"></i>
-                    </button>
-                    <button class="btn btn-primary" type="submit" (click)="change(product.barcode, product.quantity)">
-                      <i class="fas fa-print"></i>
-                    </button>
-                    <button class="btn btn-primary" type="submit" (click)="stickToTop(product, true)">
-                      <i class="fa fa-thumb-tack" aria-hidden="true"></i>
-                    </button>
-                  </div>
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a class="dropdown-item" *ngIf="this.currentOrderNo.includes('WS')"
+                        (click)="deleteSetProduct(product)">
+                        <i class="fa-solid fa-minus"></i> Sil
+                      </a>
+                    </li>
+
+                  </ul>
                 </td>
+
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="4">Bu set için ürün bulunmamaktadır.</td>
               </tr>
             </ng-template>
           </p-table>
-          <p-paginator [rows]="5" [totalRecords]="productsToCollect.length" (onPageChange)="currentPage ">
-          </p-paginator>
         </div>
+        </td>
+        </tr>
+        </ng-template>
+        </p-table>
 
-        <div class="card" *ngIf="lastCollectedProducts.length > 0">
-          <p-table [value]="lastCollectedProducts" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
-            [responsiveLayout]="'scroll'" [filterDelay]="500">
-            <ng-template pTemplate="caption">
-              <div class="flex align-items-center justify-content-between">
-                Toplanan Ürünler
-              </div>
-            </ng-template>
-            <ng-template pTemplate="header">
-              <tr>
-                <th pSortableColumn="id">Id</th>
-                <th pSortableColumn="photoUrl">Fotoğraf</th>
-                <th pSortableColumn="shelfNo">Raf</th>
-                <th pSortableColumn="itemCode">Ürün Kodu</th>
-                <th pSortableColumn="quantity">Rafa Giren Miktar</th>
-                <th pSortableColumn="barcode">Barkod</th>
-                <th pSortableColumn="batchCode">Parti Kodu</th>
-                <th>İşlemler</th>
-              </tr>
-              <tr>
-                <th>
-                  <p-columnFilter type="numeric" field="id" [showClearButton]="false"></p-columnFilter>
-                </th>
-                <th>
-                  <!-- Fotoğraf sütunu için filtre eklemiyoruz -->
-                </th>
-                <th>
-                  <p-columnFilter type="text" field="shelfNo" [showClearButton]="false"></p-columnFilter>
-                </th>
-                <th>
-                  <p-columnFilter type="text" field="itemCode" [showClearButton]="false"></p-columnFilter>
-                </th>
-                <th>
-                  <p-columnFilter type="numeric" field="quantity" [showClearButton]="false"></p-columnFilter>
-                </th>
-                <th>
-                  <p-columnFilter type="text" field="barcode" [showClearButton]="false"></p-columnFilter>
-                </th>
-                <th>
-                  <p-columnFilter type="text" field="batchCode" [showClearButton]="false"></p-columnFilter>
-                </th>
-                <th>
-                  <!-- İşlemler sütunu için filtre eklemiyoruz -->
-                </th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-product let-i="rowIndex">
-              <tr>
-                <td>{{ i + 1 }}</td>
-                <td>
-                  <img src="{{ product.photoUrl }}" alt="Resim" width="50" height="50"
-                    (click)="openImageModal(product.photoUrl)" />
-                </td>
-                <td>{{ product.shelfNo }}</td>
-                <td>{{ product.itemCode }}</td>
-                <td>{{ product.quantity }}</td>
-                <td>{{ product.barcode }}</td>
-                <td>{{ product.batchCode }}</td>
-                <td>
-                  <div class="btn-group">
-                    <button pButton type="button" icon="pi pi-trash" class="p-button-danger"
-                      (click)="deleteOrderProduct(orderNo, product)">
-                    </button>
-                    <button pButton type="button" icon="pi pi-bars" class="p-button-primary"
-                      (click)="getShelves(product.barcode)">
-                    </button>
-                    <button pButton type="button" icon="pi pi-print" class="p-button-primary"
-                      (click)="change(product.barcode, product.quantity)">
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
+      </div>
+
+      <div class="card" *ngIf="lastCollectedProducts.length > 0">
+        <p-table [value]="lastCollectedProducts" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
+          [responsiveLayout]="'scroll'" [filterDelay]="500">
+          <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-between">
+              Toplanan Ürünler
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="id">Id</th>
+              <th pSortableColumn="photoUrl">Fotoğraf</th>
+              <th pSortableColumn="shelfNo">Raf</th>
+              <th pSortableColumn="itemCode">Ürün Kodu</th>
+              <th pSortableColumn="quantity">Rafa Giren Miktar</th>
+              <th pSortableColumn="barcode">Barkod</th>
+              <th pSortableColumn="batchCode">Parti Kodu</th>
+              <th>İşlemler</th>
+            </tr>
+            <tr>
+              <th>
+                <p-columnFilter type="numeric" field="id" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <!-- Fotoğraf sütunu için filtre eklemiyoruz -->
+              </th>
+              <th>
+                <p-columnFilter type="text" field="shelfNo" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="itemCode" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="numeric" field="quantity" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="barcode" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="batchCode" [showClearButton]="false"></p-columnFilter>
+              </th>
+              <th>
+                <!-- İşlemler sütunu için filtre eklemiyoruz -->
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-product let-i="rowIndex">
+            <tr>
+              <td>{{ i + 1 }}</td>
+              <td>
+                <p-image src="{{ product.photoUrl }}" previewImageSrc="{{ product.photoUrl }}" alt="Image" width="30"
+                  [preview]="true" />
 
 
-        </div>
+              </td>
+              <td>{{ product.shelfNo }}</td>
+              <td>{{ product.itemCode }}</td>
+              <td>{{ product.quantity }}</td>
+              <td>{{ product.barcode }}</td>
+              <td>{{ product.batchCode }}</td>
+              <td>
+                <div class="btn-group">
+                  <button pButton type="button" icon="pi pi-trash" class="p-button-danger"
+                    (click)="deleteOrderProduct(orderNo, product)">
+                  </button>
+                  <button pButton type="button" icon="pi pi-bars" class="p-button-primary"
+                    (click)="getShelves(product.barcode)">
+                  </button>
+                  <button pButton type="button" icon="pi pi-print" class="p-button-primary"
+                    (click)="change(product.barcode, product.quantity)">
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
 
-        <!-- Yeni kart: Toplanan Ürünler -->
-        <div div class="card text-center">
-          <div class="card-body">
-            <h5 class="card-title">Toplanan Ürünler</h5>
-            <h1 class="display-1">{{ totalCount }}</h1>
-            <!--eklenen ürün miktarı yazcak! -->
 
-            <p class="card-text">Adet Ürün Toplandı</p>
-          </div>
+      </div>
+
+      <!-- Yeni kart: Toplanan Ürünler -->
+      <div div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Toplanan Ürünler</h5>
+          <h1 class="display-1">{{ totalCount }}</h1>
+          <!--eklenen ürün miktarı yazcak! -->
+
+          <p class="card-text">Adet Ürün Toplandı</p>
         </div>
       </div>
+    </div>
     </div>
     <!-- Yeni -->
     <qrcode style="display: none" (qrCodeURL)="onChangeURL($event)" [qrdata]="qrCodeValue" [width]="256"

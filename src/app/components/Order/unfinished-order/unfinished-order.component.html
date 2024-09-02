@@ -28,29 +28,33 @@
               <th>Sipariş No</th>
               <th>Kargo Durumu</th>
               <th>İptal Durumu</th>
+              <th>Sipariş Numarası</th>
               <th>Oluşturulma Zamanı</th>
               <th>İşlemler</th>
             </tr>
             <tr>
               <th>
                 <p-columnFilter type="text" field="customerDescription" placeholder="Bayiye göre ara"
-                  ariaLabel="Müşteri filtresi" />
+                  ariaLabel="Müşteri" />
               </th>
               <th>
                 <p-columnFilter type="text" field="subCustomerDescription" placeholder="Alt Müşteriye göre ara"
-                  ariaLabel="Müşteri filtresi" />
+                  ariaLabel="Müşteri" />
               </th>
               <th>
                 <p-columnFilter type="text" field="orderNo" placeholder="Sipariş No'ya göre ara"
-                  ariaLabel="Sipariş No filtresi" />
+                  ariaLabel="Sipariş No" />
               </th>
               <th>
-                <p-columnFilter type="text" field="isCancelled" placeholder="İptal Durumu"
-                  ariaLabel="İptal Durumu filtresi" />
+                <p-columnFilter type="text" field="isCancelled" placeholder="İptal Durumu" ariaLabel="İptal Durumu" />
               </th>
               <th>
                 <p-columnFilter type="text" field="cargoStatus" placeholder="Kargo Durumuna göre ara"
-                  ariaLabel="Kargo Durumu filtresi" />
+                  ariaLabel="Kargo Durumu" />
+              </th>
+              <th>
+                <p-columnFilter type="text" field="orderNumber" placeholder="Sipariş Numarası"
+                  ariaLabel="Sipariş Numarası" />
               </th>
               <th>
                 <!-- Filtre yok -->
@@ -72,7 +76,7 @@
                   <i class="fa {{ order.isCancelled ? 'fa-ban' : 'fa-check' }}"></i>
                 </button>
               </td>
-
+              <td>{{ order.orderNumber }}</td>
               <td>{{ order.createdDate | date : "dd.MM.yyyy HH:mm" }}</td>
               <td>
                 <div class="btn-group">

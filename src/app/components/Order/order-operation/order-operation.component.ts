@@ -27,6 +27,7 @@ import {
 import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
 import { WarehouseOperationDetailModel } from 'src/app/models/model/warehouse/warehouseOperationDetailModel';
 import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/warehouseOperationProductModel';
+import { ZTMSG_CountedSetProduct } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
@@ -40,6 +41,7 @@ declare var window: any;
   styleUrls: ['./order-operation.component.css'],
 })
 export class OrderOperationComponent implements OnInit {
+  expandedRows = {};
   infoProducts: CreatePurchaseInvoice[] = [];
   lastCollectedProducts: CollectedProduct[] = [];
   productsToCollect: ProductOfOrder[] = [];
@@ -311,6 +313,7 @@ export class OrderOperationComponent implements OnInit {
     this.headerService.updatePageTitle(this.pageDescription);
 
   }
+
   addedProductCount: string = '';
   lastCollectedProduct: ProductOfOrder = null;
   async getAllProducts(orderNo: string, orderNoType: string): Promise<any> {
@@ -329,24 +332,32 @@ export class OrderOperationComponent implements OnInit {
 
     }
     this.productsToCollect = productData; //toplanacak ürünler çekildi
+    if (this.orderNo.includes('WS') && this.lockedSetProduct) {
+      this.lockSetProduct_force(this.lockedSetProduct);
+    }
     // this.productsToCollect = this.productsToCollect.filter(p => p.quantity > 0);
 
-    this.setTopProduct(productData)
-
-    if (orderNoType == 'WS') {
-      //sayım yapılabilcek ürünler listesine atıldı
-      this.productsToCollect.forEach((e) => {
-        if (e.quantity > e.currentQty) {
-          var model: CreatePurchaseInvoice = new CreatePurchaseInvoice();
-          model.barcode = e.barcode;
-          model.quantity = e.quantity;
-          model.shelfNo = e.shelfNo;
-          model.photoUrl = e.photoUrl;
-          this.infoProducts.push(model);
-        }
-      });
-      this.addedProductCount = 'Sayım Paneli(' + this.infoProducts.length + ')';
+    if (this.isLocked) {
+      this.setTopProduct(this.productsToCollect.find(p => p.lineId == this.lockedSetProduct.lineId).setProducts)
+    } else {
+      this.setTopProduct(productData)
     }
+
+
+    // if (orderNoType == 'WS') {
+    //   //sayım yapılabilcek ürünler listesine atıldı
+    //   // this.productsToCollect.forEach((e) => {
+    //   //   if (e.quantity > e.currentQty) {
+    //   //     var model: CreatePurchaseInvoice = new CreatePurchaseInvoice();
+    //   //     model.barcode = e.barcode;
+    //   //     model.quantity = e.quantity;
+    //   //     model.shelfNo = e.shelfNo;
+    //   //     model.photoUrl = e.photoUrl;
+    //   //     this.infoProducts.push(model);
+    //   //   }
+    //   // });
+    //   // this.addedProductCount = 'Sayım Paneli(' + this.infoProducts.length + ')';
+    // }
     if (orderNoType == 'WT') {
       var response =
         await this.warehouseService.getWarehosueOperationListByInnerNumber(
@@ -371,7 +382,24 @@ export class OrderOperationComponent implements OnInit {
             p.itemCode == this.stickedProduct.itemCode &&
             p.shelfNo == this.stickedProduct.shelfNo
         );
-        if (_foundedProduct == undefined) {
+        if (!_foundedProduct) {
+
+          this.productsToCollect.find(product =>
+            product.setProducts.some(setProduct => {
+              if (
+                setProduct.barcode == this.stickedProduct.barcode &&
+                setProduct.itemCode == this.stickedProduct.itemCode &&
+                setProduct.shelfNo == this.stickedProduct.shelfNo
+              ) {
+                _foundedProduct = setProduct;
+                return true; // Bu `some` döngüsünden çıkmak için true döndürülür
+              }
+              return false;
+            })
+          );
+        }
+
+        if (_foundedProduct == undefined || _foundedProduct.quantity == 0) {
           if (this.lastCollectedProduct == null) {
             //üste atılcak ürün seçildi
             this._productsToCollect = [];
@@ -380,13 +408,23 @@ export class OrderOperationComponent implements OnInit {
             this.checkForm.get('shelfNo').setValue(productData[0].shelfNo);
 
           } else {
-            //eğer son sayılan ürün varsa toplanacak ürünlerden bul
-            var foundedProduct = this.productsToCollect.find(
-              (p) =>
-                p.barcode == this.lastCollectedProduct.barcode &&
-                p.itemCode == this.lastCollectedProduct.itemCode &&
-                p.shelfNo == this.lastCollectedProduct.shelfNo
-            );
+
+            if (!this.isLocked) {
+              var foundedProduct = this.productsToCollect.find(
+                (p) =>
+                  p.barcode == this.lastCollectedProduct.barcode &&
+                  p.itemCode == this.lastCollectedProduct.itemCode &&
+                  p.shelfNo == this.lastCollectedProduct.shelfNo
+              );
+            } else {
+              var foundedProduct = this.productsToCollect.find(p => p.lineId == this.lockedSetProduct.lineId).setProducts.find(
+                (p) =>
+                  p.barcode == this.lastCollectedProduct.barcode &&
+                  p.itemCode == this.lastCollectedProduct.itemCode &&
+                  p.shelfNo == this.lastCollectedProduct.shelfNo
+              );
+            }
+
 
             if (foundedProduct) {
               //eğer ürün bulunduysa
@@ -442,13 +480,20 @@ export class OrderOperationComponent implements OnInit {
   stickToTop(product: ProductOfOrder, add: boolean) {
     if (product.quantity > 0 && add) {
       this.stickedProduct = product;
-      this.setTopProduct(this.productsToCollect)
 
-      this.toasterService.success('Ürün Sabitlendi')
+      if (this.isLocked) {
+        this.setTopProduct(this.lockedSetProduct.setProducts);
+
+      } else {
+
+        this.setTopProduct(this.productsToCollect)
+      }
+
+      // this.toasterService.success('Ürün Sabitlendi')
     } else if (!add) {
       this.stickedProduct = null;
       this.setTopProduct(this.productsToCollect)
-      this.toasterService.success('Ürün Sabitlenenlerden Kaldırıldı')
+      // this.toasterService.success('Ürün Sabitlenenlerden Kaldırıldı')
     }
   }
   goDown2(barcode: string, shelfNo: string, itemCode: string) {
@@ -742,10 +787,11 @@ export class OrderOperationComponent implements OnInit {
   }
 
 
+
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
   async onSubmit(productModel: CountProduct): Promise<any> {
-    this.toasterService.success(productModel.barcode);
+
     // = işareti varsa - yap
     if (productModel.barcode.includes("=")) {
       productModel.barcode = productModel.barcode.replace(/=/g, "-");
@@ -779,7 +825,7 @@ export class OrderOperationComponent implements OnInit {
         }
       }
 
-      this.toasterService.success("Formu Verileri Dolduruldu.")
+      // this.toasterService.success("Formu Verileri Dolduruldu.")
       return;
     }
 
@@ -789,6 +835,107 @@ export class OrderOperationComponent implements OnInit {
 
 
       if (this.checkForm.valid) {
+
+        //SET ÜRÜNÜ KODLARI
+
+
+        //EĞER KİTLENMEDİYSE VE DİREKT SET ÜRÜNÜ İSE
+
+        if (!this.isLocked && this.productsToCollect.find(p => p.barcode == productModel.barcode)?.setProducts.length > 0) {
+          this.toasterService.error('Lütfen Ürünü Kitleyiniz Ve Set Ürünlerini Okutunuz');
+          return;
+        }
+        //EĞER KİTLENDİSYE  VE DİREKT SET ÜRÜNÜ İSE
+        else if (this.isLocked && this.productsToCollect.find(p => p.barcode == productModel.barcode)?.setProducts.length > 0) {
+          this.toasterService.error('Lütfen Set Ürünlerini Okutunuz');
+          return;
+        }
+        //EĞER KİTLENDİYSE VE SETİN İÇİNDEKİ ÜRÜN OKUTULDUYSA
+        if (this.isLocked && this.lockSetProduct) {
+          this.toasterService.info('SET ÜRÜNÜ ALGILANDI');
+          if (this.lockedSetProduct.setProducts.some(p => p.quantity > 0 && p.barcode == productModel.barcode)) {
+
+            var result: string[] = await this.productService.countProductByBarcode3(
+              productModel.barcode
+            );
+            this.shelfNumbers = result[0];
+            var newResponse = this.shelfNumbers;
+            this.shelfNumbers += this.lockedSetProduct.shelfNo;
+            const shelves = newResponse
+              .split(',')
+              .filter((raflar) => raflar.trim() !== '')
+              .map((raflar) => raflar.toLowerCase());
+
+            const foundProduct = this.lockedSetProduct.setProducts.find(
+              (o) => o.barcode == productModel.barcode
+
+            );
+
+            var shelf_req = shelves.find(
+              (s) => s.toLowerCase() == productModel.shelfNo.toLowerCase()
+            ) &&
+              (foundProduct != null || foundProduct != undefined);
+
+            if (!shelf_req) {
+              if (!window.confirm(
+                'Raf Numarası Eşleşmedi Yine De Eklemek İstiyor Musunuz?'
+              )) {
+                this.toasterService.error('Eklenmedi');
+                return;
+              }
+            }
+
+
+            if (foundProduct.quantity - productModel.quantity >= 0) {
+
+              var _setRequest: ZTMSG_CountedSetProduct = new ZTMSG_CountedSetProduct();
+              _setRequest.barcode = productModel.barcode;
+              _setRequest.batchCode = productModel.barcode;
+              _setRequest.quantity = productModel.quantity
+              _setRequest.batchCode = productModel.batchCode
+              _setRequest.shelfNo = productModel.shelfNo;
+              _setRequest.lineId = foundProduct.lineId;
+              _setRequest.operationNumber = this.orderNo;
+              _setRequest.setItemCode = this.lockedSetProduct.itemCode;
+              _setRequest.isCompleted = true;
+              var set_response = await this.warehouseService.addSetProduct(
+                _setRequest
+              );
+              if (set_response) {
+                await this.getAllProducts(this.orderNo, 'WS');
+                //eğer artık okutulan set ürününün tüm ürünleri toplandıysa
+                var lp = this.productsToCollect.find(p => p.lineId == this.lockedSetProduct.lineId)
+                if (!lp.setProducts.some(p => p.quantity > 0)) {
+                  this.isLocked = false;
+                  this.lockedSetProduct = null;
+                  this.old_list = [];
+                  await this.collectSelectedProduct(lp);
+                  return;
+                }
+                //↑↑↑↑↑↑↑↑↑ TÜM ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
+                this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
+                this.clearBarcodeAndQuantity();
+                return;
+              } else {
+                this.toasterService.error('Sayım Yapılamadı');
+                return;
+              }
+              //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
+
+
+
+            } else {
+              this.toasterService.warn('Stok Hatası.');
+              return;
+            }
+          } else {
+            this.toasterService.warn('set ürünü bulunamadı')
+            return;
+          }
+
+        }
+
+
 
         var foundModel = this.productsToCollect.find(
           (o) => o.barcode == productModel.barcode
@@ -1250,7 +1397,7 @@ export class OrderOperationComponent implements OnInit {
       }
     }
   }
-  async deleteOrderProduct(orderNo: string, product: any): Promise<boolean> {
+  async deleteOrderProduct(orderNo: string, product: CollectedProduct): Promise<boolean> {
 
     if (this.currentOrderNo.includes("MIS")) {
       await this.deleteMissingProduct("MIS-" + orderNo, product.barcode);
@@ -1261,6 +1408,13 @@ export class OrderOperationComponent implements OnInit {
     );
 
     if (confirmDelete) {
+      // eğer set ürünü iset
+      if (product.setProducts.length > 1) {
+        var delete_set_response = await this.warehouseService.deleteCountedSetProductByOrder(orderNo, product.itemCode);
+        if (delete_set_response) {
+          this.toasterService.success("Set Ürünleri Silindi");
+        }
+      }
       const response: boolean = await this.productService.deleteOrderProduct(
         orderNo,
         product.itemCode,
@@ -1373,5 +1527,73 @@ export class OrderOperationComponent implements OnInit {
     this.quantity = quantity
   }
 
-  //--------------
+  //----------------------------
+  //----------------------------SET KODLARI
+
+  isLocked: boolean = false;
+  lockedSetProduct: ProductOfOrder;
+  old_list: ProductOfOrder[] = [];
+  lockSetProduct(setProduct: ProductOfOrder) {
+    if (this.lockedSetProduct?.lineId != setProduct.lineId) {
+      if (setProduct.setProducts.length > 0) {
+        // Herhangi bir ürünün toplanmayan adedi var mı kontrol et
+        if (setProduct.setProducts.some(p => p.quantity > 0)) {
+          this.lockedSetProduct = setProduct;
+          this.isLocked = true;
+          this.old_list = [...this.productsToCollect]; // Mevcut listeyi yedekle
+          this.productsToCollect = this.productsToCollect.filter(p => p === setProduct); // Diğer ürünleri filtrele
+          this.stickToTop(setProduct.setProducts.find(p => p.quantity > 0), true);
+          this.toasterService.success("Ürün Kitlendi");
+        } else {
+          this.toasterService.error("Tüm Set Ürünleri Toplanmıştır");
+        }
+      } else {
+        this.toasterService.error("Bu Bir Set Ürünü Değildir");
+        return;
+      }
+    }
+  }
+  lockSetProduct_force(setProduct: ProductOfOrder) {
+    if (setProduct.setProducts.length > 0) {
+      // Herhangi bir ürünün toplanmayan adedi var mı kontrol et
+      if (setProduct.setProducts.some(p => p.quantity > 0)) {
+        // this.stickToTop(setProduct.setProducts.find(p => p.quantity > 0), true);
+        // this.lockedSetProduct = setProduct;
+        // this.isLocked = true;
+        this.old_list = [];
+        this.old_list = [...this.productsToCollect]; // Mevcut listeyi yedekle
+        this.productsToCollect = this.productsToCollect.filter(p => p.lineId === setProduct.lineId); // Diğer ürünleri filtrele
+        this.toasterService.success("Ürün Kitlendi");
+      } else {
+        this.toasterService.error("Tüm Set Ürünleri Toplanmıştır");
+      }
+    } else {
+      this.toasterService.error("Bu Bir Set Ürünü Değildir");
+      return;
+    }
+  }
+
+  unlockSetProduct() {
+    if (this.isLocked) {
+      this.productsToCollect = this.old_list; // Eski listeyi geri yükle
+      this.isLocked = false;
+      this.lockedSetProduct = null;
+      this.toasterService.success("Ürün Kilidi Kaldırıldı");
+    }
+  }
+
+  async deleteSetProduct(product: ProductOfOrder) {
+    var response = await this.warehouseService.deleteSetCount(product.lineId);
+    await this.getAllProducts(this.orderNo, 'WS')
+  }
+  async collectSelectedProduct(product: ProductOfOrder) {
+    this.checkForm.reset();
+    this.checkForm.get('shelfNo').setValue(product.shelfNo);
+    this.checkForm.get('barcode').setValue(product.barcode);
+    this.checkForm.get('quantity').setValue(product.quantity);
+
+    await this.onSubmit(this.checkForm.value);
+  }
+
+  //----------------------------
 }

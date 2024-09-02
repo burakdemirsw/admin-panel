@@ -148,14 +148,14 @@
               Tutar
               <p-sortIcon field="price"></p-sortIcon>
             </th>
-            <th pSortableColumn="collectedQty">
+            <!-- <th pSortableColumn="collectedQty">
               Toplanan Miktar
               <p-sortIcon field="collectedQty"></p-sortIcon>
             </th>
             <th pSortableColumn="remainingQty">
               Toplanalabilir Miktar
               <p-sortIcon field="remainingQty"></p-sortIcon>
-            </th>
+            </th> -->
             <th pSortableColumn="warehouseCode">
               Depo
               <p-sortIcon field="warehouseCode"></p-sortIcon>
@@ -204,12 +204,12 @@
             <th>
               <p-columnFilter type="numeric" field="price" [showClearButton]="false"></p-columnFilter>
             </th>
-            <th>
+            <!-- <th>
               <p-columnFilter type="numeric" field="collectedQty" [showClearButton]="false"></p-columnFilter>
             </th>
             <th>
               <p-columnFilter type="numeric" field="remainingQty" [showClearButton]="false"></p-columnFilter>
-            </th>
+            </th> -->
             <th>
               <p-columnFilter type="text" field="warehouseCode" [showClearButton]="false"></p-columnFilter>
             </th>
@@ -287,8 +287,8 @@
             <td>{{ order.description }}</td>
             <td>{{ order.qty1 }}</td>
             <td>{{ order.price.toString() | currency : "₺" }}</td>
-            <td>{{ order.collectedQty }}</td>
-            <td>{{ order.remainingQty }}</td>
+            <!-- <td>{{ order.collectedQty }}</td>
+            <td>{{ order.remainingQty }}</td> -->
             <td>{{ order.warehouseCode }}</td>
             <td>
               <button class="btn" [ngClass]="{

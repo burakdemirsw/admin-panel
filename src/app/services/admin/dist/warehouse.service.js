@@ -49,6 +49,62 @@ var WarehouseService = /** @class */ (function () {
     function WarehouseService(httpClientService) {
         this.httpClientService = httpClientService;
     }
+    WarehouseService.prototype.deleteSetCount = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.get({
+                            controller: "Warehouse/delete-set-count/" + request
+                        }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    WarehouseService.prototype.deleteCountedSetProductByOrder = function (operationNumber, setItemCode) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.httpClientService.get({
+                            controller: "Warehouse/delete-all-set-count-by-operation-number/" + operationNumber + '/' + setItemCode
+                        }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                }
+            });
+        });
+    };
+    WarehouseService.prototype.addSetProduct = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (request.barcode.includes('/')) {
+                            request.barcode = request.barcode.replace(/\//g, '-');
+                        }
+                        return [4 /*yield*/, this.httpClientService.post({
+                                controller: "Warehouse/add-set-count"
+                            }, request)
+                                .toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        if (response == true) {
+                            return [2 /*return*/, response];
+                        }
+                        else {
+                            return [2 /*return*/, false];
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     WarehouseService.prototype.deleteCount = function (request) {
         return __awaiter(this, void 0, Promise, function () {
             var response;

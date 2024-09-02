@@ -93,139 +93,133 @@
       <div class="row">
         <div class="col-md-12">
           <div class="card">
-            <div class="card-body">
-              <!-- <h5 class="card-title">Geliştirmeler</h5> -->
+            <p-table #dt2 [value]="tasks" [(selection)]="selectedTasks" dataKey="id" [paginator]="true"
+              [rowsPerPageOptions]="[10, 20, 50]" [resizableColumns]="true" expandableRows="true"
+              columnResizeMode="expand" styleClass="p-datatable-gridlines" [rows]="20" styleClass="p-datatable-striped"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+              <ng-template pTemplate="caption">
 
-              <p-table #dt2 [value]="tasks" [(selection)]="selectedTasks" dataKey="id" [paginator]="true"
-                [rowsPerPageOptions]="[10, 20, 50]" [resizableColumns]="true" expandableRows="true"
-                columnResizeMode="expand" styleClass="p-datatable-gridlines" [rows]="20"
-                styleClass="p-datatable-striped"
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
-                <ng-template pTemplate="caption">
+                <h5 *ngIf="selectedTasks.length > 0" style="text-align: left">
+                  {{ selectedTasks.length }}/{{ tasks.length }} Adet Görev Seçildi
+                </h5>
+              </ng-template>
 
-                  <h5 *ngIf="selectedTasks.length > 0" style="text-align: left">
-                    {{ selectedTasks.length }}/{{ tasks.length }} Adet Görev Seçildi
-                  </h5>
-                </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
 
-                <ng-template pTemplate="header">
-                  <tr>
+                  <th pSortableColumn="id">
+                    Id
+                    <p-sortIcon field="id"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="zone">
+                    Sayfa
+                    <p-sortIcon field="zone"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="header">
+                    Başlık
+                    <p-sortIcon field="header"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="description">
+                    Açıklama
+                    <p-sortIcon field="description"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="isCompleted">
+                    Sonuç
+                    <p-sortIcon field="isCompleted"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="createdDate">
+                    Oluşturulma Zamanı
+                    <p-sortIcon field="createdDate"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="finishedDate">
+                    Tamamlanma Zamanı
+                    <p-sortIcon field="finishedDate"></p-sortIcon>
+                  </th>
+                  <th>İşlemler</th>
+                </tr>
+                <tr>
 
-                    <th pSortableColumn="id">
-                      Id
-                      <p-sortIcon field="id"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="zone">
-                      Sayfa
-                      <p-sortIcon field="zone"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="header">
-                      Başlık
-                      <p-sortIcon field="header"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="description">
-                      Açıklama
-                      <p-sortIcon field="description"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="isCompleted">
-                      Sonuç
-                      <p-sortIcon field="isCompleted"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="createdDate">
-                      Oluşturulma Zamanı
-                      <p-sortIcon field="createdDate"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="finishedDate">
-                      Tamamlanma Zamanı
-                      <p-sortIcon field="finishedDate"></p-sortIcon>
-                    </th>
-                    <th>İşlemler</th>
-                  </tr>
-                  <tr>
+                  <th>
+                    <p-columnFilter type="text" field="id" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="zone" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="header" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="description" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="boolean" field="isCompleted" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="date" field="createdDate" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="date" field="finishedDate" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th></th>
+                </tr>
+              </ng-template>
 
-                    <th>
-                      <p-columnFilter type="text" field="id" [showClearButton]="false"></p-columnFilter>
-                    </th>
-                    <th>
-                      <p-columnFilter type="text" field="zone" [showClearButton]="false"></p-columnFilter>
-                    </th>
-                    <th>
-                      <p-columnFilter type="text" field="header" [showClearButton]="false"></p-columnFilter>
-                    </th>
-                    <th>
-                      <p-columnFilter type="text" field="description" [showClearButton]="false"></p-columnFilter>
-                    </th>
-                    <th>
-                      <p-columnFilter type="boolean" field="isCompleted" [showClearButton]="false"></p-columnFilter>
-                    </th>
-                    <th>
-                      <p-columnFilter type="date" field="createdDate" [showClearButton]="false"></p-columnFilter>
-                    </th>
-                    <th>
-                      <p-columnFilter type="date" field="finishedDate" [showClearButton]="false"></p-columnFilter>
-                    </th>
-                    <th></th>
-                  </tr>
-                </ng-template>
+              <ng-template pTemplate="body" let-task let-i="rowIndex">
+                <tr>
 
-                <ng-template pTemplate="body" let-task let-i="rowIndex">
-                  <tr>
-
-                    <td>{{ i + 1 }}</td>
-                    <td>{{ task.zone }}</td>
-                    <td>{{ task.header }}</td>
-                    <td (click)="openModal(task)" style="cursor :pointer !important; ">
-                      <p-editor [(ngModel)]="task.description" [readonly]="true" [style]="{ height: '200px' }"
-                        *ngIf="task.description"></p-editor>
-                    </td>
-                    <td>
-                      <span class="btn" [ngClass]="{
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ task.zone }}</td>
+                  <td>{{ task.header }}</td>
+                  <td (click)="openModal(task)" style="cursor :pointer !important; ">
+                    <p-editor [(ngModel)]="task.description" [readonly]="true" [style]="{ height: '200px' }"
+                      *ngIf="task.description"></p-editor>
+                  </td>
+                  <td>
+                    <span class="btn" [ngClass]="{
             'btn-success': task.isCompleted,
             'btn-warning': !task.isCompleted,
             blinking: !task.isCompleted
           }">
-                        <i *ngIf="task.isCompleted" class="fa fa-check"></i>
-                        <i *ngIf="!task.isCompleted" class="fa fa-exclamation"></i>
-                      </span>
-                    </td>
-                    <td>
-                      {{ task.createdDate | date : "dd.MM.yyyy HH:mm" }}
-                    </td>
-                    <td>
-                      {{ task.finishedDate | date : "dd.MM.yyyy HH:mm" }}
-                    </td>
-                    <td>
-                      <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
-                        aria-expanded="true">
-                      </button>
-                      <ul class="dropdown-menu">
-                        <li>
-                          <a class="dropdown-item" (click)="updateTaskStatus(task, true)">
-                            <i class="fa fa-check"></i> Tamamla
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item" (click)="updateTaskStatus(task, false)">
-                            <i class="fa fa-times"></i> İptal Et
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item" (click)="openModal(task)">
-                            <i class="fa fa-pencil"></i> Düzenle
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item" (click)="deleteTask(task)">
-                            <i class="fa fa-trash"></i> Sil
-                          </a>
-                        </li>
-                      </ul>
-                    </td>
-                  </tr>
-                </ng-template>
-              </p-table>
-
-            </div>
+                      <i *ngIf="task.isCompleted" class="fa fa-check"></i>
+                      <i *ngIf="!task.isCompleted" class="fa fa-exclamation"></i>
+                    </span>
+                  </td>
+                  <td>
+                    {{ task.createdDate | date : "dd.MM.yyyy HH:mm" }}
+                  </td>
+                  <td>
+                    {{ task.finishedDate | date : "dd.MM.yyyy HH:mm" }}
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                      aria-expanded="true">
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li>
+                        <a class="dropdown-item" (click)="updateTaskStatus(task, true)">
+                          <i class="fa fa-check"></i> Tamamla
+                        </a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" (click)="updateTaskStatus(task, false)">
+                          <i class="fa fa-times"></i> İptal Et
+                        </a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" (click)="openModal(task)">
+                          <i class="fa fa-pencil"></i> Düzenle
+                        </a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" (click)="deleteTask(task)">
+                          <i class="fa fa-trash"></i> Sil
+                        </a>
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
           </div>
         </div>
       </div>

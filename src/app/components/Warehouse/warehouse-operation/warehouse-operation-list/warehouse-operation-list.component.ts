@@ -158,7 +158,7 @@ export class WarehouseOperationListComponent implements OnInit {
   async sendBarcodesToNebim(isPackage: boolean) {
     var request = new CreateBarcodeFromOrder_RM(isPackage)
     request.operationNo = this.selectedOrderNo;
-    request.from = "order-operation";
+    request.from = "warehouse-operation";
     request.products = null;
     var response = await this.productService.sendBarcodesToNebim(request);
     if (response) {

@@ -26,11 +26,11 @@
                 }}" formControlName="shelfNo" />
 
 
-              <button class="btn btn-primary" type="submit"><i class="fa fa-plus" aria-hidden="true"></i> Ürün
+              <button class="btn btn-success" type="submit"><i class="fa fa-plus" aria-hidden="true"></i> Ürün
                 Ekle</button>
-              <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+              <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown"
                 aria-expanded="false">
-                Ürün İşlemleri
+
               </button>
               <ul class="dropdown-menu">
                 <li>
@@ -58,9 +58,9 @@
 
           </div>
         </form>
-        <p-dialog header="Bulunan Ürünler" [(visible)]="findProductDialog" [style]="{ width: '100vw' }">
+        <p-dialog header="Bulunan Ürünler" [(visible)]="findProductDialog" [style]="{ width: '100vw',height: '100vw' }">
           <p-table #dt2 [styleClass]="'p-datatable-striped'" [value]="allProducts" [paginator]="true" [rows]="10"
-            (onFilter)="logFilteredData($event)" [tableStyle]="{ 'min-width': '50rem' }"
+            (onFilter)="logFilteredData($event)" [tableStyle]="{ 'min-width': '50rem' }" [modal]="true"
             [globalFilterFields]="['description','itemCode']">
 
             <ng-template pTemplate="caption">
@@ -207,7 +207,7 @@
               <tr>
 
                 <td>
-                  <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true">
+                  <p-image src="{{ product.photoUrl }}" alt="Image" width="30" [preview]="true">
                   </p-image>
                 </td>
                 <td>{{ product.brand }}</td>
@@ -222,7 +222,7 @@
                 <td>{{ product.inventory }}</td>
                 <td>{{ product.price }}</td>
                 <td>
-                  <button type="button" class="btn btn-primary" (click)="addProduct(product)"><i class="fa fa-plus"
+                  <button type="button" class="btn btn-success" (click)="addProduct(product)"><i class="fa fa-plus"
                       aria-hidden="true"></i></button>
                 </td>
               </tr>
@@ -256,7 +256,7 @@
           <ng-template pTemplate="body" let-product>
             <tr [pEditableRow]="product">
               <td class="image-icon-td">
-                <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true"></p-image>
+                <p-image src="{{ product.photoUrl }}" alt="Image" width="30" [preview]="true"></p-image>
               </td>
 
               <td>{{ product.itemCode }}</td>
@@ -281,10 +281,10 @@
                 {{getTotalQuantity() }} Adet
               </td>
 
-              <td colspan="2" class="text-right"> {{getTotal().toFixed(2) }} </td>
-              <td class="text-right"> {{getTotalTax_2().toFixed(2) }} </td>
+              <td colspan="2" class="text-right"> {{getTotal().toFixed(2)   | currency : "₺" }} </td>
+              <td class="text-right"> {{getTotalTax_2().toFixed(2)   | currency : "₺" }} </td>
 
-              <td colspan="2" class="text-right"> {{getTotalTaxedPrice()}}</td>
+              <td colspan="2" class="text-right"> {{getTotalTaxedPrice()  | currency : "₺" }}</td>
             </tr>
           </ng-template>
         </p-table>
@@ -319,9 +319,9 @@
 
 
               <th scope="col">Toplam Fiyat</th>
-              <th scope="col">% Kdv</th>
-              <th scope="col">₺ Kdv</th>
-              <th scope="col">K. Total</th>
+              <th scope="col" *ngIf="paymentForm.value.taxTypeCode.value=='0'">% Kdv</th>
+              <th scope="col" *ngIf="paymentForm.value.taxTypeCode.value=='0'">₺ Kdv</th>
+              <th scope="col" *ngIf="paymentForm.value.taxTypeCode.value=='0'">K. Total</th>
 
               <th scope="col">Envanter</th>
 
@@ -334,12 +334,12 @@
           <ng-template pTemplate="body" let-product let-editing="editing" let-ri="rowIndex">
             <tr [pEditableRow]="product">
               <td class="image-icon-td">
-                <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true"></p-image>
+                <p-image src="{{ product.photoUrl }}" alt="Image" width="30" [preview]="true"></p-image>
               </td>
 
 
               <td>{{ product.itemCode }}</td>
-              <td class="scrollable-td">
+              <td>
                 {{ product.description}}
               </td>
               <td *ngIf="!this.orderType">{{ product.shelfNo }}</td>
@@ -380,15 +380,15 @@
 
 
               <td>
-                {{product.totalPrice}}
+                {{product.totalPrice  | currency : "₺" }}
               </td>
-              <td>
+              <td *ngIf="paymentForm.value.taxTypeCode.value=='0'">
                 {{product.taxRate}}
               </td>
-              <td>
+              <td *ngIf="paymentForm.value.taxTypeCode.value=='0'">
                 {{((product.taxRate/100)* product.totalPrice).toFixed(2)}}
               </td>
-              <td>
+              <td *ngIf="paymentForm.value.taxTypeCode.value=='0'">
                 {{ product.totalTaxedPrice }}
               </td>
               <td>
@@ -401,7 +401,7 @@
                 <div class="btn-group" role="group" aria-label="Basic example">
                   <button type="button" class="btn btn-danger" (click)="deleteProduct(product)"> <i class="fa fa-trash"
                       aria-hidden="true"></i></button>
-                  <button type="button" icon="" (click)="openUpdateDialog(product,ri)" class="btn btn-primary"><i
+                  <button type="button" icon="" (click)="openUpdateDialog(product,ri)" class="btn btn-success"><i
                       class="fa fa-pencil" aria-hidden="true"></i></button>
                 </div>
 
@@ -436,7 +436,7 @@
                     <td>{{ product?.suggestedItemInventory }}</td>
 
                     <td>
-                      <button class="btn btn-primary" icon="pi pi-plus"
+                      <button class="btn btn-success" icon="pi pi-plus"
                         (click)="routeGetProduct( product?.suggestedItemCode)" type="submit"></button>
                     </td>
                   </tr>
@@ -452,10 +452,13 @@
                 {{getTotalQuantity() }} Adet
               </td>
 
-              <td colspan="2" class="text-right"> {{getTotal().toFixed(2) }} </td>
-              <td class="text-right"> {{getTotalTax_2().toFixed(2) }} </td>
+              <td colspan="2" class="text-right"> {{getTotal().toFixed(2)  | currency : "₺"  }} </td>
+              <td class="text-right" *ngIf="paymentForm.value.taxTypeCode.value=='0'">
+                {{getTotalTax_2().toFixed(2)  | currency : "₺"  }}
+              </td>
 
-              <td colspan="2" class="text-right"> {{getTotalTaxedPrice()}}</td>
+              <td colspan="2" class="text-right" *ngIf="paymentForm.value.taxTypeCode.value=='0'">
+                {{getTotalTaxedPrice()  | currency : "₺" }}</td>
             </tr>
           </ng-template>
         </p-table>
@@ -478,7 +481,7 @@
                 <td>{{ product?.suggestedItemInventory }}</td>
 
                 <td>
-                  <button class="btn btn-primary" icon="pi pi-plus"
+                  <button class="btn btn-success" icon="pi pi-plus"
                     (click)="routeGetProduct( product?.suggestedItemCode)" type="submit"></button>
                 </td>
               </tr>
@@ -518,11 +521,9 @@
           </form>
         </p-dialog>
 
-
-
         <!-- TOPLAM------------------------------------------------------------------------------------------------------------>
-        <div class="card mb-3" *ngIf="selectedProducts.length>0">
-          <div class="card-body">
+        <div class="mb-3" *ngIf="selectedProducts.length>0">
+          <div class="div">
             <div class="mt-3">
               <table class="table table-bordered">
 
@@ -538,7 +539,7 @@
                     <th scope="row">Ara Toplam <small class="text-muted">KDVSİZ</small>
                     </th>
                     <td>
-                      {{getTotal().toFixed(2) }}
+                      {{getTotal().toFixed(2)   | currency : "₺" }}
                     </td>
                   </tr>
                   <tr *ngIf=" this.discountRate1">
@@ -557,21 +558,21 @@
                     <td>{{ getUnTaxedTotalAfterDiscount() | currency : "₺" }}</td>
                   </tr>
 
-                  <tr *ngIf="findVatRate(10)">
+                  <tr *ngIf="findVatRate(10) && paymentForm.value.taxTypeCode.value=='0'">
                     <th scope="row">%10 KDV</th>
                     <td>{{calculateVatAmount(10)| currency : "₺"}}</td>
                   </tr>
-                  <tr *ngIf="findVatRate(20)">
+                  <tr *ngIf="findVatRate(20)  && paymentForm.value.taxTypeCode.value=='0'">
                     <th scope="row">%20 KDV</th>
                     <td>{{calculateVatAmount(20)| currency : "₺"}}</td>
                   </tr>
-                  <tr>
+                  <tr *ngIf="paymentForm.value.taxTypeCode.value=='0'">
                     <th scope="row">KDV</th>
                     <td>
                       {{ ((getUnTaxedTotalAfterDiscount() /getTotal() )*getTotalTax_2() ).toFixed(2)| currency : "₺" }}
                     </td>
                   </tr>
-                  <tr>
+                  <tr *ngIf="paymentForm.value.taxTypeCode.value=='0'">
                     <th scope="row">Genel Toplam</th>
                     <td>
                       {{ ((getUnTaxedTotalAfterDiscount() /getTotal() )*getTotalTax_2() ) +  getUnTaxedTotalAfterDiscount()   | currency : "₺" }}
@@ -579,11 +580,8 @@
                   </tr>
                 </tbody>
               </table>
-
             </div>
-
             <!-- İNDİRİM FORMU----------------------------------------------------------------------------------------------------->
-
             <form [formGroup]="discountForm" *ngIf="selectedProducts.length > 0" class="mb-3 ">
               <div class="row">
                 <div class="col-md-4  mb-3">
@@ -622,11 +620,10 @@
             </form>
 
 
-
-
-
           </div>
         </div>
+
+
 
         <div class="row">
           <div class="col-md">
@@ -642,7 +639,7 @@
           <p-tabPanel header="Müşteri Bul">
             <div class="row mb-3" *ngIf="this.invoiceType != undefined">
               <div class="col-md-1">
-                <button class="btn btn-primary" (click)="changeInvoiceType(undefined)" type="submit"
+                <button class="btn btn-success" (click)="changeInvoiceType(undefined)" type="submit"
                   icon="pi pi-arrow-left"><i class="fa fa-arrow-left" aria-hidden="true"></i> </button>
               </div>
             </div>
@@ -684,7 +681,7 @@
                     </div>
                   </div>
                   <div class="mt-3 mb-3">
-                    <button class="btn btn-primary" type="button" (click)="openDialog('createCustomerDialog')"> Yeni
+                    <button class="btn btn-success" type="button" (click)="openDialog('createCustomerDialog')"> Yeni
                       Müşteri Oluştur</button>
                   </div>
                   <p-dialog header="Müşteri Ekle" [(visible)]="createCustomerDialog" [style]="{ width: '80vw' }">
@@ -863,7 +860,7 @@
                       <div class="row mb-3">
                         <div class="col-md-12">
                           <div class="form-group">
-                            <button class="btn btn-primary" icon="pi pi-plus" type="submit" style="width: 100%"
+                            <button class="btn btn-success" icon="pi pi-plus" type="submit" style="width: 100%"
                               (click)="submitAddressForm(createCustomerForm.value)">Müşteri Ekle</button>
 
                           </div>
@@ -886,7 +883,7 @@
                 <form [formGroup]="createCustomerForm">
                   <p-inputGroup>
                     <p-inputGroupAddon>
-                      <!-- <button  icon="pi pi-eye" class="btn btn-primary" type="button"
+                      <!-- <button  icon="pi pi-eye" class="btn btn-success" type="button"
       (click)=" this.subCustomerDialog = !this.subCustomerDialog "></button> -->
                       <p-dropdown scrollHeight="350px" [virtualScroll]="true" [itemSize]="50" [style]="{'width': '50%'}"
                         #subCurrAccDescription_dropdown formControlName="sc_Description" (click)="showPanel(3)"
@@ -896,14 +893,14 @@
                       </p-dropdown>
 
                     </p-inputGroupAddon>
-                    <button icon="pi pi-search" class="btn btn-primary" type="button" (click)="getSubCustomers()"> <i
+                    <button icon="pi pi-search" class="btn btn-success" type="button" (click)="getSubCustomers()"> <i
                         class="fa fa-search" aria-hidden="true"></i></button>
 
 
                   </p-inputGroup>
 
                   <div class="mt-3 mb-3">
-                    <button class="btn btn-primary" type="button" (click)="openDialog('addSubCustomerDialog')">Yeni Alt
+                    <button class="btn btn-success" type="button" (click)="openDialog('addSubCustomerDialog')">Yeni Alt
                       Müşteri Oluştur</button>
                   </div>
                 </form>
@@ -939,7 +936,7 @@
                     <td>{{ address.districtDescription }}</td>
                     <td>{{ address.address.substring(0, 20) }}</td>
                     <td>
-                      <button class="btn btn-primary" (click)="selectCurrentAddress(address)" type="submit"><i
+                      <button class="btn btn-success" (click)="selectCurrentAddress(address)" type="submit"><i
                           class="fa fa-plus" aria-hidden="true"></i></button>
                     </td>
                   </tr>
@@ -970,7 +967,7 @@
                     {{ customer.phone }}
                   </td>
                   <td>
-                    <button class="btn btn-primary" (click)="selectCurrentCustomer(customer)"><i class="fa fa-plus"
+                    <button class="btn btn-success" (click)="selectCurrentCustomer(customer)"><i class="fa fa-plus"
                         aria-hidden="true"></i></button>
                   </td>
                 </tr>
@@ -1056,7 +1053,7 @@
                 <td>{{ subCustomer?.city + ' / ' + subCustomer?.district + ' / ' + subCustomer?.address }}</td>
 
                 <td>
-                  <button class="btn btn-primary" icon="pi pi-plus" (click)="selectCurrentSubCustomer(subCustomer)"
+                  <button class="btn btn-success" icon="pi pi-plus" (click)="selectCurrentSubCustomer(subCustomer)"
                     type="submit"><i class="fa fa-plus" aria-hidden="true"></i></button>
                 </td>
               </tr>
@@ -1133,7 +1130,7 @@
             </div>
 
             <div class="row mb-3">
-              <button class="btn btn-primary" icon="pi pi-plus" label="Detaylar" type="button"
+              <button class="btn btn-success" icon="pi pi-plus" label="Detaylar" type="button"
                 (click)="isCollapsed_2 = !isCollapsed_2"><i class="fa fa-plus" aria-hidden="true"></i>Detaylar</button>
             </div>
 
@@ -1219,7 +1216,7 @@
 
             <div class="row mb-3">
               <div class="form-group">
-                <button class="btn btn-primary" type="submit" (click)="addSubCustomer()"><i class="fa fa-plus"
+                <button class="btn btn-success" type="submit" (click)="addSubCustomer()"><i class="fa fa-plus"
                     aria-hidden="true"></i> Ekle</button>
               </div>
             </div>
@@ -1253,7 +1250,7 @@
         </div>
         <div class="row mb-3" *ngIf="showCargo2">
           <div class="col-md-1">
-            <button class="btn btn-primary" (click)="goBack()" type="submit"><i class="fa fa-arrow-left"
+            <button class="btn btn-success" (click)="goBack()" type="submit"><i class="fa fa-arrow-left"
                 aria-hidden="true"></i></button>
           </div>
         </div>
@@ -1464,7 +1461,6 @@
                 </div>
 
               </div>
-              <button (click)="createOrder()" style="width: 100%" class="btn btn-success">Siparişi Onayla</button>
 
 
             </div>
@@ -1494,9 +1490,9 @@
 
 
                 <th scope="col">Toplam Fiyat</th>
-                <th scope="col">% Kdv</th>
-                <th scope="col">₺ Kdv</th>
-                <th scope="col">K. Total</th>
+                <th scope="col" *ngIf="paymentForm.value.taxTypeCode.value=='0'">% Kdv</th>
+                <th scope="col" *ngIf="paymentForm.value.taxTypeCode.value=='0'">₺ Kdv</th>
+                <th scope="col" *ngIf="paymentForm.value.taxTypeCode.value=='0'">K. Total</th>
 
 
                 <!--  <th scope="col">Ekle-Çıkar</th> -->
@@ -1506,7 +1502,7 @@
             <ng-template pTemplate="body" let-product let-ri="rowIndex">
               <tr>
                 <td class="image-icon-td">
-                  <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true"></p-image>
+                  <p-image src="{{ product.photoUrl }}" alt="Image" width="30" [preview]="true"></p-image>
                 </td>
 
 
@@ -1552,15 +1548,15 @@
 
 
                 <td>
-                  {{product.totalPrice}}
+                  {{product.totalPrice  | currency : "₺" }}
                 </td>
-                <td>
+                <td *ngIf="paymentForm.value.taxTypeCode.value=='0'">
                   {{product.taxRate}}
                 </td>
-                <td>
+                <td *ngIf="paymentForm.value.taxTypeCode.value=='0'">
                   {{((product.taxRate/100)* product.totalPrice).toFixed(2)}}
                 </td>
-                <td>
+                <td *ngIf="paymentForm.value.taxTypeCode.value=='0'">
                   {{ product.totalTaxedPrice }}
                 </td>
 
@@ -1574,13 +1570,122 @@
                 </td>
 
                 <td colspan="2" class="text-right"> {{getTotal() }} </td>
-                <td class="text-right"> {{getTotalTax_2().toFixed(2) }} </td>
+                <td class="text-right" *ngIf="paymentForm.value.taxTypeCode.value=='0'">
+                  {{getTotalTax_2().toFixed(2) | currency : "₺"  }}
+                </td>
 
-                <td colspan="2" class="text-right"> {{getTotalTaxedPrice()}}</td>
+                <td colspan="2" class="text-right" *ngIf="paymentForm.value.taxTypeCode.value=='0'">
+                  {{getTotalTaxedPrice()  | currency : "₺" }}</td>
               </tr>
             </ng-template>
           </p-table>
         </div>
+
+        <!-- TOPLAM------------------------------------------------------------------------------------------------------------>
+        <div class="mb-3" *ngIf="selectedProducts.length>0">
+          <div class="div">
+            <div class="mt-3">
+              <table class="table table-bordered">
+
+                <tbody>
+                  <tr>
+                    <th scope="row">Sayın</th>
+                    <td style="font-weight: bold;">
+                      {{this.selectedCustomers[0]?.currAccDescription.toUpperCase()}}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <th scope="row">Ara Toplam <small class="text-muted">KDVSİZ</small>
+                    </th>
+                    <td>
+                      {{getTotal().toFixed(2)   | currency : "₺" }}
+                    </td>
+                  </tr>
+                  <tr *ngIf=" this.discountRate1">
+                    <th scope="row">Dip İskonto (%)
+                    </th>
+                    <td>%{{ this.discountRate1}} <span style="color: red" *ngIf=" this.discountRate1">|
+                        {{(getTotal()*this.discountRate1/100).toFixed(2)}}₺ </span></td>
+                  </tr>
+                  <tr *ngIf=" this.discountRate2">
+                    <th scope="row">Dip İskonto (₺)</th>
+                    <td>₺{{ this.discountRate2}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Toplam <small class="text-muted">KDVSİZ</small></th>
+                    <td>{{ getUnTaxedTotalAfterDiscount() | currency : "₺" }}</td>
+                  </tr>
+
+                  <tr *ngIf="findVatRate(10) && paymentForm.value.taxTypeCode.value=='0'">
+                    <th scope="row">%10 KDV</th>
+                    <td>{{calculateVatAmount(10)| currency : "₺"}}</td>
+                  </tr>
+                  <tr *ngIf="findVatRate(20)  && paymentForm.value.taxTypeCode.value=='0'">
+                    <th scope="row">%20 KDV</th>
+                    <td>{{calculateVatAmount(20)| currency : "₺"}}</td>
+                  </tr>
+                  <tr *ngIf="paymentForm.value.taxTypeCode.value=='0'">
+                    <th scope="row">KDV</th>
+                    <td>
+                      {{ ((getUnTaxedTotalAfterDiscount() /getTotal() )*getTotalTax_2() ).toFixed(2)| currency : "₺" }}
+                    </td>
+                  </tr>
+                  <tr *ngIf="paymentForm.value.taxTypeCode.value=='0'">
+                    <th scope="row">Genel Toplam</th>
+                    <td>
+                      {{ ((getUnTaxedTotalAfterDiscount() /getTotal() )*getTotalTax_2() ) +  getUnTaxedTotalAfterDiscount()   | currency : "₺" }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- İNDİRİM FORMU----------------------------------------------------------------------------------------------------->
+            <form [formGroup]="discountForm" *ngIf="selectedProducts.length > 0" class="mb-3 ">
+              <div class="row">
+                <div class="col-md-4  mb-3">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <button class="btn btn-success" (click)="
+                      discount(this.discountForm.value.percentDiscountRate)
+                    " type="button"><i class="fa fa-check" aria-hidden="true"></i></button>
+                    </div>
+                    <input type="number" class="form-control" id="percentDiscountRate" placeholder="Yüzde İndirim Oranı"
+                      formControlName="percentDiscountRate" (keydown.enter)="
+                    discount(this.discountForm.value.percentDiscountRate)
+                  " />
+                  </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <div class="input-group ">
+                    <div class="input-group-append">
+                      <button class="btn btn-success" icon="pi pi-check" (click)="
+                      cashDiscount(this.discountForm.value.cashDiscountRate)
+                    " type="button"><i class="fa fa-check" aria-hidden="true"></i></button>
+                    </div>
+                    <input type="number" class="form-control" id="cashDiscountRate" placeholder="Nakit İndirim Tutarı"
+                      formControlName="cashDiscountRate" (keydown.enter)="
+                    cashDiscount(this.discountForm.value.cashDiscountRate)
+                  " />
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <button btn style="width: 100%" class="btn btn-danger" (click)="resetDiscount()" type="button"><i
+                      class="fa fa-trash" aria-hidden="true"></i> İndirimi Sıfırla</button>
+                </div>
+              </div>
+
+
+            </form>
+
+            <div class="col-md-12 mb-3">
+              <button (click)="createOrder()" style="width: 100%" class="btn btn-success">Siparişi
+                Onayla</button>
+            </div>
+          </div>
+        </div>
+
 
         <!-- Create New Order Button -->
         <div class="mb-3"></div>
@@ -1595,159 +1700,97 @@
         </div> -->
 
         <div class="mb-3"></div>
-        <div class="row" style="display: flex" #kutular>
-          <div class="col-md-4 mb-4">
-            <div class="card" #card1 style="height: 100%" *ngIf="this.selectedCustomers.length > 0">
-              <div class="card-body">
-                <h5 class="card-title">Müşteri
-                </h5>
+        <table class="table table-bordered">
+          <tbody>
+            <!-- Müşteri Bilgileri -->
+            <tr>
+              <th colspan="2" class="text-center">Müşteri Bilgileri</th>
+            </tr>
+            <tr *ngIf="selectedCustomers.length > 0">
+              <th scope="row">Müşteri</th>
+              <td>{{ selectedCustomers[0]?.currAccDescription }}</td>
+            </tr>
+            <tr *ngIf="selectedCustomers.length > 0">
+              <th scope="row">Para Birimi</th>
+              <td>{{ selectedCustomers[0]?.docCurrencyCode }}</td>
+            </tr>
+            <tr *ngIf="selectedCustomers.length > 0">
+              <th scope="row">Alt Müşteri</th>
+              <td>{{ selectedSubCustomers[0]?.companyName }}</td>
+            </tr>
+            <tr *ngIf="selectedCustomers.length > 0">
+              <th scope="row">Telefon</th>
+              <td>{{ selectedSubCustomers[0]?.phone }}</td>
+            </tr>
+            <tr *ngIf="selectedCustomers.length > 0">
+              <th scope="row">Mail</th>
+              <td>{{ selectedSubCustomers[0]?.mail }}</td>
+            </tr>
 
-                <p class="card-text">
-                  Müşteri: {{ selectedCustomers[0]?.currAccDescription }}
-                </p>
+            <!-- Adres Bilgileri -->
+            <tr>
+              <th colspan="2" class="text-center">Adres Bilgileri</th>
+            </tr>
+            <tr *ngIf="selectedAddresses.length > 0">
+              <th scope="row">Ülke</th>
+              <td>{{ selectedAddresses[0].countryDescription }}</td>
+            </tr>
+            <tr *ngIf="selectedAddresses.length > 0">
+              <th scope="row">Bölge</th>
+              <td>{{ selectedAddresses[0].stateDescription }}</td>
+            </tr>
+            <tr *ngIf="selectedAddresses.length > 0">
+              <th scope="row">İl</th>
+              <td>{{ selectedAddresses[0].cityDescription }}</td>
+            </tr>
+            <tr *ngIf="selectedAddresses.length > 0">
+              <th scope="row">İlçe</th>
+              <td>{{ selectedAddresses[0].districtDescription }}</td>
+            </tr>
+            <tr *ngIf="selectedAddresses.length > 0">
+              <th scope="row">Adres</th>
+              <td>{{ selectedAddresses[0].address }}</td>
+            </tr>
+            <tr *ngIf="selectedAddresses.length > 0">
+              <th scope="row">Alıcı Adı</th>
+              <td>{{ this.cargoForm.get('address_recepient_name').value }}</td>
+            </tr>
 
-                <p class="card-text">
-                  Para Birimi: {{ selectedCustomers[0]?.docCurrencyCode }}
-                </p>
+            <!-- Sipariş Bilgileri -->
+            <tr>
+              <th colspan="2" class="text-center">Sipariş Bilgileri</th>
+            </tr>
+            <tr *ngFor="let value of selectedOfficeAndWarehosue">
+              <th scope="row">Ofis</th>
+              <td>{{ value.office }}</td>
+            </tr>
+            <tr *ngFor="let value of selectedOfficeAndWarehosue">
+              <th scope="row">Depo</th>
+              <td>{{ value.warehouse }}</td>
+            </tr>
+            <tr *ngFor="let value of selectedOfficeAndWarehosue">
+              <th scope="row">Ödeme</th>
+              <td>{{ payment.creditCardTypeCode ? payment.creditCardTypeCode : '' }}</td>
+            </tr>
+            <tr *ngFor="let value of selectedOfficeAndWarehosue">
+              <th scope="row">Satış Elemanı</th>
+              <td>{{ this.salesPersonCode ? this.salesPersonCode : '' }}</td>
+            </tr>
+            <tr *ngFor="let value of selectedOfficeAndWarehosue">
+              <th scope="row">Paketleme Tipi</th>
+              <td>{{ this.cargoForm.get('packagingType')?.value?.name }}</td>
+            </tr>
+            <tr *ngFor="let value of selectedOfficeAndWarehosue">
+              <th scope="row">Kapıda Ödeme</th>
+              <td>{{ this.cargoForm.get('isCOD')?.value === true ? 'Evet' : 'Hayır' }}</td>
+            </tr>
+            <tr *ngFor="let value of selectedOfficeAndWarehosue">
+              <th scope="row">Sipariş No</th>
+              <td>{{ this.orderNo }}{{ this.orderNumber != null ? '- ' + this.orderNumber : '' }}</td>
+            </tr>
+          </tbody>
+        </table>
 
-                <h5 class="card-title">Alt Müşteri</h5>
-                <p class="card-text">
-                  Alt Müşteri: {{ selectedSubCustomers[0]?.companyName }}
-                </p>
-                <p class="card-text">
-                  Telefon: {{ selectedSubCustomers[0]?.phone }}
-                </p>
-                <p class="card-text">
-                  Mail: {{ selectedSubCustomers[0]?.mail }}
-                </p>
-                <button class="btn btn-danger" (click)="deleteCurrentCustomer()"
-                  *ngIf="(!this.isCancelled && !this.isCompleted)">
-                  Müşteriyi Sil
-                </button>
-              </div>
-            </div>
-
-            <div class="card" *ngIf="selectedCustomers.length <= 0" style="height: 100%">
-              <div class="card-body text-center" (click)="this.activeIndex = 1" style="
-                  cursor: pointer;
-                  display: flex;
-                  flex-direction: column;
-                  align-items: center;
-                  justify-content: center;
-                ">
-                <div class="d-flex flex-column align-items-center">
-                  <h1 class="mt-3">
-                    <i class="fa-regular fa-circle-xmark"></i>
-                  </h1>
-
-                  <h5 class="mb-3">Müşteri Seçiniz</h5>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4 mb-4">
-            <div class="card" style="height: 100%" #card2 *ngIf="selectedAddresses.length > 0">
-              <div class="card-body">
-                <p class="card-title">Adres</p>
-                <p class="card-text">
-                  Ülke: {{ this.selectedAddresses[0].countryDescription }}
-                </p>
-                <p class="card-text">
-                  Bölge: {{ this.selectedAddresses[0].stateDescription }}
-                </p>
-                <p class="card-text">
-                  İl: {{ this.selectedAddresses[0].cityDescription }}
-                </p>
-                <p class="card-text">
-                  İlçe: {{ this.selectedAddresses[0].districtDescription }}
-                </p>
-                <p class="card-text">
-                  Adres: {{ this.selectedAddresses[0].address }}
-                </p>
-
-                <p class="card-text">
-                  Alıcı Adı:
-                  {{ this.cargoForm.get("address_recepient_name").value }}
-                </p>
-                <button class="btn btn-danger" (click)="deleteCurrentAddress()"
-                  *ngIf="(!this.isCancelled && !this.isCompleted)">
-                  Adresi Sil
-                </button>
-              </div>
-            </div>
-
-            <div class="card" *ngIf="selectedAddresses.length <= 0" style="
-                cursor: pointer;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                height: 100%;
-              ">
-              <div class="card-body text-center" (click)="this.activeIndex = 1" style="
-                  cursor: pointer;
-                  display: flex;
-                  flex-direction: column;
-                  align-items: center;
-                  justify-content: center;
-                ">
-                <div class="d-flex flex-column align-items-center">
-                  <h1 class="mt-3">
-                    <i class="fa-regular fa-circle-xmark"></i>
-                  </h1>
-
-                  <h5 class="mb-3">Adresi Seçiniz</h5>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4 mb-4" *ngFor="let value of selectedOfficeAndWarehosue">
-            <div class="card" style="height: 100%">
-              <div class="card-body">
-                <h5 class="card-title">Sipariş Bilgileri</h5>
-                <p class="card-subtitle mb-2 text-muted">
-                  Ofis: {{ value.office }}
-                </p>
-                <p class="card-text">Depo: {{ value.warehouse }}</p>
-                <p class="card-text">
-                  Ödeme:
-                  {{
-                    payment.creditCardTypeCode === undefined
-                      ? ""
-                      : payment.creditCardTypeCode
-                  }}
-                </p>
-                <p class="card-text">
-                  Satış Elemanı:
-                  {{
-                    this.salesPersonCode === undefined
-                      ? ""
-                      : this.salesPersonCode
-                  }}
-                </p>
-
-                <p class="card-text">
-                  Paketleme Tipi:
-                  {{ this.cargoForm.get("packagingType")?.value?.name }}
-                </p>
-                <p class="card-text">
-                  Kapıda Ödeme :
-                  {{
-                    this.cargoForm.get("isCOD")?.value === true
-                      ? "Evet"
-                      : "Hayır"
-                  }}
-                </p>
-                <p class="card-text">
-                  Sipariş No:
-                  {{ this.orderNo }}
-                  {{ this.orderNumber != null ? "- " + this.orderNumber : "" }}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <div class="card border-0 shadow-lg text-center mt-4 p-3" *ngIf="this.isCancelled || this.isCompleted  ">
           <div class="card-body">
@@ -1762,22 +1805,19 @@
         </div>
 
 
-        <div class="card">
-          <div class="card-body p-4">
-            <div class="row">
-              <div class="col-md-6">
-                <button (click)="createNewOrder()" style="width: 100%" class="btn btn-success">Yeni Sipariş
-                  Oluştur</button>
-              </div>
-              <div class="col-md-6" *ngIf="this.isCancelled">
-                <button (click)="updateClientOrderCancelStatus(this.id, this.isCancelled)" style="width: 100%"> Siparişi
-                  İptal Kaldır</button>
-              </div>
-              <div class="col-md-6" *ngIf="!this.isCancelled">
-                <button (click)="updateClientOrderCancelStatus(this.id, this.isCancelled)" style="width: 100%"
-                  class="btn btn-danger"> Siparişi İptal Et</button>
-              </div>
-            </div>
+        <div class="row">
+
+          <div class="col-md-6">
+            <button (click)="createNewOrder()" style="width: 100%" class="btn btn-success">Yeni Sipariş
+              Oluştur</button>
+          </div>
+          <div class="col-md-6" *ngIf="this.isCancelled">
+            <button (click)="updateClientOrderCancelStatus(this.id, this.isCancelled)" style="width: 100%"> Siparişi
+              İptal Kaldır</button>
+          </div>
+          <div class="col-md-6" *ngIf="!this.isCancelled">
+            <button (click)="updateClientOrderCancelStatus(this.id, this.isCancelled)" style="width: 100%"
+              class="btn btn-danger"> Siparişi İptal Et</button>
           </div>
         </div>
 

@@ -310,10 +310,10 @@
 
     <p-dialog header="Barkod Türü Seçiniz - {{ this.selectedOrderNo }}" [(visible)]="visible" [modal]="true"
       [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
-      <button type="button" class="btn custom-btn-primary mt-3" (click)="this.sendBarcodesToNebim(true)">
+      <button type="button" class="btn btn-primary mt-3" (click)="this.sendBarcodesToNebim(true)">
         Koli
       </button>
-      <button type="button" class="btn custom-btn-primary mt-3" (click)="this.sendBarcodesToNebim(false)">
+      <button type="button" class="btn btn-primary mt-3" (click)="this.sendBarcodesToNebim(false)">
         Barkod
       </button>
     </p-dialog>

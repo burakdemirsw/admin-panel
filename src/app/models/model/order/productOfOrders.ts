@@ -15,4 +15,6 @@ export class ProductOfOrder {
   description: string
   lineId: string;
   setStatus: string;
+  setProducts: ProductOfOrder[];
+  setProducts_JS: string;
 }

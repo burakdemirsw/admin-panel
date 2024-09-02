@@ -40,3 +40,16 @@ export class ZTMSG_ProductOnShelf {
 
 
 }
+export class ZTMSG_CountedSetProduct {
+  id: number;
+  shelfNo?: string;
+  barcode?: string;
+  quantity?: number;
+  batchCode?: string;
+  operationNumber?: string;
+  itemCode?: string;
+  setItemCode: string;
+  isCompleted?: boolean;
+  lineId?: string;
+
+}

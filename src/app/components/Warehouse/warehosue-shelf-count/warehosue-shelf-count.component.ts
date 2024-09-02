@@ -292,7 +292,8 @@ export class WarehosueShelfCountComponent implements OnInit {
       batchCode: [null, Validators.required],
       warehouseCode: [null, Validators.required],
       isShelfBased: [false],
-      isShelfBased2: [true]
+      isShelfBased2: [true],
+      automaticCount: [false]
     });
 
 
@@ -489,9 +490,11 @@ export class WarehosueShelfCountComponent implements OnInit {
       );
       countProductRequestModel = updated_product;
       if (this.checkForm.valid && !_isUUID) {
-        this.onSubmit(countProductRequestModel);
-      } else {
-
+        if (this.checkForm.value.automaticCount) {
+          this.onSubmit(countProductRequestModel);
+        } else {
+          return;
+        }
       }
       this.toasterService.success("Form Verileri Güncellendi")
       return;

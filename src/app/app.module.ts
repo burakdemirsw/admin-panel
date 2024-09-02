@@ -67,7 +67,7 @@ import { BlockUIModule } from 'primeng/blockui';
 import { PanelModule } from 'primeng/panel';
 import { BoxCountComponent } from './components/Warehouse/box-count/box-count.component';
 import { RadioButtonModule } from 'primeng/radiobutton';
-import { CreateOrderComponent } from './components/Order/create-order/create-order.component';
+import { CreateOrderComponent } from './components/Order/nebim-get-orders/create-order/create-order.component';
 import { TabViewModule } from 'primeng/tabview';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';

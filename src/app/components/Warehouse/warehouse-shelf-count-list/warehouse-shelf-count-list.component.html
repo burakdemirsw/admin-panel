@@ -86,6 +86,10 @@
               Kullanıcı
               <p-sortIcon field="user"></p-sortIcon>
             </th>
+            <th pSortableColumn="process">
+              İşlem
+              <p-sortIcon field="process"></p-sortIcon>
+            </th>
             <th>İşlemler</th>
           </tr>
           <tr>
@@ -99,6 +103,9 @@
               <p-columnFilter type="text" field="user" [showClearButton]="false"></p-columnFilter>
             </th>
             <th>
+              <p-columnFilter type="text" field="process" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
               <!-- İşlemler sütunu için filtre eklemiyoruz -->
             </th>
           </tr>
@@ -108,6 +115,7 @@
             <td>{{ count.lastUpdateDate | date : "dd.MM.yyyy HH:mm:ss" }}</td>
             <td>{{ count.totalProduct }}</td>
             <td>{{ count.user }}</td>
+            <td>{{ count.process }}</td>
             <td>
               <div class="btn-group">
                 <button class="btn btn-success mr-2" data-text="İşlemler"
@@ -117,7 +125,7 @@
                 <button class="btn btn-success" data-text="Sil" (click)="deleteCountFromId(count.orderNo)">
                   <i class="fas fa-trash"></i>
                 </button>
-                <button class="btn btn-success" data-text="Barkod Etiketi Oluştur" (click)="showModal(count.orderNo)">
+                <button class="btn btn-success" data-text="Barkod Etiketi Oluştur" (click)="showModal(count)">
                   <i class="fa fa-barcode" aria-hidden="true"></i>
                 </button>
               </div>
@@ -128,7 +136,7 @@
 
     </div>
 
-    <p-dialog header="Barkod Türü Seçiniz - {{ this.selectedOrderNo }}" [(visible)]="visible" [modal]="true"
+    <p-dialog header="Barkod Türü Seçiniz - {{ this.selectedOperation?.orderNo}}" [(visible)]="visible" [modal]="true"
       [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
       <button type="button" class="btn btn-primary mt-3" (click)="this.sendBarcodesToNebim(true)">
         Koli

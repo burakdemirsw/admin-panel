@@ -305,7 +305,8 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
             batchCode: [null, forms_1.Validators.required],
             warehouseCode: [null, forms_1.Validators.required],
             isShelfBased: [false],
-            isShelfBased2: [true]
+            isShelfBased2: [true],
+            automaticCount: [false]
         });
         this.checkForm.get('office').valueChanges.subscribe(function (value) {
             if (value === 'M') {
@@ -507,9 +508,12 @@ var WarehosueShelfCountComponent = /** @class */ (function () {
                         updated_product = _a.sent();
                         countProductRequestModel = updated_product;
                         if (this.checkForm.valid && !_isUUID) {
-                            this.onSubmit(countProductRequestModel);
-                        }
-                        else {
+                            if (this.checkForm.value.automaticCount) {
+                                this.onSubmit(countProductRequestModel);
+                            }
+                            else {
+                                return [2 /*return*/];
+                            }
                         }
                         this.toasterService.success("Form Verileri Güncellendi");
                         return [2 /*return*/];

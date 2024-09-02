@@ -131,15 +131,23 @@ export class WarehouseShelfCountListComponent implements OnInit {
     }
   }
   visible: boolean = false;
-  selectedOrderNo: string;
-  showModal(operationNo: string) {
-    this.selectedOrderNo = operationNo;
+  selectedOperation: CountListModel;
+  showModal(operation: CountListModel) {
+    this.selectedOperation = operation;
     this.visible = !this.visible;
   }
+
   async sendBarcodesToNebim(isPackage: boolean) {
     var request = new CreateBarcodeFromOrder_RM(isPackage)
-    request.operationNo = this.selectedOrderNo;
-    request.from = "warehouse-shelf-count";
+    if (this.selectedOperation.process == 'C') {
+      request.from = "warehouse-shelf-count";
+    } else if (this.selectedOperation.process == 'CI') {
+      request.from = "add-product-to-shelf";
+    } else if (this.selectedOperation.process == 'CO') {
+      request.from = "remove-product-to-shelf";
+    }
+
+    request.operationNo = this.selectedOperation.orderNo;
     request.products = null;
     var response = await this.productService.sendBarcodesToNebim(request);
     if (response) {

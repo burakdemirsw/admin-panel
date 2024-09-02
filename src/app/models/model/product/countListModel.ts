@@ -6,4 +6,5 @@ export class CountListModel {
   salesPersonCode?: string;
   taxTypeCode?: string;
   user?: string;
+  process: string;
 }

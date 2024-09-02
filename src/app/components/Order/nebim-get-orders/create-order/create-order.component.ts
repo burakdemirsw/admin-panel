@@ -21,14 +21,14 @@ import { BarcodeSearch_RM, ProductService } from 'src/app/services/admin/product
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
-import { AddCustomerAddress_CM, ClientCustomer, CreateCustomer_CM } from '../../../models/model/order/createCustomer_CM';
-import { CustomerAddress_VM, CustomerList_VM, GetCustomerList_CM } from '../../../models/model/order/getCustomerList_CM';
-import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, Payment } from '../../../models/model/order/nebimOrder';
-import { OrderService } from '../../../services/admin/order.service';
-import { GoogleDriveService } from '../../../services/common/google-drive.service';
-import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from '../../cargo/create-cargo/models/models';
+import { AddCustomerAddress_CM, ClientCustomer, CreateCustomer_CM } from '../../../../models/model/order/createCustomer_CM';
+import { CustomerAddress_VM, CustomerList_VM, GetCustomerList_CM } from '../../../../models/model/order/getCustomerList_CM';
+import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, Payment } from '../../../../models/model/order/nebimOrder';
+import { OrderService } from '../../../../services/admin/order.service';
+import { GoogleDriveService } from '../../../../services/common/google-drive.service';
+import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from '../../../cargo/create-cargo/models/models';
 import { SuggestedProduct } from 'src/app/models/model/order/suggestedProduct';
-import { FastTransfer_VM } from '../../../models/model/warehouse/transferRequestListModel';
+import { FastTransfer_VM } from '../../../../models/model/warehouse/transferRequestListModel';
 import { OverlayOptions } from 'primeng/api';
 import { SubCustomerList_VM } from 'src/app/models/model/customer/subCustomerList_VM';
 
@@ -1149,7 +1149,7 @@ export class CreateOrderComponent implements OnInit {
     this.selectedCustomers.push(request);
     this.currAccCode = request.currAccCode
     this.openDialog("getCustomerDialog");
-    this.toasterService.success("Müşteri Seçildi")
+    // this.toasterService.success("Müşteri Seçildi")
     //this.generalService.beep()();
     var _request: GetCustomerAddress_CM = new GetCustomerAddress_CM();
     _request.currAccCode = request.currAccCode;
@@ -1456,7 +1456,6 @@ export class CreateOrderComponent implements OnInit {
       var response: ClientOrder = await this.orderService.createClientOrder(r);
       if (response) {
         this.getClientOrder(0);
-        this.getTaxedTotalAfterDiscount();
         this.toasterService.success('Güncellendi')
       } else {
         this.toasterService.error('Güncellenmedi')

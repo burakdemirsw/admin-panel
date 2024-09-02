@@ -1,3 +1,5 @@
+import { ProductOfOrder } from "../order/productOfOrders";
+
 export class CollectedProduct {
   photoUrl!: string;
   shelfNo!: string;
@@ -8,5 +10,6 @@ export class CollectedProduct {
   lineId !: string
   availableQty !: number
   id: string;
-
+  setProducts: ProductOfOrder[];
+  setProducts_JS: string;
 }

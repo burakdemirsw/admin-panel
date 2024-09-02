@@ -75,90 +75,87 @@
     </div>
 
     <div class="card">
-      <div class="card-body">
-        <p-table #dt9 [value]="countList" [(selection)]="selectedCounts" dataKey="orderNo" [paginator]="true"
-          [rowsPerPageOptions]="[5, 10, 20]" [resizableColumns]="true" expandableRows="true" columnResizeMode="expand"
-          styleClass="p-datatable-striped" [rows]="10" [tableStyle]="{ 'min-width': '50rem' }"
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
-          <ng-template pTemplate="caption">
+      <p-table #dt9 [value]="countList" [(selection)]="selectedCounts" dataKey="orderNo" [paginator]="true"
+        [rowsPerPageOptions]="[5, 10, 20]" [resizableColumns]="true" expandableRows="true" columnResizeMode="expand"
+        styleClass="p-datatable-striped" [rows]="10" [tableStyle]="{ 'min-width': '50rem' }"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <ng-template pTemplate="caption">
 
-            <h5 *ngIf="selectedCounts.length > 0" style="text-align: left">
-              {{ selectedCounts.length }}/{{ countList.length }} Adet İşlem Seçildi
-            </h5>
-          </ng-template>
+          <h5 *ngIf="selectedCounts.length > 0" style="text-align: left">
+            {{ selectedCounts.length }}/{{ countList.length }} Adet İşlem Seçildi
+          </h5>
+        </ng-template>
 
-          <ng-template pTemplate="header">
-            <tr>
-              <th pSortableColumn="lastUpdateDate">
-                İşlem Tarihi
-                <p-sortIcon field="lastUpdateDate"></p-sortIcon>
-              </th>
-              <th pSortableColumn="totalProduct">
-                Toplam Sayılan Ürün Sayısı
-                <p-sortIcon field="totalProduct"></p-sortIcon>
-              </th>
-              <th pSortableColumn="orderNo">
-                Fatura Tipi
-                <p-sortIcon field="orderNo"></p-sortIcon>
-              </th>
-              <th pSortableColumn="salesPersonCode">
-                Müşteri
-                <p-sortIcon field="salesPersonCode"></p-sortIcon>
-              </th>
-              <th>İşlemler</th>
-            </tr>
-            <tr>
-              <th>
-                <p-columnFilter type="date" field="lastUpdateDate" [showClearButton]="false"></p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter type="numeric" field="totalProduct" [showClearButton]="false"></p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter type="text" field="orderNo" [showClearButton]="false"></p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter type="text" field="salesPersonCode" [showClearButton]="false"></p-columnFilter>
-              </th>
-              <th></th>
-            </tr>
-          </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="lastUpdateDate">
+              İşlem Tarihi
+              <p-sortIcon field="lastUpdateDate"></p-sortIcon>
+            </th>
+            <th pSortableColumn="totalProduct">
+              Toplam Sayılan Ürün Sayısı
+              <p-sortIcon field="totalProduct"></p-sortIcon>
+            </th>
+            <th pSortableColumn="orderNo">
+              Fatura Tipi
+              <p-sortIcon field="orderNo"></p-sortIcon>
+            </th>
+            <th pSortableColumn="salesPersonCode">
+              Müşteri
+              <p-sortIcon field="salesPersonCode"></p-sortIcon>
+            </th>
+            <th>İşlemler</th>
+          </tr>
+          <tr>
+            <th>
+              <p-columnFilter type="date" field="lastUpdateDate" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="totalProduct" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="orderNo" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="salesPersonCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th></th>
+          </tr>
+        </ng-template>
 
-          <ng-template pTemplate="body" let-count>
-            <tr>
-              <td>{{ count.lastUpdateDate | date : "dd.MM.yyyy HH:mm:ss" }}</td>
-              <td>{{ count.totalProduct }}</td>
-              <td>
-                {{ count.orderNo.includes("WS") ? "Satış " : "Alış " }}{{ count.isReturn == true ? "İade" : "" }}
-              </td>
-              <td>{{ count.salesPersonCode }}</td>
-              <td>
-                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
-                  aria-expanded="false">
-                </button>
-                <ul class="dropdown-menu" style="z-index: 99999;">
-                  <li>
-                    <a class="dropdown-item" (click)="routeToPage(count.orderNo)">
-                      <i class="fas fa-sliders-h"></i> İşlemler
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" (click)="deleteInvoiceProducts(count.orderNo)">
-                      <i class="fas fa-trash"></i> Sil
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" (click)="deleteInvoiceProducts(count.orderNo)">
-                      <i class="fas fa-refresh"></i> İade Faturası Kes
-                    </a>
-                  </li>
-                </ul>
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-
-      </div>
+        <ng-template pTemplate="body" let-count>
+          <tr>
+            <td>{{ count.lastUpdateDate | date : "dd.MM.yyyy HH:mm:ss" }}</td>
+            <td>{{ count.totalProduct }}</td>
+            <td>
+              {{ count.orderNo.includes("WS") ? "Satış " : "Alış " }}{{ count.isReturn == true ? "İade" : "" }}
+            </td>
+            <td>{{ count.salesPersonCode }}</td>
+            <td>
+              <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                aria-expanded="false">
+              </button>
+              <ul class="dropdown-menu" style="z-index: 99999;">
+                <li>
+                  <a class="dropdown-item" (click)="routeToPage(count.orderNo)">
+                    <i class="fas fa-sliders-h"></i> İşlemler
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="deleteInvoiceProducts(count.orderNo)">
+                    <i class="fas fa-trash"></i> Sil
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="deleteInvoiceProducts(count.orderNo)">
+                    <i class="fas fa-refresh"></i> İade Faturası Kes
+                  </a>
+                </li>
+              </ul>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
   </section>
 </main>
