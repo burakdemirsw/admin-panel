@@ -307,7 +307,6 @@ var OrderOperationComponent = /** @class */ (function () {
     OrderOperationComponent.prototype.getCollectedOrderProducts = function (orderNo) {
         return __awaiter(this, void 0, Promise, function () {
             var response;
-            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.productService.getCollectedOrderProducts(orderNo)];
@@ -315,10 +314,10 @@ var OrderOperationComponent = /** @class */ (function () {
                         response = _a.sent();
                         this.lastCollectedProducts = response;
                         this.toasterService.info(this.lastCollectedProducts.length.toString());
-                        this.lastCollectedProducts.forEach(function (p) {
-                            var set_products = _this.productsToCollect.find(function (p) { return p.setProducts.length > 0; }).setProducts;
-                            p.setProducts = set_products;
-                        });
+                        // this.lastCollectedProducts.forEach(p => {
+                        //   var set_products = this.productsToCollect.find(p => p.setProducts.length > 0).setProducts;
+                        //   p.setProducts = set_products;
+                        // });
                         this.calculateTotalQty();
                         return [2 /*return*/, response];
                 }

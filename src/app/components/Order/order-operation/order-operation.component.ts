@@ -224,10 +224,10 @@ export class OrderOperationComponent implements OnInit {
     this.lastCollectedProducts = response;
 
     this.toasterService.info(this.lastCollectedProducts.length.toString())
-    this.lastCollectedProducts.forEach(p => {
-      var set_products = this.productsToCollect.find(p => p.setProducts.length > 0).setProducts;
-      p.setProducts = set_products;
-    });
+    // this.lastCollectedProducts.forEach(p => {
+    //   var set_products = this.productsToCollect.find(p => p.setProducts.length > 0).setProducts;
+    //   p.setProducts = set_products;
+    // });
     this.calculateTotalQty();
     return response;
   }
