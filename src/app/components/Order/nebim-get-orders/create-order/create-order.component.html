@@ -1065,8 +1065,13 @@
           <form [formGroup]="addSubCustomerForm">
             <div class="row mb-3">
               <div class="form-group">
-                <input pInputText class="form-control" type="text" placeholder="Alt Müşteri" id="subCurrAccDesc"
-                  name="subCurrAccDesc" fullWidth formControlName="subCurrAccDesc" />
+
+                <p-dropdown scrollHeight="350px" [virtualScroll]="true" [itemSize]="50" [style]="{'width': '50%'}"
+                  formControlName="subCurrAccDesc" [options]="selectableSubCustomers" placeholder="Alt Müşteri"
+                  [editable]="true" optionLabel="name" [showClear]="true" filterBy="name" filter="true">
+
+                </p-dropdown>
+
               </div>
             </div>
             <div class="row mb-3">
@@ -1225,9 +1230,7 @@
         </p-dialog>
       </p-tabPanel>
 
-      <p-tabPanel *ngIf="(!this.isCancelled && !this.isCompleted)" [rightIcon]="
-          this.cargoForm.valid == true ? 'pi pi-check' : 'pi pi-times'
-        " header="Kargo Oluştur">
+      <p-tabPanel [rightIcon]="'pi pi-check'" header="Kargo Oluştur">
         <div class="container mt-5" *ngIf="!showCargo2">
           <div class="row">
             <div class="col-md-6 mb-3">
@@ -1255,7 +1258,8 @@
           </div>
         </div>
 
-        <form [formGroup]="cargoForm" *ngIf="this.showCargo2">
+
+        <form [formGroup]="cargoForm_2" *ngIf="showCargo2">
           <div class="row mb-3">
             <div class="col-md-6">
               <input pInputText placeholder="Klinik Kargo Sorumlusu/ Fatura-Sipariş Açıklaması" type="text"
@@ -1263,173 +1267,20 @@
                 formControlName="address_recepient_name" class="form-control" />
             </div>
           </div>
-          <div class="row">
+          <div class="row mb-3">
             <div class="col-md-6 form-group">
-              <input maxlength="11" pInputText placeholder="Alıcı Telefon Numarası" type="text" class="form-control"
+              <input pInputText placeholder="Alıcı Telefon Numarası" type="text" class="form-control"
                 id="address_phoneNumber" name="address_phoneNumber" placeholder="(05XX XXX XX XX)" fullWidth
                 formControlName="address_phoneNumber" />
-              <!-- <p style="font-weight: bold">
-                {{
-                  this.cargoForm.get("address_phoneNumber")?.value === null ||
-                  this.cargoForm.get("address_phoneNumber")?.value === ""
-                    ? "Alıcı Telefonu Yoksa Satış Elemanı Telefonu ile Gönderim Yapılır"
-                    : ""
-                }}
-              </p> -->
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6">
-              <br />
-              <p-dropdown [style]="{'width': '100%'}" placeholder="Kargo Şirketi Seçiniz" [filter]="true"
-                filterBy="name" formControlName="cargoFirm" [options]="cargoFirms" optionLabel="name"
-                placeholder=" Kargo Şirketi Seçiniz"></p-dropdown>
             </div>
           </div>
           <div class="row mb-3">
             <div class="col-md-6">
-              <br />
-              <p-dropdown [style]="{'width': '100%'}" placeholder="Paketleme Tipi Seçiniz" [filter]="true"
-                filterBy="name" class="'ng-dirty ng-invalid'" formControlName="packagingType" [options]="packagingTypes"
-                optionLabel="name" placeholder=" Paketleme Tipi Seçiniz"></p-dropdown>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <p-panel header="KG & DESİ" *ngIf="
-                  this.cargoForm.get('packagingType').value &&
-                  this.cargoForm.get('packagingType').value?.code !== '1'
-                ">
-                <div class="row mb-3">
-                  <div class="col-md">
-                    <label for="kg"> Kg</label>
-                    <br />
-                    <input type="number" class="form-control" id="kg" placeholder="KG" formControlName="kg" />
-
-                    <p>{{ kgErrorMessage }}</p>
-                  </div>
-                </div>
-
-                <div class="row mb-3">
-                  <div class="col-md">
-                    <label for="desi"> Desi</label>
-                    <br />
-                    <input type="number" class="form-control" id="desi" placeholder="DESİ" formControlName="desi" />
-                    <p>{{ desiErrorMessage }}</p>
-                  </div>
-                </div>
-              </p-panel>
-            </div>
-          </div>
-
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <p-dropdown [style]="{'width': '100%'}" placeholder="Gönderim Türü Seçiniz" [filter]="true"
-                filterBy="name" formControlName="shipmentServiceType" [options]="shipmentServiceTypes"
-                optionLabel="name" placeholder="  Gönderim Türü Seçiniz"></p-dropdown>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <p-dropdown [style]="{'width': '100%'}" [filter]="true" filterBy="name" formControlName="cargoPrice"
-                [options]="cargoPrices" optionLabel="name" placeholder="Paket Fiyatlandırması Seçiniz"></p-dropdown>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-6 form-group mb-3">
-              <input pInputText placeholder="Paket Adedi" type="number" class="form-control" id="address_package_count"
-                name="address_package_count" fullWidth formControlName="address_package_count" />
-              <p style="font-weight: bold" *ngIf="
-                  cargoForm.get('address_package_count').value <
-                  this.selectedProducts.length
-                ">
-                {{ "Seçilen Koli Adedi Ürün Sayısından Az Olamaz" }}
-              </p>
-            </div>
-          </div>
-
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="office"> Kapıda Ödeme?</label>
-              <br />
-              <p-inputSwitch formControlName="isCOD"></p-inputSwitch>
-            </div>
-          </div>
-
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="isActive"> Kargolu Satış </label>
-              <br />
-              <p-inputSwitch formControlName="isActive"></p-inputSwitch>
-            </div>
-          </div>
-
-          <div class="card" *ngIf="
-              selectedCustomers?.length > 0 &&
-              selectedAddresses?.length > 0 &&
-              this.cargoForm.get('cargoFirm').value?.name === 'Aras'
-            ">
-            <div class="card-body" style="
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-direction: column;
-                height: 100%;
-              "></div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md">
-              <button *ngIf="this.cargoForm.valid" style="width: 100%" class="btn btn-success" (click)="goToPage(3)"
+              <button *ngIf="this.cargoForm_2.valid" style="width: 100%" class="btn btn-success" (click)="goToPage(3)"
                 type="submit"> Önizleme Sayfasına İlerle</button>
             </div>
           </div>
         </form>
-
-        <!-- <form [formGroup]="cargoForm_2" *ngIf="showCargo2">
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <input
-                pInputText
-                placeholder="Klinik Kargo Sorumlusu/ Fatura-Sipariş Açıklaması"
-                type="text"
-                id="address_recepient_name"
-                name="address_recepient_name"
-                fullWidth
-                formControlName="address_recepient_name"
-                class="form-control"
-              />
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-6 form-group">
-              <input
-                pInputText
-                placeholder="Alıcı Telefon Numarası"
-                type="text"
-                class="form-control"
-                id="address_phoneNumber"
-                name="address_phoneNumber"
-                placeholder="(05XX XXX XX XX)"
-                fullWidth
-                formControlName="address_phoneNumber"
-              />
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <button
-                *ngIf="this.cargoForm_2.valid"
-
-                style="width: 100%"
-                class="btn btn-success"
-
-                (click)="goToPage(3)"
-                type="submit"
-              > Önizleme Sayfasına İlerle</button>
-            </div>
-          </div>
-        </form>-->
       </p-tabPanel>
 
       <p-tabPanel header="Sipariş Önizleme">
@@ -1753,7 +1604,7 @@
             </tr>
             <tr *ngIf="selectedAddresses.length > 0">
               <th scope="row">Alıcı Adı</th>
-              <td>{{ this.cargoForm.get('address_recepient_name').value }}</td>
+              <td>{{ this.cargoForm_2.get('address_recepient_name').value }}</td>
             </tr>
 
             <!-- Sipariş Bilgileri -->
@@ -1776,14 +1627,7 @@
               <th scope="row">Satış Elemanı</th>
               <td>{{ this.salesPersonCode ? this.salesPersonCode : '' }}</td>
             </tr>
-            <tr *ngFor="let value of selectedOfficeAndWarehosue">
-              <th scope="row">Paketleme Tipi</th>
-              <td>{{ this.cargoForm.get('packagingType')?.value?.name }}</td>
-            </tr>
-            <tr *ngFor="let value of selectedOfficeAndWarehosue">
-              <th scope="row">Kapıda Ödeme</th>
-              <td>{{ this.cargoForm.get('isCOD')?.value === true ? 'Evet' : 'Hayır' }}</td>
-            </tr>
+
             <tr *ngFor="let value of selectedOfficeAndWarehosue">
               <th scope="row">Sipariş No</th>
               <td>{{ this.orderNo }}{{ this.orderNumber != null ? '- ' + this.orderNumber : '' }}</td>

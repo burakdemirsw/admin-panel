@@ -313,7 +313,7 @@ var OrderOperationComponent = /** @class */ (function () {
                     case 1:
                         response = _a.sent();
                         this.lastCollectedProducts = response;
-                        this.toasterService.info(this.lastCollectedProducts.length.toString());
+                        // this.toasterService.info(this.lastCollectedProducts.length.toString())
                         // this.lastCollectedProducts.forEach(p => {
                         //   var set_products = this.productsToCollect.find(p => p.setProducts.length > 0).setProducts;
                         //   p.setProducts = set_products;
@@ -774,7 +774,7 @@ var OrderOperationComponent = /** @class */ (function () {
     };
     OrderOperationComponent.prototype.setFormValues = function (barcode) {
         return __awaiter(this, void 0, Promise, function () {
-            var result, currentShelfNo, product, foundedProduct, result, currentShelfNo, product, foundedProduct, error_1;
+            var result, currentShelfNo, product, foundedProduct, result, currentShelfNo, product, foundedProduct, foundedProduct, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -820,12 +820,24 @@ var OrderOperationComponent = /** @class */ (function () {
                         else {
                             product.quantity = this.checkForm.get('quantity').value;
                         }
-                        foundedProduct = this.productsToCollect.find(function (p) {
-                            return p.barcode == product.barcode;
-                        });
-                        this.stickToTop(foundedProduct, true);
-                        //------------------
-                        return [2 /*return*/, product];
+                        //üste okutulan ürün yerleştirme
+                        if (this.isLocked) {
+                            foundedProduct = this.lockedSetProduct.setProducts.find(function (p) {
+                                return p.barcode == product.barcode;
+                            });
+                            // this.stickToTop(foundedProduct, true);
+                            //------------------
+                            return [2 /*return*/, product];
+                        }
+                        else {
+                            foundedProduct = this.productsToCollect.find(function (p) {
+                                return p.barcode == product.barcode;
+                            });
+                            this.stickToTop(foundedProduct, true);
+                            //------------------
+                            return [2 /*return*/, product];
+                        }
+                        _a.label = 4;
                     case 4: return [3 /*break*/, 6];
                     case 5:
                         error_1 = _a.sent();
@@ -872,7 +884,6 @@ var OrderOperationComponent = /** @class */ (function () {
                         if (!(this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-'))) return [3 /*break*/, 30];
                         if (!this.checkForm.valid) return [3 /*break*/, 29];
                         if (!(this.isLocked && this.lockSetProduct)) return [3 /*break*/, 15];
-                        this.toasterService.info('SET ÜRÜNÜ ALGILANDI');
                         if (!this.lockedSetProduct.setProducts.some(function (p) { return p.quantity > 0 && p.barcode == productModel.barcode; })) return [3 /*break*/, 14];
                         return [4 /*yield*/, this.productService.countProductByBarcode3(productModel.barcode)];
                     case 5:
@@ -922,7 +933,7 @@ var OrderOperationComponent = /** @class */ (function () {
                         return [2 /*return*/];
                     case 9:
                         //↑↑↑↑↑↑↑↑↑ TÜM ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
-                        this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
+                        // this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
                         this.clearBarcodeAndQuantity();
                         return [2 /*return*/];
                     case 10:

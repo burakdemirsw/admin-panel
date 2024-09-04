@@ -337,6 +337,7 @@ export class ClientOrder {
   createdDate: Date;
   paymentDate: Date
   cargoStatus: string
+
   recepientName: string;
   recepientPhone: string;
   orderDescription: string;

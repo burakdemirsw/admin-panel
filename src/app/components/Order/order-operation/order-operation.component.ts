@@ -223,7 +223,7 @@ export class OrderOperationComponent implements OnInit {
     var response = await this.productService.getCollectedOrderProducts(orderNo);
     this.lastCollectedProducts = response;
 
-    this.toasterService.info(this.lastCollectedProducts.length.toString())
+    // this.toasterService.info(this.lastCollectedProducts.length.toString())
     // this.lastCollectedProducts.forEach(p => {
     //   var set_products = this.productsToCollect.find(p => p.setProducts.length > 0).setProducts;
     //   p.setProducts = set_products;
@@ -778,15 +778,28 @@ export class OrderOperationComponent implements OnInit {
 
 
         //üste okutulan ürün yerleştirme
+        if (this.isLocked) {
+          var foundedProduct = this.lockedSetProduct.setProducts.find(
+            (p) =>
+              p.barcode == product.barcode
+          );
 
-        var foundedProduct = this.productsToCollect.find(
-          (p) =>
-            p.barcode == product.barcode
-        );
 
-        this.stickToTop(foundedProduct, true);
-        //------------------
-        return product;
+          // this.stickToTop(foundedProduct, true);
+          //------------------
+          return product;
+        } else {
+          var foundedProduct = this.productsToCollect.find(
+            (p) =>
+              p.barcode == product.barcode
+          );
+
+
+          this.stickToTop(foundedProduct, true);
+          //------------------
+          return product;
+        }
+
       }
     } catch (error) {
       this.toasterService.error(error.message);
@@ -862,7 +875,7 @@ export class OrderOperationComponent implements OnInit {
         // }
         //EĞER KİTLENDİYSE VE SETİN İÇİNDEKİ ÜRÜN OKUTULDUYSA
         if (this.isLocked && this.lockSetProduct) {
-          this.toasterService.info('SET ÜRÜNÜ ALGILANDI');
+          // this.toasterService.info('SET ÜRÜNÜ ALGILANDI');
           if (this.lockedSetProduct.setProducts.some(p => p.quantity > 0 && p.barcode == productModel.barcode)) {
 
             var result: string[] = await this.productService.countProductByBarcode3(
@@ -923,7 +936,7 @@ export class OrderOperationComponent implements OnInit {
                   return;
                 }
                 //↑↑↑↑↑↑↑↑↑ TÜM ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
-                this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
+                // this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
                 this.clearBarcodeAndQuantity();
                 return;
               } else {

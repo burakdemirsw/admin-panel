@@ -12,6 +12,10 @@
             </ng-template>
             <ng-template pTemplate="header">
               <tr>
+                <th>
+                  Resim
+
+                </th>
                 <th pSortableColumn="shelfNo">
                   Raf
                   <p-sortIcon field="shelfNo"></p-sortIcon>
@@ -59,6 +63,10 @@
             </ng-template>
             <ng-template pTemplate="body" let-product let-i="rowIndex">
               <tr>
+                <td>
+                  <p-image src="{{ product.photoUrl }}" previewImageSrc="{{ product.photoUrl }}" alt="Image" width="30"
+                    [preview]="true" />
+                </td>
                 <td>{{ product.shelfNo }}</td>
                 <td>{{ product.itemCode }}</td>
                 <td>{{ product.quantity }}</td>

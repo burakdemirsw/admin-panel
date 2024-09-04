@@ -65,8 +65,8 @@
       </div>
     </div>
     <div class="card">
-      <p-table [value]="countList" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
-        [responsiveLayout]="'scroll'" [filterDelay]="500">
+      <p-table [value]="countList" [paginator]="true" [rowsPerPageOptions]="[10, 25, 50,100]" [rows]="10"
+        [tableStyle]="{'min-width': '50rem'}" [responsiveLayout]="'scroll'" [filterDelay]="500">
         <ng-template pTemplate="caption">
           <div class="flex align-items-center justify-content-between">
             Sayım Listesi
