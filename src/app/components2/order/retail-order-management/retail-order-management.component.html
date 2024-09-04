@@ -3,7 +3,8 @@
 
     <div class="card">
       <p-table #dt2 [value]="saleOrderModels" [(selection)]="selectedOrders" dataKey="orderNumber" [paginator]="true"
-        [rowsPerPageOptions]="[5, 10, 20]" styleClass="p-datatable-gridlines" [rows]="50"     [tableStyle]="{ 'min-width': '75rem' }"
+        [rowsPerPageOptions]="[5, 10, 20]" styleClass="p-datatable-gridlines" [rows]="50"
+        [tableStyle]="{ 'min-width': '75rem' }"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
         <ng-template pTemplate="caption">
           <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
@@ -145,7 +146,7 @@
             <!-- <td>{{ order.salespersonCode }}</td> -->
             <td>{{ order.description }}</td>
             <td>{{ order.qty1 }}</td>
-            <td>{{ order.price.toString() | currency : "₺" }}</td>
+            <td>{{ order.price?.toString() | currency : "₺" }}</td>
             <!-- <td>{{ order.collectedQty }}</td>
               <td>{{ order.remainingQty }}</td> -->
             <!-- <td>{{ order.warehouseCode }}</td> -->
