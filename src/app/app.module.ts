@@ -133,6 +133,8 @@ import { IdeasoftOffersComponent } from './components/special-panels/ideasoft-of
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { TransferredOrdersComponent } from './components/marketplace/transferred-orders/transferred-orders.component';
 import { ChartModule } from 'primeng/chart';
+import { CustomReuseStrategy } from 'src/customReuseStrategy ';
+import { RouteReuseStrategy } from '@angular/router';
 
 @NgModule({
 

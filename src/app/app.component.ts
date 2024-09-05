@@ -10,8 +10,8 @@ import { filter } from 'rxjs';
 })
 export class AppComponent {
 
-
   constructor(@Inject(DOCUMENT) private document, private elementRef: ElementRef, public _router: Router) {
+
     const bodyClassList = this.document.body.classList;
     const isMobile = window.innerWidth <= 768;
     this._router.events.pipe(
