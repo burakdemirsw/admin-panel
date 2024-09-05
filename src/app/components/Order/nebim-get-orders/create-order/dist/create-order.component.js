@@ -193,7 +193,7 @@ var CreateOrderComponent = /** @class */ (function () {
             appendTo: 'body',
             autoZIndex: true,
             baseZIndex: 1000,
-            style: { 'min-width': '400px' },
+            style: { 'min-width': '100%' },
             styleClass: 'custom-overlay-class' // Custom CSS class
         };
     }
@@ -213,6 +213,9 @@ var CreateOrderComponent = /** @class */ (function () {
                         this.createCustomerFormMethod();
                         this.createDiscountForm();
                         this._createCustomerFormMethod();
+                        return [4 /*yield*/, this.getSalesPersonModels()];
+                    case 1:
+                        _b.sent();
                         this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
@@ -254,7 +257,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         }
                         _a = this;
                         return [4 /*yield*/, this.orderService.getExchangeRates()];
-                    case 1:
+                    case 2:
                         _a.exchangeRate = _b.sent();
                         this.generatedCargoNumber = this._generateRandomNumber();
                         this.paymentForm.get('paymentType').setValue(this.paymentMethods[5]);
@@ -266,6 +269,8 @@ var CreateOrderComponent = /** @class */ (function () {
         });
     };
     CreateOrderComponent.prototype.console = function () {
+        this.focusNextInput('barcode_product');
+        this.toasterService.info(this.isCompleted.toString());
         // console.clear();
         // console.log('payment:', this.payment);
         // console.log('selectedCustomers:', this.selectedCustomers);
@@ -561,6 +566,8 @@ var CreateOrderComponent = /** @class */ (function () {
             request.isCancelled = false;
             request.discountRate1 = this.discountRate1;
             request.discountRate2 = this.discountRate2;
+            request.salesPersonCode = localStorage.getItem('salesPersonCode');
+            request.salesPersonDescription = this.salesPersonModelList.find(function (s) { return s.code == request.salesPersonCode; }).name;
             if (this.payment) {
                 request.paymentType = this.payment.creditCardTypeCode;
             }
@@ -632,38 +639,30 @@ var CreateOrderComponent = /** @class */ (function () {
     };
     CreateOrderComponent.prototype.getSalesPersonModels = function () {
         return __awaiter(this, void 0, Promise, function () {
-            var _a, error_2, error_3;
+            var _a, error_2;
             var _this = this;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        _b.trys.push([0, 5, , 6]);
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 3, , 4]);
+                        _b.trys.push([0, 2, , 3]);
                         _a = this;
                         return [4 /*yield*/, this.httpClientService
                                 .get({
                                 controller: 'Order/GetSalesPersonModels'
                             })
                                 .toPromise()];
-                    case 2:
+                    case 1:
                         _a.salesPersonModels = _b.sent();
                         this.salesPersonModels.forEach(function (c) {
-                            var color = { name: c.firstLastName + " " + ("" + c.salespersonCode), code: c.salespersonCode };
+                            var color = { name: c.firstLastName, code: c.salespersonCode };
                             _this.salesPersonModelList.push(color);
                         });
-                        return [3 /*break*/, 4];
-                    case 3:
+                        return [3 /*break*/, 3];
+                    case 2:
                         error_2 = _b.sent();
                         this.toasterService.error(error_2.message);
                         return [2 /*return*/, null];
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
-                        error_3 = _b.sent();
-                        this.toasterService.error(error_3.message);
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
+                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -1028,6 +1027,7 @@ var CreateOrderComponent = /** @class */ (function () {
                     case 5:
                         response = _a.sent();
                         if (!response.currAccCode) return [3 /*break*/, 10];
+                        this.createCustomerDialog = false;
                         clientCustomer_request = new createCustomer_CM_1.ClientCustomer();
                         clientCustomer_request.cargoAddressPhotoUrl = formValue.cargoAddressPhotoUrl;
                         clientCustomer_request.currAccCode = response.currAccCode;
@@ -1250,7 +1250,7 @@ var CreateOrderComponent = /** @class */ (function () {
     };
     CreateOrderComponent.prototype.getAllCustomers = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _request, _response, error_4;
+            var _request, _response, error_3;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -1269,8 +1269,8 @@ var CreateOrderComponent = /** @class */ (function () {
                         ;
                         return [3 /*break*/, 3];
                     case 2:
-                        error_4 = _a.sent();
-                        this.toasterService.error(error_4.message);
+                        error_3 = _a.sent();
+                        this.toasterService.error(error_3.message);
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }
@@ -1721,7 +1721,7 @@ var CreateOrderComponent = /** @class */ (function () {
     };
     CreateOrderComponent.prototype.getProducts = function (request, pageType) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, _request, response, totalQuantity, _i, _a, _product, error_5, result, result, result, check_response, data, response, totalQuantity, _b, _c, _product;
+            var result, _request, response, totalQuantity, _i, _a, _product, error_4, result, result, result, check_response, data, response, totalQuantity, _b, _c, _product;
             var _this = this;
             return __generator(this, function (_d) {
                 switch (_d.label) {
@@ -1820,7 +1820,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         this.getProductsForm.get('barcode').setValue(null);
                         return [2 /*return*/, response];
                     case 16:
-                        error_5 = _d.sent();
+                        error_4 = _d.sent();
                         return [2 /*return*/, null];
                     case 17: return [3 /*break*/, 36];
                     case 18:
@@ -2290,6 +2290,9 @@ var CreateOrderComponent = /** @class */ (function () {
                             this.toasterService.success("Sipariş İptal Edildi");
                             this.getClientOrder(0);
                         }
+                        return [4 /*yield*/, this.orderService.deleteNebimOrder(this.orderNumber)];
+                    case 2:
+                        _a.sent();
                         return [2 /*return*/];
                 }
             });

@@ -1056,7 +1056,7 @@ export class ShelfTransferRequestComponent implements OnInit {
     appendTo: 'body',  // Example of setting where the overlay should be appended
     autoZIndex: true,
     baseZIndex: 1000,
-    style: { 'min-width': '400px' },  // Custom styles
+    style: { 'min-width': '800px' },  // Custom styles
     styleClass: 'custom-overlay-class' // Custom CSS class
   };
 }

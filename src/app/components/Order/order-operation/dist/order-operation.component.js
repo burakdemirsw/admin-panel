@@ -850,7 +850,7 @@ var OrderOperationComponent = /** @class */ (function () {
     };
     OrderOperationComponent.prototype.onSubmit = function (productModel) {
         return __awaiter(this, void 0, Promise, function () {
-            var updated_product, result, newResponse, shelves, foundProduct, shelf_req, _setRequest, set_response, lp, foundModel, newResponse, shelves, foundProduct, lineId, response, qrResponse, confirmDelete, lineId, response, foundModel, foundProduct, model, response_1, lineId, response2, qrResponse, response, data, foundModel2, foundProduct, lineId, response, qrResponse;
+            var updated_product, sp, result, newResponse, shelves, foundProduct, shelf_req, _setRequest, set_response, lp, foundModel, newResponse, shelves, foundProduct, lineId, response, qrResponse, confirmDelete, lineId, response, foundModel, foundProduct, model, response_1, lineId, response2, qrResponse, response, data, foundModel2, foundProduct, lineId, response, qrResponse;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -871,7 +871,7 @@ var OrderOperationComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.setFormValues(productModel.barcode)];
                     case 1:
                         updated_product = _a.sent();
-                        if (!(this.checkForm.get('quantity').value == null || this.checkForm.get('quantity').value == 1)) return [3 /*break*/, 3];
+                        if (!(this.checkForm.get('quantity').value == null || this.checkForm.get('quantity').value > 1)) return [3 /*break*/, 3];
                         if (!((this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-')) && this.checkForm.valid)) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.onSubmit(updated_product)];
                     case 2:
@@ -883,8 +883,13 @@ var OrderOperationComponent = /** @class */ (function () {
                     case 4:
                         if (!(this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-'))) return [3 /*break*/, 30];
                         if (!this.checkForm.valid) return [3 /*break*/, 29];
-                        if (!(this.isLocked && this.lockSetProduct)) return [3 /*break*/, 15];
+                        if (!(this.isLocked && this.lockedSetProduct)) return [3 /*break*/, 15];
                         if (!this.lockedSetProduct.setProducts.some(function (p) { return p.quantity > 0 && p.barcode == productModel.barcode; })) return [3 /*break*/, 14];
+                        sp = this.lockedSetProduct.setProducts.find(function (p) { return p.quantity > 0 && p.barcode == productModel.barcode; });
+                        if (sp.quantity - productModel.quantity < 0) {
+                            this.toasterService.error('Stok Hatası');
+                            return [2 /*return*/];
+                        }
                         return [4 /*yield*/, this.productService.countProductByBarcode3(productModel.barcode)];
                     case 5:
                         result = _a.sent();
@@ -1468,7 +1473,7 @@ var OrderOperationComponent = /** @class */ (function () {
             var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.warehouseService.deleteSetCount(product.lineId)];
+                    case 0: return [4 /*yield*/, this.warehouseService.deleteSetCount(this.orderNo, product.barcode)];
                     case 1:
                         response = _a.sent();
                         return [4 /*yield*/, this.getAllProducts(this.orderNo, 'WS')];

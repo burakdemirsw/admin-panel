@@ -706,10 +706,30 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
+    OrderService.prototype.updateCustomer = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response, error_16;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.httpClientService.post({ controller: "order/update-customer" }, request).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                    case 2:
+                        error_16 = _a.sent();
+                        // console.log(error.message);
+                        return [2 /*return*/, null];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     //yanıt true ise sipariş iptal edilmşitir
     OrderService.prototype.checkClientOrderByOrderNumber = function (orderNumber) {
         return __awaiter(this, void 0, Promise, function () {
-            var response, error_16;
+            var response, error_17;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -719,7 +739,7 @@ var OrderService = /** @class */ (function () {
                         response = _a.sent();
                         return [2 /*return*/, response];
                     case 2:
-                        error_16 = _a.sent();
+                        error_17 = _a.sent();
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }
@@ -728,32 +748,12 @@ var OrderService = /** @class */ (function () {
     };
     OrderService.prototype.getClientOrder = function (id) {
         return __awaiter(this, void 0, Promise, function () {
-            var response, error_17;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/get-client-order" + "/" + id }).toPromise()];
-                    case 1:
-                        response = _a.sent();
-                        return [2 /*return*/, response];
-                    case 2:
-                        error_17 = _a.sent();
-                        // console.log(error.message);
-                        return [2 /*return*/, null];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    OrderService.prototype.getClientOrders = function (isCompleted) {
-        return __awaiter(this, void 0, Promise, function () {
             var response, error_18;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/get-client-orders" }, isCompleted.toString()).toPromise()];
+                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/get-client-order" + "/" + id }).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];
@@ -766,14 +766,14 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
-    OrderService.prototype.createClientOrder = function (request) {
-        return __awaiter(this, void 0, void 0, function () {
+    OrderService.prototype.getClientOrders = function (isCompleted) {
+        return __awaiter(this, void 0, Promise, function () {
             var response, error_19;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService.post({ controller: "order/create-client-order" }, request).toPromise()];
+                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/get-client-orders" }, isCompleted.toString()).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];
@@ -786,14 +786,14 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
-    OrderService.prototype.createClientOrderBasketItem = function (request) {
+    OrderService.prototype.createClientOrder = function (request) {
         return __awaiter(this, void 0, void 0, function () {
             var response, error_20;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService.post({ controller: "order/create-client-order-basket-item" }, request).toPromise()];
+                        return [4 /*yield*/, this.httpClientService.post({ controller: "order/create-client-order" }, request).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];
@@ -806,14 +806,14 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
-    OrderService.prototype.updateClientOrderBasketItem = function (item) {
-        return __awaiter(this, void 0, Promise, function () {
+    OrderService.prototype.createClientOrderBasketItem = function (request) {
+        return __awaiter(this, void 0, void 0, function () {
             var response, error_21;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService.post({ controller: "order/update-client-order-basket-item" }, item).toPromise()];
+                        return [4 /*yield*/, this.httpClientService.post({ controller: "order/create-client-order-basket-item" }, request).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];
@@ -826,15 +826,14 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
-    OrderService.prototype.updateClientOrderPayment = function (orderId, paymentDescription) {
+    OrderService.prototype.updateClientOrderBasketItem = function (item) {
         return __awaiter(this, void 0, Promise, function () {
-            var query, response, error_22;
+            var response, error_22;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        query = orderId + "/" + paymentDescription;
-                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/update-client-order-payment" + "/" + query }).toPromise()];
+                        return [4 /*yield*/, this.httpClientService.post({ controller: "order/update-client-order-basket-item" }, item).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];
@@ -847,14 +846,15 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
-    OrderService.prototype.editClientCustomer = function (request) {
+    OrderService.prototype.updateClientOrderPayment = function (orderId, paymentDescription) {
         return __awaiter(this, void 0, Promise, function () {
-            var response, error_23;
+            var query, response, error_23;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService.post({ controller: "order/edit-client-customer" }, request).toPromise()];
+                        query = orderId + "/" + paymentDescription;
+                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/update-client-order-payment" + "/" + query }).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];
@@ -867,14 +867,14 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
-    OrderService.prototype.getClientCustomer = function (salesPersonCode) {
+    OrderService.prototype.editClientCustomer = function (request) {
         return __awaiter(this, void 0, Promise, function () {
             var response, error_24;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/get-client-customer" }, salesPersonCode).toPromise()];
+                        return [4 /*yield*/, this.httpClientService.post({ controller: "order/edit-client-customer" }, request).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];
@@ -887,14 +887,14 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
-    OrderService.prototype.getOrderDetail = function (orderNumber) {
+    OrderService.prototype.getClientCustomer = function (salesPersonCode) {
         return __awaiter(this, void 0, Promise, function () {
             var response, error_25;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/get-order-detail" + "/" + orderNumber }).toPromise()];
+                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/get-client-customer" }, salesPersonCode).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];
@@ -907,14 +907,14 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
-    OrderService.prototype.deleteClientOrder = function (id) {
+    OrderService.prototype.getOrderDetail = function (orderNumber) {
         return __awaiter(this, void 0, Promise, function () {
             var response, error_26;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/delete-client-order" + "/" + id }).toPromise()];
+                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/get-order-detail" + "/" + orderNumber }).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];
@@ -927,14 +927,14 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
-    OrderService.prototype.updateClientOrderCancelStatus = function (orderId, status) {
+    OrderService.prototype.deleteClientOrder = function (id) {
         return __awaiter(this, void 0, Promise, function () {
             var response, error_27;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/update-client-order-cancel-status" + "/" + orderId + "/" + status }).toPromise()];
+                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/delete-client-order" + "/" + id }).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];
@@ -947,15 +947,14 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
-    OrderService.prototype.deleteClientOrderBasketItem = function (orderId, lineId) {
+    OrderService.prototype.updateClientOrderCancelStatus = function (orderId, status) {
         return __awaiter(this, void 0, Promise, function () {
-            var query, response, error_28;
+            var response, error_28;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        query = orderId + "/" + lineId;
-                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/delete-client-order-basket-item" }, query).toPromise()];
+                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/update-client-order-cancel-status" + "/" + orderId + "/" + status }).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];
@@ -968,9 +967,30 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
+    OrderService.prototype.deleteClientOrderBasketItem = function (orderId, lineId) {
+        return __awaiter(this, void 0, Promise, function () {
+            var query, response, error_29;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        query = orderId + "/" + lineId;
+                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/delete-client-order-basket-item" }, query).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                    case 2:
+                        error_29 = _a.sent();
+                        // console.log(error.message);
+                        return [2 /*return*/, null];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     OrderService.prototype.addCustomerAddress = function (request) {
         return __awaiter(this, void 0, Promise, function () {
-            var response, error_29;
+            var response, error_30;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -980,7 +1000,7 @@ var OrderService = /** @class */ (function () {
                         response = _a.sent();
                         return [2 /*return*/, response];
                     case 2:
-                        error_29 = _a.sent();
+                        error_30 = _a.sent();
                         // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
@@ -1010,7 +1030,7 @@ var OrderService = /** @class */ (function () {
     };
     OrderService.prototype.getExchangeRates = function () {
         return __awaiter(this, void 0, Promise, function () {
-            var response, error_30;
+            var response, error_31;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1024,7 +1044,7 @@ var OrderService = /** @class */ (function () {
                         response = _a.sent();
                         return [2 /*return*/, response[0]];
                     case 2:
-                        error_30 = _a.sent();
+                        error_31 = _a.sent();
                         // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
@@ -1081,7 +1101,7 @@ var OrderService = /** @class */ (function () {
     };
     OrderService.prototype.deleteNebimOrder = function (request) {
         return __awaiter(this, void 0, Promise, function () {
-            var response, error_31;
+            var response, error_32;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1093,7 +1113,29 @@ var OrderService = /** @class */ (function () {
                         return [2 /*return*/, response];
                     case 2: return [3 /*break*/, 4];
                     case 3:
-                        error_31 = _a.sent();
+                        error_32 = _a.sent();
+                        // console.log(error.message);
+                        return [2 /*return*/, null];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    OrderService.prototype.deleteNebimInvoiceAndOrder = function (request) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response, error_33;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        if (!window.confirm("Siparişi silmek istediğinize emin misiniz?")) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/delete-nebim-invoice-and-order" + "/" + request }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
+                    case 2: return [3 /*break*/, 4];
+                    case 3:
+                        error_33 = _a.sent();
                         // console.log(error.message);
                         return [2 /*return*/, null];
                     case 4: return [2 /*return*/];
@@ -1103,7 +1145,7 @@ var OrderService = /** @class */ (function () {
     };
     OrderService.prototype.sendInvoiceToPrinter = function (request) {
         return __awaiter(this, void 0, Promise, function () {
-            var userId, response, error_32;
+            var userId, response, error_34;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1114,7 +1156,7 @@ var OrderService = /** @class */ (function () {
                         response = _a.sent();
                         return [2 /*return*/, response];
                     case 2:
-                        error_32 = _a.sent();
+                        error_34 = _a.sent();
                         // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
@@ -1146,7 +1188,7 @@ var OrderService = /** @class */ (function () {
     };
     OrderService.prototype.getSuggestedProducts = function (itemCode) {
         return __awaiter(this, void 0, Promise, function () {
-            var response, error_33;
+            var response, error_35;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1156,7 +1198,7 @@ var OrderService = /** @class */ (function () {
                         response = _a.sent();
                         return [2 /*return*/, response];
                     case 2:
-                        error_33 = _a.sent();
+                        error_35 = _a.sent();
                         // console.log(error.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
@@ -1166,7 +1208,7 @@ var OrderService = /** @class */ (function () {
     };
     OrderService.prototype.createProposalReport = function (request, sendMail) {
         return __awaiter(this, void 0, Promise, function () {
-            var response, file, fileURL, downloadLink, _file, _fileURL, iframe_1, error_34;
+            var response, file, fileURL, downloadLink, _file, _fileURL, iframe_1, error_36;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1203,8 +1245,8 @@ var OrderService = /** @class */ (function () {
                         }
                         return [2 /*return*/, response];
                     case 2:
-                        error_34 = _a.sent();
-                        console.log(error_34.message);
+                        error_36 = _a.sent();
+                        console.log(error_36.message);
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }

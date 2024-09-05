@@ -49,13 +49,13 @@ var WarehouseService = /** @class */ (function () {
     function WarehouseService(httpClientService) {
         this.httpClientService = httpClientService;
     }
-    WarehouseService.prototype.deleteSetCount = function (request) {
+    WarehouseService.prototype.deleteSetCount = function (orderNumber, barcode) {
         return __awaiter(this, void 0, Promise, function () {
             var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.httpClientService.get({
-                            controller: "Warehouse/delete-set-count/" + request
+                            controller: "Warehouse/delete-set-count/" + orderNumber + "/" + barcode
                         }).toPromise()];
                     case 1:
                         response = _a.sent();

@@ -79,7 +79,7 @@ var UnfinishedOrderComponent = /** @class */ (function () {
                     case 1:
                         _a.orders = _b.sent();
                         this.filterOrdersByRole();
-                        this.headerService.updatePageTitle((this.currentOrderState == true ? "Tamamlanmış" : "Tamamlanmamış") + " Siparişler");
+                        this.headerService.updatePageTitle((this.currentOrderState == true ? "Aktarılan" : "Aktarılmamış") + " Siparişler");
                         return [2 /*return*/];
                 }
             });
@@ -87,7 +87,7 @@ var UnfinishedOrderComponent = /** @class */ (function () {
     };
     UnfinishedOrderComponent.prototype.filterOrdersByRole = function () {
         if (localStorage.getItem('roleDescription') != 'Admin') {
-            this.orders = this.orders.filter(function (x) { return x.customerCode == localStorage.getItem('salesPersonCode'); });
+            this.orders = this.orders.filter(function (x) { return x.salesPersonCode == localStorage.getItem('salesPersonCode'); });
             this.toasterService.info('Sadece Kendi Siparişlerinizi Görebilirsiniz.');
         }
     };

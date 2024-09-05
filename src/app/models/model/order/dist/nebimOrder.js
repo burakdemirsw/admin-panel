@@ -55,10 +55,11 @@ var NebimOrder = /** @class */ (function () {
             var line = new Line();
             line.usedBarcode = p.barcode;
             line.salesPersonCode = salesPersonCode;
+            var price = p.totalPrice / p.quantity;
             if (_this.taxTypeCode == 0) { //standart ise
                 if (exchangeRate != 1) { //dövizli ise
                     line.priceVI = null;
-                    line.price = parseFloat((p.discountedPrice / exchangeRate).toFixed(2));
+                    line.price = parseFloat((price / exchangeRate).toFixed(2));
                 }
                 else { //dövizli değilse
                     line.priceVI = null;
@@ -67,22 +68,22 @@ var NebimOrder = /** @class */ (function () {
             }
             else if (_this.taxTypeCode == 5) {
                 if (exchangeRate != 1) { //dövizli ise
-                    line.priceVI = parseFloat((p.discountedPrice / exchangeRate).toFixed(2));
-                    line.price = parseFloat((p.discountedPrice / exchangeRate).toFixed(2));
+                    line.priceVI = parseFloat((price / exchangeRate).toFixed(2));
+                    line.price = parseFloat((price / exchangeRate).toFixed(2));
                 }
                 else { //dövizli değilse
-                    line.priceVI = parseFloat((p.discountedPrice).toFixed(2));
-                    line.price = parseFloat((p.discountedPrice).toFixed(2));
+                    line.priceVI = parseFloat((price).toFixed(2));
+                    line.price = parseFloat((price).toFixed(2));
                 }
             }
             else { //vergisiz ise
                 if (exchangeRate != 1) { //dövizli ise
-                    line.priceVI = parseFloat((p.discountedPrice / exchangeRate).toFixed(2));
-                    line.price = parseFloat((p.discountedPrice / exchangeRate).toFixed(2));
+                    line.priceVI = parseFloat((price / exchangeRate).toFixed(2));
+                    line.price = parseFloat((price / exchangeRate).toFixed(2));
                 }
                 else { //dövizli değilse
-                    line.priceVI = parseFloat((p.discountedPrice).toFixed(2));
-                    line.price = parseFloat((p.discountedPrice).toFixed(2));
+                    line.priceVI = parseFloat((price).toFixed(2));
+                    line.price = parseFloat((price).toFixed(2));
                 }
             }
             line.qty1 = p.quantity;
@@ -97,8 +98,14 @@ var NebimOrder = /** @class */ (function () {
             payment.amount = this.lines.reduce(function (a, b) { return a + (b.price) * b.qty1; }, 0);
         }
         // this.payments = [];
-        this.discounts.push(new Discount(discountRate1, 1, "1", true));
-        this.discounts.push(new Discount(discountRate2, 2, "2", false));
+        if (exchangeRate != 1) {
+            this.discounts.push(new Discount(discountRate1 / exchangeRate, 1, "1", true));
+            this.discounts.push(new Discount(discountRate2 / exchangeRate, 2, "2", false));
+        }
+        else {
+            this.discounts.push(new Discount(discountRate1, 1, "1", true));
+            this.discounts.push(new Discount(discountRate2, 2, "2", false));
+        }
     }
     return NebimOrder;
 }());
@@ -127,10 +134,11 @@ var NebimOrder_2 = /** @class */ (function () {
         this.description = customerDesc;
         this.discounts.push(new Discount(discountPercentage, 1, "1", true));
         selectedProducts.forEach(function (p) {
+            var price = p.totalPrice / p.quantity;
             var line = new Line_2();
             line.usedBarcode = p.barcode;
             line.salesPersonCode = salesPersonCode;
-            line.priceVI = p.discountedPrice;
+            line.priceVI = price;
             line.qty1 = p.quantity;
             line.itemCode = p.itemCode;
             line.batchCode = p.batchCode;
@@ -174,12 +182,13 @@ var NebimInvoice = /** @class */ (function () {
         this.discounts.push(new Discount(discountPercentage2, 2, "2", false));
         // this.documentNumber = orderNo;
         selectedProducts.forEach(function (p) {
+            var price = p.totalPrice / p.quantity;
             var line = new Line_3();
             if (exchangeRate != 1) {
-                line.price = parseFloat((p.discountedPrice / exchangeRate).toFixed(2));
+                line.price = parseFloat((price / exchangeRate).toFixed(2));
             }
             else {
-                line.price = parseFloat((p.discountedPrice).toFixed(2));
+                line.price = parseFloat((price).toFixed(2));
             }
             line.usedBarcode = p.barcode;
             line.salesPersonCode = salesPersonCode;

@@ -176,6 +176,12 @@ const routes: Routes = [
     component: AddCustomerComponent,
     canActivate: [AuthGuard],
   },
+
+  {
+    path: 'add-customer/:currAccCode',
+    component: AddCustomerComponent,
+    canActivate: [AuthGuard],
+  },
   {
     path: 'create-order/:orderType/:id',
     component: CreateOrderComponent,

@@ -142,7 +142,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
             appendTo: 'body',
             autoZIndex: true,
             baseZIndex: 1000,
-            style: { 'min-width': '400px' },
+            style: { 'min-width': '800px' },
             styleClass: 'custom-overlay-class' // Custom CSS class
         };
     }

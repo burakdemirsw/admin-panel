@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,7 +16,6 @@ import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel'
 import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 import { PostalAddress } from 'src/app/models/nebim/customer/nebimCustomer';
 import { AddressService } from 'src/app/services/admin/address.service';
-import { CargoService } from 'src/app/services/admin/cargo.service';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { PaymentService } from 'src/app/services/admin/payment.service';
@@ -85,7 +83,7 @@ export class CreateOrderComponent implements OnInit {
     this.createCustomerFormMethod();
     this.createDiscountForm();
     this._createCustomerFormMethod();
-
+    await this.getSalesPersonModels();
 
     this.activatedRoute.params.subscribe(async (params) => {
       if (params['id']) {
@@ -124,7 +122,10 @@ export class CreateOrderComponent implements OnInit {
   }
 
 
+
   console() {
+    this.focusNextInput('barcode_product')
+    this.toasterService.info(this.isCompleted.toString());
     // console.clear();
     // console.log('payment:', this.payment);
     // console.log('selectedCustomers:', this.selectedCustomers);
@@ -430,7 +431,8 @@ export class CreateOrderComponent implements OnInit {
       request.isCancelled = false;
       request.discountRate1 = this.discountRate1
       request.discountRate2 = this.discountRate2
-
+      request.salesPersonCode = localStorage.getItem('salesPersonCode');
+      request.salesPersonDescription = this.salesPersonModelList.find(s => s.code == request.salesPersonCode).name;
       if (this.payment) {
         request.paymentType = this.payment.creditCardTypeCode;
       } else {
@@ -505,25 +507,21 @@ export class CreateOrderComponent implements OnInit {
   }
   async getSalesPersonModels(): Promise<any> {
     try {
-      try {
-        this.salesPersonModels = await this.httpClientService
-          .get<SalesPersonModel>({
-            controller: 'Order/GetSalesPersonModels',
-          })
-          .toPromise();
+      this.salesPersonModels = await this.httpClientService
+        .get<SalesPersonModel>({
+          controller: 'Order/GetSalesPersonModels',
+        })
+        .toPromise();
 
-        this.salesPersonModels.forEach((c) => {
-          var color: any = { name: c.firstLastName + " " + `${c.salespersonCode}`, code: c.salespersonCode };
-          this.salesPersonModelList.push(color);
-        });
+      this.salesPersonModels.forEach((c) => {
+        var color: any = { name: c.firstLastName, code: c.salespersonCode };
+        this.salesPersonModelList.push(color);
+      });
 
-        //this.toasterService.success("Başarıyla "+this.salesPersonModels.length+" Adet Çekildi")
-      } catch (error: any) {
-        this.toasterService.error(error.message);
-        return null;
-      }
+      //this.toasterService.success("Başarıyla "+this.salesPersonModels.length+" Adet Çekildi")
     } catch (error: any) {
       this.toasterService.error(error.message);
+      return null;
     }
   }
   //---------------------------------------------------------------------------
@@ -820,7 +818,7 @@ export class CreateOrderComponent implements OnInit {
     }
   }
   async setCustomer() {
-    //ilk önce tüm müşterileri çek;
+    //ilk önce tüm müşterileri çekkk;
     if (this.selectedCustomers.length == 0) {
       var salesPersonCode = localStorage.getItem('currAccCode');
       var request: GetCustomerList_CM = new GetCustomerList_CM();
@@ -900,6 +898,7 @@ export class CreateOrderComponent implements OnInit {
       if (true) {
         var response = await this.orderService.createCustomer(request);
         if (response.currAccCode) {
+          this.createCustomerDialog = false;
           var clientCustomer_request = new ClientCustomer();
           clientCustomer_request.cargoAddressPhotoUrl = formValue.cargoAddressPhotoUrl;
           clientCustomer_request.currAccCode = response.currAccCode;
@@ -2039,6 +2038,8 @@ export class CreateOrderComponent implements OnInit {
       this.toasterService.success("Sipariş İptal Edildi")
       this.getClientOrder(0)
     }
+    await this.orderService.deleteNebimOrder(this.orderNumber);
+
   }
 
   generateRandomNumber(): string {
@@ -2487,7 +2488,7 @@ export class CreateOrderComponent implements OnInit {
     appendTo: 'body',  // Example of setting where the overlay should be appended
     autoZIndex: true,
     baseZIndex: 1000,
-    style: { 'min-width': '400px' },  // Custom styles
+    style: { 'min-width': '100%' },  // Custom styles
     styleClass: 'custom-overlay-class' // Custom CSS class
   };
 

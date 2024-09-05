@@ -153,6 +153,14 @@ export class OrderManagamentComponent implements OnInit {
       this.getOrders(this.status, this.invoiceStatus)
     }
   }
+
+  async deleteNebimInvoiceAndOrder(request: string) {
+    var response = await this.orderService.deleteNebimInvoiceAndOrder(request)
+    if (response) {
+      this.toasterService.success("İşlem Başarılı")
+      this.getOrders(this.status, this.invoiceStatus)
+    }
+  }
   setPageDescription() {
 
     if (this.status == 1 && this.invoiceStatus == 2) {

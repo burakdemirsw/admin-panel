@@ -586,6 +586,16 @@ export class OrderService {
       return null;
     }
   }
+  async updateCustomer(request: CreateCustomer_CM): Promise<any> {
+    try {
+      var response = await this.httpClientService.post<CreateCustomer_CM>({ controller: "order/update-customer" }, request).toPromise();
+
+      return response;
+    } catch (error: any) {
+      // console.log(error.message);
+      return null;
+    }
+  }
 
   //yanıt true ise sipariş iptal edilmşitir
   async checkClientOrderByOrderNumber(orderNumber: string): Promise<any> {
@@ -832,6 +842,21 @@ export class OrderService {
       return null;
     }
   }
+
+  async deleteNebimInvoiceAndOrder(request: string): Promise<any> {
+    try {
+      if (window.confirm("Siparişi silmek istediğinize emin misiniz?")) {
+        var response = await this.httpClientService.get<string>({ controller: "order/delete-nebim-invoice-and-order" + "/" + request }).toPromise();
+
+        return response;
+      }
+
+    } catch (error: any) {
+      // console.log(error.message);
+      return null;
+    }
+  }
+
 
   async sendInvoiceToPrinter(request: string): Promise<any> {
     try {

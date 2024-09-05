@@ -181,6 +181,11 @@ var routes = [
         canActivate: [auth_guard_1.AuthGuard]
     },
     {
+        path: 'add-customer/:currAccCode',
+        component: add_customer_component_1.AddCustomerComponent,
+        canActivate: [auth_guard_1.AuthGuard]
+    },
+    {
         path: 'create-order/:orderType/:id',
         component: create_order_component_1.CreateOrderComponent,
         canActivate: [auth_guard_1.AuthGuard]

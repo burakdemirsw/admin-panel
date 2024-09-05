@@ -30,12 +30,12 @@ export class WarehouseService {
   ) { }
 
   async deleteSetCount(
-    request: string
+    orderNumber: string, barcode: string
   ): Promise<any> {
 
     var response = await this.httpClientService.get<any>(
       {
-        controller: "Warehouse/delete-set-count/" + request
+        controller: "Warehouse/delete-set-count/" + orderNumber + "/" + barcode
       },
     ).toPromise();
 

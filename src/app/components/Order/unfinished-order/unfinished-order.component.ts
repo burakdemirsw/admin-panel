@@ -20,8 +20,6 @@ export class UnfinishedOrderComponent implements OnInit {
   currentOrderState: boolean = false;
   ngOnInit(): void {
     this.getOrders(this.currentOrderState);
-
-
   }
 
   route(order: ClientOrder) {
@@ -37,11 +35,11 @@ export class UnfinishedOrderComponent implements OnInit {
     this.currentOrderState = isCompleted;
     this.orders = await this.orderService.getClientOrders(isCompleted);
     this.filterOrdersByRole();
-    this.headerService.updatePageTitle((this.currentOrderState == true ? "Tamamlanmış" : "Tamamlanmamış") + " Siparişler");
+    this.headerService.updatePageTitle((this.currentOrderState == true ? "Aktarılan" : "Aktarılmamış") + " Siparişler");
   }
   filterOrdersByRole() {
     if (localStorage.getItem('roleDescription') != 'Admin') {
-      this.orders = this.orders.filter(x => x.customerCode == localStorage.getItem('salesPersonCode'))
+      this.orders = this.orders.filter(x => x.salesPersonCode == localStorage.getItem('salesPersonCode'))
       this.toasterService.info('Sadece Kendi Siparişlerinizi Görebilirsiniz.')
     }
   }

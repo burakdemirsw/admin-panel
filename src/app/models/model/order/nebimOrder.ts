@@ -64,11 +64,13 @@ export class NebimOrder {
       var line: Line = new Line();
       line.usedBarcode = p.barcode;
       line.salesPersonCode = salesPersonCode;
+
+      var price = p.totalPrice / p.quantity
       if (this.taxTypeCode == 0) { //standart ise
 
         if (exchangeRate != 1) { //dövizli ise
           line.priceVI = null;
-          line.price = parseFloat((p.discountedPrice / exchangeRate).toFixed(2));
+          line.price = parseFloat((price / exchangeRate).toFixed(2));
         } else { //dövizli değilse
           line.priceVI = null;
           line.price = parseFloat(p.discountedPrice.toFixed(2));
@@ -76,21 +78,21 @@ export class NebimOrder {
       } else if (this.taxTypeCode == 5) {
 
         if (exchangeRate != 1) { //dövizli ise
-          line.priceVI = parseFloat((p.discountedPrice / exchangeRate).toFixed(2));
-          line.price = parseFloat((p.discountedPrice / exchangeRate).toFixed(2));
+          line.priceVI = parseFloat((price / exchangeRate).toFixed(2));
+          line.price = parseFloat((price / exchangeRate).toFixed(2));
         } else { //dövizli değilse
-          line.priceVI = parseFloat((p.discountedPrice).toFixed(2));
-          line.price = parseFloat((p.discountedPrice).toFixed(2));
+          line.priceVI = parseFloat((price).toFixed(2));
+          line.price = parseFloat((price).toFixed(2));
         }
       }
       else { //vergisiz ise
 
         if (exchangeRate != 1) { //dövizli ise
-          line.priceVI = parseFloat((p.discountedPrice / exchangeRate).toFixed(2));
-          line.price = parseFloat((p.discountedPrice / exchangeRate).toFixed(2));
+          line.priceVI = parseFloat((price / exchangeRate).toFixed(2));
+          line.price = parseFloat((price / exchangeRate).toFixed(2));
         } else { //dövizli değilse
-          line.priceVI = parseFloat((p.discountedPrice).toFixed(2));
-          line.price = parseFloat((p.discountedPrice).toFixed(2));
+          line.priceVI = parseFloat((price).toFixed(2));
+          line.price = parseFloat((price).toFixed(2));
         }
       }
 
@@ -107,8 +109,14 @@ export class NebimOrder {
 
     }
     // this.payments = [];
-    this.discounts.push(new Discount(discountRate1, 1, "1", true));
-    this.discounts.push(new Discount(discountRate2, 2, "2", false));
+    if (exchangeRate != 1) {
+      this.discounts.push(new Discount(discountRate1 / exchangeRate, 1, "1", true));
+      this.discounts.push(new Discount(discountRate2 / exchangeRate, 2, "2", false));
+    } else {
+      this.discounts.push(new Discount(discountRate1, 1, "1", true));
+      this.discounts.push(new Discount(discountRate2, 2, "2", false));
+    }
+
   }
 }
 export class NebimOrder_2 {
@@ -157,10 +165,13 @@ export class NebimOrder_2 {
     this.description = customerDesc;
     this.discounts.push(new Discount(discountPercentage, 1, "1", true));
     selectedProducts.forEach(p => {
+      var price = p.totalPrice / p.quantity
+
+
       var line: Line_2 = new Line_2();
       line.usedBarcode = p.barcode;
       line.salesPersonCode = salesPersonCode;
-      line.priceVI = p.discountedPrice;
+      line.priceVI = price;
       line.qty1 = p.quantity;
       line.itemCode = p.itemCode;
       line.batchCode = p.batchCode;
@@ -228,12 +239,16 @@ export class NebimInvoice {
     this.discounts.push(new Discount(discountPercentage2, 2, "2", false));
     // this.documentNumber = orderNo;
     selectedProducts.forEach(p => {
+
+      var price = p.totalPrice / p.quantity
+
+
       var line: Line_3 = new Line_3();
       if (exchangeRate != 1) {
 
-        line.price = parseFloat((p.discountedPrice / exchangeRate).toFixed(2));
+        line.price = parseFloat((price / exchangeRate).toFixed(2));
       } else {
-        line.price = parseFloat((p.discountedPrice).toFixed(2));
+        line.price = parseFloat((price).toFixed(2));
       }
       line.usedBarcode = p.barcode;
       line.salesPersonCode = salesPersonCode;
@@ -328,6 +343,8 @@ export class ClientOrder_DTO {
 export class ClientOrder {
   id: string;
   customerCode?: string;
+  salesPersonCode?: string;
+  salesPersonDescription?: string;
   customerDescription?: string;
   shippingPostalAddressId: string;
   orderNo?: string;
@@ -337,7 +354,6 @@ export class ClientOrder {
   createdDate: Date;
   paymentDate: Date
   cargoStatus: string
-
   recepientName: string;
   recepientPhone: string;
   orderDescription: string;

@@ -24,3 +24,7 @@
   color: black;
   /* Set the text color */
 }
+
+::ng-deep .p-multiselect {
+  max-width: 200px !important;
+}

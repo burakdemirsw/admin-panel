@@ -58,7 +58,8 @@
 
           </div>
         </form>
-        <p-dialog header="Bulunan Ürünler" [(visible)]="findProductDialog" [style]="{ width: '100vw',height: '100vw' }">
+        <p-dialog header="Bulunan Ürünler" [modal]="true" [(visible)]="findProductDialog" [maximizable]="true"
+          [style]="{ width: '100vw' }">
           <p-table #dt2 [styleClass]="'p-datatable-striped'" [value]="allProducts" [paginator]="true" [rows]="10"
             (onFilter)="logFilteredData($event)" [tableStyle]="{ 'min-width': '50rem' }" [modal]="true"
             [globalFilterFields]="['description','itemCode']">
@@ -85,7 +86,7 @@
                 </th>
 
                 <th pSortableColumn="description">
-                  Ürün <p-sortIcon field="description"></p-sortIcon>
+                  Ürün Adı<p-sortIcon field="description"></p-sortIcon>
                 </th>
                 <th pSortableColumn="productHierarchyLevel01">
                   Ürün Hiyerarşisi 1 <p-sortIcon field="productHierarchyLevel01"></p-sortIcon>
@@ -142,13 +143,13 @@
                 <th>
                   <p-columnFilter field="description" matchMode="equals" [showMenu]="false">
                     <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                      <p-dropdown [overlayOptions]="overlayOptions" virtualScroll="true" virtualScrollItemSize="50"
+                      <p-multiSelect [overlayOptions]="overlayOptions" virtualScroll="true" virtualScrollItemSize="50"
                         [options]="descriptions" (onChange)="filter($event.value)" placeholder="Seçiniz"
                         [showClear]="true" filter="true" filterBy="label">
                         <ng-template let-option pTemplate="item">
                           <span class="ml-1 mt-1">{{ option.label }}</span>
                         </ng-template>
-                      </p-dropdown>
+                      </p-multiSelect>
                     </ng-template>
                   </p-columnFilter>
                 </th>
@@ -338,15 +339,15 @@
               </td>
 
 
-              <td>{{ product.itemCode }}</td>
-              <td>
+              <td style="cursor: pointer;" (click)="openUpdateDialog(product,ri)">{{ product.itemCode }}</td>
+              <td style="cursor: pointer;" (click)="openUpdateDialog(product,ri)">
                 {{ product.description}}
               </td>
               <td *ngIf="!this.orderType">{{ product.shelfNo }}</td>
               <td *ngIf="!this.orderType">{{ product.batchCode }}</td>
 
 
-              <td>
+              <td style="cursor: pointer;" (click)="openUpdateDialog(product,ri)">
                 {{ product.priceWs}}
               </td>
               <td style="cursor: pointer;" (click)="openUpdateDialog(product,ri)">
@@ -531,9 +532,10 @@
                   <tr>
                     <th scope="row">Sayın</th>
                     <td style="font-weight: bold;">
-                      {{this.selectedCustomers[0]?.currAccDescription.toUpperCase()}}
+                      {{ this.selectedCustomers.length > 0 && this.selectedCustomers[0]?.currAccDescription ? this.selectedCustomers[0].currAccDescription.toUpperCase() : "" }}
                     </td>
                   </tr>
+
 
                   <tr>
                     <th scope="row">Ara Toplam <small class="text-muted">KDVSİZ</small>
@@ -582,7 +584,7 @@
               </table>
             </div>
             <!-- İNDİRİM FORMU----------------------------------------------------------------------------------------------------->
-            <form [formGroup]="discountForm" *ngIf="selectedProducts.length > 0" class="mb-3 ">
+            <form [formGroup]="discountForm" *ngIf="selectedProducts.length > 0 && !this.isCompleted" class="mb-3 ">
               <div class="row">
                 <div class="col-md-4  mb-3">
                   <div class="input-group">
@@ -1230,7 +1232,7 @@
         </p-dialog>
       </p-tabPanel>
 
-      <p-tabPanel [rightIcon]="'pi pi-check'" header="Kargo Oluştur">
+      <p-tabPanel [rightIcon]="'pi pi-check'" header="Kargo Oluştur" *ngIf="!this.isCompleted">
         <div class="container mt-5" *ngIf="!showCargo2">
           <div class="row">
             <div class="col-md-6 mb-3">
@@ -1442,10 +1444,9 @@
                   <tr>
                     <th scope="row">Sayın</th>
                     <td style="font-weight: bold;">
-                      {{this.selectedCustomers[0]?.currAccDescription.toUpperCase()}}
+                      {{ this.selectedCustomers[0]?.currAccDescription ? this.selectedCustomers[0].currAccDescription.toUpperCase() : "" }}
                     </td>
                   </tr>
-
                   <tr>
                     <th scope="row">Ara Toplam <small class="text-muted">KDVSİZ</small>
                     </th>
@@ -1493,7 +1494,7 @@
               </table>
             </div>
             <!-- İNDİRİM FORMU----------------------------------------------------------------------------------------------------->
-            <form [formGroup]="discountForm" *ngIf="selectedProducts.length > 0" class="mb-3 ">
+            <form [formGroup]="discountForm" *ngIf="selectedProducts.length > 0 && !this.isCompleted" class="mb-3 ">
               <div class="row">
                 <div class="col-md-4  mb-3">
                   <div class="input-group">
@@ -1619,16 +1620,16 @@
               <th scope="row">Depo</th>
               <td>{{ value.warehouse }}</td>
             </tr>
-            <tr *ngFor="let value of selectedOfficeAndWarehosue">
+            <tr>
               <th scope="row">Ödeme</th>
               <td>{{ payment.creditCardTypeCode ? payment.creditCardTypeCode : '' }}</td>
             </tr>
-            <tr *ngFor="let value of selectedOfficeAndWarehosue">
+            <tr>
               <th scope="row">Satış Elemanı</th>
               <td>{{ this.salesPersonCode ? this.salesPersonCode : '' }}</td>
             </tr>
 
-            <tr *ngFor="let value of selectedOfficeAndWarehosue">
+            <tr>
               <th scope="row">Sipariş No</th>
               <td>{{ this.orderNo }}{{ this.orderNumber != null ? '- ' + this.orderNumber : '' }}</td>
             </tr>

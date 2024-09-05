@@ -3,6 +3,7 @@ import { PostalAddress } from "../../nebim/customer/nebimCustomer";
 export class CreateCustomer_CM {
   currAccDescription: string;
   taxNumber: string;
+  identityNumber: string;
   taxOfficeCode: string;
   mersisNum: string;
   mail: string;
@@ -13,7 +14,7 @@ export class CreateCustomer_CM {
   officeCode: string;
   warehouseCode: string;
   address: Address;
-
+  currAccCode: string;
   constructor() {
     this.address = new Address();
     this.mersisNum = "1111111111";
@@ -30,6 +31,7 @@ export class Address {
   taxOffice: string;
   description: string;
   postalCode: string;
+  postalAddressId: string;
 }
 
 export class CreateCustomer_ResponseModel {

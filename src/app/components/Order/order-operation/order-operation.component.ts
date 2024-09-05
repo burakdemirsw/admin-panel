@@ -838,7 +838,7 @@ export class OrderOperationComponent implements OnInit {
         productModel.barcode
       );
 
-      if (this.checkForm.get('quantity').value == null || this.checkForm.get('quantity').value == 1) {
+      if (this.checkForm.get('quantity').value == null || this.checkForm.get('quantity').value > 1) {
 
 
         if ((this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-')) && this.checkForm.valid) {
@@ -874,10 +874,15 @@ export class OrderOperationComponent implements OnInit {
         //   return;
         // }
         //EĞER KİTLENDİYSE VE SETİN İÇİNDEKİ ÜRÜN OKUTULDUYSA
-        if (this.isLocked && this.lockSetProduct) {
+        if (this.isLocked && this.lockedSetProduct) {
           // this.toasterService.info('SET ÜRÜNÜ ALGILANDI');
           if (this.lockedSetProduct.setProducts.some(p => p.quantity > 0 && p.barcode == productModel.barcode)) {
 
+            var sp = this.lockedSetProduct.setProducts.find(p => p.quantity > 0 && p.barcode == productModel.barcode);
+            if (sp.quantity - productModel.quantity < 0) {
+              this.toasterService.error('Stok Hatası');
+              return;
+            }
             var result: string[] = await this.productService.countProductByBarcode3(
               productModel.barcode
             );
@@ -907,8 +912,6 @@ export class OrderOperationComponent implements OnInit {
                 return;
               }
             }
-
-
             if (foundProduct.quantity - productModel.quantity >= 0) {
 
               var _setRequest: ZTMSG_CountedSetProduct = new ZTMSG_CountedSetProduct();
@@ -1606,7 +1609,7 @@ export class OrderOperationComponent implements OnInit {
   }
 
   async deleteSetProduct(product: ProductOfOrder) {
-    var response = await this.warehouseService.deleteSetCount(product.lineId);
+    var response = await this.warehouseService.deleteSetCount(this.orderNo, product.barcode);
     await this.getAllProducts(this.orderNo, 'WS')
   }
   async collectSelectedProduct(product: ProductOfOrder) {
