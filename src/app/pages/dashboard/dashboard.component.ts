@@ -13,7 +13,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(private headerService: HeaderService, private elementRef: ElementRef, private orderService: OrderService) { }
   data: any;
-
+  day = 1;
   options: any;
   raportData: Raport_CR;
   roleDescription: string;
@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit {
   }
 
   async saleCountRaport() {
-    const response: Raport_CR = await this.orderService.getRaports(7);
+    const response: Raport_CR = await this.orderService.getRaports(this.day);
     this.raportData = response;
     var days: string[] = [];
     var data: number[] = [];

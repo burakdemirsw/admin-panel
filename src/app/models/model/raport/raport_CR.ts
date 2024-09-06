@@ -9,6 +9,12 @@ export class Raport_1 {
   wsOrderCount?: number;
   wsOrderRevenue?: number;
   customerCount?: number;
+  sendedEArchiveInvoicesCount?: number;
+  unSendedEArchiveInvoicesCount?: number;
+  sendedEInvoicesCount?: number;
+  unSendedEInvoicesCount?: number;
+  collectableRetailOrdersCount?: number;
+  collectableWhosaleOrdersCount?: number;
 }
 
 export class Raport_2 {
