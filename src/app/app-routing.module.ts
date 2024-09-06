@@ -172,13 +172,13 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'add-customer',
+    path: 'customer/add',
     component: AddCustomerComponent,
     canActivate: [AuthGuard],
   },
 
   {
-    path: 'add-customer/:currAccCode',
+    path: 'customer/update/:currAccCode',
     component: AddCustomerComponent,
     canActivate: [AuthGuard],
   },

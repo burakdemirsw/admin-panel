@@ -65,7 +65,7 @@
       </div>
     </div>
     <div class="card">
-      <p-table [value]="countList" [paginator]="true" [rowsPerPageOptions]="[10, 25, 50,100]" [rows]="10"
+      <p-table [value]="countList" [paginator]="true" [rowsPerPageOptions]="[25, 50, 75,100]" [rows]="25"
         [tableStyle]="{'min-width': '50rem'}" [responsiveLayout]="'scroll'" [filterDelay]="500">
         <ng-template pTemplate="caption">
           <div class="flex align-items-center justify-content-between">
@@ -86,9 +86,21 @@
               Kullanıcı
               <p-sortIcon field="user"></p-sortIcon>
             </th>
+            <th pSortableColumn="isCompleted">
+              Tamamlanma Durumu
+              <p-sortIcon field="isCompleted"></p-sortIcon>
+            </th>
             <th pSortableColumn="process">
               İşlem
               <p-sortIcon field="process"></p-sortIcon>
+            </th>
+            <th pSortableColumn="warehouseCode">
+              Depo
+              <p-sortIcon field="warehouseCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="attribute">
+              Raf
+              <p-sortIcon field="attribute"></p-sortIcon>
             </th>
             <th>İşlemler</th>
           </tr>
@@ -103,7 +115,16 @@
               <p-columnFilter type="text" field="user" [showClearButton]="false"></p-columnFilter>
             </th>
             <th>
+              <p-columnFilter type="boolean" field="isCompleted"></p-columnFilter>
+            </th>
+            <th>
               <p-columnFilter type="text" field="process" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="warehouseCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="attribute" [showClearButton]="false"></p-columnFilter>
             </th>
             <th>
               <!-- İşlemler sütunu için filtre eklemiyoruz -->
@@ -115,7 +136,15 @@
             <td>{{ count.lastUpdateDate | date : "dd.MM.yyyy HH:mm:ss" }}</td>
             <td>{{ count.totalProduct }}</td>
             <td>{{ count.user }}</td>
+            <td> <button *ngIf="count.isCompleted " class="btn btn-success"><i class="fa fa-check"
+                  aria-hidden="true"></i> </button>
+              <button *ngIf="!count.isCompleted " class="btn btn-danger"><i class="fa fa-ban" aria-hidden="true"></i>
+              </button>
+            </td>
             <td>{{ count.process }}</td>
+            <td>{{ count.warehouseCode }}</td>
+            <td>{{ count.attribute }}</td>
+
             <td>
               <div class="btn-group">
                 <button class="btn btn-success mr-2" data-text="İşlemler"

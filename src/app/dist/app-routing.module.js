@@ -176,12 +176,12 @@ var routes = [
         canActivate: [auth_guard_1.AuthGuard]
     },
     {
-        path: 'add-customer',
+        path: 'customer/add',
         component: add_customer_component_1.AddCustomerComponent,
         canActivate: [auth_guard_1.AuthGuard]
     },
     {
-        path: 'add-customer/:currAccCode',
+        path: 'customer/update/:currAccCode',
         component: add_customer_component_1.AddCustomerComponent,
         canActivate: [auth_guard_1.AuthGuard]
     },

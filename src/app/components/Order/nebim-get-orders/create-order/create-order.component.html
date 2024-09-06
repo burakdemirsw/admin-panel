@@ -58,7 +58,7 @@
 
           </div>
         </form>
-        <p-dialog header="Bulunan Ürünler" [modal]="true" [(visible)]="findProductDialog" [maximizable]="true"
+        <p-dialog [maximizable]="true" header="Bulunan Ürünler" [modal]="true" [(visible)]="findProductDialog"
           [style]="{ width: '100vw' }">
           <p-table #dt2 [styleClass]="'p-datatable-striped'" [value]="allProducts" [paginator]="true" [rows]="10"
             (onFilter)="logFilteredData($event)" [tableStyle]="{ 'min-width': '50rem' }" [modal]="true"
@@ -410,7 +410,7 @@
               </td>
             </tr>
 
-            <p-dialog id="p-{ri}" header="Stok Miktarı Yetersiz! Eğer Birinci Seçeneği Seçerseniz Eksik Gönderilcek Ürünler Olacaktır. İkince Seçenek Stoktaki Ürünler
+            <p-dialog [maximizable]="true" id="p-{ri}" header="Stok Miktarı Yetersiz! Eğer Birinci Seçeneği Seçerseniz Eksik Gönderilcek Ürünler Olacaktır. İkince Seçenek Stoktaki Ürünler
              " [(visible)]="visibleDialogs[ri]" [style]="{ width: '80vw' }" modal="true" [dismissableMask]="true">
               <div class="price-list-container">
                 <div *ngFor="let quantity of quantityList;let i = index" class="price-item">
@@ -463,8 +463,8 @@
             </tr>
           </ng-template>
         </p-table>
-        <p-dialog header="Muadil Ürün" [(visible)]="suggestedProductsDialog" [modal]="true" [closable]="true"
-          [style]="{ width: '80vw' }">
+        <p-dialog [maximizable]="true" header="Muadil Ürün" [(visible)]="suggestedProductsDialog" [modal]="true"
+          [closable]="true" [style]="{ width: '80vw' }">
           <p-table [scrollable]="true" [value]="suggestedProducts" styleClass="p-datatable-striped"
             *ngIf="suggestedProducts.length>0">
             <ng-template pTemplate="header">
@@ -482,16 +482,16 @@
                 <td>{{ product?.suggestedItemInventory }}</td>
 
                 <td>
-                  <button class="btn btn-success" icon="pi pi-plus"
-                    (click)="routeGetProduct( product?.suggestedItemCode)" type="submit"></button>
+                  <button class="btn btn-success" (click)="routeGetProduct( product?.suggestedItemCode)" type="submit">
+                    <i class="fa fa-plus" aria-hidden="true"></i></button>
                 </td>
               </tr>
             </ng-template>
           </p-table>
         </p-dialog>
 
-        <p-dialog header="Ürün Güncelle" [(visible)]="updateProductDialog" [modal]="true" [closable]="false"
-          [style]="{width: '300px'}">
+        <p-dialog [maximizable]="true" header="Ürün Güncelle" [(visible)]="updateProductDialog" [modal]="true"
+          [closable]="false" [style]="{width: '300px'}">
           <form [formGroup]="updateProductForm">
             <div class="p-fluid">
               <div class="p-field">
@@ -686,13 +686,19 @@
                     <button class="btn btn-success" type="button" (click)="openDialog('createCustomerDialog')"> Yeni
                       Müşteri Oluştur</button>
                   </div>
-                  <p-dialog header="Müşteri Ekle" [(visible)]="createCustomerDialog" [style]="{ width: '80vw' }">
+                  <p-dialog [maximizable]="true" header="Müşteri Ekle" [(visible)]="createCustomerDialog"
+                    [style]="{ width: '80vw' }">
                     <form [formGroup]="createCustomerForm">
                       <div class="row mb-3">
                         <div class="col-md-12">
+                          <p-dropdown scrollHeight="350px" [virtualScroll]="true" [itemSize]="50"
+                            [style]="{'width': '50%'}" #subCurrAccDescription_dropdown
+                            formControlName="currAccDescription" [options]="_selectableCustomers" placeholder=" Müşteri"
+                            [editable]="true" optionLabel="name" [showClear]="true" filterBy="name" filter="true">
 
-                          <input pInputText type="text" class="form-control" id="currAccDescription" placeholder="Firma"
-                            formControlName="currAccDescription" />
+                          </p-dropdown>
+
+
 
                         </div>
                       </div>
@@ -922,7 +928,8 @@
               </div>
             </form>
 
-            <p-dialog header="Bulunan Adresler" [(visible)]="selectAddressDialog" [style]="{ width: '80vw' }">
+            <p-dialog [maximizable]="true" header="Bulunan Adresler" [(visible)]="selectAddressDialog"
+              [style]="{ width: '80vw' }">
               <p-table [scrollable]="true" [value]="addresses" styleClass="p-datatable-striped">
                 <ng-template pTemplate="header">
                   <tr>
@@ -976,7 +983,7 @@
               </ng-template>
             </p-table>
           </p-tabPanel>
-          <p-tabPanel header="Adres Ekle" *ngIf="invoiceType==false">
+          <p-tabPanel header="Adres Ekle" *ngIf="false">
             <div *ngIf="this.selectedCustomers.length > 0">
               <form [formGroup]="_createCustomerForm" (ngSubmit)="_submitAddressForm(_createCustomerForm.value)">
                 <div class="row">
@@ -1038,7 +1045,8 @@
             </div>
           </p-tabPanel>
         </p-tabView>
-        <p-dialog header="Alt Müşteriler" [(visible)]="subCustomerDialog" [style]="{ width: '80vw' }">
+        <p-dialog [maximizable]="true" header="Alt Müşteriler" [(visible)]="subCustomerDialog"
+          [style]="{ width: '80vw' }">
           <p-table [scrollable]="true" [value]="subCustomers" styleClass="p-datatable-striped">
             <ng-template pTemplate="header">
               <tr>
@@ -1063,7 +1071,8 @@
           </p-table>
         </p-dialog>
 
-        <p-dialog header="Alt Müşteri Ekle" [(visible)]="addSubCustomerDialog" [style]="{ width: '100vw' }">
+        <p-dialog [maximizable]="true" header="Alt Müşteri Ekle" [(visible)]="addSubCustomerDialog"
+          [style]="{ width: '100vw' }">
           <form [formGroup]="addSubCustomerForm">
             <div class="row mb-3">
               <div class="form-group">

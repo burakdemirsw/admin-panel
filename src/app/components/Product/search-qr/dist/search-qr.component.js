@@ -183,6 +183,8 @@ var SearchQrComponent = /** @class */ (function () {
                             barcode = barcode.replace(/=/g, "-");
                         }
                         model = new product_service_1.BarcodeSearch_RM(barcode);
+                        this.focusNextInput('barcode');
+                        this.qrForm.reset();
                         return [4 /*yield*/, this.productService._searchProduct(model)];
                     case 1:
                         response = _a.sent();

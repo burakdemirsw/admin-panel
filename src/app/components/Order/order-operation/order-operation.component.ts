@@ -838,7 +838,7 @@ export class OrderOperationComponent implements OnInit {
         productModel.barcode
       );
 
-      if (this.checkForm.get('quantity').value == null || this.checkForm.get('quantity').value > 1) {
+      if (this.checkForm.get('quantity').value == null || this.checkForm.get('quantity').value >= 1) {
 
 
         if ((this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-')) && this.checkForm.valid) {

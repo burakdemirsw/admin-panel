@@ -52,6 +52,9 @@ export class SearchQrComponent implements OnInit {
   qrCodeValue: string;
 
   invoiceProducts2: CreatePurchaseInvoice[] = [];
+
+
+
   createJson(barcode: string, shelfNo: string) {
 
     var model: QrCode = this.qrCodes.find(
@@ -119,6 +122,7 @@ export class SearchQrComponent implements OnInit {
       if (this.currentId || barcode) {
         const response = await this.productService.getQr(barcode);
         this.qrCodes = response;
+
         return response;
       } else {
         throw new Exception("id alanı boş")
@@ -139,7 +143,8 @@ export class SearchQrComponent implements OnInit {
 
       }
       var model: BarcodeSearch_RM = new BarcodeSearch_RM(barcode);
-
+      this.focusNextInput('barcode');
+      this.qrForm.reset();
       const response = await this.productService._searchProduct(model);
       this._products = response;
       return response;

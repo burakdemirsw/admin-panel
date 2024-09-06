@@ -370,7 +370,18 @@ export class ClientOrder {
   }
 }
 
-
+export class ClientOrderFilter {
+  customerCode?: string;
+  salesPersonCode?: string;
+  salesPersonDescription?: string;
+  paymentDescription?: string;
+  orderNo?: string;
+  orderNumber?: string;
+  createdDate?: Date;
+  updatedDate?: Date;
+  customerDescription?: string;
+  isCancelled?: boolean;
+}
 export class ClientOrderBasketItem {
   orderId: string;
   lineId!: string

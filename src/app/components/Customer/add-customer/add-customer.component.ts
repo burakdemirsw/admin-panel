@@ -26,10 +26,16 @@ export class AddCustomerComponent implements OnInit {
   addressId: string;
   pageType: boolean;//eğer false ise ekle
   postalAddressId: string
-  constructor(private router: Router, private cargoService: CargoService, private addressService: AddressService, private httpClient: HttpClientService, private toasterService: ToasterService, private orderService: OrderService,
-    private headerService: HeaderService, private generalService: GeneralService, private formBuilder: FormBuilder,
+  findedCustomer: ClientCustomer
+  constructor(private router: Router,
+    private addressService: AddressService,
+    private toasterService: ToasterService,
+    private orderService: OrderService,
+    private headerService: HeaderService,
+    private generalService: GeneralService,
+    private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private spinnerService: NgxSpinnerService, private googleDriveService: GoogleDriveService) { }
+    private googleDriveService: GoogleDriveService) { }
 
   async ngOnInit() {
 
@@ -42,6 +48,13 @@ export class AddCustomerComponent implements OnInit {
         this.currAccCode = params['currAccCode'];
 
         this.addressId = params['addressId'];
+        var response = await this.orderService.getClientCustomerById(this.currAccCode);
+        if (response) {
+
+          this.findedCustomer = response[0];
+        } else {
+          this.toasterService.error("Müşteriye Ait Bilgi Bulunamadı")
+        }
         var r: GetCustomerList_CM = new GetCustomerList_CM();
         r.currAccCode = this.currAccCode;
         var address_response: CustomerAddress_VM[] = await this.orderService.getCustomerAddress(r);

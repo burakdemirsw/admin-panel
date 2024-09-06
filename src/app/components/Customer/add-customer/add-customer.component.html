@@ -1,5 +1,15 @@
 <main id="main" class="main">
   <section class="section">
+
+    <div class="card text-center" *ngIf="findedCustomer">
+      <div class="card-body">
+        <h5 class="card-title">Müşteri Bilgileri</h5>
+        <p-image src="{{ this.findedCustomer.stampPhotoUrl }}" alt="Image" width="100px" height="100px" [preview]="true"
+          appendTo="body">
+        </p-image>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-body">
         <form [formGroup]="createCustomerForm" class="mt-4">
@@ -19,7 +29,7 @@
             </div>
           </div>
 
-          <div class="row mb-3">
+          <div class="row mb-3" *ngIf="!this.pageType">
             <div class="col-md-6">
               <div class="">
                 <div class="row">

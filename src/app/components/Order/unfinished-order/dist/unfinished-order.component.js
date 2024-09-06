@@ -45,8 +45,9 @@ exports.__esModule = true;
 exports.UnfinishedOrderComponent = void 0;
 var core_1 = require("@angular/core");
 var UnfinishedOrderComponent = /** @class */ (function () {
-    function UnfinishedOrderComponent(headerService, toasterService, orderService, router) {
+    function UnfinishedOrderComponent(headerService, fb, toasterService, orderService, router) {
         this.headerService = headerService;
+        this.fb = fb;
         this.toasterService = toasterService;
         this.orderService = orderService;
         this.router = router;
@@ -56,15 +57,49 @@ var UnfinishedOrderComponent = /** @class */ (function () {
         this.currentOrderState = false;
     }
     UnfinishedOrderComponent.prototype.ngOnInit = function () {
+        this.createForm();
         this.getOrders(this.currentOrderState);
     };
     UnfinishedOrderComponent.prototype.route = function (order) {
-        if (order.orderNo.includes('MSG-P')) {
-            this.router.navigate(["/create-order/retail-order/" + order.id]);
+        if (order.clientOrder.orderNo.includes('MSG-P')) {
+            this.router.navigate(["/create-order/retail-order/" + order.clientOrder.id]);
         }
         else {
-            this.router.navigate(["/create-order/quick-order/" + order.id]);
+            this.router.navigate(["/create-order/quick-order/" + order.clientOrder.id]);
         }
+    };
+    UnfinishedOrderComponent.prototype.createForm = function () {
+        this.clientOrderFilterForm = this.fb.group({
+            customerCode: [null],
+            salesPersonCode: [null],
+            salesPersonDescription: [null],
+            paymentDescription: [null],
+            orderNo: [null],
+            orderNumber: [null],
+            createdDate: [null],
+            updatedDate: [null],
+            customerDescription: [null],
+            isCancelled: [null]
+        });
+    };
+    UnfinishedOrderComponent.prototype.onSubmit = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var filter, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        filter = this.clientOrderFilterForm.value;
+                        return [4 /*yield*/, this.orderService.getClientOrdersByFilter(filter)];
+                    case 1:
+                        response = _a.sent();
+                        this.orders = [];
+                        this.orders = response;
+                        // this.filterOrdersByRole();
+                        this.headerService.updatePageTitle((this.currentOrderState == true ? "Aktarılan" : "Aktarılmamış") + " Siparişler");
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     UnfinishedOrderComponent.prototype.getOrders = function (isCompleted) {
         return __awaiter(this, void 0, void 0, function () {
@@ -86,8 +121,16 @@ var UnfinishedOrderComponent = /** @class */ (function () {
         });
     };
     UnfinishedOrderComponent.prototype.filterOrdersByRole = function () {
-        if (localStorage.getItem('roleDescription') != 'Admin') {
-            this.orders = this.orders.filter(function (x) { return x.salesPersonCode == localStorage.getItem('salesPersonCode'); });
+        var _a;
+        var roleDescription = localStorage.getItem('roleDescription');
+        var salesPersonCode = localStorage.getItem('salesPersonCode');
+        if (roleDescription !== 'Admin') {
+            // Siparişlerin boş olup olmadığını kontrol et
+            if (((_a = this.orders) === null || _a === void 0 ? void 0 : _a.length) > 0) {
+                // Satış personel koduna göre filtreleme
+                this.orders = this.orders.filter(function (order) { var _a; return ((_a = order.clientOrder) === null || _a === void 0 ? void 0 : _a.salesPersonCode) === salesPersonCode; });
+            }
+            // Bilgilendirme mesajı
             this.toasterService.info('Sadece Kendi Siparişlerinizi Görebilirsiniz.');
         }
     };

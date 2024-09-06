@@ -7,4 +7,7 @@ export class CountListModel {
   taxTypeCode?: string;
   user?: string;
   process: string;
+  isCompleted: boolean;
+  warehouseCode: string;
+  attribute: string;
 }

@@ -49,18 +49,15 @@ var getCustomerList_CM_1 = require("src/app/models/model/order/getCustomerList_C
 var createCustomer_CM_1 = require("../../../models/model/order/createCustomer_CM");
 var customer_list_component_1 = require("../customer-list/customer-list.component");
 var AddCustomerComponent = /** @class */ (function () {
-    function AddCustomerComponent(router, cargoService, addressService, httpClient, toasterService, orderService, headerService, generalService, formBuilder, activatedRoute, spinnerService, googleDriveService) {
+    function AddCustomerComponent(router, addressService, toasterService, orderService, headerService, generalService, formBuilder, activatedRoute, googleDriveService) {
         this.router = router;
-        this.cargoService = cargoService;
         this.addressService = addressService;
-        this.httpClient = httpClient;
         this.toasterService = toasterService;
         this.orderService = orderService;
         this.headerService = headerService;
         this.generalService = generalService;
         this.formBuilder = formBuilder;
         this.activatedRoute = activatedRoute;
-        this.spinnerService = spinnerService;
         this.googleDriveService = googleDriveService;
         this.countries = [];
         this.provinces = [];
@@ -82,7 +79,7 @@ var AddCustomerComponent = /** @class */ (function () {
             var _this = this;
             return __generator(this, function (_a) {
                 this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
-                    var r, address_response;
+                    var response, r, address_response;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0: return [4 /*yield*/, this.createCustomerFormMethod()];
@@ -91,27 +88,36 @@ var AddCustomerComponent = /** @class */ (function () {
                                 return [4 /*yield*/, this.getAddresses()];
                             case 2:
                                 _a.sent();
-                                if (!params['currAccCode']) return [3 /*break*/, 4];
+                                if (!params['currAccCode']) return [3 /*break*/, 5];
                                 this.pageType = true;
                                 this.headerService.updatePageTitle("Müşteri Güncelle");
                                 this.currAccCode = params['currAccCode'];
                                 this.addressId = params['addressId'];
+                                return [4 /*yield*/, this.orderService.getClientCustomerById(this.currAccCode)];
+                            case 3:
+                                response = _a.sent();
+                                if (response) {
+                                    this.findedCustomer = response[0];
+                                }
+                                else {
+                                    this.toasterService.error("Müşteriye Ait Bilgi Bulunamadı");
+                                }
                                 r = new getCustomerList_CM_1.GetCustomerList_CM();
                                 r.currAccCode = this.currAccCode;
                                 return [4 /*yield*/, this.orderService.getCustomerAddress(r)];
-                            case 3:
+                            case 4:
                                 address_response = _a.sent();
                                 if (address_response.length > 0) {
                                     this.toasterService.info(address_response.length.toString());
                                     this.postalAddressId = address_response[0].postalAddressID;
                                     this.fillForm(address_response[0]);
                                 }
-                                return [3 /*break*/, 5];
-                            case 4:
+                                return [3 /*break*/, 6];
+                            case 5:
                                 this.pageType = false;
                                 this.headerService.updatePageTitle("Müşteri Oluştur");
-                                _a.label = 5;
-                            case 5: return [2 /*return*/];
+                                _a.label = 6;
+                            case 6: return [2 /*return*/];
                         }
                     });
                 }); });

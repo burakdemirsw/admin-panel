@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 exports.__esModule = true;
-exports.ClientOrderBasketItem = exports.ClientOrder = exports.ClientOrder_DTO = exports.OrdersViaInternetInfo = exports.Payment = exports.ITAttribute = exports.Line_3 = exports.Line_2 = exports.Line = exports.Discount = exports.NebimInvoiceResponse = exports.NebimInvoice = exports.NebimOrder_2 = exports.NebimOrder = exports.CheckCustomerModel = exports.CheckOrderModel = void 0;
+exports.ClientOrderBasketItem = exports.ClientOrderFilter = exports.ClientOrder = exports.ClientOrder_DTO = exports.OrdersViaInternetInfo = exports.Payment = exports.ITAttribute = exports.Line_3 = exports.Line_2 = exports.Line = exports.Discount = exports.NebimInvoiceResponse = exports.NebimInvoice = exports.NebimOrder_2 = exports.NebimOrder = exports.CheckCustomerModel = exports.CheckOrderModel = void 0;
 var CheckOrderModel = /** @class */ (function () {
     function CheckOrderModel() {
     }
@@ -280,6 +280,12 @@ var ClientOrder = /** @class */ (function () {
     return ClientOrder;
 }());
 exports.ClientOrder = ClientOrder;
+var ClientOrderFilter = /** @class */ (function () {
+    function ClientOrderFilter() {
+    }
+    return ClientOrderFilter;
+}());
+exports.ClientOrderFilter = ClientOrderFilter;
 var ClientOrderBasketItem = /** @class */ (function () {
     function ClientOrderBasketItem() {
         this.createdDate = new Date();

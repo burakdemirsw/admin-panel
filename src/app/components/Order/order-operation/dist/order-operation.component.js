@@ -871,7 +871,7 @@ var OrderOperationComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.setFormValues(productModel.barcode)];
                     case 1:
                         updated_product = _a.sent();
-                        if (!(this.checkForm.get('quantity').value == null || this.checkForm.get('quantity').value > 1)) return [3 /*break*/, 3];
+                        if (!(this.checkForm.get('quantity').value == null || this.checkForm.get('quantity').value >= 1)) return [3 /*break*/, 3];
                         if (!((this.currentOrderNo.split('-')[1] === 'WS' || this.currentOrderNo.includes('MIS-')) && this.checkForm.valid)) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.onSubmit(updated_product)];
                     case 2:

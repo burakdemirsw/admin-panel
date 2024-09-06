@@ -13,8 +13,66 @@
       </div>
     </div>
 
+    <p-panel header="Filtre" [toggleable]="true" [collapsed]="true">
+      <form [formGroup]="clientOrderFilterForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="customerCode">Müşteri Kodu</label>
+          <input id="customerCode" formControlName="customerCode" class="form-control" type="text">
+        </div>
+
+        <div class="form-group">
+          <label for="salesPersonCode">Satış Temsilcisi Kodu</label>
+          <input id="salesPersonCode" formControlName="salesPersonCode" class="form-control" type="text">
+        </div>
+
+        <div class="form-group">
+          <label for="salesPersonDescription">Satış Temsilcisi Açıklaması</label>
+          <input id="salesPersonDescription" formControlName="salesPersonDescription" class="form-control" type="text">
+        </div>
+
+        <div class="form-group">
+          <label for="paymentDescription">Ödeme Açıklaması</label>
+          <input id="paymentDescription" formControlName="paymentDescription" class="form-control" type="text">
+        </div>
+
+        <div class="form-group">
+          <label for="orderNo">Sipariş Numarası (Uygulama)</label>
+          <input id="orderNo" formControlName="orderNo" class="form-control" type="text">
+        </div>
+
+        <div class="form-group">
+          <label for="orderNumber">Sipariş Numarası (Nebim)</label>
+          <input id="orderNumber" formControlName="orderNumber" class="form-control" type="text">
+        </div>
+
+        <div class="form-group">
+          <label for="createdDate">Oluşturulma Tarihi</label>
+          <input id="createdDate" formControlName="createdDate" class="form-control" type="date">
+        </div>
+
+        <div class="form-group">
+          <label for="updatedDate">Güncellenme Tarihi</label>
+          <input id="updatedDate" formControlName="updatedDate" class="form-control" type="date">
+        </div>
+
+        <div class="form-group">
+          <label for="customerDescription">Müşteri Açıklaması</label>
+          <input id="customerDescription" formControlName="customerDescription" class="form-control" type="text">
+        </div>
+
+        <div class="form-group form-check">
+          <input id="isCancelled" formControlName="isCancelled" class="form-check-input" type="checkbox">
+          <label for="isCancelled" class="form-check-label">İptal Edildi</label>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Filtreyi Uygula</button>
+      </form>
+    </p-panel>
+
+    <div class="card"></div>
     <div class="card">
-      <p-table [value]="orders" dataKey="id" [rows]="20" [paginator]="true" [rowsPerPageOptions]="[10, 20, 50]"
+      <p-table [value]="orders" dataKey="id" [rows]="25" [paginator]="true" [rowsPerPageOptions]="[25, 50, 75,100]"
         [globalFilterFields]="[
             'customerDescription',
             'orderNo',
@@ -31,6 +89,7 @@
             <th>İptal Durumu</th>
             <th>Sipariş Numarası</th>
             <th>Oluşturulma Zamanı</th>
+            <th>Adet</th>
             <th>İşlemler</th>
           </tr>
           <tr>
@@ -69,24 +128,28 @@
             <th>
               <!-- Filtre yok -->
             </th>
+            <th>
+              <!-- Filtre yok -->
+            </th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-order>
           <tr>
-            <td>{{ order.salesPersonDescription }}</td>
-            <td>{{ order.customerDescription }}</td>
-            <td>{{ order.subCustomerDescription }}</td>
-            <td>{{ order.orderNo }}</td>
-            <td>{{ order.paymentDescription }}</td>
+            <td>{{ order.clientOrder.salesPersonDescription }}</td>
+            <td>{{ order.clientOrder.customerDescription }}</td>
+            <td>{{ order.clientOrder.subCustomerDescription }}</td>
+            <td>{{ order.clientOrder.orderNo }}</td>
+            <td>{{ order.clientOrder.paymentDescription }}</td>
 
-            <td>{{ order.cargoStatus }}</td>
+            <td>{{ order.clientOrder.cargoStatus }}</td>
             <td>
-              <button class="btn {{ order.isCancelled ? 'btn-danger' : 'btn-success' }}">
-                <i class="fa {{ order.isCancelled ? 'fa-ban' : 'fa-check' }}"></i>
+              <button class="btn {{ order.clientOrder.isCancelled ? 'btn-danger' : 'btn-success' }}">
+                <i class="fa {{ order.clientOrder.isCancelled ? 'fa-ban' : 'fa-check' }}"></i>
               </button>
             </td>
-            <td>{{ order.orderNumber }}</td>
-            <td>{{ order.createdDate | date : "dd.MM.yyyy HH:mm" }}</td>
+            <td>{{ order.clientOrder.orderNumber }}</td>
+            <td>{{ order.clientOrder.createdDate | date : "dd.MM.yyyy HH:mm" }}</td>
+            <td>{{ order.clientOrderBasketItems?.length}}</td>
             <td>
               <div class="btn-group">
 
@@ -94,14 +157,18 @@
                 <div class="btn btn-success" data-text="Siparişe Git" (click)="route(order)">
                   <i class="fa fa-bars" aria-hidden="true"></i>
                 </div>
-                <div class="btn btn-success" data-text="İptal" *ngIf="order.isCompleted"
-                  (click)="updateClientOrderCancelStatus(order.id, order.isCancelled)">
+                <div class="btn btn-success" data-text="İptal" *ngIf="order.clientOrder.isCompleted"
+                  (click)="updateClientOrderCancelStatus(order.clientOrder.id, order.clientOrder.isCancelled)">
                   <i class="fa fa-ban" aria-hidden="true"></i>
                 </div>
-                <div class="btn btn-success" data-text="Kargo" (click)="deleteClientOrder(order.id)">
+                <div class="btn btn-success" data-text="Kargo" (click)="deleteClientOrder(order.clientOrder.id)">
                   <i class="fa fa-trash" aria-hidden="true"></i>
                 </div>
-                <div class="btn btn-success" data-text="Kargo" (click)="updateCargoStatus(order)">
+                <div class="btn btn-success" data-text="Müşteri Güncelle"
+                  routerLink="/customer/update/{{order.clientOrder.customerCode}}">
+                  <i class="fa fa-pencil" aria-hidden="true"></i>
+                </div>
+                <div class="btn btn-success" data-text="Kargo" (click)="updateCargoStatus(order.clientOrder)">
                   <i class="fa fa-truck" aria-hidden="true"></i>
                 </div>
               </div>
