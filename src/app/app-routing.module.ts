@@ -72,6 +72,8 @@ import { AddProductToShelfComponent } from './components/Warehouse/warehosue-she
 import { AddProductToShelfListComponent } from './components/Warehouse/warehosue-shelf-count/add-product-to-shelf-list/add-product-to-shelf-list.component';
 import { IdeasoftOffersComponent } from './components/special-panels/ideasoft-offers/ideasoft-offers.component';
 import { TransferredOrdersComponent } from './components/marketplace/transferred-orders/transferred-orders.component';
+import { TaskPanelsComponent } from './components/Devolopment/devolopment-list/task-panels/task-panels.component';
+import { TaskPanelComponent } from './components/Devolopment/devolopment-list/task-panel/task-panel.component';
 
 
 const routes: Routes = [
@@ -309,6 +311,17 @@ const routes: Routes = [
   {
     path: 'devolopment-list',
     component: DevolopmentListComponent,
+    canActivate: [AuthGuard],
+  },
+
+  {
+    path: 'task/panels',
+    component: TaskPanelsComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'task/panel/:id',
+    component: TaskPanelComponent,
     canActivate: [AuthGuard],
   },
   { path: 'order-state', component: OrderStateComponent, canActivate: [AuthGuard] },

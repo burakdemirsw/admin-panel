@@ -1,0 +1,179 @@
+<main id="main" class="main">
+  <section class="section">
+    <div class="container">
+      <div cdkDropList (cdkDropListDropped)="drop($event)" class="row">
+        <!-- Task Card için Bootstrap Kart Yapısı -->
+        <div class="col-lg-6 col-md-6 mb-4" *ngFor="let taskCard of taskCards; let i = index" cdkDrag>
+          <div class="card h-100">
+            <!-- Kartın Başlığı (Sadece Header Sürüklenebilir) -->
+            <div class="card-header d-flex justify-content-between align-items-center" style="cursor: move"
+              cdkDragHandle>
+              <h5 class="mb-0">Card ID: {{ taskCard.id }}</h5>
+              <button class="btn btn-primary btn-sm" (click)="openAddTaskDialog(taskCard)"><i class="fa fa-plus"
+                  aria-hidden="true"></i></button>
+            </div>
+
+            <!-- Kartın İçeriği (Development Tasks) -->
+            <div class="card-body mt-3">
+              <div class="development-task mb-3" *ngFor="let task of taskCard.developmentTasks"
+                (click)="openTaskDetailsDialog(task)">
+                <h6><strong>{{ task.header }}</strong></h6>
+                <p>{{ task.description }}</p>
+                <span class="badge" [ngClass]="task.isCompleted ? 'btn-success' : 'btn-warning'">
+                  {{ task.isCompleted ? 'Completed' : 'Pending' }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Kartın Footer Bölümü -->
+            <div class="card-footer">
+              <button class="btn btn-success btn-sm" (click)="completeTask(taskCard)">
+                Mark all as Completed
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PrimeNG Dialog for Adding a New Task -->
+  <p-dialog maximizable="true" header="Add New Task" [(visible)]="displayAddTaskDialog" [modal]="true"
+    [style]="{width: '30vw'}" [closable]="true" (onHide)="onDialogHide()">
+    <form [formGroup]="addTaskForm" (ngSubmit)="onSubmitTaskForm()">
+      <div class="form-group">
+        <label for="header">Task Header</label>
+        <input type="text" pInputText formControlName="header" placeholder="Enter task header" class="form-control"
+          style="width: 100%">
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea pInputTextarea formControlName="description" placeholder="Enter task description"
+          class="form-control"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="isCompleted">Is Completed?</label>
+        <p-dropdown [options]="completionOptions" formControlName="isCompleted"></p-dropdown>
+      </div>
+      <button pButton type="submit" label="Add Task" class="btn btn-primary"></button>
+    </form>
+  </p-dialog>
+
+  <!-- Task Details Dialog -->
+  <p-dialog header="Task Details" [(visible)]="displayTaskDetailsDialog" [modal]="true" [style]="{width: '50vw'}"
+    [closable]="true">
+    <div *ngIf="selectedTask">
+      <!-- Task Header -->
+      <div class="form-group">
+        <label for="header">Task Header:</label>
+        <input type="text" pInputText [(ngModel)]="selectedTask.header" class="form-control" readonly>
+      </div>
+
+      <!-- Task Description -->
+      <div class="form-group mb-3">
+        <label for="description">Description:</label>
+        <textarea [(ngModel)]="selectedTask.description" class="form-control" readonly></textarea>
+      </div>
+
+      <!-- Task Priority Dropdown -->
+      <div class="form-group mb-3">
+        <label for="priority">Priority:</label>
+        <p-dropdown [options]="taskPriorities" [(ngModel)]="selectedTask.taskPriority" optionLabel="state"
+          class="form-control">
+        </p-dropdown>
+      </div>
+
+      <!-- Task Status -->
+      <div class="form-group mb-3">
+        <label for="isCompleted">Status:</label>
+        <span class="badge" [ngClass]="selectedTask.isCompleted ? 'bg-success' : 'bg-warning'">
+          {{ selectedTask.isCompleted ? 'Completed' : 'Pending' }}
+        </span>
+      </div>
+
+      <!-- Comments Section -->
+      <!-- Comments Section -->
+      <div class="form-group mb-3">
+        <label for="comments">Comments:</label>
+        <div class="list-group">
+          <div *ngFor="let comment of selectedTask.taskComments" class="list-group-item comment-item">
+            <div class="d-flex align-items-center">
+              <!-- Avatar for each comment -->
+              <div class="avatar">
+                <img src="assets/img/profile-img.jpg" alt="Avatar" class="rounded-circle">
+              </div>
+              <div class="comment-content ml-2">
+                <div class="d-flex justify-content-between">
+                  <h6 class="mb-1">{{ comment.header }}</h6>
+                  <small class="text-muted">{{ comment.createdDate | date: 'short' }}</small>
+                </div>
+                <p class="mb-1">{{ comment.description }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- New Comment Section with Avatar -->
+        <div class="new-comment d-flex align-items-center mt-3">
+          <!-- Avatar next to input -->
+          <div class="avatar">
+            <img src="assets/img/profile-img.jpg" alt="Avatar" class="rounded-circle">
+          </div>
+          <!-- Textarea for adding a new comment -->
+          <textarea [(ngModel)]="newComment.description" class="form-control ml-2"
+            placeholder="Yorum yaz..."></textarea>
+        </div>
+        <button class="btn btn-primary mt-2" (click)="addComment(selectedTask)">Add Comment</button>
+      </div>
+
+
+      <!-- Task Controls Section -->
+      <div class="form-group">
+        <label for="controls">Kontrol Listesi:</label>
+
+        <!-- Progress Bar -->
+        <div class="progress mb-2">
+          <div class="progress-bar" role="progressbar"
+            [style.width.%]="getTaskCompletionPercentage(selectedTask.taskControls)"
+            [ngClass]="{'bg-success': getTaskCompletionPercentage(selectedTask.taskControls) === 100, 'bg-info': getTaskCompletionPercentage(selectedTask.taskControls) < 100}">
+            {{ getTaskCompletionPercentage(selectedTask.taskControls) }}%
+          </div>
+        </div>
+
+        <!-- Existing Task Controls -->
+        <ul class="list-group">
+          <li *ngFor="let control of selectedTask.taskControls"
+            class="list-group-item d-flex justify-content-between align-items-center">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" [(ngModel)]="control.isCompleted"
+                (change)="toggleTaskControl(control)">
+              <label class="form-check-label">{{ control.header }}</label>
+            </div>
+            <button class="btn btn-sm btn-danger" (click)="removeTaskControl(control)"><i class="fa fa-trash"
+                aria-hidden="true"></i></button>
+          </li>
+        </ul>
+
+        <!-- Add New Task Control -->
+        <button *ngIf="!showNewControl" class="btn btn-primary mt-2" (click)="showNewControl = true">Bir öğe
+          ekleyin</button>
+
+        <!-- New Task Control Form -->
+        <div *ngIf="showNewControl" class="mt-2">
+          <input type="text" class="form-control mb-2" placeholder="Bir öğe ekleyin" [(ngModel)]="newControl.header">
+          <div class="d-flex align-items-center">
+            <button class="btn btn-primary btn-sm mr-2" (click)="addTaskControl()">Ekle</button>
+            <button class="btn btn-secondary btn-sm" (click)="showNewControl = false">İptal</button>
+          </div>
+          <!-- Additional options can go here, like deadline or assignments -->
+
+        </div>
+      </div>
+
+
+    </div>
+  </p-dialog>
+
+
+
+</main>

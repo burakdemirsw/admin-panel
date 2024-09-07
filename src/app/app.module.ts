@@ -11,12 +11,14 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { NgxPopper } from 'angular-popper';
 import { QRCodeModule } from 'angularx-qrcode';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { NgxPopperjsModule } from 'ngx-popperjs';
 import { NgxPrintModule } from 'ngx-print';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { MessageService } from 'primeng/api';
 import { BlockUIModule } from 'primeng/blockui';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { ChartModule } from 'primeng/chart';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { DialogModule } from 'primeng/dialog';
@@ -24,10 +26,12 @@ import { DropdownModule } from 'primeng/dropdown';
 import { EditorModule } from 'primeng/editor';
 import { FieldsetModule } from 'primeng/fieldset';
 import { FileUploadModule } from 'primeng/fileupload';
+import { FloatLabelModule } from 'primeng/floatlabel';
 import { ImageModule } from 'primeng/image';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { ListboxModule } from 'primeng/listbox';
 import { MessagesModule } from 'primeng/messages';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { PanelModule } from 'primeng/panel';
@@ -54,17 +58,18 @@ import { CategoryOperationComponent } from './components/Category/category-opera
 import { AddCustomerComponent } from './components/Customer/add-customer/add-customer.component';
 import { CustomerListComponent } from './components/Customer/customer-list/customer-list.component';
 import { DevolopmentListComponent } from './components/Devolopment/devolopment-list/devolopment-list.component';
+import { TaskPanelsComponent } from './components/Devolopment/devolopment-list/task-panels/task-panels.component';
+import { CreatePurchaseOrderComponent } from './components/Invoice/create-purchase-order/create-purchase-order.component';
+import { CreateSaleOrderComponent } from './components/Invoice/create-sale-order/create-sale-order.component';
+import { InvoiceListComponent } from './components/Invoice/invoice-list/invoice-list.component';
 import { LogManagamentComponent } from './components/Log/log-managament/log-managament.component';
+import { TransferredOrdersComponent } from './components/marketplace/transferred-orders/transferred-orders.component';
 import { CollectedPackageDetailComponent } from './components/Order/collected-package-detail/collected-package-detail.component';
 import { CollectedPackagesComponent } from './components/Order/collected-packages/collected-packages.component';
 import { CreateOrderComponent } from './components/Order/create-order/create-order.component';
-import { CreatePurchaseOrderComponent } from './components/Invoice/create-purchase-order/create-purchase-order.component';
-import { CreateQrComponent } from './components/Product/create-qr/create-qr.component';
-import { CreateSaleOrderComponent } from './components/Invoice/create-sale-order/create-sale-order.component';
 import { CollectExportProductsComponent } from './components/Order/export-transactions/collect-export-products/collect-export-products.component';
 import { ExportTransactionsComponent } from './components/Order/export-transactions/export-transactions.component';
 import { ImportTransactionsComponent } from './components/Order/import-transactions/import-transactions.component';
-import { InvoiceListComponent } from './components/Invoice/invoice-list/invoice-list.component';
 import { MarketplaceInvoicesComponent } from './components/Order/marketplace-invoices/marketplace-invoices.component';
 import { NebimGetOrdersComponent } from './components/Order/nebim-get-orders/nebim-get-orders.component';
 import { OrderBillingOperationComponent } from './components/Order/order-billing-operation/order-billing-operation.component';
@@ -75,23 +80,29 @@ import { PurchaseOrderManagamentComponent } from './components/Order/purchase-or
 import { SaleOrderManagamentComponent } from './components/Order/sale-order-managament/sale-order-managament.component';
 import { UnfinishedOrderComponent } from './components/Order/unfinished-order/unfinished-order.component';
 import { CreateBarcodeComponent } from './components/Product/create-barcode/create-barcode.component';
-import { CreateProposalComponent } from './components/proposal/create-proposal/create-proposal.component';
+import { CreateQrComponent } from './components/Product/create-qr/create-qr.component';
 import { NebimProductExtractComponent } from './components/Product/nebim-product-extract/nebim-product-extract.component';
 import { NebimStockControlComponent } from './components/Product/nebim-stock-control/nebim-stock-control.component';
 import { ProductManagementComponent } from './components/Product/product-management/product-management.component';
 import { ProductOperationComponent } from './components/Product/product-operation/product-operation.component';
-import { ProposalListComponent } from './components/proposal/proposal-list/proposal-list.component';
+import { ProductStockReportComponent } from './components/Product/product-stock-report/product-stock-report.component';
 import { ReadBarcodeComponent } from './components/Product/read-barcode/read-barcode.component';
 import { SearchQrComponent } from './components/Product/search-qr/search-qr.component';
 import { SearchShelfComponent } from './components/Product/search-shelf/search-shelf.component';
+import { CreateProposalComponent } from './components/proposal/create-proposal/create-proposal.component';
+import { ProposalListComponent } from './components/proposal/proposal-list/proposal-list.component';
 import { ShelveOperationComponent } from './components/Shelf/shelve-operation/shelve-operation.component';
 import { ShelvesManagamentComponent } from './components/Shelf/shelves-managament/shelves-managament.component';
+import { IdeasoftOffersComponent } from './components/special-panels/ideasoft-offers/ideasoft-offers.component';
 import { RoleListComponent } from './components/User/user-list/role/role-list/role-list.component';
 import { UserListComponent } from './components/User/user-list/user-list.component';
 import { BoxCountComponent } from './components/Warehouse/box-count/box-count.component';
 import { FastTransferListComponent } from './components/Warehouse/fast-transfer/fast-transfer-list/fast-transfer-list.component';
 import { FastTransferComponent } from './components/Warehouse/fast-transfer/fast-transfer.component';
 import { ShelfTransferRequestComponent } from './components/Warehouse/shelf-transfer-request/shelf-transfer-request.component';
+import { ShelfComponent } from './components/Warehouse/shelf/shelf.component';
+import { AddProductToShelfListComponent } from './components/Warehouse/warehosue-shelf-count/add-product-to-shelf-list/add-product-to-shelf-list.component';
+import { AddProductToShelfComponent } from './components/Warehouse/warehosue-shelf-count/add-product-to-shelf/add-product-to-shelf.component';
 import { WarehosueShelfCountComponent } from './components/Warehouse/warehosue-shelf-count/warehosue-shelf-count.component';
 import { WarehouseOperationConfirmDetailComponent } from './components/Warehouse/warehouse-operation/warehouse-operation-confirm-detail/warehouse-operation-confirm-detail.component';
 import { WarehouseOperationListComponent } from './components/Warehouse/warehouse-operation/warehouse-operation-list/warehouse-operation-list.component';
@@ -123,19 +134,9 @@ import { ExportCsvService } from './services/export-csv.service';
 import { FastTransferPipe } from './services/pipes/fast-transfer.pipe';
 import { AlertifyService } from './services/ui/alertify.service';
 import { HttpErrorInterceptor } from './services/ui/http-error-interceptor.service';
-import { ListboxModule } from 'primeng/listbox';
-import { NgxPopperjsModule } from 'ngx-popperjs';
-import { ShelfComponent } from './components/Warehouse/shelf/shelf.component';
-import { ProductStockReportComponent } from './components/Product/product-stock-report/product-stock-report.component';
-import { AddProductToShelfComponent } from './components/Warehouse/warehosue-shelf-count/add-product-to-shelf/add-product-to-shelf.component';
-import { AddProductToShelfListComponent } from './components/Warehouse/warehosue-shelf-count/add-product-to-shelf-list/add-product-to-shelf-list.component';
-import { IdeasoftOffersComponent } from './components/special-panels/ideasoft-offers/ideasoft-offers.component';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { TransferredOrdersComponent } from './components/marketplace/transferred-orders/transferred-orders.component';
-import { ChartModule } from 'primeng/chart';
-import { CustomReuseStrategy } from 'src/customReuseStrategy ';
-import { RouteReuseStrategy } from '@angular/router';
-
+import { CalendarModule } from 'primeng/calendar';
+import { TaskPanelComponent } from './components/Devolopment/devolopment-list/task-panel/task-panel.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 @NgModule({
 
   declarations: [
@@ -218,11 +219,13 @@ import { RouteReuseStrategy } from '@angular/router';
     IdeasoftOffersComponent,
     AuthorizationComponent,
     RoleListComponent,
+    TaskPanelComponent,
     ShelfComponent,
     ProductStockReportComponent,
     AddProductToShelfComponent,
     AddProductToShelfListComponent,
-    TransferredOrdersComponent
+    TransferredOrdersComponent,
+    TaskPanelsComponent
 
   ],
 
@@ -232,6 +235,7 @@ import { RouteReuseStrategy } from '@angular/router';
     ToolbarModule,
     SkeletonModule,
     FormsModule,
+    DragDropModule,
     ReactiveFormsModule,
     BrowserModule,
     FloatLabelModule,
@@ -252,6 +256,7 @@ import { RouteReuseStrategy } from '@angular/router';
     ToastModule,
     InputTextareaModule,
     DropdownModule,
+    CalendarModule,
     InputSwitchModule,
     BlockUIModule,
     RadioButtonModule,

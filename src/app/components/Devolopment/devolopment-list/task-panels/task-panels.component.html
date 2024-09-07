@@ -1,0 +1,51 @@
+<main id="main" class="main">
+  <section class="section">
+    <p-button label="Yeni Panel Ekle" icon="pi pi-plus" (click)="showAddPanelDialog()" class="mb-3"></p-button>
+
+    <p-table [value]="taskPanels" [paginator]="true" [rows]="10" responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Panel ID</th>
+          <th>Kullanıcı ID</th>
+          <th>Oluşturulma Tarihi</th>
+          <th>Güncellenme Tarihi</th>
+          <th>İşlemler</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-panel>
+        <tr>
+          <td>{{ panel.id }}</td>
+          <td>{{ panel.userId }}</td>
+          <td>{{ panel.createdDate | date:'dd/MM/yyyy' }}</td>
+          <td>{{ panel.updatedDate | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <p-button icon="pi pi-trash" class="p-button-danger" (click)="deleteTaskPanel(panel.id)" label="Sil">
+            </p-button>
+            <p-button icon="pi pi-arrow-right" class="p-button-info" label="Git" (click)="goToPanel(panel.id)">
+            </p-button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <!-- Yeni Panel Ekleme Dialog'u -->
+    <p-dialog header="Yeni Panel Ekle" [modal]="true" [(visible)]="addPanelDialogVisible" [style]="{ width: '50rem'}">
+      <div class="p-fluid">
+        <div class="p-field">
+          <label for="userId">Kullanıcı ID</label>
+          <input id="userId" [(ngModel)]="newTaskPanel.userId" pInputText />
+        </div>
+        <div class="p-field">
+          <label for="finishedDate">Bitiş Tarihi</label>
+          <p-calendar appendTo="body" [(ngModel)]="newTaskPanel.finishedDate" showIcon></p-calendar>
+        </div>
+      </div>
+
+      <p-footer>
+        <p-button label="Kaydet" icon="pi pi-check" (click)="addTaskPanel()"></p-button>
+        <p-button label="İptal" icon="pi pi-times" (click)="addPanelDialogVisible = false"></p-button>
+      </p-footer>
+    </p-dialog>
+
+  </section>
+</main>
