@@ -91,18 +91,17 @@ export class TaskPanel {
 
 
 }
-
-
-export class TaskPanelDTO {
+export class TaskCard {
   id: number;
-  finishedDate?: Date;
-  taskCards: TaskCardDTO[];
-}
+  developmentTasks: DevelopmentTask[] | null;
+  taskPanel
+  userId: number;
+  user: any
+  finishedDate: Date | null;
+  createdDate: Date | null;
+  updatedDate: Date | null;
 
-export class TaskCardDTO {
-  id: number;
-  finishedDate?: Date;
-  developmentTasks: DevelopmentTaskDTO[];
+
 }
 
 export class DevelopmentTaskDTO {
@@ -110,29 +109,75 @@ export class DevelopmentTaskDTO {
   header: string;
   description: string;
   isCompleted: boolean;
-  finishedDate?: Date;
+  user: UserDTO;
+  development: DevelopmentDTO;
   taskPriority: TaskPriorityDTO;
   taskComments: TaskCommentDTO[];
   taskControls: TaskControlDTO[];
+  finishedDate?: Date;
+  createdDate?: Date;
+  updatedDate?: Date;
 }
 
+export class UserDTO {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phoneNumber?: string;
+  photoUrl?: string;
+  createdDate?: Date;
+}
+export class DevelopmentDTO {
+  id: number;
+  zone?: string;
+  createdDate?: Date;
+  updatedDate?: Date;
+}
+
+export class TaskPanelDTO {
+  id: number;
+  userId: number;
+  taskCards: TaskCardDTO[];
+  finishedDate?: Date;
+  createdDate?: Date;
+  updatedDate?: Date;
+}
+export class TaskCardDTO {
+  id: number;
+  header?: string; // Optional property
+  taskPanelId: number;
+  userId: number;
+  finishedDate?: Date;
+  createdDate?: Date;
+  updatedDate?: Date;
+  developmentTasks: DevelopmentTaskDTO[];
+}
 export class TaskPriorityDTO {
   id: number;
   state: string;
   order: number;
+  createdDate?: Date;
+  updatedDate?: Date;
 }
 
 export class TaskCommentDTO {
   id: number;
-  header: string;
-  description: string;
+  header?: string;
+  description?: string;
+  developmentTaskId: number;
+  userId: number;
+  createdDate?: Date;
+  updatedDate?: Date;
 }
 
 export class TaskControlDTO {
   id: number;
-  header: string;
-  description: string;
+  description?: string;
+  header?: string;
   isCompleted?: boolean;
+  developmentTaskId: number;
+  userId: number;
+  finishedDate?: Date;
+  createdDate?: Date;
+  updatedDate?: Date;
 }
-
-

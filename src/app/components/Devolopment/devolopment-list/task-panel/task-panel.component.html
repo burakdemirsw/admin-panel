@@ -8,28 +8,42 @@
             <!-- Kartın Başlığı (Sadece Header Sürüklenebilir) -->
             <div class="card-header d-flex justify-content-between align-items-center" style="cursor: move"
               cdkDragHandle>
-              <h5 class="mb-0">Card ID: {{ taskCard.id }}</h5>
-              <button class="btn btn-primary btn-sm" (click)="openAddTaskDialog(taskCard)"><i class="fa fa-plus"
-                  aria-hidden="true"></i></button>
+              <h5 class="mb-0">{{ taskCard.header }}</h5>
+              <!-- <button class="btn btn-primary btn-sm" (click)="openAddTaskDialog(taskCard)"><i class="fa fa-plus"
+                  aria-hidden="true"></i></button> -->
             </div>
-
             <!-- Kartın İçeriği (Development Tasks) -->
             <div class="card-body mt-3">
               <div class="development-task mb-3" *ngFor="let task of taskCard.developmentTasks"
                 (click)="openTaskDetailsDialog(task)">
-                <h6><strong>{{ task.header }}</strong></h6>
+                <h6>
+                  <strong>{{ task.header }}</strong>
+                  <!-- Conditional Icons for Comments and Control Lists -->
+
+                </h6>
                 <p>{{ task.description }}</p>
-                <span class="badge" [ngClass]="task.isCompleted ? 'btn-success' : 'btn-warning'">
+                <span class="badge" [ngClass]="task.isCompleted ? 'btn-success' : 'btn-danger'">
                   {{ task.isCompleted ? 'Completed' : 'Pending' }}
+                </span>
+
+                <span *ngIf="task.taskComments && task.taskComments.length > 0" class="ms-2">
+                  <i class="fa fa-comment" aria-hidden="true"></i> <!-- Comment Icon -->
+                </span>
+                <span *ngIf="task.taskControls && task.taskControls.length > 0" class="ms-2">
+                  <i class="fa fa-tasks" aria-hidden="true"></i> <!-- Control List Icon -->
                 </span>
               </div>
             </div>
 
+
             <!-- Kartın Footer Bölümü -->
             <div class="card-footer">
-              <button class="btn btn-success btn-sm" (click)="completeTask(taskCard)">
+
+              <button class="btn btn-success" (click)="openAddTaskDialog(taskCard)" style="width: 100% !important;"><i
+                  class="fa fa-plus" aria-hidden="true"></i> Kart Ekle</button>
+              <!-- <button class="btn btn-success btn-sm" (click)="completeTask(taskCard)">
                 Mark all as Completed
-              </button>
+              </button> -->
             </div>
           </div>
         </div>
@@ -86,7 +100,7 @@
       <!-- Task Status -->
       <div class="form-group mb-3">
         <label for="isCompleted">Status:</label>
-        <span class="badge" [ngClass]="selectedTask.isCompleted ? 'bg-success' : 'bg-warning'">
+        <span class="badge" [ngClass]="selectedTask.isCompleted ? 'btn-success' : 'btn-danger'">
           {{ selectedTask.isCompleted ? 'Completed' : 'Pending' }}
         </span>
       </div>
