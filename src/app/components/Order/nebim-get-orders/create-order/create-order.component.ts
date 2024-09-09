@@ -252,9 +252,9 @@ export class CreateOrderComponent implements OnInit {
           var order = response;
           this.createdDate = order.clientOrder.createdDate;
           this.discountRate1 = order.clientOrder.discountRate1;
+          this.discountRate2 = order.clientOrder.discountRate2
           this.discountForm.get('percentDiscountRate').setValue(this.discountRate1)
           this.discountForm.get('cashDiscountRate').setValue(this.discountRate2)
-          this.discountRate2 = order.clientOrder.discountRate2
           this.updateProductForm.get('discountRate1').setValue(order.clientOrder.discountRate1);
           this.updateProductForm.get('discountRate2').setValue(order.clientOrder.discountRate2);
 
@@ -792,8 +792,32 @@ export class CreateOrderComponent implements OnInit {
       this.createCustomerDialog = !this.createCustomerDialog
     }
   }
+  onTabChange(event: number): void {
+    var st = this.discountRate1 != this.discountForm.get('percentDiscountRate').value ? false : true;
+    var st_2 = this.discountRate2 != this.discountForm.get('cashDiscountRate').value ? false : true;
+
+    if (st && st_2) {
+      // Koşullar sağlanırsa tab değişikliğine izin ver
+      return;
+    } else {
+      // Koşul sağlanmazsa aktif tabı sıfırla
+      setTimeout(() => {
+        this.activeIndex = 0; // Tab 0'a geri dön
+      }, 0); // Zaman gecikmesi ekliyoruz, böylece Angular değişikliği algılıyor
+      alert('Lütfen İndirimleri Uygulayınız.');
+    }
+  }
+
+
   goToPage(index: number) {
-    this.activeIndex = index;
+    var st = this.discountRate1 != this.discountForm.get('percentDiscountRate').value ? false : true;
+    var st_2 = this.discountRate2 != this.discountForm.get('cashDiscountRate').value ? false : true;
+    if (st && st_2) {
+
+      this.activeIndex = index;
+    } else {
+      alert('Lütfen İndirimleri Uygulayınız.');
+    }
     // this.toasterService.info(this.activeIndex.toString())
   }
   //----------------------------------------------------
@@ -938,6 +962,27 @@ export class CreateOrderComponent implements OnInit {
 
 
   addSubCustomerForm: FormGroup;
+  onInputChange(event: any, backspace: boolean) {
+    let newVal = event.target.value.replace(/\D/g, ''); // Sadece sayılar kalacak şekilde filtreleme
+    if (backspace && newVal.length <= 6) {
+      newVal = newVal.substring(0, newVal.length - 1); // Backspace ile son karakter siliniyor
+    }
+    if (newVal.length === 0) {
+      newVal = ''; // Boş değer durumu
+    } else if (newVal.length <= 3) {
+      newVal = newVal.replace(/^(\d{0,3})/, '($1)'); // İlk 3 hane parantez içinde gösteriliyor
+    } else if (newVal.length <= 6) {
+      newVal = newVal.replace(/^(\d{0,3})(\d{0,3})/, '($1) $2'); // 3 hane parantez içinde ve ardından 3 hane
+    } else if (newVal.length <= 10) {
+      newVal = newVal.replace(/^(\d{0,3})(\d{0,3})(\d{0,4})/, '($1) $2-$3'); // Tam telefon formatı
+    } else {
+      newVal = newVal.substring(0, 10); // Maksimum 10 haneli telefon numarası
+      newVal = newVal.replace(/^(\d{0,3})(\d{0,3})(\d{0,4})/, '($1) $2-$3');
+    }
+    this.addSubCustomerForm.controls['phone'].setValue(newVal, { emitEvent: false }); // Form kontrolüne yeni değeri set etme
+  }
+
+
   createsubCustomerForm() {
     this.addSubCustomerForm = this.formBuilder.group({
       currAccCode: [null],
@@ -956,7 +1001,10 @@ export class CreateOrderComponent implements OnInit {
     });
 
 
-
+    this.addSubCustomerForm.get('phone').valueChanges.subscribe((value) => {
+      const formattedValue = this.generalService.formatPhoneNumber(value); // Metodu kullanarak formatlama
+      this.addSubCustomerForm.get('phone').setValue(formattedValue, { emitEvent: false }); // Formatlanmış değeri ayarla
+    });
     this.addSubCustomerForm.get('region').valueChanges.subscribe(async (value) => { //illeri getir
       var _value = this.addSubCustomerForm.get('region').value.code;
       var response = await this.addressService.getAddress(3, _value)
@@ -1018,7 +1066,7 @@ export class CreateOrderComponent implements OnInit {
       salesPersonCode: [null],
       currAccDescription: [null, Validators.required],
       mail: [' ', Validators.required],
-      phoneNumber: ['05', [Validators.required]],
+      phoneNumber: ['', [Validators.required]],
       stampPhotoUrl: [null],
       bussinesCardPhotoUrl: [null],
       cargoAddressPhotoUrl: [null],
@@ -1035,6 +1083,10 @@ export class CreateOrderComponent implements OnInit {
     });
 
 
+    this.createCustomerForm.get('phoneNumber').valueChanges.subscribe((value) => {
+      const formattedValue = this.generalService.formatPhoneNumber(value); // Metodu kullanarak formatlama
+      this.createCustomerForm.get('phoneNumber').setValue(formattedValue, { emitEvent: false }); // Formatlanmış değeri ayarla
+    });
     this.createCustomerForm.get('sc_Description').valueChanges.subscribe(async (value) => { //alt müşteri olayını
       if (!this.generalService.isNullOrEmpty(value?.name)) {
         var subCustomer: SubCustomerList_VM = new SubCustomerList_VM();
@@ -1238,6 +1290,8 @@ export class CreateOrderComponent implements OnInit {
       request.stampPhotoUrl = this.addSubCustomerForm.value.stampPhotoUrl;
       request.bussinesCardPhotoUrl = this.addSubCustomerForm.value.bussinesCardPhotoUrl;
       request.cargoAddressPhotoUrl = this.addSubCustomerForm.value.cargoAddressPhotoUrl;
+
+      //var mı diye kontrol et
       if (this.selectableSubCustomers.some(c => c.name == request.companyName)) {
         this.toasterService.info("Bu Şirkete Ait Kayıt Zaten Açılmıştır");
         this.addSubCustomerDialog = false;
@@ -1245,9 +1299,6 @@ export class CreateOrderComponent implements OnInit {
         return;
       }
 
-
-
-      //var mı diye kontrol et
       var response = await this.orderService.addSubCustomer(request);
       if (response) {
         this.toasterService.success("Alt Müşteri Eklendi")
@@ -1583,7 +1634,7 @@ export class CreateOrderComponent implements OnInit {
 
             return;
           } else {
-            this.toasterService.success(this.products.length + " Adet Ürün Bulundu")
+            // this.toasterService.success(this.products.length + " Adet Ürün Bulundu")
             for (const _product of this.products) {
               // if (this.products.length > 1) {
               //   _product.description += ` (SK: ${request.barcode})`;
@@ -2496,9 +2547,9 @@ export class CreateOrderComponent implements OnInit {
     appendTo: 'body',  // Example of setting where the overlay should be appended
     autoZIndex: true,
     baseZIndex: 1000,
-    style: { 'min-width': '100%' },  // Custom styles
     styleClass: 'custom-overlay-class' // Custom CSS class
   };
+
 
 
 }

@@ -65,3 +65,7 @@ th {
 ul {
   padding-left: 0px !important
 }
+
+::ng-deep .p-overlay {
+  min-width: 50vw !important;
+}

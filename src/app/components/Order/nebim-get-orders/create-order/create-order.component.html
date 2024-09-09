@@ -5,7 +5,8 @@
   </ol> -->
   <section class="section">
 
-    <p-tabView id="closableTabView" [scrollable]="true" [(activeIndex)]="activeIndex">
+    <p-tabView id="closableTabView" [scrollable]="true" [(activeIndex)]="activeIndex"
+      (activeIndexChange)="onTabChange($event)">
 
       <p-tabPanel *ngIf="(!this.isCancelled && !this.isCompleted)" header="Ürün & Fiyat" [rightIcon]="
           this.selectedProducts.length > 0
@@ -415,7 +416,7 @@
               <div class="price-list-container">
                 <div *ngFor="let quantity of quantityList;let i = index" class="price-item">
                   <button (click)="selectQuantity(product,ri,quantity)" icon="pi pi-check"
-                    class="-rounded -text price-button" type="button">{{quantity}} <span *ngIf="i % 2 === 1">
+                    class="btn btn-primary -text price-button" type="button">{{quantity}} <span *ngIf="i % 2 === 1">
                       {{' (Terminli)'}}</span></button>
                 </div>
               </div>
@@ -437,8 +438,9 @@
                     <td>{{ product?.suggestedItemInventory }}</td>
 
                     <td>
-                      <button class="btn btn-success" icon="pi pi-plus"
-                        (click)="routeGetProduct( product?.suggestedItemCode)" type="submit"></button>
+                      <button class="btn btn-success" (click)="routeGetProduct( product?.suggestedItemCode)"
+                        type="submit"> <i class="fa fa-plus" aria-hidden="true"></i>
+                      </button>
                     </td>
                   </tr>
                 </ng-template>
@@ -589,7 +591,10 @@
                 <div class="col-md-4  mb-3">
                   <div class="input-group">
                     <div class="input-group-prepend">
-                      <button class="btn btn-success" (click)="
+                      <button class="btn" icon="pi pi-check" [ngClass]="{
+          'btn-danger blinking-button ': this.discountRate1 != this.discountForm.get('percentDiscountRate').value,
+          'btn-success': this.discountRate1 == this.discountForm.get('percentDiscountRate').value
+        }" (click)="
                       discount(this.discountForm.value.percentDiscountRate)
                     " type="button"><i class="fa fa-check" aria-hidden="true"></i></button>
                     </div>
@@ -602,15 +607,21 @@
                 <div class="col-md-4 mb-3">
                   <div class="input-group ">
                     <div class="input-group-append">
-                      <button class="btn btn-success" icon="pi pi-check" (click)="
-                      cashDiscount(this.discountForm.value.cashDiscountRate)
-                    " type="button"><i class="fa fa-check" aria-hidden="true"></i></button>
+                      <button class="btn" icon="pi pi-check" [ngClass]="{
+          'btn-danger blinking-button ': this.discountRate2 != this.discountForm.get('cashDiscountRate').value,
+          'btn-success': this.discountRate2 == this.discountForm.get('cashDiscountRate').value
+        }" (click)="cashDiscount(this.discountForm.value.cashDiscountRate)" type="button">
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                      </button>
                     </div>
                     <input type="number" class="form-control" id="cashDiscountRate" placeholder="Nakit İndirim Tutarı"
                       formControlName="cashDiscountRate" (keydown.enter)="
                     cashDiscount(this.discountForm.value.cashDiscountRate)
                   " />
                   </div>
+                  <p *ngIf="this.discountRate2 != this.discountForm.get('cashDiscountRate').value">İndirimi Uygulamak
+                    İçin
+                    Lütfen Butona Basınız</p>
                 </div>
                 <div class="col-md-4">
                   <button btn style="width: 100%" class="btn btn-danger" (click)="resetDiscount()" type="button"><i
@@ -704,9 +715,8 @@
                       </div>
                       <div class="row mb-3">
                         <div class="col-md-12">
-                          <input maxlength="11" pInputText placeholder="Telefon Numarası *" type="text"
-                            class="form-control" id="phoneNumber" placeholder="(05XX XXX XX XX)"
-                            formControlName="phoneNumber" />
+                          <input pInputText placeholder="Telefon Numarası *" type="text" class="form-control"
+                            id="phoneNumber" placeholder="(05XX XXX XX XX)" formControlName="phoneNumber" />
                         </div>
                       </div>
                       <div>
@@ -1087,8 +1097,8 @@
             </div>
             <div class="row mb-3">
               <div class="form-group">
-                <input maxlength="11" pInputText class="form-control" type="text" placeholder="Telefon" id="phone"
-                  name="phone" fullWidth formControlName="phone" />
+                <input pInputText class="form-control" type="text" placeholder="Telefon" id="phone" name="phone"
+                  fullWidth formControlName="phone" />
               </div>
             </div>
             <div class="row mb-3">
@@ -1294,7 +1304,7 @@
         </form>
       </p-tabPanel>
 
-      <p-tabPanel header="Sipariş Önizleme">
+      <p-tabPanel header="Sipariş Önizleme" *ngIf="selectedProducts.length > 0">
 
         <div class="mb-3"></div>
         <div *ngIf="(!this.isCancelled && !this.isCompleted)" #ödemeler>
@@ -1502,43 +1512,7 @@
                 </tbody>
               </table>
             </div>
-            <!-- İNDİRİM FORMU----------------------------------------------------------------------------------------------------->
-            <form [formGroup]="discountForm" *ngIf="selectedProducts.length > 0 && !this.isCompleted" class="mb-3 ">
-              <div class="row">
-                <div class="col-md-4  mb-3">
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <button class="btn btn-success" (click)="
-                      discount(this.discountForm.value.percentDiscountRate)
-                    " type="button"><i class="fa fa-check" aria-hidden="true"></i></button>
-                    </div>
-                    <input type="number" class="form-control" id="percentDiscountRate" placeholder="Yüzde İndirim Oranı"
-                      formControlName="percentDiscountRate" (keydown.enter)="
-                    discount(this.discountForm.value.percentDiscountRate)
-                  " />
-                  </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                  <div class="input-group ">
-                    <div class="input-group-append">
-                      <button class="btn btn-success" icon="pi pi-check" (click)="
-                      cashDiscount(this.discountForm.value.cashDiscountRate)
-                    " type="button"><i class="fa fa-check" aria-hidden="true"></i></button>
-                    </div>
-                    <input type="number" class="form-control" id="cashDiscountRate" placeholder="Nakit İndirim Tutarı"
-                      formControlName="cashDiscountRate" (keydown.enter)="
-                    cashDiscount(this.discountForm.value.cashDiscountRate)
-                  " />
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <button btn style="width: 100%" class="btn btn-danger" (click)="resetDiscount()" type="button"><i
-                      class="fa fa-trash" aria-hidden="true"></i> İndirimi Sıfırla</button>
-                </div>
-              </div>
 
-
-            </form>
 
             <div class="col-md-12 mb-3">
               <button (click)="createOrder()" style="width: 100%" class="btn btn-success">Siparişi

@@ -193,7 +193,6 @@ var CreateOrderComponent = /** @class */ (function () {
             appendTo: 'body',
             autoZIndex: true,
             baseZIndex: 1000,
-            style: { 'min-width': '100%' },
             styleClass: 'custom-overlay-class' // Custom CSS class
         };
     }
@@ -384,9 +383,9 @@ var CreateOrderComponent = /** @class */ (function () {
                         order = response;
                         this.createdDate = order.clientOrder.createdDate;
                         this.discountRate1 = order.clientOrder.discountRate1;
+                        this.discountRate2 = order.clientOrder.discountRate2;
                         this.discountForm.get('percentDiscountRate').setValue(this.discountRate1);
                         this.discountForm.get('cashDiscountRate').setValue(this.discountRate2);
-                        this.discountRate2 = order.clientOrder.discountRate2;
                         this.updateProductForm.get('discountRate1').setValue(order.clientOrder.discountRate1);
                         this.updateProductForm.get('discountRate2').setValue(order.clientOrder.discountRate2);
                         this.orderNo = order.clientOrder.orderNo;
@@ -913,8 +912,31 @@ var CreateOrderComponent = /** @class */ (function () {
             this.createCustomerDialog = !this.createCustomerDialog;
         }
     };
+    CreateOrderComponent.prototype.onTabChange = function (event) {
+        var _this = this;
+        var st = this.discountRate1 != this.discountForm.get('percentDiscountRate').value ? false : true;
+        var st_2 = this.discountRate2 != this.discountForm.get('cashDiscountRate').value ? false : true;
+        if (st && st_2) {
+            // Koşullar sağlanırsa tab değişikliğine izin ver
+            return;
+        }
+        else {
+            // Koşul sağlanmazsa aktif tabı sıfırla
+            setTimeout(function () {
+                _this.activeIndex = 0; // Tab 0'a geri dön
+            }, 0); // Zaman gecikmesi ekliyoruz, böylece Angular değişikliği algılıyor
+            alert('Lütfen İndirimleri Uygulayınız.');
+        }
+    };
     CreateOrderComponent.prototype.goToPage = function (index) {
-        this.activeIndex = index;
+        var st = this.discountRate1 != this.discountForm.get('percentDiscountRate').value ? false : true;
+        var st_2 = this.discountRate2 != this.discountForm.get('cashDiscountRate').value ? false : true;
+        if (st && st_2) {
+            this.activeIndex = index;
+        }
+        else {
+            alert('Lütfen İndirimleri Uygulayınız.');
+        }
         // this.toasterService.info(this.activeIndex.toString())
     };
     CreateOrderComponent.prototype.changeInvoiceType = function (type) {
@@ -1069,6 +1091,29 @@ var CreateOrderComponent = /** @class */ (function () {
             });
         });
     };
+    CreateOrderComponent.prototype.onInputChange = function (event, backspace) {
+        var newVal = event.target.value.replace(/\D/g, ''); // Sadece sayılar kalacak şekilde filtreleme
+        if (backspace && newVal.length <= 6) {
+            newVal = newVal.substring(0, newVal.length - 1); // Backspace ile son karakter siliniyor
+        }
+        if (newVal.length === 0) {
+            newVal = ''; // Boş değer durumu
+        }
+        else if (newVal.length <= 3) {
+            newVal = newVal.replace(/^(\d{0,3})/, '($1)'); // İlk 3 hane parantez içinde gösteriliyor
+        }
+        else if (newVal.length <= 6) {
+            newVal = newVal.replace(/^(\d{0,3})(\d{0,3})/, '($1) $2'); // 3 hane parantez içinde ve ardından 3 hane
+        }
+        else if (newVal.length <= 10) {
+            newVal = newVal.replace(/^(\d{0,3})(\d{0,3})(\d{0,4})/, '($1) $2-$3'); // Tam telefon formatı
+        }
+        else {
+            newVal = newVal.substring(0, 10); // Maksimum 10 haneli telefon numarası
+            newVal = newVal.replace(/^(\d{0,3})(\d{0,3})(\d{0,4})/, '($1) $2-$3');
+        }
+        this.addSubCustomerForm.controls['phone'].setValue(newVal, { emitEvent: false }); // Form kontrolüne yeni değeri set etme
+    };
     CreateOrderComponent.prototype.createsubCustomerForm = function () {
         var _this = this;
         this.addSubCustomerForm = this.formBuilder.group({
@@ -1085,6 +1130,10 @@ var CreateOrderComponent = /** @class */ (function () {
             stampPhotoUrl: [null],
             bussinesCardPhotoUrl: [null],
             cargoAddressPhotoUrl: [null]
+        });
+        this.addSubCustomerForm.get('phone').valueChanges.subscribe(function (value) {
+            var formattedValue = _this.generalService.formatPhoneNumber(value); // Metodu kullanarak formatlama
+            _this.addSubCustomerForm.get('phone').setValue(formattedValue, { emitEvent: false }); // Formatlanmış değeri ayarla
         });
         this.addSubCustomerForm.get('region').valueChanges.subscribe(function (value) { return __awaiter(_this, void 0, void 0, function () {
             var _value, response;
@@ -1166,7 +1215,7 @@ var CreateOrderComponent = /** @class */ (function () {
             salesPersonCode: [null],
             currAccDescription: [null, forms_1.Validators.required],
             mail: [' ', forms_1.Validators.required],
-            phoneNumber: ['05', [forms_1.Validators.required]],
+            phoneNumber: ['', [forms_1.Validators.required]],
             stampPhotoUrl: [null],
             bussinesCardPhotoUrl: [null],
             cargoAddressPhotoUrl: [null],
@@ -1180,6 +1229,10 @@ var CreateOrderComponent = /** @class */ (function () {
             address_taxOffice: [null],
             sc_Description: [null],
             sc_mode: [false]
+        });
+        this.createCustomerForm.get('phoneNumber').valueChanges.subscribe(function (value) {
+            var formattedValue = _this.generalService.formatPhoneNumber(value); // Metodu kullanarak formatlama
+            _this.createCustomerForm.get('phoneNumber').setValue(formattedValue, { emitEvent: false }); // Formatlanmış değeri ayarla
         });
         this.createCustomerForm.get('sc_Description').valueChanges.subscribe(function (value) { return __awaiter(_this, void 0, void 0, function () {
             var subCustomer;
@@ -1429,6 +1482,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         request.stampPhotoUrl = this.addSubCustomerForm.value.stampPhotoUrl;
                         request.bussinesCardPhotoUrl = this.addSubCustomerForm.value.bussinesCardPhotoUrl;
                         request.cargoAddressPhotoUrl = this.addSubCustomerForm.value.cargoAddressPhotoUrl;
+                        //var mı diye kontrol et
                         if (this.selectableSubCustomers.some(function (c) { return c.name == request.companyName; })) {
                             this.toasterService.info("Bu Şirkete Ait Kayıt Zaten Açılmıştır");
                             this.addSubCustomerDialog = false;
@@ -1795,7 +1849,6 @@ var CreateOrderComponent = /** @class */ (function () {
                         _d.sent();
                         return [2 /*return*/];
                     case 8:
-                        this.toasterService.success(this.products.length + " Adet Ürün Bulundu");
                         _i = 0, _a = this.products;
                         _d.label = 9;
                     case 9:

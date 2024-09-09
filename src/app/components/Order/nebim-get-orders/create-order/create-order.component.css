@@ -2,6 +2,24 @@
   width: 100% !important;
 } */
 
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.blinking-button {
+  animation: blink 1s infinite;
+}
+
 
 .thin-column {
   width: 100px;

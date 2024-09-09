@@ -33,7 +33,29 @@ export class GeneralService {
     }
 
   }
+  formatPhoneNumber(value: string): string {
+    let newVal = value.replace(/\D/g, ''); // Sadece sayıları bırak
 
+    // Eğer ilk hane 0 ise, 0'ı sil
+    if (newVal.startsWith('0')) {
+      newVal = newVal.substring(1);
+      this.toasterService.info('Lütfen 5XX-XXX-XX-XX Formatında Numarayı Giriniz')
+
+    }
+    if (newVal.length === 0) {
+      newVal = ''; // Boş değer durumu
+    } else if (newVal.length <= 3) {
+      newVal = newVal.replace(/^(\d{0,3})/, '($1)'); // İlk 3 hane parantez içinde gösteriliyor
+    } else if (newVal.length <= 6) {
+      newVal = newVal.replace(/^(\d{0,3})(\d{0,3})/, '($1) $2'); // 3 hane parantez içinde ve ardından 3 hane
+    } else if (newVal.length <= 10) {
+      newVal = newVal.replace(/^(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, '($1) $2 $3 $4'); // Tam telefon formatı
+    } else {
+      newVal = newVal.substring(0, 10); // Maksimum 10 haneli telefon numarası
+      newVal = newVal.replace(/^(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, '($1) $2 $3 $4'); // Son format: (XXX) XXX XX XX
+    }
+    return newVal;
+  }
   beep() {
     const audio = new Audio('assets/music/qrSound.mp3');
     audio.play();
