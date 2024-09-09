@@ -125,7 +125,7 @@ export class CreateOrderComponent implements OnInit {
 
   console() {
     this.focusNextInput('barcode_product')
-    this.toasterService.info(this.isCompleted.toString());
+    // this.toasterService.info(this.isCompleted.toString());
     // console.clear();
     // console.log('payment:', this.payment);
     // console.log('selectedCustomers:', this.selectedCustomers);
@@ -252,6 +252,8 @@ export class CreateOrderComponent implements OnInit {
           var order = response;
           this.createdDate = order.clientOrder.createdDate;
           this.discountRate1 = order.clientOrder.discountRate1;
+          this.discountForm.get('percentDiscountRate').setValue(this.discountRate1)
+          this.discountForm.get('cashDiscountRate').setValue(this.discountRate2)
           this.discountRate2 = order.clientOrder.discountRate2
           this.updateProductForm.get('discountRate1').setValue(order.clientOrder.discountRate1);
           this.updateProductForm.get('discountRate2').setValue(order.clientOrder.discountRate2);
@@ -338,7 +340,7 @@ export class CreateOrderComponent implements OnInit {
 
         } else {
           this.orderNo = this.generateRandomNumber();
-          this.toasterService.success("Yeni Sipariş : " + this.orderNo)
+          // this.toasterService.success("Yeni Sipariş : " + this.orderNo)
         }
       } else {
         this.createdDate = response.clientOrder.createdDate;
@@ -821,16 +823,22 @@ export class CreateOrderComponent implements OnInit {
     //ilk önce tüm müşterileri çekkk;
     if (this.selectedCustomers.length == 0) {
       var salesPersonCode = localStorage.getItem('currAccCode');
-      var request: GetCustomerList_CM = new GetCustomerList_CM();
-      request.currAccCode = salesPersonCode;
-      var response = await this.orderService.getCustomerList_2(request)
-      if (response) {
-        var findedCustomer = response.find(c => c.currAccCode == salesPersonCode);
+      if (salesPersonCode) {
+        var request: GetCustomerList_CM = new GetCustomerList_CM();
+        request.currAccCode = salesPersonCode;
+        var response = await this.orderService.getCustomerList_2(request)
+        if (response) {
+          var findedCustomer = response.find(c => c.currAccCode == salesPersonCode);
 
-        this.selectableCustomers.push({ name: findedCustomer.currAccDescription, value: findedCustomer.phone, currAccCode: findedCustomer.currAccCode })
-        this.createCustomerForm.get('currAccDescription').setValue(findedCustomer.currAccDescription);
-        await this.selectCurrentCustomer(findedCustomer);
+          this.selectableCustomers.push({ name: findedCustomer.currAccDescription, value: findedCustomer.phone, currAccCode: findedCustomer.currAccCode })
+          this.createCustomerForm.get('currAccDescription').setValue(findedCustomer.currAccDescription);
+          await this.selectCurrentCustomer(findedCustomer);
+        }
+      } else {
+        this.toasterService.error('Kullanıcıya Ait Müşteri Bulunamadı')
+        return;
       }
+
     }
 
   }
@@ -2305,7 +2313,7 @@ export class CreateOrderComponent implements OnInit {
           this.sendInvoiceToPrinter(addedOrder.orderNumber);
 
         }
-        this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "unfinished-orders");
+        this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "client-orders/true");
       }
     } else {
 

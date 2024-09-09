@@ -166,6 +166,19 @@ const routes: Routes = [
     component: UnfinishedOrderComponent,
     canActivate: [AuthGuard],
   },
+
+
+  {
+    path: 'client-orders/:status',
+    component: UnfinishedOrderComponent,
+    canActivate: [AuthGuard],
+  },
+
+  {
+    path: 'client-orders/:status',
+    component: UnfinishedOrderComponent,
+    canActivate: [AuthGuard],
+  },
   {
     path: 'cargo-list',
     component: CargoListComponent,

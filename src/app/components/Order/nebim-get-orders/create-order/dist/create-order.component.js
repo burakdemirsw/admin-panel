@@ -270,7 +270,7 @@ var CreateOrderComponent = /** @class */ (function () {
     };
     CreateOrderComponent.prototype.console = function () {
         this.focusNextInput('barcode_product');
-        this.toasterService.info(this.isCompleted.toString());
+        // this.toasterService.info(this.isCompleted.toString());
         // console.clear();
         // console.log('payment:', this.payment);
         // console.log('selectedCustomers:', this.selectedCustomers);
@@ -384,6 +384,8 @@ var CreateOrderComponent = /** @class */ (function () {
                         order = response;
                         this.createdDate = order.clientOrder.createdDate;
                         this.discountRate1 = order.clientOrder.discountRate1;
+                        this.discountForm.get('percentDiscountRate').setValue(this.discountRate1);
+                        this.discountForm.get('cashDiscountRate').setValue(this.discountRate2);
                         this.discountRate2 = order.clientOrder.discountRate2;
                         this.updateProductForm.get('discountRate1').setValue(order.clientOrder.discountRate1);
                         this.updateProductForm.get('discountRate2').setValue(order.clientOrder.discountRate2);
@@ -462,7 +464,6 @@ var CreateOrderComponent = /** @class */ (function () {
                         return [3 /*break*/, 9];
                     case 8:
                         this.orderNo = this.generateRandomNumber();
-                        this.toasterService.success("Yeni Sipariş : " + this.orderNo);
                         _b.label = 9;
                     case 9: return [3 /*break*/, 11];
                     case 10:
@@ -932,8 +933,9 @@ var CreateOrderComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!(this.selectedCustomers.length == 0)) return [3 /*break*/, 3];
+                        if (!(this.selectedCustomers.length == 0)) return [3 /*break*/, 5];
                         salesPersonCode = localStorage.getItem('currAccCode');
+                        if (!salesPersonCode) return [3 /*break*/, 4];
                         request = new getCustomerList_CM_2.GetCustomerList_CM();
                         request.currAccCode = salesPersonCode;
                         return [4 /*yield*/, this.orderService.getCustomerList_2(request)];
@@ -947,7 +949,11 @@ var CreateOrderComponent = /** @class */ (function () {
                     case 2:
                         _a.sent();
                         _a.label = 3;
-                    case 3: return [2 /*return*/];
+                    case 3: return [3 /*break*/, 5];
+                    case 4:
+                        this.toasterService.error('Kullanıcıya Ait Müşteri Bulunamadı');
+                        return [2 /*return*/];
+                    case 5: return [2 /*return*/];
                 }
             });
         });
@@ -2535,7 +2541,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         if (addedOrder.orderNumber) {
                             this.sendInvoiceToPrinter(addedOrder.orderNumber);
                         }
-                        this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "unfinished-orders");
+                        this.generalService.waitAndNavigate("Sipariş Oluşturuldu", "client-orders/true");
                         _e.label = 8;
                     case 8: return [3 /*break*/, 17];
                     case 9:

@@ -45,27 +45,45 @@ exports.__esModule = true;
 exports.UnfinishedOrderComponent = void 0;
 var core_1 = require("@angular/core");
 var UnfinishedOrderComponent = /** @class */ (function () {
-    function UnfinishedOrderComponent(headerService, fb, toasterService, orderService, router) {
+    function UnfinishedOrderComponent(headerService, fb, toasterService, orderService, router, activatedRoute) {
         this.headerService = headerService;
         this.fb = fb;
         this.toasterService = toasterService;
         this.orderService = orderService;
         this.router = router;
+        this.activatedRoute = activatedRoute;
         this.currentPage = 1;
         this.orders = [];
         this.visible = false;
         this.currentOrderState = false;
     }
     UnfinishedOrderComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.activatedRoute.params.subscribe(function (p) {
+            if (p["status"] == "true") {
+                _this.status = true;
+                _this.getOrders(true);
+            }
+            else if (p["status"] == "false") {
+                _this.status = false;
+                _this.getOrders(false);
+            }
+            else {
+                _this.getOrders(false);
+            }
+        });
         this.createForm();
-        this.getOrders(this.currentOrderState);
     };
     UnfinishedOrderComponent.prototype.route = function (order) {
-        if (order.clientOrder.orderNo.includes('MSG-P')) {
-            this.router.navigate(["/create-order/retail-order/" + order.clientOrder.id]);
+        if (order.clientOrder.orderNo.includes("MSG-P")) {
+            this.router.navigate([
+                "/create-order/retail-order/" + order.clientOrder.id,
+            ]);
         }
         else {
-            this.router.navigate(["/create-order/quick-order/" + order.clientOrder.id]);
+            this.router.navigate([
+                "/create-order/quick-order/" + order.clientOrder.id,
+            ]);
         }
     };
     UnfinishedOrderComponent.prototype.createForm = function () {
@@ -95,7 +113,8 @@ var UnfinishedOrderComponent = /** @class */ (function () {
                         this.orders = [];
                         this.orders = response;
                         // this.filterOrdersByRole();
-                        this.headerService.updatePageTitle((this.currentOrderState == true ? "Aktarılan" : "Aktarılmamış") + " Siparişler");
+                        this.headerService.updatePageTitle((this.currentOrderState == true ? "Aktarılan" : "Aktarılmamış") +
+                            " Siparişler");
                         return [2 /*return*/];
                 }
             });
@@ -114,7 +133,8 @@ var UnfinishedOrderComponent = /** @class */ (function () {
                     case 1:
                         _a.orders = _b.sent();
                         this.filterOrdersByRole();
-                        this.headerService.updatePageTitle((this.currentOrderState == true ? "Aktarılan" : "Aktarılmamış") + " Siparişler");
+                        this.headerService.updatePageTitle((this.currentOrderState == true ? "Aktarılan" : "Aktarılmamış") +
+                            " Siparişler");
                         return [2 /*return*/];
                 }
             });
@@ -122,16 +142,16 @@ var UnfinishedOrderComponent = /** @class */ (function () {
     };
     UnfinishedOrderComponent.prototype.filterOrdersByRole = function () {
         var _a;
-        var roleDescription = localStorage.getItem('roleDescription');
-        var salesPersonCode = localStorage.getItem('salesPersonCode');
-        if (roleDescription !== 'Admin') {
+        var roleDescription = localStorage.getItem("roleDescription");
+        var salesPersonCode = localStorage.getItem("salesPersonCode");
+        if (roleDescription !== "Admin") {
             // Siparişlerin boş olup olmadığını kontrol et
             if (((_a = this.orders) === null || _a === void 0 ? void 0 : _a.length) > 0) {
                 // Satış personel koduna göre filtreleme
                 this.orders = this.orders.filter(function (order) { var _a; return ((_a = order.clientOrder) === null || _a === void 0 ? void 0 : _a.salesPersonCode) === salesPersonCode; });
             }
             // Bilgilendirme mesajı
-            this.toasterService.info('Sadece Kendi Siparişlerinizi Görebilirsiniz.');
+            this.toasterService.info("Sadece Kendi Siparişlerinizi Görebilirsiniz.");
         }
     };
     UnfinishedOrderComponent.prototype.deleteClientOrder = function (id) {
@@ -200,9 +220,9 @@ var UnfinishedOrderComponent = /** @class */ (function () {
     };
     UnfinishedOrderComponent = __decorate([
         core_1.Component({
-            selector: 'app-unfinished-order',
-            templateUrl: './unfinished-order.component.html',
-            styleUrls: ['./unfinished-order.component.css']
+            selector: "app-unfinished-order",
+            templateUrl: "./unfinished-order.component.html",
+            styleUrls: ["./unfinished-order.component.css"]
         })
     ], UnfinishedOrderComponent);
     return UnfinishedOrderComponent;

@@ -171,6 +171,16 @@ var routes = [
         canActivate: [auth_guard_1.AuthGuard]
     },
     {
+        path: 'client-orders/:status',
+        component: unfinished_order_component_1.UnfinishedOrderComponent,
+        canActivate: [auth_guard_1.AuthGuard]
+    },
+    {
+        path: 'client-orders/:status',
+        component: unfinished_order_component_1.UnfinishedOrderComponent,
+        canActivate: [auth_guard_1.AuthGuard]
+    },
+    {
         path: 'cargo-list',
         component: cargo_list_component_1.CargoListComponent,
         canActivate: [auth_guard_1.AuthGuard]
