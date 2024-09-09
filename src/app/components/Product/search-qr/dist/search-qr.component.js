@@ -66,6 +66,7 @@ var SearchQrComponent = /** @class */ (function () {
         this.selectedProductList = [];
         this.visible = false;
         this._products = [];
+        this.groupedProducts = [];
     }
     SearchQrComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -172,6 +173,23 @@ var SearchQrComponent = /** @class */ (function () {
             });
         });
     };
+    SearchQrComponent.prototype.groupProductsByWarehouse = function () {
+        var grouped = this._products.reduce(function (acc, product) {
+            var warehouseCode = product.warehouseCode;
+            if (!acc[warehouseCode]) {
+                acc[warehouseCode] = { warehouseCode: warehouseCode, products: [] };
+            }
+            acc[warehouseCode].products.push(product);
+            return acc;
+        }, {});
+        this.groupedProducts = Object.values(grouped);
+    };
+    SearchQrComponent.prototype.calculateTotalStock = function (products) {
+        return products.reduce(function (sum, product) { return sum + product.quantity; }, 0);
+    };
+    SearchQrComponent.prototype.calculateTotalShelfStock = function (products) {
+        return products.reduce(function (sum, product) { return sum + product.shelfQuantity; }, 0);
+    };
     SearchQrComponent.prototype.getProducts2 = function (barcode) {
         return __awaiter(this, void 0, void 0, function () {
             var model, response, error_1;
@@ -189,6 +207,7 @@ var SearchQrComponent = /** @class */ (function () {
                     case 1:
                         response = _a.sent();
                         this._products = response;
+                        this.groupProductsByWarehouse();
                         return [2 /*return*/, response];
                     case 2:
                         error_1 = _a.sent();

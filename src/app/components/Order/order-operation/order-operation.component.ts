@@ -1509,12 +1509,12 @@ export class OrderOperationComponent implements OnInit {
         if (qrOperationResponse) {
           ////console.log(this.qrOperationModels);
           this.generalService.beep3();
-          this.toasterService.success('Qr Operasyonu Geri Alındı');
+          // this.toasterService.success('Qr Operasyonu Geri Alındı');
         } else {
-          this.toasterService.error('Qr Operaasyonu Geri Alınamadı');
+          // this.toasterService.error('Qr Operaasyonu Geri Alınamadı');
         }
       } else {
-        this.toasterService.error('Qr Operaasyonu Geri Alınamadı');
+        // this.toasterService.error('Qr Operaasyonu Geri Alınamadı');
       }
 
       return response;

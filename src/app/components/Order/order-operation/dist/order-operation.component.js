@@ -1299,7 +1299,7 @@ var OrderOperationComponent = /** @class */ (function () {
                         return [2 /*return*/, true];
                     case 2:
                         confirmDelete = window.confirm('Bu hareketi silmek istediğinizden emin misiniz?');
-                        if (!confirmDelete) return [3 /*break*/, 20];
+                        if (!confirmDelete) return [3 /*break*/, 19];
                         if (!(product.setProducts.length > 1)) return [3 /*break*/, 4];
                         return [4 /*yield*/, this.warehouseService.deleteCountedSetProductByOrder(orderNo, product.itemCode)];
                     case 3:
@@ -1382,17 +1382,14 @@ var OrderOperationComponent = /** @class */ (function () {
                         if (qrOperationResponse) {
                             ////console.log(this.qrOperationModels);
                             this.generalService.beep3();
-                            this.toasterService.success('Qr Operasyonu Geri Alındı');
+                            // this.toasterService.success('Qr Operasyonu Geri Alındı');
                         }
                         else {
-                            this.toasterService.error('Qr Operaasyonu Geri Alınamadı');
+                            // this.toasterService.error('Qr Operaasyonu Geri Alınamadı');
                         }
-                        return [3 /*break*/, 19];
-                    case 18:
-                        this.toasterService.error('Qr Operaasyonu Geri Alınamadı');
-                        _b.label = 19;
-                    case 19: return [2 /*return*/, response];
-                    case 20: return [2 /*return*/, false];
+                        return [3 /*break*/, 18];
+                    case 18: return [2 /*return*/, response];
+                    case 19: return [2 /*return*/, false];
                 }
             });
         });

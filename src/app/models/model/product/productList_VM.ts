@@ -43,4 +43,5 @@ export class ProductList_VM_2 {
   taxRate: number;
   shelfQuantity: number;
 
+
 }

@@ -395,6 +395,7 @@ export class ShelfTransferRequestComponent implements OnInit {
       }
     }
 
+
     this.mapProducts(this.__transferProducts)
     this.fillShelfNo(2);
 
@@ -447,8 +448,12 @@ export class ShelfTransferRequestComponent implements OnInit {
         this.lastCollectedProduct = null;
         this._transferProducts = [list[0]];
         this.lastCollectedProduct = list[0];
+
         this.mapProducts(list)
       }
+      this.checkForm.get('shelfNo').setValue(this.lastCollectedProduct.shelfNo.toUpperCase());
+      this.checkForm.get('targetShelfNo').setValue(this.lastCollectedProduct.targetShelf.toUpperCase());
+
       this.toasterService.info("Hedef Ürün Güncellendi")
 
     } catch (error) {
@@ -914,6 +919,7 @@ export class ShelfTransferRequestComponent implements OnInit {
                 this.selectedButton.toString()
               );
             }
+            this.checkForm.get('shelfNo').setValue(this.lastCollectedProduct.shelfNo.toUpperCase());
             this.toasterService.success('Okutma Başarılı');
             this.generalService.beep();
           } else {
@@ -1035,11 +1041,12 @@ export class ShelfTransferRequestComponent implements OnInit {
   clearForm() {
     this.checkForm.get('barcode').setValue(null);
     this.checkForm.get('quantity').setValue(null);
-    this.checkForm.get('shelfNo').setValue(null);
+
     this.checkForm.get('batchCode').setValue(null);
     this.checkForm.get('targetShelfNo').setValue(null);
 
     if (this.selectedButton != 4) {
+      this.checkForm.get('shelfNo').setValue(null);
       if (this.currentPageType == "2") {//sadece çanta için
         this.checkForm.get('shelfNo').setValue(this.lastCollectedProduct.shelfNo);
         this.focusNextInput('barcode');

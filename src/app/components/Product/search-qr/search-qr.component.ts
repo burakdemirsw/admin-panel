@@ -35,6 +35,7 @@ export class SearchQrComponent implements OnInit {
   currentId: string = null
   qrForm: FormGroup;
   async ngOnInit() {
+
     this.headerService.updatePageTitle("Ürün & Qr Sorgulama")
     this.activatedRoute.params.subscribe(async (params) => {
       this.currentId = params['id']
@@ -135,8 +136,35 @@ export class SearchQrComponent implements OnInit {
   }
 
   _products: ProductList_VM_2[] = [];
+  groupedProducts = [];
+
+
+
+  groupProductsByWarehouse() {
+    const grouped = this._products.reduce((acc, product) => {
+      const warehouseCode = product.warehouseCode;
+      if (!acc[warehouseCode]) {
+        acc[warehouseCode] = { warehouseCode, products: [] };
+      }
+      acc[warehouseCode].products.push(product);
+      return acc;
+    }, {});
+
+    this.groupedProducts = Object.values(grouped);
+  }
+
+  calculateTotalStock(products) {
+    return products.reduce((sum, product) => sum + product.quantity, 0);
+  }
+
+  calculateTotalShelfStock(products) {
+    return products.reduce((sum, product) => sum + product.shelfQuantity, 0);
+  }
+
+
   async getProducts2(barcode: string) {
     try {
+
 
       if (barcode.includes("=")) {
         barcode = barcode.replace(/=/g, "-");
@@ -147,6 +175,7 @@ export class SearchQrComponent implements OnInit {
       this.qrForm.reset();
       const response = await this.productService._searchProduct(model);
       this._products = response;
+      this.groupProductsByWarehouse();
       return response;
     } catch (error: any) {
       console.log(error.message);

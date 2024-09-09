@@ -39,6 +39,10 @@
               Ürün Kodu
               <p-sortIcon field="itemCode"></p-sortIcon>
             </th>
+            <th>
+              Depo
+
+            </th>
             <th pSortableColumn="shelfNo">
               Raf No
               <p-sortIcon field="shelfNo"></p-sortIcon>
@@ -79,6 +83,10 @@
             <th>
               <p-columnFilter type="text" field="itemCode" [showClearButton]="false"></p-columnFilter>
             </th>
+
+            <th>
+
+            </th>
             <th>
               <p-columnFilter type="text" field="shelfNo" [showClearButton]="false"></p-columnFilter>
             </th>
@@ -113,6 +121,7 @@
               </p-image>
             </td>
             <td>{{ qr.itemCode }}</td>
+            <td>{{ qr.shelfNo.startsWith('H') ? 'UD' : 'MD' }}</td>
             <td>{{ qr.shelfNo }}</td>
             <td>{{ qr.warehouseCode }}</td>
             <td>{{ qr.quantity }}</td>
@@ -131,7 +140,7 @@
 
     </div>
     <div class="card" *ngIf="_products.length > 0">
-      <p-table [value]="_products" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
+      <p-table [value]="groupedProducts" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
         [responsiveLayout]="'scroll'" [filterDelay]="500">
         <ng-template pTemplate="caption">
           <div class="flex align-items-center justify-content-between">
@@ -140,103 +149,69 @@
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
-            <th pSortableColumn="id">
-              Id
-              <p-sortIcon field="id"></p-sortIcon>
-            </th>
             <th>Resim</th>
-            <th pSortableColumn="itemCode">
-              Ürün Kodu
-              <p-sortIcon field="itemCode"></p-sortIcon>
+            <th pSortableColumn="itemCode">Ürün Kodu<p-sortIcon field="itemCode"></p-sortIcon>
             </th>
-            <th pSortableColumn="description">
-              Ürün Adı
-              <p-sortIcon field="description"></p-sortIcon>
+            <th pSortableColumn="description">Ürün Adı<p-sortIcon field="description"></p-sortIcon>
             </th>
-            <th pSortableColumn="shelfNo">
-              Raf No
-              <p-sortIcon field="shelfNo"></p-sortIcon>
+            <th pSortableColumn="warehouseCode">Depo<p-sortIcon field="warehouseCode"></p-sortIcon>
             </th>
-            <th pSortableColumn="quantity">
-              Raf Stok
-              <p-sortIcon field="quantity"></p-sortIcon>
+            <th pSortableColumn="shelfNo">Raf No<p-sortIcon field="shelfNo"></p-sortIcon>
             </th>
-            <th pSortableColumn="shelfQuantity">
-              Toplam Stok
-              <p-sortIcon field="shelfQuantity"></p-sortIcon>
+            <th pSortableColumn="quantity">Raf Stok<p-sortIcon field="quantity"></p-sortIcon>
             </th>
-            <th pSortableColumn="barcode">
-              Barkod
-              <p-sortIcon field="barcode"></p-sortIcon>
+            <th pSortableColumn="shelfQuantity">Toplam Stok<p-sortIcon field="shelfQuantity"></p-sortIcon>
             </th>
-            <th pSortableColumn="batchCode">
-              Parti
-              <p-sortIcon field="batchCode"></p-sortIcon>
+            <th pSortableColumn="barcode">Barkod<p-sortIcon field="barcode"></p-sortIcon>
             </th>
-            <th pSortableColumn="price">
-              Satış Fiyatı
-              <p-sortIcon field="price"></p-sortIcon>
+            <th pSortableColumn="batchCode">Parti<p-sortIcon field="batchCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="price">Satış Fiyatı<p-sortIcon field="price"></p-sortIcon>
             </th>
             <th>İşlemler</th>
           </tr>
-          <tr>
-            <th>
-              <p-columnFilter type="numeric" field="id" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <!-- Resim sütunu için filtre eklemiyoruz -->
-            </th>
-            <th>
-              <p-columnFilter type="text" field="itemCode" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="description" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="shelfNo" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="numeric" field="quantity" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="numeric" field="shelfQuantity" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="barcode" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="batchCode" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="numeric" field="price" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <!-- İşlemler sütunu için filtre eklemiyoruz -->
-            </th>
-          </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-product let-i="rowIndex">
-          <tr>
-            <td>{{ i + 1 }}</td>
-            <td class="image-icon-td">
-              <p-image src="{{ product.photoUrl }}" alt="Image" width="30" [preview]="true"></p-image>
-            </td>
-            <td>{{ product.itemCode }}</td>
-            <td>{{ product.description.substring(0, 15) }}</td>
-            <td>{{ product.shelfNo }}</td>
-            <td>{{ product.quantity }}</td>
-            <td>{{ product.shelfQuantity }}</td>
-            <td>{{ product.barcode }}</td>
-            <td>{{ product.batchCode }}</td>
-            <td>{{ product.price }}</td>
-            <td>
-              <button class="btn btn-primary" type="submit" (click)="createJson(product.barcode, product.shelfNo)">
-                <i class="fas fa-print"></i>
-              </button>
-            </td>
+
+        <ng-template pTemplate="body" let-group let-groupIndex="rowIndex">
+
+          <ng-container *ngFor="let product of group.products">
+            <tr>
+              <td>{{ product.itemCode }}</td>
+              <td class="image-icon-td">
+                <p-image src="{{ product.photoUrl }}" alt="Image" width="30" [preview]="true"></p-image>
+              </td>
+              <td>{{ product.description }}</td>
+              <td>{{ product.warehouseCode }}</td>
+              <td>{{ product.shelfNo }}</td>
+              <td>{{ product.quantity }}</td>
+              <td>{{ product.shelfQuantity }}</td>
+              <td>{{ product.barcode }}</td>
+              <td>{{ product.batchCode }}</td>
+              <td>{{ product.price }}</td>
+              <td>
+                <button class="btn btn-primary" type="submit" (click)="createJson(product.barcode, product.shelfNo)">
+                  <i class="fas fa-print"></i>
+                </button>
+              </td>
+            </tr>
+          </ng-container>
+          <tr class="group-row" style="font-weight: bold;">
+            <td colspan="5">Toplam </td>
+
+            <td colspan="0">{{ calculateTotalStock(group.products)}} Adet</td>
+            <td colspan="5"> </td>
           </tr>
+          <!-- Footer for each warehouse group -->
+          <ng-template pTemplate="footer">
+            <tr>
+              <td colspan="5" class="text-right">{{ calculateTotalStock(group.products)}} Adet</td>
+              <td colspan="2" class="text-right">{{calculateTotalShelfStock(group.products) }}</td>
+
+            </tr>
+          </ng-template>
         </ng-template>
       </p-table>
+
 
     </div>
   </section>

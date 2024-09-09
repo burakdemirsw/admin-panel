@@ -513,6 +513,8 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                 this.lastCollectedProduct = list[0];
                 this.mapProducts(list);
             }
+            this.checkForm.get('shelfNo').setValue(this.lastCollectedProduct.shelfNo.toUpperCase());
+            this.checkForm.get('targetShelfNo').setValue(this.lastCollectedProduct.targetShelf.toUpperCase());
             this.toasterService.info("Hedef Ürün Güncellendi");
         }
         catch (error) {
@@ -970,6 +972,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         _a.sent();
                         _a.label = 20;
                     case 20:
+                        this.checkForm.get('shelfNo').setValue(this.lastCollectedProduct.shelfNo.toUpperCase());
                         this.toasterService.success('Okutma Başarılı');
                         this.generalService.beep();
                         return [3 /*break*/, 22];
@@ -1105,10 +1108,10 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
     ShelfTransferRequestComponent.prototype.clearForm = function () {
         this.checkForm.get('barcode').setValue(null);
         this.checkForm.get('quantity').setValue(null);
-        this.checkForm.get('shelfNo').setValue(null);
         this.checkForm.get('batchCode').setValue(null);
         this.checkForm.get('targetShelfNo').setValue(null);
         if (this.selectedButton != 4) {
+            this.checkForm.get('shelfNo').setValue(null);
             if (this.currentPageType == "2") { //sadece çanta için
                 this.checkForm.get('shelfNo').setValue(this.lastCollectedProduct.shelfNo);
                 this.focusNextInput('barcode');
