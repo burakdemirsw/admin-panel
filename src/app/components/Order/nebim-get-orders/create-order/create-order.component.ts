@@ -239,7 +239,7 @@ export class CreateOrderComponent implements OnInit {
   isCompleted: boolean = false;
   isCancelled: boolean = false;
   orderNumber: string = "";
-  orderDescription: string = "burak demir"  
+  orderDescription: string = "burak demir"
   discountRate1: number = 0;
   discountRate2: number = 0;
   createdDate: Date;

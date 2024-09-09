@@ -27,6 +27,19 @@
 
 .task-card-body {
   margin-top: 10px;
+  /* Animasyon geçiş süresi ve tipi */
+}
+
+.development-task {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Kart üzerine gelindiğinde uygulanacak animasyon */
+.development-task:hover {
+  transform: scale(1.05);
+  /* Kartı %5 büyütme */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  /* Hafif gölge efekti */
 }
 
 .development-task {
@@ -123,4 +136,41 @@ textarea.form-control {
   /* width: calc(100% - 50px); */
   /* Adjusting to account for avatar space */
 
+}
+
+.task-card-body {
+  max-height: 50vh;
+  /* Kartın maksimum yüksekliği */
+  overflow-y: auto;
+  /* Taşan içerik için dikey scroll ekler */
+  padding-right: 10px;
+  /* Scroll çubuğu için sağa boşluk ekler */
+  /* overflow-y: hidden;
+  Dikey scroll barı gizler */
+}
+
+.container-fluid {
+  overflow-x: auto;
+  /* Yatay kaydırma ekle */
+  white-space: nowrap;
+  /* Cardların yan yana kalmasını sağlar */
+}
+
+.row {
+  display: flex;
+  /* Flexbox ile satırları yatay hizalar */
+  flex-wrap: nowrap;
+  /* Cardların alt alta düşmesini engeller */
+}
+
+.col-lg-3,
+.col-md-4 {
+  flex: 0 0 auto;
+  /* Cardların sabit genişlikte kalmasını sağlar */
+  max-width: 300px;
+  /* Card genişliğini belirler */
+}
+
+::ng-deep .p-editor {
+  width: 100% !important;
 }

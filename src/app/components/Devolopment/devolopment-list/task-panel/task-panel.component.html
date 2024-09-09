@@ -1,33 +1,61 @@
 <main id="main" class="main">
   <section class="section">
-    <div class="container">
-      <div cdkDropList (cdkDropListDropped)="drop($event)" class="row">
+    <div class="container-fluid">
+      <div class="row flex-nowrap" cdkDropList (cdkDropListDropped)="drop($event)">
         <!-- Task Card için Bootstrap Kart Yapısı -->
-        <div class="col-lg-6 col-md-6 mb-4" *ngFor="let taskCard of taskCards; let i = index" cdkDrag>
+        <div class="col-lg-3 col-md-4 mb-4" *ngFor="let taskCard of taskCards; let i = index" cdkDrag>
           <div class="card h-100">
             <!-- Kartın Başlığı (Sadece Header Sürüklenebilir) -->
-            <div class="card-header d-flex justify-content-between align-items-center" style="cursor: move"
-              cdkDragHandle>
+            <div #headerOfCard class="card-header d-flex justify-content-between align-items-center"
+              style="cursor: move" cdkDragHandle>
               <h5 class="mb-0">{{ taskCard.header }}</h5>
             </div>
-
+            <p-contextMenu appendTo="body" [target]="headerOfCard" [model]="items" />
             <!-- Kartın İçeriği (Development Tasks) -->
-            <div class="card-body mt-3">
+            <div class="card-body task-card-body mt-3" style="cursor: pointer;">
               <div class="development-task mb-3" *ngFor="let task of taskCard.developmentTasks"
                 (click)="openTaskDetailsDialog(task)">
-                <h6>
-                  <strong>{{ task.header }}</strong>
-                </h6>
+                <h6><strong>{{ task.header }}</strong></h6>
                 <p>{{ task.description }}</p>
-                <span class="badge" [ngClass]="task.isCompleted ? 'btn-success' : 'btn-danger'">
-                  {{ task.isCompleted ? 'Tamamlandı' : 'Devam Ediyor' }}
+                <span class="btn" [ngClass]="{
+        'btn-success': task.taskPriority.state === 'Low',
+        'btn-primary': task.taskPriority.state === 'Medium',
+        'btn-danger': task.taskPriority.state === 'High'
+      }">
+
+                  <!-- Low Priority Icons (1 icon) -->
+                  <ng-container *ngIf="task.taskPriority.state === 'Low'">
+                    <i class="fas fa-signal"></i>
+                  </ng-container>
+
+                  <!-- Medium Priority Icons (2 icons) -->
+                  <ng-container *ngIf="task.taskPriority.state === 'Medium'">
+                    <i class="fas fa-signal"></i>
+                  </ng-container>
+
+                  <!-- High Priority Icons (3 icons) -->
+                  <ng-container *ngIf="task.taskPriority.state === 'High'">
+                    <i class="fas fa-signal"></i>
+                  </ng-container>
+
+                  <!-- Task Priority Text -->
+
                 </span>
 
+
                 <span *ngIf="task.taskComments && task.taskComments.length > 0" class="ms-2">
-                  <i class="fa fa-comment" aria-hidden="true"></i> <!-- Yorum İkonu -->
+                  <button class="btn btn-success">
+                    <i class="fa fa-comment" aria-hidden="true"></i> <!-- Yorum İkonu -->
+
+                  </button>
                 </span>
                 <span *ngIf="task.taskControls && task.taskControls.length > 0" class="ms-2">
-                  <i class="fa fa-tasks" aria-hidden="true"></i> <!-- Kontrol Listesi İkonu -->
+                  <button class="btn btn-success">
+                    <i class="fa fa-tasks" aria-hidden="true"></i> <!-- Kontrol Listesi İkonu -->
+
+                  </button>
+
+
                 </span>
               </div>
             </div>
@@ -43,12 +71,27 @@
       </div>
     </div>
 
+
   </section>
 
+  <p-dialog header="Kart Ekle" [(visible)]="addCardDialog" [style]="{width: '30vw'}">
+    <form [formGroup]="cardForm">
+
+      <div class="form-group">
+        <label for="header">Başlık</label>
+        <input type="text" id="header" pInputText formControlName="header" class="form-control"
+          placeholder="Başlık girin" style="width: 100%">
+      </div>
+
+      <div class="form-group mt-3 d-flex justify-content-end">
+        <button type="button" (click)="addTaskCard()" class="btn btn-primary">Güncelle</button>
+      </div>
+
+    </form>
+  </p-dialog>
   <!-- PrimeNG Dialog for Adding a New Task -->
-  <p-dialog maximizable="true" header="Yeni Görev Ekle" [(visible)]="displayAddTaskDialog" [modal]="true"
-    [style]="{width: '30vw'}" [closable]="true" (onHide)="onDialogHide()">
-    <form [formGroup]="addTaskForm" (ngSubmit)="onSubmitTaskForm()">
+  <p-dialog header="Yeni Görev Ekle" [(visible)]="displayAddTaskDialog" (onHide)="onDialogHide()">
+    <form [formGroup]="addTaskForm" (ngSubmit)="addDevolopmentTask()">
 
       <div class="form-group">
         <label for="header">Görev Başlığı</label>
@@ -61,8 +104,9 @@
           class="form-control"></textarea>
       </div>
       <div class="form-group">
-        <label for="isCompleted">Tamamlandı mı?</label>
-        <p-dropdown [options]="completionOptions" formControlName="isCompleted"></p-dropdown>
+        <label for="taskPriorityId">Öncelik</label>
+        <p-dropdown appendTo="body" [options]="_taskPriorities" optionLabel="name" formControlName="taskPriorityId">
+        </p-dropdown>
       </div>
       <button pButton type="submit" label="Görev Ekle" class="btn btn-primary mt-3"></button>
     </form>
@@ -100,39 +144,7 @@
         </span>
       </div>
 
-      <!-- Comments Section -->
-      <div class="form-group mb-3">
-        <label for="comments">Yorumlar:</label>
-        <div class="list-group">
-          <div *ngFor="let comment of selectedTask.taskComments" class="list-group-item comment-item">
-            <div class="d-flex align-items-center">
-              <!-- Avatar for each comment -->
-              <div class="avatar">
-                <img src="assets/img/profile-img.jpg" alt="Avatar" class="rounded-circle">
-              </div>
-              <div class="comment-content ml-2">
-                <div class="d-flex justify-content-between">
-                  <h6 class="mb-1">{{ comment.header }}</h6>
-                  <small class="text-muted">{{ comment.createdDate | date: 'short' }}</small>
-                </div>
-                <p class="mb-1">{{ comment.description }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- New Comment Section with Avatar -->
-        <div class="new-comment d-flex align-items-center mt-3">
-          <!-- Avatar next to input -->
-          <div class="avatar">
-            <img src="assets/img/profile-img.jpg" alt="Avatar" class="rounded-circle">
-          </div>
-          <!-- Textarea for adding a new comment -->
-          <textarea [(ngModel)]="newComment.description" class="form-control ml-2"
-            placeholder="Yorum yaz..."></textarea>
-        </div>
-        <button class="btn btn-primary mt-2" (click)="addComment(selectedTask)">Yorum Ekle</button>
-      </div>
 
       <!-- Task Controls Section -->
       <div class="form-group">
@@ -167,11 +179,51 @@
 
         <!-- New Task Control Form -->
         <div *ngIf="showNewControl" class="mt-2">
-          <input type="text" class="form-control mb-2" placeholder="Bir öğe ekleyin" [(ngModel)]="newControl.header">
+          <input type="text" class="form-control mb-2" placeholder="Bir öğe ekleyin" [(ngModel)]="newControl">
+
           <div class="d-flex align-items-center">
             <button class="btn btn-primary btn-sm mr-2" (click)="addTaskControl()">Ekle</button>
             <button class="btn btn-secondary btn-sm" (click)="showNewControl = false">İptal</button>
           </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="form-group mb-3">
+          <label for="comments">Yorumlar:</label>
+          <div class="list-group">
+            <div *ngFor="let comment of selectedTask.taskComments" class="list-group-item comment-item">
+              <div class="d-flex align-items-center">
+                <!-- Avatar for each comment -->
+                <div class="avatar">
+                  <img src="assets/img/profile-img.jpg" alt="Avatar" class="rounded-circle">
+                </div>
+                <div class="comment-content ml-2">
+                  <div class="d-flex justify-content-between">
+                    <h6 class="mb-1">{{ comment.header }}</h6>
+                    <small class="text-muted">{{ comment.createdDate | date: 'short' }}</small>
+                  </div>
+                  <p class="mb-1">{{ comment.description }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- New Comment Section with Avatar -->
+          <div class="new-comment d-flex align-items-center mt-3">
+            <!-- Avatar next to input -->
+            <div class="avatar">
+              <img src="assets/img/profile-img.jpg" alt="Avatar" class="rounded-circle">
+            </div>
+            <!-- Textarea for adding a new comment -->
+            <!-- <textarea [(ngModel)]="newComment" class="form-control ml-2" placeholder="Yorum yaz..."></textarea> -->
+
+            <p-editor [(ngModel)]="newComment" class=" ml-2" placeholder="Yorum yaz..."
+              [style]="{ height: '100px',width: '100% !important' }">
+
+            </p-editor>
+
+          </div>
+          <button class="btn btn-primary mt-2" (click)="addTaskComment()">Yorum Ekle</button>
         </div>
       </div>
     </div>

@@ -137,6 +137,7 @@ import { HttpErrorInterceptor } from './services/ui/http-error-interceptor.servi
 import { CalendarModule } from 'primeng/calendar';
 import { TaskPanelComponent } from './components/Devolopment/devolopment-list/task-panel/task-panel.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { AutoMaximizeDialogDirective } from './directives/auto-maximize-dialog.directive';
 @NgModule({
 
   declarations: [
@@ -225,7 +226,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     AddProductToShelfComponent,
     AddProductToShelfListComponent,
     TransferredOrdersComponent,
-    TaskPanelsComponent
+    TaskPanelsComponent,
+    AutoMaximizeDialogDirective
 
   ],
 
@@ -287,6 +289,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     useClass: HttpErrorInterceptor,
     multi: true
   }],
+
   bootstrap: [AppComponent],
 })
 export class AppModule { }

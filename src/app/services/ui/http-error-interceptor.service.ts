@@ -27,11 +27,11 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
         if (er.statusCode) {
           if (er.statusCode >= 400 && er.statusCode <= 500 || er.statusCode === 0) {
-            //this.toasterService.warn(` ${er.title + "-" + er.message}`);
+            this.toasterService.warn(` ${er.title + "-" + er.message}`);
             console.error(` ${er.title + "-" + er.message}`);
           } else if (error.status >= 500) {
 
-            //  this.toasterService.warn(`Sunucu Hatası: ${error.message}`);
+            this.toasterService.warn(`Sunucu Hatası: ${error.message}`);
             console.error(`Sunucu Hatası: ${error.message}`);
           } else if (er.statusCode == 401) {
             this.toasterService.warn("Yetki Hatası(1)")

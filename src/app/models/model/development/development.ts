@@ -19,18 +19,9 @@ export class DevelopmentTask extends BaseEntity {
   isCompleted: boolean;
   finishedDate: Date;
   header: string;
-
-  constructor(description: string, isCompleted: boolean, finishedDate: Date,
-    id: number, createdDate: Date, updatedDate: Date, header: string, developmentId: number) {
-    super(id, createdDate, updatedDate);
-    this.developmentId = developmentId;
-    this.description = description;
-    this.isCompleted = isCompleted;
-    this.finishedDate = finishedDate;
-    this.header = header;
-  }
-
-
+  taskPriorityId: number;
+  taskCardId: number;
+  userId: number;
 
 }
 export class DevelopmentTask_VM {

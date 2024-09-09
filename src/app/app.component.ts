@@ -1,6 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, ElementRef, Inject, HostListener } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { PrimeNGConfig } from 'primeng/api';
 import { filter } from 'rxjs';
 
 @Component({
@@ -10,7 +11,21 @@ import { filter } from 'rxjs';
 })
 export class AppComponent {
 
-  constructor(@Inject(DOCUMENT) private document, private elementRef: ElementRef, public _router: Router) {
+  constructor(@Inject(DOCUMENT) private document, private elementRef: ElementRef, public _router: Router, private primengConfig: PrimeNGConfig) {
+    this.primengConfig.setTranslation({
+      contains: 'İçeren',
+      notContains: 'İçermeyen',
+      startsWith: 'İle başlayan',
+      endsWith: 'İle biten',
+      equals: 'Eşittir',
+      notEquals: 'Eşit değil',
+      noFilter: 'Filtre yok',
+      dateIs: 'Tarih Eşittir',
+      dateIsNot: 'Tarih Eşit Değil',
+      dateBefore: 'Tarih Öncesi',
+      dateAfter: 'Tarih Sonrası'
+    });
+
 
     const bodyClassList = this.document.body.classList;
     const isMobile = window.innerWidth <= 768;

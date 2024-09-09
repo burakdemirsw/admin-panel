@@ -80,29 +80,29 @@ export class DevolopmentListComponent implements OnInit {
   updateTaskDescription() {
 
 
-    var request: DevelopmentTask = new DevelopmentTask(this.description, this.selectedTask.isCompleted, this.selectedTask.finishedDate
-      , this.selectedTask.id, this.selectedTask.createdDate, new Date(), this.updateTask_Header.toUpperCase(), this.selectedTask.developmentId)
-    this.developmentService.updateDevelopmentTask(request).then((response) => {
-      this.getAllDevelopments(this.searchTaskForm.get('searchTask_IsCompleted').value, this.searchTaskForm.get('searchTask_DevelopmentId').value);
-      this.visible = false;
-      this.description = ""
-      this.updateTask_Header = ""
-      this.toasterService.success("Görev Başarıyla Güncellendi")
+    // var request: DevelopmentTask = new DevelopmentTask(this.description, this.selectedTask.isCompleted, this.selectedTask.finishedDate
+    //   , this.selectedTask.id, this.selectedTask.createdDate, new Date(), this.updateTask_Header.toUpperCase(), this.selectedTask.developmentId)
+    // this.developmentService.updateDevelopmentTask(request).then((response) => {
+    //   this.getAllDevelopments(this.searchTaskForm.get('searchTask_IsCompleted').value, this.searchTaskForm.get('searchTask_DevelopmentId').value);
+    //   this.visible = false;
+    //   this.description = ""
+    //   this.updateTask_Header = ""
+    //   this.toasterService.success("Görev Başarıyla Güncellendi")
 
-    })
+    // })
 
   }
   async updateTaskStatus(task: DevelopmentTask_VM, status: boolean) {
 
 
-    if (window.confirm("Görevi güncellemek istediğinize emin misiniz?")) {
-      var request: DevelopmentTask = new DevelopmentTask(task.description, status, task.finishedDate, task.id, task.createdDate, new Date(), task.header,
-        task.developmentId)
-      await this.developmentService.updateDevelopmentTask(request).then((response) => {
-        this.getAllDevelopments(this.searchTaskForm.get('searchTask_IsCompleted').value, this.searchTaskForm.get('searchTask_DevelopmentId').value);
-        this.toasterService.success("Görev Başarıyla Güncellendi")
-      })
-    }
+    // if (window.confirm("Görevi güncellemek istediğinize emin misiniz?")) {
+    //   var request: DevelopmentTask = new DevelopmentTask(task.description, status, task.finishedDate, task.id, task.createdDate, new Date(), task.header,
+    //     task.developmentId)
+    //   await this.developmentService.updateDevelopmentTask(request).then((response) => {
+    //     this.getAllDevelopments(this.searchTaskForm.get('searchTask_IsCompleted').value, this.searchTaskForm.get('searchTask_DevelopmentId').value);
+    //     this.toasterService.success("Görev Başarıyla Güncellendi")
+    //   })
+    // }
 
 
   }
@@ -152,16 +152,16 @@ export class DevolopmentListComponent implements OnInit {
 
   async addTask() {
 
-    var request: DevelopmentTask = new DevelopmentTask(this.addTask_Description, false, new Date(), 0, new Date(), new Date(), this.addTask_Header,
-      this.addTask_Zone)
-    await this.developmentService.addDevelopmentTask(request).then((response) => {
-      this.getAllDevelopments(this.searchTaskForm.value.searchTask_IsCompleted, this.searchTaskForm.value.searchTask_DevelopmentId);
-      ;
-      this.toasterService.success("Görev Başarıyla Eklendi")
-      this.addTaskVisible = false;
-      this.addTask_Description = ""
-      this.addTask_Header = ""
-    })
+    // var request: DevelopmentTask = new DevelopmentTask(this.addTask_Description, false, new Date(), 0, new Date(), new Date(), this.addTask_Header,
+    //   this.addTask_Zone)
+    // await this.developmentService.addDevelopmentTask(request).then((response) => {
+    //   this.getAllDevelopments(this.searchTaskForm.value.searchTask_IsCompleted, this.searchTaskForm.value.searchTask_DevelopmentId);
+    //   ;
+    //   this.toasterService.success("Görev Başarıyla Eklendi")
+    //   this.addTaskVisible = false;
+    //   this.addTask_Description = ""
+    //   this.addTask_Header = ""
+    // })
   }
 
 }
