@@ -9,89 +9,84 @@
             <div class="card-header d-flex justify-content-between align-items-center" style="cursor: move"
               cdkDragHandle>
               <h5 class="mb-0">{{ taskCard.header }}</h5>
-              <!-- <button class="btn btn-primary btn-sm" (click)="openAddTaskDialog(taskCard)"><i class="fa fa-plus"
-                  aria-hidden="true"></i></button> -->
             </div>
+
             <!-- Kartın İçeriği (Development Tasks) -->
             <div class="card-body mt-3">
               <div class="development-task mb-3" *ngFor="let task of taskCard.developmentTasks"
                 (click)="openTaskDetailsDialog(task)">
                 <h6>
                   <strong>{{ task.header }}</strong>
-                  <!-- Conditional Icons for Comments and Control Lists -->
-
                 </h6>
                 <p>{{ task.description }}</p>
                 <span class="badge" [ngClass]="task.isCompleted ? 'btn-success' : 'btn-danger'">
-                  {{ task.isCompleted ? 'Completed' : 'Pending' }}
+                  {{ task.isCompleted ? 'Tamamlandı' : 'Devam Ediyor' }}
                 </span>
 
                 <span *ngIf="task.taskComments && task.taskComments.length > 0" class="ms-2">
-                  <i class="fa fa-comment" aria-hidden="true"></i> <!-- Comment Icon -->
+                  <i class="fa fa-comment" aria-hidden="true"></i> <!-- Yorum İkonu -->
                 </span>
                 <span *ngIf="task.taskControls && task.taskControls.length > 0" class="ms-2">
-                  <i class="fa fa-tasks" aria-hidden="true"></i> <!-- Control List Icon -->
+                  <i class="fa fa-tasks" aria-hidden="true"></i> <!-- Kontrol Listesi İkonu -->
                 </span>
               </div>
             </div>
 
-
             <!-- Kartın Footer Bölümü -->
             <div class="card-footer">
-
-              <button class="btn btn-success" (click)="openAddTaskDialog(taskCard)" style="width: 100% !important;"><i
-                  class="fa fa-plus" aria-hidden="true"></i> Kart Ekle</button>
-              <!-- <button class="btn btn-success btn-sm" (click)="completeTask(taskCard)">
-                Mark all as Completed
-              </button> -->
+              <button class="btn btn-success" (click)="openAddTaskDialog(taskCard)" style="width: 100% !important;">
+                <i class="fa fa-plus" aria-hidden="true"></i> Görev Ekle
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
+
   </section>
 
   <!-- PrimeNG Dialog for Adding a New Task -->
-  <p-dialog maximizable="true" header="Add New Task" [(visible)]="displayAddTaskDialog" [modal]="true"
+  <p-dialog maximizable="true" header="Yeni Görev Ekle" [(visible)]="displayAddTaskDialog" [modal]="true"
     [style]="{width: '30vw'}" [closable]="true" (onHide)="onDialogHide()">
     <form [formGroup]="addTaskForm" (ngSubmit)="onSubmitTaskForm()">
+
       <div class="form-group">
-        <label for="header">Task Header</label>
-        <input type="text" pInputText formControlName="header" placeholder="Enter task header" class="form-control"
-          style="width: 100%">
+        <label for="header">Görev Başlığı</label>
+        <input type="text" id="header" pInputText formControlName="header" placeholder="Görev başlığını girin"
+          class="form-control" style="width: 100%">
       </div>
       <div class="form-group">
-        <label for="description">Description</label>
-        <textarea pInputTextarea formControlName="description" placeholder="Enter task description"
+        <label for="description">Açıklama</label>
+        <textarea pInputTextarea formControlName="description" placeholder="Görev açıklamasını girin"
           class="form-control"></textarea>
       </div>
       <div class="form-group">
-        <label for="isCompleted">Is Completed?</label>
+        <label for="isCompleted">Tamamlandı mı?</label>
         <p-dropdown [options]="completionOptions" formControlName="isCompleted"></p-dropdown>
       </div>
-      <button pButton type="submit" label="Add Task" class="btn btn-primary"></button>
+      <button pButton type="submit" label="Görev Ekle" class="btn btn-primary mt-3"></button>
     </form>
   </p-dialog>
 
   <!-- Task Details Dialog -->
-  <p-dialog header="Task Details" [(visible)]="displayTaskDetailsDialog" [modal]="true" [style]="{width: '50vw'}"
+  <p-dialog header="Görev Detayları" [(visible)]="displayTaskDetailsDialog" [modal]="true" [style]="{width: '50vw'}"
     [closable]="true">
     <div *ngIf="selectedTask">
       <!-- Task Header -->
       <div class="form-group">
-        <label for="header">Task Header:</label>
+        <label for="header">Görev Başlığı:</label>
         <input type="text" pInputText [(ngModel)]="selectedTask.header" class="form-control" readonly>
       </div>
 
       <!-- Task Description -->
       <div class="form-group mb-3">
-        <label for="description">Description:</label>
+        <label for="description">Açıklama:</label>
         <textarea [(ngModel)]="selectedTask.description" class="form-control" readonly></textarea>
       </div>
 
       <!-- Task Priority Dropdown -->
       <div class="form-group mb-3">
-        <label for="priority">Priority:</label>
+        <label for="priority">Öncelik:</label>
         <p-dropdown [options]="taskPriorities" [(ngModel)]="selectedTask.taskPriority" optionLabel="state"
           class="form-control">
         </p-dropdown>
@@ -99,16 +94,15 @@
 
       <!-- Task Status -->
       <div class="form-group mb-3">
-        <label for="isCompleted">Status:</label>
+        <label for="isCompleted">Durum:</label>
         <span class="badge" [ngClass]="selectedTask.isCompleted ? 'btn-success' : 'btn-danger'">
-          {{ selectedTask.isCompleted ? 'Completed' : 'Pending' }}
+          {{ selectedTask.isCompleted ? 'Tamamlandı' : 'Bekliyor' }}
         </span>
       </div>
 
       <!-- Comments Section -->
-      <!-- Comments Section -->
       <div class="form-group mb-3">
-        <label for="comments">Comments:</label>
+        <label for="comments">Yorumlar:</label>
         <div class="list-group">
           <div *ngFor="let comment of selectedTask.taskComments" class="list-group-item comment-item">
             <div class="d-flex align-items-center">
@@ -137,9 +131,8 @@
           <textarea [(ngModel)]="newComment.description" class="form-control ml-2"
             placeholder="Yorum yaz..."></textarea>
         </div>
-        <button class="btn btn-primary mt-2" (click)="addComment(selectedTask)">Add Comment</button>
+        <button class="btn btn-primary mt-2" (click)="addComment(selectedTask)">Yorum Ekle</button>
       </div>
-
 
       <!-- Task Controls Section -->
       <div class="form-group">
@@ -179,14 +172,11 @@
             <button class="btn btn-primary btn-sm mr-2" (click)="addTaskControl()">Ekle</button>
             <button class="btn btn-secondary btn-sm" (click)="showNewControl = false">İptal</button>
           </div>
-          <!-- Additional options can go here, like deadline or assignments -->
-
         </div>
       </div>
-
-
     </div>
   </p-dialog>
+
 
 
 
