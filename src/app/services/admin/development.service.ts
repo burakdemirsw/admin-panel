@@ -135,4 +135,9 @@ export class DevelopmentService {
   async getPanelDetails(panelId: number): Promise<TaskPanelDTO> {
     return await this.httpClientService.get_new<TaskPanelDTO>({ controller: `Developments/get-panel-details/${panelId}` }).toPromise();
   }
+
+  // GetPanelDetails method for fetching all details of a panel by panelId
+  async moveDevelopmentTask(panelId: number, targetTaskId: number): Promise<TaskPanelDTO> {
+    return await this.httpClientService.get_new<boolean>({ controller: `Developments/move-devolopment-task/${panelId}/${targetTaskId}` }).toPromise();
+  }
 }

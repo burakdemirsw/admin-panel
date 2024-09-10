@@ -19,9 +19,9 @@
           <td>{{ panel.createdDate | date:'dd/MM/yyyy' }}</td>
           <td>{{ panel.updatedDate | date:'dd/MM/yyyy' }}</td>
           <td>
-            <p-button icon="pi pi-trash" class="p-button-danger" (click)="deleteTaskPanel(panel.id)" label="Sil">
+            <p-button icon="pi pi-trash" class="p-button-danger" (click)="deleteTaskPanel(panel.id)">
             </p-button>
-            <p-button icon="pi pi-arrow-right" class="p-button-info" label="Git" (click)="goToPanel(panel.id)">
+            <p-button icon="pi pi-arrow-right" class="p-button-info" (click)="goToPanel(panel.id)">
             </p-button>
           </td>
         </tr>
@@ -31,10 +31,7 @@
     <!-- Yeni Panel Ekleme Dialog'u -->
     <p-dialog header="Yeni Panel Ekle" [modal]="true" [(visible)]="addPanelDialogVisible" [style]="{ width: '50rem'}">
       <div class="p-fluid">
-        <div class="p-field">
-          <label for="userId">Kullanıcı ID</label>
-          <input id="userId" [(ngModel)]="newTaskPanel.userId" pInputText />
-        </div>
+
         <div class="p-field">
           <label for="finishedDate">Bitiş Tarihi</label>
           <p-calendar appendTo="body" [(ngModel)]="newTaskPanel.finishedDate" showIcon></p-calendar>

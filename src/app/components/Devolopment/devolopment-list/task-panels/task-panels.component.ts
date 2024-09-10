@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { TaskPanel } from 'src/app/models/model/development/development';
 import { DevelopmentService } from 'src/app/services/admin/development.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
@@ -14,7 +15,7 @@ export class TaskPanelsComponent {
   addPanelDialogVisible: boolean = false;  // Dialog'un görünürlüğünü kontrol eden değişken
   newTaskPanel: TaskPanel = new TaskPanel();  // Yeni panel için boş model
 
-  constructor(private developmentService: DevelopmentService, private toasterService: ToasterService) { }
+  constructor(private router: Router, private developmentService: DevelopmentService, private toasterService: ToasterService) { }
 
   ngOnInit(): void {
     this.loadTaskPanels();  // Panelleri yükle
@@ -38,6 +39,7 @@ export class TaskPanelsComponent {
   // Yeni panel ekleyen fonksiyon
   async addTaskPanel() {
     try {
+      this.newTaskPanel.userId = Number(localStorage.getItem('userId'));
       await this.developmentService.addTaskPanel(this.newTaskPanel);
       this.addPanelDialogVisible = false;  // Dialog'u kapat
       this.loadTaskPanels();  // Panelleri tekrar yükle
@@ -60,8 +62,7 @@ export class TaskPanelsComponent {
 
   // Panel sayfasına gitme fonksiyonu (Örnek bir yönlendirme)
   goToPanel(id: number) {
-    // Burada panel detayına gitmek için routing yapılabilir
-    console.log('Panele git:', id);
-    // this.router.navigate(['/panels', id]);
+
+    this.router.navigate(['/task/panel/', id]);
   }
 }

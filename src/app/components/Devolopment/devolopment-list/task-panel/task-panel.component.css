@@ -36,7 +36,7 @@
 
 /* Kart üzerine gelindiğinde uygulanacak animasyon */
 .development-task:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
   /* Kartı %5 büyütme */
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   /* Hafif gölge efekti */

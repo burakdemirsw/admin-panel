@@ -2,97 +2,135 @@
   <section class="section">
     <div class="container-fluid">
       <div class="row flex-nowrap" cdkDropList (cdkDropListDropped)="drop($event)">
-        <!-- Task Card için Bootstrap Kart Yapısı -->
-        <div class="col-lg-3 col-md-4 mb-4" *ngFor="let taskCard of taskCards; let i = index" cdkDrag>
-          <div class="card h-100">
-            <!-- Kartın Başlığı (Sadece Header Sürüklenebilir) -->
-            <div #headerOfCard class="card-header d-flex justify-content-between align-items-center"
-              style="cursor: move" cdkDragHandle>
-              <h5 class="mb-0">{{ taskCard.header }}</h5>
-            </div>
-            <p-contextMenu appendTo="body" [target]="headerOfCard" [model]="items" />
-            <!-- Kartın İçeriği (Development Tasks) -->
-            <div class="card-body task-card-body mt-3" style="cursor: pointer;">
-              <div class="development-task mb-3" *ngFor="let task of taskCard.developmentTasks"
-                (click)="openTaskDetailsDialog(task)">
-                <h6><strong>{{ task.header }}</strong></h6>
-                <p>{{ task.description }}</p>
-                <span class="btn" [ngClass]="{
-        'btn-success': task.taskPriority.state === 'Low',
-        'btn-primary': task.taskPriority.state === 'Medium',
-        'btn-danger': task.taskPriority.state === 'High'
-      }">
-
-                  <!-- Low Priority Icons (1 icon) -->
-                  <ng-container *ngIf="task.taskPriority.state === 'Low'">
-                    <i class="fas fa-signal"></i>
-                  </ng-container>
-
-                  <!-- Medium Priority Icons (2 icons) -->
-                  <ng-container *ngIf="task.taskPriority.state === 'Medium'">
-                    <i class="fas fa-signal"></i>
-                  </ng-container>
-
-                  <!-- High Priority Icons (3 icons) -->
-                  <ng-container *ngIf="task.taskPriority.state === 'High'">
-                    <i class="fas fa-signal"></i>
-                  </ng-container>
-
-                  <!-- Task Priority Text -->
-
-                </span>
-
-
-                <span *ngIf="task.taskComments && task.taskComments.length > 0" class="ms-2">
-                  <button class="btn btn-success">
-                    <i class="fa fa-comment" aria-hidden="true"></i> <!-- Yorum İkonu -->
-
+        <!-- Kart var mı kontrolü -->
+        <ng-container *ngIf="taskCards && taskCards.length > 0; else noCardsTemplate">
+          <!-- Task Card için Bootstrap Kart Yapısı -->
+          <div class="col-lg-4 col-md-6 mb-4" *ngFor="let taskCard of taskCards; let i = index" cdkDrag>
+            <div class="card h-100">
+              <!-- Kartın Başlığı (Sadece Header Sürüklenebilir) -->
+              <div #headerOfCard class="card-header d-flex justify-content-between align-items-center"
+                style="cursor: move" cdkDragHandle>
+                <h5 class="mb-0">{{ taskCard.header }}</h5>
+                <div class="dropdown">
+                  <button class="btn btn-success" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    ...
                   </button>
-                </span>
-                <span *ngIf="task.taskControls && task.taskControls.length > 0" class="ms-2">
-                  <button class="btn btn-success">
-                    <i class="fa fa-tasks" aria-hidden="true"></i> <!-- Kontrol Listesi İkonu -->
-
-                  </button>
-
-
-                </span>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" (click)="this.addCardDialog = true">Yeni Kart Ekle</a></li>
+                    <li><a class="dropdown-item">Kartın Görevlerini Tamamla</a></li>
+                    <li><a class="dropdown-item" (click)="openUpdatetaskDialog(taskCard)">Kartı Güncelle</a></li>
+                    <li><a class="dropdown-item" (click)="deleteTaskCard(taskCard.id)">Kartı Sil</a></li>
+                  </ul>
+                </div>
+              </div>
+              <!-- Kartın İçeriği (Development Tasks) -->
+              <div class="card-body task-card-body mt-3" style="cursor: pointer;">
+                <div class="development-task mb-3" *ngFor="let task of taskCard.developmentTasks">
+                  <h6><strong>{{ task.header }}</strong></h6>
+                  <p>
+                    {{ task.description.length > 50 ? (task.description.substring(0, 50).toUpperCase() + '...') : task.description.toUpperCase() }}
+                  </p>
+                  <span class="btn btn-sm" [ngClass]="{
+                    'btn-success ': task.taskPriority.state === 'Low',
+                    'btn-primary ': task.taskPriority.state === 'Medium',
+                    'btn-danger': task.taskPriority.state === 'High'
+                    }">
+                    <!-- Priority Icons -->
+                    <ng-container *ngIf="task.taskPriority.state === 'Low'"><i class="fas fa-signal"></i></ng-container>
+                    <ng-container *ngIf="task.taskPriority.state === 'Medium'"><i class="fas fa-signal"></i>
+                    </ng-container>
+                    <ng-container *ngIf="task.taskPriority.state === 'High'"><i class="fas fa-signal"></i>
+                    </ng-container>
+                  </span>
+                  <!-- Yorum ve Kontrol İkonları -->
+                  <span *ngIf="task.taskComments && task.taskComments.length > 0" class="ms-2">
+                    <button class="btn btn-success btn-sm">
+                      <i class="fa fa-comment" aria-hidden="true"></i>
+                    </button>
+                  </span>
+                  <span *ngIf="task.taskControls && task.taskControls.length > 0" class="ms-2">
+                    <button class="btn btn-success btn-sm">
+                      <i class="fa fa-tasks" aria-hidden="true"></i>
+                    </button>
+                  </span>
+                  <span class="ms-2">
+                    <button class="btn btn-primary btn-sm" (click)="openTaskDetailsDialog(task)">
+                      <i class="fa fa-pencil" aria-hidden="true"></i>
+                    </button>
+                  </span>
+                  <span class="ms-2">
+                    <button class="btn btn-primary btn-sm" (click)="openTransferTaskDialog(task)">
+                      <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                    </button>
+                  </span>
+                  <span>
+                    <button class="btn btn-danger btn-sm" (click)="deleteDevolopmentTask(task.id)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </span>
+                </div>
+              </div>
+              <!-- Kartın Footer Bölümü -->
+              <div class="card-footer">
+                <button class="btn btn-success" (click)="openAddTaskDialog(taskCard)" style="width: 100% !important;">
+                  <i class="fa fa-plus" aria-hidden="true"></i> Görev Ekle
+                </button>
               </div>
             </div>
+          </div>
+        </ng-container>
 
-            <!-- Kartın Footer Bölümü -->
-            <div class="card-footer">
-              <button class="btn btn-success" (click)="openAddTaskDialog(taskCard)" style="width: 100% !important;">
-                <i class="fa fa-plus" aria-hidden="true"></i> Görev Ekle
-              </button>
+        <!-- Hiç Kart Yoksa Default Kart -->
+        <ng-template #noCardsTemplate>
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Varsayılan Kart</h5>
+              </div>
+              <div class="card-body">
+                <p>Kartınız yok. Buradan yeni bir kart ekleyebilirsiniz.</p>
+              </div>
+              <div class="card-footer">
+                <button class="btn btn-success" (click)="openAddTaskDialog(null)" style="width: 100% !important;">
+                  <i class="fa fa-plus" aria-hidden="true"></i> Yeni Kart Ekle
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </ng-template>
       </div>
     </div>
 
-
   </section>
-
   <p-dialog header="Kart Ekle" [(visible)]="addCardDialog" [style]="{width: '30vw'}">
     <form [formGroup]="cardForm">
-
       <div class="form-group">
         <label for="header">Başlık</label>
         <input type="text" id="header" pInputText formControlName="header" class="form-control"
           placeholder="Başlık girin" style="width: 100%">
       </div>
-
       <div class="form-group mt-3 d-flex justify-content-end">
-        <button type="button" (click)="addTaskCard()" class="btn btn-primary">Güncelle</button>
+        <button type="button" (click)="addTaskCard()" class="btn btn-primary">Ekle</button>
       </div>
+    </form>
+  </p-dialog>
 
+  <p-dialog header="Kart Güncelle" [(visible)]="updateCardDialog" [style]="{width: '30vw'}">
+    <form [formGroup]="cardForm">
+      <div class="form-group">
+        <label for="header">Başlık</label>
+        <input type="text" id="header" pInputText formControlName="header" class="form-control"
+          placeholder="Başlık girin" style="width: 100%">
+      </div>
+      <div class="form-group mt-3 d-flex justify-content-end">
+        <button type="button" (click)="updateTaskCard()" class="btn btn-primary">Güncelle</button>
+      </div>
     </form>
   </p-dialog>
   <!-- PrimeNG Dialog for Adding a New Task -->
   <p-dialog header="Yeni Görev Ekle" [(visible)]="displayAddTaskDialog" (onHide)="onDialogHide()">
     <form [formGroup]="addTaskForm" (ngSubmit)="addDevolopmentTask()">
-
       <div class="form-group">
         <label for="header">Görev Başlığı</label>
         <input type="text" id="header" pInputText formControlName="header" placeholder="Görev başlığını girin"
@@ -111,7 +149,6 @@
       <button pButton type="submit" label="Görev Ekle" class="btn btn-primary mt-3"></button>
     </form>
   </p-dialog>
-
   <!-- Task Details Dialog -->
   <p-dialog header="Görev Detayları" [(visible)]="displayTaskDetailsDialog" [modal]="true" [style]="{width: '50vw'}"
     [closable]="true">
@@ -119,15 +156,13 @@
       <!-- Task Header -->
       <div class="form-group">
         <label for="header">Görev Başlığı:</label>
-        <input type="text" pInputText [(ngModel)]="selectedTask.header" class="form-control" readonly>
+        <input class="form-control" type="text" pInputText [(ngModel)]="selectedTask.header">
       </div>
-
       <!-- Task Description -->
       <div class="form-group mb-3">
         <label for="description">Açıklama:</label>
-        <textarea [(ngModel)]="selectedTask.description" class="form-control" readonly></textarea>
+        <textarea [(ngModel)]="selectedTask.description" class="form-control"></textarea>
       </div>
-
       <!-- Task Priority Dropdown -->
       <div class="form-group mb-3">
         <label for="priority">Öncelik:</label>
@@ -135,21 +170,19 @@
           class="form-control">
         </p-dropdown>
       </div>
-
       <!-- Task Status -->
       <div class="form-group mb-3">
         <label for="isCompleted">Durum:</label>
         <span class="badge" [ngClass]="selectedTask.isCompleted ? 'btn-success' : 'btn-danger'">
-          {{ selectedTask.isCompleted ? 'Tamamlandı' : 'Bekliyor' }}
+          {{ selectedTask.isCompleted ? 'Tamamlandı' : 'Tamamlanmadı' }}
         </span>
       </div>
-
-
-
+      <div class="form-group mb-3">
+        <button class="btn btn-primary" (click)="updateDevolopmentTask()">Güncelle</button>
+      </div>
       <!-- Task Controls Section -->
       <div class="form-group">
         <label for="controls">Kontrol Listesi:</label>
-
         <!-- Progress Bar -->
         <div class="progress mb-2">
           <div class="progress-bar" role="progressbar"
@@ -158,7 +191,6 @@
             {{ getTaskCompletionPercentage(selectedTask.taskControls) }}%
           </div>
         </div>
-
         <!-- Existing Task Controls -->
         <ul class="list-group">
           <li *ngFor="let control of selectedTask.taskControls"
@@ -172,64 +204,70 @@
                 aria-hidden="true"></i></button>
           </li>
         </ul>
-
         <!-- Add New Task Control -->
         <button *ngIf="!showNewControl" class="btn btn-primary mt-2" (click)="showNewControl = true">Bir öğe
           ekleyin</button>
-
         <!-- New Task Control Form -->
-        <div *ngIf="showNewControl" class="mt-2">
+        <div *ngIf="showNewControl" class="mt-2 mb-2">
           <input type="text" class="form-control mb-2" placeholder="Bir öğe ekleyin" [(ngModel)]="newControl">
-
           <div class="d-flex align-items-center">
             <button class="btn btn-primary btn-sm mr-2" (click)="addTaskControl()">Ekle</button>
             <button class="btn btn-secondary btn-sm" (click)="showNewControl = false">İptal</button>
           </div>
         </div>
-
         <!-- Comments Section -->
         <div class="form-group mb-3">
           <label for="comments">Yorumlar:</label>
           <div class="list-group">
             <div *ngFor="let comment of selectedTask.taskComments" class="list-group-item comment-item">
-              <div class="d-flex align-items-center">
-                <!-- Avatar for each comment -->
-                <div class="avatar">
-                  <img src="assets/img/profile-img.jpg" alt="Avatar" class="rounded-circle">
-                </div>
-                <div class="comment-content ml-2">
-                  <div class="d-flex justify-content-between">
-                    <h6 class="mb-1">{{ comment.header }}</h6>
-                    <small class="text-muted">{{ comment.createdDate | date: 'short' }}</small>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                  <!-- Avatar for each comment -->
+                  <div class="avatar">
+                    <img src="assets/img/profile-img.jpg" alt="Avatar" class="rounded-circle">
                   </div>
-                  <p class="mb-1">{{ comment.description }}</p>
+                  <div class="comment-content ml-2">
+                    <div class="d-flex justify-content-between">
+                      <h6 class="mb-1">{{ comment.header }}</h6>
+                      <small class="text-muted">{{ comment.createdDate | date: 'short' }}</small>
+                    </div>
+                    <p class="mb-1">{{ comment.description }}</p>
+                  </div>
                 </div>
+                <!-- Silme Butonu Sağ Tarafa Hizalanmış -->
+                <button class="btn btn-danger btn-sm" (click)="deleteComment(comment.id)">
+                  <i class="fa fa-trash"></i>
+                </button>
               </div>
             </div>
           </div>
 
-          <!-- New Comment Section with Avatar -->
+          <!-- Yeni Yorum Ekleme Bölümü -->
           <div class="new-comment d-flex align-items-center mt-3">
-            <!-- Avatar next to input -->
+            <!-- Avatar -->
             <div class="avatar">
               <img src="assets/img/profile-img.jpg" alt="Avatar" class="rounded-circle">
             </div>
-            <!-- Textarea for adding a new comment -->
-            <!-- <textarea [(ngModel)]="newComment" class="form-control ml-2" placeholder="Yorum yaz..."></textarea> -->
-
-            <p-editor [(ngModel)]="newComment" class=" ml-2" placeholder="Yorum yaz..."
-              [style]="{ height: '100px',width: '100% !important' }">
-
-            </p-editor>
+            <!-- Yorum Yazma Alanı -->
+            <input class="form-control" type="text" pInputText [(ngModel)]="newComment" class=" ml-2"
+              placeholder="Yorum yaz..." [style]="{ height: '100px',width: '100% !important' }">
 
           </div>
           <button class="btn btn-primary mt-2" (click)="addTaskComment()">Yorum Ekle</button>
         </div>
+
       </div>
     </div>
   </p-dialog>
 
-
-
-
+  <p-dialog header="Görev Aktar" [(visible)]="displayTransferDialog" [modal]="true" [style]="{ width: '30vw' }">
+    <div *ngIf="taskForTransfer">
+      <p>Görevi hangi karta taşımak istiyorsunuz?</p>
+      <p-dropdown appendTo="body" [options]="taskCards" optionLabel="header" [(ngModel)]="selectedTargetCard">
+      </p-dropdown>
+      <div class="form-group mt-3 d-flex justify-content-end">
+        <button type="button" (click)="confirmTransferTask()" class="btn btn-primary">Görevi Aktar</button>
+      </div>
+    </div>
+  </p-dialog>
 </main>

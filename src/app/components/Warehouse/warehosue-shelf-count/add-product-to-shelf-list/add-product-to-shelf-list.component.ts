@@ -15,7 +15,6 @@ import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 @Component({
   selector: 'app-add-product-to-shelf-list',
-
   templateUrl: './add-product-to-shelf-list.component.html',
   styleUrl: './add-product-to-shelf-list.component.css'
 })
@@ -63,9 +62,9 @@ export class AddProductToShelfListComponent {
     const result = await this.generalService.generateGUID()
 
     if (isInQty) {
-      this.router.navigate(["/add-product-to-shelf/true/" + result])
+      this.router.navigate(["/add-product-to-shelf/true/false/" + result])
     } else {
-      this.router.navigate(["/add-product-to-shelf/false/" + result])
+      this.router.navigate(["/add-product-to-shelf/false/false/" + result])
     }
 
   }

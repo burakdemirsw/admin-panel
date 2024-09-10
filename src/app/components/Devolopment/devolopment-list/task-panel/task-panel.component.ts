@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import {
   DevelopmentTask,
+  DevelopmentTaskDTO,
   TaskCardDTO,
   TaskComment,
   TaskControl,
@@ -43,7 +44,10 @@ export class TaskPanelComponent {
   newComment: string;
   selectedCard: TaskCardDTO;
   addCardDialog: boolean = false;
-
+  updateCardDialog: boolean = false;
+  taskForTransfer: DevelopmentTaskDTO | null = null; // Aktarılacak görev
+  selectedTargetCard: TaskCardDTO | null = null; // Seçilen hedef kart
+  displayTransferDialog: boolean = false; // Dialog görünürlüğü
   constructor(
     private gs: GeneralService,
     private toasterService: ToasterService,
@@ -53,16 +57,7 @@ export class TaskPanelComponent {
     private activatedRoute: ActivatedRoute
   ) {
     this.userInfo = this.userService.getUserClientInfoResponse();
-    this.items = [
-      {
-        label: "Yeni Kart Ekle",
-        icon: "fa fa-plus",
-        command: (event) => (this.addCardDialog = true),
-        // command: (event) => this.addCard()
-      },
-      { label: "Kartın Görevlerini Tamamla", icon: "fa fa-check" },
-      { label: "Kartı Sil", icon: "fa fa-trash" },
-    ];
+
     this.addTaskForm = this.fb.group({
       header: [null, Validators.required],
       description: [null, Validators.required],
@@ -74,14 +69,55 @@ export class TaskPanelComponent {
   }
 
   ngOnInit(): void {
-    this.loadTaskCards();
     this.activatedRoute.params.subscribe(p => {
       if (p['id']) {
         this.taskPanelId = Number(p['id'])
       }
     })
+    this.loadTaskCards();
+
   }
 
+  openTransferTaskDialog(task: DevelopmentTaskDTO) {
+    this.taskForTransfer = task;
+    this.displayTransferDialog = true;
+  }
+  // Görevi seçilen karta aktar
+  async confirmTransferTask() {
+    if (this.selectedTargetCard && this.taskForTransfer) {
+      // API ile görevi seçilen karta taşı
+      var response = await this.developmentService.moveDevelopmentTask(this.taskForTransfer.id, this.selectedTargetCard.id);
+      if (response) {
+        this.toasterService.success("Görev başarıyla taşındı.");
+        await this.loadTaskCards(); // Kartları yeniden yükle
+        this.displayTransferDialog = false; // Dialogu kapat
+      } else {
+        this.toasterService.error("Görev taşınırken bir hata oluştu.");
+      }
+    } else {
+      this.toasterService.error("Hedef kartı seçmelisiniz.");
+    }
+  }
+
+  getItems(taskCard: any) {
+    return [
+      {
+        label: "Yeni Kart Ekle",
+        icon: "fa fa-plus",
+        command: (event) => (this.addCardDialog = true)  // taskCard.id'yi gönderiyoruz
+      },
+      {
+        label: "Kartın Görevlerini Tamamla",
+        icon: "fa fa-check",
+        // command: (event) => this.completeTasks(taskCard.id)  // taskCard.id'yi gönderiyoruz
+      },
+      {
+        label: "Kartı Sil",
+        icon: "fa fa-trash",
+        command: () => this.deleteTaskCard(taskCard)
+      }
+    ];
+  }
   // addTaskControl() {
   //   if (this.newControl.header.trim() !== "") {
   //     this.selectedTask.taskControls.push({ ...this.newControl });
@@ -163,6 +199,31 @@ export class TaskPanelComponent {
     }
 
   }
+
+  openUpdatetaskDialog(taskCard: TaskCardDTO) {
+    this.cardForm.get('header').setValue(taskCard.header)
+    this.selectedCard = taskCard;
+    this.updateCardDialog = true;
+  }
+  async updateTaskCard() {
+    var request: TaskCardDTO = this.selectedCard;
+    request.header = this.cardForm.value.header;
+    request.userId = this.userInfo.userId;
+    if (!this.gs.isNullOrEmpty(request.header) && request.userId > 0) {
+      var response = await this.developmentService.updateTaskCard(request);
+      if (response) {
+        this.toasterService.success("Güncellendi");
+        this.cardForm.reset();
+        this.loadTaskCards();
+        this.updateCardDialog = false;
+      } else {
+        this.toasterService.error("Hata Alındı");
+      }
+    } else {
+      this.toasterService.error("Hata Alındı");
+    }
+  }
+
   async addTaskCard() {
     var request: TaskCardDTO = new TaskCardDTO();
     request.id = 0;
@@ -175,6 +236,7 @@ export class TaskPanelComponent {
         this.toasterService.success("Eklendi");
         this.cardForm.reset();
         this.loadTaskCards();
+        this.addCardDialog = false;
       } else {
         this.toasterService.error("Hata Alındı");
       }
@@ -182,6 +244,30 @@ export class TaskPanelComponent {
       this.toasterService.error("Hata Alındı");
     }
   }
+
+  async deleteTaskCard(id: number) {
+    var response = await this.developmentService.deleteTaskCard(id);
+    if (response) {
+      this.toasterService.success("Silindi");
+      this.cardForm.reset();
+      this.loadTaskCards();
+    } else {
+      this.toasterService.error("Hata Alındı");
+    }
+  }
+
+
+  async deleteDevolopmentTask(id: number) {
+    var response = await this.developmentService.deleteDevelopmentTask(id);
+    if (response) {
+      this.toasterService.success("Silindi");
+      this.cardForm.reset();
+      this.loadTaskCards();
+    } else {
+      this.toasterService.error("Hata Alındı");
+    }
+  }
+
   // Formu submit ettiğimizde yeni task eklenir
   async addDevolopmentTask() {
     if (this.addTaskForm.valid) {
@@ -213,10 +299,53 @@ export class TaskPanelComponent {
     }
 
   }
+
+  async updateDevolopmentTask() {
+    var value = this.addTaskForm.value;
+    var request: DevelopmentTask = this.selectedTask;
+    request.userId = this.userInfo.userId
+    request.taskPriorityId = this.selectedTask.taskPriority.id
+    if (!this.gs.isNullOrEmpty(request.header) && request.userId > 0) {
+      var response = await this.developmentService.updateDevelopmentTask(request);
+      if (response) {
+        this.toasterService.success("Güncellendi");
+        this.displayAddTaskDialog = false;
+        this.addTaskForm.reset();
+        this.loadTaskCards();
+      } else {
+        this.toasterService.error("Hata Alındı");
+      }
+    } else {
+      this.toasterService.error("Hata Alındı");
+    }
+
+  }
+
+  async deleteComment(commentId: number) {
+    if (confirm("Yorumu silmek istediğinizden emin misiniz?")) {
+      var response = await this.developmentService.deleteTaskComment(commentId); // Yorum silme API çağrısı
+      if (response) {
+        this.toasterService.success("Yorum silindi.");
+        await this.loadTaskCards();
+        this.displayTaskDetailsDialog = false;
+        var foundTask = null;
+        var foundCard = this.taskCards.find(card => {
+          const task = card.developmentTasks.find(task => task.id === this.selectedTask.id);
+          if (task) {
+            foundTask = task;  // Eşleşen task'i saklıyoruz
+            return true; // Eşleşen task'in olduğu kartı döndürmek için true döndürüyoruz
+          }
+          return false; // Eşleşme yoksa false
+        }); this.openTaskDetailsDialog(foundTask)
+      } else {
+        this.toasterService.error("Yorum silinirken bir hata oluştu.");
+      }
+    }
+  }
   async loadTaskCards() {
     try {
       // panelId değerini belirleyin ya da dinamik olarak alın
-      const panelId = 1;
+      const panelId = this.taskPanelId;
       var r = await this.developmentService.getPanelDetails(panelId);
       this.taskCards = r.taskCards;
       console.log(this.taskCards);
