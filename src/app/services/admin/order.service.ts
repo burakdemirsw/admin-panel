@@ -567,14 +567,25 @@ export class OrderService {
 
   async getCustomerAddress(request: GetCustomerAddress_CM): Promise<any> {
     try {
-      var response = await this.httpClientService.post<GetCustomerAddress_CM>({ controller: "order/get-customer-address" }, request).toPromise();
+      // Query string'i manuel olarak oluşturuyoruz.
+      let queryString = Object.keys(request)
+        .map(key => `${key}=${encodeURIComponent(request[key])}`)
+        .join('&');
+
+      // İsteği yaparken query string'i URL'nin sonuna ekliyoruz.
+      const url = `order/get-customer-address?${queryString}`;
+
+      var response = await this.httpClientService.get<GetCustomerAddress_CM>({
+        controller: url
+      }).toPromise();
 
       return response;
     } catch (error: any) {
-      // console.log(error.message);
+      // Hata durumunda null döndür.
       return null;
     }
   }
+
 
   async createCustomer(request: CreateCustomer_CM): Promise<any> {
     try {

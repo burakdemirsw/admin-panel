@@ -668,18 +668,24 @@ var OrderService = /** @class */ (function () {
     };
     OrderService.prototype.getCustomerAddress = function (request) {
         return __awaiter(this, void 0, Promise, function () {
-            var response, error_14;
+            var queryString, url, response, error_14;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService.post({ controller: "order/get-customer-address" }, request).toPromise()];
+                        queryString = Object.keys(request)
+                            .map(function (key) { return key + "=" + encodeURIComponent(request[key]); })
+                            .join('&');
+                        url = "order/get-customer-address?" + queryString;
+                        return [4 /*yield*/, this.httpClientService.get({
+                                controller: url
+                            }).toPromise()];
                     case 1:
                         response = _a.sent();
                         return [2 /*return*/, response];
                     case 2:
                         error_14 = _a.sent();
-                        // console.log(error.message);
+                        // Hata durumunda null döndür.
                         return [2 /*return*/, null];
                     case 3: return [2 /*return*/];
                 }

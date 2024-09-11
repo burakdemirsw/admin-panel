@@ -30,6 +30,7 @@ import { FastTransfer_VM } from '../../../../models/model/warehouse/transferRequ
 import { OrderService } from '../../../../services/admin/order.service';
 import { GoogleDriveService } from '../../../../services/common/google-drive.service';
 import { CreatePackage_MNG_RR, OrderDetail } from '../../../cargo/create-cargo/models/models';
+import { query } from '@angular/animations';
 
 @Component({
   selector: 'app-create-order',
@@ -450,7 +451,7 @@ export class CreateOrderComponent implements OnInit {
     }
 
   }
-  createClientOrderBasketItem_RM(line: ProductList_VM): ClientOrderBasketItem {
+  createClientOrderBasketItem_RM(line: ProductList_VM, quantity?: number): ClientOrderBasketItem {
     try {
       var newLine = Object.assign({}, line);
       newLine.quantity = 1;
@@ -467,7 +468,7 @@ export class CreateOrderComponent implements OnInit {
       request.itemCode = newLine.itemCode;
       request.batchCode = newLine.batchCode;
       request.price = newLine.price;
-      request.quantity = newLine.quantity2;
+      request.quantity = quantity ? quantity : newLine.quantity2;
       request.warehouseCode = newLine.warehouseCode;
       request.brandDescription = newLine.brandDescription;
       request.uD_Stock = newLine.uD_Stock;
@@ -1568,7 +1569,7 @@ export class CreateOrderComponent implements OnInit {
   shelfNumbers: string = 'RAFLAR:'
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
-  async getProducts(request: any, pageType: boolean) {
+  async getProducts(request: any, pageType: boolean, quantity?: number) {
 
     if (pageType) { //HIZLI SATIŞ
       try {
@@ -1626,7 +1627,7 @@ export class CreateOrderComponent implements OnInit {
             }
           });
 
-          if (totalQuantity >= this.products[0].quantity) {
+          if (totalQuantity > this.products[0].quantity) {
             this.toasterService.error("STOK HATASI")
             this.products = [];
             this.getProductsForm.get('barcode').setValue(null);
@@ -1639,7 +1640,16 @@ export class CreateOrderComponent implements OnInit {
               // if (this.products.length > 1) {
               //   _product.description += ` (SK: ${request.barcode})`;
               // }
-              await this.addCurrentProducts(_product);
+
+              if (quantity) {
+                _product.quantity = quantity;
+                await this.addCurrentProducts(_product, quantity);
+                continue;
+              } else {
+                await this.addCurrentProducts(_product);
+                continue;
+              }
+
             }
             this.getProductsForm.get('barcode').setValue(null);
             this.products = [];
@@ -1760,7 +1770,7 @@ export class CreateOrderComponent implements OnInit {
               }
             });
 
-            if (totalQuantity >= this.products[0].quantity) {
+            if (totalQuantity > this.products[0].quantity) {
               this.toasterService.error("STOK HATASI")
               this.products = [];
               this.getProductsForm.get('barcode').setValue(null);
@@ -1775,7 +1785,15 @@ export class CreateOrderComponent implements OnInit {
                 // if (this.products.length > 1) {
                 //   _product.description += ` (SK: ${request.barcode})`;
                 // }
-                await this.addCurrentProducts(_product);
+                if (quantity) {
+                  _product.quantity = quantity;
+                  await this.addCurrentProducts(_product, quantity);
+                  continue;
+                } else {
+                  await this.addCurrentProducts(_product);
+                  continue;
+                }
+
 
               }
               this.focusNextInput('barcode_product');
@@ -1799,6 +1817,7 @@ export class CreateOrderComponent implements OnInit {
   }
 
   suggestedProducts: SuggestedProduct[] = [];
+  selectedSuggestedProducts: SuggestedProduct[] = [];
 
   async routeGetProduct(request: string) {
     this.getProductsForm.get('barcode').setValue(request);
@@ -1818,8 +1837,101 @@ export class CreateOrderComponent implements OnInit {
     }
 
   }
+  selectSuggestedProductDialog: boolean = false;
+  selectedSuggestedProduct: SuggestedProduct;
+  sg_product_qty: number = 0;
 
-  async addCurrentProducts(request: ProductList_VM): Promise<boolean> {
+
+  getTotalQuantityOfSugProducts(): number {
+
+
+    var total_qty = this.selectedSuggestedProducts.reduce((acc, product) => acc + product.quantity, 0);
+    return total_qty;
+  }
+
+
+  getConfirmedQuantity(): number {
+
+    var total_qty = this.selectedSuggestedProducts.reduce((acc, product) => acc + product.quantity, 0);
+    return this.quantityList[1] - total_qty;
+  }
+  openSuggestedProductDialog(product: SuggestedProduct) {
+    this.sg_product_qty = this.getConfirmedQuantity();
+    this.selectedSuggestedProduct = product;
+    this.selectSuggestedProductDialog = true;
+  }
+
+  deleteSelectedSgProduct(product: SuggestedProduct) {
+    this.selectedSuggestedProducts = this.selectedSuggestedProducts.filter(p => p.suggestedItemCode != product.suggestedItemCode && p.quantity == product.quantity);
+  }
+  async completeGetProduct(index?: number) {
+    if (index) {
+
+      this.closeDialog(index)
+    }
+    this.selectSuggestedProductDialog = false;
+    this.updateProductDialog = false;
+    this.suggestedProductsDialog = false;
+    //var olan ürün silincek...
+    if (this.selectedProduct) {
+      await this.deleteProduct(this.selectedProduct);
+
+    }
+
+    //yenileri eklencek
+
+    for (const _product of this.selectedSuggestedProducts) {
+      var request = { barcode: _product.suggestedItemCode };
+      await this.getProducts(request, this.orderType, _product.quantity)
+    }
+
+
+    this.selectedSuggestedProducts = [];
+
+  }
+
+  selectSuggestedProduct(quantity: number) {
+    var qty = this.quantityList[1];
+    var _qty = this.selectedSuggestedProducts.reduce((total, product) => total + product.quantity, 0) + quantity;
+    if (_qty > qty) {
+      this.toasterService.error('Belirtilen Miktardan Fazla Giriş Yapılamaz');
+      return;
+    }
+    if (quantity > this.selectedSuggestedProduct.inventory) {
+      this.toasterService.error('Envanterden Fazla Giriş Yapılamaz');
+      return;
+    }
+    var product = Object.assign(this.selectedSuggestedProduct);
+    product.quantity = quantity;
+    this.selectedSuggestedProducts.push(product);
+    this.selectedSuggestedProduct = null;
+    this.selectSuggestedProductDialog = false;
+  }
+  selectSuggestedProductFromSelectedProduct(quantity: number) {
+    console.log(this.selectedProduct);
+    var sgp: SuggestedProduct = new SuggestedProduct();
+    sgp.brand = this.selectedProduct.brandDescription;
+    sgp.inventory = Number(this.selectedProduct.mD_Stock);
+    sgp.suggestedItemCode = this.selectedProduct.itemCode;
+    sgp.quantity = quantity;
+    sgp.tsfFiyat = Number(this.selectedProduct.priceWs.split(' '));
+    sgp.suggestedItemDesc = this.selectedProduct.description;
+    sgp.itemCode = this.suggestedProducts[0].itemCode;
+
+
+    var qty = this.quantityList[1];
+    var _qty = this.selectedSuggestedProducts.reduce((total, product) => total + product.quantity, 0) + quantity;
+    if (_qty > qty) {
+      this.toasterService.error('Belirtilen Miktardan Fazla Giriş Yapılamaz');
+      return;
+    }
+    var product = Object.assign(sgp);
+
+    this.selectedSuggestedProducts.push(product);
+    this.selectedSuggestedProduct = null;
+    this.selectSuggestedProductDialog = false;
+  }
+  async addCurrentProducts(request: ProductList_VM, quantity?: number): Promise<boolean> {
 
     if (request.quantity > 0) {
       var order_request = this.createClientOrder_RM()
@@ -1827,7 +1939,7 @@ export class CreateOrderComponent implements OnInit {
       if (order_response) {
 
 
-        var line_request = this.createClientOrderBasketItem_RM(request);
+        var line_request = this.createClientOrderBasketItem_RM(request, quantity);
         if (line_request.itemCode.startsWith('FG')) {
           line_request.quantity = 5;
         }

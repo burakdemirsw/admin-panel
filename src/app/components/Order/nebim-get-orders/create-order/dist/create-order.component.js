@@ -47,6 +47,7 @@ var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
 var subCustomerList_VM_1 = require("src/app/models/model/customer/subCustomerList_VM");
 var getCustomerList_CM_1 = require("src/app/models/model/order/getCustomerList_CM");
+var suggestedProduct_1 = require("src/app/models/model/order/suggestedProduct");
 var payment_CR_1 = require("src/app/models/model/payment/payment_CR");
 var productList_VM_1 = require("src/app/models/model/product/productList_VM");
 var nebimCustomer_1 = require("src/app/models/nebim/customer/nebimCustomer");
@@ -158,6 +159,9 @@ var CreateOrderComponent = /** @class */ (function () {
         this.qrBarcodeUrl = null;
         this.qrOperationModels = [];
         this.suggestedProducts = [];
+        this.selectedSuggestedProducts = [];
+        this.selectSuggestedProductDialog = false;
+        this.sg_product_qty = 0;
         this.clonedProducts = {};
         this.quantityList = [];
         //----------------------------------------------------
@@ -581,7 +585,7 @@ var CreateOrderComponent = /** @class */ (function () {
             return null;
         }
     };
-    CreateOrderComponent.prototype.createClientOrderBasketItem_RM = function (line) {
+    CreateOrderComponent.prototype.createClientOrderBasketItem_RM = function (line, quantity) {
         try {
             var newLine = Object.assign({}, line);
             newLine.quantity = 1;
@@ -596,7 +600,7 @@ var CreateOrderComponent = /** @class */ (function () {
             request.itemCode = newLine.itemCode;
             request.batchCode = newLine.batchCode;
             request.price = newLine.price;
-            request.quantity = newLine.quantity2;
+            request.quantity = quantity ? quantity : newLine.quantity2;
             request.warehouseCode = newLine.warehouseCode;
             request.brandDescription = newLine.brandDescription;
             request.uD_Stock = newLine.uD_Stock;
@@ -1779,17 +1783,17 @@ var CreateOrderComponent = /** @class */ (function () {
             // stockCode: [null],
         });
     };
-    CreateOrderComponent.prototype.getProducts = function (request, pageType) {
+    CreateOrderComponent.prototype.getProducts = function (request, pageType, quantity) {
         return __awaiter(this, void 0, void 0, function () {
             var result, _request, response, totalQuantity, _i, _a, _product, error_4, result, result, result, check_response, data, response, totalQuantity, _b, _c, _product;
             var _this = this;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
-                        if (!pageType) return [3 /*break*/, 18];
+                        if (!pageType) return [3 /*break*/, 20];
                         _d.label = 1;
                     case 1:
-                        _d.trys.push([1, 16, , 17]);
+                        _d.trys.push([1, 18, , 19]);
                         if (!(request.barcode.includes('http') || this.generalService.isGuid(request.barcode))) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.productService.countProductByBarcode3(request.barcode)];
                     case 2:
@@ -1817,7 +1821,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         return [2 /*return*/];
                     case 6:
                         this.products = response;
-                        if (!(this.products.length > 0)) return [3 /*break*/, 14];
+                        if (!(this.products.length > 0)) return [3 /*break*/, 16];
                         this.products.forEach(function (p) { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
@@ -1840,7 +1844,7 @@ var CreateOrderComponent = /** @class */ (function () {
                                 totalQuantity += product.quantity;
                             }
                         });
-                        if (!(totalQuantity >= this.products[0].quantity)) return [3 /*break*/, 8];
+                        if (!(totalQuantity > this.products[0].quantity)) return [3 /*break*/, 8];
                         this.toasterService.error("STOK HATASI");
                         this.products = [];
                         this.getProductsForm.get('barcode').setValue(null);
@@ -1852,41 +1856,41 @@ var CreateOrderComponent = /** @class */ (function () {
                         _i = 0, _a = this.products;
                         _d.label = 9;
                     case 9:
-                        if (!(_i < _a.length)) return [3 /*break*/, 12];
+                        if (!(_i < _a.length)) return [3 /*break*/, 14];
                         _product = _a[_i];
-                        // if (this.products.length > 1) {
-                        //   _product.description += ` (SK: ${request.barcode})`;
-                        // }
-                        return [4 /*yield*/, this.addCurrentProducts(_product)];
+                        if (!quantity) return [3 /*break*/, 11];
+                        _product.quantity = quantity;
+                        return [4 /*yield*/, this.addCurrentProducts(_product, quantity)];
                     case 10:
-                        // if (this.products.length > 1) {
-                        //   _product.description += ` (SK: ${request.barcode})`;
-                        // }
                         _d.sent();
-                        _d.label = 11;
-                    case 11:
+                        return [3 /*break*/, 13];
+                    case 11: return [4 /*yield*/, this.addCurrentProducts(_product)];
+                    case 12:
+                        _d.sent();
+                        return [3 /*break*/, 13];
+                    case 13:
                         _i++;
                         return [3 /*break*/, 9];
-                    case 12:
+                    case 14:
                         this.getProductsForm.get('barcode').setValue(null);
                         this.products = [];
-                        _d.label = 13;
-                    case 13: return [3 /*break*/, 15];
-                    case 14:
-                        this.toasterService.error("Ürün Bulunamadı");
                         _d.label = 15;
-                    case 15:
+                    case 15: return [3 /*break*/, 17];
+                    case 16:
+                        this.toasterService.error("Ürün Bulunamadı");
+                        _d.label = 17;
+                    case 17:
                         this.getProductsForm.get('barcode').setValue(null);
                         return [2 /*return*/, response];
-                    case 16:
+                    case 18:
                         error_4 = _d.sent();
                         return [2 /*return*/, null];
-                    case 17: return [3 /*break*/, 36];
-                    case 18:
-                        if (!!request.shelfNo) return [3 /*break*/, 22];
-                        if (!(request.barcode.includes('http') || this.generalService.isGuid(request.barcode))) return [3 /*break*/, 20];
+                    case 19: return [3 /*break*/, 40];
+                    case 20:
+                        if (!!request.shelfNo) return [3 /*break*/, 24];
+                        if (!(request.barcode.includes('http') || this.generalService.isGuid(request.barcode))) return [3 /*break*/, 22];
                         return [4 /*yield*/, this.productService.countProductByBarcode3(request.barcode)];
-                    case 19:
+                    case 21:
                         result = _d.sent();
                         if (result == null) {
                             this.toasterService.error("Qr Sorgusu Hatalı");
@@ -1896,18 +1900,18 @@ var CreateOrderComponent = /** @class */ (function () {
                         this.getProductsForm.get('barcode').setValue(result[3]);
                         request.barcode = result[3];
                         this.toasterService.success("Form Verileri Güncellendi");
-                        _d.label = 20;
-                    case 20: return [4 /*yield*/, this.productService.countProductByBarcode(request.barcode)];
-                    case 21:
+                        _d.label = 22;
+                    case 22: return [4 /*yield*/, this.productService.countProductByBarcode(request.barcode)];
+                    case 23:
                         result = _d.sent();
                         this.shelfNumbers += result[0];
                         this.generalService.focusNextInput('shelfNo');
                         this.toasterService.info("Raf Numarası Giriniz");
                         return [2 /*return*/];
-                    case 22:
-                        if (!(request.barcode.includes('http') || this.generalService.isGuid(request.barcode))) return [3 /*break*/, 24];
+                    case 24:
+                        if (!(request.barcode.includes('http') || this.generalService.isGuid(request.barcode))) return [3 /*break*/, 26];
                         return [4 /*yield*/, this.productService.countProductByBarcode3(request.barcode)];
-                    case 23:
+                    case 25:
                         result = _d.sent();
                         if (result == null) {
                             this.toasterService.error("Qr Sorgusu Hatalı");
@@ -1916,27 +1920,27 @@ var CreateOrderComponent = /** @class */ (function () {
                         this.getProductsForm.get('barcode').setValue(result[3]);
                         this.getProductsForm.get('barcode').setValue(null);
                         return [2 /*return*/];
-                    case 24: return [4 /*yield*/, this.warehouseService.countProductRequest(request.barcode, request.shelfNo, 1, '', '', '', 'Order/CountProductControl', this.orderNo, '')];
-                    case 25:
+                    case 26: return [4 /*yield*/, this.warehouseService.countProductRequest(request.barcode, request.shelfNo, 1, '', '', '', 'Order/CountProductControl', this.orderNo, '')];
+                    case 27:
                         check_response = _d.sent();
-                        if (!(check_response != undefined)) return [3 /*break*/, 36];
+                        if (!(check_response != undefined)) return [3 /*break*/, 40];
                         data = check_response;
                         if (data.status != 'RAF') {
                             this.getProductsForm.get('barcode').setValue(check_response.description);
                         }
                         return [4 /*yield*/, this.productService.searchProduct3(check_response.description, check_response.batchCode, this.getProductsForm.value.shelfNo)];
-                    case 26:
+                    case 28:
                         response = _d.sent();
-                        if (!(response.length == 0)) return [3 /*break*/, 28];
+                        if (!(response.length == 0)) return [3 /*break*/, 30];
                         this.toasterService.error("Ürün Sorgusundan Yanıt Alınamadı");
                         return [4 /*yield*/, this.getsuggestedProducts(_request.barcode, true)];
-                    case 27:
+                    case 29:
                         _d.sent();
                         this.getProductsForm.get('barcode').setValue(null);
                         return [2 /*return*/];
-                    case 28:
+                    case 30:
                         this.products = response;
-                        if (!(this.products.length > 0)) return [3 /*break*/, 35];
+                        if (!(this.products.length > 0)) return [3 /*break*/, 39];
                         this.products.forEach(function (p) { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
@@ -1963,43 +1967,43 @@ var CreateOrderComponent = /** @class */ (function () {
                                 totalQuantity += product.quantity;
                             }
                         });
-                        if (!(totalQuantity >= this.products[0].quantity)) return [3 /*break*/, 30];
+                        if (!(totalQuantity > this.products[0].quantity)) return [3 /*break*/, 32];
                         this.toasterService.error("STOK HATASI");
                         this.products = [];
                         this.getProductsForm.get('barcode').setValue(null);
                         return [4 /*yield*/, this.getsuggestedProducts(_request.barcode, true)];
-                    case 29:
+                    case 31:
                         _d.sent();
                         return [2 /*return*/];
-                    case 30:
+                    case 32:
                         this.getProductsForm.get('barcode').setValue(null);
                         this.getProductsForm.get('shelfNo').setValue(null);
                         _b = 0, _c = this.products;
-                        _d.label = 31;
-                    case 31:
-                        if (!(_b < _c.length)) return [3 /*break*/, 34];
-                        _product = _c[_b];
-                        // if (this.products.length > 1) {
-                        //   _product.description += ` (SK: ${request.barcode})`;
-                        // }
-                        return [4 /*yield*/, this.addCurrentProducts(_product)];
-                    case 32:
-                        // if (this.products.length > 1) {
-                        //   _product.description += ` (SK: ${request.barcode})`;
-                        // }
-                        _d.sent();
                         _d.label = 33;
                     case 33:
-                        _b++;
-                        return [3 /*break*/, 31];
+                        if (!(_b < _c.length)) return [3 /*break*/, 38];
+                        _product = _c[_b];
+                        if (!quantity) return [3 /*break*/, 35];
+                        _product.quantity = quantity;
+                        return [4 /*yield*/, this.addCurrentProducts(_product, quantity)];
                     case 34:
+                        _d.sent();
+                        return [3 /*break*/, 37];
+                    case 35: return [4 /*yield*/, this.addCurrentProducts(_product)];
+                    case 36:
+                        _d.sent();
+                        return [3 /*break*/, 37];
+                    case 37:
+                        _b++;
+                        return [3 /*break*/, 33];
+                    case 38:
                         this.focusNextInput('barcode_product');
                         this.getProductsForm.get('barcode').setValue(null);
                         this.products = [];
                         this.shelfNumbers = 'RAFLAR:';
-                        _d.label = 35;
-                    case 35: return [2 /*return*/, response];
-                    case 36: return [2 /*return*/];
+                        _d.label = 39;
+                    case 39: return [2 /*return*/, response];
+                    case 40: return [2 /*return*/];
                 }
             });
         });
@@ -2044,7 +2048,99 @@ var CreateOrderComponent = /** @class */ (function () {
             });
         });
     };
-    CreateOrderComponent.prototype.addCurrentProducts = function (request) {
+    CreateOrderComponent.prototype.getTotalQuantityOfSugProducts = function () {
+        var total_qty = this.selectedSuggestedProducts.reduce(function (acc, product) { return acc + product.quantity; }, 0);
+        return total_qty;
+    };
+    CreateOrderComponent.prototype.getConfirmedQuantity = function () {
+        var total_qty = this.selectedSuggestedProducts.reduce(function (acc, product) { return acc + product.quantity; }, 0);
+        return this.quantityList[1] - total_qty;
+    };
+    CreateOrderComponent.prototype.openSuggestedProductDialog = function (product) {
+        this.sg_product_qty = this.getConfirmedQuantity();
+        this.selectedSuggestedProduct = product;
+        this.selectSuggestedProductDialog = true;
+    };
+    CreateOrderComponent.prototype.deleteSelectedSgProduct = function (product) {
+        this.selectedSuggestedProducts = this.selectedSuggestedProducts.filter(function (p) { return p.suggestedItemCode != product.suggestedItemCode && p.quantity == product.quantity; });
+    };
+    CreateOrderComponent.prototype.completeGetProduct = function (index) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _i, _a, _product, request;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        if (index) {
+                            this.closeDialog(index);
+                        }
+                        this.selectSuggestedProductDialog = false;
+                        this.updateProductDialog = false;
+                        this.suggestedProductsDialog = false;
+                        if (!this.selectedProduct) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.deleteProduct(this.selectedProduct)];
+                    case 1:
+                        _b.sent();
+                        _b.label = 2;
+                    case 2:
+                        _i = 0, _a = this.selectedSuggestedProducts;
+                        _b.label = 3;
+                    case 3:
+                        if (!(_i < _a.length)) return [3 /*break*/, 6];
+                        _product = _a[_i];
+                        request = { barcode: _product.suggestedItemCode };
+                        return [4 /*yield*/, this.getProducts(request, this.orderType, _product.quantity)];
+                    case 4:
+                        _b.sent();
+                        _b.label = 5;
+                    case 5:
+                        _i++;
+                        return [3 /*break*/, 3];
+                    case 6:
+                        this.selectedSuggestedProducts = [];
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CreateOrderComponent.prototype.selectSuggestedProduct = function (quantity) {
+        var qty = this.quantityList[1];
+        var _qty = this.selectedSuggestedProducts.reduce(function (total, product) { return total + product.quantity; }, 0) + quantity;
+        if (_qty > qty) {
+            this.toasterService.error('Belirtilen Miktardan Fazla Giriş Yapılamaz');
+            return;
+        }
+        if (quantity > this.selectedSuggestedProduct.inventory) {
+            this.toasterService.error('Envanterden Fazla Giriş Yapılamaz');
+            return;
+        }
+        var product = Object.assign(this.selectedSuggestedProduct);
+        product.quantity = quantity;
+        this.selectedSuggestedProducts.push(product);
+        this.selectedSuggestedProduct = null;
+        this.selectSuggestedProductDialog = false;
+    };
+    CreateOrderComponent.prototype.selectSuggestedProductFromSelectedProduct = function (quantity) {
+        console.log(this.selectedProduct);
+        var sgp = new suggestedProduct_1.SuggestedProduct();
+        sgp.brand = this.selectedProduct.brandDescription;
+        sgp.inventory = Number(this.selectedProduct.mD_Stock);
+        sgp.suggestedItemCode = this.selectedProduct.itemCode;
+        sgp.quantity = quantity;
+        sgp.tsfFiyat = Number(this.selectedProduct.priceWs.split(' '));
+        sgp.suggestedItemDesc = this.selectedProduct.description;
+        sgp.itemCode = this.suggestedProducts[0].itemCode;
+        var qty = this.quantityList[1];
+        var _qty = this.selectedSuggestedProducts.reduce(function (total, product) { return total + product.quantity; }, 0) + quantity;
+        if (_qty > qty) {
+            this.toasterService.error('Belirtilen Miktardan Fazla Giriş Yapılamaz');
+            return;
+        }
+        var product = Object.assign(sgp);
+        this.selectedSuggestedProducts.push(product);
+        this.selectedSuggestedProduct = null;
+        this.selectSuggestedProductDialog = false;
+    };
+    CreateOrderComponent.prototype.addCurrentProducts = function (request, quantity) {
         return __awaiter(this, void 0, Promise, function () {
             var order_request, order_response, line_request, line_response;
             return __generator(this, function (_a) {
@@ -2057,7 +2153,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         order_response = _a.sent() //sipariş oluşturuldu varsa güncellendi
                         ;
                         if (!order_response) return [3 /*break*/, 6];
-                        line_request = this.createClientOrderBasketItem_RM(request);
+                        line_request = this.createClientOrderBasketItem_RM(request, quantity);
                         if (line_request.itemCode.startsWith('FG')) {
                             line_request.quantity = 5;
                         }
