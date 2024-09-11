@@ -263,7 +263,7 @@ var CreateOrderComponent = /** @class */ (function () {
                     case 2:
                         _a.exchangeRate = _b.sent();
                         this.generatedCargoNumber = this._generateRandomNumber();
-                        this.paymentForm.get('paymentType').setValue(this.paymentMethods[5]);
+                        this.paymentForm.get('paymentType').setValue(this.paymentMethods[2]);
                         this.paymentForm.get('taxTypeCode').setValue(this.stateOptions[1]);
                         this.console();
                         return [2 /*return*/];
@@ -272,6 +272,7 @@ var CreateOrderComponent = /** @class */ (function () {
         });
     };
     CreateOrderComponent.prototype.console = function () {
+        console.log(this.discountRate1, this.discountRate2, this.discountForm.get('cashDiscountRate').value, this.discountForm.get('percentDiscountRate').value);
         this.focusNextInput('barcode_product');
         // this.toasterService.info(this.isCompleted.toString());
         // console.clear();
@@ -970,9 +971,10 @@ var CreateOrderComponent = /** @class */ (function () {
                         if (!response) return [3 /*break*/, 3];
                         findedCustomer = response.find(function (c) { return c.currAccCode == salesPersonCode; });
                         this.selectableCustomers.push({ name: findedCustomer.currAccDescription, value: findedCustomer.phone, currAccCode: findedCustomer.currAccCode });
-                        this.createCustomerForm.get('currAccDescription').setValue(findedCustomer.currAccDescription);
+                        // this.createCustomerForm.get('currAccDescription').setValue(findedCustomer.currAccDescription);
                         return [4 /*yield*/, this.selectCurrentCustomer(findedCustomer)];
                     case 2:
+                        // this.createCustomerForm.get('currAccDescription').setValue(findedCustomer.currAccDescription);
                         _a.sent();
                         _a.label = 3;
                     case 3: return [3 /*break*/, 5];
@@ -1017,8 +1019,10 @@ var CreateOrderComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        console.log(formValue);
                         check_request = new getCustomerList_CM_1.GetCustomerAddress_CM();
-                        check_request.currAccCode = formValue.currAccDescription.currAccCode;
+                        // check_request.currAccCode = formValue.currAccDescription.currAccCode;
+                        check_request.phone = formValue.phoneNumber;
                         return [4 /*yield*/, this.orderService.getCustomerList_2(check_request)];
                     case 1:
                         check_response = _a.sent();
@@ -1042,6 +1046,8 @@ var CreateOrderComponent = /** @class */ (function () {
                         request.bussinesCardPhotoUrl = formValue.bussinesCardPhotoUrl;
                         request.officeCode = 'M';
                         request.warehouseCode = 'MD';
+                        request.taxNumber = formValue.tax_number;
+                        request.identityNumber = formValue.identity_number;
                         if (!formValue.address_country) {
                             request.address = null;
                         }
@@ -1063,7 +1069,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         clientCustomer_request = new createCustomer_CM_1.ClientCustomer();
                         clientCustomer_request.cargoAddressPhotoUrl = formValue.cargoAddressPhotoUrl;
                         clientCustomer_request.currAccCode = response.currAccCode;
-                        clientCustomer_request.description = formValue.currAccDescription.value;
+                        clientCustomer_request.description = formValue.currAccDescription;
                         clientCustomer_request.stampPhotoUrl = formValue.stampPhotoUrl;
                         clientCustomer_request.bussinesCardPhotoUrl = formValue.bussinesCardPhotoUrl;
                         clientCustomer_request.addedSellerCode = localStorage.getItem('salesPersonCode');
@@ -1220,19 +1226,20 @@ var CreateOrderComponent = /** @class */ (function () {
             currAccDescription: [null, forms_1.Validators.required],
             mail: [' ', forms_1.Validators.required],
             phoneNumber: ['', [forms_1.Validators.required]],
-            stampPhotoUrl: [null],
-            bussinesCardPhotoUrl: [null],
-            cargoAddressPhotoUrl: [null],
+            stampPhotoUrl: [''],
+            bussinesCardPhotoUrl: [''],
+            cargoAddressPhotoUrl: [''],
             address_country: [null],
             address_province: [null],
             address_district: [null],
             address_region: [null],
-            taxNumber: [null],
+            tax_number: [null],
             address_description: [null],
             address_postalCode: [' '],
             address_taxOffice: [null],
             sc_Description: [null],
-            sc_mode: [false]
+            sc_mode: [false],
+            identity_number: [null]
         });
         this.createCustomerForm.get('phoneNumber').valueChanges.subscribe(function (value) {
             var formattedValue = _this.generalService.formatPhoneNumber(value); // Metodu kullanarak formatlama
@@ -1673,8 +1680,8 @@ var CreateOrderComponent = /** @class */ (function () {
     };
     CreateOrderComponent.prototype.createDiscountForm = function () {
         this.discountForm = this.formBuilder.group({
-            cashDiscountRate: [null, forms_1.Validators.required],
-            percentDiscountRate: [null, forms_1.Validators.required]
+            cashDiscountRate: [0, forms_1.Validators.required],
+            percentDiscountRate: [0, forms_1.Validators.required]
         });
     };
     CreateOrderComponent.prototype.getTotalPrice = function () {
@@ -2070,12 +2077,14 @@ var CreateOrderComponent = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        if (index) {
+                        if (index >= 0) {
                             this.closeDialog(index);
                         }
                         this.selectSuggestedProductDialog = false;
                         this.updateProductDialog = false;
                         this.suggestedProductsDialog = false;
+                        this.sg_product_qty = 0;
+                        this.quantityList = [];
                         if (!this.selectedProduct) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.deleteProduct(this.selectedProduct)];
                     case 1:
@@ -2120,6 +2129,7 @@ var CreateOrderComponent = /** @class */ (function () {
         this.selectSuggestedProductDialog = false;
     };
     CreateOrderComponent.prototype.selectSuggestedProductFromSelectedProduct = function (quantity) {
+        var _a;
         console.log(this.selectedProduct);
         var sgp = new suggestedProduct_1.SuggestedProduct();
         sgp.brand = this.selectedProduct.brandDescription;
@@ -2128,7 +2138,7 @@ var CreateOrderComponent = /** @class */ (function () {
         sgp.quantity = quantity;
         sgp.tsfFiyat = Number(this.selectedProduct.priceWs.split(' '));
         sgp.suggestedItemDesc = this.selectedProduct.description;
-        sgp.itemCode = this.suggestedProducts[0].itemCode;
+        sgp.itemCode = (_a = this.suggestedProducts[0]) === null || _a === void 0 ? void 0 : _a.itemCode;
         var qty = this.quantityList[1];
         var _qty = this.selectedSuggestedProducts.reduce(function (total, product) { return total + product.quantity; }, 0) + quantity;
         if (_qty > qty) {
@@ -2824,6 +2834,13 @@ var CreateOrderComponent = /** @class */ (function () {
     CreateOrderComponent.prototype.closeDialog = function (ri) {
         this.visibleDialogs[ri] = false; // Dialog'u kapatır
     };
+    CreateOrderComponent.prototype.onShow = function (e) {
+        this.findProductDialogRef.maximize();
+    };
+    // Optionally, you can toggle visibility based on the ri value
+    CreateOrderComponent.prototype.toggleDialog = function (ri) {
+        this.visibleDialogs[ri] = !this.visibleDialogs[ri];
+    };
     __decorate([
         core_1.ViewChild('findCustomer', { static: false })
     ], CreateOrderComponent.prototype, "findCustomer");
@@ -2848,6 +2865,9 @@ var CreateOrderComponent = /** @class */ (function () {
     __decorate([
         core_1.ViewChild('dt1')
     ], CreateOrderComponent.prototype, "myTable");
+    __decorate([
+        core_1.ViewChild('findProductDialogRef')
+    ], CreateOrderComponent.prototype, "findProductDialogRef");
     CreateOrderComponent = __decorate([
         core_1.Component({
             selector: 'app-create-order',

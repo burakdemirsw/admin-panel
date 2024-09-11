@@ -1,5 +1,92 @@
 <main id="main" class="main">
   <section class="section">
+
+    <div class="card" *ngIf="!pageDescription">
+      <div class="card-body">
+        <!-- Filtreleme Alanı (Başlangıç) -->
+        <div class="btn-group mb-3 mt-4">
+          <div class="input-group">
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse"
+              aria-expanded="false" aria-controls="filterCollapse">
+              <i class="fa fa-bars" aria-hidden="true"></i>
+            </button>
+            <input type="text" class="form-control" placeholder="Ara..." [(ngModel)]="searchedOrder"
+              (keydown.enter)="goToPage()" />
+            <button class="btn btn-primary" type="button" (click)="goToPage()">
+              <i class="fa fa-search" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="collapse" id="filterCollapse">
+          <form [formGroup]="filterForm" (ngSubmit)="onSubmit(filterForm.value)">
+            <div class="row mb-3">
+              <div class="col-md-4 mb-3">
+                <div class="form-group">
+                  <input pInputText placeholder="Sipariş Numarası" type="text" id="orderNo" class="form-control"
+                    formControlName="orderNo" />
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="form-group">
+                  <input pInputText placeholder="Müşteri Kodu" type="text" id="currAccCode" class="form-control"
+                    formControlName="currAccCode" />
+                </div>
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <div class="form-group">
+                  <input pInputText placeholder="Müşteri Adı" type="text" id="customerName" class="form-control"
+                    formControlName="customerName" />
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4 mb-3">
+                <div class="form-group">
+                  <input pInputText placeholder="Satıcı Kodu" type="text" id="sellerCode" class="form-control"
+                    formControlName="sellerCode" />
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="form-group">
+                  <input pInputText placeholder="İşlem Başlangıç Tarihi" type="date" id="startDate" class="form-control"
+                    formControlName="startDate" />
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="form-group">
+                  <input pInputText placeholder="İşlem Bitiş Tarihi" type="date" id="endDate" class="form-control"
+                    formControlName="endDate" />
+                </div>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-md-4 mb-3">
+                <button class="btn btn-primary">Filtrele</button>
+              </div>
+            </div>
+            <div class="card custom-card mt-3">
+              <div class="card-body">
+                <button type="button" class="btn custom-btn-primary mt-3" (click)="getOrders(1, 1)">
+                  <i class="fas fa-file-invoice-dollar"></i> Faturalandırılan
+                  Siparişler
+                </button>
+                <button type="button" class="btn custom-btn-primary mt-3" (click)="getOrders(1, 2)">
+                  <i class="fas fa-file-excel"></i> Faturalandırılmayan
+                  Siparişler
+                </button>
+                <button type="button" class="btn custom-btn-primary mt-3" (click)="getOrders(0, 3)">
+                  <i class="fas fa-file-invoice"></i> Kısmi Faturalaştırılan
+                  Siparişler
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <!-- Filtreleme Alanı (Bitiş) -->
+      </div>
+    </div>
     <div class="card" *ngIf="false">
       <div class="card-body">
         <!-- Filtreleme Alanı (Başlangıç) -->

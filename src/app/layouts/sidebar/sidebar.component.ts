@@ -31,16 +31,32 @@ export class SidebarComponent implements OnInit {
       const otherItems: MenuItem[] = [];
       let ayarlarItem: MenuItem | null = null;
 
-      // Separate "Ayarlar" item from the rest
+      // Check user role
+      const userRole = localStorage.getItem("roleDescription");
+
+      // Separate "Ayarlar" item from the rest based on role
       for (const item of data) {
-        if (item.label === 'Ayarlar') {
-          ayarlarItem = item;
-        }
-        else if (item.label === 'Anasayfa') {
-          continue;
-        }
-        else {
-          otherItems.push(item);
+        if (userRole === 'Salesman') {
+          // If the role is Salesman, include specific items
+          if (item.label === 'Toptan Satış') {
+            // Within "Toptan Satış", only include "Siparişlerim"
+            const filteredSubItems = item.children?.filter(subItem => subItem.label === 'Siparişlerim' || subItem.label === 'Sipariş Ver' || subItem.label === 'Perakende Satış') || [];
+            if (filteredSubItems.length > 0) {
+              item.children = filteredSubItems; // Set only the "Siparişlerim" submenu
+              otherItems.push(item); // Add the modified "Toptan Satış" menu
+            }
+          } else if (['Satış & Pazarlama', 'Ürünler'].includes(item.label)) {
+            otherItems.push(item); // Add these menu items unchanged
+          }
+        } else {
+          // For non-admin roles, include items except "Anasayfa"
+          if (item.label === 'Ayarlar') {
+            ayarlarItem = item;
+          } else if (item.label === 'Anasayfa') {
+            continue;
+          } else {
+            otherItems.push(item);
+          }
         }
       }
 
@@ -55,6 +71,7 @@ export class SidebarComponent implements OnInit {
       console.error('Error loading menu', error);
     }
   }
+
   onAction(action: string, param?: any) {
     switch (action) {
       case 'routeNewPage':

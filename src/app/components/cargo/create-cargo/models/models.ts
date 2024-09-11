@@ -11,6 +11,7 @@ export class OrderDetail {
   city: string;
   district: string;
   address: string;
+  taxTypeCode: number;
   products: BasketProductSummary[];
 
 

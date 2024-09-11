@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OverlayOptions } from 'primeng/api';
+import { Dialog } from 'primeng/dialog';
 import { Dropdown } from 'primeng/dropdown';
 import { Table } from 'primeng/table';
 import { SubCustomerList_VM } from 'src/app/models/model/customer/subCustomerList_VM';
@@ -30,7 +31,6 @@ import { FastTransfer_VM } from '../../../../models/model/warehouse/transferRequ
 import { OrderService } from '../../../../services/admin/order.service';
 import { GoogleDriveService } from '../../../../services/common/google-drive.service';
 import { CreatePackage_MNG_RR, OrderDetail } from '../../../cargo/create-cargo/models/models';
-import { query } from '@angular/animations';
 
 @Component({
   selector: 'app-create-order',
@@ -117,7 +117,7 @@ export class CreateOrderComponent implements OnInit {
     }
     this.exchangeRate = await this.orderService.getExchangeRates();
     this.generatedCargoNumber = this._generateRandomNumber();
-    this.paymentForm.get('paymentType').setValue(this.paymentMethods[5])
+    this.paymentForm.get('paymentType').setValue(this.paymentMethods[2])
     this.paymentForm.get('taxTypeCode').setValue(this.stateOptions[1])
     this.console();
   }
@@ -125,6 +125,8 @@ export class CreateOrderComponent implements OnInit {
 
 
   console() {
+
+    console.log(this.discountRate1, this.discountRate2, this.discountForm.get('cashDiscountRate').value, this.discountForm.get('percentDiscountRate').value)
     this.focusNextInput('barcode_product')
     // this.toasterService.info(this.isCompleted.toString());
     // console.clear();
@@ -856,7 +858,7 @@ export class CreateOrderComponent implements OnInit {
           var findedCustomer = response.find(c => c.currAccCode == salesPersonCode);
 
           this.selectableCustomers.push({ name: findedCustomer.currAccDescription, value: findedCustomer.phone, currAccCode: findedCustomer.currAccCode })
-          this.createCustomerForm.get('currAccDescription').setValue(findedCustomer.currAccDescription);
+          // this.createCustomerForm.get('currAccDescription').setValue(findedCustomer.currAccDescription);
           await this.selectCurrentCustomer(findedCustomer);
         }
       } else {
@@ -886,11 +888,14 @@ export class CreateOrderComponent implements OnInit {
 
   }
   async submitAddressForm(formValue: any) {
+    console.log(formValue)
+    // return;
 
 
     //kotnrol isteği atılıyor **
     var check_request = new GetCustomerAddress_CM();
-    check_request.currAccCode = formValue.currAccDescription.currAccCode;
+    // check_request.currAccCode = formValue.currAccDescription.currAccCode;
+    check_request.phone = formValue.phoneNumber
     var check_response = await this.orderService.getCustomerList_2(check_request);
     if (check_response.length > 0 && check_request.currAccCode != undefined) {
       var _findedCustomer = check_response.find(c => c.currAccCode == formValue.currAccDescription.currAccCode);
@@ -912,7 +917,8 @@ export class CreateOrderComponent implements OnInit {
       request.bussinesCardPhotoUrl = formValue.bussinesCardPhotoUrl;
       request.officeCode = 'M'
       request.warehouseCode = 'MD'
-
+      request.taxNumber = formValue.tax_number;
+      request.identityNumber = formValue.identity_number;
       if (!formValue.address_country) {
         request.address = null
       } else {
@@ -935,7 +941,7 @@ export class CreateOrderComponent implements OnInit {
           var clientCustomer_request = new ClientCustomer();
           clientCustomer_request.cargoAddressPhotoUrl = formValue.cargoAddressPhotoUrl;
           clientCustomer_request.currAccCode = response.currAccCode;
-          clientCustomer_request.description = formValue.currAccDescription.value;
+          clientCustomer_request.description = formValue.currAccDescription;
           clientCustomer_request.stampPhotoUrl = formValue.stampPhotoUrl;
           clientCustomer_request.bussinesCardPhotoUrl = formValue.bussinesCardPhotoUrl;
           clientCustomer_request.addedSellerCode = localStorage.getItem('salesPersonCode');
@@ -1068,19 +1074,20 @@ export class CreateOrderComponent implements OnInit {
       currAccDescription: [null, Validators.required],
       mail: [' ', Validators.required],
       phoneNumber: ['', [Validators.required]],
-      stampPhotoUrl: [null],
-      bussinesCardPhotoUrl: [null],
-      cargoAddressPhotoUrl: [null],
+      stampPhotoUrl: [''],
+      bussinesCardPhotoUrl: [''],
+      cargoAddressPhotoUrl: [''],
       address_country: [null],
       address_province: [null],
       address_district: [null],
       address_region: [null],
-      taxNumber: [null],
+      tax_number: [null],
       address_description: [null],
       address_postalCode: [' '],
       address_taxOffice: [null],
       sc_Description: [null],
       sc_mode: [false],
+      identity_number: [null],
     });
 
 
@@ -1474,8 +1481,8 @@ export class CreateOrderComponent implements OnInit {
   createDiscountForm() {
 
     this.discountForm = this.formBuilder.group({
-      cashDiscountRate: [null, Validators.required],
-      percentDiscountRate: [null, Validators.required]
+      cashDiscountRate: [0, Validators.required],
+      percentDiscountRate: [0, Validators.required]
     });
   }
   getTotalPrice() {
@@ -1593,11 +1600,7 @@ export class CreateOrderComponent implements OnInit {
 
 
         }
-
-
         var _request = new BarcodeSearch_RM(request.barcode);
-
-
         const response = await this.productService.searchProduct(_request);
 
         if (response.length == 0) {
@@ -1865,13 +1868,15 @@ export class CreateOrderComponent implements OnInit {
     this.selectedSuggestedProducts = this.selectedSuggestedProducts.filter(p => p.suggestedItemCode != product.suggestedItemCode && p.quantity == product.quantity);
   }
   async completeGetProduct(index?: number) {
-    if (index) {
+    if (index >= 0) {
 
       this.closeDialog(index)
     }
     this.selectSuggestedProductDialog = false;
     this.updateProductDialog = false;
     this.suggestedProductsDialog = false;
+    this.sg_product_qty = 0;
+    this.quantityList = [];
     //var olan ürün silincek...
     if (this.selectedProduct) {
       await this.deleteProduct(this.selectedProduct);
@@ -1884,9 +1889,9 @@ export class CreateOrderComponent implements OnInit {
       var request = { barcode: _product.suggestedItemCode };
       await this.getProducts(request, this.orderType, _product.quantity)
     }
-
-
     this.selectedSuggestedProducts = [];
+
+
 
   }
 
@@ -1916,7 +1921,7 @@ export class CreateOrderComponent implements OnInit {
     sgp.quantity = quantity;
     sgp.tsfFiyat = Number(this.selectedProduct.priceWs.split(' '));
     sgp.suggestedItemDesc = this.selectedProduct.description;
-    sgp.itemCode = this.suggestedProducts[0].itemCode;
+    sgp.itemCode = this.suggestedProducts[0]?.itemCode;
 
 
     var qty = this.quantityList[1];
@@ -2662,6 +2667,20 @@ export class CreateOrderComponent implements OnInit {
     styleClass: 'custom-overlay-class' // Custom CSS class
   };
 
+  @ViewChild('findProductDialogRef') findProductDialogRef: Dialog;
 
+
+  onShow(e: any) {
+    this.findProductDialogRef.maximize();
+  }
+
+
+
+
+
+  // Optionally, you can toggle visibility based on the ri value
+  toggleDialog(ri: number) {
+    this.visibleDialogs[ri] = !this.visibleDialogs[ri];
+  }
 
 }

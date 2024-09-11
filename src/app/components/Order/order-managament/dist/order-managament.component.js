@@ -499,7 +499,7 @@ var OrderManagamentComponent = /** @class */ (function () {
             location.href = this.searchedOrder;
         }
         else {
-            location.href = location.origin + "/order-operation/" + this.searchedOrder + "/false/MD";
+            location.href = this.searchedOrder;
         }
     };
     OrderManagamentComponent = __decorate([

@@ -117,6 +117,8 @@ import { ServiceManagementComponent } from './components/service-management/serv
 import { PagesInfoComponent } from './pages/pages-info/pages-info.component';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { CreateSaleOrderComponent } from './components/Order/create-sale-order/create-sale-order.component';
+
+
 @NgModule({
 
   declarations: [
@@ -186,6 +188,7 @@ import { CreateSaleOrderComponent } from './components/Order/create-sale-order/c
     RetailOrderManagementComponent,
     CollectedPackagesComponent2,
     OrderStateComponent,
+
     ReadBarcodeComponent,
     CreateProductBarcodeComponent,
     ProposalListComponent,
@@ -229,6 +232,7 @@ import { CreateSaleOrderComponent } from './components/Order/create-sale-order/c
     ChartModule,
     SelectButtonModule,
     SidebarModule,
+
     OverlayPanelModule,
     FileUploadModule, TableModule, InputTextModule, MessagesModule, FieldsetModule, EditorModule,
     JwtModule.forRoot({

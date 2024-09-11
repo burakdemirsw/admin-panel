@@ -361,7 +361,7 @@ export class OrderManagamentComponent implements OnInit {
     if (this.searchedOrder.includes("http")) {
       location.href = this.searchedOrder;
     } else {
-      location.href = location.origin + "/order-operation/" + this.searchedOrder + "/false/MD";
+      location.href = this.searchedOrder;
     }
 
   }

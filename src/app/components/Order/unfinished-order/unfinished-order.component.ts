@@ -9,6 +9,7 @@ import {
 } from "../../../models/model/order/nebimOrder";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormBuilder, FormGroup } from "@angular/forms";
+import { GeneralService } from "src/app/services/admin/general.service";
 
 @Component({
   selector: "app-unfinished-order",
@@ -22,7 +23,8 @@ export class UnfinishedOrderComponent implements OnInit {
     private toasterService: ToasterService,
     private orderService: OrderService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private generalService: GeneralService
   ) { }
   currentPage = 1;
   orders: ClientOrder_DTO[] = [];
@@ -101,6 +103,12 @@ export class UnfinishedOrderComponent implements OnInit {
       " Siparişler"
     );
   }
+
+  async routePage() {
+    const result = await this.generalService.generateGUID()
+    location.href = location.origin + "/create-order/quick-order/" + result;
+  }
+
   filterOrdersByRole() {
     const roleDescription = localStorage.getItem("roleDescription");
     const salesPersonCode = localStorage.getItem("salesPersonCode");

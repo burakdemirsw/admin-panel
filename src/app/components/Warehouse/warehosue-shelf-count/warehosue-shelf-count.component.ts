@@ -293,7 +293,8 @@ export class WarehosueShelfCountComponent implements OnInit {
       warehouseCode: [null, Validators.required],
       isShelfBased: [false],
       isShelfBased2: [true],
-      automaticCount: [false]
+      automaticCount: [false],
+      shelfControl: [false]
     });
 
 
@@ -419,15 +420,16 @@ export class WarehosueShelfCountComponent implements OnInit {
           this.checkForm.get('quantity').setValue(Number(result[1]));
         }
 
-        if (result[4] == 'false' && product.barcode.length > 13) {
+        //FUAR -- PARTI HATASI KAPANDI
+        // if (result[4] == 'false' && product.barcode.length > 13) {
 
-          if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
-            this.checkForm.get('batchCode').setValue(null);
-            this.focusNextInput('batchCode');
-            this.toasterService.error('Parti Giriniz');
-            return null;
-          }
-        }
+        //   if (!window.confirm('Parti Hatalı Devam Edilsin Mi?')) {
+        //     this.checkForm.get('batchCode').setValue(null);
+        //     this.focusNextInput('batchCode');
+        //     this.toasterService.error('Parti Giriniz');
+        //     return null;
+        //   }
+        // }
         var updated_product: CountProduct3 = product;
 
 
@@ -522,10 +524,12 @@ export class WarehosueShelfCountComponent implements OnInit {
         if (this.state) {
           this.state = false;
 
-          // EĞER GİRİLEN RAF  RAFLARDA VARSA DİREKT SAYAR
+          // EĞER GİRİLEN RAF  RAFLARDA VARSA DİREKT SAYAR 11.09 değiştirildi
+          // if içine bunu ekle
+          //    shelves.includes(countProductRequestModel.shelfNo.toLowerCase()
+          var control = this.checkForm.value.shelfControl == true ? true : shelves.includes(countProductRequestModel.shelfNo.toLowerCase());
           if (
-            shelves.includes(countProductRequestModel.shelfNo.toLowerCase())
-          ) {
+            control) {
 
             var request: ZTMSG_CountedProduct = new ZTMSG_CountedProduct();
             request.barcode = countProductRequestModel.barcode;

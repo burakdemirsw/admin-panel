@@ -86,7 +86,16 @@
                   </div>
                 </div>
               </div>
-
+              <div class="form-group row">
+                <div class="col-6">
+                  <label for="shelfControl" class="col-form-label">Raf Kontrolünü Kapat</label>
+                </div>
+                <div class="col-6">
+                  <div class="form-check">
+                    <p-inputSwitch id="shelfControl" formControlName="shelfControl"></p-inputSwitch>
+                  </div>
+                </div>
+              </div>
               <div class="row mb-1">
                 <div class="form-group col">
                   <button type="button" class="btn btn-primary" (click)="manageOnSubmit(this.checkForm.value)"

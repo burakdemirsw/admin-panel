@@ -1,4 +1,5 @@
 export class SuggestedProduct {
+  photoUrl: string
   itemCode: string;
   suggestedItemCode: string;
   suggestedItemInventory: number;

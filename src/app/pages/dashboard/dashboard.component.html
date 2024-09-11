@@ -1,6 +1,24 @@
 <main id="main" class="main">
   <section class="section dashboard">
     <div *ngIf="this.userId != 5 && this.userId != 1">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card shadow-sm">
+            <div class="card-body text-center">
+              <h5 class="card-title">Sipariş Ver</h5>
+              <a class="btn btn-primary" (click)="routePage()"> Sipariş Oluştur</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card shadow-sm">
+            <div class="card-body text-center">
+              <h5 class="card-title">Teklif Ver</h5>
+              <a [routerLink]="['/create-proposal']" class="btn btn-primary">Teklif Oluştur</a>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="container">
         <div class="error-container p-4" style="text-align: center">
           <h1 class="mb-4">Hoşgeldin {{ userName }}</h1>

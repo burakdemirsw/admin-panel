@@ -67,28 +67,46 @@ var SidebarComponent = /** @class */ (function () {
         });
     };
     SidebarComponent.prototype.loadMenu = function () {
+        var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var data, otherItems, ayarlarItem, _i, data_1, item, error_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var data, otherItems, ayarlarItem, userRole, _i, data_1, item, filteredSubItems, error_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _b.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, this.infoService.getStructuredMenu()];
                     case 1:
-                        data = _a.sent();
+                        data = _b.sent();
                         otherItems = [];
                         ayarlarItem = null;
-                        // Separate "Ayarlar" item from the rest
+                        userRole = localStorage.getItem("roleDescription");
+                        // Separate "Ayarlar" item from the rest based on role
                         for (_i = 0, data_1 = data; _i < data_1.length; _i++) {
                             item = data_1[_i];
-                            if (item.label === 'Ayarlar') {
-                                ayarlarItem = item;
-                            }
-                            else if (item.label === 'Anasayfa') {
-                                continue;
+                            if (userRole === 'Salesman') {
+                                // If the role is Salesman, include specific items
+                                if (item.label === 'Toptan Satış') {
+                                    filteredSubItems = ((_a = item.children) === null || _a === void 0 ? void 0 : _a.filter(function (subItem) { return subItem.label === 'Siparişlerim' || subItem.label === 'Sipariş Ver' || subItem.label === 'Perakende Satış'; })) || [];
+                                    if (filteredSubItems.length > 0) {
+                                        item.children = filteredSubItems; // Set only the "Siparişlerim" submenu
+                                        otherItems.push(item); // Add the modified "Toptan Satış" menu
+                                    }
+                                }
+                                else if (['Satış & Pazarlama', 'Ürünler'].includes(item.label)) {
+                                    otherItems.push(item); // Add these menu items unchanged
+                                }
                             }
                             else {
-                                otherItems.push(item);
+                                // For non-admin roles, include items except "Anasayfa"
+                                if (item.label === 'Ayarlar') {
+                                    ayarlarItem = item;
+                                }
+                                else if (item.label === 'Anasayfa') {
+                                    continue;
+                                }
+                                else {
+                                    otherItems.push(item);
+                                }
                             }
                         }
                         // Add "Ayarlar" item to the end if it exists
@@ -99,7 +117,7 @@ var SidebarComponent = /** @class */ (function () {
                         this.menuItems = otherItems;
                         return [3 /*break*/, 3];
                     case 2:
-                        error_1 = _a.sent();
+                        error_1 = _b.sent();
                         console.error('Error loading menu', error_1);
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
