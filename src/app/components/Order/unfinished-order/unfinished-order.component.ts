@@ -10,6 +10,7 @@ import {
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { GeneralService } from "src/app/services/admin/general.service";
+import { UserService } from "src/app/services/admin/user.service";
 
 @Component({
   selector: "app-unfinished-order",
@@ -24,7 +25,8 @@ export class UnfinishedOrderComponent implements OnInit {
     private orderService: OrderService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private generalService: GeneralService
+    private generalService: GeneralService,
+    private userService: UserService
   ) { }
   currentPage = 1;
   orders: ClientOrder_DTO[] = [];
@@ -85,7 +87,7 @@ export class UnfinishedOrderComponent implements OnInit {
     var response = await this.orderService.getClientOrdersByFilter(filter);
     this.orders = [];
     this.orders = response;
-    // this.filterOrdersByRole();
+    this.filterOrdersByRole();
     this.headerService.updatePageTitle(
       (this.currentOrderState == true ? "Aktarılan" : "Aktarılmamış") +
       " Siparişler"
@@ -112,18 +114,17 @@ export class UnfinishedOrderComponent implements OnInit {
   filterOrdersByRole() {
     const roleDescription = localStorage.getItem("roleDescription");
     const salesPersonCode = localStorage.getItem("salesPersonCode");
-
-    if (roleDescription !== "Admin") {
-      // Siparişlerin boş olup olmadığını kontrol et
+    var ui = this.userService.getUserClientInfoResponse();
+    var f = (ui.name + ui.surname);
+    if (ui.roleDescription != 'Admin') {
       if (this.orders?.length > 0) {
         // Satış personel koduna göre filtreleme
         this.orders = this.orders.filter(
-          (order) => order.clientOrder?.salesPersonCode === salesPersonCode
+          (order) => order.clientOrder?.userId == ui.userId
         );
       }
-      // Bilgilendirme mesajı
-      this.toasterService.info("Sadece Kendi Siparişlerinizi Görebilirsiniz.");
     }
+
   }
 
   async deleteClientOrder(id: string) {

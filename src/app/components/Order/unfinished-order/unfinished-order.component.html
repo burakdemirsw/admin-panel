@@ -85,6 +85,7 @@
           ]" [tableStyle]="{ 'min-width': '75rem' }" styleClass="p-datatable-striped">
         <ng-template pTemplate="header">
           <tr>
+            <th>Kullanıcı</th>
             <th>Satış Sorumlusu</th>
             <th>Müşteri</th>
             <th>Alt Müşteri</th>
@@ -98,6 +99,9 @@
             <th>İşlemler</th>
           </tr>
           <tr>
+            <th>
+              <p-columnFilter type="text" field="sellerDescription" placeholder="Kullanıcı" ariaLabel="Kullanıcı" />
+            </th>
             <th>
               <p-columnFilter type="text" field="salesPersonDescription" placeholder="Satış Elemanına göre ara"
                 ariaLabel="Satış Elemanı" />
@@ -116,12 +120,13 @@
             <th>
               <p-columnFilter type="text" field="paymentDescription" placeholder="Ödemeye göre ara" ariaLabel="Ödeme" />
             </th>
-            <th>
-              <p-columnFilter type="text" field="isCancelled" placeholder="İptal Durumu" ariaLabel="İptal Durumu" />
-            </th>
+
             <th>
               <p-columnFilter type="text" field="cargoStatus" placeholder="Kargo Durumuna göre ara"
                 ariaLabel="Kargo Durumu" />
+            </th>
+            <th>
+              <p-columnFilter type="boolean" field="isCancelled" placeholder="İptal Durumu" ariaLabel="İptal Durumu" />
             </th>
             <th>
               <p-columnFilter type="text" field="orderNumber" placeholder="Sipariş Numarası"
@@ -140,6 +145,8 @@
         </ng-template>
         <ng-template pTemplate="body" let-order>
           <tr>
+            <td>{{ order.clientOrder.sellerDescription }}</td>
+
             <td>{{ order.clientOrder.salesPersonDescription }}</td>
             <td>{{ order.clientOrder.customerDescription }}</td>
             <td>{{ order.clientOrder.subCustomerDescription }}</td>

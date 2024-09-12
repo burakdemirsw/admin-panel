@@ -364,6 +364,7 @@ export class ClientOrder {
   discountRate1: number
   discountRate2: number
   sellerDescription: string;
+  userId: number;
   constructor() {
     this.createdDate = new Date();
     this.isCompleted = false;

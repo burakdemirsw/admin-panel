@@ -79,6 +79,8 @@ export class CreateOrderComponent implements OnInit {
     private orderService: OrderService) { }
 
   async ngOnInit() {
+
+
     this.createGetCustomerForm();
     this.createGetProductForm();
     this.createUpdateProductForm()
@@ -89,7 +91,7 @@ export class CreateOrderComponent implements OnInit {
     this.createDiscountForm();
     this._createCustomerFormMethod();
     await this.getSalesPersonModels();
-    this.userInfo = this.userService.getUserClientInfoResponse();
+
     this.activatedRoute.params.subscribe(async (params) => {
       if (params['id']) {
 
@@ -417,6 +419,7 @@ export class CreateOrderComponent implements OnInit {
   createClientOrder_RM(): ClientOrder {
     try {
 
+      var userInfo = this.userService.getUserClientInfoResponse()
       var request: ClientOrder = new ClientOrder()
       const currentTime = new Date();
 
@@ -441,8 +444,9 @@ export class CreateOrderComponent implements OnInit {
       request.discountRate1 = this.discountRate1
       request.discountRate2 = this.discountRate2
       request.salesPersonCode = localStorage.getItem('salesPersonCode');
-      request.sellerDescription = this.userInfo.name + '' + this.userInfo.surname;
+      request.sellerDescription = userInfo.name + ' ' + userInfo.surname;
       request.salesPersonDescription = this.salesPersonModelList.find(s => s.code == request.salesPersonCode).name;
+      request.userId = userInfo.userId;
       if (this.payment) {
         request.paymentType = this.payment.creditCardTypeCode;
       } else {

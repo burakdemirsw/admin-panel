@@ -220,7 +220,6 @@ var CreateOrderComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.getSalesPersonModels()];
                     case 1:
                         _b.sent();
-                        this.userInfo = this.userService.getUserClientInfoResponse();
                         this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
@@ -551,6 +550,7 @@ var CreateOrderComponent = /** @class */ (function () {
     CreateOrderComponent.prototype.createClientOrder_RM = function () {
         var _a, _b, _c, _d;
         try {
+            var userInfo = this.userService.getUserClientInfoResponse();
             var request = new nebimOrder_1.ClientOrder();
             var currentTime = new Date();
             // 3 saat çıkararak yeni bir Date nesnesi oluşturun
@@ -574,8 +574,9 @@ var CreateOrderComponent = /** @class */ (function () {
             request.discountRate1 = this.discountRate1;
             request.discountRate2 = this.discountRate2;
             request.salesPersonCode = localStorage.getItem('salesPersonCode');
-            request.sellerDescription = this.userInfo.name + '' + this.userInfo.surname;
+            request.sellerDescription = userInfo.name + ' ' + userInfo.surname;
             request.salesPersonDescription = this.salesPersonModelList.find(function (s) { return s.code == request.salesPersonCode; }).name;
+            request.userId = userInfo.userId;
             if (this.payment) {
                 request.paymentType = this.payment.creditCardTypeCode;
             }

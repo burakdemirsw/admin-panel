@@ -799,7 +799,7 @@
                     Müşteri Oluştur</button>
                 </div>
 
-                <form [formGroup]="createCustomerForm" (ngSubmit)="submitAddressForm(createCustomerForm.value)">
+                <form [formGroup]="createCustomerForm">
 
                   <p-dialog [maximizable]="true" header="Müşteri Ekle" [(visible)]="createCustomerDialog"
                     [style]="{ width: '80vw' }">
@@ -1374,15 +1374,9 @@
         <div class="mb-3"></div>
         <div *ngIf="(!this.isCancelled && !this.isCompleted)" #ödemeler>
           <form [formGroup]="paymentForm">
-            <div *ngIf="
-                  this.selectedCustomers.length > 0 &&
-                  this.selectedAddresses.length > 0
-                  ">
-              <div class="row" #TAXFREE? *ngIf="
-                  this.selectedCustomers.length > 0 &&
-                  this.selectedAddresses.length > 0
-                  ">
-                <div class="col-md-6 mb-3">
+            <div>
+              <div class="row" #TAXFREE>
+                <div class=" col-md-6 mb-3">
                   <p-dropdown [style]="{'width': '100%'}" [options]="stateOptions" optionLabel="label"
                     placeholder="Vergi Tipi Seçiniz" formControlName="taxTypeCode"></p-dropdown>
                 </div>

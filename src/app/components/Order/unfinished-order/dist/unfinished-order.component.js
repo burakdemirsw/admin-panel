@@ -45,7 +45,7 @@ exports.__esModule = true;
 exports.UnfinishedOrderComponent = void 0;
 var core_1 = require("@angular/core");
 var UnfinishedOrderComponent = /** @class */ (function () {
-    function UnfinishedOrderComponent(headerService, fb, toasterService, orderService, router, activatedRoute, generalService) {
+    function UnfinishedOrderComponent(headerService, fb, toasterService, orderService, router, activatedRoute, generalService, userService) {
         this.headerService = headerService;
         this.fb = fb;
         this.toasterService = toasterService;
@@ -53,6 +53,7 @@ var UnfinishedOrderComponent = /** @class */ (function () {
         this.router = router;
         this.activatedRoute = activatedRoute;
         this.generalService = generalService;
+        this.userService = userService;
         this.currentPage = 1;
         this.orders = [];
         this.visible = false;
@@ -113,7 +114,7 @@ var UnfinishedOrderComponent = /** @class */ (function () {
                         response = _a.sent();
                         this.orders = [];
                         this.orders = response;
-                        // this.filterOrdersByRole();
+                        this.filterOrdersByRole();
                         this.headerService.updatePageTitle((this.currentOrderState == true ? "Aktarılan" : "Aktarılmamış") +
                             " Siparişler");
                         return [2 /*return*/];
@@ -159,14 +160,13 @@ var UnfinishedOrderComponent = /** @class */ (function () {
         var _a;
         var roleDescription = localStorage.getItem("roleDescription");
         var salesPersonCode = localStorage.getItem("salesPersonCode");
-        if (roleDescription !== "Admin") {
-            // Siparişlerin boş olup olmadığını kontrol et
+        var ui = this.userService.getUserClientInfoResponse();
+        var f = (ui.name + ui.surname);
+        if (ui.roleDescription != 'Admin') {
             if (((_a = this.orders) === null || _a === void 0 ? void 0 : _a.length) > 0) {
                 // Satış personel koduna göre filtreleme
-                this.orders = this.orders.filter(function (order) { var _a; return ((_a = order.clientOrder) === null || _a === void 0 ? void 0 : _a.salesPersonCode) === salesPersonCode; });
+                this.orders = this.orders.filter(function (order) { var _a; return ((_a = order.clientOrder) === null || _a === void 0 ? void 0 : _a.userId) == ui.userId; });
             }
-            // Bilgilendirme mesajı
-            this.toasterService.info("Sadece Kendi Siparişlerinizi Görebilirsiniz.");
         }
     };
     UnfinishedOrderComponent.prototype.deleteClientOrder = function (id) {
