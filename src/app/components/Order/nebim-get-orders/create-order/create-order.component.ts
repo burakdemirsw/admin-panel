@@ -31,6 +31,8 @@ import { FastTransfer_VM } from '../../../../models/model/warehouse/transferRequ
 import { OrderService } from '../../../../services/admin/order.service';
 import { GoogleDriveService } from '../../../../services/common/google-drive.service';
 import { CreatePackage_MNG_RR, OrderDetail } from '../../../cargo/create-cargo/models/models';
+import { UserClientInfoResponse } from '../../../../models/model/user/userRegister_VM';
+import { UserService } from 'src/app/services/admin/user.service';
 
 @Component({
   selector: 'app-create-order',
@@ -60,6 +62,7 @@ export class CreateOrderComponent implements OnInit {
   exchangeRate: ExchangeRate;
   isCollapsed: boolean = false;
   isCollapsed_2: boolean = false;
+  userInfo: UserClientInfoResponse;
   constructor(private headerService: HeaderService,
     private warehouseService: WarehouseService,
     private paymentService: PaymentService,
@@ -72,6 +75,7 @@ export class CreateOrderComponent implements OnInit {
     private googleDriveService: GoogleDriveService,
     private productService: ProductService,
     private formBuilder: FormBuilder,
+    private userService: UserService,
     private orderService: OrderService) { }
 
   async ngOnInit() {
@@ -85,7 +89,7 @@ export class CreateOrderComponent implements OnInit {
     this.createDiscountForm();
     this._createCustomerFormMethod();
     await this.getSalesPersonModels();
-
+    this.userInfo = this.userService.getUserClientInfoResponse();
     this.activatedRoute.params.subscribe(async (params) => {
       if (params['id']) {
 
@@ -437,6 +441,7 @@ export class CreateOrderComponent implements OnInit {
       request.discountRate1 = this.discountRate1
       request.discountRate2 = this.discountRate2
       request.salesPersonCode = localStorage.getItem('salesPersonCode');
+      request.sellerDescription = this.userInfo.name + '' + this.userInfo.surname;
       request.salesPersonDescription = this.salesPersonModelList.find(s => s.code == request.salesPersonCode).name;
       if (this.payment) {
         request.paymentType = this.payment.creditCardTypeCode;
@@ -1947,6 +1952,8 @@ export class CreateOrderComponent implements OnInit {
         var line_request = this.createClientOrderBasketItem_RM(request, quantity);
         if (line_request.itemCode.startsWith('FG')) {
           line_request.quantity = 5;
+          line_request.totalPrice = 5 * line_request.totalPrice;
+          line_request.totalTaxedPrice = 5 * line_request.totalTaxedPrice;
         }
         var line_response = await this.orderService.createClientOrderBasketItem(line_request); //sipariş ürünü oluşturuldu
         if (line_response) {

@@ -56,7 +56,7 @@ var createCustomer_CM_1 = require("../../../../models/model/order/createCustomer
 var getCustomerList_CM_2 = require("../../../../models/model/order/getCustomerList_CM");
 var nebimOrder_1 = require("../../../../models/model/order/nebimOrder");
 var CreateOrderComponent = /** @class */ (function () {
-    function CreateOrderComponent(headerService, warehouseService, paymentService, toasterService, activatedRoute, router, httpClientService, generalService, addressService, googleDriveService, productService, formBuilder, orderService) {
+    function CreateOrderComponent(headerService, warehouseService, paymentService, toasterService, activatedRoute, router, httpClientService, generalService, addressService, googleDriveService, productService, formBuilder, userService, orderService) {
         this.headerService = headerService;
         this.warehouseService = warehouseService;
         this.paymentService = paymentService;
@@ -69,6 +69,7 @@ var CreateOrderComponent = /** @class */ (function () {
         this.googleDriveService = googleDriveService;
         this.productService = productService;
         this.formBuilder = formBuilder;
+        this.userService = userService;
         this.orderService = orderService;
         this.selectedCustomers = [];
         this.selectedProducts = [];
@@ -219,6 +220,7 @@ var CreateOrderComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.getSalesPersonModels()];
                     case 1:
                         _b.sent();
+                        this.userInfo = this.userService.getUserClientInfoResponse();
                         this.activatedRoute.params.subscribe(function (params) { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
@@ -572,6 +574,7 @@ var CreateOrderComponent = /** @class */ (function () {
             request.discountRate1 = this.discountRate1;
             request.discountRate2 = this.discountRate2;
             request.salesPersonCode = localStorage.getItem('salesPersonCode');
+            request.sellerDescription = this.userInfo.name + '' + this.userInfo.surname;
             request.salesPersonDescription = this.salesPersonModelList.find(function (s) { return s.code == request.salesPersonCode; }).name;
             if (this.payment) {
                 request.paymentType = this.payment.creditCardTypeCode;
@@ -2166,6 +2169,8 @@ var CreateOrderComponent = /** @class */ (function () {
                         line_request = this.createClientOrderBasketItem_RM(request, quantity);
                         if (line_request.itemCode.startsWith('FG')) {
                             line_request.quantity = 5;
+                            line_request.totalPrice = 5 * line_request.totalPrice;
+                            line_request.totalTaxedPrice = 5 * line_request.totalTaxedPrice;
                         }
                         return [4 /*yield*/, this.orderService.createClientOrderBasketItem(line_request)];
                     case 2:

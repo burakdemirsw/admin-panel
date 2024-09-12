@@ -363,6 +363,7 @@ export class ClientOrder {
   subCustomerDescription?: string;
   discountRate1: number
   discountRate2: number
+  sellerDescription: string;
   constructor() {
     this.createdDate = new Date();
     this.isCompleted = false;
