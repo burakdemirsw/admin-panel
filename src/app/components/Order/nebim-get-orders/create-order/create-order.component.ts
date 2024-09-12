@@ -2157,6 +2157,11 @@ export class CreateOrderComponent implements OnInit {
       address_recepient_name: [null],
       address_phoneNumber: [null]
     })
+
+    this.cargoForm_2.get('address_phoneNumber').valueChanges.subscribe((value) => {
+      const formattedValue = this.generalService.formatPhoneNumber(value); // Metodu kullanarak formatlama
+      this.cargoForm_2.get('address_phoneNumber').setValue(formattedValue, { emitEvent: false }); // Formatlanmış değeri ayarla
+    });
   }
 
   desiErrorMessage = '';

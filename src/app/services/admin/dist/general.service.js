@@ -73,6 +73,10 @@ var GeneralService = /** @class */ (function () {
         if (newVal.length === 0) {
             return ''; // Boş değer durumu
         }
+        // Maksimum 10 hane (sadece rakamlar) sınırı
+        if (newVal.length > 10) {
+            newVal = newVal.substring(0, 10); // Sadece ilk 10 rakamı al
+        }
         // Eğer ilk hane 0 ise, 0'ı sil
         if (newVal.startsWith('0')) {
             newVal = newVal.substring(1);
@@ -80,8 +84,7 @@ var GeneralService = /** @class */ (function () {
         }
         // Telefon numarasını formatla
         if (newVal.length <= 3) {
-            // Eğer sadece 3 rakam varsa ve kullanıcı silme yapmak istiyorsa boş bırak
-            newVal = newVal; // (539) gibi görünmesini engeller
+            newVal = newVal.replace(/^(\d{0,3})/, '($1)'); // İlk 3 hane parantez içinde gösteriliyor
         }
         else if (newVal.length <= 6) {
             newVal = newVal.replace(/^(\d{0,3})(\d{0,3})/, '($1)-$2'); // 3 hane parantez içinde ve ardından 3 hane, tire ile ayır

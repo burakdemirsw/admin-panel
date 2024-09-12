@@ -2395,10 +2395,15 @@ var CreateOrderComponent = /** @class */ (function () {
     };
     CreateOrderComponent.prototype.createCargoForm_2 = function () {
         return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
             return __generator(this, function (_a) {
                 this.cargoForm_2 = this.formBuilder.group({
                     address_recepient_name: [null],
                     address_phoneNumber: [null]
+                });
+                this.cargoForm_2.get('address_phoneNumber').valueChanges.subscribe(function (value) {
+                    var formattedValue = _this.generalService.formatPhoneNumber(value); // Metodu kullanarak formatlama
+                    _this.cargoForm_2.get('address_phoneNumber').setValue(formattedValue, { emitEvent: false }); // Formatlanmış değeri ayarla
                 });
                 return [2 /*return*/];
             });
