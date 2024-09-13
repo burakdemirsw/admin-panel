@@ -74,6 +74,7 @@ import { IdeasoftOffersComponent } from './components/special-panels/ideasoft-of
 import { TransferredOrdersComponent } from './components/marketplace/transferred-orders/transferred-orders.component';
 import { TaskPanelsComponent } from './components/Devolopment/devolopment-list/task-panels/task-panels.component';
 import { TaskPanelComponent } from './components/Devolopment/devolopment-list/task-panel/task-panel.component';
+import { UntransferredOrdersComponent } from './components/marketplace/transferred-orders/untransferred-orders/untransferred-orders.component';
 
 
 const routes: Routes = [
@@ -179,6 +180,13 @@ const routes: Routes = [
     component: UnfinishedOrderComponent,
     canActivate: [AuthGuard],
   },
+
+  {
+    path: 'untransferred-orders',
+    component: UntransferredOrdersComponent,
+    canActivate: [AuthGuard],
+  },
+
   {
     path: 'cargo-list',
     component: CargoListComponent,
@@ -326,8 +334,8 @@ const routes: Routes = [
   },
   { path: 'order-state', component: OrderStateComponent, canActivate: [AuthGuard] },
   { path: 'box-count', component: BoxCountComponent, canActivate: [AuthGuard] },
-  { path: 'search-qr/:id', component: SearchQrComponent, canActivate: [AuthGuard] },
-  { path: 'search-qr', component: SearchQrComponent, canActivate: [AuthGuard] },
+  { path: 'search/:target', component: SearchQrComponent, canActivate: [AuthGuard] },
+  { path: 'search/:target/:id', component: SearchQrComponent, canActivate: [AuthGuard] },
   { path: 'nebim-get-orders', component: NebimGetOrdersComponent, canActivate: [AuthGuard] },
   { path: 'nebim-stock-control', component: NebimStockControlComponent, canActivate: [AuthGuard] },
   { path: 'nebim-product-extract', component: NebimProductExtractComponent, canActivate: [AuthGuard] },

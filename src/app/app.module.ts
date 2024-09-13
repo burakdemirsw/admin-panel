@@ -138,6 +138,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { TaskPanelComponent } from './components/Devolopment/devolopment-list/task-panel/task-panel.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AutoMaximizeDialogDirective } from './directives/auto-maximize-dialog.directive';
+import { UntransferredOrdersComponent } from './components/marketplace/transferred-orders/untransferred-orders/untransferred-orders.component';
 @NgModule({
 
   declarations: [
@@ -227,7 +228,8 @@ import { AutoMaximizeDialogDirective } from './directives/auto-maximize-dialog.d
     AddProductToShelfListComponent,
     TransferredOrdersComponent,
     TaskPanelsComponent,
-    AutoMaximizeDialogDirective
+    AutoMaximizeDialogDirective,
+    UntransferredOrdersComponent
 
   ],
 

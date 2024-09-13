@@ -600,7 +600,7 @@ export class WarehouseOperationComponent implements OnInit {
     );
     this.shelfNumbers = result[0];
     this.warehouseForm.get('barcode').setValue(result[3]);
-    this.warehouseForm.get('batchCode').setValue(result[2].toString());
+    this.warehouseForm.get('batchCode').setValue(result[2]?.toString());
     this.warehouseForm.get('quantity').setValue(result[1]);
 
 

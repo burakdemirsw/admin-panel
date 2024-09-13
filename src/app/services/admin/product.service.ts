@@ -319,6 +319,13 @@ export class ProductService {
     return response;
   }
 
+  async _searchShelf(model: BarcodeSearch_RM): Promise<any> {
+    const response = await this.httpClientService
+      .post<BarcodeSearch_RM>({ controller: 'Products/search-shelf' }, model)
+      .toPromise();
+
+    return response;
+  }
 
 
   async searchProduct(model: BarcodeSearch_RM): Promise<ProductList_VM[]> {

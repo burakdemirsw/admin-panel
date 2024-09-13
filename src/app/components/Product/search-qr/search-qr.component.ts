@@ -34,20 +34,21 @@ export class SearchQrComponent implements OnInit {
   ) { }
   currentId: string = null
   qrForm: FormGroup;
+  currentSearchTarget: string;
   async ngOnInit() {
-    this.headerService.updatePageTitle("Ürün Sorgulama")
     this.activatedRoute.params.subscribe(async (params) => {
-      this.currentId = params['id']
-      if (this.currentId != null) {
+      this.currentSearchTarget = params['target']
+      if (this.currentSearchTarget == 'shelf') {
+        this.headerService.updatePageTitle("Raf Sorgulama")
+
         await this.getProducts(this.currentId);
+      } else if (this.currentSearchTarget != 'product') {
+        this.headerService.updatePageTitle("Ürün Sorgulama")
       }
-      // this.toasterService.success(this.currentId)
     })
-    //this.spinnerService.show();
 
     this.formGenerator();
 
-    //this.spinnerService.hide();
   }
   qrCodeValue: string;
 
@@ -130,6 +131,14 @@ export class SearchQrComponent implements OnInit {
 
   }
 
+  async getProducts3(barcode: string) {
+    var model: BarcodeSearch_RM = new BarcodeSearch_RM();
+    model.barcode = barcode;
+    const response = await this.productService._searchShelf(model);
+    this._products = response;
+  }
+
+
   _products: ProductList_VM[] = [];
   async getProducts2(barcode: string) {
     try {
@@ -159,7 +168,13 @@ export class SearchQrComponent implements OnInit {
     }
   }
   async onSubmit(value: any) {
-    await this.getProducts(value.barcode);
-    this.toasterService.success(value.barcode);
+    if (this.currentSearchTarget == 'product') {
+      await this.getProducts(value.barcode);
+      this.toasterService.success(value.barcode);
+    } else if (this.currentSearchTarget == 'shelf') {
+      await this.getProducts3(value.barcode);
+      this.toasterService.success(value.barcode);
+    }
+
   }
 }

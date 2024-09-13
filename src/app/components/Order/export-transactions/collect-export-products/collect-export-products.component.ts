@@ -316,7 +316,7 @@ export class CollectExportProductsComponent {
       this.shelfNumbers = result[0];
       var currentShelfNo = this.checkForm.get('shelfNo').value;
       this.checkForm.get('barcode').setValue(result[3]);
-      this.checkForm.get('batchCode').setValue(result[2].toString());
+      this.checkForm.get('batchCode').setValue(result[2]?.toString());
       this.checkForm.get('quantity').setValue(result[1]);
 
       var product: CountProduct = new CountProduct(result[3], currentShelfNo, result[2], Number(result[1]));

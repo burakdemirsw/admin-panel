@@ -920,7 +920,7 @@ export class CreateSaleOrderComponent implements OnInit {
         model.barcode
       );
       this.shelfNumbers = result[0];
-      this.productForm.get('batchCode').setValue(result[2]);
+      this.productForm.get('batchCode').setValue(result[2]?.toString());
       this.productForm.get('barcode').setValue(result[3]);
       this.productForm.get('quantity').setValue(result[1]);
 

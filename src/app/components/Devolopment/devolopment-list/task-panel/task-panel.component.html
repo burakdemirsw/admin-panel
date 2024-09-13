@@ -26,9 +26,12 @@
               </div>
               <!-- Kartın İçeriği (Development Tasks) -->
               <div class="card-body task-card-body mt-3" style="cursor: pointer;">
-                <div class="development-task mb-3" *ngFor="let task of taskCard.developmentTasks">
-                  <h6><strong>{{ task.header }}</strong></h6>
-                  <p>
+                <div class="development-task mb-3" *ngFor="let task of taskCard.developmentTasks"
+                  style="overflow: hidden;">
+                  <h6 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">
+                    <strong>{{ task.header }}</strong>
+                  </h6>
+                  <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">
                     {{ task.description.length > 50 ? (task.description.substring(0, 50).toUpperCase() + '...') : task.description.toUpperCase() }}
                   </p>
                   <span class="btn btn-sm" [ngClass]="{
@@ -71,6 +74,7 @@
                   </span>
                 </div>
               </div>
+
               <!-- Kartın Footer Bölümü -->
               <div class="card-footer">
                 <button class="btn btn-success" (click)="openAddTaskDialog(taskCard)" style="width: 100% !important;">

@@ -1,0 +1,65 @@
+<main id="main" class="main">
+  <section class="section">
+    <div class="card">
+      <p-table #dt2 [value]="orders" dataKey="id" [paginator]="true" [rowsPerPageOptions]="[5, 10, 20]" [rows]="10"
+        [tableStyle]="{ 'min-width': '70rem' }"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="operationNumber">İşlem Numarası <p-sortIcon field="operationNumber"></p-sortIcon>
+            </th>
+            <th pSortableColumn="transactionDescription">Açıklama <p-sortIcon field="transactionDescription">
+              </p-sortIcon>
+            </th>
+            <th pSortableColumn="status">Durum <p-sortIcon field="status"></p-sortIcon>
+            </th>
+            <th pSortableColumn="errMsg">Hata Mesajı <p-sortIcon field="errMsg"></p-sortIcon>
+            </th>
+            <th pSortableColumn="createdDate">Oluşturma Tarihi <p-sortIcon field="createdDate"></p-sortIcon>
+            </th>
+          </tr>
+          <tr>
+            <th>
+              <p-columnFilter type="text" field="operationNumber" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="transactionDescription" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="status" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="errMsg" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="createdDate" [showClearButton]="false"></p-columnFilter>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-rowData>
+          <tr>
+            <td>{{ rowData.operationNumber }}</td>
+            <td>{{ rowData.transactionDescription }}</td>
+            <td>
+              <button class="btn btn-danger">
+                Başarısız
+              </button>
+            </td>
+            <td>
+              <p-editor [(ngModel)]="rowData.errMsg" [style]="{'width':'100%'}" [disabled]="true">
+                <p-header hidden>
+                  <span class="ql-formats"></span>
+                </p-header>
+              </p-editor>
+            </td>
+            <td>{{ rowData.createdDate | date:'short' }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+
+    </div>
+  </section>
+</main>

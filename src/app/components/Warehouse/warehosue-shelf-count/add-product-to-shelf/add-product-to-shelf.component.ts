@@ -215,7 +215,7 @@ export class AddProductToShelfComponent {
       );
       if (result) {
         this.shelfNumbers = result[0];
-        this.checkForm.get('batchCode').setValue(result[2]);
+        this.checkForm.get('batchCode').setValue(result[2]?.toString());
         this.checkForm.get('barcode').setValue(result[3]);
         this.checkForm.get('quantity').setValue(Number(result[1]));
 

@@ -21,7 +21,7 @@ export class IdeasoftComponent implements OnInit {
     var state = url.split('state=')[1].split('&')[0];
     var code = url.split('code=')[1];
     this.toasterService.success(state);
-    this.toasterService.success(code);
+    this.toasterService.success(code); 
 
   }
 

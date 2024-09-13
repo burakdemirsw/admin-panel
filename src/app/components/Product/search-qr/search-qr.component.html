@@ -2,29 +2,15 @@
   <section class="section">
     <div class="card">
       <div class="card-body">
-        <form
-          [formGroup]="qrForm"
-          (ngSubmit)="onSubmit(qrForm.value)"
-          class="mt-4"
-        >
+        <form [formGroup]="qrForm" (ngSubmit)="onSubmit(qrForm.value)" class="mt-4">
           <div class="form-row">
             <div class="form-group col-md-12 mb-3">
               <div class="input-group">
-                <input
-                  pInputText
-                  placeholder="Barkod"
-                  type="search"
-                  id="barcode"
-                  class="form-control"
-                  formControlName="barcode"
-                />
+                <input pInputText placeholder="{{this.currentSearchTarget=='product' ? 'Barkod':  'Raf'}}" type="search"
+                  id="barcode" class="form-control" formControlName="barcode" />
                 <div class="input-group-append">
-                  <button
-                    class="btn btn-primary"
-                    type="submit"
-                    style="height: 100%"
-                  >
-                    Sorgula
+                  <button class="btn btn-primary" type="submit" style="height: 100%">
+                    <i class="fa fa-search" aria-hidden="true"></i>
                   </button>
                 </div>
               </div>
@@ -60,12 +46,8 @@
               <tr *ngFor="let qr of qrCodes; let i = index">
                 <td>{{ qr.id }}</td>
                 <td class="image-icon-td">
-                  <p-image
-                    src="data:image/jpeg;base64,{{ qr.barcodeBase64 }}"
-                    alt="Image"
-                    width="50"
-                    [preview]="true"
-                  ></p-image>
+                  <p-image src="data:image/jpeg;base64,{{ qr.barcodeBase64 }}" alt="Image" width="50" [preview]="true">
+                  </p-image>
                 </td>
                 <td>{{ qr.itemCode }}</td>
                 <td>{{ qr.shelfNo }}</td>
@@ -77,11 +59,7 @@
                 <td>{{ qr.price }}</td>
                 <td>{{ qr.description }}</td>
                 <td>
-                  <button
-                    class="btn btn-primary"
-                    type="submit"
-                    (click)="print(qr.barcodeBase64)"
-                  >
+                  <button class="btn btn-primary" type="submit" (click)="print(qr.barcodeBase64)">
                     <i class="fas fa-print"></i>
                   </button>
                 </td>
@@ -114,12 +92,7 @@
               <tr *ngFor="let product of _products; let i = index">
                 <td>{{ i + 1 }}</td>
                 <td class="image-icon-td">
-                  <p-image
-                    src="{{ product.photoUrl }}"
-                    alt="Image"
-                    width="30"
-                    [preview]="true"
-                  ></p-image>
+                  <p-image src="{{ product.photoUrl }}" alt="Image" width="30" [preview]="true"></p-image>
                 </td>
                 <td>{{ product.itemCode }}</td>
                 <td>{{ product.description }}</td>
