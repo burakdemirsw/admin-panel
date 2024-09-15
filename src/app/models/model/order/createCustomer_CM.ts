@@ -17,7 +17,7 @@ export class CreateCustomer_CM {
   currAccCode: string;
   constructor() {
     this.address = new Address();
-    this.mersisNum = "1111111111";
+    this.mersisNum = "";
     this.taxNumber = "1111111111";
     this.taxOfficeCode = "";
 

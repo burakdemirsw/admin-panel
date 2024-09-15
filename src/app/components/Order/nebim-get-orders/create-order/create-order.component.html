@@ -290,6 +290,7 @@
               <th scope="col">% İSK</th>
               <th scope="col">₺ İSK</th>
               <th scope="col">Toplam Fiyat</th>
+
               <th scope="col" *ngIf="paymentForm.value.taxTypeCode.value=='0'">% Kdv</th>
               <th scope="col" *ngIf="paymentForm.value.taxTypeCode.value=='0'">₺ Kdv</th>
               <th scope="col" *ngIf="paymentForm.value.taxTypeCode.value=='0'">K. Total</th>
@@ -697,6 +698,9 @@
             <form [formGroup]="discountForm" *ngIf="selectedProducts.length > 0 && !this.isCompleted" class="mb-3 ">
               <div class="row">
                 <div class="col-md-4  mb-3">
+                  <div class="mb-3">
+                    <label>Yüzde İndirim </label>
+                  </div>
                   <div class="input-group">
                     <div class="input-group-prepend">
                       <button class="btn" icon="pi pi-check" [ngClass]="{
@@ -713,6 +717,10 @@
                   </div>
                 </div>
                 <div class="col-md-4 mb-3">
+                  <div class="mb-3">
+                    <label>Nakit İndirim </label>
+                  </div>
+
                   <div class="input-group ">
                     <div class="input-group-append">
                       <button class="btn" icon="pi pi-check" [ngClass]="{
@@ -734,7 +742,52 @@
                     Lütfen Butona Basınız
                   </p>
                 </div>
-                <div class="col-md-4">
+
+                <div class="col-md-4 mb-3" *ngIf="paymentForm.value.taxTypeCode.value!='0'">
+                  <div class="mb-3">
+                    <label>Kdvsiz Son Fiyat</label>
+                  </div>
+
+                  <div class="input-group ">
+                    <div class="input-group-append">
+                      <button class="btn" icon="pi pi-check" class="btn btn-success" (click)="cashDiscount(
+                        getTotal()-this.discountForm.get('lastPrice').value)" type="button">
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                    <input type="number" class="form-control" id="lastPrice" placeholder="Son Fiyat"
+                      formControlName="lastPrice" (keydown.enter)="
+                        cashDiscount(this.discountForm.value.cashDiscountRate)
+                        " />
+                  </div>
+
+                </div>
+                <div class="col-md-4 mb-3" *ngIf="false">
+                  <div class="mb-3">
+                    <label>Kdvli Son Fiyat</label>
+                  </div>
+
+                  <div class="input-group ">
+                    <div class="input-group-append">
+                      <button class="btn" icon="pi pi-check" class="btn btn-success"
+                        (click)="cashDiscount(
+                        (((getUnTaxedTotalAfterDiscount() /getTotal() )*getTotalTax_2() ) +  getUnTaxedTotalAfterDiscount()  )-this.discountForm.get('lastPrice').value)"
+                        type="button">
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                    <input type="number" class="form-control" id="lastPrice" placeholder="Son Fiyat"
+                      formControlName="lastPrice" (keydown.enter)="
+                        cashDiscount(this.discountForm.value.cashDiscountRate)
+                        " />
+                  </div>
+
+                </div>
+
+                <div class="col-md-12">
+                  <div class="mb-3">
+                    <label></label>
+                  </div>
                   <button btn style="width: 100%" class="btn btn-danger" (click)="resetDiscount()" type="button"><i
                       class="fa fa-trash" aria-hidden="true"></i> İndirimi Sıfırla</button>
                 </div>
@@ -822,7 +875,8 @@
                           id="phoneNumber" placeholder="(5XX XXX XX XX)" formControlName="phoneNumber" />
                       </div>
                     </div>
-                    <div>
+
+                    <p-panel header="Detay" [toggleable]="true" [collapsed]="true">
                       <div class="row mb-3" *ngIf="this.createCustomerForm.value.stampPhotoUrl">
                         <p-image src="{{ this.createCustomerForm.value.stampPhotoUrl  }}" alt="Image" width="350"
                           [preview]="true" />
@@ -986,8 +1040,8 @@
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="row mb-3">
+                    </p-panel>
+                    <div class="row mb-3 mt-3">
                       <div class="col-md-12">
                         <div class="form-group">
                           <button class="btn btn-success" icon="pi pi-plus" type="submit" style="width: 100%"
@@ -1412,9 +1466,16 @@
                 <th scope="col">% İSK</th>
                 <th scope="col">₺ İSK</th>
                 <th scope="col">Toplam Fiyat</th>
+                @if (!this.isCompleted){
                 <th scope="col" *ngIf="paymentForm.value.taxTypeCode.value=='0'">% Kdv</th>
                 <th scope="col" *ngIf="paymentForm.value.taxTypeCode.value=='0'">₺ Kdv</th>
                 <th scope="col" *ngIf="paymentForm.value.taxTypeCode.value=='0'">K. Total</th>
+                }@else{
+                <th scope="col" *ngIf="this._orderDetail?.taxTypeCode==0">% Kdv</th>
+                <th scope="col" *ngIf="this._orderDetail?.taxTypeCode==0">₺ Kdv</th>
+                <th scope="col" *ngIf="this._orderDetail?.taxTypeCode==0">K. Total</th>
+                }
+
                 <!--  <th scope="col">Ekle-Çıkar</th> -->
                 <!-- <th scope="col">Sil</th> -->
               </tr>
@@ -1462,6 +1523,7 @@
                 <td>
                   {{product.totalPrice  | currency : "₺" }}
                 </td>
+                @if (!this.isCompleted){
                 <td *ngIf="paymentForm.value.taxTypeCode.value=='0'">
                   {{product.taxRate}}
                 </td>
@@ -1471,6 +1533,21 @@
                 <td *ngIf="paymentForm.value.taxTypeCode.value=='0'">
                   {{ product.totalTaxedPrice }}
                 </td>
+                }@else{
+
+                <td *ngIf="this._orderDetail.taxTypeCode==0">
+                  {{product.taxRate}}
+                </td>
+                <td *ngIf="this._orderDetail.taxTypeCode==0">
+                  {{((product.taxRate/100)* product.totalPrice).toFixed(2)}}
+                </td>
+                <td *ngIf="this._orderDetail.taxTypeCode==0">
+                  {{ product.totalTaxedPrice }}
+                </td>
+                }
+
+
+
               </tr>
             </ng-template>
             <ng-template pTemplate="footer">
@@ -1548,7 +1625,7 @@
                 </tbody>
               </table>
             </div>
-            <div class="col-md-12 mb-3">
+            <div class="col-md-12 mb-3" *ngIf="!this.isCompleted">
               <button (click)="createOrder()" style="width: 100%" class="btn btn-success">Siparişi
                 Onayla</button>
             </div>

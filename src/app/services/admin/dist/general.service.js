@@ -77,23 +77,27 @@ var GeneralService = /** @class */ (function () {
         if (newVal.length > 10) {
             newVal = newVal.substring(0, 10); // Sadece ilk 10 rakamı al
         }
-        // Eğer ilk hane 0 ise, 0'ı sil
+        // Eğer ilk hane 0 ise, 0'ı sil ve tekrar formatlamayı başlat
         if (newVal.startsWith('0')) {
-            newVal = newVal.substring(1);
+            newVal = newVal.substring(1); // İlk haneyi sil
             this.toasterService.info('Lütfen 5XX-XXX-XX-XX Formatında Numarayı Giriniz');
         }
         // Telefon numarasını formatla
         if (newVal.length <= 3) {
-            newVal = newVal.replace(/^(\d{0,3})/, '($1)'); // İlk 3 hane parantez içinde gösteriliyor
+            newVal = newVal.replace(/^(\d{0,3})/, '($1'); // İlk 3 hane parantez açılır
         }
         else if (newVal.length <= 6) {
-            newVal = newVal.replace(/^(\d{0,3})(\d{0,3})/, '($1)-$2'); // 3 hane parantez içinde ve ardından 3 hane, tire ile ayır
+            newVal = newVal.replace(/^(\d{0,3})(\d{0,3})/, '($1) $2'); // 3 hane parantez içinde ve ardından 3 hane, boşluk ile ayır
         }
         else if (newVal.length <= 8) {
-            newVal = newVal.replace(/^(\d{0,3})(\d{0,3})(\d{0,2})/, '($1)-$2-$3'); // 3+3+2 formatı
+            newVal = newVal.replace(/^(\d{0,3})(\d{0,3})(\d{0,2})/, '($1) $2-$3'); // 3+3+2 formatı
         }
         else if (newVal.length <= 10) {
-            newVal = newVal.replace(/^(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, '($1)-$2-$3-$4'); // Tam telefon formatı, tire ile ayır
+            newVal = newVal.replace(/^(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, '($1) $2-$3-$4'); // Tam telefon formatı, tire ile ayır
+        }
+        // Eğer parantez açıldı ama kapatma eksikse bunu manuel olarak sil
+        if (value.length < 5 && value.includes('(') && !value.includes(')')) {
+            newVal = newVal.replace('(', ''); // '(' varsa ama ')' yoksa parantezi kaldır
         }
         return newVal;
     };

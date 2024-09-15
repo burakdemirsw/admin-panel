@@ -118,6 +118,7 @@ import { PagesInfoComponent } from './pages/pages-info/pages-info.component';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { CreateSaleOrderComponent } from './components/Order/create-sale-order/create-sale-order.component';
 
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 @NgModule({
 
@@ -210,6 +211,7 @@ import { CreateSaleOrderComponent } from './components/Order/create-sale-order/c
     NgxSpinnerModule.forRoot({ type: 'line-scale-pulse-out' }),
     ZXingScannerModule,
     NgxPaginationModule,
+    FloatLabelModule,
     NgSelectModule,
     QRCodeModule,
     NgxPrintModule,

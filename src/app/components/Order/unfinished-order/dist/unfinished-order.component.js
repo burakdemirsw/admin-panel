@@ -124,14 +124,15 @@ var UnfinishedOrderComponent = /** @class */ (function () {
     };
     UnfinishedOrderComponent.prototype.getOrders = function (isCompleted) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a;
+            var userId, _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         this.headerService.updatePageTitle("Panel Siparişleri");
                         this.currentOrderState = isCompleted;
+                        userId = Number(localStorage.getItem("userId"));
                         _a = this;
-                        return [4 /*yield*/, this.orderService.getClientOrders(isCompleted)];
+                        return [4 /*yield*/, this.orderService.getClientOrders(isCompleted, userId)];
                     case 1:
                         _a.orders = _b.sent();
                         this.filterOrdersByRole();

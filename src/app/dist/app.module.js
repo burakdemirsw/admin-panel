@@ -126,6 +126,7 @@ var service_management_component_1 = require("./components/service-management/se
 var pages_info_component_1 = require("./pages/pages-info/pages-info.component");
 var multiselect_1 = require("primeng/multiselect");
 var create_sale_order_component_1 = require("./components/Order/create-sale-order/create-sale-order.component");
+var floatlabel_1 = require("primeng/floatlabel");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -218,6 +219,7 @@ var AppModule = /** @class */ (function () {
                 ngx_spinner_1.NgxSpinnerModule.forRoot({ type: 'line-scale-pulse-out' }),
                 ngx_scanner_1.ZXingScannerModule,
                 ngx_pagination_1.NgxPaginationModule,
+                floatlabel_1.FloatLabelModule,
                 ng_select_1.NgSelectModule,
                 angularx_qrcode_1.QRCodeModule,
                 ngx_print_1.NgxPrintModule,

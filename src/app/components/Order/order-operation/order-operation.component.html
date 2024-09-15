@@ -523,7 +523,7 @@
 
 
               </td>
-              <td> <button *ngIf="product.setProducts.length>0" [pRowToggler]="product" (click)=" logger()"
+              <td> <button *ngIf="product.setProducts?.length>0" [pRowToggler]="product" (click)=" logger()"
                   class="btn btn-danger"><i class="fa fa-database" aria-hidden="true"></i>
                 </button></td>
 

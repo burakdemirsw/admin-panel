@@ -97,7 +97,9 @@ export class UnfinishedOrderComponent implements OnInit {
   async getOrders(isCompleted: boolean) {
     this.headerService.updatePageTitle("Panel Siparişleri");
     this.currentOrderState = isCompleted;
-    this.orders = await this.orderService.getClientOrders(isCompleted);
+    const userId = Number(localStorage.getItem("userId"));
+
+    this.orders = await this.orderService.getClientOrders(isCompleted, userId);
 
     this.filterOrdersByRole();
     this.headerService.updatePageTitle(

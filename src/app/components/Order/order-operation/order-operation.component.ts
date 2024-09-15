@@ -755,8 +755,11 @@ export class OrderOperationComponent implements OnInit {
         var foundedProduct = this.productsToCollect.find(
           (p) => p.barcode == product.barcode
         );
+        //kadir abi fuarda istedi
+        if (this.generalService.isNullOrEmpty(this.checkForm.get('shelfNo').value)) {
+          this.stickToTop(foundedProduct, true);
+        }
 
-        this.stickToTop(foundedProduct, true);
         //------------------
         return product;
       } else {
@@ -811,8 +814,10 @@ export class OrderOperationComponent implements OnInit {
           var foundedProduct = this.productsToCollect.find(
             (p) => p.barcode == product.barcode
           );
-
-          this.stickToTop(foundedProduct, true);
+          //kadir abi fuarda istedi
+          if (this.generalService.isNullOrEmpty(this.checkForm.get('shelfNo').value)) {
+            this.stickToTop(foundedProduct, true);
+          }
           //------------------
           return product;
         }

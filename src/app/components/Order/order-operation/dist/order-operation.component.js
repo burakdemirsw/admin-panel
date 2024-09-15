@@ -819,7 +819,10 @@ var OrderOperationComponent = /** @class */ (function () {
                         this.checkForm.get("quantity").setValue(result[1]);
                         product = new countProduct_1.CountProduct(result[3], currentShelfNo, result[2], Number(result[1]));
                         foundedProduct = this.productsToCollect.find(function (p) { return p.barcode == product.barcode; });
-                        this.stickToTop(foundedProduct, true);
+                        //kadir abi fuarda istedi
+                        if (this.generalService.isNullOrEmpty(this.checkForm.get('shelfNo').value)) {
+                            this.stickToTop(foundedProduct, true);
+                        }
                         //------------------
                         return [2 /*return*/, product];
                     case 2: return [4 /*yield*/, this.productService.countProductByBarcode4(barcode, this.warehouseCode)];
@@ -858,7 +861,10 @@ var OrderOperationComponent = /** @class */ (function () {
                         }
                         else {
                             foundedProduct = this.productsToCollect.find(function (p) { return p.barcode == product.barcode; });
-                            this.stickToTop(foundedProduct, true);
+                            //kadir abi fuarda istedi
+                            if (this.generalService.isNullOrEmpty(this.checkForm.get('shelfNo').value)) {
+                                this.stickToTop(foundedProduct, true);
+                            }
                             //------------------
                             return [2 /*return*/, product];
                         }

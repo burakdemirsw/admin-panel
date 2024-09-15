@@ -632,9 +632,9 @@ export class OrderService {
 
 
 
-  async getClientOrders(isCompleted: boolean): Promise<any> {
+  async getClientOrders(isCompleted: boolean, userID: number): Promise<any> {
     try {
-      var response = await this.httpClientService.get<ClientOrder>({ controller: "order/get-client-orders" }, isCompleted.toString()).toPromise();
+      var response = await this.httpClientService.get<ClientOrder>({ controller: "order/get-client-orders" }, isCompleted.toString() + "/" + userID).toPromise();
 
       return response;
     } catch (error: any) {

@@ -90,8 +90,6 @@ export class CreateOrderComponent implements OnInit {
     this.createCustomerFormMethod();
     this.createDiscountForm();
     this._createCustomerFormMethod();
-    await this.getSalesPersonModels();
-
     this.activatedRoute.params.subscribe(async (params) => {
       if (params['id']) {
 
@@ -111,9 +109,13 @@ export class CreateOrderComponent implements OnInit {
       }
 
       await this.setCustomer();
-      await this.getAllCustomers();
-      await this.getAddresses();
+
     })
+    await this.getSalesPersonModels();
+    await this.getAddresses();
+    await this.getAllCustomers();
+
+
 
     var spc = localStorage.getItem('salesPersonCode');
     if (!spc) {
@@ -243,6 +245,7 @@ export class CreateOrderComponent implements OnInit {
   }
 
   //--------------------------------------------------------------------------- CLIENT ORDER
+  _orderDetail: OrderDetail;
   stateOptions: any[] = [{ label: 'Standart', value: '0' }, { label: 'Vergisiz', value: '4' }, { label: 'Standart Kdv Düş', value: '5' }];
   taxTypeCode: any;
   isCompleted: boolean = false;
@@ -269,9 +272,15 @@ export class CreateOrderComponent implements OnInit {
 
           this.orderNo = order.clientOrder.orderNo
           this.isCompleted = order.clientOrder.isCompleted != null ? order.clientOrder.isCompleted : false;
+
           this.isCancelled = order.clientOrder.isCancelled != null ? order.clientOrder.isCancelled : false;
           this.currAccCode = order.clientOrder.customerCode;
           this.orderNumber = order.clientOrder.orderNumber
+
+          if (this.isCompleted) {
+            this._orderDetail = await this.orderService.getOrderDetail(order.clientOrder.orderNumber)
+            console.log(this._orderDetail);
+          }
           var customer_request = new GetCustomerList_CM();
           customer_request.currAccCode = this.currAccCode;
           if (customer_request.currAccCode != null) {
@@ -824,6 +833,8 @@ export class CreateOrderComponent implements OnInit {
   goToPage(index: number) {
     var st = this.discountRate1 != this.discountForm.get('percentDiscountRate').value ? false : true;
     var st_2 = this.discountRate2 != this.discountForm.get('cashDiscountRate').value ? false : true;
+
+
     if (st && st_2) {
 
       this.activeIndex = index;
@@ -939,9 +950,6 @@ export class CreateOrderComponent implements OnInit {
         request.address.description = formValue.address_description;
         request.address.postalCode = formValue.address_postalCode;
       }
-
-
-
 
       if (true) {
         var response = await this.orderService.createCustomer(request);
@@ -1097,6 +1105,12 @@ export class CreateOrderComponent implements OnInit {
       sc_Description: [null],
       sc_mode: [false],
       identity_number: [null],
+    });
+
+
+    this.createCustomerForm.get('currAccDescription').valueChanges.subscribe((value) => {
+      this.createCustomerForm.get('currAccDescription').setValue(value.toUpperCase(), { emitEvent: false }); // Formatlanmış değeri ayarla
+
     });
 
 
@@ -1491,7 +1505,8 @@ export class CreateOrderComponent implements OnInit {
 
     this.discountForm = this.formBuilder.group({
       cashDiscountRate: [0, Validators.required],
-      percentDiscountRate: [0, Validators.required]
+      percentDiscountRate: [0, Validators.required],
+      lastPrice: [0, Validators.required]
     });
   }
   getTotalPrice() {
