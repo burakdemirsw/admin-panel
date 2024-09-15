@@ -1573,6 +1573,49 @@ export class CreateOrderComponent implements OnInit {
       this.toasterService.error('Güncellenmedi')
     }
   }
+  calculateCashDiscountForTaxedPrice() {
+    const targetTaxedPrice = this.discountForm.get('lastPrice').value; // 2000 TL girilen hedef fiyat
+    let totalCurrentTaxedPrice = 0;
+
+    // Öncelikle tüm ürünlerin mevcut KDV'li fiyatlarını topluyoruz
+    this.selectedProducts.forEach(product => {
+      const vatRate = product.taxRate;
+      const productTaxedPrice = product.totalPrice * (1 + vatRate / 100); // Ürünün KDV'li fiyatı
+      totalCurrentTaxedPrice += productTaxedPrice;
+    });
+
+    // Hedef toplam 2000 TL'ye orantılı olarak her ürün için indirim hesaplaması yapıyoruz
+    const discountRatio = targetTaxedPrice / totalCurrentTaxedPrice;
+
+    let totalRequiredCashDiscount = 0;
+
+    this.selectedProducts.forEach(product => {
+      const vatRate = product.taxRate;
+
+      // Ürünün mevcut KDV'li fiyatı
+      const productTaxedPrice = product.totalPrice * (1 + vatRate / 100);
+
+      // Hedef KDV'li fiyatı hesapla (orantılı olarak)
+      const targetProductTaxedPrice = productTaxedPrice * discountRatio;
+
+      // Hedef KDV'li fiyattan vergisiz fiyata geçiyoruz
+      const targetProductUntaxedPrice = targetProductTaxedPrice / (1 + vatRate / 100);
+
+      // Mevcut vergisiz fiyatı alalım (indirim uygulanmış haliyle)
+      const productCurrentUntaxedPrice = product.totalPrice * (1 - (this.discountRate1 || 0) / 100);
+
+      // Her ürün için gereken nakit indirimi hesapla
+      const requiredCashDiscountForProduct = productCurrentUntaxedPrice - targetProductUntaxedPrice;
+
+      // Toplam nakit indirimi ekle
+      totalRequiredCashDiscount += requiredCashDiscountForProduct;
+    });
+
+    // Sonuç olarak toplam nakit indirimi uygula
+    this.cashDiscount(totalRequiredCashDiscount);
+  }
+
+
 
   async resetDiscount() {
     this.discountRate1 = 0;

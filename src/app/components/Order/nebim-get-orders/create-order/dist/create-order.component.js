@@ -1771,6 +1771,37 @@ var CreateOrderComponent = /** @class */ (function () {
             });
         });
     };
+    CreateOrderComponent.prototype.calculateCashDiscountForTaxedPrice = function () {
+        var _this = this;
+        var targetTaxedPrice = this.discountForm.get('lastPrice').value; // 2000 TL girilen hedef fiyat
+        var totalCurrentTaxedPrice = 0;
+        // Öncelikle tüm ürünlerin mevcut KDV'li fiyatlarını topluyoruz
+        this.selectedProducts.forEach(function (product) {
+            var vatRate = product.taxRate;
+            var productTaxedPrice = product.totalPrice * (1 + vatRate / 100); // Ürünün KDV'li fiyatı
+            totalCurrentTaxedPrice += productTaxedPrice;
+        });
+        // Hedef toplam 2000 TL'ye orantılı olarak her ürün için indirim hesaplaması yapıyoruz
+        var discountRatio = targetTaxedPrice / totalCurrentTaxedPrice;
+        var totalRequiredCashDiscount = 0;
+        this.selectedProducts.forEach(function (product) {
+            var vatRate = product.taxRate;
+            // Ürünün mevcut KDV'li fiyatı
+            var productTaxedPrice = product.totalPrice * (1 + vatRate / 100);
+            // Hedef KDV'li fiyatı hesapla (orantılı olarak)
+            var targetProductTaxedPrice = productTaxedPrice * discountRatio;
+            // Hedef KDV'li fiyattan vergisiz fiyata geçiyoruz
+            var targetProductUntaxedPrice = targetProductTaxedPrice / (1 + vatRate / 100);
+            // Mevcut vergisiz fiyatı alalım (indirim uygulanmış haliyle)
+            var productCurrentUntaxedPrice = product.totalPrice * (1 - (_this.discountRate1 || 0) / 100);
+            // Her ürün için gereken nakit indirimi hesapla
+            var requiredCashDiscountForProduct = productCurrentUntaxedPrice - targetProductUntaxedPrice;
+            // Toplam nakit indirimi ekle
+            totalRequiredCashDiscount += requiredCashDiscountForProduct;
+        });
+        // Sonuç olarak toplam nakit indirimi uygula
+        this.cashDiscount(totalRequiredCashDiscount);
+    };
     CreateOrderComponent.prototype.resetDiscount = function () {
         return __awaiter(this, void 0, void 0, function () {
             var r, response;

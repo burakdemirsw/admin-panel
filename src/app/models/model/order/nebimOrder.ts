@@ -31,7 +31,6 @@ export class NebimOrder {
   isCreditSale: boolean;
   DeliveryCompanyCode: string;
   exchangeRate: number
-
   lines: Line[];
   discounts: Discount[] = [];
   // discounts: Discount[];

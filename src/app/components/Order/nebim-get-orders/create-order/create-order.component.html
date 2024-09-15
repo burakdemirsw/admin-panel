@@ -762,7 +762,7 @@
                   </div>
 
                 </div>
-                <div class="col-md-4 mb-3" *ngIf="false">
+                <div class="col-md-4 mb-3" *ngIf="paymentForm.value.taxTypeCode.value=='0'">
                   <div class="mb-3">
                     <label>Kdvli Son Fiyat</label>
                   </div>
@@ -770,9 +770,7 @@
                   <div class="input-group ">
                     <div class="input-group-append">
                       <button class="btn" icon="pi pi-check" class="btn btn-success"
-                        (click)="cashDiscount(
-                        (((getUnTaxedTotalAfterDiscount() /getTotal() )*getTotalTax_2() ) +  getUnTaxedTotalAfterDiscount()  )-this.discountForm.get('lastPrice').value)"
-                        type="button">
+                        (click)="calculateCashDiscountForTaxedPrice()" type="button">
                         <i class="fa fa-check" aria-hidden="true"></i>
                       </button>
                     </div>
