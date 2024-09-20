@@ -442,55 +442,57 @@ export class CollectExportProductsComponent {
               this.toasterService.warn('Stok Hatası.');
             }
           } else {
-            const confirmDelete = window.confirm(
-              'Raf Numarası Eşleşmedi Yine De Eklemek İstiyor Musunuz?'
-            );
+            return this.toasterService.error('Rafta Ürün Bulunamamaktadır')
 
-            if (confirmDelete) {
+            // const confirmDelete = window.confirm(
+            //   'Raf Numarası Eşleşmedi Yine De Eklemek İstiyor Musunuz?'
+            // );
 
-              productModel.quantity =
-                productModel.quantity;
+            // if (confirmDelete) {
 
-              if (foundProduct.quantity - productModel.quantity >= 0) {
-                var lineId = this.productsToCollect.find(p => p.barcode == productModel.barcode
-                ).lineId
-                if (!lineId) {
-                  this.toasterService.error("lineId bulunamadı")
-                }
+            //   productModel.quantity =
+            //     productModel.quantity;
 
-                var response = await this.warehouseService.countProductRequest2(
-                  this.checkForm.get('barcode').value,
-                  productModel.shelfNo,
-                  productModel.quantity,
-                  null,
-                  this.warehouseCode,
-                  null,
-                  productModel.batchCode,
-                  'Order/CountProduct',
-                  this.currentOrderNo,
-                  null,
-                  lineId
-                );
-                //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
-                if (response.status.includes('Error')) {
-                  this.toasterService.error("Sayım Sırasında Hata Alındı : " + response.status)
-                  return;
+            //   if (foundProduct.quantity - productModel.quantity >= 0) {
+            //     var lineId = this.productsToCollect.find(p => p.barcode == productModel.barcode
+            //     ).lineId
+            //     if (!lineId) {
+            //       this.toasterService.error("lineId bulunamadı")
+            //     }
 
-                }
+            //     var response = await this.warehouseService.countProductRequest2(
+            //       this.checkForm.get('barcode').value,
+            //       productModel.shelfNo,
+            //       productModel.quantity,
+            //       null,
+            //       this.warehouseCode,
+            //       null,
+            //       productModel.batchCode,
+            //       'Order/CountProduct',
+            //       this.currentOrderNo,
+            //       null,
+            //       lineId
+            //     );
+            //     //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
+            //     if (response.status.includes('Error')) {
+            //       this.toasterService.error("Sayım Sırasında Hata Alındı : " + response.status)
+            //       return;
 
-                await this.getAllProducts();
+            //     }
 
-                //↑↑↑↑↑↑↑↑↑ TOPLANAN ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
-                this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
-                this.clearBarcodeAndQuantity();
+            //     await this.getAllProducts();
 
-              } else {
-                this.toasterService.warn('Stok Hatası.');
-              }
+            //     //↑↑↑↑↑↑↑↑↑ TOPLANAN ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
+            //     this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
+            //     this.clearBarcodeAndQuantity();
 
-            } else {
-              this.toasterService.error("Eklenmedi")
-            }
+            //   } else {
+            //     this.toasterService.warn('Stok Hatası.');
+            //   }
+
+            // } else {
+            //   this.toasterService.error("Eklenmedi")
+            // }
           }
         }
       }

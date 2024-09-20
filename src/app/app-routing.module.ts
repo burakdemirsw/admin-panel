@@ -75,6 +75,8 @@ import { TransferredOrdersComponent } from './components/marketplace/transferred
 import { TaskPanelsComponent } from './components/Devolopment/devolopment-list/task-panels/task-panels.component';
 import { TaskPanelComponent } from './components/Devolopment/devolopment-list/task-panel/task-panel.component';
 import { UntransferredOrdersComponent } from './components/marketplace/transferred-orders/untransferred-orders/untransferred-orders.component';
+import { CreateWarehouseProcessComponent } from './components/Warehouse/warehouse-operation/create-warehouse-process/create-warehouse-process.component';
+import { RaportComponent } from './components/raport/raport/raport.component';
 
 
 const routes: Routes = [
@@ -238,9 +240,18 @@ const routes: Routes = [
     component: CreateSaleOrderComponent,
     canActivate: [AuthGuard],
   },
+
+  { path: 'create-warehosue-process/:processType/:processCode/:activeIndex/:processId', component: CreateWarehouseProcessComponent, canActivate: [AuthGuard] },
+
   {
     path: 'collect-product-of-order/:number',
     component: CollectProductOfOrderComponent,
+    canActivate: [AuthGuard],
+  },
+
+  {
+    path: 'raport/:type',
+    component: RaportComponent,
     canActivate: [AuthGuard],
   },
   {

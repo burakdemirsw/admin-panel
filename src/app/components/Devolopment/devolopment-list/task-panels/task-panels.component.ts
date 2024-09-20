@@ -16,6 +16,8 @@ export class TaskPanelsComponent {
   newTaskPanel: TaskPanel = new TaskPanel();  // Yeni panel için boş model
 
   constructor(private router: Router, private developmentService: DevelopmentService, private toasterService: ToasterService) { }
+  selectedPanels: any = {};
+
 
   ngOnInit(): void {
     this.loadTaskPanels();  // Panelleri yükle
@@ -52,9 +54,11 @@ export class TaskPanelsComponent {
   // Paneli silen fonksiyon
   async deleteTaskPanel(id: number) {
     try {
-      await this.developmentService.deleteTaskPanel(id);
-      this.loadTaskPanels();  // Panelleri tekrar yükle
-      this.toasterService.success('Panel başarıyla silindi.');
+      if (window.confirm("Silmek İstediğinize Emin Misiniz?")) {
+        await this.developmentService.deleteTaskPanel(id);
+        this.loadTaskPanels();  // Panelleri tekrar yükle
+        this.toasterService.success('Panel başarıyla silindi.');
+      }
     } catch (error) {
       this.toasterService.error('Panel silinirken bir hata oluştu.');
     }

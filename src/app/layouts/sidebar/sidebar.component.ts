@@ -17,12 +17,10 @@ export class SidebarComponent implements OnInit {
   userId: string;
   menuItems: MenuItem[] = [];
   async ngOnInit() {
-
     this.roleDescription = localStorage.getItem("roleDescription")
     this.userId = localStorage.getItem("userId")
     if (Number(this.userId) != 0) {
       await this.loadMenu();
-
     }
   }
 
@@ -86,6 +84,15 @@ export class SidebarComponent implements OnInit {
       case 'routeNewPage7':
         this.routeNewPage7();
         break;
+      case 'routeNewPage9':
+        this.routeNewPage9();
+        break;
+      case 'routeNewPage10':
+        this.routeNewPage10();
+        break;
+      case 'routeNewPage11':
+        this.routeNewPage11();
+        break;
       default:
         console.error(`Action "${action}" not found`);
     }
@@ -144,5 +151,19 @@ export class SidebarComponent implements OnInit {
       this.router.navigate(["/add-product-to-shelf/false/" + result])
     }
 
+  }
+
+  async routeNewPage9() {
+    const result = await this.generalService.generateGUID()
+    this.router.navigate(["warehouse-operation/" + result + "/" + "0"])
+  }
+
+  async routeNewPage10() {
+    const result = await this.generalService.generateGUID()
+    this.router.navigate(["warehouse-operation/" + "MT-" + result + "/0"])
+  }
+  async routeNewPage11() {
+    const result = await this.generalService.generateGUID()
+    this.router.navigate(["warehouse-operation/" + "RC-" + result + "/0"])
   }
 }

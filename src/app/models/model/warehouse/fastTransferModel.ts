@@ -34,6 +34,7 @@ export class WarehouseTransferModel {
   description: string;
   barcode: string;
   quantity: number;
+  out_Quantity: number;
   batchCode: string;
   operationId: string;
   shelfNo: string;

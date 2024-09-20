@@ -38,7 +38,6 @@ export class PagesInfoComponent implements OnInit {
     this.createInvoiceEntegratorInfoForm();
 
     this.loadMarketPlaceCompanyInfos();
-    this.loadMenuInfos();
     this.loadCompanyInfo();
     this.loadNebimInfos();
     this.loadMailInfos();
@@ -51,6 +50,7 @@ export class PagesInfoComponent implements OnInit {
     this.loadCargoCompanyInfos();
     this.loadInvoiceEntegratorInfos();
     this.loadBasePriceCodes()
+    this.loadMenuInfos();
   }
 
 
@@ -306,7 +306,7 @@ export class PagesInfoComponent implements OnInit {
   async loadPaymentInfos() {
     try {
       const data = await this.infoService.getPaymentInfos();
-      if (data) {
+      if (data.length > 0) {
         this.paymentInfos = data;
       }
     } catch (error) {

@@ -75,6 +75,7 @@ export class TaskComment {
 }
 export class TaskPanel {
   id: number;
+  description: string | null;
   finishedDate: Date | null;
   userId: number;
   createdDate: Date | null;
@@ -128,6 +129,8 @@ export class DevelopmentDTO {
 export class TaskPanelDTO {
   id: number;
   userId: number;
+  description: string | null;
+
   taskCards: TaskCardDTO[];
   finishedDate?: Date;
   createdDate?: Date;

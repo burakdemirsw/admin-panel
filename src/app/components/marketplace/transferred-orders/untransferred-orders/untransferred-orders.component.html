@@ -48,11 +48,7 @@
               </button>
             </td>
             <td>
-              <p-editor [(ngModel)]="rowData.errMsg" [style]="{'width':'100%'}" [disabled]="true">
-                <p-header hidden>
-                  <span class="ql-formats"></span>
-                </p-header>
-              </p-editor>
+              {{ rowData.errMsg}}
             </td>
             <td>{{ rowData.createdDate | date:'short' }}</td>
           </tr>

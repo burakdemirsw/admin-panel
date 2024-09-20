@@ -139,6 +139,8 @@ import { TaskPanelComponent } from './components/Devolopment/devolopment-list/ta
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AutoMaximizeDialogDirective } from './directives/auto-maximize-dialog.directive';
 import { UntransferredOrdersComponent } from './components/marketplace/transferred-orders/untransferred-orders/untransferred-orders.component';
+import { CreateWarehouseProcessComponent } from './components/Warehouse/warehouse-operation/create-warehouse-process/create-warehouse-process.component';
+import { RaportComponent } from './components/raport/raport/raport.component';
 @NgModule({
 
   declarations: [
@@ -229,7 +231,9 @@ import { UntransferredOrdersComponent } from './components/marketplace/transferr
     TransferredOrdersComponent,
     TaskPanelsComponent,
     AutoMaximizeDialogDirective,
-    UntransferredOrdersComponent
+    UntransferredOrdersComponent,
+    CreateWarehouseProcessComponent,
+    RaportComponent
 
   ],
 

@@ -1,10 +1,11 @@
 <main id="main" class="main">
   <section class="section">
-    <div class="card ">
+    <div class="card">
       <p-tabView>
         <p-tabPanel header="Raflar">
           <div *ngIf="shelves.length > 0; else noShelves">
-            <p-table [value]="shelves" [paginator]="true" [rows]="10" [tableStyle]="{ 'min-width': '25rem' }"
+            <p-table [value]="shelves" [paginator]="true" [rowsPerPageOptions]="[5, 10, 20]" [rows]="10"
+              [tableStyle]="{ 'min-width': '70rem' }" [tableStyle]="{ 'min-width': '25rem' }"
               [styleClass]="'p-datatable-striped'">
               <ng-template pTemplate="header">
                 <tr>
@@ -48,7 +49,7 @@
                     <div class="btn-group" role="group" aria-label="Basic example">
                       <button class="btn btn-primary" (click)="openUpdateDialog(shelf)"><i class="fa fa-pencil"
                           aria-hidden="true"></i></button>
-                      <button class="btn btn-danger" (click)="deleteShelf(shelf.id)">
+                      <button class="btn btn-danger" (click)="deleteShelf(shelf?.id)">
                         <i class="fa fa-trash" aria-hidden="true"></i>
                       </button>
                     </div>

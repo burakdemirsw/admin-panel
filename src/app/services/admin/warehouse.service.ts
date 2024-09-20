@@ -15,7 +15,7 @@ import { FastTransferListModel, FastTransferModel, FastTransferModel2, Warehouse
 import { TransferModel } from 'src/app/models/model/warehouse/transferModel';
 import { TransferRequestListModel } from 'src/app/models/model/warehouse/transferRequestListModel';
 import { WarehouseOperationListModel } from 'src/app/models/model/warehouse/warehosueOperationListModel';
-import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
+import { WarehouseOfficeModel, WarehouseOfficeModel_V1 } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/warehouseOperationProductModel';
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
@@ -182,6 +182,20 @@ export class WarehouseService {
       const data = await this.httpClientService
         .get<WarehouseOfficeModel>({
           controller: 'Warehouse/get-office-and-warehouses',
+        })
+        .toPromise();
+      return data;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+  async getWarehouseAndOffices_V1(): Promise<WarehouseOfficeModel_V1[]> {
+    try {
+      const data = await this.httpClientService
+        .get<WarehouseOfficeModel_V1>({
+          controller: 'Warehouse/get-office-and-warehouses-v1',
         })
         .toPromise();
       return data;

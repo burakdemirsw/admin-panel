@@ -21,22 +21,16 @@ export class ShelfComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private toasterService: ToasterService,
-    private orderService: OrderService,
-    private router: Router,
-
-    private activatedRoute: ActivatedRoute,
-    private productService: ProductService,
     private warehouseService: WarehouseService,
     private generalService: GeneralService,
-    private title: Title,
-    private headerService: HeaderService
+
   ) { }
   updateShelfForm: FormGroup;
   shelfForm: FormGroup;
-  selectedShelf: Shelf | null = null;
+  selectedShelf: Shelf;
   displayUpdateDialog: boolean = false;
-  ngOnInit(): void {
-    this.loadShelves();
+  async ngOnInit() {
+
     this.shelfForm = this.formBuilder.group({
       id: [null],
       warehouse: [null],
@@ -55,6 +49,7 @@ export class ShelfComponent implements OnInit {
       createdDate: [Date.now],
       updatedDate: [Date.now],
     });
+    await this.loadShelves();
   }
 
   async loadShelves() {

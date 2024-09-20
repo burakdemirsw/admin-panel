@@ -10,7 +10,7 @@ import { WarehouseTransferModel } from 'src/app/models/model/warehouse/fastTrans
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseItem } from 'src/app/models/model/warehouse/warehouseItem';
 import { WarehouseModel } from 'src/app/models/model/warehouse/warehouseModel';
-import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
+import { WarehouseOfficeModel, WarehouseOfficeModel_V1 } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { OrderService } from 'src/app/services/admin/order.service';
@@ -18,6 +18,7 @@ import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { filter } from 'rxjs';
 declare var window: any;
 
 @Component({
@@ -66,7 +67,7 @@ export class WarehouseOperationComponent implements OnInit {
   ) { } // Add this line
 
   //#region Params
-  warehouseModels: WarehouseOfficeModel[] = [];
+  warehouseModels: WarehouseOfficeModel_V1[] = [];
   warehouseModels2: WarehouseOfficeModel[] = [];
   barcodeModel: BarcodeModel = new BarcodeModel();
   shelfNo: string = null;
@@ -79,7 +80,10 @@ export class WarehouseOperationComponent implements OnInit {
   _barcode: string = null;
   quantity: number = null;
   offices: any[] = [];
+  _offices: any[] = [];
+
   warehouses: any[] = [];
+  _warehouses: any[] = [];
   inventoryItemColums: string[] = [
     'Id',
     'Fotoğraf',
@@ -134,14 +138,13 @@ export class WarehouseOperationComponent implements OnInit {
         this.currentDataType = '-1';
       }
       else {
-        this.pageStatus = 'Depolar Arası Transfer';
+        this.pageStatus = 'Mağaza Transfer';
         this.currentDataType = '-1';
       }
 
 
     }
 
-    this.toasterService.success('Sipariş No: ' + this.currentOrderNo);
     this.formGenerator();
     this.activatedRoute.params.subscribe(async (params) => {
 
@@ -157,36 +160,533 @@ export class WarehouseOperationComponent implements OnInit {
 
       else {
         this.currentOrderNo = 'TP-' + params['number'];
-        this.pageStatus = 'Depolar Arası Transfer';
+        this.pageStatus = 'Mağaza Transfer İrsaliyesi';
         this.currentDataType = '-1';
       }
 
-      this.toasterService.success('Sipariş No: ' + this.currentOrderNo);
       await this.getProductOfCount(this.currentOrderNo);
       this.warehouseForm.get('orderNo').setValue(this.currentOrderNo);
     });
   }
 
+  formGenerator() {
+    try {
+      this.warehouseForm = this.formBuilder.group({
+        id: [null],
+        shelfNo: [this.shelfNo, Validators.required],
+        barcode: [this.currentBarcode, Validators.required],
+        quantity: [null, Validators.required],
+        batchCode: [this.batchCode],
+        office: [null, Validators.required],
+        officeTo: [null, Validators.required],
+        warehouseCode: [{ value: null, disabled: true }, Validators.required],  // İlk başta disable
+        toWarehouseCode: [{ value: null, disabled: true }, Validators.required],  // İlk başta disable
+        orderNo: [null, Validators.required],
+      });
+
+
+      if (location.href.includes('MT-')) {
+        // this.pageStatus = 'Mağaza Depoları Arası Transfer';
+        // this.currentDataType = '-1';
+
+        this.warehouseForm.get('office')?.valueChanges.subscribe(value => {
+          if (value) {
+            // Ofis seçildiyse warehouse alanlarını etkinleş  tir
+            this.warehouseForm.get('warehouseCode').enable();
+            this.warehouseForm.get('toWarehouseCode').enable();
+
+            // Seçilen ofise göre warehouse'ları filtrele
+            const filteredWarehouses = this.warehouseModels.filter(w => w.officeCode === value && w.isOfficeWarehouse === false);
+
+            // warehouseSet'i güncelle
+            const warehouseSet = new Set(filteredWarehouses.map(w => w.warehouseCode));
+
+            // warehouse'ları mapleyerek güncelle
+            this.warehouses = Array.from(warehouseSet).map(code => {
+              const model = filteredWarehouses.find(warehouse => warehouse.warehouseCode === code);
+              if (!model) {
+                return null;  // Eşleşme yoksa null döndür
+              }
+              return {
+                code: model.warehouseCode,
+                name: model.warehouseDescription,
+                officeCode: model.officeCode,
+                isOfficeWarehouse: model.isOfficeWarehouse
+              };
+            }).filter(warehouse => warehouse !== null);  // null olanları filtrele
+
+            // Office değiştiğinde toOffice Code otomatik olarak aynı olacak
+            this.warehouseForm.get('officeTo').setValue(value);
+          } else if (value == null) {
+            // Ofis seçilmediyse warehouse alanlarını devre dışı bırak
+            this.warehouseForm.get('warehouseCode').disable();
+            this.warehouseForm.get('toWarehouseCode').disable();
+          }
+        });
+
+        this.warehouseForm.get('officeTo')?.valueChanges.subscribe(value => {
+          if (value) {
+            // Ofis seçildiyse warehouse alanlarını etkinleştir
+            this.warehouseForm.get('warehouseCode').enable();
+            this.warehouseForm.get('toWarehouseCode').enable();
+
+            if (this.warehouseForm.get('office').value != value) {
+              this.toasterService.error("Ofisler Aynı Olmalıdır");
+              setTimeout(() => {
+                this.warehouseForm.get('officeTo').setValue(null);
+              }, 1);
+
+            }
+
+
+            // Seçilen ofise göre warehouse'ları filtrele
+            const filteredWarehouses = this.warehouseModels.filter(w => w.officeCode === value && w.isOfficeWarehouse === false);
+
+            // warehouseSet'i güncelle
+            const warehouseSet = new Set(filteredWarehouses.map(w => w.warehouseCode));
+
+            // warehouse'ları mapleyerek güncelle
+            this._warehouses = Array.from(warehouseSet).map(code => {
+              const model = filteredWarehouses.find(warehouse => warehouse.warehouseCode === code);
+              if (!model) {
+                return null;  // Eşleşme yoksa null döndür
+              }
+              return {
+                code: model.warehouseCode,
+                name: model.warehouseDescription,
+                officeCode: model.officeCode,
+                isOfficeWarehouse: model.isOfficeWarehouse
+              };
+            }).filter(warehouse => warehouse !== null);  // null olanları filtrele
+
+            // Office değiştiğinde office alanı ile aynı olacak
+            this.warehouseForm.get('office').setValue(value);
+
+
+
+          } else if (value == null) {
+            // Ofis seçilmediyse warehouse alanlarını devre dışı bırak
+            this.warehouseForm.get('warehouseCode').disable();
+            this.warehouseForm.get('toWarehouseCode').disable();
+          }
+        });
+
+      } else if (location.href.includes('RC-')) {
+        // this.pageStatus = 'Merkeze İade';
+        // this.currentDataType = '-1';
+
+        this.warehouseForm.get('office')?.valueChanges.subscribe(value => {
+          if (value) {
+            // Ofis seçildiyse warehouse alanlarını etkinleştir
+            this.warehouseForm.get('warehouseCode').enable();
+            this.warehouseForm.get('toWarehouseCode').enable();
+
+
+
+
+            // Seçilen ofise göre warehouse'ları filtrele
+            const filteredWarehouses = this.warehouseModels.filter(w => w.officeCode === value && w.isOfficeWarehouse === false);
+
+            // warehouseSet'i güncelle
+            const warehouseSet = new Set(filteredWarehouses.map(w => w.warehouseCode));
+
+            // warehouse'ları mapleyerek güncelle
+            this.warehouses = Array.from(warehouseSet).map(code => {
+              const model = filteredWarehouses.find(warehouse => warehouse.warehouseCode === code);
+              if (!model) {
+                return null;  // Eşleşme yoksa null döndür
+              }
+              return {
+                code: model.warehouseCode,
+                name: model.warehouseDescription,
+                officeCode: model.officeCode,
+                isOfficeWarehouse: model.isOfficeWarehouse
+              };
+            }).filter(warehouse => warehouse !== null);  // null olanları filtrele
+
+
+            // Office değiştiğinde toOffice Code otomatik olarak aynı olacak
+            this.warehouseForm.get('officeTo').setValue(value);
+          } else if (value == null) {
+            // Ofis seçilmediyse warehouse alanlarını devre dışı bırak
+            this.warehouseForm.get('warehouseCode').disable();
+            this.warehouseForm.get('toWarehouseCode').disable();
+          }
+        });
+
+        this.warehouseForm.get('officeTo')?.valueChanges.subscribe(value => {
+          if (value) {
+            // Ofis seçildiyse warehouse alanlarını etkinleştir
+            this.warehouseForm.get('warehouseCode').enable();
+            this.warehouseForm.get('toWarehouseCode').enable();
+
+
+            if (this.warehouseForm.get('office').value != value) {
+              this.toasterService.error("Ofisler Aynı Olmalıdır");
+              setTimeout(() => {
+                this.warehouseForm.get('officeTo').setValue(null);
+              }, 1);
+              return;
+
+            }
+            // Seçilen ofise göre warehouse'ları filtrele
+            const filteredWarehouses = this.warehouseModels.filter(w => w.officeCode === value && w.isOfficeWarehouse === true);
+
+            // warehouseSet'i güncelle
+            const warehouseSet = new Set(filteredWarehouses.map(w => w.warehouseCode));
+
+            // warehouse'ları mapleyerek güncelle
+            this._warehouses = Array.from(warehouseSet).map(code => {
+              const model = filteredWarehouses.find(warehouse => warehouse.warehouseCode === code);
+              if (!model) {
+                return null;  // Eşleşme yoksa null döndür
+              }
+              return {
+                code: model.warehouseCode,
+                name: model.warehouseDescription,
+                officeCode: model.officeCode,
+                isOfficeWarehouse: model.isOfficeWarehouse
+              };
+            }).filter(warehouse => warehouse !== null);  // null olanları filtrele
+
+            // Office değiştiğinde office alanı ile aynı olacak
+            this.warehouseForm.get('office').setValue(value);
+          } else if (value == null) {
+            // Ofis seçilmediyse warehouse alanlarını devre dışı bırak
+            this.warehouseForm.get('warehouseCode').disable();
+            this.warehouseForm.get('toWarehouseCode').disable();
+          }
+        });
+
+      }
+
+      else {
+        // this.pageStatus = 'Mağaza Transfer İrsaliyesi';
+        // this.currentDataType = '-1';
+
+        this.warehouseForm.get('office')?.valueChanges.subscribe(value => {
+          if (value) {
+            // Ofis seçildiyse warehouse alanlarını etkinleştir
+            this.warehouseForm.get('warehouseCode').enable();
+            this.warehouseForm.get('toWarehouseCode').enable();
+
+            // Seçilen ofise göre warehouse'ları filtrele
+            const filteredWarehouses = this.warehouseModels.filter(w => w.officeCode === value && w.isOfficeWarehouse === true);
+
+
+            // warehouseSet'i güncelle
+
+            const warehouseSet = new Set(filteredWarehouses.map(w => w.warehouseCode));
+
+            // warehouse'ları mapleyerek güncelle
+            this.warehouses = Array.from(warehouseSet).map(code => {
+              const model = filteredWarehouses.find(warehouse => warehouse.warehouseCode === code);
+              if (!model) {
+                return null;  // Eşleşme yoksa null döndür
+              }
+              return {
+                code: model.warehouseCode,
+                name: model.warehouseDescription,
+                officeCode: model.officeCode,
+                isOfficeWarehouse: model.isOfficeWarehouse
+              };
+            }).filter(warehouse => warehouse !== null);  // null olanları filtrele
+
+            // Office değiştiğinde toOffice Code otomatik olarak aynı olacak
+            this.warehouseForm.get('officeTo').setValue(value);
+          } else if (value == null) {
+            // Ofis seçilmediyse warehouse alanlarını devre dışı bırak
+            this.warehouseForm.get('warehouseCode').disable();
+            this.warehouseForm.get('toWarehouseCode').disable();
+          }
+        });
+
+        this.warehouseForm.get('officeTo')?.valueChanges.subscribe(value => {
+          if (value) {
+            // Ofis seçildiyse warehouse alanlarını etkinleştir
+            this.warehouseForm.get('warehouseCode').enable();
+            this.warehouseForm.get('toWarehouseCode').enable();
+
+
+
+            // Seçilen ofise göre warehouse'ları filtrele
+            const filteredWarehouses = this.warehouseModels.filter(w => w.officeCode === value && w.isOfficeWarehouse === false);
+
+            // warehouseSet'i güncelle
+            const warehouseSet = new Set(filteredWarehouses.map(w => w.warehouseCode));
+
+            // warehouse'ları mapleyerek güncelle
+            this._warehouses = Array.from(warehouseSet).map(code => {
+              const model = filteredWarehouses.find(warehouse => warehouse.warehouseCode === code);
+              if (!model) {
+                return null;  // Eşleşme yoksa null döndür
+              }
+              return {
+                code: model.warehouseCode,
+                name: model.warehouseDescription,
+                officeCode: model.officeCode,
+                isOfficeWarehouse: model.isOfficeWarehouse
+              };
+            }).filter(warehouse => warehouse !== null);  // null olanları filtrele
+
+
+            if (this.warehouseForm.get('office').value != value) {
+              this.toasterService.error("Ofisler Aynı Olmalıdır");
+              setTimeout(() => {
+                this.warehouseForm.get('officeTo').setValue(null);
+              }, 1);
+
+
+            }
+
+            // // Office değiştiğinde office alanı ile aynı olacak
+            this.warehouseForm.get('office').setValue(value);
+          } else if (value == null) {
+            // Ofis seçilmediyse warehouse alanlarını devre dışı bırak
+            this.warehouseForm.get('warehouseCode').disable();
+            this.warehouseForm.get('toWarehouseCode').disable();
+          }
+        });
+
+      }
+      // toWarehouseCode değiştiğinde:
+      this.warehouseForm.get('warehouseCode')?.valueChanges.subscribe(value => {
+        if (value != null) {
+          const warehouseValue = this.warehouseForm.get('toWarehouseCode').value.code;
+          console.log(warehouseValue)
+          // Aynı depoyu seçmişse warehouseCode'u boşalt
+          if (value.code == warehouseValue) {
+            setTimeout(() => {
+              this.warehouseForm.get('warehouseCode').setValue(null);
+            }, 1);
+            this.toasterService.error('Aynı depoları seçemezsiniz. Lütfen farklı bir depo seçiniz.');
+            return;
+          }
+
+        }
+
+      });
+
+
+
+      // toWarehouseCode değiştiğinde:
+      this.warehouseForm.get('toWarehouseCode')?.valueChanges.subscribe(value => {
+        if (value != null) {
+          const warehouseValue = this.warehouseForm.get('warehouseCode').value.code;
+          console.log(warehouseValue)
+          // Aynı depoyu seçmişse warehouseCode'u boşalt
+          if (value.code == warehouseValue) {
+            setTimeout(() => {
+              this.warehouseForm.get('toWarehouseCode').setValue(null);
+            }, 1);
+            this.toasterService.error('Aynı depoları seçemezsiniz. Lütfen farklı bir depo seçiniz.');
+            return;
+          }
+
+        }
+
+      });
+
+
+
+
+
+      // this.warehouseForm.get('warehouseCode')?.valueChanges.subscribe(value => {
+      //   var oc = this.warehouseModels.find(m => m.warehouseCode == value.code).officeCode;
+      //   this.warehouseForm.get('office').setValue(oc);
+
+      //   if (this.warehouseForm.get('toWarehouseCode').value == value) {
+      //     this.warehouseForm.get('warehouseCode').setValue(null);
+
+      //   }
+
+      // });
+      // this.warehouseForm.get('toWarehouseCode')?.valueChanges.subscribe(value => {
+      //   var oc = this.warehouseModels.find(m => m.warehouseCode == value.code).officeCode;
+      //   this.warehouseForm.get('officeTo').setValue(oc);
+
+      //   if (this.warehouseForm.get('warehouseCode').value == value) {
+      //     this.warehouseForm.get('toWarehouseCode').setValue(null);
+
+      //   }
+
+      // });
+
+      console.log(this.warehouseForm.value)
+    } catch (error) {
+      console.error(error);
+      // Handle the error as needed.
+    }
+  }
   async getWarehouseAndOffices() {
-    var response = await this.warehouseService.getWarehouseAndOffices();
+    var response = await this.warehouseService.getWarehouseAndOffices_V1();
     this.warehouseModels = response;
 
     const officeSet = new Set();
     const warehouseSet = new Set();
+    const isOfficeWarehouse = new Set();
 
-    this.warehouseModels.forEach(model => {
-      officeSet.add(model.officeCode);
-      warehouseSet.add(model.warehouseCode);
-    });
+    const _officeSet = new Set();
+    const _warehouseSet = new Set();
+    const _isOfficeWarehouse = new Set();
 
-    this.offices = Array.from(officeSet);
-    this.warehouses = Array.from(warehouseSet).map(code => {
-      const model = this.warehouseModels.find(warehouse => warehouse.warehouseCode === code);
-      return {
-        code: model.warehouseCode,
-        name: model.warehouseDescription
-      };
-    });
+
+
+    if (location.href.includes('MT-')) {
+      // this.pageStatus = 'Mağaza Depoları Arası Transfer';
+      // this.currentDataType = '-1';
+      var nw = this.warehouseModels.filter(p => p.isOfficeWarehouse == false);
+
+      nw.forEach(model => {
+        officeSet.add(model.officeCode);
+        warehouseSet.add(model.warehouseCode);
+        isOfficeWarehouse.add(model.isOfficeWarehouse);
+      });
+
+      console.log(this.warehouseModels);
+      this.offices = Array.from(officeSet);
+
+      this.warehouses = Array.from(warehouseSet).map(code => {
+        const model = nw.find(warehouse => warehouse.warehouseCode === code);
+        if (!model) {
+          return null;  // Eşleşme yoksa null döndür
+        }
+        return {
+          code: model.warehouseCode,
+          name: model.warehouseDescription,
+          officeCode: model.officeCode,
+          isOfficeWarehouse: model.isOfficeWarehouse
+        };
+      }).filter(warehouse => warehouse !== null);  // null olanları filtrele
+
+      var nw_1 = this.warehouseModels.filter(p => p.isOfficeWarehouse == false);
+
+      nw_1.forEach(model => {
+        _officeSet.add(model.officeCode);
+        _warehouseSet.add(model.warehouseCode);
+        _isOfficeWarehouse.add(model.isOfficeWarehouse);
+      });
+
+      console.log(this.warehouseModels);
+      this._offices = Array.from(_officeSet);
+
+
+      this._warehouses = Array.from(warehouseSet).map(code => {
+        const model = nw_1.find(warehouse => warehouse.warehouseCode === code);
+        if (!model) {
+          return null;  // Eşleşme yoksa null döndür
+        }
+        return {
+          code: model.warehouseCode,
+          name: model.warehouseDescription,
+          officeCode: model.officeCode,
+          isOfficeWarehouse: model.isOfficeWarehouse
+        };
+      }).filter(warehouse => warehouse !== null);  // null olanları filtrele
+
+    }
+    else if (location.href.includes('RC-')) {
+      // this.pageStatus = 'Merkeze İade';
+      // this.currentDataType = '-1';
+
+      var nw = this.warehouseModels.filter(p => p.isOfficeWarehouse == false);
+
+      nw.forEach(model => {
+        officeSet.add(model.officeCode);
+        warehouseSet.add(model.warehouseCode);
+        isOfficeWarehouse.add(model.isOfficeWarehouse);
+      });
+
+      this.offices = Array.from(officeSet);
+
+      this.warehouses = Array.from(warehouseSet).map(code => {
+        const model = nw.find(warehouse => warehouse.warehouseCode === code);
+        if (!model) {
+          return null;  // Eşleşme yoksa null döndür
+        }
+        return {
+          code: model.warehouseCode,
+          name: model.warehouseDescription,
+          officeCode: model.officeCode,
+          isOfficeWarehouse: model.isOfficeWarehouse
+        };
+      }).filter(warehouse => warehouse !== null);  // null olanları filtrele
+
+      //---------------------------------------------------------------
+      var nw_1 = this.warehouseModels.filter(p => p.isOfficeWarehouse == true);
+      nw_1.forEach(model => {
+        _officeSet.add(model.officeCode);
+        _warehouseSet.add(model.warehouseCode);
+        _isOfficeWarehouse.add(model.isOfficeWarehouse);
+      });
+
+
+      this._offices = Array.from(_officeSet);
+      this._warehouses = Array.from(warehouseSet).map(code => {
+        const model = nw_1.find(warehouse => warehouse.warehouseCode === code);
+        if (!model) {
+          return null;  // Eşleşme yoksa null döndür
+        }
+        return {
+          code: model.warehouseCode,
+          name: model.warehouseDescription,
+          officeCode: model.officeCode,
+          isOfficeWarehouse: model.isOfficeWarehouse
+        };
+      }).filter(warehouse => warehouse !== null);  // null olanları filtrele
+
+    }
+    else {
+      // this.pageStatus = 'Mağaza Transfer İrsaliyesi';
+      // this.currentDataType = '-1';
+
+      var nw = this.warehouseModels.filter(p => p.isOfficeWarehouse == true);
+      nw.forEach(model => {
+        officeSet.add(model.officeCode);
+        warehouseSet.add(model.warehouseCode);
+        isOfficeWarehouse.add(model.isOfficeWarehouse);
+      });
+
+      this.offices = Array.from(officeSet);
+
+      this.warehouses = Array.from(warehouseSet).map(code => {
+        const model = nw.find(warehouse => warehouse.warehouseCode === code);
+        if (!model) {
+          return null;  // Eşleşme yoksa null döndür
+        }
+        return {
+          code: model.warehouseCode,
+          name: model.warehouseDescription,
+          isOfficeWarehouse: model.isOfficeWarehouse
+        };
+      }).filter(warehouse => warehouse !== null);  // null olanları filtrele
+
+      var nw_1 = this.warehouseModels.filter(p => p.isOfficeWarehouse == false);
+
+      nw_1.forEach(model => {
+        _officeSet.add(model.officeCode);
+        _warehouseSet.add(model.warehouseCode);
+        _isOfficeWarehouse.add(model.isOfficeWarehouse);
+      });
+
+
+      this._offices = Array.from(_officeSet);
+
+      this._warehouses = Array.from(warehouseSet).map(code => {
+        const model = nw_1.find(warehouse => warehouse.warehouseCode === code);
+        if (!model) {
+          return null;  // Eşleşme yoksa null döndür
+        }
+        return {
+          code: model.warehouseCode,
+          name: model.warehouseDescription,
+          isOfficeWarehouse: model.isOfficeWarehouse
+        };
+      }).filter(warehouse => warehouse !== null);  // null olanları filtrele
+
+
+    }
+
   }
 
 
@@ -364,53 +864,6 @@ export class WarehouseOperationComponent implements OnInit {
     this.formModal.show();
   }
 
-  formGenerator() {
-    try {
-      this.warehouseForm = this.formBuilder.group({
-        id: [null],
-        shelfNo: [this.shelfNo, Validators.required],
-        barcode: [this.currentBarcode, Validators.required],
-        quantity: [null, Validators.required],
-        batchCode: [this.batchCode],
-        office: [null, Validators.required],
-        officeTo: [null, Validators.required],
-        warehouseCode: [null, Validators.required],
-        toWarehouseCode: [null, Validators.required],
-        orderNo: [null, Validators.required],
-      });
-
-      console.log(this.warehouseForm.value)
-      // this.warehouseForm.get('office')?.valueChanges.subscribe(value => {
-      //   var wc = this.warehouseModels.find(m => m.officeCode == value).warehouseCode;
-      //   var md = this.warehouses.find(m => m.code == wc);
-      //   this.warehouseForm.get('warehouseCode').setValue(md);
-      // });
-
-      // this.warehouseForm.get('officeTo')?.valueChanges.subscribe(value => {
-      //   var wc = this.warehouseModels.find(m => m.officeCode == value).warehouseCode;
-      //   var md = this.warehouses.find(m => m.code == wc);
-      //   this.warehouseForm.get('toWarehouseCode').setValue(md);
-
-      // });
-
-
-      this.warehouseForm.get('warehouseCode')?.valueChanges.subscribe(value => {
-        var oc = this.warehouseModels.find(m => m.warehouseCode == value.code).officeCode;
-        this.warehouseForm.get('office').setValue(oc);
-
-      });
-      this.warehouseForm.get('toWarehouseCode')?.valueChanges.subscribe(value => {
-        var oc = this.warehouseModels.find(m => m.warehouseCode == value.code).officeCode;
-        this.warehouseForm.get('officeTo').setValue(oc);
-
-      });
-
-      console.log(this.warehouseForm.value)
-    } catch (error) {
-      console.error(error);
-      // Handle the error as needed.
-    }
-  }
   onModelChanged(value: string) {
     this.getShelfByQrDetail(value);
   }

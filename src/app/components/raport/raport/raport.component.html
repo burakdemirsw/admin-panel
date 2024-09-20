@@ -1,1 +1,447 @@
-<p>raport works!</p>
+<main id="main" class="main">
+  <section class="section">
+    <div class="card" *ngIf="this.raportID !=2">
+      <div class="card-body p-4">
+        <div class="form-row">
+          <div class="form-group col-md-12 mb-3">
+            <div class="input-group">
+              <input pInputText placeholder="Stok Kodu" type="search" id="itemCode" class="form-control"
+                [(ngModel)]="search" />
+              <div class="input-group-append">
+                <button (click)="handleOnSubmit()" class="btn btn-primary" type="submit" style="height: 100%">
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" *ngIf="productInventoryRaports.length > 0 && this.raportID == 0 ">
+      <p-table #dt [value]="productInventoryRaports" dataKey="itemCode" [rows]="10" [paginator]="true"
+        [globalFilterFields]="['itemDescription', 'itemCode', 'warehouseCode']">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Resim</th>
+            <th pSortableColumn="itemDescription">
+              Ürün Açıklaması
+              <p-sortIcon field="itemDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="itemCode">
+              Ürün Kodu
+              <p-sortIcon field="itemCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="warehouseCode">
+              Depo
+              <p-sortIcon field="warehouseCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="qty">
+              Miktar
+              <p-sortIcon field="qty"></p-sortIcon>
+            </th>
+          </tr>
+          <tr>
+            <th>
+              <!-- Optional: Placeholder for image filter if needed -->
+            </th>
+            <th>
+              <p-columnFilter type="text" field="itemDescription" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="itemCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="warehouseCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="qty" [showClearButton]="false"></p-columnFilter>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-product>
+          <tr>
+            <td class="image-icon-td">
+              <p-image src="data:image/jpeg;base64,{{ product.photo }}" alt="Image" width="50" [preview]="true">
+              </p-image>
+            </td>
+            <td>{{ product.itemDescription }}</td>
+            <td>{{ product.itemCode }}</td>
+            <td>{{ product.warehouseCode }}</td>
+            <td>{{ product.qty }}</td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="5">No products found.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+
+    </div>
+    <div class="card" *ngIf="productExtractRaports.length > 0 && this.raportID == 1">
+      <p-table #dt [value]="productExtractRaports" dataKey="productCode" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
+        [paginator]="true" [globalFilterFields]="['productCode', 'operationDate', 'processCode', 'processDescription']"
+        [tableStyle]="{ 'min-width': '75rem' }">
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="productCode">
+              Ürün Kodu
+              <p-sortIcon field="productCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="operationDate">
+              İşlem Tarihi
+              <p-sortIcon field="operationDate"></p-sortIcon>
+            </th>
+            <th pSortableColumn="processCode">
+              İşlem Kodu
+              <p-sortIcon field="processCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="processDescription">
+              İşlem Açıklaması
+              <p-sortIcon field="processDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="transTypeCode">
+              İşlem Türü Kodu
+              <p-sortIcon field="transTypeCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="transTypeDescription">
+              İşlem Türü Açıklaması
+              <p-sortIcon field="transTypeDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="isReturn">
+              İade mi?
+              <p-sortIcon field="isReturn"></p-sortIcon>
+            </th>
+            <th pSortableColumn="refNumber">
+              Referans Numarası
+              <p-sortIcon field="refNumber"></p-sortIcon>
+            </th>
+            <th pSortableColumn="documentNumber">
+              Belge Numarası
+              <p-sortIcon field="documentNumber"></p-sortIcon>
+            </th>
+            <th pSortableColumn="currAccTypeCode">
+              Müşteri Hesap Türü Kodu
+              <p-sortIcon field="currAccTypeCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="currAccTypeDescription">
+              Müşteri Hesap Türü Açıklaması
+              <p-sortIcon field="currAccTypeDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="currAccCode">
+              Müşteri Hesap Kodu
+              <p-sortIcon field="currAccCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="currAccDescription">
+              Müşteri Hesap Açıklaması
+              <p-sortIcon field="currAccDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="colorCode">
+              Renk Kodu
+              <p-sortIcon field="colorCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="colorDescription">
+              Renk Açıklaması
+              <p-sortIcon field="colorDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="itemDim1Code">
+              Boyut 1 Kodu
+              <p-sortIcon field="itemDim1Code"></p-sortIcon>
+            </th>
+            <th pSortableColumn="in_Qty1">
+              Giriş Miktarı
+              <p-sortIcon field="in_Qty1"></p-sortIcon>
+            </th>
+            <th pSortableColumn="out_Qty1">
+              Çıkış Miktarı
+              <p-sortIcon field="out_Qty1"></p-sortIcon>
+            </th>
+            <th pSortableColumn="inventoryQty1">
+              Stok Miktarı
+              <p-sortIcon field="inventoryQty1"></p-sortIcon>
+            </th>
+            <th pSortableColumn="companyCode">
+              Şirket Kodu
+              <p-sortIcon field="companyCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="officeCode">
+              Ofis Kodu
+              <p-sortIcon field="officeCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="storeCode">
+              Mağaza Kodu
+              <p-sortIcon field="storeCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="warehouseCode">
+              Depo Kodu
+              <p-sortIcon field="warehouseCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="warehouseDescription">
+              Depo Açıklaması
+              <p-sortIcon field="warehouseDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="fromOfficeCode">
+              Gönderilen Ofis Kodu
+              <p-sortIcon field="fromOfficeCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="fromStoreCode">
+              Gönderilen Mağaza Kodu
+              <p-sortIcon field="fromStoreCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="applicationCode">
+              Uygulama Kodu
+              <p-sortIcon field="applicationCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="applicationDescription">
+              Uygulama Açıklaması
+              <p-sortIcon field="applicationDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="linkedApplicationCode">
+              Bağlantılı Uygulama Kodu
+              <p-sortIcon field="linkedApplicationCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="linkedApplicationID">
+              Bağlantılı Uygulama ID
+              <p-sortIcon field="linkedApplicationID"></p-sortIcon>
+            </th>
+            <th pSortableColumn="productDescription">
+              Ürün Açıklaması
+              <p-sortIcon field="productDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="isBlocked">
+              Engellendi mi?
+              <p-sortIcon field="isBlocked"></p-sortIcon>
+            </th>
+            <th pSortableColumn="refNumber">
+              Referans Numarası
+              <p-sortIcon field="refNumber"></p-sortIcon>
+            </th>
+          </tr>
+          <tr>
+            <th>
+              <p-tableHeaderCheckbox />
+            </th>
+            <th>
+              <p-columnFilter type="text" field="productCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="date" field="operationDate" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="processCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="processDescription" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="transTypeCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="boolean" field="isReturn" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="refNumber" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="documentNumber" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="currAccTypeCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="currAccTypeDescription" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="currAccCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="currAccDescription" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="colorCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="colorDescription" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="itemDim1Code" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="in_Qty1" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="out_Qty1" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="inventoryQty1" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="companyCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="officeCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="storeCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="warehouseCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="warehouseDescription" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="fromOfficeCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="fromStoreCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="applicationCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="applicationDescription" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="linkedApplicationCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="linkedApplicationID" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="productDescription" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="boolean" field="isBlocked" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="refNumber" [showClearButton]="false"></p-columnFilter>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+          <tr>
+            <td>{{ product.productCode }}</td>
+            <td>{{ product.operationDate }}</td>
+            <td>{{ product.processCode }}</td>
+            <td>{{ product.processDescription }}</td>
+            <td>{{ product.transTypeCode }}</td>
+            <td>{{ product.transTypeDescription }}</td>
+            <td>{{ product.isReturn }}</td>
+            <td>{{ product.refNumber }}</td>
+            <td>{{ product.documentNumber }}</td>
+            <td>{{ product.currAccTypeCode }}</td>
+            <td>{{ product.currAccTypeDescription }}</td>
+            <td>{{ product.currAccCode }}</td>
+            <td>{{ product.currAccDescription }}</td>
+            <td>{{ product.colorCode }}</td>
+            <td>{{ product.colorDescription }}</td>
+            <td>{{ product.itemDim1Code }}</td>
+            <td>{{ product.in_Qty1 }}</td>
+            <td>{{ product.out_Qty1 }}</td>
+            <td>{{ product.inventoryQty1 }}</td>
+            <td>{{ product.companyCode }}</td>
+            <td>{{ product.officeCode }}</td>
+            <td>{{ product.storeCode }}</td>
+            <td>{{ product.warehouseCode }}</td>
+            <td>{{ product.warehouseDescription }}</td>
+            <td>{{ product.fromOfficeCode }}</td>
+            <td>{{ product.fromStoreCode }}</td>
+            <td>{{ product.applicationCode }}</td>
+            <td>{{ product.applicationDescription }}</td>
+            <td>{{ product.linkedApplicationCode }}</td>
+            <td>{{ product.linkedApplicationID }}</td>
+            <td>{{ product.productDescription }}</td>
+            <td>{{ product.isBlocked }}</td>
+            <td>{{ product.refNumber }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="30">No products found.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+    </div>
+
+    <div class="card" *ngIf="bestSellers.length > 0 && this.raportID == 2">
+      <p-table #dt [value]="bestSellers" dataKey="productCode" [rows]="50" [paginator]="true"
+        [globalFilterFields]="['productCode', 'productDescription']">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Resim</th>
+            <th pSortableColumn="productCode">
+              Ürün Kodu
+              <p-sortIcon field="productCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="productDescription">
+              Ürün Açıklaması
+              <p-sortIcon field="productDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="totalSalesQty1">
+              Toplam Satış Miktarı
+              <p-sortIcon field="totalSalesQty1"></p-sortIcon>
+            </th>
+            <th pSortableColumn="salesWithoutTax">
+              Vergisiz Satış
+              <p-sortIcon field="salesWithoutTax"></p-sortIcon>
+            </th>
+            <th pSortableColumn="salesWithTax">
+              Vergili Satış
+              <p-sortIcon field="salesWithTax"></p-sortIcon>
+            </th>
+          </tr>
+          <tr>
+            <th>
+              <!-- Optional: Placeholder for image filter -->
+            </th>
+            <th>
+              <p-columnFilter type="text" field="productCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="productDescription" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="totalSalesQty1" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="salesWithoutTax" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="salesWithTax" [showClearButton]="false"></p-columnFilter>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-report>
+          <tr>
+            <td class="image-icon-td">
+              <p-image src="{{ report.photo }}" alt="Image" width="50" [preview]="true">
+              </p-image>
+            </td>
+            <td>{{ report.productCode }}</td>
+            <td>{{ report.productDescription }}</td>
+            <td>{{ report.totalSalesQty1 }}</td>
+            <td>{{ report.salesWithoutTax | currency:'₺'}}</td>
+            <td>{{ report.salesWithTax | currency:'₺' }}</td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6">No best seller reports found.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+    </div>
+
+  </section>
+</main>

@@ -3,11 +3,12 @@ export class AvailableShelf {
 }
 export class Shelf {
   id: string;
-  warehouse: string;
-  shelfNo: string;
-  rowNumber: string;
-  konum: string;
-  createdDate: Date;
-  updatedDate: Date;
+  warehouse?: string;
+  shelfNo?: string;
+  rowNumber?: string;
+  konum?: string;
+  createdDate?: Date;
+  updatedDate?: Date;
 
 }
+//asdas

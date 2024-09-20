@@ -263,6 +263,7 @@ export class OrderManagamentComponent implements OnInit {
 
   }
 
+  url = 'drive.google.com/uc?export=view&id=1Dl1SKEWpKPaNDSmtjJq15oGx1PzoLyJE';
   // 1, 2 toplanabilir
   // 1, 1 faturalandırılan
   async getOrders(status: number, invoiceStatus: number): Promise<any> {

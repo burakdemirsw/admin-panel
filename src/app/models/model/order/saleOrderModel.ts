@@ -2,6 +2,7 @@ import { OrderStatus } from './orderStatus';
 export class SaleOrderModel {
   orderDate: Date;
   orderNumber: string;
+  invoiceNumber: string;
   currAccCode: string;
   currAccDescription: string;
   salespersonCode: string;
@@ -12,6 +13,7 @@ export class SaleOrderModel {
   status: number
   description: string
   invoiceStatus: number
+  eInvoiceStatusCode: boolean
   isShipped: boolean;
   warehouseCode: string;
 }

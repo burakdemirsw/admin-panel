@@ -1,6 +1,6 @@
 <main id="main" class="main">
   <section class="section">
-
+    <img [src]="url" alt="" style="object-fit: cover" />
     <div class="card">
       <p-table #dt2 [value]="saleOrderModels" [(selection)]="selectedOrders" dataKey="orderNumber" [paginator]="true"
         [rowsPerPageOptions]="[5, 10, 20]" [rows]="50" [tableStyle]="{ 'min-width': '70rem' }"
@@ -29,6 +29,11 @@
               Sipariş Numarası
               <p-sortIcon field="orderNumber"></p-sortIcon>
             </th>
+
+            <th pSortableColumn="invoiceNumber" *ngIf="invoiceStatus==1">
+              Fatura Numarası
+              <p-sortIcon field="invoiceNumber"></p-sortIcon>
+            </th>
             <!-- <th pSortableColumn="currAccCode" style="width: 10%">
                 Müşteri Kodu
                 <p-sortIcon field="currAccCode"></p-sortIcon>
@@ -37,6 +42,10 @@
             <th pSortableColumn="currAccDescription">
               Müşteri Adı
               <p-sortIcon field="currAccDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="currAccCode">
+              Müşteri Kodu
+              <p-sortIcon field="currAccCode"></p-sortIcon>
             </th>
             <!-- <th pSortableColumn="salespersonCode" style="width: 10%">
                 Satıcı Kodu
@@ -67,7 +76,7 @@
                 <p-sortIcon field="warehouseCode"></p-sortIcon>
               </th> -->
             <th>Kargo</th>
-
+            <th *ngIf="invoiceStatus==1">Fatura</th>
             <th>İşlemler</th>
           </tr>
           <tr>
@@ -75,10 +84,13 @@
               <p-tableHeaderCheckbox />
             </th>
             <th>
-              <p-columnFilter type="date" field="orderDate" [showClearButton]="false"></p-columnFilter>
+              <p-columnFilter type="date" field="orderDate" display="menu" [showClearButton]="false"></p-columnFilter>
             </th>
             <th>
               <p-columnFilter type="text" field="orderNumber" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th *ngIf="invoiceStatus==1">
+              <p-columnFilter type="text" field="invoiceNumber" [showClearButton]="false"></p-columnFilter>
             </th>
             <!-- <th>
                 <p-columnFilter
@@ -89,6 +101,9 @@
               </th> -->
             <th>
               <p-columnFilter type="text" field="currAccDescription" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="currAccCode" [showClearButton]="false"></p-columnFilter>
             </th>
             <!-- <th>
                 <p-columnFilter
@@ -130,6 +145,9 @@
             <th>
               <p-columnFilter type="boolean" field="isShipped" [showClearButton]="false"></p-columnFilter>
             </th>
+            <th *ngIf="invoiceStatus==1">
+              <p-columnFilter type="boolean" field="eInvoiceStatusCode" [showClearButton]="false"></p-columnFilter>
+            </th>
             <th></th>
             <th></th>
           </tr>
@@ -142,8 +160,10 @@
             </td>
             <td>{{ order.orderDate | date : "MM.dd HH:mm" }}</td>
             <td>{{ order.orderNumber }}</td>
-            <!-- <td>{{ order.currAccCode }}</td> -->
+            <td *ngIf="invoiceStatus==1">{{ order.invoiceNumber }}</td>
+
             <td>{{ order.currAccDescription }}</td>
+            <td>{{ order.currAccCode }}</td>
             <!-- <td>{{ order.salespersonCode }}</td> -->
             <td>{{ order.description }}</td>
             <td>{{ order.qty1 }}</td>
@@ -160,7 +180,15 @@
                 <i *ngIf="!order.isShipped" class="fa-solid fa-ban" aria-hidden="true"></i>
               </button>
             </td>
-
+            <td *ngIf="invoiceStatus==1">
+              <button class="btn" [ngClass]="{
+                    'btn-success': order.eInvoiceStatusCode,
+                    'btn-danger': !order.eInvoiceStatusCode
+                  }">
+                <i *ngIf="order.eInvoiceStatusCode" class="fa fa-check" aria-hidden="true"></i>
+                <i *ngIf="!order.eInvoiceStatusCode" class="fa-solid fa-ban" aria-hidden="true"></i>
+              </button>
+            </td>
             <td>
               <div class="btn-group">
                 <div *ngIf="!pageDescription" class="btn btn-success" data-text="Varyasyonlar" [routerLink]="
@@ -179,6 +207,9 @@
                 <div class="btn btn-success" data-text="Kargo" [routerLink]="'/create-cargo/' + order.orderNumber">
                   <i class="fa fa-truck" aria-hidden="true"></i>
                 </div>
+
+
+
                 <!-- <div *ngIf="!pageDescription" class="btn btn-success" data-text="Sil" (click)="deleteNebimOrder()">
                     <i class="fa-solid fa-trash"></i>
                   </div> -->

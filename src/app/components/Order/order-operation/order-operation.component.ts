@@ -503,7 +503,6 @@ export class OrderOperationComponent implements OnInit {
 
         if (orderType === 'WS' || orderType === 'MIS' || orderType === 'R') {
           this.collectAndPack_WS(this.collectedProducts);
-
           return;
 
         }
@@ -767,55 +766,56 @@ export class OrderOperationComponent implements OnInit {
               this.toasterService.warn('Stok Hatası.');
             }
           } else {
-            const confirmDelete = window.confirm(
-              'Raf Numarası Eşleşmedi Yine De Eklemek İstiyor Musunuz?'
-            );
+            return this.toasterService.error('Rafta Ürün Bulunamamaktadır')
+            // const confirmDelete = window.confirm(
+            //   'Raf Numarası Eşleşmedi Yine De Eklemek İstiyor Musunuz?'
+            // );
 
-            if (confirmDelete) {
+            // if (confirmDelete) {
 
-              productModel.quantity =
-                productModel.quantity;
+            //   productModel.quantity =
+            //     productModel.quantity;
 
-              if (foundProduct.quantity - productModel.quantity >= 0) {
-                var lineId = this.productsToCollect.find(p => p.barcode == productModel.barcode
-                ).lineId
-                if (!lineId) {
-                  this.toasterService.error("lineId bulunamadı")
-                }
+            //   if (foundProduct.quantity - productModel.quantity >= 0) {
+            //     var lineId = this.productsToCollect.find(p => p.barcode == productModel.barcode
+            //     ).lineId
+            //     if (!lineId) {
+            //       this.toasterService.error("lineId bulunamadı")
+            //     }
 
-                var response = await this.warehouseService.countProductRequest2(
-                  this.checkForm.get('barcode').value,
-                  productModel.shelfNo,
-                  productModel.quantity,
-                  null,
-                  null,
-                  null,
-                  productModel.batchCode == "0" ? null : productModel.batchCode,
-                  'Order/CountProduct',
-                  this.orderNo,
-                  null,
-                  lineId
-                );
-                //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
-                if (response.status.includes('Error')) {
-                  this.toasterService.error("Sayım Sırasında Hata Alındı : " + response.status)
-                  return;
+            //     var response = await this.warehouseService.countProductRequest2(
+            //       this.checkForm.get('barcode').value,
+            //       productModel.shelfNo,
+            //       productModel.quantity,
+            //       null,
+            //       null,
+            //       null,
+            //       productModel.batchCode == "0" ? null : productModel.batchCode,
+            //       'Order/CountProduct',
+            //       this.orderNo,
+            //       null,
+            //       lineId
+            //     );
+            //     //↑↑↑↑↑↑↑↑↑ SAYIM YAPILDI ↑↑↑↑↑↑↑↑↑
+            //     if (response.status.includes('Error')) {
+            //       this.toasterService.error("Sayım Sırasında Hata Alındı : " + response.status)
+            //       return;
 
-                }
+            //     }
 
-                await this.getAllProducts(this.orderNo, 'WS');
+            //     await this.getAllProducts(this.orderNo, 'WS');
 
-                //↑↑↑↑↑↑↑↑↑ TOPLANAN ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
-                this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
-                this.clearBarcodeAndQuantity();
+            //     //↑↑↑↑↑↑↑↑↑ TOPLANAN ÜRÜNLER ÇEKİLDİ ↑↑↑↑↑↑↑↑↑
+            //     this.toasterService.success('Ürün Toplama İşlemi Tamamlandı!');
+            //     this.clearBarcodeAndQuantity();
 
-              } else {
-                this.toasterService.warn('Stok Hatası.');
-              }
+            //   } else {
+            //     this.toasterService.warn('Stok Hatası.');
+            //   }
 
-            } else {
-              this.toasterService.error("Eklenmedi")
-            }
+            // } else {
+            //   this.toasterService.error("Eklenmedi")
+            // }
           }
         }
       }
