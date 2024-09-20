@@ -204,7 +204,7 @@ export class CreateProposalComponent implements OnInit {
         var list: FastTransfer_VM[] = event.filteredValue;
         this.mapProducts(list)
 
-        this.toasterService.info("Dinamik Search Güncellendi")
+        // this.toasterService.info("Dinamik Search Güncellendi")
       }
 
     } catch (error) {
@@ -218,7 +218,7 @@ export class CreateProposalComponent implements OnInit {
       this.allProducts = await this.productService.searchProduct5();
 
     }
-    this.toasterService.success('Tüm Ürünler Getirildi')
+    // this.toasterService.success('Tüm Ürünler Getirildi')
     this.mapProducts(this.allProducts);
     if (showDialog) {
 
@@ -265,9 +265,8 @@ export class CreateProposalComponent implements OnInit {
       this.proposal = response;
       this.proposalId = response.id;
       // await this.getProposalProducts();
-      this.toasterService.success('Oluşturuldu')
+      // this.toasterService.success('Oluşturuldu')
       // //this.generalService.beep();
-      this.router.navigate(["create-proposal", response.id])
     } else {
       this.toasterService.error('Oluşturulamadı')
     }
@@ -310,8 +309,12 @@ export class CreateProposalComponent implements OnInit {
     //toptan fiyat ve tr giyat alıncak
     //buradada db ye ekle sonra çek
 
+    var state: boolean;
     if (!this.proposalId) {
+      state = true;
       await this.addProposal();
+    } else {
+      state = false;
     }
     var request: BarcodeSearch_RM = new BarcodeSearch_RM(product.barcode);
     const productDetail = await this.productService.searchProduct(request);
@@ -349,13 +352,19 @@ export class CreateProposalComponent implements OnInit {
       var response = await this.productService.addProposalProduct(proposalProduct);
     }
 
-    if (response) {
-      await this.getProposalProducts();
-      this.toasterService.success('Eklendi')
-      //this.generalService.beep();
+    if (state == true) {
+      this.router.navigate(["create-proposal", this.proposal.id])
+      return;
     } else {
-      this.toasterService.error('Eklenmedi')
+      if (response) {
+        await this.getProposalProducts();
+        this.toasterService.success('Eklendi')
+        //this.generalService.beep();
+      } else {
+        this.toasterService.error('Eklenmedi')
+      }
     }
+
 
 
   }
@@ -559,13 +568,13 @@ export class CreateProposalComponent implements OnInit {
   phones: any[] = [];
   _descriptions: any[] = [];
   docCurrencyCodes: any[] = [];
-
   mapCustomers(data: CustomerList_VM[]) {
     const uniqueMap = (array, key) => {
       const map = new Map();
       array.forEach(item => {
-        if (!map.has(item[key])) {
-          map.set(item[key], { label: item[key], value: item[key] });
+        const keyValue = item[key] || ''; // Provide a default empty string for null or undefined values
+        if (!map.has(keyValue)) {
+          map.set(keyValue, { label: keyValue, value: keyValue });
         }
       });
       return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label));
@@ -577,7 +586,6 @@ export class CreateProposalComponent implements OnInit {
     this.phones = uniqueMap(data, 'phone');
     this.docCurrencyCodes = uniqueMap(data, 'docCurrencyCode');
   }
-
 
   async getAllCustomers() {
     if (this._selectableCustomers.length > 0) {
