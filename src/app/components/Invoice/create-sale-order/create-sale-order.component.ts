@@ -74,8 +74,12 @@ export class CreateSaleOrderComponent implements OnInit {
           this.headerService.updatePageTitle(`Satış Faturası ${this.processCode}`);
           this.invoice_r_formGenerator();
           await this.getWarehouseAndOffices();
+          if (this.processCode == "R") {
+            await this.getCustomerList('4'); //Perakende Müşterileri Çeker
+          } else {
+            await this.getCustomerList('3'); //TOPTAN Müşterileri Çeker
+          }
 
-          await this.getCustomerList('4'); //Perakende Müşterileri Çeker
         } else if (this.processCode == "BP" && this.processType == "invoice") {
           this.headerService.updatePageTitle('Alış Faturası (BP)');
           this.invoice_bp_formGenerator();

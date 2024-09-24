@@ -14,7 +14,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxPopperjsModule } from 'ngx-popperjs';
 import { NgxPrintModule } from 'ngx-print';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { BlockUIModule } from 'primeng/blockui';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -141,6 +141,8 @@ import { AutoMaximizeDialogDirective } from './directives/auto-maximize-dialog.d
 import { UntransferredOrdersComponent } from './components/marketplace/transferred-orders/untransferred-orders/untransferred-orders.component';
 import { CreateWarehouseProcessComponent } from './components/Warehouse/warehouse-operation/create-warehouse-process/create-warehouse-process.component';
 import { RaportComponent } from './components/raport/raport/raport.component';
+
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 @NgModule({
 
   declarations: [
@@ -273,6 +275,7 @@ import { RaportComponent } from './components/raport/raport/raport.component';
     CardModule,
     ButtonModule,
     StepsModule,
+    ConfirmDialogModule, //asdas
     ChartModule,
     SelectButtonModule,
     SidebarModule,
@@ -290,7 +293,7 @@ import { RaportComponent } from './components/raport/raport/raport.component';
   ],
 
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [MessageService, DatePipe, AlertifyService, NgModule, NgxPopper, DatePipe, NgxSpinnerModule, ExportCsvService, {
+  providers: [ConfirmationService, MessageService, DatePipe, AlertifyService, NgModule, NgxPopper, DatePipe, NgxSpinnerModule, ExportCsvService, {
     provide: HTTP_INTERCEPTORS,
     useClass: HttpErrorInterceptor,
     multi: true

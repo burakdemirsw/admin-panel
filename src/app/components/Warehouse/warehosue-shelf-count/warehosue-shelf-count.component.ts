@@ -18,7 +18,7 @@ import {
 import { AvailableShelf } from 'src/app/models/model/warehouse/availableShelf';
 import { CompleteCountOperation_CM } from 'src/app/models/model/warehouse/completeCount_CM';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
-import { ZTMSG_CountedProduct, ProductOnShelf } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
+import { ZTMSG_CountedProduct } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
@@ -227,7 +227,6 @@ export class WarehosueShelfCountComponent implements OnInit {
     this.totalCount = totalQty;
   }
   lastCollectedProducts: ZTMSG_CountedProduct[] = [];
-  lastCollectedProducts2: ProductOnShelf[] = [];
   async getProductOfCount(orderNo: string): Promise<any> {
     this.lastCollectedProducts = await this.warehouseService.getCountsOfOperation(
       orderNo

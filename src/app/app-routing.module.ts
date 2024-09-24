@@ -374,7 +374,8 @@ const routes: Routes = [
   { path: 'infos', component: PagesInfoComponent, canActivate: [AuthGuard] },
   { path: 'unauthorized', component: PagesUnauthorizedComponent },
   { path: 'product-stock-report', component: ProductStockReportComponent },
-  { path: 'add-product-to-shelf/:type/:isCompleted/:id', component: AddProductToShelfComponent },
+  { path: 'add-product-to-shelf/:innerProcessCode/:isCompleted/:id', component: AddProductToShelfComponent },
+  { path: 'add-product-to-shelf/:innerProcessCode/:isCompleted', component: AddProductToShelfComponent },
   { path: 'add-product-to-shelf-list', component: AddProductToShelfListComponent },
 
   //-------------------------------------------------------------------------

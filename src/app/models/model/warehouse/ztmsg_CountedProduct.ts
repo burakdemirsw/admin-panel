@@ -25,23 +25,18 @@ export class ZTMSG_CountedProduct {
   isCompleted?: boolean
 
 }
-export class ProductOnShelf {
+export class InnerLine {
   id: string;
+  innerHeaderId: string;
+  barcode?: string;
+  shelfNo?: string;
+  itemCode?: string;
+  quantity: number;
+  batchCode?: string;
   createdDate?: Date;
   updatedDate: Date = new Date();
-  shelfNo?: string;
-  barcode?: string;
-  in_Quantity?: number;
-  out_Quantity?: number;
-  batchCode?: string;
-  operationNumber?: string;
-  price?: number;
-  warehouseCode?: string;
-  itemCode?: string;
-  isCompleted?: boolean
-
 }
-export class ProductOnShelf_VM {
+export class InnerLine_VM {
 
   createdDate?: Date;
   updatedDate: Date;
@@ -49,5 +44,25 @@ export class ProductOnShelf_VM {
   type: boolean;
   operationNumber: string;
   isCompleted?: boolean
+
+}
+
+export class InnerHeader {
+  id: string;                // GUID türünde benzersiz kimlik
+  innerNumber: string;
+  officeCode: string;         // Office kodu
+  toOfficeCode: string;
+  toWarehouseCode: string;
+  warehouseCode: string;      // Depo kodu
+  description?: string;       // Açıklama (opsiyonel)
+  applicationCode?: string;   // Uygulama kodu (opsiyonel)
+  innerProcessType: number;   // İç işlem tipi, 2 ise ekler 3 ise çıkar
+  isCompleted: boolean;
+  isReturn: boolean;// Tamamlanma durumu
+  userId: number
+  createdDate?: Date;         // Oluşturulma tarihi (opsiyonel)
+  updatedDate?: Date = new Date();  // Güncellenme tarihi (varsayılan olarak şu anki zaman)
+  innerProcessCode: string;   // İç işlem tipi, 2 ise ekler 3 ise çıkar
+
 
 }

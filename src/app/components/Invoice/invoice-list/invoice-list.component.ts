@@ -46,7 +46,12 @@ export class InvoiceListComponent implements OnInit {
         if (this.processCode == 'R' && this.processType == 'invoice') {
           this.headerService.updatePageTitle("Peşin Satış Faturaları");
           await this.getInvoiceList();
-        } else if ((this.processCode == 'BP' && this.processType == 'invoice')) {
+        }
+        else if ((this.processCode == 'WS' && this.processType == 'invoice')) {
+          this.headerService.updatePageTitle("Toptan Satış Faturaları");
+          await this.getInvoiceList();
+        }
+        else if ((this.processCode == 'BP' && this.processType == 'invoice')) {
           this.headerService.updatePageTitle("Alış Faturaları");
           await this.getInvoiceList();
         } else if ((this.processCode == 'R' && this.processType == 'proposal')) {

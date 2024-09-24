@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { CreateBarcodeFromOrder_RM } from 'src/app/components/Product/create-barcode/models/createBarcode';
 import { CountListFilterModel } from 'src/app/models/model/filter/countListFilterModel';
-import { CountListModel } from 'src/app/models/model/product/countListModel';
-import { ProductOnShelf_VM } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
+import { InnerLine_VM } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { ProductService } from 'src/app/services/admin/product.service';
@@ -62,9 +61,9 @@ export class AddProductToShelfListComponent {
     const result = await this.generalService.generateGUID()
 
     if (isInQty) {
-      this.router.navigate(["/add-product-to-shelf/true/false/" + result])
+      this.router.navigate(["/add-product-to-shelf/CI/false/"])
     } else {
-      this.router.navigate(["/add-product-to-shelf/false/false/" + result])
+      this.router.navigate(["/add-product-to-shelf/CO/false/"])
     }
 
   }
@@ -91,7 +90,7 @@ export class AddProductToShelfListComponent {
   async newCount2() {
     try {
       const orderNo: string = await this.generalService.generateGUID();
-      this.router.navigate(['/warehouse-shelf-count/add-product-to-shelf/' + orderNo]);
+      this.router.navigate(['/warehouse-shelf-count/CI']);
     } catch (error: any) {
       console.log(error.message);
     }
@@ -100,18 +99,19 @@ export class AddProductToShelfListComponent {
   async newCount3() {
     try {
       const orderNo: string = await this.generalService.generateGUID();
-      this.router.navigate(['/warehouse-shelf-count/remove-product-to-shelf/' + orderNo]);
+      this.router.navigate(['/warehouse-shelf-count/CO']);
     } catch (error: any) {
       console.log(error.message);
     }
 
   }
 
-  countList: ProductOnShelf_VM[]
+  countList: InnerLine_VM[]
 
   async getGetCountList(): Promise<any> {
     try {
-      this.countList = await this.warehouseService.getProductOnShelfOperationList();
+      var request: string[] = ["CI", "CO"];
+      this.countList = await this.warehouseService.getInnerHeaders(request);
     } catch (error: any) {
       console.log(error.message);
     }

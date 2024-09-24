@@ -80,10 +80,10 @@ export class WarehouseOperationComponent implements OnInit {
   _barcode: string = null;
   quantity: number = null;
   offices: any[] = [];
-  _offices: any[] = [];
 
   warehouses: any[] = [];
   _warehouses: any[] = [];
+  _offices: any[] = [];
   inventoryItemColums: string[] = [
     'Id',
     'Fotoğraf',
@@ -467,8 +467,6 @@ export class WarehouseOperationComponent implements OnInit {
 
       });
 
-
-
       // toWarehouseCode değiştiğinde:
       this.warehouseForm.get('toWarehouseCode')?.valueChanges.subscribe(value => {
         if (value != null) {
@@ -486,31 +484,6 @@ export class WarehouseOperationComponent implements OnInit {
         }
 
       });
-
-
-
-
-
-      // this.warehouseForm.get('warehouseCode')?.valueChanges.subscribe(value => {
-      //   var oc = this.warehouseModels.find(m => m.warehouseCode == value.code).officeCode;
-      //   this.warehouseForm.get('office').setValue(oc);
-
-      //   if (this.warehouseForm.get('toWarehouseCode').value == value) {
-      //     this.warehouseForm.get('warehouseCode').setValue(null);
-
-      //   }
-
-      // });
-      // this.warehouseForm.get('toWarehouseCode')?.valueChanges.subscribe(value => {
-      //   var oc = this.warehouseModels.find(m => m.warehouseCode == value.code).officeCode;
-      //   this.warehouseForm.get('officeTo').setValue(oc);
-
-      //   if (this.warehouseForm.get('warehouseCode').value == value) {
-      //     this.warehouseForm.get('toWarehouseCode').setValue(null);
-
-      //   }
-
-      // });
 
       console.log(this.warehouseForm.value)
     } catch (error) {
@@ -879,7 +852,6 @@ export class WarehouseOperationComponent implements OnInit {
       this.storeTransfer(this.currentOrderNo);
     }
   }
-
   async refundToCenter(currentOrderNo: string) {
     if (currentOrderNo != null && currentOrderNo !== '') {
       const userConfirmed = window.confirm(
@@ -917,7 +889,6 @@ export class WarehouseOperationComponent implements OnInit {
     }
 
   }
-
   async transferBetweenStoreWarehouses(currentOrderNo: string) {
     if (currentOrderNo != null && currentOrderNo !== '') {
       const userConfirmed = window.confirm(
@@ -955,8 +926,6 @@ export class WarehouseOperationComponent implements OnInit {
     }
 
   }
-
-
   async storeTransfer(currentOrderNo: string) {
     if (currentOrderNo != null && currentOrderNo !== '') {
       const userConfirmed = window.confirm(

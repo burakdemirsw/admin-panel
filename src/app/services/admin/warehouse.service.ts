@@ -20,7 +20,7 @@ import { WarehouseOperationProductModel } from 'src/app/models/model/warehouse/w
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 import { GeneralService } from './general.service';
-import { ProductOnShelf, ProductOnShelf_VM, ZTMSG_CountedProduct } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
+import { InnerHeader, InnerLine, InnerLine_VM, ZTMSG_CountedProduct } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { CompleteCountOperation_CM } from 'src/app/models/model/warehouse/completeCount_CM';
 
 @Injectable({
@@ -566,42 +566,89 @@ export class WarehouseService {
 
   //----------------------------------------------------
 
-  // ProductOnShelf -----------------------------------------------------------
+  // Inner-----------------------------------------------------------
 
 
-  async completeProductOnShelfOperation(opetationId: string): Promise<boolean> {
+  async completeInnerHeader(opetationId: string, sendNebim: boolean): Promise<boolean> {
     const response = await this.httpClientService
-      .get_new<boolean>({ controller: 'Warehouse/complete-product-on-shelf-operation' }, opetationId)
+      .get_new<boolean>({ controller: 'Warehouse/complete-inner-header' }, opetationId + "/" + sendNebim)
       .toPromise();
     return response;
   }
-  async getProductOnShelfOperationList(): Promise<ProductOnShelf_VM[]> {
+  async getInnerHeaders(innerProcessCodes: string[]): Promise<InnerLine_VM[]> {
     const response = await this.httpClientService
-      .get<ProductOnShelf_VM>({ controller: 'Warehouse/get-products-on-shelf-operation-list' })
-      .toPromise();
-    return response;
-  }
-
-  async addProductOnShelf(request: ProductOnShelf): Promise<boolean> {
-    const response = await this.httpClientService
-      .post<any>({ controller: 'Warehouse/add-product-to-shelf' }, request)
+      .post<InnerLine_VM>({ controller: 'Warehouse/get-inner-headers', }, innerProcessCodes)
       .toPromise();
     return response;
   }
 
-  async getProductOnShelf(request: string): Promise<ProductOnShelf[]> {
+  async addInnerLine(request: InnerLine): Promise<boolean> {
     const response = await this.httpClientService
-      .get<ProductOnShelf>({ controller: 'Warehouse/get-products-on-shelves' }, request)
+      .post<any>({ controller: 'Warehouse/add-inner-line' }, request)
       .toPromise();
     return response;
   }
 
-  async deleteProductOnShelf(request: string): Promise<any> {
+  async getInnerLines(request: string): Promise<InnerLine[]> {
+    const response = await this.httpClientService
+      .get<InnerLine>({ controller: 'Warehouse/get-inner-lines' }, request)
+      .toPromise();
+    return response;
+  }
+
+  async deleteInnerLine(request: string): Promise<any> {
 
     const response = await this.httpClientService
-      .get<any>({ controller: 'Warehouse/delete-product-on-shelf' }, request)
+      .get<any>({ controller: 'Warehouse/delete-inner-line' }, request)
+      .toPromise();
+    return response;
+  }
+
+  async completeInnerHeaderOperation(operationId: string): Promise<boolean> {
+    const response = await this.httpClientService
+      .get_new<boolean>({ controller: 'Warehouse/complete-inner-header-operation' }, operationId)
+      .toPromise();
+    return response;
+  }
+
+  // InnerHeader operasyon listesini alma
+  async getInnerHeaderOperationList(): Promise<InnerHeader[]> {
+    const response = await this.httpClientService
+      .get<InnerHeader>({ controller: 'Warehouse/get-inner-header-operation-list' })
+      .toPromise();
+    return response;
+  }
+
+  // Yeni InnerHeader ekleme
+  async addInnerHeader(request: InnerHeader): Promise<InnerHeader> {
+    const response = await this.httpClientService
+      .post<InnerHeader>({ controller: 'Warehouse/add-inner-header' }, request)
+      .toPromise();
+    return response;
+  }
+  // Yeni InnerHeader ekleme
+  async updateInnerHeader(request: InnerHeader): Promise<InnerHeader> {
+    const response = await this.httpClientService
+      .post<InnerHeader>({ controller: 'Warehouse/update-inner-header' }, request)
+      .toPromise();
+    return response;
+  }
+  // InnerHeader işlemlerini ID ile getirme
+  async getInnerHeaderById(request: string): Promise<InnerHeader> {
+    const response = await this.httpClientService
+      .get_new<InnerHeader>({ controller: 'Warehouse/get-inner-header' }, request)
+      .toPromise();
+    return response;
+  }
+
+  // InnerHeader işlemini silme
+  async deleteInnerHeader(request: string): Promise<any> {
+    const response = await this.httpClientService
+      .get<any>({ controller: 'Warehouse/delete-inner-header' }, request)
       .toPromise();
     return response;
   }
   //---------------------------------------------------------------------------
+
+
 }
