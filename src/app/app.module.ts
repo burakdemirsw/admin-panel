@@ -118,7 +118,6 @@ import { ExportCsvService } from './services/export-csv.service';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { SearchShelfComponent } from './components/Product/search-shelf/search-shelf.component';
 import { ImportTransactionsComponent } from './components/Order/import-transactions/import-transactions.component';
-import { Html5QrcodeScanner } from 'html5-qrcode';
 
 @NgModule({
 
