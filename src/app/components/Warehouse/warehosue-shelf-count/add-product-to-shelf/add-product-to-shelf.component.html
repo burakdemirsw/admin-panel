@@ -8,6 +8,7 @@
             <form *ngIf="this.innerProcessCode == 'C'
             ||this.innerProcessCode == 'CI'
             || this.innerProcessCode == 'CO'
+              || this.innerProcessCode == 'ST' || this.innerProcessCode == 'WS' || this.innerProcessCode == 'R'
             " [formGroup]="_checkForm" (ngSubmit)="updateInnerHeader(_checkForm.value)">
               <div class="row mb-3 ">
                 <div class="form-group col-md-6 mt-3">
@@ -75,10 +76,20 @@
                     formControlName="description" maxlength="100" />
                 </div>
               </div>
-              <div class="row mb-3">
+              <div class="row mb-3" *ngIf="this.innerHeader?.innerNumber">
                 <div class="form-group">
                   <input [disabled]="true" pInputText type="text" placeholder="Hareket Numarası" id="innerNumber"
                     class="form-control" formControlName="innerNumber" />
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-6">
+                  <label for="isReturn" class="col-form-label">İade</label>
+                </div>
+                <div class="col-6">
+                  <div class="form-check">
+                    <p-inputSwitch id="isReturn" formControlName="isReturn"></p-inputSwitch>
+                  </div>
                 </div>
               </div>
 
@@ -117,26 +128,33 @@
           <div class="row mb-3">
             <div class="form-group">
               <input pInputText type="search" placeholder="Barkod" id="countPageBarcode" class="form-control"
-                formControlName="barcode" [disabled]="checkForm.disabled" [(ngModel)]="currentbarcode"
-                (keydown.enter)="onSubmit(checkForm.value)" />
+                formControlName="barcode" [disabled]="checkForm?.disabled"
+                (keydown.enter)="onSubmit(checkForm?.value)" />
             </div>
           </div>
           <div class="row mb-3">
             <div class="form-group col">
               <div class="form-group">
                 <input pInputText placeholder="Miktar" type="number" id="quantity" class="form-control"
-                  formControlName="quantity" [disabled]="checkForm.disabled" />
+                  formControlName="quantity" [disabled]="checkForm?.disabled" />
               </div>
             </div>
             <div class="form-group col">
               <div class="form-group">
                 <input placeholder="Parti" pInputText input type="text" id="batchCode" class="form-control"
-                  formControlName="batchCode" (keydown.enter)="onSubmit(checkForm.value)"
-                  [disabled]="checkForm.disabled" />
+                  formControlName="batchCode" (keydown.enter)="onSubmit(checkForm?.value)"
+                  [disabled]="checkForm?.disabled" />
               </div>
             </div>
           </div>
-
+          <div class="form-group col mb-3" *ngIf=" this.innerProcessCode == 'ST'
+            ">
+            <div class="form-group">
+              <input placeholder="Hedef Raf" pInputText input type="text" id="toShelfNo" class="form-control"
+                formControlName="toShelfNo" (keydown.enter)="onSubmit(checkForm?.value)"
+                [disabled]="checkForm?.disabled" />
+            </div>
+          </div>
 
           <div class="row mb-1">
             <div class="form-group col">
@@ -145,14 +163,30 @@
               </button>
             </div>
             <div class="form-group col">
-              <button *ngIf="this.innerProcessCode == 'CI' ||this.innerProcessCode == 'CO' " type="button"
+              <button *ngIf="this.innerProcessCode == 'CI' ||this.innerProcessCode == 'CO'" type="button"
                 class="btn btn-primary" style="margin-left: 10px; color: white"
                 (click)="completeCountFromService(currentOrderNo)" style="width: 100%">
-                Tamamla
+                Sayımı Tamamla
               </button>
               <button *ngIf="this.innerProcessCode == 'C' " type="button" class="btn btn-primary"
-                style="margin-left: 10px; color: white" (click)="dialog=true" style="width: 100%">
-                Tamamla
+                style="margin-left: 10px; color: white" (click)="completeCountFromService(currentOrderNo)"
+                style="width: 100%">
+                Sayımı Eşitlemeyi Tamamla
+              </button>
+              <button *ngIf="this.innerProcessCode == 'S'||this.innerProcessCode == 'WT' " type="button"
+                class="btn btn-primary" style="margin-left: 10px; color: white" (click)="handleTransfer()"
+                style="width: 100%">
+                Transferi Tamamla
+              </button>
+
+              <button *ngIf="this.innerProcessCode == 'ST' " type="button" class="btn btn-primary"
+                style="margin-left: 10px; color: white" style="width: 100%" (click)="create_st()">
+                Raf Transferi Tamamla
+              </button>
+
+              <button *ngIf="this.innerProcessCode == 'WS'||this.innerProcessCode == 'R'  " type="button"
+                class="btn btn-primary" style="margin-left: 10px; color: white" style="width: 100%">
+                Siparişi Faturalaştır
               </button>
             </div>
           </div>
@@ -166,8 +200,20 @@
               [responsiveLayout]="'scroll'">
               <ng-template pTemplate="header">
                 <tr>
-                  <th *ngFor="let header of _tableHeaders">
-                    {{ header }}
+                  <th>
+                    Ürün Kodu
+                  </th>
+                  <th>
+                    Barkod
+                  </th>
+                  <th>
+                    Raf
+                  </th>
+                  <th>
+                    Hedef Raf
+                  </th>
+                  <th>
+                    Miktar
                   </th>
                 </tr>
               </ng-template>
@@ -177,6 +223,7 @@
                   <td>{{ product.itemCode }}</td>
                   <td>{{ product.barcode }}</td>
                   <td>{{ product.shelfNo }}</td>
+                  <td>{{ product.toShelfNo }}</td>
                   <td>{{ product.quantity }}</td>
                   <td>
                     <div class="btn-group">

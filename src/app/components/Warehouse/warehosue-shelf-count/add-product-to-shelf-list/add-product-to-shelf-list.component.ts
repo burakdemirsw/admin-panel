@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { CreateBarcodeFromOrder_RM } from 'src/app/components/Product/create-barcode/models/createBarcode';
 import { CountListFilterModel } from 'src/app/models/model/filter/countListFilterModel';
@@ -10,6 +10,7 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
+import { ExportCsvService } from 'src/app/services/export-csv.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 @Component({
@@ -26,48 +27,137 @@ export class AddProductToShelfListComponent {
     private productService: ProductService,
     private router: Router,
     private formBuilder: FormBuilder,
-
+    private exportCsvService: ExportCsvService,
     private warehouseService: WarehouseService,
     private generalService: GeneralService,
-    private title: Title,
+    private activatedRoute: ActivatedRoute,
     private headerService: HeaderService
   ) { }
-
+  innerProcessCode: string;
   async ngOnInit() {
 
     //this.spinnerService.show();
-    this.headerService.updatePageTitle("Rafa Ürün Ekle/Çıkar Listesi")
     this.formGenerator();
-    await this.getGetCountList();
-
-    //this.spinnerService.hide();
+    this.activatedRoute.paramMap.subscribe(params => {
+      const param = params.get('innerProcessCode'); // 'id' parametresini alıyoruz, rota yapınıza göre değiştirin
+      this.loadData();
+      this.items.push({
+        label: 'Excel\'e Aktar',
+        command: () => {
+          this.exportCsv();
+        }
+      })
+    });
 
   }
-  items: MenuItem[] = [
-    {
-      label: 'Rafa Ürün Ekle',
-      command: () => {
-        this.route(true)
-      }
-    },
-    {
-      label: 'Raftan Ürün Çıkar',
-      command: () => {
-        this.route(false)
-      }
-    }
-  ];
-  async route(isInQty: boolean) {
-    const result = await this.generalService.generateGUID()
+  async route(code: string, isReturn?: boolean) {
+    const result = await this.generalService.generateGUID();
 
-    if (isInQty) {
-      this.router.navigate(["/add-product-to-shelf/CI/false/"])
+    if (isReturn) {
+      this.router.navigate([`add-product-to-shelf/${code}/false`], { queryParams: { isReturn: true } });
     } else {
-      this.router.navigate(["/add-product-to-shelf/CO/false/"])
+      this.router.navigate([`add-product-to-shelf/${code}/false`]);
+    }
+  }
+
+  async loadData() {
+    this.activatedRoute.params.subscribe((params) => {
+
+      if (params["innerProcessCode"]) {
+        this.innerProcessCode = params["innerProcessCode"];
+      }
+    });
+    if (this.innerProcessCode == "CI") {
+      this.items = [
+        {
+          label: 'Yeni',
+          command: () => {
+            this.route(this.innerProcessCode)
+          }
+        }
+      ];
+      this.headerService.updatePageTitle("Rafa Ürün Ekle");
+      var request: string[] = ["CI", "CO"];
+      await this.getGetCountList(request);
+    } else if (this.innerProcessCode == "CO") {
+      this.items = [
+        {
+          label: 'Yeni',
+          command: () => {
+            this.route(this.innerProcessCode)
+          }
+        }
+
+      ];
+      var request: string[] = ["CI", "CO"];
+      await this.getGetCountList(request);
+      this.headerService.updatePageTitle("Raftan Ürün Çıkar");
+    } else if (this.innerProcessCode == "C") {
+      this.items = [
+        {
+          label: 'Yeni',
+          command: () => {
+            this.route(this.innerProcessCode)
+          }
+        }
+      ];
+      var request: string[] = ["C"];
+      await this.getGetCountList(request);
+      this.headerService.updatePageTitle("Sayım");
+    } else if (this.innerProcessCode == "WT") {
+
+      this.items = [
+        {
+          label: 'Yeni',
+          command: () => {
+            this.route(this.innerProcessCode)
+          }
+        }
+      ];
+      var request: string[] = ["WT"];
+      await this.getGetCountList(request);
+      this.headerService.updatePageTitle("Mağazanın Depoları Arası Transfer");
+    } else if (this.innerProcessCode == "S") {
+      this.items = [
+        {
+          label: 'Yeni',
+          command: () => {
+            this.route(this.innerProcessCode)
+          }
+        },
+        {
+          label: 'Yeni İade',
+          command: () => {
+            this.route(this.innerProcessCode, true)
+          }
+        }
+      ];
+      var request: string[] = ["S"];
+      await this.getGetCountList(request);
+      this.headerService.updatePageTitle("Transferler");
+    } else if (this.innerProcessCode == "ST") {
+      this.items = [
+        {
+          label: 'Yeni',
+          command: () => {
+            this.route(this.innerProcessCode)
+          }
+        }
+      ];
+      var request: string[] = ["ST"];
+      await this.getGetCountList(request);
+      this.headerService.updatePageTitle("Raflar Arası Transfer");
+
     }
 
   }
 
+
+  exportCsv() {
+    this.exportCsvService.exportToCsv(this.countList, 'my-data');
+  }
+
+  items: MenuItem[] = [];
 
   innerNumberList: string[] = [];
   addInnerNumberToList(innerNumber: string) {
@@ -108,9 +198,8 @@ export class AddProductToShelfListComponent {
 
   countList: InnerLine_VM[]
 
-  async getGetCountList(): Promise<any> {
+  async getGetCountList(request: string[]): Promise<any> {
     try {
-      var request: string[] = ["CI", "CO"];
       this.countList = await this.warehouseService.getInnerHeaders(request);
     } catch (error: any) {
       console.log(error.message);

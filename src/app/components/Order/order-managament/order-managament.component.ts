@@ -142,7 +142,7 @@ export class OrderManagamentComponent implements OnInit {
   }
   productsToCollect: ProductOfOrder[];
   exportCsv() {
-    this.exportCsvService.exportToCsv(this.selectedOrders, 'my-orders');
+    this.exportCsvService.exportToCsv(this.selectedOrders, 'my-data');
   }
   async deleteNebimOrder() {
     if (this.selectedOrders.length < 1) {

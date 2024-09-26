@@ -21,6 +21,12 @@
     <div class="card" *ngIf="productInventoryRaports.length > 0 && this.raportID == 0 ">
       <p-table #dt [value]="productInventoryRaports" dataKey="itemCode" [rows]="10" [paginator]="true"
         [globalFilterFields]="['itemDescription', 'itemCode', 'warehouseCode']">
+        <ng-template pTemplate="caption">
+          <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
+            <p-splitButton label="İşlemler" [model]="items" appendTo="body" />
+          </div>
+
+        </ng-template>
 
         <ng-template pTemplate="header">
           <tr>
@@ -87,6 +93,16 @@
       <p-table #dt [value]="productExtractRaports" dataKey="productCode" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
         [paginator]="true" [globalFilterFields]="['productCode', 'operationDate', 'processCode', 'processDescription']"
         [tableStyle]="{ 'min-width': '75rem' }">
+
+        <ng-template pTemplate="caption">
+          <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
+            <p-splitButton label="İşlemler" [model]="items" appendTo="body" />
+          </div>
+
+        </ng-template>
+
+
+
         <ng-template pTemplate="header">
           <tr>
             <th pSortableColumn="productCode">
@@ -373,6 +389,12 @@
     <div class="card" *ngIf="bestSellers.length > 0 && this.raportID == 2">
       <p-table #dt [value]="bestSellers" dataKey="productCode" [rows]="50" [paginator]="true"
         [globalFilterFields]="['productCode', 'productDescription']">
+        <ng-template pTemplate="caption">
+          <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
+            <p-splitButton label="İşlemler" [model]="items" appendTo="body" />
+          </div>
+
+        </ng-template>
 
         <ng-template pTemplate="header">
           <tr>

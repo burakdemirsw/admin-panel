@@ -68,7 +68,7 @@
       </div>
     </div>
 
-    <p-dialog header="Depo Seç {{selectedInvoiceNumber != null ? '| '+selectedInvoiceNumber : ''}}"
+    <p-dialog header="Hangi Depodan Çıkış Yapılsın {{selectedInvoiceNumber != null ? '| '+selectedInvoiceNumber : ''}}"
       [(visible)]="warehouseDialog" [modal]="true" [style]="{ 'max-width': '800px' }" [draggable]="false"
       [resizable]="false">
       <div class="container mt-3">
@@ -77,8 +77,10 @@
             <div class="card h-100" style="cursor: pointer">
 
               <div class="card-body d-flex align-items-center justify-content-center"
-                routerLink="/collect-export-products/{{this.selectedInvoiceNumber}}/{{model.warehouseCode}}">
-                <h5 class="card-title m-0">{{ model.warehouseDescription }}</h5>
+                [routerLink]="['/add-product-to-shelf', 'S', 'true']"
+                [queryParams]="{ isReturn: true, warehouseCode: model.warehouseCode ,invoiceNumber : this.selectedInvoiceNumber}">
+
+                <h5 class="card-title m-0">{{ model.warehouseDescription+" - "+ "("+model.warehouseCode+")"}}</h5>
               </div>
             </div>
           </div>

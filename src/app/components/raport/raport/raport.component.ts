@@ -2,11 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { MenuItem } from 'primeng/api';
 import { Raport_BestSeller, Raport_ProductExtract, Raport_ProductInventory } from 'src/app/models/model/raport/raport_CR';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { RaportService } from 'src/app/services/admin/raport.service';
+import { ExportCsvService } from 'src/app/services/export-csv.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 
 @Component({
@@ -22,7 +24,8 @@ export class RaportComponent implements OnInit {
     private activatedRoute: ActivatedRoute, private generalService: GeneralService, private formBuilder: FormBuilder,
     private spinnerService: NgxSpinnerService,
     private raportService: RaportService,
-    private headerService: HeaderService) { }
+    private headerService: HeaderService,
+    private exportCsvService: ExportCsvService) { }
   raportID = 0;
   tableHeaders: string[] = [
     'Ürün Kodu',
@@ -59,8 +62,8 @@ export class RaportComponent implements OnInit {
     'Engellendi mi?',
     'Referans Numarası'
   ];
-  selectedColumns: any[] = []
-    ;
+  selectedColumns: any[] = [];
+
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(p => {
       if (p['type'] == 'product-inventory-raport') {
@@ -95,6 +98,27 @@ export class RaportComponent implements OnInit {
     } else if (this.raportID == 3) {
 
     }
+  }
+  items: MenuItem[] = [
+    {
+      label: 'Excel\'e Aktar',
+      command: () => {
+        this.exportCsv();
+      }
+    }
+  ];
+  exportCsv() {
+    if (this.raportID == 0) {
+      this.exportCsvService.exportToCsv(this.productInventoryRaports, 'my-data');
+    } else if (this.raportID == 1) {
+      this.exportCsvService.exportToCsv(this.productExtractRaports, 'my-data');
+    } else if (this.raportID == 2) {
+      this.exportCsvService.exportToCsv(this.bestSellers, 'my-data');
+    } else {
+      this.toasterService.error('Veri Yok')
+
+    }
+
   }
 
 

@@ -1,17 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { CreateBarcodeFromOrder_RM, CreateBarcodeModel } from 'src/app/components/Product/create-barcode/models/createBarcode';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import {
   BarcodeModelResponse,
   BarcodeModel_A,
 } from 'src/app/models/model/barcode/barcodeModel_A';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
-import { CollectedInvoiceProduct, CreatePurchaseInvoice, InvoiceProcess } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
 import { GetProductExtract_RM, GetProductStock_RM } from 'src/app/models/model/product/getProductStock';
 import { ProductCountModel2 } from 'src/app/models/model/product/productCountModel2';
 import { ProductCreateModel } from 'src/app/models/model/product/productCreateModel';
+import { ProductList_VM } from 'src/app/models/model/product/productList_VM';
+import { Proposal_VM, ZTMSG_Proposal, ZTMSG_ProposalProduct } from 'src/app/models/model/product/proposalProduct';
 import { QrCode } from 'src/app/models/model/product/qrCode';
 import { QrControlCommandModel } from 'src/app/models/model/product/qrControlModel';
 import {
@@ -22,14 +25,11 @@ import {
   ProductCountModel,
   ProductCountModel3,
 } from 'src/app/models/model/shelfNameModel';
+import { FastTransfer_VM } from 'src/app/models/model/warehouse/transferRequestListModel';
 import { WarehouseFormModel } from 'src/app/models/model/warehouse/warehosueTransferModel';
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 import { GeneralService } from './general.service';
-import { CreateBarcodeFromOrder_RM, CreateBarcodeModel } from 'src/app/components/Product/create-barcode/models/createBarcode';
-import { ZTMSG_ProposalProduct, Proposal_VM, ZTMSG_Proposal } from 'src/app/models/model/product/proposalProduct';
-import { FastTransfer_VM } from 'src/app/models/model/warehouse/transferRequestListModel';
-import { ProductList_VM } from 'src/app/models/model/product/productList_VM';
 
 @Injectable({
   providedIn: 'root',

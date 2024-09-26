@@ -20,6 +20,15 @@
               İşlem Tipi
               <p-sortIcon field="innerProcessCode"></p-sortIcon>
             </th>
+
+            <th pSortableColumn="warehouseCode">
+              Depo Kodu
+              <p-sortIcon field="warehouseCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="toWarehouseCode">
+              Hedef Depo Kodu
+              <p-sortIcon field="toWarehouseCode"></p-sortIcon>
+            </th>
             <th pSortableColumn="createdDate">
               Oluşturulma Tarihi
               <p-sortIcon field="createdDate"></p-sortIcon>
@@ -27,6 +36,11 @@
             <th pSortableColumn="isCompleted">
               Tamamlandı Mı
               <p-sortIcon field="isCompleted"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="isReturn">
+              İade Mı
+              <p-sortIcon field="isReturn"></p-sortIcon>
             </th>
             <th pSortableColumn="innerNumber">
               İşlem Numarası
@@ -42,10 +56,19 @@
               <p-columnFilter type="text" field="innerProcessCode" [showClearButton]="true"></p-columnFilter>
             </th>
             <th>
+              <p-columnFilter type="text" field="warehouseCode" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="toWarehouseCode" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
               <p-columnFilter type="date" field="createdDate" [showClearButton]="true"></p-columnFilter>
             </th>
             <th>
               <p-columnFilter type="boolean" field="isCompleted" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="boolean" field="isReturn" [showClearButton]="true"></p-columnFilter>
             </th>
             <th>
               <p-columnFilter type="text" field="innerNumber" [showClearButton]="true"></p-columnFilter>
@@ -60,8 +83,12 @@
           <tr>
             <td>{{ count.description }}</td>
             <td>{{ count.innerProcessCode }}</td>
+            <td>{{ count.warehouseCode }}</td>
+            <td>{{ count.toWarehouseCode }}</td>
+
             <td>{{ count.createdDate | date:'dd/MM/yyyy' }}</td>
             <td>{{ count.isCompleted ? 'Evet' : 'Hayır' }}</td>
+            <td>{{ count.isReturn ? 'Evet' : 'Hayır' }}</td>
             <td>{{ count.innerNumber }}</td>
             <td>
               <div class="btn-group">

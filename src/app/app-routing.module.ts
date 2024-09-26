@@ -375,8 +375,10 @@ const routes: Routes = [
   { path: 'unauthorized', component: PagesUnauthorizedComponent },
   { path: 'product-stock-report', component: ProductStockReportComponent },
   { path: 'add-product-to-shelf/:innerProcessCode/:isCompleted/:id', component: AddProductToShelfComponent },
+  { path: 'add-product-to-shelf/:innerProcessCode/:isCompleted/:isReturn/:id', component: AddProductToShelfComponent },
+
   { path: 'add-product-to-shelf/:innerProcessCode/:isCompleted', component: AddProductToShelfComponent },
-  { path: 'add-product-to-shelf-list', component: AddProductToShelfListComponent },
+  { path: 'inner-list/:innerProcessCode', component: AddProductToShelfListComponent },
 
   //-------------------------------------------------------------------------
   { path: '**', component: PagesError404Component },

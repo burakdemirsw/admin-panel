@@ -9,6 +9,8 @@ export class OrderDetail {
   mail: string;
   customer: string;
   city: string;
+  officeCode: string;
+  warehouseCode: string;
   district: string;
   address: string;
   products: BasketProductSummary[];

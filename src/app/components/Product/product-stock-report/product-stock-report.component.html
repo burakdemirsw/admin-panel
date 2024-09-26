@@ -17,7 +17,12 @@
         [tableStyle]="{ 'min-width': '50rem' }"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
 
+        <ng-template pTemplate="caption">
+          <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
+            <p-splitButton label="İşlemler" [model]="items" appendTo="body" />
+          </div>
 
+        </ng-template>
 
         <ng-template pTemplate="header">
           <tr>

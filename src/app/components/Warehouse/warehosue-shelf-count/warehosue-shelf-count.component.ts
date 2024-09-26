@@ -10,7 +10,7 @@ import { CountProductRequestModel2 } from 'src/app/models/model/order/countProdu
 import { OrderBillingListModel } from 'src/app/models/model/order/orderBillingListModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
 import { CountProduct3 } from 'src/app/models/model/product/countProduct';
-import { CountedProduct, CountedProductControl } from 'src/app/models/model/product/countedProduct';
+import { CountedProductControl } from 'src/app/models/model/product/countedProduct';
 import { ItemBillingModel } from 'src/app/models/model/product/itemBillingModel ';
 import {
   ProductCountModel,

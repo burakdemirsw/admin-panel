@@ -30,6 +30,7 @@ export class InnerLine {
   innerHeaderId: string;
   barcode?: string;
   shelfNo?: string;
+  toShelfNo?: string;
   itemCode?: string;
   quantity: number;
   batchCode?: string;

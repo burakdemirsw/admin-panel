@@ -640,6 +640,12 @@ export class WarehouseService {
       .toPromise();
     return response;
   }
+  async getInnerHeaderByDescription(request: string): Promise<InnerHeader> {
+    const response = await this.httpClientService
+      .get_new<InnerHeader>({ controller: 'Warehouse/get-inner-header-by-description' }, request)
+      .toPromise();
+    return response;
+  }
 
   // InnerHeader işlemini silme
   async deleteInnerHeader(request: string): Promise<any> {

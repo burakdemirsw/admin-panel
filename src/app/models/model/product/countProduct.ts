@@ -42,6 +42,7 @@ export class CountProduct3 extends CountProduct {  //warehouse-shelf-count
   warehouseCode: any;
   isShelfBased: boolean;
   isShelfBased2: boolean;
+  toShelfNo?: string;
 
   constructor(shelfNo: string, barcode: string, quantity: number, batchCode: string,
     office: string, warehouseCode: string, isShelfBased: boolean, isShelfBased2: boolean) {
