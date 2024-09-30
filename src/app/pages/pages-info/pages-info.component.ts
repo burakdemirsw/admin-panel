@@ -207,8 +207,9 @@ export class PagesInfoComponent implements OnInit {
       shipmentMethodCode: [null],
       deliveryCompanyCode: [null],
       basePriceCode: [null],
-      isOrderBase: [null],
-      isShipmentBase: [null]
+      applicationCode: [null],
+      // isOrderBase: [null],
+      // isShipmentBase: [null]
     });
   }
   createMailInfoForm() {

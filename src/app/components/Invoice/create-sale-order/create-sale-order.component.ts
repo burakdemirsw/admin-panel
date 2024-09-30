@@ -46,7 +46,7 @@ export class CreateSaleOrderComponent implements OnInit {
   visible: boolean = false;
   infoProducts: CreatePurchaseInvoice[] = [];
   selectedCustomer: any;
-
+  applicationCode: string;
   constructor(
     private formBuilder: FormBuilder,
     private toasterService: ToasterService,
@@ -72,6 +72,7 @@ export class CreateSaleOrderComponent implements OnInit {
         this.createDiscountForm();
         if ((this.processCode == "R" || this.processCode == "WS") && this.processType == "invoice") {
           this.headerService.updatePageTitle(`Satış Faturası ${this.processCode}`);
+          this.applicationCode = "Invoice";
           this.invoice_r_formGenerator();
           await this.getWarehouseAndOffices();
           if (this.processCode == "R") {
@@ -82,36 +83,42 @@ export class CreateSaleOrderComponent implements OnInit {
 
         } else if (this.processCode == "BP" && this.processType == "invoice") {
           this.headerService.updatePageTitle('Alış Faturası (BP)');
+          this.applicationCode = "Invoice";
           this.invoice_bp_formGenerator();
           await this.getWarehouseAndOffices();
 
           await this.getCustomerList('1'); //Tedarikçileri Çeker
         } else if (this.processCode == "R" && this.processType == "proposal") {//teklif paneli
           this.headerService.updatePageTitle('Satış Teklif Oluştur');
+          this.applicationCode = "Proposal";
           this.proposal_r_formGenerator();
           await this.getWarehouseAndOffices();
           await this.getCustomerList('3');
         }
         else if (this.processCode == "BP" && this.processType == "proposal") {//teklif paneli
           this.headerService.updatePageTitle('Alış Teklif Oluştur');
+          this.applicationCode = "Proposal";
           this.proposal_bp_formGenerator();
           await this.getWarehouseAndOffices();
           await this.getCustomerList('1');
         }
         else if (this.processCode == "R" && this.processType == "order") {//sipariş paneli
           this.headerService.updatePageTitle('Peşin Satış Oluştur');
+          this.applicationCode = "Order";
           this.order_r_formGenerator();
           await this.getWarehouseAndOffices();
           await this.getCustomerList('4');
         }
         else if (this.processCode == "WS" && this.processType == "order") {//sipariş paneli
           this.headerService.updatePageTitle('Toptan Satış Oluştur');
+          this.applicationCode = "Order";
           this.order_r_formGenerator();
           await this.getWarehouseAndOffices();
           await this.getCustomerList('3');
         }
         else if (this.processCode == "WS" && this.processType == "shipment") {//sipariş paneli
           this.headerService.updatePageTitle('Toptan Satış Oluştur');
+          this.applicationCode = "Waybill";
           this.order_r_formGenerator();
           await this.getWarehouseAndOffices();
           await this.getCustomerList('3');
@@ -1060,5 +1067,15 @@ export class CreateSaleOrderComponent implements OnInit {
 
   }
 
+  //----------------------------------------
 
+  // async getAllProducts() {
+  //   if (this.allProducts.length == 0) {
+  //     this.allProducts = await this.productService.searchProduct5();
+
+  //   }
+  //   this.toasterService.success('Tüm Ürünler Getirildi')
+  //   this.mapProducts(this.allProducts);
+  //   this.openDialog('findProductDialog');
+  // }
 }

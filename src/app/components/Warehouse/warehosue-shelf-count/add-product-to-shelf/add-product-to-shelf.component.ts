@@ -1352,8 +1352,10 @@ export class AddProductToShelfComponent {
         request.batchCode = formValue.batchCode;
         request.innerHeaderId = this.innerHeader.id;
 
-        if (!this.isShelfBased) {
-          request.shelfNo = this.innerProcessCode == 'ST' ? formValue.shelfNo : null;
+        if (this.isShelfBased) {
+          // request.shelfNo = this.innerProcessCode == 'ST' ? formValue.shelfNo : null;
+          request.shelfNo = formValue.shelfNo
+
         } else {
           request.shelfNo = "1";
         }

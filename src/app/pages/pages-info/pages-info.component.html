@@ -433,13 +433,13 @@
       <p-tabPanel header="Nebim">
 
         <p-tabView>
-          <p-tabPanel header="Nebim Süreçleri">
+          <p-tabPanel header="Sipariş & Teklif Parametreleri">
             <form [formGroup]="nebimInfoForm" (ngSubmit)="onSubmitNebimInfo()">
               <div class="form-group">
                 <label for="description">Tür</label>
                 <select id="description" class="form-control" formControlName="description">
-                  <option value="Perakende Sipariş">Perakende Sipariş Aktarımı</option>
-                  <option value="Toptan Sipariş Aktarımı">Toptan Sipariş Aktarımı</option>
+                  <option value="WS">WS</option>
+                  <option value="R">R</option>
                   <option value="Perakende Sipariş Faturalaştırma">Perakende Sipariş Faturalaştırma</option>
                   <option value="Toptan Sipariş Faturalaştırma">Toptan Sipariş Faturalaştırma</option>
                   <option value="Perakende Sipariş Oluşturma">Perakende Sipariş Oluşturma</option>
@@ -447,6 +447,15 @@
                   <option value="Perakende Fatura Oluşturma">Perakende Fatura Oluşturma</option>
                   <option value="Toptan Fatura Oluşturma">Toptan Fatura Oluşturma</option>
                   <option value="Alış Faturası oluşturma">Alış Faturası oluşturma</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="description">Uygulama Kodu</label>
+                <select id="applicationCode" class="form-control" formControlName="applicationCode">
+                  <option value="Order">Sipariş</option>
+                  <option value="Invoice">Faturalaştırma</option>
+                  <option value="Proposal">Teklif</option>
+
                 </select>
               </div>
               <div class="form-group">
@@ -484,7 +493,6 @@
               </div>
               <div class="form-group">
                 <label for="shipmentMethodCode">Gönderi Metodu Kodu</label>
-                <!-- <input type="text" id="shipmentMethodCode" class="form-control" formControlName="shipmentMethodCode"> -->
 
                 <select id="shipmentMethodCode" class="form-control" formControlName="shipmentMethodCode">
                   <option *ngFor="let g of cdShipmentMethodDescs" value="{{ g.shipmentMethodCode}}">
@@ -499,9 +507,8 @@
                     {{g.deliveryCompanyDescription}}</option>
                 </select>
 
-                <!-- <input type="text" id="deliveryCompanyCode" class="form-control" formControlName="deliveryCompanyCode"> -->
               </div>
-              <div class="form-group">
+              <!-- <div class="form-group">
                 <label for="isOrderBase">Sipariş Bazlı Fatura</label>
                 <p-inputSwitch id="isOrderBase" class="form-control" formControlName="isOrderBase" />
 
@@ -511,7 +518,7 @@
                 <label for="isOrderBase">İrsaliye Bazlı Fatura</label>
                 <p-inputSwitch id="isOrderBase" class="form-control" formControlName="isOrderBase" />
 
-              </div>
+              </div> -->
 
 
 
@@ -560,7 +567,7 @@
                     <p-sortIcon field="basePriceCode"></p-sortIcon>
                   </th>
 
-                  <th pSortableColumn="isOrderBase">
+                  <!-- <th pSortableColumn="isOrderBase">
                     Sipariş Bazlı Mı
                     <p-sortIcon field="isOrderBase"></p-sortIcon>
                   </th>
@@ -568,7 +575,7 @@
                   <th pSortableColumn="isShipment">
                     İrsaliye Bazlı Mı
                     <p-sortIcon field="isShipment"></p-sortIcon>
-                  </th>
+                  </th> -->
                   <th>İşlemler</th>
                 </tr>
               </ng-template>
@@ -581,8 +588,8 @@
                   <td>{{ nebim.shipmentMethodCode }}</td>
                   <td>{{ nebim.deliveryCompanyCode }}</td>
                   <td>{{ nebim.basePriceCode }}</td>
-                  <td>{{ nebim.isOrderBase }}</td>
-                  <td>{{ nebim.isShipmentBase }}</td>
+                  <!-- <td>{{ nebim.isOrderBase }}</td>
+                  <td>{{ nebim.isShipmentBase }}</td> -->
                   <td>
                     <button (click)="onEditNebimInfo(nebim)" class="btn btn-primary">
                       <i class="fa fa-refresh" aria-hidden="true"></i>

@@ -69,6 +69,7 @@ export class MarketPlaceInfo extends BaseEntity {
   warehouseCode: string
   storeCode?: string;
   posTerminalID?: string;
+  applicationCode?: string;
   shipmentMethodCode?: string;
   deliveryCompanyCode?: string;
   creditCardTypeCode?: string;
