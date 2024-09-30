@@ -99,7 +99,7 @@ export class AddProductToShelfComponent {
   ) { }
   userInfo: UserClientInfoResponse;
   async ngOnInit() {
-
+    //:D
     this.userInfo = this.userService.getUserClientInfoResponse();
 
     this.activatedRoute.params.subscribe((params) => {
