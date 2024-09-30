@@ -361,8 +361,6 @@ export class RetailOrderManagementComponent implements OnInit {
   }
   async selectCargo(cargo: any) {
     this.createCargoBulk(this.selectedOrders, cargo.id)
-
-
     await this.updateOrderStatus();
     this.cargoSelectVisible = false;
 

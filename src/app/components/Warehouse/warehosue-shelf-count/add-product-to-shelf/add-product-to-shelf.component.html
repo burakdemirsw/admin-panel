@@ -45,8 +45,9 @@
 
               </div>
             </form>
-            <form *ngIf="this.innerProcessCode == 'S'  || this.innerProcessCode == 'WT'" class="mt-4"
-              [formGroup]="transferForm" (ngSubmit)="onSubmit(transferForm.value)">
+            <form
+              *ngIf="this.innerProcessCode == 'S'  || this.innerProcessCode == 'WT'|| this.innerProcessCode == 'WT-O'"
+              class="mt-4" [formGroup]="transferForm" (ngSubmit)="onSubmit(transferForm.value)">
               <!-- Form alanları -->
               <div class="row mb-3">
                 <div class="form-group col">
@@ -110,7 +111,7 @@
       </p-tabPanel>
       <p-tabPanel header="Satırlar">
         <form [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)">
-          <div class="row mb-3">
+          <div class="row mb-3" *ngIf="this.isShelfBased == true">
             <div class="form-group">
               <div class="input-group">
                 <input pInputText placeholder="{{
@@ -148,7 +149,7 @@
             </div>
           </div>
           <div class="form-group col mb-3" *ngIf=" this.innerProcessCode == 'ST'
-            ">
+             && this.isShelfBased ==true">
             <div class="form-group">
               <input placeholder="Hedef Raf" pInputText input type="text" id="toShelfNo" class="form-control"
                 formControlName="toShelfNo" (keydown.enter)="onSubmit(checkForm?.value)"
@@ -173,8 +174,9 @@
                 style="width: 100%">
                 Sayımı Eşitlemeyi Tamamla
               </button>
-              <button *ngIf="this.innerProcessCode == 'S'||this.innerProcessCode == 'WT' " type="button"
-                class="btn btn-primary" style="margin-left: 10px; color: white" (click)="handleTransfer()"
+              <button
+                *ngIf="this.innerProcessCode == 'S'||this.innerProcessCode == 'WT' || this.innerProcessCode == 'WT-O' "
+                type="button" class="btn btn-primary" style="margin-left: 10px; color: white" (click)="handleTransfer()"
                 style="width: 100%">
                 Transferi Tamamla
               </button>
@@ -206,10 +208,10 @@
                   <th>
                     Barkod
                   </th>
-                  <th>
+                  <th *ngIf="this.isShelfBased ==true">
                     Raf
                   </th>
-                  <th>
+                  <th *ngIf="this.isShelfBased ==true && this.innerProcessCode == 'ST'">
                     Hedef Raf
                   </th>
                   <th>
@@ -222,8 +224,8 @@
 
                   <td>{{ product.itemCode }}</td>
                   <td>{{ product.barcode }}</td>
-                  <td>{{ product.shelfNo }}</td>
-                  <td>{{ product.toShelfNo }}</td>
+                  <td *ngIf="this.isShelfBased ==true">{{ product.shelfNo }}</td>
+                  <td *ngIf="this.isShelfBased ==true && this.innerProcessCode == 'ST'">{{ product.toShelfNo }}</td>
                   <td>{{ product.quantity }}</td>
                   <td>
                     <div class="btn-group">

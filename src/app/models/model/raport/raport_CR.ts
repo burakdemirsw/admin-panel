@@ -38,6 +38,7 @@ export class Raport_ProductInventory {
   photo: string;
   itemDescription: string;
   itemCode: string;
+  brand: string;
   warehouseCode: string;
   qty: number
 

@@ -437,47 +437,83 @@
             <form [formGroup]="nebimInfoForm" (ngSubmit)="onSubmitNebimInfo()">
               <div class="form-group">
                 <label for="description">Tür</label>
-
                 <select id="description" class="form-control" formControlName="description">
-                  <option value="Perakende Sipariş">Perakende Sipariş</option>
-                  <option value="Toptan Sipariş">Toptan Sipariş</option>
-                  <option value="R">Perakende Fatura</option>
-                  <option value="WS">Toptan Fatura</option>
-                  <option value="BP">Alış Faturası</option>
-
+                  <option value="Perakende Sipariş">Perakende Sipariş Aktarımı</option>
+                  <option value="Toptan Sipariş Aktarımı">Toptan Sipariş Aktarımı</option>
+                  <option value="Perakende Sipariş Faturalaştırma">Perakende Sipariş Faturalaştırma</option>
+                  <option value="Toptan Sipariş Faturalaştırma">Toptan Sipariş Faturalaştırma</option>
+                  <option value="Perakende Sipariş Oluşturma">Perakende Sipariş Oluşturma</option>
+                  <option value="Toptan Sipariş Oluşturma">Toptan Sipariş Oluşturma</option>
+                  <option value="Perakende Fatura Oluşturma">Perakende Fatura Oluşturma</option>
+                  <option value="Toptan Fatura Oluşturma">Toptan Fatura Oluşturma</option>
+                  <option value="Alış Faturası oluşturma">Alış Faturası oluşturma</option>
                 </select>
               </div>
               <div class="form-group">
                 <label for="officeCode">Ofis Kodu</label>
-                <input type="text" id="officeCode" class="form-control" formControlName="officeCode">
+
+                <select id="officeCode" class="form-control" formControlName="officeCode">
+                  <option *ngFor="let g of warehouseOfficeModels" value="{{ g.officeCode}}">
+                    {{g.officeCode}}</option>
+                </select>
+                <!-- <input type="text" id="officeCode" class="form-control" formControlName="officeCode"> -->
+              </div>
+              <div class="form-group mb-3">
+                <label for="warehouseCode">Depo Kodu</label>
+                <select id="warehouseCode" class="form-control" formControlName="warehouseCode">
+                  <option *ngFor="let g of warehouseOfficeModels" value="{{ g.warehouseCode}}">
+                    {{g.warehouseDescription}}</option>
+                </select>
+                <!-- <input type="text" id="warehouseCode" class="form-control" formControlName="warehouseCode"> -->
+
               </div>
               <div class="form-group">
                 <label for="storeCode">Mağaza Kodu</label>
-                <input type="text" id="storeCode" class="form-control" formControlName="storeCode">
+                <select id="storeCode" class="form-control" formControlName="storeCode">
+                  <option *ngFor="let g of warehouseOfficeModels" value="{{ g.storeCode}}">
+                    {{g.storeCode}}</option>
+                </select>
+                <!-- <input type="text" id="storeCode" class="form-control" formControlName="storeCode"> -->
               </div>
               <div class="form-group">
                 <label for="posTerminalID">POS Terminal ID</label>
-                <input type="text" id="posTerminalID" class="form-control" formControlName="posTerminalID">
+                <select id="posTerminalID" class="form-control" formControlName="posTerminalID">
+                  <option *ngFor="let g of cdPOSTerminals" value="{{ g.posTerminalID}}">
+                    {{ g.posTerminalID}}</option>
+                </select>
               </div>
               <div class="form-group">
-                <label for="shipmentMethodCode">Kargo Metodu Kodu</label>
-                <input type="text" id="shipmentMethodCode" class="form-control" formControlName="shipmentMethodCode">
+                <label for="shipmentMethodCode">Gönderi Metodu Kodu</label>
+                <!-- <input type="text" id="shipmentMethodCode" class="form-control" formControlName="shipmentMethodCode"> -->
+
+                <select id="shipmentMethodCode" class="form-control" formControlName="shipmentMethodCode">
+                  <option *ngFor="let g of cdShipmentMethodDescs" value="{{ g.shipmentMethodCode}}">
+                    {{g.shipmentMethodDescription}}</option>
+                </select>
+
               </div>
               <div class="form-group ">
-                <label for="deliveryCompanyCode">Teslimat Şirketi Kodu</label>
-                <input type="text" id="deliveryCompanyCode" class="form-control" formControlName="deliveryCompanyCode">
+                <label for="deliveryCompanyCode">Kargo Şirketi Şirketi Kodu</label>
+                <select id="deliveryCompanyCode" class="form-control" formControlName="deliveryCompanyCode">
+                  <option *ngFor="let g of cdDeliveryCompanyDescs" value="{{ g.deliveryCompanyCode}}">
+                    {{g.deliveryCompanyDescription}}</option>
+                </select>
+
+                <!-- <input type="text" id="deliveryCompanyCode" class="form-control" formControlName="deliveryCompanyCode"> -->
               </div>
               <div class="form-group">
                 <label for="isOrderBase">Sipariş Bazlı Fatura</label>
-                <input type="text" id="isOrderBase" class="form-control" formControlName="isOrderBase">
+                <p-inputSwitch id="isOrderBase" class="form-control" formControlName="isOrderBase" />
 
               </div>
 
-              <div class="form-group mb-3">
-                <label for="warehouseCode">Depo Kodu</label>
-                <input type="text" id="warehouseCode" class="form-control" formControlName="warehouseCode">
+              <div class="form-group">
+                <label for="isOrderBase">İrsaliye Bazlı Fatura</label>
+                <p-inputSwitch id="isOrderBase" class="form-control" formControlName="isOrderBase" />
 
               </div>
+
+
 
               <div class="form-group mb-3">
                 <label for="basePriceCode">Temel Fiyat Tipi</label>
@@ -523,6 +559,16 @@
                     Temel Fiyat Tipi
                     <p-sortIcon field="basePriceCode"></p-sortIcon>
                   </th>
+
+                  <th pSortableColumn="isOrderBase">
+                    Sipariş Bazlı Mı
+                    <p-sortIcon field="isOrderBase"></p-sortIcon>
+                  </th>
+
+                  <th pSortableColumn="isShipment">
+                    İrsaliye Bazlı Mı
+                    <p-sortIcon field="isShipment"></p-sortIcon>
+                  </th>
                   <th>İşlemler</th>
                 </tr>
               </ng-template>
@@ -535,6 +581,8 @@
                   <td>{{ nebim.shipmentMethodCode }}</td>
                   <td>{{ nebim.deliveryCompanyCode }}</td>
                   <td>{{ nebim.basePriceCode }}</td>
+                  <td>{{ nebim.isOrderBase }}</td>
+                  <td>{{ nebim.isShipmentBase }}</td>
                   <td>
                     <button (click)="onEditNebimInfo(nebim)" class="btn btn-primary">
                       <i class="fa fa-refresh" aria-hidden="true"></i>
@@ -703,6 +751,69 @@
                 <label for="sellerId">Satıcı ID</label>
                 <input type="text" id="sellerId" class="form-control" formControlName="sellerId">
               </div>
+
+              <div class="form-group">
+                <label for="officeCode">Ofis Kodu</label>
+
+                <select id="officeCode" class="form-control" formControlName="officeCode">
+                  <option *ngFor="let g of warehouseOfficeModels" value="{{ g.officeCode}}">
+                    {{g.officeCode}}</option>
+                </select>
+                <!-- <input type="text" id="officeCode" class="form-control" formControlName="officeCode"> -->
+              </div>
+              <div class="form-group mb-3">
+                <label for="warehouseCode">Depo Kodu</label>
+                <select id="warehouseCode" class="form-control" formControlName="warehouseCode">
+                  <option *ngFor="let g of warehouseOfficeModels" value="{{ g.warehouseCode}}">
+                    {{g.warehouseDescription}}</option>
+                </select>
+                <!-- <input type="text" id="warehouseCode" class="form-control" formControlName="warehouseCode"> -->
+
+              </div>
+              <div class="form-group">
+                <label for="storeCode">Mağaza Kodu</label>
+                <select id="storeCode" class="form-control" formControlName="storeCode">
+                  <option *ngFor="let g of warehouseOfficeModels" value="{{ g.storeCode}}">
+                    {{g.storeCode}}</option>
+                </select>
+                <!-- <input type="text" id="storeCode" class="form-control" formControlName="storeCode"> -->
+              </div>
+              <div class="form-group">
+                <label for="posTerminalID">POS Terminal ID</label>
+                <select id="posTerminalID" class="form-control" formControlName="posTerminalID">
+                  <option *ngFor="let g of cdPOSTerminals" value="{{ g.posTerminalID}}">
+                    {{ g.posTerminalID}}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="shipmentMethodCode">Gönderi Metodu Kodu</label>
+                <!-- <input type="text" id="shipmentMethodCode" class="form-control" formControlName="shipmentMethodCode"> -->
+
+                <select id="shipmentMethodCode" class="form-control" formControlName="shipmentMethodCode">
+                  <option *ngFor="let g of cdShipmentMethodDescs" value="{{ g.shipmentMethodCode}}">
+                    {{g.shipmentMethodDescription}}</option>
+                </select>
+
+              </div>
+              <div class="form-group ">
+                <label for="deliveryCompanyCode">Kargo Şirketi Şirketi Kodu</label>
+                <select id="deliveryCompanyCode" class="form-control" formControlName="deliveryCompanyCode">
+                  <option *ngFor="let g of cdDeliveryCompanyDescs" value="{{ g.deliveryCompanyCode}}">
+                    {{g.deliveryCompanyDescription}}</option>
+                </select>
+
+                <!-- <input type="text" id="deliveryCompanyCode" class="form-control" formControlName="deliveryCompanyCode"> -->
+              </div>
+              <div class="form-group mb-3">
+                <label for="creditCardTypeCode">Ödeme Tipi Kodu</label>
+                <select id="creditCardTypeCode" class="form-control" formControlName="creditCardTypeCode">
+                  <option *ngFor="let g of cdCreditCardTypeDescs" value="{{ g.creditCardTypeCode}}">
+                    {{g.creditCardTypeDescription}}</option>
+                </select>
+
+                <!-- <input type="text" id="deliveryCompanyCode" class="form-control" formControlName="deliveryCompanyCode"> -->
+              </div>
+
               <button type="submit" class="btn btn-primary"
                 [disabled]="marketPlaceInfoForm.invalid">{{this.updatedMarketPlaceInfo ? 'Güncelle' : 'Ekle'}}</button>
             </form>
@@ -736,6 +847,36 @@
                     Satıcı ID
                     <p-sortIcon field="sellerId"></p-sortIcon>
                   </th>
+
+                  <th pSortableColumn="officeCode">
+                    Ofis Kodu
+                    <p-sortIcon field="officeCode"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="warehouseCode">
+                    Depo Kodu
+                    <p-sortIcon field="warehouseCode"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="storeCode">
+                    Mağaza Kodu
+                    <p-sortIcon field="storeCode"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="posTerminalID">
+                    Pos Terminal Id
+                    <p-sortIcon field="posTerminalID"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="shipmentMethodCode">
+                    Gönderim Türü Kodu
+                    <p-sortIcon field="shipmentMethodCode"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="deliveryCompanyCode">
+                    Kargo Şirketi Kodu
+                    <p-sortIcon field="deliveryCompanyCode"></p-sortIcon>
+                  </th>
+
+                  <th pSortableColumn="creditCardTypeCode">
+                    Ödeme Tipi Kodu
+                    <p-sortIcon field="creditCardTypeCode"></p-sortIcon>
+                  </th>
                   <th>İşlemler</th>
                 </tr>
               </ng-template>
@@ -747,6 +888,16 @@
                   <td>{{ marketPlace.redirectUri }}</td>
                   <td>{{ marketPlace.baseUrl }}</td>
                   <td>{{ marketPlace.sellerId }}</td>
+
+                  <td>{{ marketPlace.officeCode }}</td>
+                  <td>{{ marketPlace.warehouseCode }}</td>
+                  <td>{{ marketPlace.storeCode }}</td>
+                  <td>{{ marketPlace.posTerminalID }}</td>
+                  <td>{{ marketPlace.deliveryCompanyCode }}</td>
+                  <td>{{ marketPlace.shipmentMethodCode }}</td>
+                  <td>{{ marketPlace.creditCardTypeCode }}</td>
+
+
                   <td>
                     <button (click)="onEditMarketPlaceInfo(marketPlace)" class="btn btn-primary">
                       <i class="fa fa-refresh" aria-hidden="true"></i>

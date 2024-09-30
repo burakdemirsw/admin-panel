@@ -53,7 +53,9 @@ export class NebimInfo extends BaseEntity {
   posTerminalID?: string;
   shipmentMethodCode?: string;
   deliveryCompanyCode?: string;
-  basePriceCode: string
+  basePriceCode: string;
+  isOrderBase: boolean;
+  isShipmentBase: boolean;
 }
 
 export class MarketPlaceInfo extends BaseEntity {
@@ -63,6 +65,13 @@ export class MarketPlaceInfo extends BaseEntity {
   redirectUri?: string;
   baseUrl?: string;
   sellerId?: string;
+  officeCode?: string;
+  warehouseCode: string
+  storeCode?: string;
+  posTerminalID?: string;
+  shipmentMethodCode?: string;
+  deliveryCompanyCode?: string;
+  creditCardTypeCode?: string;
 }
 
 export class ReportInfo extends BaseEntity {

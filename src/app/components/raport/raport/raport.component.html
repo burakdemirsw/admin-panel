@@ -32,6 +32,10 @@
           <tr>
             <th>Resim</th>
             <th pSortableColumn="itemDescription">
+              Marka
+              <p-sortIcon field="itemDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="itemDescription">
               Ürün Açıklaması
               <p-sortIcon field="itemDescription"></p-sortIcon>
             </th>
@@ -51,6 +55,9 @@
           <tr>
             <th>
               <!-- Optional: Placeholder for image filter if needed -->
+            </th>
+            <th>
+              <p-columnFilter type="text" field="brand" [showClearButton]="false"></p-columnFilter>
             </th>
             <th>
               <p-columnFilter type="text" field="itemDescription" [showClearButton]="false"></p-columnFilter>
@@ -73,6 +80,7 @@
               <p-image src="data:image/jpeg;base64,{{ product.photo }}" alt="Image" width="50" [preview]="true">
               </p-image>
             </td>
+            <td>{{ product.brand }}</td>
             <td>{{ product.itemDescription }}</td>
             <td>{{ product.itemCode }}</td>
             <td>{{ product.warehouseCode }}</td>

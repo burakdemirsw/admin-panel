@@ -62,6 +62,7 @@ export class InnerHeader {
   isReturn: boolean;// Tamamlanma durumu
   userId: number
   createdDate?: Date;         // Oluşturulma tarihi (opsiyonel)
+  isShelfBased?: boolean;
   updatedDate?: Date = new Date();  // Güncellenme tarihi (varsayılan olarak şu anki zaman)
   innerProcessCode: string;   // İç işlem tipi, 2 ise ekler 3 ise çıkar
 

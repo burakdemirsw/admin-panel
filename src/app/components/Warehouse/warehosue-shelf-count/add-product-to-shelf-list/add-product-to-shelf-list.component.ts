@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { CreateBarcodeFromOrder_RM } from 'src/app/components/Product/create-barcode/models/createBarcode';
@@ -50,13 +49,27 @@ export class AddProductToShelfListComponent {
     });
 
   }
-  async route(code: string, isReturn?: boolean) {
+  async route(code: string, isReturn?: boolean, isShefBased?: boolean, istransferbetweeenOfficeWarehouses?: boolean) {
     const result = await this.generalService.generateGUID();
 
-    if (isReturn) {
+
+    if (isReturn == true && isShefBased == undefined) {
       this.router.navigate([`add-product-to-shelf/${code}/false`], { queryParams: { isReturn: true } });
-    } else {
-      this.router.navigate([`add-product-to-shelf/${code}/false`]);
+
+    }
+    else if (isReturn == true && isShefBased == false) {
+      this.router.navigate([`add-product-to-shelf/${code}/false/true`], { queryParams: { isReturn: true, isShelfBased: isShefBased } });
+
+    }
+
+    else {
+      if (isShefBased != null) {
+        this.router.navigate([`add-product-to-shelf/${code}/false`], { queryParams: { isShelfBased: isShefBased } });
+      } else {
+        this.router.navigate([`add-product-to-shelf/${code}/false`]);
+
+      }
+
     }
   }
 
@@ -70,25 +83,66 @@ export class AddProductToShelfListComponent {
     if (this.innerProcessCode == "CI") {
       this.items = [
         {
-          label: 'Yeni',
+          label: 'Yeni Sayım Ekle',
           command: () => {
-            this.route(this.innerProcessCode)
+            this.route('CI')
+          }
+        },
+        {
+          label: 'Yeni Sayım Çıkar',
+          command: () => {
+            this.route('CO')
           }
         }
       ];
+      if (localStorage.getItem('userId') == "1") {
+        this.items.push({
+          label: 'Yeni Rafsız Sayım Ekle',
+          command: () => {
+            this.route('CI', false, false)
+          }
+        },
+          {
+            label: 'Yeni Rafsız Sayım Çıkar',
+            command: () => {
+              this.route('CO', false, false)
+            }
+          })
+      }
+
       this.headerService.updatePageTitle("Rafa Ürün Ekle");
       var request: string[] = ["CI", "CO"];
       await this.getGetCountList(request);
     } else if (this.innerProcessCode == "CO") {
       this.items = [
         {
-          label: 'Yeni',
+          label: 'Yeni Sayım Ekle',
           command: () => {
-            this.route(this.innerProcessCode)
+            this.route('CI')
+          }
+        },
+        {
+          label: 'Yeni Sayım Çıkar',
+          command: () => {
+            this.route('CO')
           }
         }
-
       ];
+
+      if (localStorage.getItem('userId') == "1") {
+        this.items.push({
+          label: 'Yeni Rafsız Sayım Ekle',
+          command: () => {
+            this.route('CI', false, false)
+          }
+        },
+          {
+            label: 'Yeni Rafsız Sayım Çıkar',
+            command: () => {
+              this.route('CO', false, false)
+            }
+          })
+      }
       var request: string[] = ["CI", "CO"];
       await this.getGetCountList(request);
       this.headerService.updatePageTitle("Raftan Ürün Çıkar");
@@ -104,34 +158,70 @@ export class AddProductToShelfListComponent {
       var request: string[] = ["C"];
       await this.getGetCountList(request);
       this.headerService.updatePageTitle("Sayım");
-    } else if (this.innerProcessCode == "WT") {
+    } else if (this.innerProcessCode == "WT" || this.innerProcessCode == "WT-O") {
 
       this.items = [
         {
-          label: 'Yeni',
+          label: 'Mağaza Depoları Arası Transfer OLuştur',
           command: () => {
-            this.route(this.innerProcessCode)
+            this.route("WT")
+          }
+        },
+        {
+          label: 'Ofis Depoları Arası Transfer OLuştur',
+          command: () => {
+            this.route("WT-O", true)
           }
         }
       ];
+
+      if (localStorage.getItem('userId') == "1") {
+        this.items.push({
+          label: 'Rafsız Mağaza Depoları Arası Transfer Oluştur',
+          command: () => {
+            this.route("WT", false, false)
+          }
+        },
+          {
+            label: 'Rafsız Ofis Depoları Arası Transfer OLuştur',
+            command: () => {
+              this.route("WT-O", true, false)
+            }
+          })
+      }
       var request: string[] = ["WT"];
       await this.getGetCountList(request);
       this.headerService.updatePageTitle("Mağazanın Depoları Arası Transfer");
     } else if (this.innerProcessCode == "S") {
       this.items = [
         {
-          label: 'Yeni',
+          label: 'Yeni Mağaza Transfer İrsaliyesi Oluştur',
           command: () => {
             this.route(this.innerProcessCode)
           }
         },
         {
-          label: 'Yeni İade',
+          label: 'Yeni Merkeze İade Oluştur',
           command: () => {
             this.route(this.innerProcessCode, true)
           }
         }
       ];
+      if (localStorage.getItem('userId') == "1") {
+        this.items.push({
+          label: 'Yeni Rafsız Mağaza Transfer İrsaliyesi Oluştur',
+          command: () => {
+            this.route(this.innerProcessCode, false, false)
+          }
+        },
+          {
+            label: 'Yeni Rafsız Merkeze İade Oluştur',
+            command: () => {
+              this.route(this.innerProcessCode, true, false)
+            }
+          })
+      }
+
       var request: string[] = ["S"];
       await this.getGetCountList(request);
       this.headerService.updatePageTitle("Transferler");

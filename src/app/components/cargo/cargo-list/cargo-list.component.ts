@@ -61,7 +61,7 @@ export class CargoListComponent implements OnInit {
       }
     },
     {
-      label: 'Yazdır (A4) | YK',
+      label: 'Pazaryeri Barkodu Yazdır (A4) | YK',
       command: () => {
         this.createMarketplaceCargoBarcode()
       }

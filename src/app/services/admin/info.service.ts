@@ -8,6 +8,8 @@ import {
   ReportInfo, MailInfo, PaymentInfo, Info, NebimUserInfo, MenuItem, MenuInfo, CargoCompanyInfo, MarketplaceCompanyInfo,
   InvoiceIntegratorInfo
 } from 'src/app/models/model/company/companyInfo';
+import { cdColorDesc, cdCreditCardTypeDesc, cdDeliveryCompanyDesc, cdItemDim1Desc, cdPOSTerminal, cdShipmentMethodDesc } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
+import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 
 @Injectable({
   providedIn: 'root'
@@ -321,6 +323,49 @@ export class InfoService {
   async getProductPriceList(): Promise<any> {
     const response = await this.httpClientService.get<any>({ controller: 'Infos/get-product-price-list' }).toPromise();
     return response;
+  }
+
+  async getShipmentMethods(): Promise<cdShipmentMethodDesc[]> {
+    const response = await this.httpClientService.get<cdShipmentMethodDesc>({ controller: 'Infos/get-shipment-methods' }).toPromise();
+    return response;
+  }
+
+  async getDeliveryCompanies(): Promise<cdDeliveryCompanyDesc[]> {
+    const response = await this.httpClientService.get<cdDeliveryCompanyDesc>({ controller: 'Infos/get-delivery-companies' }).toPromise();
+    return response;
+  }
+
+  async getColors(): Promise<cdColorDesc[]> {
+    const response = await this.httpClientService.get<cdColorDesc>({ controller: 'Infos/get-colors' }).toPromise();
+    return response;
+  }
+
+  async getItemDimensions(): Promise<cdItemDim1Desc[]> {
+    const response = await this.httpClientService.get<cdItemDim1Desc>({ controller: 'Infos/get-item-dimensions' }).toPromise();
+    return response;
+  }
+
+  async getCreditCardTypes(): Promise<cdCreditCardTypeDesc[]> {
+    const response = await this.httpClientService.get<cdCreditCardTypeDesc>({ controller: 'Infos/get-credit-card-types' }).toPromise();
+    return response;
+  }
+  async getPosTerminals(): Promise<cdPOSTerminal[]> {
+    const response = await this.httpClientService.get<cdPOSTerminal>({ controller: 'Infos/get-pos-terminals' }).toPromise();
+    return response;
+  }
+
+  async getWarehouseAndOffices(): Promise<WarehouseOfficeModel[]> {
+    try {
+      const data = await this.httpClientService
+        .get<WarehouseOfficeModel>({
+          controller: 'Infos/get-office-and-warehouses',
+        })
+        .toPromise();
+      return data;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
   }
 }
 

@@ -4,6 +4,9 @@ import { CargoCompanyInfo, CargoInfo, InvoiceIntegratorInfo, MailInfo, Marketpla
 import { InfoService } from 'src/app/services/admin/info.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { ProductPriceList_VM } from '../../models/model/company/companyInfo';
+import { HeaderService } from 'src/app/services/admin/header.service';
+import { cdColorDesc, cdCreditCardTypeDesc, cdDeliveryCompanyDesc, cdItemDim1Desc, cdPOSTerminal, cdShipmentMethodDesc } from '../../models/model/nebim/cdShipmentMethodDesc ';
+import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 
 @Component({
   selector: 'app-pages-info',
@@ -17,12 +20,14 @@ export class PagesInfoComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private infoService: InfoService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private headerService: HeaderService
   ) { }
 
 
 
   ngOnInit(): void {
+    this.headerService.updatePageTitle("Genel Ayarlar")
     this.createCompanyInfoForm();
     this.createNebimInfoForm();
     this.createMailInfoForm();
@@ -49,7 +54,7 @@ export class PagesInfoComponent implements OnInit {
     this.createTestMailForm();
     this.loadCargoCompanyInfos();
     this.loadInvoiceEntegratorInfos();
-    this.loadBasePriceCodes()
+    this.loadAllData()
     this.loadMenuInfos();
   }
 
@@ -98,10 +103,54 @@ export class PagesInfoComponent implements OnInit {
   }
 
   productPriceList: ProductPriceList_VM[] = []
+  cdShipmentMethodDescs: cdShipmentMethodDesc[] = []
+  cdDeliveryCompanyDescs: cdDeliveryCompanyDesc[] = []
+  cdColorDescs: cdColorDesc[] = []
+  cdItemDim1Descs: cdItemDim1Desc[] = []
+  cdCreditCardTypeDescs: cdCreditCardTypeDesc[] = []
+  cdPOSTerminals: cdPOSTerminal[] = []
+
   async loadBasePriceCodes() {
     this.productPriceList = await this.infoService.getProductPriceList();
   }
+  async getShipmentMethods() {
+    this.cdShipmentMethodDescs = await this.infoService.getShipmentMethods();
+  }
 
+  async getDeliveryCompanies() {
+    this.cdDeliveryCompanyDescs = await this.infoService.getDeliveryCompanies();
+  }
+
+  async getColors() {
+    this.cdColorDescs = await this.infoService.getColors();
+  }
+
+  async getItemDimensions() {
+    this.cdItemDim1Descs = await this.infoService.getItemDimensions();
+  }
+
+  async getCreditCardTypes() {
+    this.cdCreditCardTypeDescs = await this.infoService.getCreditCardTypes();
+  }
+
+  async getPosTerminals() {
+    this.cdPOSTerminals = await this.infoService.getPosTerminals();
+  }
+  warehouseOfficeModels: WarehouseOfficeModel[] = []
+  async getWarehouseAndOffices() {
+    var response = await this.infoService.getWarehouseAndOffices();
+    this.warehouseOfficeModels = response;
+  }
+  async loadAllData() {
+    await this.loadBasePriceCodes();
+    await this.getShipmentMethods();
+    await this.getDeliveryCompanies();
+    await this.getColors();
+    await this.getItemDimensions();
+    await this.getCreditCardTypes();
+    await this.getPosTerminals();
+    await this.getWarehouseAndOffices();
+  }
   createMarketPlaceCompanyInfoForm() {
     this.marketPlaceCompanyInfoForm = this.fb.group({
       companyName: [null, Validators.required],
@@ -153,10 +202,13 @@ export class PagesInfoComponent implements OnInit {
       description: [null],
       officeCode: [null],
       storeCode: [null],
+      warehouseCode: [null],
       posTerminalID: [null],
       shipmentMethodCode: [null],
       deliveryCompanyCode: [null],
-      basePriceCode: [null]
+      basePriceCode: [null],
+      isOrderBase: [null],
+      isShipmentBase: [null]
     });
   }
   createMailInfoForm() {
@@ -193,7 +245,14 @@ export class PagesInfoComponent implements OnInit {
       clientSecret: [null],
       redirectUri: [null],
       baseUrl: [null],
-      sellerId: [null]
+      sellerId: [null],
+      officeCode: [null],
+      storeCode: [null],
+      warehouseCode: [null],
+      posTerminalID: [null],
+      shipmentMethodCode: [null],
+      deliveryCompanyCode: [null],
+      creditCardTypeCode: [null]
     });
   }
   createPaymentInfoForm() {

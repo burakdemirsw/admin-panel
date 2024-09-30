@@ -376,6 +376,7 @@ const routes: Routes = [
   { path: 'product-stock-report', component: ProductStockReportComponent },
   { path: 'add-product-to-shelf/:innerProcessCode/:isCompleted/:id', component: AddProductToShelfComponent },
   { path: 'add-product-to-shelf/:innerProcessCode/:isCompleted/:isReturn/:id', component: AddProductToShelfComponent },
+  { path: 'add-product-to-shelf/:innerProcessCode/:isCompleted/:isReturn/:isShelfBased/:id', component: AddProductToShelfComponent },
 
   { path: 'add-product-to-shelf/:innerProcessCode/:isCompleted', component: AddProductToShelfComponent },
   { path: 'inner-list/:innerProcessCode', component: AddProductToShelfListComponent },
