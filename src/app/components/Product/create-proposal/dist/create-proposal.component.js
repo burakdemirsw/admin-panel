@@ -51,9 +51,8 @@ var nebimOrder_1 = require("src/app/models/model/order/nebimOrder");
 var proposalProduct_1 = require("src/app/models/model/product/proposalProduct");
 var product_service_1 = require("src/app/services/admin/product.service");
 var CreateProposalComponent = /** @class */ (function () {
-    function CreateProposalComponent(headerService, warehouseService, toasterService, activatedRoute, router, generalService, googleDriveService, productService, formBuilder, orderService, addressService) {
+    function CreateProposalComponent(headerService, toasterService, activatedRoute, router, generalService, googleDriveService, productService, formBuilder, orderService, addressService) {
         this.headerService = headerService;
-        this.warehouseService = warehouseService;
         this.toasterService = toasterService;
         this.activatedRoute = activatedRoute;
         this.router = router;
@@ -74,6 +73,7 @@ var CreateProposalComponent = /** @class */ (function () {
         this["true"] = true;
         this.isCollapsed = false;
         this.isCollapsed_2 = false;
+        this.selectableProducts = [];
         this.updateProductDialog = false;
         this.getCustomerDialog = false;
         this.findProductDialog = false;
@@ -151,6 +151,36 @@ var CreateProposalComponent = /** @class */ (function () {
                         }); });
                         this.headerService.updatePageTitle(this.pageTitle);
                         this.createDiscountForm();
+                        return [4 /*yield*/, this.onStartPage()];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CreateProposalComponent.prototype.onChangeProductsDropdown = function (product) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                console.log(product);
+                return [2 /*return*/];
+            });
+        });
+    };
+    CreateProposalComponent.prototype.onStartPage = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: 
+                    //tüm ürünleri çek
+                    return [4 /*yield*/, this.getAllProducts(false)];
+                    case 1:
+                        //tüm ürünleri çek
+                        _a.sent();
+                        //bunları bir objede topla
+                        this.selectableProducts = this.allProducts.map(function (b) {
+                            return { name: b.description, code: b.itemCode };
+                        });
                         return [2 /*return*/];
                 }
             });

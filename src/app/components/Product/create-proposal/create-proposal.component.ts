@@ -2,7 +2,6 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Dropdown } from 'primeng/dropdown';
-import { FileUpload } from 'primeng/fileupload';
 import { SubCustomerList_VM } from 'src/app/models/model/customer/subCustomerList_VM';
 import { CreateCustomer_CM } from 'src/app/models/model/order/createCustomer_CM';
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
@@ -59,7 +58,6 @@ export class CreateProposalComponent implements OnInit {
   discountForm: FormGroup;
   getProductsForm: FormGroup;
   constructor(private headerService: HeaderService,
-    private warehouseService: WarehouseService,
     private toasterService: ToasterService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -89,10 +87,23 @@ export class CreateProposalComponent implements OnInit {
     })
     this.headerService.updatePageTitle(this.pageTitle);
     this.createDiscountForm();
-
-
+    await this.onStartPage();
   }
 
+  selectableProducts: any[] = [];
+  async onChangeProductsDropdown(product: any) {
+    console.log(product)
+  }
+  async onStartPage() {
+    //tüm ürünleri çek
+    await this.getAllProducts(false);
+
+    //bunları bir objede topla
+
+    this.selectableProducts = this.allProducts.map((b) => {
+      return { name: b.description, code: b.itemCode };
+    });
+  }
   chooseFile() {
     this.fileInput.nativeElement.click();
   }

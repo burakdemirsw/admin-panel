@@ -11,6 +11,8 @@
           <p-inputGroup>
             <input pInputText type="search" id="barcode_product" placeholder="Barkod" [(ngModel)]="barcode"
               (keydown.enter)="addProductFromInput(barcode)" />
+
+
             <button btn class="btn btn-primary" type="button" (click)="addProductFromInput(barcode)"><i
                 class="fa fa-plus" aria-hidden="true"></i></button>
 
@@ -272,10 +274,18 @@
     <!-- BULUNAN ÜRÜNLER----------------------------------------------------------------------------------------------------->
     <p-dialog header="Bulunan Ürünler" [(visible)]="findProductDialog" [style]="{ width: '100vw' ,minheight : '100vw'}"
       modal="true">
-      <p-table [styleClass]="'p-datatable-striped'" [value]="allProducts" [paginator]="true" [rows]="10"
+      <p-table #dt01 [styleClass]="'p-datatable-striped'" [value]="allProducts" [paginator]="true" [rows]="10"
+        [globalFilterFields]="['description','itemCode','brand','productHierarchyLevel01','productHierarchyLevel02','productHierarchyLevel03']"
         (onFilter)="logFilteredData($event)" [tableStyle]="{ 'min-width': '50rem' , 'minheight' : '100vw' }">
 
-
+        <ng-template pTemplate="caption">
+          <div class="flex">
+            <p-iconField iconPosition="left" class="ml-auto">
+              <input pInputText type="text" (input)="dt01.filterGlobal($any($event).target.value, 'contains')"
+                placeholder="Ara" />
+            </p-iconField>
+          </div>
+        </ng-template>
         <ng-template pTemplate="header">
 
           <tr>
