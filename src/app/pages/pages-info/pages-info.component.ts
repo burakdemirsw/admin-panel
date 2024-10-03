@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CargoCompanyInfo, CargoInfo, InvoiceIntegratorInfo, MailInfo, MarketplaceCompanyInfo, MarketPlaceInfo, MenuInfo, MenuItem, NebimInfo, NebimUserInfo, PaymentInfo } from 'src/app/models/model/company/companyInfo';
+import { CargoCompanyInfo, CargoInfo, InvoiceIntegratorInfo, MailInfo, MarketplaceCompanyInfo, MarketPlaceInfo, MenuInfo, MenuItem, NebimInfo, NebimInvoiceInfo, NebimUserInfo, PaymentInfo } from 'src/app/models/model/company/companyInfo';
 import { InfoService } from 'src/app/services/admin/info.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { ProductPriceList_VM } from '../../models/model/company/companyInfo';
@@ -30,6 +30,7 @@ export class PagesInfoComponent implements OnInit {
     this.headerService.updatePageTitle("Genel Ayarlar")
     this.createCompanyInfoForm();
     this.createNebimInfoForm();
+    this.createNebimInvoiceInfoForm();
     this.createMailInfoForm();
     this.createReportInfoForm();
     this.createDatabaseInfoForm();
@@ -45,6 +46,7 @@ export class PagesInfoComponent implements OnInit {
     this.loadMarketPlaceCompanyInfos();
     this.loadCompanyInfo();
     this.loadNebimInfos();
+    this.loadNebimInvoiceInfos();
     this.loadMailInfos();
     this.loadDatabaseInfo();
     this.loadMarketPlaceInfos();
@@ -61,6 +63,8 @@ export class PagesInfoComponent implements OnInit {
 
   companyInfoForm: FormGroup;
   nebimInfoForm: FormGroup;
+  nebimInvoiceInfoForm: FormGroup;
+
   mailInfoForm: FormGroup;
   reportInfoForm: FormGroup;
   databaseInfoForm: FormGroup;
@@ -79,6 +83,8 @@ export class PagesInfoComponent implements OnInit {
   marketPlaceCompanies: MarketplaceCompanyInfo[] = [];
   menuInfos: MenuInfo[] = [];
   nebimInfos: NebimInfo[] = [];
+  nebimInvoiceInfos: NebimInvoiceInfo[] = [];
+
   marketPlaceInfos: MarketPlaceInfo[] = [];
   cargoInfos: CargoInfo[] = [];
   nebimUserInfos: NebimUserInfo[] = [];
@@ -199,7 +205,7 @@ export class PagesInfoComponent implements OnInit {
   createNebimInfoForm() {
     this.nebimInfoForm = this.fb.group({
       id: [0],
-      description: [null],
+      processCode: [null],
       officeCode: [null],
       storeCode: [null],
       warehouseCode: [null],
@@ -208,8 +214,27 @@ export class PagesInfoComponent implements OnInit {
       deliveryCompanyCode: [null],
       basePriceCode: [null],
       applicationCode: [null],
+      sendAutoMail: [null],
       // isOrderBase: [null],
       // isShipmentBase: [null]
+    });
+  }
+
+  createNebimInvoiceInfoForm() {
+    this.nebimInfoForm = this.fb.group({
+      id: [0],
+      processCode: [null],
+      officeCode: [null],
+      storeCode: [null],
+      warehouseCode: [null],
+      posTerminalID: [null],
+      shipmentMethodCode: [null],
+      deliveryCompanyCode: [null],
+      basePriceCode: [null],
+      applicationCode: [null],
+      sendAutoMail: [null],
+      isOrderBase: [null],
+      isShipmentBase: [null]
     });
   }
   createMailInfoForm() {
@@ -253,7 +278,11 @@ export class PagesInfoComponent implements OnInit {
       posTerminalID: [null],
       shipmentMethodCode: [null],
       deliveryCompanyCode: [null],
-      creditCardTypeCode: [null]
+      creditCardTypeCode: [null],
+      cargoItemCode: [null],
+      bankCommisionItemCode: [null],
+      paymentAtDoorItemCode: [null],
+      giftVoucherItemCode: [null],
     });
   }
   createPaymentInfoForm() {
@@ -330,7 +359,16 @@ export class PagesInfoComponent implements OnInit {
       this.toasterService.error('Nebim bilgileri yüklenirken bir hata oluştu');
     }
   }
-
+  async loadNebimInvoiceInfos() {
+    try {
+      const data = await this.infoService.getNebimInvoiceInfos();
+      if (data) {
+        this.nebimInvoiceInfos = data;
+      }
+    } catch (error) {
+      this.toasterService.error('Nebim  Fatura bilgileri yüklenirken bir hata oluştu');
+    }
+  }
   async loadMailInfos() {
     try {
       const data = await this.infoService.getMailInfos();
@@ -467,6 +505,57 @@ export class PagesInfoComponent implements OnInit {
       }
     } catch (error) {
       this.toasterService.error('Nebim bilgileri kaydedilirken bir hata oluştu');
+    }
+  }
+
+  //-------------------------------------------------------------------------------NEBIMINVOİCE
+
+  updatedNebimInvoiceInfo: NebimInfo;
+  async onEditNebimInvoiceInfo(nebim: NebimInfo) {
+    this.updatedNebimInvoiceInfo = nebim;
+    this.nebimInvoiceInfoForm.patchValue(nebim);
+  }
+
+  async onDeleteNebimInvoiceInfo(id: number) {
+    try {
+      const result = await this.infoService.deleteNebimInvoiceInfo(id);
+      if (result) {
+        this.toasterService.success('Nebim Fatura bilgileri başarıyla silindi');
+        await this.loadNebimInvoiceInfos(); // Refresh the list after deletion
+      } else {
+        this.toasterService.error('Nebim Fatura bilgileri silinemedi');
+      }
+    } catch (error) {
+      this.toasterService.error('Nebim Fatura bilgileri silinirken bir hata oluştu');
+    }
+  }
+
+
+  async onSubmitNebimInvoiceInfo() {
+    if (this.nebimInvoiceInfoForm.invalid) {
+      this.toasterService.error('Lütfen tüm gerekli alanları doldurun');
+      return;
+    }
+
+    try {
+      if (this.updatedNebimInvoiceInfo) {
+        var result = await this.infoService.updateNebimInvoiceInfo(this.nebimInvoiceInfoForm.value);
+
+      } else {
+        this.nebimInvoiceInfoForm.value.id = 0;
+        var result = await this.infoService.addNebimInfo(this.nebimInvoiceInfoForm.value);
+
+      }
+      if (result) {
+        await this.loadNebimInfos();
+        this.toasterService.success('Nebim Fatura bilgileri başarıyla kaydedildi');
+        this.updatedNebimInvoiceInfo = null;
+        this.nebimInfoForm.reset();
+      } else {
+        this.toasterService.error('Nebim Fatura bilgileri kaydedilemedi');
+      }
+    } catch (error) {
+      this.toasterService.error('Nebim Fatura bilgileri kaydedilirken bir hata oluştu');
     }
   }
   //----------------------------------------------------------------------------------MAIL

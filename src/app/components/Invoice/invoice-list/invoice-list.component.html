@@ -27,7 +27,7 @@
             <th>Seç</th>
             <th pSortableColumn="currAccDescription">Müşteri <p-sortIcon field="currAccDescription"></p-sortIcon>
             </th>
-            <th pSortableColumn="eInvoiceNumber">Fatura Numarası <p-sortIcon field="eInvoiceNumber"></p-sortIcon>
+            <th pSortableColumn="eInvoiceNumber">İç Numara <p-sortIcon field="eInvoiceNumber"></p-sortIcon>
             </th>
             <th pSortableColumn="amount">Tutar <p-sortIcon field="amount"></p-sortIcon>
             </th>
@@ -76,7 +76,10 @@
                 <button class="btn btn-success" (click)="goPage(invoice.id)">
                   <i class="fas fa-sliders-h"></i>
                 </button>
-                <button *ngIf="this.processType =='proposal'" class="btn btn-primary"
+                <button *ngIf="this.processType =='order'" class="btn btn-primary" title="Siparişi Faturaya Çevir"
+                  (click)="convertWSOrderToWSInvoice(invoice.processCode,invoice.id)">
+                  <i class="fas fa-receipt    "></i> </button>
+                <button *ngIf="this.processType =='proposal'" class="btn btn-primary" title="Teklifi Siparişe Çevir"
                   (click)="convertWSProposalToWSOrder(invoice.processCode,invoice.id)">
                   <i class="fas fa-receipt    "></i> </button>
                 <button class="btn btn-danger" title="Sil" (click)="deleteInvoice(invoice.id)">
@@ -90,5 +93,6 @@
       </p-table>
 
     </div>
+
   </section>
 </main>

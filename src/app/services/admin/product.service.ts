@@ -25,7 +25,7 @@ import {
   ProductCountModel,
   ProductCountModel3,
 } from 'src/app/models/model/shelfNameModel';
-import { FastTransfer_VM } from 'src/app/models/model/warehouse/transferRequestListModel';
+import { BasketProduct_VM, FastTransfer_VM } from 'src/app/models/model/warehouse/transferRequestListModel';
 import { WarehouseFormModel } from 'src/app/models/model/warehouse/warehosueTransferModel';
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
@@ -560,15 +560,26 @@ export class ProductService {
   }
 
   async searchProduct5(): Promise<FastTransfer_VM[]> {
+    // const response = await this.httpClientService
+    //   .get<FastTransfer_VM>({ controller: 'Products/search-product-5' })
+    //   .toPromise();
+
+    return null;
+  }
+
+
+  async getBasketProducts(processCode: string, applicationCode: string): Promise<BasketProduct_VM[]> {
     const response = await this.httpClientService
-      .get<FastTransfer_VM>({ controller: 'Products/search-product-5' })
+      .get<BasketProduct_VM>({ controller: 'Products/search-product-5/' + processCode }, applicationCode)
       .toPromise();
 
     return response;
   }
-  async createProposalReport(request: string, sendMail: boolean): Promise<any> {
+  async createProposalReport(request: string): Promise<any> {
     try {
-      var response: any = await this.httpClientService.get<any>({ controller: "Products/create-proposal-report", responseType: 'arraybuffer' }, request.toString() + "/" + sendMail).toPromise();
+      var response: any = await this.httpClientService.get<any>({
+        controller: "Products/create-proposal-report", responseType: 'arraybuffer'
+      }, request.toString()).toPromise();
       if (response) {
 
 

@@ -11,13 +11,7 @@ export class FastTransfer_VM {
   barcode: string;
   itemCode: string;
   shelfNo: string;
-  drawerCount: number;
-  transferQuantity: number;
-  targetShelf: string;
   quantity: number;
-  productHierarchyLevel01: string;
-  productHierarchyLevel02: string;
-  productHierarchyLevel03: string;
   speed: number;
   inventory: number;
   brand: string;
@@ -25,4 +19,17 @@ export class FastTransfer_VM {
   price: string;
   description;
 
+}
+export interface BasketProduct_VM {
+  photoUrl?: string;
+  itemCode?: string;
+  description?: string;
+  barcode?: string;
+  price?: number;
+  priceVI?: number;
+  brand?: string;
+  colorCode?: string;
+  colorDescription?: string;
+  itemDim1Code?: string;
+  inventory?: number;
 }

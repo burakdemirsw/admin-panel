@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
@@ -13,13 +13,14 @@ import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { HeaderService } from '../../../services/admin/header.service';
 import { CustomerAddress_VM, GetCustomerAddress_CM } from 'src/app/models/model/order/getCustomerList_CM';
+import { BasketProduct_VM } from 'src/app/models/model/warehouse/transferRequestListModel';
 declare var window: any;
 @Component({
   selector: 'app-create-sale-order',
   templateUrl: './create-sale-order.component.html',
   styleUrls: ['./create-sale-order.component.css'],
 })
-export class CreateSaleOrderComponent implements OnInit {
+export class CreateSaleOrderComponent implements OnInit, OnDestroy {
   //----------
   processCodes: string[] = ["WS", "BP", "R", "ws", "bp", "r", "prws"]
   processTypes: string[] = ["invoice", "order", "proposal", "shipment"]
@@ -88,10 +89,10 @@ export class CreateSaleOrderComponent implements OnInit {
           await this.getWarehouseAndOffices();
 
           await this.getCustomerList('1'); //Tedarikçileri Çeker
-        } else if (this.processCode == "R" && this.processType == "proposal") {//teklif paneli
-          this.headerService.updatePageTitle('Satış Teklif Oluştur');
+        } else if (this.processCode == "WS" && this.processType == "proposal") {//teklif paneli
+          this.headerService.updatePageTitle('Toptan Satış Teklif Oluştur');
           this.applicationCode = "Proposal";
-          this.proposal_r_formGenerator();
+          this.proposal_ws_formGenerator();
           await this.getWarehouseAndOffices();
           await this.getCustomerList('3');
         }
@@ -249,6 +250,8 @@ export class CreateSaleOrderComponent implements OnInit {
 
 
   }
+
+
   async cashDiscount(discountAmount: number) {
     this.invoiceProcess.discountRate2 = discountAmount;
     var response: InvoiceProcess = await this.orderService.editInvoiceProcess(this.invoiceProcess);
@@ -262,6 +265,32 @@ export class CreateSaleOrderComponent implements OnInit {
     } else {
       this.toasterService.error('Güncellenmedi')
     }
+  }
+  calculateTotalTax() {
+    var total_tax = 0;
+    var total_sum = 0;
+
+    // Tüm ürünlerin toplam miktarını ve toplam tutarını hesaplayın
+    this.invoiceProducts.forEach(p => {
+      total_sum += p.quantity * p.price;
+    });
+
+    // Vergi matrahını ve toplam KDV'yi hesaplayın
+    this.invoiceProducts.forEach(p => {
+      // İlk indirim oranını birim fiyata uygula
+      var discountedPrice = p.price * ((100 - (this.invoiceProcess?.discountRate1 || 0)) / 100);
+
+      // İkinci indirim tutarını, toplam tutar üzerinden paylaştırarak uygula
+      var discountRate2Amount = (this.invoiceProcess?.discountRate2 || 0) * ((p.quantity * p.price) / total_sum);
+
+      // İndirimi uyguladıktan sonra vergi matrahını bul
+      var taxBase = (discountedPrice * p.quantity) - discountRate2Amount;
+
+      // Vergiyi hesapla ve total_tax'a ekle
+      total_tax += (taxBase * (p.taxRate / 100));
+    });
+
+    return total_tax;
   }
 
   async resetDiscount() {
@@ -280,12 +309,9 @@ export class CreateSaleOrderComponent implements OnInit {
 
   }
   getFinalTotalPrice() {
-    var number = this.invoiceProducts?.reduce((acc, product) => acc + product.quantity * (product.price), 0);
-    if (number.toString().includes('.')) {
-      return Number(number.toString().split('.')[0])
-    } else {
-      return number
-    }
+    var p = this.invoiceProducts?.reduce((acc, product) => acc + product.quantity * (product.price), 0);
+    p = (p * ((100 - this.invoiceProcess?.discountRate1) / 100)) - this.invoiceProcess?.discountRate2;
+    return p;
   }
   //dip iskonto uygulandıktan sonraki fiyatı çeker
   getFinalTotalPrice2() {
@@ -372,7 +398,39 @@ export class CreateSaleOrderComponent implements OnInit {
       this.toasterService.error('Güncellenmedi')
     }
   }
-  async updateInvocieProcess(formValue: any) {
+  reloadStatus = true; //eğer nebime siparişi/faturayı/teklifi attıysa sayfa kapanırken soru sormasın diye eklendi;
+  async ngOnDestroy() {
+    if (this.reloadStatus) {
+      if (this.invoiceProcess.applicationCode == 'Order') {
+        if (!this.invoiceProcess.isCompleted && this.invoiceProcess.eInvoiceNumber != null) {
+          if (window.confirm("Sipariş Durumu Tamamlandı Olarak Değişecektir. Çıkmak İstiyor Musunuz?")) {
+            await this.changeStatusOfProcess(true, true)
+          } else {
+            await this.changeStatusOfProcess(true, true)
+          }
+
+
+
+        }
+      }
+    }
+
+
+  }
+
+  async changeStatusOfProcess(isCompleted: boolean, reload: boolean) {
+    var req: InvoiceProcess = Object.assign(this.invoiceProcess);
+    req.isCompleted = isCompleted;
+    var response = await this.orderService.editInvoiceProcess(this.invoiceProcess);
+    if (reload) {
+      this.invoiceProcess.isCompleted = false;
+      // this.routerService.navigate([`/create-process/${this.processType}/${this.processCode}/1/${response.id}`]);
+
+    }
+
+
+  }
+  async updateInvocieProcess(formValue: any, isCompleted?: boolean) {
 
     if (!this.invoiceProcess) {
       await this.addInvoiceProcess(formValue);
@@ -387,7 +445,8 @@ export class CreateSaleOrderComponent implements OnInit {
     request.invoiceNumber = this.invoiceNumber;
     request.currAccCode = ((this.processCode == 'R' || this.processCode == 'WS') || (this.processType == 'order')) ? formValue.currAccCode.code : null;
     request.vendorCode = this.processCode == 'BP' ? formValue.vendorCode.code : null;
-    request.eInvoiceNumber = formValue.eInvoiceNumber;
+    // request.eInvoiceNumber = formValue.eInvoiceNumber;
+    request.eInvoiceNumber = this.invoiceProcess.eInvoiceNumber;
     request.description = formValue.description;
     request.internalDescription = formValue.internalDescription;
     request.officeCode = formValue.officeCode;
@@ -395,8 +454,8 @@ export class CreateSaleOrderComponent implements OnInit {
     request.taxTypeCode = formValue.taxTypeCode.code;
     request.shippingPostalAddressId = formValue.shippingPostalAddressId.code
     request.billingPostalAddressId = formValue.billingPostalAddressId.code
-    request.isCompleted = false;
-
+    request.isCompleted = isCompleted != undefined ? isCompleted : this.invoiceProcess.isCompleted;
+    request.applicationCode = this.applicationCode;
     var response = await this.orderService.editInvoiceProcess(request);
     if (response) {
       this.responseHandler(true, "Güncellendi")
@@ -429,7 +488,7 @@ export class CreateSaleOrderComponent implements OnInit {
     request.taxTypeCode = formValue.taxTypeCode.code;
     request.shippingPostalAddressId = formValue.shippingPostalAddressId?.code
     request.billingPostalAddressId = formValue.billingPostalAddressId?.code
-
+    request.applicationCode = this.applicationCode;
     request.isCompleted = false;
 
     var response = await this.orderService.editInvoiceProcess(request);
@@ -520,20 +579,20 @@ export class CreateSaleOrderComponent implements OnInit {
       // Diğer değerleri set ediyoruz
       this.newOrderNumber = v.id;
       this.invoiceNumber = v.invoiceNumber;
-    } else if (this.processType == 'proposal' && this.processCode == 'R') {
-      this.proposal_r_form.get('officeCode').setValue(officeCode);
-      this.proposal_r_form.get('warehouseCode').setValue(warehouseCode);
-      this.proposal_r_form.get('salesPersonCode').setValue(salesPersonCode);
+    } else if (this.processType == 'proposal' && this.processCode == 'WS') {
+      this.proposal_ws_form.get('officeCode').setValue(officeCode);
+      this.proposal_ws_form.get('warehouseCode').setValue(warehouseCode);
+      this.proposal_ws_form.get('salesPersonCode').setValue(salesPersonCode);
       this.selectedCustomer = currAccCode;
-      this.proposal_r_form.get('currAccCode').setValue(currAccCode);
-      this.proposal_r_form.get('taxTypeCode').setValue(taxTypeCode);
-      this.proposal_r_form.get('description').setValue(description);
-      this.proposal_r_form.get('internalDescription').setValue(internalDescription);
+      this.proposal_ws_form.get('currAccCode').setValue(currAccCode);
+      this.proposal_ws_form.get('taxTypeCode').setValue(taxTypeCode);
+      this.proposal_ws_form.get('description').setValue(description);
+      this.proposal_ws_form.get('internalDescription').setValue(internalDescription);
       if (shippingPostalAddressId) {
-        this.proposal_r_form.get('shippingPostalAddressId').setValue(shippingPostalAddressId);
+        this.proposal_ws_form.get('shippingPostalAddressId').setValue(shippingPostalAddressId);
       }
       if (billingPostalAddressId) {
-        this.proposal_r_form.get('billingPostalAddressId').setValue(billingPostalAddressId);
+        this.proposal_ws_form.get('billingPostalAddressId').setValue(billingPostalAddressId);
       }
 
       this.discountForm.get('percentDiscountRate').setValue(v.discountRate1);
@@ -632,6 +691,7 @@ export class CreateSaleOrderComponent implements OnInit {
     if (confirmation) {
       var response = await this.orderService.createOrder_New(this.processCode, this.invoiceProcess.id);
       if (response) {
+        this.reloadStatus = false;
         this.toasterService.success('Sipariş Oluşturuldu.');
         this.routerService.navigate([`/create-process/0/${this.processCode}/${this.invoiceProcess.id}`]);
 
@@ -684,7 +744,7 @@ export class CreateSaleOrderComponent implements OnInit {
   productForm: FormGroup;
   invoiceForm: FormGroup;
   proposal_bp_form: FormGroup;
-  proposal_r_form: FormGroup;
+  proposal_ws_form: FormGroup;
   order_r_form: FormGroup;
   shipment_ws_form: FormGroup;
   trackChanges(form: FormGroup, isCustomer: boolean) {
@@ -777,8 +837,8 @@ export class CreateSaleOrderComponent implements OnInit {
     this.trackChanges(this.proposal_bp_form, false);
 
   }
-  proposal_r_formGenerator() {
-    this.proposal_r_form = this.formBuilder.group({
+  proposal_ws_formGenerator() {
+    this.proposal_ws_form = this.formBuilder.group({
       officeCode: [null, Validators.required],
       warehouseCode: [null, Validators.required],
       currAccCode: [null, Validators.required],
@@ -789,7 +849,7 @@ export class CreateSaleOrderComponent implements OnInit {
       shippingPostalAddressId: [null],
       billingPostalAddressId: [null],
     });
-    this.trackChanges(this.proposal_r_form, true);
+    this.trackChanges(this.proposal_ws_form, true);
 
   }
   shipment_ws_formGenerator() {
@@ -808,13 +868,18 @@ export class CreateSaleOrderComponent implements OnInit {
 
   async createProposalReport() {
 
-    if (window.confirm("Mail Gönderilsin mi?")) {
-      var data = await this.productService.createProposalReport(this.invoiceProcess.id, true);
-    } else {
-      var data = await this.productService.createProposalReport(this.invoiceProcess.id, false);
+    if (window.confirm("Teklif Gönderilsin mi?")) {
+      var data = await this.productService.createProposalReport(this.invoiceProcess.id);
+      this.toasterService.info("Genel Ayarlarınızda Otomatik Mail Parametresi Açık İse Mail Otomatik Gidecektir")
+
+      if (this.invoiceProcess.isCompleted == false && this.invoiceProcess.eInvoiceNumber != null) {
+        location.reload()
+      } else {
+        this.routerService.navigate([`/create-process/${this.processType}/${this.processCode}/0/${this.invoiceProcess.id}`]);
+
+      }
     }
 
-    this.routerService.navigate([`/create-process/${this.processType}/${this.processCode}/0/${this.invoiceProcess.id}`]);
 
   }
 
@@ -1068,14 +1133,110 @@ export class CreateSaleOrderComponent implements OnInit {
   }
 
   //----------------------------------------
+  allProducts: BasketProduct_VM[] = [];
+  brands: any[] = []
+  itemCodes: any[] = []
+  shelfNos: any[] = []
+  descriptions: any[] = []
+  findProductDialog: boolean = false;
 
-  // async getAllProducts() {
-  //   if (this.allProducts.length == 0) {
-  //     this.allProducts = await this.productService.searchProduct5();
+  logFilteredData(event: any) {
 
-  //   }
-  //   this.toasterService.success('Tüm Ürünler Getirildi')
-  //   this.mapProducts(this.allProducts);
-  //   this.openDialog('findProductDialog');
-  // }
+    try {
+      if (event.filteredValue) {
+        console.log('Filtered data:', event.filteredValue);
+        var list: BasketProduct_VM[] = event.filteredValue;
+        this.mapProducts(list)
+
+        this.toasterService.info("Dinamik Search Güncellendi")
+      }
+
+    } catch (error) {
+      this.toasterService.error(error.message)
+    }
+
+  }
+
+  mapProducts(data: BasketProduct_VM[]) {
+    const uniqueMap = (array, key) => {
+      const map = new Map();
+      array.forEach(item => {
+        if (!map.has(item[key])) {
+          map.set(item[key], { label: item[key], value: item[key] });
+        }
+      });
+      return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label));
+    };
+
+    this.shelfNos = uniqueMap(data, 'shelfNo');
+    this.brands = uniqueMap(data, 'brand');
+    this.itemCodes = uniqueMap(data, 'itemCode');
+    // this.targetShelfs = uniqueMap(this.__transferProducts, 'targetShelf');
+    this.descriptions = uniqueMap(data, 'description');
+  }
+  async getAllProducts() {
+    if (this.allProducts.length == 0) {
+      this.allProducts = await this.productService.getBasketProducts(this.invoiceProcess.processCode, this.invoiceProcess.applicationCode);
+
+    }
+    this.toasterService.success('Tüm Ürünler Getirildi')
+    // this.mapProducts(this.allProducts);
+    this.findProductDialog = true;
+  }
+  async addProduct(p: BasketProduct_VM) {
+    if (!this.invoiceProcess) {
+      await this.addInvoiceProcess(this.productForm.value);
+      return;
+    } else {
+      if (p.inventory <= 0) {
+        this.toasterService.error("Yetersiz Envanter Hatası.");
+        return; // Return early if inventory is not sufficient
+      }
+
+      // Step 1: Get the current total quantity of this product in the basket
+      const currentTotalQuantity = await this.getCurrentTotalQuantity(p.barcode);
+
+      // Step 2: Check if adding this product exceeds the available inventory
+      const newQuantity = currentTotalQuantity + 1; // We're adding one item
+      if (newQuantity > p.inventory) {
+        this.toasterService.error("Envanter limitini aşıyorsunuz.");
+        return; // Prevent adding the product
+      }
+
+      // Proceed to add the product
+      var product_detail = await this.orderService.getProductDetailByPriceCode(this.processCode, p.barcode);
+      var request: CollectedInvoiceProduct = new CollectedInvoiceProduct();
+
+      request.barcode = p.barcode;
+      request.quantity = 1;
+      request.shelfNo = "1";
+      request.batchCode = null;
+      request.processId = this.newOrderNumber;
+      request.itemCode = product_detail.itemCode;
+      request.photoUrl = product_detail.photoUrl;
+      request.price = product_detail.price;
+      request.priceVI = product_detail.priceVI;
+      request.discountRate1 = 0;
+      request.discountRate2 = 0;
+      request.taxRate = product_detail.taxRate;
+
+      var response = await this.orderService.addCollectedInvoiceProduct(request);
+      if (response) {
+        this.responseHandler(true, "Eklendi");
+        this.getProductOfProcess();
+        return;
+      } else {
+        this.responseHandler(false, "Eklenmedi");
+        return;
+      }
+    }
+  }
+
+  // Helper method to calculate the total quantity of a product in the basket
+  private async getCurrentTotalQuantity(barcode: string): Promise<number> {
+    // Assume this.invoiceProducts is the list of currently added products
+    const existingProducts = this.invoiceProducts.filter(item => item.barcode === barcode);
+    const totalQuantity = existingProducts.reduce((sum, item) => sum + item.quantity, 0);
+    return totalQuantity;
+  }
 }

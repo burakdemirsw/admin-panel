@@ -143,6 +143,7 @@ import { CreateWarehouseProcessComponent } from './components/Warehouse/warehous
 import { RaportComponent } from './components/raport/raport/raport.component';
 
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { KeysPipe } from './components/raport/raport/keys.pipe';
 @NgModule({
 
   declarations: [
@@ -235,8 +236,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     AutoMaximizeDialogDirective,
     UntransferredOrdersComponent,
     CreateWarehouseProcessComponent,
-    RaportComponent
-
+    RaportComponent,
+    KeysPipe
   ],
 
 
@@ -293,7 +294,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
   ],
 
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [ConfirmationService, MessageService, DatePipe, AlertifyService, NgModule, NgxPopper, DatePipe, NgxSpinnerModule, ExportCsvService, {
+  providers: [ConfirmationService, MessageService, AlertifyService, NgModule, NgxPopper, DatePipe, NgxSpinnerModule, ExportCsvService, {
     provide: HTTP_INTERCEPTORS,
     useClass: HttpErrorInterceptor,
     multi: true

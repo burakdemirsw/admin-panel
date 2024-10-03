@@ -570,6 +570,17 @@ export class OrderService {
     }
   }
 
+  async updateCustomer(request: CreateCustomer_CM): Promise<any> {
+    try {
+      var response = await this.httpClientService.post<CreateCustomer_CM>({ controller: "order/update-customer" }, request).toPromise();
+
+      return response;
+    } catch (error: any) {
+      // console.log(error.message);
+      return null;
+    }
+  }
+
 
   async getClientOrder(id: string): Promise<any> {
     try {

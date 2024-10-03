@@ -18,6 +18,7 @@ export class CustomerList_VM {
 }
 
 export class CustomerAddress_VM {
+  currAccDescription?: string;
   postalAddressID: string;
   currAccCode?: string;
   countryCode?: string;
@@ -28,5 +29,11 @@ export class CustomerAddress_VM {
   cityDescription?: string;
   districtCode?: string;
   districtDescription?: string;
+  phoneNumber?: string;
+  taxOfficeCode?: string;
+  taxOfficeDescription?: string;
   address?: string;
+  taxNumber?: string;
+  mail?: string;
+  identityNumber?: string;
 }

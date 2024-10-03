@@ -342,11 +342,11 @@
             </form>
           </p-tabPanel>
 
-          <!-- TEKLİF BİLGİLERİ (R) ------------------------------------------------------------------------------------------------>
+          <!-- TEKLİF BİLGİLERİ (WS) ------------------------------------------------------------------------------------------------>
 
           <p-tabPanel header="Satış Teklif Başlığı"
-            *ngIf="(this.processCode == 'R' && this.processType=='proposal')&& !this.invoiceProcess?.isCompleted">
-            <form [formGroup]="proposal_r_form" (ngSubmit)="onSubmit(proposal_r_form.value)">
+            *ngIf="(this.processCode == 'WS' && this.processType=='proposal')&& !this.invoiceProcess?.isCompleted">
+            <form [formGroup]="proposal_ws_form" (ngSubmit)="onSubmit(proposal_ws_form.value)">
               <div class="row mb-3">
                 <div class="form-group col-md-6">
                   <label for="officeCode">Ofis</label>
@@ -410,7 +410,7 @@
               <div class="row mb-3">
                 <div class="form-group col">
                   <button type="button" class="btn btn-primary" style="width: 100%"
-                    (click)="updateInvocieProcess(this.proposal_r_form.value)" [disabled]="
+                    (click)="updateInvocieProcess(this.proposal_ws_form.value)" [disabled]="
                     this.invoiceProcess?.isCompleted">
                     Kaydet
                   </button>
@@ -484,26 +484,9 @@
               </div>
             </form>
           </p-tabPanel>
-          <p-tabPanel header="{{lineHeading}}" *ngIf="this.invoiceProcess && !this.invoiceProcess?.isCompleted ">
+          <p-tabPanel header="{{lineHeading}}" *ngIf="(this.invoiceProcess && !this.invoiceProcess?.isCompleted) && (this.invoiceProcess?.applicationCode  !='Order'
+            && this.invoiceProcess?.applicationCode !='Proposal')">
             <!-- FATURA ÜRÜN FORMU------------------------------------------------------------------------------------------------>
-
-            <div class="">
-              <div class="row mt-4">
-                <div class="col">
-                  <div class="card p-3">
-                    <div class="card-body text-center">
-                      <h5>Ürün Seçin</h5>
-                      <a class="btn btn-link">
-                        <i class="bi bi-plus-circle"></i> Ürün Ekle
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-
             <form [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
               <div class="row mb-3">
                 <div class="form-group">
@@ -553,7 +536,154 @@
 
           </p-tabPanel>
           <!-- FATURA KONTROL  *ngIf="this.invoiceProcess && this.invoiceProducts.length>0"------------------------------------------------------------------------------------------------>
-          <p-tabPanel header="{{detailHeading}}" *ngIf="this.invoiceProcess && invoiceProducts.length > 0 ">
+          <p-tabPanel header="{{detailHeading}}" *ngIf="(this.invoiceProcess && invoiceProducts.length > 0 ) || (this.invoiceProcess?.applicationCode  =='Order'
+            || this.invoiceProcess?.applicationCode =='Proposal')">
+
+            <!-- BULUNAN ÜRÜNLER DİALOGU------------------------------------------------------------------------------------------------>
+
+            <p-dialog header="Bulunan Ürünler" [(visible)]="findProductDialog"
+              [style]="{ width: '100vw' ,minheight : '100vw'}" modal="true">
+              <p-table [styleClass]="'p-datatable-striped'" [value]="allProducts" [paginator]="true" [rows]="10"
+                (onFilter)="logFilteredData($event)" [tableStyle]="{ 'min-width': '50rem' , 'minheight' : '100vw' }">
+
+
+                <ng-template pTemplate="header">
+
+                  <tr>
+                    <th>Fotoğraf</th>
+                    <th pSortableColumn="brand">
+                      Marka <p-sortIcon field="brand"></p-sortIcon>
+                    </th>
+
+                    <th pSortableColumn="itemCode">
+                      Ürün Kodu <p-sortIcon field="itemCode"></p-sortIcon>
+                    </th>
+
+                    <th pSortableColumn="description">
+                      Ürün <p-sortIcon field="description"></p-sortIcon>
+                    </th>
+
+
+                    <th pSortableColumn="inventory">
+                      Envanter <p-sortIcon field="inventory"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="price">
+                      Fiyat <p-sortIcon field="price"></p-sortIcon>
+                    </th>
+
+                    <th pSortableColumn="priceVI">
+                      Vergili Fiyat <p-sortIcon field="priceVI"></p-sortIcon>
+                    </th>
+                    <th>
+                      İşlemler
+                    </th>
+                  </tr>
+                  <tr>
+                    <th></th>
+
+                    <th>
+                      <p-columnFilter field="brand" matchMode="equals" [showMenu]="false">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                          <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="brands"
+                            (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                            filterBy="label">
+                            <ng-template let-option pTemplate="item">
+                              <span class="ml-1 mt-1">{{ option.label }}</span>
+                            </ng-template>
+                          </p-dropdown>
+                        </ng-template>
+                      </p-columnFilter>
+                    </th>
+                    <th>
+                      <p-columnFilter field="itemCode" matchMode="equals" [showMenu]="false">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                          <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="itemCodes"
+                            (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                            filterBy="label">
+                            <ng-template let-option pTemplate="item">
+                              <span class="ml-1 mt-1">{{ option.label }}</span>
+                            </ng-template>
+                          </p-dropdown>
+                        </ng-template>
+                      </p-columnFilter>
+                    </th>
+
+                    <th>
+                      <p-columnFilter field="description" matchMode="equals" [showMenu]="false">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                          <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="descriptions"
+                            (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
+                            filterBy="label">
+                            <ng-template let-option pTemplate="item">
+                              <span class="ml-1 mt-1">{{ option.label }}</span>
+                            </ng-template>
+                          </p-dropdown>
+                        </ng-template>
+                      </p-columnFilter>
+                    </th>
+
+
+                    <th>
+                      <p-columnFilter type="numeric" field="inventory" [showClearButton]="false"></p-columnFilter>
+                    </th>
+                    <th>
+                      <p-columnFilter type="numeric" field="price" [showClearButton]="false"></p-columnFilter>
+                    </th>
+                    <th>
+                      <p-columnFilter type="numeric" field="priceVI" [showClearButton]="false"></p-columnFilter>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product>
+                  <tr>
+
+                    <td>
+                      <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true">
+                      </p-image>
+                    </td>
+                    <td>{{ product.brand }}</td>
+
+                    <td>{{ product.itemCode }}</td>
+
+                    <td class="scrollable-td">{{ product.description }}</td>
+
+                    <td>{{ product.inventory }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>{{ product.priceVI }}</td>
+
+                    <td>
+                      <button type="button" class="btn btn-primary" (click)="addProduct(product)"> <i class="fa fa-plus"
+                          aria-hidden="true"></i></button>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </p-dialog>
+
+            <div class="card"
+              *ngIf="this.invoiceProcess.isCompleted==false && this.invoiceProcess.eInvoiceNumber !=null"
+              style="border: 1px solid #f5c6cb; background-color: #f8d7da; color: #721c24; padding: 15px; margin: 10px 0;">
+              <div class="card-body">
+                <strong>Uyarı:</strong> Şu an düzenleme modundasınız. Lütfen siparişi tamamlayınız.
+              </div>
+            </div>
+            <div
+              *ngIf="this.invoiceProcess?.applicationCode=='Order' || this.invoiceProcess?.applicationCode =='Proposal' && !this.invoiceProcess.isCompleted">
+              <div class="row mt-4">
+                <div class="col">
+                  <div class="card p-3">
+                    <div class="card-body text-center">
+                      <!-- <h5>Ürün Seçin</h5> -->
+                      <a class="btn btn-link" (click)="getAllProducts()">
+
+                        <h3> <i class="bi bi-plus-circle"></i> Ürün Seçin</h3>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="card" *ngIf="invoiceProducts.length > 0">
               <p-table [value]="invoiceProducts" [scrollable]="true" scrollHeight="600px"
                 [tableStyle]="{ 'min-width': '50rem' }">
@@ -643,96 +773,107 @@
                 </ng-template>
               </p-table>
             </div>
-
-            <table class="table table-bordered">
-              <tbody>
-
-
-                <tr *ngIf="this.invoiceProcess?.isCompleted">
-                  <th scope="row" class="text-left">Ofis Kodu:</th>
-                  <td class="text-left">{{ this.invoiceProcess?.officeCode || 'Belirtilmemiş' }}</td>
-                </tr>
-                <tr *ngIf="this.invoiceProcess?.isCompleted">
-                  <th scope="row" class="text-left">Depo Kodu:</th>
-                  <td class="text-left">{{ this.invoiceProcess?.warehouseCode || 'Belirtilmemiş' }}</td>
-                </tr>
-
-                <tr *ngIf="this.invoiceProcess?.isCompleted">
-                  <th scope="row" class="text-left">Satış Elemanı Kodu:</th>
-                  <td class="text-left">{{ this.invoiceProcess?.salesPersonCode || 'Belirtilmemiş' }}</td>
-                </tr>
-                <tr *ngIf="this.invoiceProcess?.isCompleted">
-                  <th scope="row" class="text-left"> Vergi Tipi:</th>
-                  <td class="text-left">{{  this.invoiceProcess?.taxTypeCode|| 'Belirtilmemiş' }}
-                  </td>
-                </tr>
-                <tr *ngIf="this.invoiceProcess?.isCompleted && this.processType=='invoice'">
-                  <th scope="row" class="text-left">İade
-                    Faturası:</th>
-                  <td class=" text-left">{{  this.invoiceProcess?.isReturn ? 'Evet' : 'Hayır' }}</td>
-                </tr>
-                <tr *ngIf="this.invoiceProcess?.isCompleted && (this.processCode =='R' &&this.processType=='order' )">
-                  <th scope="row" class="text-left">
-                    E-Fatura Numarası</th>
-                  <td class="text-left">{{ this.invoiceProcess?.eInvoiceNumber || 'Belirtilmemiş' }}</td>
-                </tr>
-                <tr *ngIf="this.invoiceProcess?.isCompleted && (this.processCode =='R' &&this.processType=='invoice' )">
-                  <th scope="row" class="text-left">
-                    E-Fatura Numarası</th>
-                  <td class="text-left">{{ this.invoiceProcess?.eInvoiceNumber || 'Belirtilmemiş' }}</td>
-                </tr>
-                <tr
-                  *ngIf="this.invoiceProcess?.isCompleted && (this.processCode =='R' &&this.processType=='proposal' )">
-                  <th scope="row" class="text-left">
-                    Teklif Numarası</th>
-                  <td class="text-left">{{ this.invoiceProcess?.eInvoiceNumber || 'Belirtilmemiş' }}</td>
-                </tr>
-
-
-
-                <tr *ngIf="this.processCode =='R' ">
-                  <th scope="row" class="text-left">Müşteri:</th>
-                  <td class="text-left">{{  this.invoiceProcess?.currAccCode || 'Belirtilmemiş' }}
-                  </td>
-                </tr>
-                <tr *ngIf="this.processCode =='BP' ">
-                  <th scope="row" class="text-left">Tedarikçi:</th>
-                  <td class="text-left">{{  this.invoiceProcess?.vendorCode || 'Belirtilmemiş' }}
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row" class="text-left">Dip İskonto (%) :</th>
-                  <td class="text-left">{{ this.invoiceProcess?.discountRate1 || 'Belirtilmemiş' }}</td>
-                </tr>
-                <tr>
-                  <th scope="row" class="text-left">Dip İskonto (₺) :</th>
-                  <td class="text-left">{{ this.invoiceProcess?.discountRate2 || 'Belirtilmemiş' }}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Toplam (KDV Hariç)</th>
-                  <td>{{ getFinalTotalPrice() | currency : "₺" }}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Toplam KDV</th>
-                  <td>{{ getTotalTax() | currency : "₺" }}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Genel Toplam (KDV Dahil)</th>
-                  <td>{{ getFinalTotalPrice2() | currency : "₺" }}</td>
-                </tr>
-
-                <tr *ngIf="invoiceNumber">
-                  <th scope="row" class="text-left">Fatura Numarası:</th>
-                  <td class="text-left">{{ invoiceNumber }}</td>
-                </tr>
-
-              </tbody>
-            </table>
-
-            <!-- İNDİRİM FORMU----------------------------------------------------------------------------------------------------->
-
             <form [formGroup]="discountForm" *ngIf="invoiceProducts.length > 0 &&  !this.invoiceProcess?.isCompleted"
               class="mb-3 ">
+              <table class="table table-bordered"
+                *ngIf="invoiceProducts.length > 0 &&  !this.invoiceProcess?.isCompleted">
+                <tbody>
+
+
+                  <tr *ngIf="this.invoiceProcess?.isCompleted">
+                    <th scope="row" class="text-left">Ofis Kodu:</th>
+                    <td class="text-left">{{ this.invoiceProcess?.officeCode || 'Belirtilmemiş' }}</td>
+                  </tr>
+                  <tr *ngIf="this.invoiceProcess?.isCompleted">
+                    <th scope="row" class="text-left">Depo Kodu:</th>
+                    <td class="text-left">{{ this.invoiceProcess?.warehouseCode || 'Belirtilmemiş' }}</td>
+                  </tr>
+
+                  <tr *ngIf="this.invoiceProcess?.isCompleted">
+                    <th scope="row" class="text-left">Satış Elemanı Kodu:</th>
+                    <td class="text-left">{{ this.invoiceProcess?.salesPersonCode || 'Belirtilmemiş' }}</td>
+                  </tr>
+                  <tr *ngIf="this.invoiceProcess?.isCompleted">
+                    <th scope="row" class="text-left"> Vergi Tipi:</th>
+                    <td class="text-left">{{  this.invoiceProcess?.taxTypeCode|| 'Belirtilmemiş' }}
+                    </td>
+                  </tr>
+                  <tr *ngIf="this.invoiceProcess?.isCompleted && this.processType=='invoice'">
+                    <th scope="row" class="text-left">İade
+                      Faturası:</th>
+                    <td class=" text-left">{{  this.invoiceProcess?.isReturn ? 'Evet' : 'Hayır' }}</td>
+                  </tr>
+                  <tr *ngIf="this.invoiceProcess?.isCompleted && (this.processCode =='R' &&this.processType=='order' )">
+                    <th scope="row" class="text-left">
+                      E-Fatura Numarası</th>
+                    <td class="text-left">{{ this.invoiceProcess?.eInvoiceNumber || 'Belirtilmemiş' }}</td>
+                  </tr>
+                  <tr
+                    *ngIf="this.invoiceProcess?.isCompleted && (this.processCode =='R' &&this.processType=='invoice' )">
+                    <th scope="row" class="text-left">
+                      E-Fatura Numarası</th>
+                    <td class="text-left">{{ this.invoiceProcess?.eInvoiceNumber || 'Belirtilmemiş' }}</td>
+                  </tr>
+                  <tr
+                    *ngIf="this.invoiceProcess?.isCompleted && (this.processCode =='R' &&this.processType=='proposal' )">
+                    <th scope="row" class="text-left">
+                      Teklif Numarası</th>
+                    <td class="text-left">{{ this.invoiceProcess?.eInvoiceNumber || 'Belirtilmemiş' }}</td>
+                  </tr>
+
+
+
+                  <tr *ngIf="this.processCode =='R' ">
+                    <th scope="row" class="text-left">Müşteri:</th>
+                    <td class="text-left">{{  this.invoiceProcess?.currAccCode || 'Belirtilmemiş' }}
+                    </td>
+                  </tr>
+                  <tr *ngIf="this.processCode =='BP' ">
+                    <th scope="row" class="text-left">Tedarikçi:</th>
+                    <td class="text-left">{{  this.invoiceProcess?.vendorCode || 'Belirtilmemiş' }}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <th scope="row">Alt Toplam</th>
+                    <td>{{ getTotal() | currency : "₺" }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="text-left">Dip İskonto (%) :</th>
+                    <td class="text-left">{{ this.invoiceProcess?.discountRate1 || 'Belirtilmemiş' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="text-left">Dip İskonto (₺) :</th>
+                    <td class="text-left">{{ this.invoiceProcess?.discountRate2 || 'Belirtilmemiş' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">İnd. Alt Toplam</th>
+                    <td>{{ getFinalTotalPrice() | currency : "₺" }}</td>
+                  </tr>
+                  <!-- <tr>
+                    <th scope="row">Toplam KDV</th>
+                    <td>{{ getTotalTax() | currency : "₺" }}</td>
+                  </tr> -->
+                  <tr>
+                    <th scope="row">Toplam KDV</th>
+                    <td>{{   calculateTotalTax()  | currency : "₺" }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Genel Toplam (KDV Dahil)</th>
+                    <td>{{ getFinalTotalPrice()+calculateTotalTax()  | currency : "₺" }}</td>
+                  </tr>
+
+                  <tr *ngIf="invoiceNumber">
+                    <th scope="row" class="text-left">Fatura Numarası:</th>
+                    <td class="text-left">{{ invoiceNumber }}</td>
+                  </tr>
+
+                </tbody>
+              </table>
+
+              <!-- İNDİRİM FORMU----------------------------------------------------------------------------------------------------->
+
+
               <div class="row">
                 <div class="col-md-4  mb-3">
                   <div class="input-group">
@@ -774,8 +915,8 @@
                     this.invoiceProcess?.isCompleted || invoiceProducts.length <= 0 ">
               Faturayı Kes
             </button>
-            <button *ngIf="this.processType=='proposal'" type="button" class="btn btn-primary"
-              (click)="createProposalReport()" style="width: 100%;" [disabled]="
+            <button *ngIf="this.processType=='proposal' && this.invoiceProducts.length >0" type=" button"
+              class="btn btn-primary" (click)="createProposalReport()" style="width: 100%;" [disabled]="
                     this.invoiceProcess?.isCompleted || invoiceProducts.length <= 0 ">
               Teklifi Oluştur
             </button>
@@ -796,9 +937,11 @@
         <p-table [value]="invoiceProducts" class="table" [paginator]="true" [rows]="10"
           [tableStyle]="{ 'min-width': '50rem' }">
           <ng-template pTemplate="header">
+
             <tr>
               <th scope="col">Fotoğraf</th>
-              <th pSortableColumn="shelfNo">
+              <th pSortableColumn="shelfNo" *ngIf="this.invoiceProcess?.applicationCode !='Order' && this.invoiceProcess?.applicationCode
+                !='Proposal'">
                 Raf
                 <p-sortIcon field="shelfNo"></p-sortIcon>
                 <p-columnFilter type="text" field="shelfNo" [showClearButton]="true"></p-columnFilter>
@@ -836,7 +979,9 @@
                   </ng-template>
                 </p-image>
               </td>
-              <td>{{ product.shelfNo }}</td>
+              <td
+                *ngIf="this.invoiceProcess?.applicationCode  !='Order' && this.invoiceProcess?.applicationCode  !='Proposal'">
+                {{ product.shelfNo }}</td>
               <td>{{ product.itemCode }}</td>
               <td>{{ product.quantity }}</td>
               <td>{{ product.batchCode }}</td>
@@ -902,7 +1047,8 @@
       </div>
 
 
-      <div class=" card text-center" *ngIf="activeIndex==1 &&  !this.invoiceProcess?.isCompleted  ">
+      <div class=" card text-center"
+        *ngIf="activeIndex==1 &&  !this.invoiceProcess?.isCompleted  && this.invoiceProducts.length>0">
         <div class="card-body">
           <h5 class="card-title">Toplanan Ürünler</h5>
           <h1 class="display-1">{{ totalCount }}</h1>
@@ -914,10 +1060,14 @@
       <div class="card" *ngIf="this.invoiceProcess?.isCompleted">
         <div class="card-body p-4">
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
+              <button class="btn btn-primary" style="width: 100%;"
+                (click)="changeStatusOfProcess(false,true)">Düzenle</button>
+            </div>
+            <div class="col-md-4">
               <button class="btn btn-primary" style="width: 100%;" (click)="goPage()">Yeni Oluştur </button>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
               <button class="btn btn-danger" style="width: 100%;" (click)="deleteInvoice()"> Sil </button>
             </div>
           </div>
@@ -927,9 +1077,16 @@
 
       <div class="card" *ngIf="!this.invoiceProcess?.isCompleted">
         <div class="card-body p-4">
-          <div class="row">
+          <div class="row mb-3">
             <div class="col-md-12">
               <button class="btn btn-primary" style="width: 100%;" (click)="goPage()">Yeni Oluştur </button>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="this.invoiceProcess?.eInvoiceNumber !=null">
+            <div class="col-md-12">
+              <button class="btn btn-primary" style="width: 100%;" (click)="changeStatusOfProcess(true,true)">Tamamla
+              </button>
             </div>
 
           </div>

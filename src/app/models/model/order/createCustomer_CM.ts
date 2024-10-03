@@ -1,8 +1,11 @@
 import { PostalAddress } from "../../nebim/customer/nebimCustomer";
 
 export class CreateCustomer_CM {
+
+  modelType: number;
   currAccDescription: string;
   taxNumber: string;
+  identityNumber: string;
   taxOfficeCode: string;
   mersisNum: string;
   mail: string;
@@ -13,10 +16,10 @@ export class CreateCustomer_CM {
   officeCode: string;
   warehouseCode: string;
   address: Address;
-
+  currAccCode: string;
   constructor() {
     this.address = new Address();
-    this.mersisNum = "1111111111";
+    this.mersisNum = "";
     this.taxNumber = "1111111111";
     this.taxOfficeCode = "";
 
@@ -30,6 +33,7 @@ export class Address {
   taxOffice: string;
   description: string;
   postalCode: string;
+  postalAddressId: string;
 }
 
 export class CreateCustomer_ResponseModel {
@@ -55,10 +59,10 @@ export class ClientCustomer {
   createdDate: Date
   addedSellerCode: string
   updatedDate: Date
+  cargoAddressPhotoUrl: string;
   constructor() {
     this.createdDate = new Date();
     this.updatedDate = new Date();
   }
 
 }
-

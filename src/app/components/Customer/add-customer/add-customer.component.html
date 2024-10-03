@@ -1,196 +1,78 @@
 <main id="main" class="main">
   <section class="section">
+
+
     <div class="card">
       <div class="card-body">
         <form [formGroup]="createCustomerForm" class="mt-4">
           <div class="row mb-3">
             <div class="col-md-12">
-              <input
-                pInputText
-                type="text"
-                class="form-control"
-                id="currAccDescription"
-                placeholder="Firma Adı"
-                formControlName="currAccDescription"
-              />
+              <input pInputText type="text" class="form-control" id="currAccDescription" placeholder="Firma Adı"
+                formControlName="currAccDescription" />
             </div>
           </div>
           <div class="row mb-3">
             <div class="col-md-6">
-              <input
-                pInputText
-                type="text"
-                class="form-control"
-                id="mail"
-                placeholder="Mail"
-                formControlName="mail"
-              />
+              <input pInputText type="text" class="form-control" id="mail" placeholder="Mail" formControlName="mail" />
             </div>
             <div class="col-md-6">
-              <input
-                pInputText
-                type="text"
-                class="form-control"
-                id="phoneNumber"
-                placeholder="(05XX XXX XX XX)"
-                formControlName="phoneNumber"
-              />
+              <input pInputText type="text" class="form-control" id="phoneNumber" placeholder="(05XX XXX XX XX)"
+                formControlName="phoneNumber" />
             </div>
           </div>
 
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <div class="">
-                <div class="row">
-                  <!-- Dosya Yükleme Bölümü -->
-                  <div class="col-md-6">
-                    <div class="input-group mb-3">
-                      <div class="fileUpload">
-                        <input
-                          type="file"
-                          class="upload"
-                          id="inputGroupFile01"
-                          aria-describedby="inputGroupFileAddon01"
-                          (change)="onUpload($event, 'stampPhotoUrl')"
-                        />
-                        <span> <i class="fas fa-camera"></i></span>
-                      </div>
-                    </div>
-                  </div>
 
-                  <!-- Metin Girişi Bölümü -->
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="stampPhotoUrl">Kaşe </label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="stampPhotoUrl"
-                        placeholder="Kaşe Fotoğraf Yolu"
-                        formControlName="stampPhotoUrl"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="input-group mb-3">
-                    <div class="fileUpload">
-                      <input
-                        type="file"
-                        class="upload"
-                        id="inputGroupFile01"
-                        aria-describedby="inputGroupFileAddon01"
-                        (change)="onUpload($event, 'bussinesCardPhotoUrl')"
-                      />
-                      <span> <i class="fas fa-camera"></i></span>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <label for="exampleInputEmail1">Kartvizit</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="bussinesCardPhotoUrl"
-                    placeholder="Kartvizit Fotoğraf Yolu"
-                    formControlName="bussinesCardPhotoUrl"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
         </form>
-        <form
-          [formGroup]="createCustomerForm"
-          (ngSubmit)="submitAddressForm(createCustomerForm.value)"
-        >
+        <form [formGroup]="createCustomerForm" (ngSubmit)="submitAddressForm(createCustomerForm.value)">
           <div class="form-group mb-3">
-            <p-dropdown
-              formControlName="address_country"
-              [options]="_countries"
-              optionLabel="name"
-              [showClear]="true"
-              placeholder="Ülke"
-            ></p-dropdown>
+            <p-dropdown formControlName="address_country" [options]="_countries" optionLabel="name" [showClear]="true"
+              placeholder="Ülke"></p-dropdown>
           </div>
           <div class="form-group mb-3">
-            <p-dropdown
-              formControlName="address_region"
-              [options]="_regions"
-              optionLabel="name"
-              [showClear]="true"
-              placeholder="Bölge"
-            ></p-dropdown>
+            <p-dropdown formControlName="address_region" [options]="_regions" optionLabel="name" [showClear]="true"
+              placeholder="Bölge"></p-dropdown>
           </div>
           <div class="form-group mb-3">
-            <p-dropdown
-              formControlName="address_province"
-              [options]="_provinces"
-              optionLabel="name"
-              [showClear]="true"
-              placeholder="il"
-            ></p-dropdown>
+            <p-dropdown formControlName="address_province" [options]="_provinces" optionLabel="name" [showClear]="true"
+              placeholder="il"></p-dropdown>
           </div>
 
           <div class="form-group mb-3">
-            <p-dropdown
-              formControlName="address_taxOffice"
-              [options]="_taxOffices"
-              optionLabel="name"
-              [showClear]="true"
-              placeholder="Vergi Dairesi"
-            ></p-dropdown>
+            <p-dropdown formControlName="address_taxOffice" [options]="_taxOffices" optionLabel="name"
+              [showClear]="true" placeholder="Vergi Dairesi"></p-dropdown>
           </div>
 
           <div class="form-group mb-3">
-            <p-dropdown
-              formControlName="address_district"
-              [options]="_districts"
-              optionLabel="name"
-              [showClear]="true"
-              placeholder="İlçe"
-            ></p-dropdown>
+            <p-dropdown formControlName="address_district" [options]="_districts" optionLabel="name" [showClear]="true"
+              placeholder="İlçe"></p-dropdown>
+          </div>
+          <div class="form-group mb-3">
+            <input placeholder="TC Kimlik Numaranız" minlength="11" maxlength="11" pInputText type="text"
+              class="form-control" id="identity_number" name="identity_number" fullWidth
+              formControlName="identity_number" />
+          </div>
+          <div class="form-group mb-3">
+            <input placeholder="Vergi Numaranız" minlength="9" maxlength="10" pInputText type="text"
+              class="form-control" id="tax_number" name="tax_number" fullWidth formControlName="tax_number" />
+          </div>
+          <div class="form-group mb-3">
+            <input placeholder="Adres*" pInputText type="text" class="form-control" id="address_description"
+              name="address_description" fullWidth formControlName="address_description" />
           </div>
 
           <div class="form-group mb-3">
-            <input
-              placeholder="Adres*"
-              pInputText
-              type="text"
-              class="form-control"
-              id="address_description"
-              name="address_description"
-              fullWidth
-              formControlName="address_description"
-            />
+            <input placeholder="Posta Kodu" pInputText type="text" id="address_postalCode" name="address_postalCode"
+              fullWidth formControlName="address_postalCode" class="form-control" />
           </div>
 
-          <div class="form-group mb-3">
-            <input
-              placeholder="Posta Kodu"
-              pInputText
-              type="text"
-              id="address_postalCode"
-              name="address_postalCode"
-              fullWidth
-              formControlName="address_postalCode"
-              class="form-control"
-            />
+          <div class="form-group" *ngIf="!this.pageType">
+            <button pButton pRipple class="p-button-success" icon="fa fa-plus" type="submit"
+              label="Müşteri Ekle"></button>
           </div>
 
-          <div class="form-group">
-            <button
-              pButton
-              pRipple
-              class="p-button-success"
-              icon="fa fa-plus"
-              type="submit"
-              label="Müşteri Ekle"
-            ></button>
+          <div class="form-group" *ngIf="this.pageType">
+            <button pButton pRipple class="p-button-success" icon="fa fa-plus" type="submit"
+              label="Müşteri Güncelle"></button>
           </div>
         </form>
       </div>

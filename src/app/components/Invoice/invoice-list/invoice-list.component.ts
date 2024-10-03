@@ -54,8 +54,8 @@ export class InvoiceListComponent implements OnInit {
         else if ((this.processCode == 'BP' && this.processType == 'invoice')) {
           this.headerService.updatePageTitle("Alış Faturaları");
           await this.getInvoiceList();
-        } else if ((this.processCode == 'R' && this.processType == 'proposal')) {
-          this.headerService.updatePageTitle("Peşin Satış Teklifleri");
+        } else if ((this.processCode == 'WS' && this.processType == 'proposal')) {
+          this.headerService.updatePageTitle("Toptan Satış Teklifleri");
           await this.getInvoiceList();
         } else if ((this.processCode == 'R' && this.processType == 'order')) {
           this.headerService.updatePageTitle("Peşin Satışlar");
@@ -130,7 +130,7 @@ export class InvoiceListComponent implements OnInit {
 
   }
   async convertWSProposalToWSOrder(processCode: string, id: string) {
-    if (window.confirm("Teklifi faturalalaşacaktır . Devam edilsin mi?")) {
+    if (window.confirm("Teklifi Siparişe Çevirilecektir. Devam edilsin mi?")) {
       var response = await this.orderService.convertWSProposalToWSOrder(this.processType, processCode, id);
       if (response) {
         this.toasterService.success("Teklif, Siparişe Dönüştürüldü");
@@ -141,13 +141,27 @@ export class InvoiceListComponent implements OnInit {
     }
 
   }
+
+  async convertWSOrderToWSInvoice(processCode: string, id: string) {
+    if (window.confirm("Sipariş Faturaya Çevirilecektir. Devam edilsin mi?")) {
+      this.toasterService.success("Sipariş, Faturaya Dönüştürüldü");
+      // var response = await this.orderService.convertWSProposalToWSOrder(this.processType, processCode, id);
+      // if (response) {
+      //   this.toasterService.success("Sipariş, Faturaya Dönüştürüldü");
+      //   this.getInvoiceList();
+      // } else {
+      //   this.toasterService.error("Sipariş, Faturaya Dönüştürülemedi");
+      // }
+    }
+
+  }
   async deleteInvoice(id: string) {
     var response = await this.orderService.deleteInvoiceProcess(id);
     if (response) {
-      this.toasterService.success("Fatura Silindi");
+      this.toasterService.success("Silindi");
       this.getInvoiceList();
     } else {
-      this.toasterService.error("Fatura Silinemedi");
+      this.toasterService.error("Silinemedi");
     }
   }
 

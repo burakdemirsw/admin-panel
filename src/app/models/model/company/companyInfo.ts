@@ -46,8 +46,9 @@ export class DatabaseInfo extends BaseEntity {
   trustServerCertificate?: boolean;
 }
 
-export class NebimInfo extends BaseEntity {
-  description?: string;
+
+export class NebimInvoiceInfo extends BaseEntity {
+  processCode?: string;
   officeCode?: string;
   storeCode?: string;
   posTerminalID?: string;
@@ -56,6 +57,19 @@ export class NebimInfo extends BaseEntity {
   basePriceCode: string;
   isOrderBase: boolean;
   isShipmentBase: boolean;
+  sendAutoMail: boolean;
+}
+
+
+export class NebimInfo extends BaseEntity {
+  processCode?: string;
+  officeCode?: string;
+  storeCode?: string;
+  posTerminalID?: string;
+  shipmentMethodCode?: string;
+  deliveryCompanyCode?: string;
+  basePriceCode: string;
+  sendAutoMail: boolean;
 }
 
 export class MarketPlaceInfo extends BaseEntity {
@@ -73,6 +87,10 @@ export class MarketPlaceInfo extends BaseEntity {
   shipmentMethodCode?: string;
   deliveryCompanyCode?: string;
   creditCardTypeCode?: string;
+  cargoItemCode?: string;
+  bankCommisionItemCode?: string;
+  paymentAtDoorItemCode?: string;
+  giftVoucherItemCode?: string;
 }
 
 export class ReportInfo extends BaseEntity {

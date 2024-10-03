@@ -22,6 +22,7 @@ export class InvoiceProcess {
   currAccCode: string;
   vendorCode: string;
   salesPersonCode: string;
+  applicationCode: string;
   isReturn?: boolean;
   invoiceNumber?: string;
   taxTypeCode?: string;

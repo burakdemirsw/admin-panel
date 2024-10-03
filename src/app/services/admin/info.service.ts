@@ -6,7 +6,8 @@ import { ToasterService } from '../ui/toaster.service';
 import {
   CompanyInfo, CargoInfo, DatabaseInfo, NebimInfo, MarketPlaceInfo,
   ReportInfo, MailInfo, PaymentInfo, Info, NebimUserInfo, MenuItem, MenuInfo, CargoCompanyInfo, MarketplaceCompanyInfo,
-  InvoiceIntegratorInfo
+  InvoiceIntegratorInfo,
+  NebimInvoiceInfo
 } from 'src/app/models/model/company/companyInfo';
 import { cdColorDesc, cdCreditCardTypeDesc, cdDeliveryCompanyDesc, cdItemDim1Desc, cdPOSTerminal, cdShipmentMethodDesc } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
@@ -315,7 +316,38 @@ export class InfoService {
     const response: InvoiceIntegratorInfo[] = await this.httpClientService.get_new<InvoiceIntegratorInfo[]>({ controller: 'Infos/get-invoice-integrator-infos' }).toPromise();
     return response;
   }
+  //---------
 
+  // Add NebimInvoiceInfo
+  async addNebimInvoiceInfo(model: NebimInvoiceInfo): Promise<any> {
+    const response = await this.httpClientService.post<any>({ controller: 'Infos/add-nebim-invoice-info' }, model).toPromise();
+    return response;
+  }
+
+  // Update NebimInvoiceInfo
+  async updateNebimInvoiceInfo(model: NebimInvoiceInfo): Promise<any> {
+    const response = await this.httpClientService.post<any>({ controller: 'Infos/update-nebim-invoice-info' }, model).toPromise();
+    return response;
+  }
+
+  // Delete NebimInvoiceInfo by id
+  async deleteNebimInvoiceInfo(id: number): Promise<any> {
+    const response = await this.httpClientService.get<any>({ controller: `Infos/delete-nebim-invoice-info/${id}` }).toPromise();
+    return response;
+  }
+
+  // Get all NebimInvoiceInfos
+  async getNebimInvoiceInfos(): Promise<any> {
+    const response = await this.httpClientService.get<NebimInvoiceInfo[]>({ controller: 'Infos/get-nebim-invoice-infos' }).toPromise();
+    return response;
+  }
+
+  // Get NebimInvoiceInfo by id
+  async getNebimInvoiceInfoById(id: number): Promise<any> {
+    const response = await this.httpClientService.get<NebimInvoiceInfo>({ controller: `Infos/get-nebim-invoice-info/${id}` }).toPromise();
+    return response;
+  }
+  //--------------
   async sendTestMail(request: any): Promise<any> {
     const response = await this.httpClientService.post<any>({ controller: 'direct-request/send-mail' }, request).toPromise();
     return response;

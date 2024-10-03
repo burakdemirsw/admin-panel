@@ -195,7 +195,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'add-customer',
+    path: 'add-customer/:type/:currAccCode',
+    component: AddCustomerComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'add-customer/:type',
     component: AddCustomerComponent,
     canActivate: [AuthGuard],
   },

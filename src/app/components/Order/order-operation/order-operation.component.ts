@@ -1145,7 +1145,7 @@ export class OrderOperationComponent implements OnInit {
       // Ürünü diziden çıkarın
       const index = this.productsToCollect.indexOf(matchingProduct);
       if (index !== -1) {
-        if (this.productsToCollect.length - 1 >= index + 1) {
+        if (this.productsToCollect.length - 1 <= this.productsToCollect.length - 1) {
           this._productsToCollect = [];
           this._productsToCollect.push(this.productsToCollect[index]);
           this.lastCollectedProduct = this.productsToCollect[index];
