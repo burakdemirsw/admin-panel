@@ -18,4 +18,14 @@ export class DirectRequestService {
     }
   }
 
+  async updateShelfStock(): Promise<boolean> {
+    try {
+      var response = await this.httpClientService.get_new<any>({ controller: "direct-request/update-shelf-stock" }).toPromise();
+      return response;
+    } catch (error: any) {
+      // console.log(error.message);
+      return null;
+    }
+  }
+
 }

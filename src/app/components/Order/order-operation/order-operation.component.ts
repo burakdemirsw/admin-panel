@@ -30,6 +30,7 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { DirectRequestService } from '../../../services/admin/direct-request.service';
 
 declare var window: any;
 
@@ -96,6 +97,7 @@ export class OrderOperationComponent implements OnInit {
     private gs: GeneralService,
     private title: Title,
     private sanitizer: DomSanitizer,
+    private directRequestService: DirectRequestService
   ) {
 
   }
@@ -339,12 +341,12 @@ export class OrderOperationComponent implements OnInit {
       this.title.setTitle('Transfer Detay');
       this.operation = 'Transferi Onayla';
 
-      this.pageDescription = 'Transfer Onaylama Detay ' + this.currentOrderNo;
+      this.pageDescription = 'Transfer Onaylama'
     } else if (orderNumberType === 'S') {
-      this.title.setTitle('Mağaza Transfer Detay');
-      this.operation = 'Mağaza Transferi Onayla';
+      this.title.setTitle('Transfer Detay');
+      this.operation = 'Transferi Onayla';
 
-      this.pageDescription = 'Transfer Onaylama Detay ' + this.currentOrderNo;
+      this.pageDescription = 'Transfer Onaylama'
     }
 
 
@@ -466,6 +468,7 @@ export class OrderOperationComponent implements OnInit {
     const response: boolean = await this.orderService.confirmTransfer(
       operationNumberList
     );
+    await this.directRequestService.updateShelfStock()
 
     if (response) {
       this.toasterService.success('Transfer işlemi Başarılı');
