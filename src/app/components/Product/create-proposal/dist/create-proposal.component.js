@@ -162,7 +162,6 @@ var CreateProposalComponent = /** @class */ (function () {
     CreateProposalComponent.prototype.onChangeProductsDropdown = function (product) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                console.log(product);
                 return [2 /*return*/];
             });
         });
@@ -474,7 +473,7 @@ var CreateProposalComponent = /** @class */ (function () {
                         _a.sent();
                         _a.label = 2;
                     case 2:
-                        product = this.allProducts.find(function (p) { return p.barcode == barcode || p.itemCode == barcode; });
+                        product = this.allProducts.find(function (p) { return p.barcode.toLocaleLowerCase() == barcode.toLocaleLowerCase() || p.itemCode.toLocaleLowerCase() == barcode.toLocaleLowerCase(); });
                         return [4 /*yield*/, this.addProduct(product)];
                     case 3:
                         _a.sent();

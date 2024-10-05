@@ -92,7 +92,7 @@ export class CreateProposalComponent implements OnInit {
 
   selectableProducts: any[] = [];
   async onChangeProductsDropdown(product: any) {
-    console.log(product)
+
   }
   async onStartPage() {
     //tüm ürünleri çek
@@ -384,7 +384,7 @@ export class CreateProposalComponent implements OnInit {
     if (this.allProducts.length <= 0) {
       await this.getAllProducts(false);
     }
-    var product = this.allProducts.find(p => p.barcode == barcode || p.itemCode == barcode)
+    var product = this.allProducts.find(p => p.barcode.toLocaleLowerCase() == barcode.toLocaleLowerCase() || p.itemCode.toLocaleLowerCase() == barcode.toLocaleLowerCase())
     await this.addProduct(product);
   }
 
