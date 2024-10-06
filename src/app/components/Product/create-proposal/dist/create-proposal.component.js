@@ -291,6 +291,7 @@ var CreateProposalComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.productService.searchProduct5()];
                     case 1:
                         _a.allProducts = _b.sent();
+                        this.allProducts = this.allProducts.sort(function (a, b) { return b.inventory - a.inventory; });
                         _b.label = 2;
                     case 2:
                         // this.toasterService.success('Tüm Ürünler Getirildi')

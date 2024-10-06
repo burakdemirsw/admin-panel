@@ -408,6 +408,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         this.toasterService.success(this.shelfNo + ' Rafına Yapılacak Transferler Getirildi');
                         //toplanacak ürünler atandı
                         this.__transferProducts = response;
+                        this.__transferProducts = this.__transferProducts.sort(function (a, b) { return b.inventory - a.inventory; });
                         if (this.deletedProductList.length > 0) {
                             this.deletedProductList.forEach(function (deletedItem) {
                                 _this.__transferProducts.forEach(function (inventoryItem, _index) {

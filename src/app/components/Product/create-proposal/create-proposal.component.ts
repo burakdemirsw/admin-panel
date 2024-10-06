@@ -240,7 +240,7 @@ export class CreateProposalComponent implements OnInit {
   async getAllProducts(showDialog: boolean) {
     if (this.allProducts.length == 0) {
       this.allProducts = await this.productService.searchProduct5();
-
+      this.allProducts = this.allProducts.sort((a, b) => b.inventory - a.inventory)
     }
     // this.toasterService.success('Tüm Ürünler Getirildi')
     this.mapProducts(this.allProducts);

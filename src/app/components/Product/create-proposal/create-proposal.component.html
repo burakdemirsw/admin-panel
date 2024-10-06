@@ -307,12 +307,7 @@
             <th pSortableColumn="description">
               Ürün <p-sortIcon field="description"></p-sortIcon>
             </th>
-            <th pSortableColumn="attribute1">
-              Özellik 1 <p-sortIcon field="attribute1"></p-sortIcon>
-            </th>
-            <th pSortableColumn="attribute2">
-              Özellik 2 <p-sortIcon field="attribute2"></p-sortIcon>
-            </th>
+
             <th pSortableColumn="productHierarchyLevel01">
               Ürün Hiyerarşisi 1 <p-sortIcon field="productHierarchyLevel01"></p-sortIcon>
             </th>
@@ -321,6 +316,12 @@
             </th>
             <th pSortableColumn="productHierarchyLevel03">
               Ürün Hiyerarşisi 3 <p-sortIcon field="productHierarchyLevel03"></p-sortIcon>
+            </th>
+            <th pSortableColumn="attribute1">
+              Özellik 1 <p-sortIcon field="attribute1"></p-sortIcon>
+            </th>
+            <th pSortableColumn="attribute2">
+              Özellik 2 <p-sortIcon field="attribute2"></p-sortIcon>
             </th>
             <th pSortableColumn="speed">
               Hız <p-sortIcon field="speed"></p-sortIcon>
@@ -381,30 +382,6 @@
                 </ng-template>
               </p-columnFilter>
             </th>
-            <th>
-              <p-columnFilter field="attribute1" matchMode="equals" [showMenu]="false">
-                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                  <p-dropdown [options]="attribute1s" (onChange)="filter($event.value)" placeholder="Seçiniz"
-                    [showClear]="true" filter="true" filterBy="label">
-                    <ng-template let-option pTemplate="item">
-                      <span class="ml-1 mt-1">{{ option.label }}</span>
-                    </ng-template>
-                  </p-dropdown>
-                </ng-template>
-              </p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter field="attribute2" matchMode="equals" [showMenu]="false">
-                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                  <p-dropdown [options]="attribute2s" (onChange)="filter($event.value)" placeholder="Seçiniz"
-                    [showClear]="true" filter="true" filterBy="label">
-                    <ng-template let-option pTemplate="item">
-                      <span class="ml-1 mt-1">{{ option.label }}</span>
-                    </ng-template>
-                  </p-dropdown>
-                </ng-template>
-              </p-columnFilter>
-            </th>
 
             <th>
               <p-columnFilter field="productHierarchyLevel01" matchMode="equals" [showMenu]="false">
@@ -445,6 +422,31 @@
               </p-columnFilter>
             </th>
             <th>
+              <p-columnFilter field="attribute1" matchMode="equals" [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown [options]="attribute1s" (onChange)="filter($event.value)" placeholder="Seçiniz"
+                    [showClear]="true" filter="true" filterBy="label">
+                    <ng-template let-option pTemplate="item">
+                      <span class="ml-1 mt-1">{{ option.label }}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter field="attribute2" matchMode="equals" [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown [options]="attribute2s" (onChange)="filter($event.value)" placeholder="Seçiniz"
+                    [showClear]="true" filter="true" filterBy="label">
+                    <ng-template let-option pTemplate="item">
+                      <span class="ml-1 mt-1">{{ option.label }}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+
+            <th>
               <p-columnFilter type="numeric" field="speed" [showClearButton]="false"></p-columnFilter>
             </th>
             <th>
@@ -470,11 +472,12 @@
             <td>{{ product.brand }}</td>
             <td>{{ product.itemCode }}</td>
             <td>{{ product.description }}</td>
-            <td>{{ product.attribute1 }}</td>
-            <td>{{ product.attribute2 }}</td>
+
             <td>{{ product.productHierarchyLevel01 }}</td>
             <td>{{ product.productHierarchyLevel02 }}</td>
             <td>{{ product.productHierarchyLevel03 }}</td>
+            <td>{{ product.attribute1 }}</td>
+            <td>{{ product.attribute2 }}</td>
             <td>{{ product.speed }}</td>
             <td>{{ product.inventory }}</td>
             <td>{{ product.price }}</td>

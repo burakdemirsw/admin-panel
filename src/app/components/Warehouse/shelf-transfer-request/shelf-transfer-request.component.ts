@@ -317,6 +317,8 @@ export class ShelfTransferRequestComponent implements OnInit {
 
     //toplanacak ürünler atandı
     this.__transferProducts = response;
+    this.__transferProducts = this.__transferProducts.sort((a, b) => b.inventory - a.inventory)
+
     if (this.deletedProductList.length > 0) {
       this.deletedProductList.forEach((deletedItem) => {
         this.__transferProducts.forEach((inventoryItem, _index) => {
