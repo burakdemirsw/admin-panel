@@ -81,29 +81,29 @@ export class AddProductToShelfListComponent {
       }
     });
     if (this.innerProcessCode == "CI") {
-      this.items = [
-        {
-          label: 'Yeni Sayım Ekle',
-          command: () => {
-            this.route('CI')
-          }
-        },
-        {
-          label: 'Yeni Sayım Çıkar',
-          command: () => {
-            this.route('CO')
-          }
-        }
-      ];
+      // this.items = [
+      //   {
+      //     label: 'Yeni Sayım Ekle',
+      //     command: () => {
+      //       this.route('CI')
+      //     }
+      //   },
+      //   {
+      //     label: 'Yeni Sayım Çıkar',
+      //     command: () => {
+      //       this.route('CO')
+      //     }
+      //   }
+      // ];
       if (localStorage.getItem('userId') == "1") {
         this.items.push({
-          label: 'Yeni Rafsız Sayım Ekle',
+          label: 'Yeni  Sayım Ekle',
           command: () => {
             this.route('CI', false, false)
           }
         },
           {
-            label: 'Yeni Rafsız Sayım Çıkar',
+            label: 'Yeni  Sayım Çıkar',
             command: () => {
               this.route('CO', false, false)
             }
@@ -160,30 +160,30 @@ export class AddProductToShelfListComponent {
       this.headerService.updatePageTitle("Sayım");
     } else if (this.innerProcessCode == "WT" || this.innerProcessCode == "WT-O") {
 
-      this.items = [
-        {
-          label: 'Mağaza Depoları Arası Transfer OLuştur',
-          command: () => {
-            this.route("WT")
-          }
-        },
-        {
-          label: 'Ofis Depoları Arası Transfer OLuştur',
-          command: () => {
-            this.route("WT-O", true)
-          }
-        }
-      ];
+      // this.items = [
+      //   {
+      //     label: 'Mağaza Depoları Arası Transfer OLuştur',
+      //     command: () => {
+      //       this.route("WT")
+      //     }
+      //   },
+      //   {
+      //     label: 'Ofis Depoları Arası Transfer OLuştur',
+      //     command: () => {
+      //       this.route("WT-O", true)
+      //     }
+      //   }
+      // ];
 
       if (localStorage.getItem('userId') == "1") {
         this.items.push({
-          label: 'Rafsız Mağaza Depoları Arası Transfer Oluştur',
+          label: ' Mağaza Depoları Arası Transfer Oluştur',
           command: () => {
             this.route("WT", false, false)
           }
         },
           {
-            label: 'Rafsız Ofis Depoları Arası Transfer OLuştur',
+            label: ' Ofis Depoları Arası Transfer OLuştur',
             command: () => {
               this.route("WT-O", true, false)
             }
