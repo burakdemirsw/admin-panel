@@ -77,6 +77,7 @@ import { TaskPanelComponent } from './components/Devolopment/devolopment-list/ta
 import { UntransferredOrdersComponent } from './components/marketplace/transferred-orders/untransferred-orders/untransferred-orders.component';
 import { CreateWarehouseProcessComponent } from './components/Warehouse/warehouse-operation/create-warehouse-process/create-warehouse-process.component';
 import { RaportComponent } from './components/raport/raport/raport.component';
+import { CollectProcessComponent } from './components/Order/order-operation/collect-process/collect-process.component';
 
 
 const routes: Routes = [
@@ -385,6 +386,8 @@ const routes: Routes = [
 
   { path: 'add-product-to-shelf/:innerProcessCode/:isCompleted', component: AddProductToShelfComponent },
   { path: 'inner-list/:innerProcessCode', component: AddProductToShelfListComponent },
+  { path: 'collect-process/:applicationCode/:processCode/:innerNumber/:id', component: CollectProcessComponent },
+  { path: 'collect-process/:applicationCode/:processCode/:innerNumber', component: CollectProcessComponent },
 
   //-------------------------------------------------------------------------
   { path: '**', component: PagesError404Component },

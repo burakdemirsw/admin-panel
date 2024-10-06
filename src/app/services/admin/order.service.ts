@@ -159,7 +159,7 @@ export class OrderService {
     } else if (orderNoType === 'WT' || orderNoType === 'S') {
       endpoint = 'Warehouse/GetWarehouseOperationDetail/'; //Usp_GETTransferOnayla
     } else if (orderNoType === 'WS' || orderNoType === 'R') {
-      endpoint = 'Order/GetOrderSaleDetail/'; //GET_MSRAFSalesOrderDetail
+      endpoint = 'Order/GetOrderSaleDetail/'; // GET_MSRAFSalesOrderDetail
     } else if (orderNoType === 'MIS') {
       endpoint = 'Order/get-missing-products-of-order/'; //GET_MSRAFOrderListMissing
     } else if (orderNoType.includes('ES')) {

@@ -87,7 +87,6 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
           this.applicationCode = "Invoice";
           this.invoice_bp_formGenerator();
           await this.getWarehouseAndOffices();
-
           await this.getCustomerList('1'); //Tedarikçileri Çeker
         } else if (this.processCode == "WS" && this.processType == "proposal") {//teklif paneli
           this.headerService.updatePageTitle('Toptan Satış Teklif Oluştur');
