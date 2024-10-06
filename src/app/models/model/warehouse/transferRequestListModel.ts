@@ -24,5 +24,8 @@ export class FastTransfer_VM {
   photoUrl: string;
   price: string;
   description;
-
+  attribute1: string;
+  attribute2: string;
+  currencyCode: string;
+  batchCode: string;
 }

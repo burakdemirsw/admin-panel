@@ -52,6 +52,7 @@ var proposalProduct_1 = require("src/app/models/model/product/proposalProduct");
 var product_service_1 = require("src/app/services/admin/product.service");
 var CreateProposalComponent = /** @class */ (function () {
     function CreateProposalComponent(headerService, toasterService, activatedRoute, router, generalService, googleDriveService, productService, formBuilder, orderService, addressService) {
+        var _this = this;
         this.headerService = headerService;
         this.toasterService = toasterService;
         this.activatedRoute = activatedRoute;
@@ -62,6 +63,14 @@ var CreateProposalComponent = /** @class */ (function () {
         this.formBuilder = formBuilder;
         this.orderService = orderService;
         this.addressService = addressService;
+        this.items = [
+            {
+                label: 'Filtrelenenleri Aktar',
+                command: function () {
+                    _this.addProduct_Toplu();
+                }
+            }
+        ];
         this.selectedCustomers = [];
         this.selectedProducts = [];
         this.selectedAddresses = [];
@@ -89,9 +98,12 @@ var CreateProposalComponent = /** @class */ (function () {
         this.productHierarchyLevel01s = [];
         this.productHierarchyLevel02s = [];
         this.productHierarchyLevel03s = [];
+        this.attribute1s = [];
+        this.attribute2s = [];
         this.allProducts = [];
         this.addedProducts = [];
         this.proposal = new proposalProduct_1.ZTMSG_Proposal();
+        this.lastFilteredData = [];
         this.currentDiscountRate = 0;
         this.selectedSize = '';
         this.currentCashdiscountRate = 0;
@@ -257,6 +269,7 @@ var CreateProposalComponent = /** @class */ (function () {
     CreateProposalComponent.prototype.logFilteredData = function (event) {
         try {
             if (event.filteredValue) {
+                this.lastFilteredData = event.filteredValue;
                 console.log('Filtered data:', event.filteredValue);
                 var list = event.filteredValue;
                 this.mapProducts(list);
@@ -308,6 +321,8 @@ var CreateProposalComponent = /** @class */ (function () {
         this.productHierarchyLevel01s = uniqueMap(data, 'productHierarchyLevel01');
         this.productHierarchyLevel02s = uniqueMap(data, 'productHierarchyLevel02');
         this.productHierarchyLevel03s = uniqueMap(data, 'productHierarchyLevel03');
+        this.attribute1s = uniqueMap(data, 'attribute1');
+        this.attribute2s = uniqueMap(data, 'attribute2');
     };
     CreateProposalComponent.prototype.addProposal = function () {
         var _a;
@@ -394,12 +409,43 @@ var CreateProposalComponent = /** @class */ (function () {
             });
         });
     };
+    CreateProposalComponent.prototype.addProduct_Toplu = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _i, _a, p, error_2;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 5, , 6]);
+                        console.log(this.lastFilteredData);
+                        _i = 0, _a = this.lastFilteredData;
+                        _b.label = 1;
+                    case 1:
+                        if (!(_i < _a.length)) return [3 /*break*/, 4];
+                        p = _a[_i];
+                        return [4 /*yield*/, this.addProduct(p)];
+                    case 2:
+                        _b.sent();
+                        _b.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        error_2 = _b.sent();
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
     CreateProposalComponent.prototype.addProduct = function (product) {
         return __awaiter(this, void 0, void 0, function () {
-            var state, request, productDetail, proposalProduct, taxed_price, response;
+            var _product, priceWS, state, request, productDetail, proposalProduct, taxed_price, response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        _product = Object.assign({}, product);
+                        priceWS = product.price;
                         if (!!this.proposalId) return [3 /*break*/, 2];
                         state = true;
                         return [4 /*yield*/, this.addProposal()];
@@ -415,19 +461,20 @@ var CreateProposalComponent = /** @class */ (function () {
                     case 4:
                         productDetail = _a.sent();
                         if (!productDetail) return [3 /*break*/, 6];
-                        product.price = productDetail[0].basePrice;
+                        _product.price = productDetail[0].basePrice;
                         proposalProduct = new proposalProduct_1.ZTMSG_ProposalProduct();
-                        proposalProduct.id = 0; // Varsayılan bir değer, ya da uygun bir değer belirleyin
-                        proposalProduct.proposalId = this.proposalId; // Uygun bir GUID değeri be  lirleyin
-                        proposalProduct.photoUrl = product.photoUrl;
-                        proposalProduct.barcode = product.barcode;
-                        proposalProduct.itemCode = product.itemCode;
+                        proposalProduct.id = 0;
+                        proposalProduct.proposalId = this.proposalId;
+                        proposalProduct.photoUrl = _product.photoUrl;
+                        proposalProduct.barcode = _product.barcode;
+                        proposalProduct.itemCode = _product.itemCode;
                         proposalProduct.quantity = 1;
-                        proposalProduct.brand = product.brand;
-                        proposalProduct.inventory = product.inventory;
-                        proposalProduct.price = product.price ? parseFloat(product.price) : null;
-                        proposalProduct.discountedPrice = product.price ? parseFloat(product.price) : null;
-                        proposalProduct.description = product.description;
+                        proposalProduct.brand = _product.brand;
+                        proposalProduct.inventory = _product.inventory;
+                        proposalProduct.priceWs = Number(priceWS.replace(',', '.')).toFixed(2) + " " + _product.currencyCode;
+                        proposalProduct.price = _product.price ? parseFloat(_product.price) : null;
+                        proposalProduct.discountedPrice = _product.price ? parseFloat(_product.price) : null;
+                        proposalProduct.description = _product.description;
                         proposalProduct.discountRate1 = 0;
                         proposalProduct.discountRate2 = 0;
                         proposalProduct.taxRate = productDetail[0].taxRate;

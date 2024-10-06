@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OverlayOptions } from 'primeng/api';
+import { MenuItem, OverlayOptions } from 'primeng/api';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
 import { CountProductRequestModel } from 'src/app/models/model/order/countProductRequestModel';
@@ -118,6 +118,16 @@ export class ShelfTransferRequestComponent implements OnInit {
   ];
 
   currentPageType: string;
+  items: MenuItem[] = [
+    {
+      label: 'Filtrelenenleri Aktar',
+      command: () => {
+        this.addProduct_Toplu();
+      }
+    }
+  ];
+
+
   async ngOnInit() {
     this.title.setTitle('Raf Aktarma İsteği');
     this.headerService.updatePageTitle('Raf Aktarma İsteği');
@@ -420,6 +430,8 @@ export class ShelfTransferRequestComponent implements OnInit {
     this.productHierarchyLevel01s = uniqueMap(this.__transferProducts, 'productHierarchyLevel01');
     this.productHierarchyLevel02s = uniqueMap(this.__transferProducts, 'productHierarchyLevel02');
     this.productHierarchyLevel03s = uniqueMap(this.__transferProducts, 'productHierarchyLevel03');
+    this.attribute1s = uniqueMap(data, 'attribute1');
+    this.attribute2s = uniqueMap(data, 'attribute2');
 
   }
 
@@ -431,12 +443,16 @@ export class ShelfTransferRequestComponent implements OnInit {
   productHierarchyLevel01s: any[] = []
   productHierarchyLevel02s: any[] = []
   productHierarchyLevel03s: any[] = []
+  attribute1s: any[] = []
+  attribute2s: any[] = []
   //tablo filtrelendiğinde en üstte kalanı üste atar
+  lastFilteredData: any[] = [];
   logFilteredData(event: any) {
 
     try {
-      if (event.filteredValue) {
-        console.log('Filtered data:', event.filteredValue);
+      if (event.filteredValue.length > 0) {
+        // console.log('Filtered data:', event.filteredValue);
+        this.lastFilteredData = event.filteredValue;
         var list: FastTransfer_VM[] = event.filteredValue;
         this.lastCollectedProduct = null;
         this._transferProducts = [list[0]];
@@ -701,19 +717,40 @@ export class ShelfTransferRequestComponent implements OnInit {
   }
 
 
+  async addProduct_Toplu() {
+
+    try {
+      console.log(this.lastFilteredData);
+      for (var p of this.lastFilteredData) {
+        await this.addProduct(p);
+
+        this.clearForm();
+      }
+      await this.getTransferRequestListModel(
+        this.selectedButton.toString()
+      );
+    } catch (error) {
+
+    }
+
+  }
   async addProduct(product) {
 
     //sladkaslşdkaşld
-    var response = await this.productService.searchProduct3(product.barcode, null, product.shelfNo);
-    if (response) {
+    // var response = await this.productService.searchProduct3(product.barcode, null, product.shelfNo);
+    if (true) {
       this.checkForm.get('barcode').setValue(product.itemCode.toUpperCase());
       this.checkForm.get('shelfNo').setValue(product.shelfNo.toUpperCase());
       this.checkForm.get('targetShelfNo').setValue(product.targetShelf.toUpperCase());
       this.checkForm.get('quantity').setValue(product.transferQuantity);
-      this.checkForm.get('batchCode').setValue(response[0].batchCode);
+      this.checkForm.get('batchCode').setValue(product.batchCode);
 
       if (this.checkForm.valid) {
-        await this.onSubmit(this.checkForm.value);
+
+        var request: FastTransferModel2 = this.checkForm.value;
+        request.operationId = this.currentOrderNo;
+        var response = await this.addFastTransferModel(request);
+        // await this.onSubmit(this.checkForm.value);
       } else {
         this.toasterService.error("Form Geçerli Değil")
       }
@@ -792,7 +829,7 @@ export class ShelfTransferRequestComponent implements OnInit {
   }
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
-  async onSubmit(transferModel: FastTransferModel2): Promise<any> {
+  async onSubmit(transferModel: FastTransferModel2, check?: boolean): Promise<any> {
     var uuuid = await this.generalService.generateGUID()
 
     if (transferModel.barcode.includes('=')) {
@@ -821,7 +858,7 @@ export class ShelfTransferRequestComponent implements OnInit {
     if (this.checkForm.valid === true) {
       transferModel = await this.setCheckBarcode(transferModel);
       transferModel.operationId = this.currentOrderNo;
-      console.log(this.shelfNumbers);
+
       if (this.shelfNumbers == undefined || this.shelfNumbers == null || this.shelfNumbers == "RAFLAR:") {
         var result: string[] = await this.productService.countProductByBarcode(
           transferModel.barcode);

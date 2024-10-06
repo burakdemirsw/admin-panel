@@ -89,6 +89,9 @@
               <th pSortableColumn="quantity">
                 Miktar <p-sortIcon field="quantity"></p-sortIcon>
               </th>
+              <th pSortableColumn="priceWs">
+                Toptan Fiyat <p-sortIcon field="priceWs"></p-sortIcon>
+              </th>
               <th pSortableColumn="price">
                 Fiyat <p-sortIcon field="price"></p-sortIcon>
               </th>
@@ -136,9 +139,10 @@
 
               <td>{{ product.itemCode }}</td>
 
-              <td class="scrollable-td">{{ product.description.substring(0,15) }}</td>
+              <td>{{ product.description }}</td>
 
               <td style="cursor: pointer;" (click)="openUpdateDialog(product)">{{ product.quantity }} </td>
+              <td style="cursor: pointer;" (click)="openUpdateDialog(product)">{{ product.priceWs }}</td>
               <td style="cursor: pointer;" (click)="openUpdateDialog(product)">{{ product.price }}</td>
 
               <td style="cursor: pointer;" (click)="openUpdateDialog(product)">{{ product.discountRate1 }}</td>
@@ -275,10 +279,12 @@
     <p-dialog header="Bulunan Ürünler" [(visible)]="findProductDialog" [style]="{ width: '100vw' ,minheight : '100vw'}"
       modal="true">
       <p-table #dt01 [styleClass]="'p-datatable-striped'" [value]="allProducts" [paginator]="true" [rows]="10"
-        [globalFilterFields]="['description','itemCode','brand','productHierarchyLevel01','productHierarchyLevel02','productHierarchyLevel03']"
+        [globalFilterFields]="['description','itemCode','brand','productHierarchyLevel01','productHierarchyLevel02','productHierarchyLevel03','attribute1','attribute2']"
         (onFilter)="logFilteredData($event)" [tableStyle]="{ 'min-width': '50rem' , 'minheight' : '100vw' }">
 
         <ng-template pTemplate="caption">
+          <p-splitButton label="İşlemler" [model]="items" appendTo="body" />
+          <div class="mb-3"> </div>
           <div class="flex">
             <p-iconField iconPosition="left" class="ml-auto">
               <input pInputText type="text" (input)="dt01.filterGlobal($any($event).target.value, 'contains')"
@@ -301,6 +307,12 @@
             <th pSortableColumn="description">
               Ürün <p-sortIcon field="description"></p-sortIcon>
             </th>
+            <th pSortableColumn="attribute1">
+              Özellik 1 <p-sortIcon field="attribute1"></p-sortIcon>
+            </th>
+            <th pSortableColumn="attribute2">
+              Özellik 2 <p-sortIcon field="attribute2"></p-sortIcon>
+            </th>
             <th pSortableColumn="productHierarchyLevel01">
               Ürün Hiyerarşisi 1 <p-sortIcon field="productHierarchyLevel01"></p-sortIcon>
             </th>
@@ -318,6 +330,9 @@
             </th>
             <th pSortableColumn="price">
               Fiyat <p-sortIcon field="price"></p-sortIcon>
+            </th>
+            <th pSortableColumn="currencyCode">
+              Para Birimi <p-sortIcon field="currencyCode"></p-sortIcon>
             </th>
             <th>
               İşlemler
@@ -367,6 +382,31 @@
               </p-columnFilter>
             </th>
             <th>
+              <p-columnFilter field="attribute1" matchMode="equals" [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown [options]="attribute1s" (onChange)="filter($event.value)" placeholder="Seçiniz"
+                    [showClear]="true" filter="true" filterBy="label">
+                    <ng-template let-option pTemplate="item">
+                      <span class="ml-1 mt-1">{{ option.label }}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter field="attribute2" matchMode="equals" [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown [options]="attribute2s" (onChange)="filter($event.value)" placeholder="Seçiniz"
+                    [showClear]="true" filter="true" filterBy="label">
+                    <ng-template let-option pTemplate="item">
+                      <span class="ml-1 mt-1">{{ option.label }}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+
+            <th>
               <p-columnFilter field="productHierarchyLevel01" matchMode="equals" [showMenu]="false">
                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                   <p-dropdown [options]="productHierarchyLevel01s" (onChange)="filter($event.value)"
@@ -410,10 +450,13 @@
             <th>
               <p-columnFilter type="numeric" field="inventory" [showClearButton]="false"></p-columnFilter>
             </th>
+
             <th>
               <p-columnFilter type="numeric" field="price" [showClearButton]="false"></p-columnFilter>
             </th>
-
+            <th>
+              <p-columnFilter type="text" field="currencyCode" [showClearButton]="false"></p-columnFilter>
+            </th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-product>
@@ -425,16 +468,17 @@
               </p-image>
             </td>
             <td>{{ product.brand }}</td>
-
             <td>{{ product.itemCode }}</td>
-
-            <td class="scrollable-td">{{ product.description }}</td>
+            <td>{{ product.description }}</td>
+            <td>{{ product.attribute1 }}</td>
+            <td>{{ product.attribute2 }}</td>
             <td>{{ product.productHierarchyLevel01 }}</td>
             <td>{{ product.productHierarchyLevel02 }}</td>
             <td>{{ product.productHierarchyLevel03 }}</td>
             <td>{{ product.speed }}</td>
             <td>{{ product.inventory }}</td>
             <td>{{ product.price }}</td>
+            <td>{{ product.currencyCode }}</td>
             <td>
               <button btn icon="pi pi-plus" type="button" class="btn btn-primary" (click)="addProduct(product)"><i
                   class="fa fa-plus" aria-hidden="true"></i></button>

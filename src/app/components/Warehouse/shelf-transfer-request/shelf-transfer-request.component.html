@@ -18,7 +18,7 @@
           <div class="card-body">
             <h1 class="card-title">Toplanacak Ürünler Alanı</h1>
             <div class="table-responsive">
-              <p-table [value]="_transferProducts.slice(0, 1)" [tableStyle]="{'min-width': '50rem'}"
+              <p-table #col_tb [value]="_transferProducts.slice(0, 1)" [tableStyle]="{'min-width': '50rem'}"
                 [responsiveLayout]="'scroll'">
                 <ng-template pTemplate="header">
                   <tr>
@@ -392,6 +392,7 @@
             [tableStyle]="{ 'min-width': '50rem' }" (onFilter)="logFilteredData($event)">
 
             <ng-template pTemplate="caption">
+              <p-splitButton label="İşlemler" [model]="items" appendTo="body" />
               <div class="flex align-items-center justify-content-between">
                 Toplanacak Ürünler
               </div>
@@ -427,6 +428,13 @@
                   </th> -->
                 <th pSortableColumn="description">
                   Ürün <p-sortIcon field="description"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="attribute1">
+                  Özellik 1 <p-sortIcon field="attribute1"></p-sortIcon>
+                </th>
+                <th pSortableColumn="attribute2">
+                  Özellik 2 <p-sortIcon field="attribute2"></p-sortIcon>
                 </th>
                 <th pSortableColumn="productHierarchyLevel01">
                   Ürün Hiyerarşisi 1 <p-sortIcon field="productHierarchyLevel01"></p-sortIcon>
@@ -524,6 +532,35 @@
                     </ng-template>
                   </p-columnFilter>
                 </th>
+
+                <th>
+                  <p-columnFilter field="attribute1" matchMode="equals" [showMenu]="false">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <p-dropdown [options]="attribute1s" (onChange)="filter($event.value)" placeholder="Seçiniz"
+                        [showClear]="true" filter="true" filterBy="label">
+                        <ng-template let-option pTemplate="item">
+                          <span class="ml-1 mt-1">{{ option.label }}</span>
+                        </ng-template>
+                      </p-dropdown>
+                    </ng-template>
+                  </p-columnFilter>
+                </th>
+                <th>
+                  <p-columnFilter field="attribute2" matchMode="equals" [showMenu]="false">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <p-dropdown [options]="attribute2s" (onChange)="filter($event.value)" placeholder="Seçiniz"
+                        [showClear]="true" filter="true" filterBy="label">
+                        <ng-template let-option pTemplate="item">
+                          <span class="ml-1 mt-1">{{ option.label }}</span>
+                        </ng-template>
+                      </p-dropdown>
+                    </ng-template>
+                  </p-columnFilter>
+                </th>
+
+                <th>
+
+
                 <th>
                   <p-columnFilter field="productHierarchyLevel01" matchMode="equals" [showMenu]="false">
                     <ng-template pTemplate="filter" let-value let-filter="filterCallback">
@@ -594,6 +631,8 @@
                 <td>{{ product.targetShelf }}</td>
                 <!-- <td>{{ product.quantity }}</td> -->
                 <td class="scrollable-td">{{ product.description }}</td>
+                <td>{{ product.attribute1 }}</td>
+                <td>{{ product.attribute2 }}</td>
                 <td>{{ product.productHierarchyLevel01 }}</td>
                 <td>{{ product.productHierarchyLevel02 }}</td>
                 <td>{{ product.productHierarchyLevel03 }}</td>

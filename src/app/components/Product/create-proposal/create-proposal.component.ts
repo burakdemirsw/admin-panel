@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MenuItem } from 'primeng/api';
 import { Dropdown } from 'primeng/dropdown';
 import { SubCustomerList_VM } from 'src/app/models/model/customer/subCustomerList_VM';
 import { CreateCustomer_CM } from 'src/app/models/model/order/createCustomer_CM';
@@ -28,7 +29,14 @@ import { ToasterService } from 'src/app/services/ui/toaster.service';
 export class CreateProposalComponent implements OnInit {
 
 
-
+  items: MenuItem[] = [
+    {
+      label: 'Filtrelenenleri Aktar',
+      command: () => {
+        this.addProduct_Toplu();
+      }
+    }
+  ];
   [x: string]: any;
   @ViewChild('fileInput') fileInput: ElementRef;
   selectedCustomers: CustomerList_VM[] = []
@@ -68,6 +76,8 @@ export class CreateProposalComponent implements OnInit {
     private orderService: OrderService,
     private addressService: AddressService
   ) { }
+
+
 
   async ngOnInit() {
     this.createUpdateProductForm()
@@ -205,12 +215,15 @@ export class CreateProposalComponent implements OnInit {
   productHierarchyLevel01s: any[] = []
   productHierarchyLevel02s: any[] = []
   productHierarchyLevel03s: any[] = []
+  attribute1s: any[] = []
+  attribute2s: any[] = []
   allProducts: FastTransfer_VM[] = [];
 
   logFilteredData(event: any) {
 
     try {
       if (event.filteredValue) {
+        this.lastFilteredData = event.filteredValue
         console.log('Filtered data:', event.filteredValue);
         var list: FastTransfer_VM[] = event.filteredValue;
         this.mapProducts(list)
@@ -256,6 +269,9 @@ export class CreateProposalComponent implements OnInit {
     this.productHierarchyLevel01s = uniqueMap(data, 'productHierarchyLevel01');
     this.productHierarchyLevel02s = uniqueMap(data, 'productHierarchyLevel02');
     this.productHierarchyLevel03s = uniqueMap(data, 'productHierarchyLevel03');
+    this.attribute1s = uniqueMap(data, 'attribute1');
+    this.attribute2s = uniqueMap(data, 'attribute2');
+
   }
 
   addedProducts: ZTMSG_ProposalProduct[] = []
@@ -316,10 +332,23 @@ export class CreateProposalComponent implements OnInit {
       this.toasterService.error('Güncelleştirilemedi')
     }
   }
+  lastFilteredData: any[] = [];
+  async addProduct_Toplu() {
+    try {
+      console.log(this.lastFilteredData);
+      for (var p of this.lastFilteredData) {
+        await this.addProduct(p);
+      }
+
+    } catch (error) {
+
+    }
+  }
   async addProduct(product: FastTransfer_VM) {
     //toptan fiyat ve tr giyat alıncak
     //buradada db ye ekle sonra çek
-
+    var _product = Object.assign({}, product);
+    var priceWS = product.price;
     var state: boolean;
     if (!this.proposalId) {
       state = true;
@@ -330,19 +359,23 @@ export class CreateProposalComponent implements OnInit {
     var request: BarcodeSearch_RM = new BarcodeSearch_RM(product.barcode);
     const productDetail = await this.productService.searchProduct(request);
     if (productDetail) {
-      product.price = productDetail[0].basePrice;
+
+
+      _product.price = productDetail[0].basePrice;
       const proposalProduct = new ZTMSG_ProposalProduct();
-      proposalProduct.id = 0; // Varsayılan bir değer, ya da uygun bir değer belirleyin
-      proposalProduct.proposalId = this.proposalId; // Uygun bir GUID değeri be  lirleyin
-      proposalProduct.photoUrl = product.photoUrl;
-      proposalProduct.barcode = product.barcode;
-      proposalProduct.itemCode = product.itemCode;
+      proposalProduct.id = 0;
+      proposalProduct.proposalId = this.proposalId;
+      proposalProduct.photoUrl = _product.photoUrl;
+      proposalProduct.barcode = _product.barcode;
+      proposalProduct.itemCode = _product.itemCode;
       proposalProduct.quantity = 1;
-      proposalProduct.brand = product.brand;
-      proposalProduct.inventory = product.inventory;
-      proposalProduct.price = product.price ? parseFloat(product.price) : null;
-      proposalProduct.discountedPrice = product.price ? parseFloat(product.price) : null;
-      proposalProduct.description = product.description;
+      proposalProduct.brand = _product.brand;
+      proposalProduct.inventory = _product.inventory;
+      proposalProduct.priceWs = Number(priceWS.replace(',', '.')).toFixed(2) + " " + _product.currencyCode;
+      proposalProduct.price = _product.price ? parseFloat(_product.price) : null;
+
+      proposalProduct.discountedPrice = _product.price ? parseFloat(_product.price) : null;
+      proposalProduct.description = _product.description;
       proposalProduct.discountRate1 = 0;
       proposalProduct.discountRate2 = 0;
 

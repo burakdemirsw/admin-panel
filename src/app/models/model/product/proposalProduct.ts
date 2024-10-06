@@ -8,6 +8,7 @@ export class ZTMSG_ProposalProduct {
   brand?: string;
   inventory: number;
   price?: number;
+  priceWs: string;
   discountedPrice?: number;
   description?: string;
   discountRate1: number;
