@@ -95,21 +95,18 @@ export class AddProductToShelfListComponent {
       //     }
       //   }
       // ];
-      if (localStorage.getItem('userId') == "1") {
-        this.items.push({
-          label: 'Yeni  Sayım Ekle',
+      this.items.push({
+        label: 'Yeni  Sayım Ekle',
+        command: () => {
+          this.route('CI', false, false)
+        }
+      },
+        {
+          label: 'Yeni  Sayım Çıkar',
           command: () => {
-            this.route('CI', false, false)
+            this.route('CO', false, false)
           }
-        },
-          {
-            label: 'Yeni  Sayım Çıkar',
-            command: () => {
-              this.route('CO', false, false)
-            }
-          })
-      }
-
+        })
       this.headerService.updatePageTitle("Rafa Ürün Ekle");
       var request: string[] = ["CI", "CO"];
       await this.getGetCountList(request);
@@ -128,21 +125,18 @@ export class AddProductToShelfListComponent {
           }
         }
       ];
-
-      if (localStorage.getItem('userId') == "1") {
-        this.items.push({
-          label: 'Yeni Rafsız Sayım Ekle',
+      this.items.push({
+        label: 'Yeni Rafsız Sayım Ekle',
+        command: () => {
+          this.route('CI', false, false)
+        }
+      },
+        {
+          label: 'Yeni Rafsız Sayım Çıkar',
           command: () => {
-            this.route('CI', false, false)
+            this.route('CO', false, false)
           }
-        },
-          {
-            label: 'Yeni Rafsız Sayım Çıkar',
-            command: () => {
-              this.route('CO', false, false)
-            }
-          })
-      }
+        })
       var request: string[] = ["CI", "CO"];
       await this.getGetCountList(request);
       this.headerService.updatePageTitle("Raftan Ürün Çıkar");
@@ -174,21 +168,18 @@ export class AddProductToShelfListComponent {
       //     }
       //   }
       // ];
-
-      if (localStorage.getItem('userId') == "1") {
-        this.items.push({
-          label: ' Mağaza Depoları Arası Transfer Oluştur',
+      this.items.push({
+        label: ' Mağaza Depoları Arası Transfer Oluştur',
+        command: () => {
+          this.route("WT", false, false)
+        }
+      },
+        {
+          label: ' Ofis Depoları Arası Transfer OLuştur',
           command: () => {
-            this.route("WT", false, false)
+            this.route("WT-O", true, false)
           }
-        },
-          {
-            label: ' Ofis Depoları Arası Transfer OLuştur',
-            command: () => {
-              this.route("WT-O", true, false)
-            }
-          })
-      }
+        })
       var request: string[] = ["WT"];
       await this.getGetCountList(request);
       this.headerService.updatePageTitle("Mağazanın Depoları Arası Transfer");
@@ -207,20 +198,18 @@ export class AddProductToShelfListComponent {
           }
         }
       ];
-      if (localStorage.getItem('userId') == "1") {
-        this.items.push({
-          label: 'Yeni Rafsız Mağaza Transfer İrsaliyesi Oluştur',
+      this.items.push({
+        label: 'Yeni Rafsız Mağaza Transfer İrsaliyesi Oluştur',
+        command: () => {
+          this.route(this.innerProcessCode, false, false)
+        }
+      },
+        {
+          label: 'Yeni Rafsız Merkeze İade Oluştur',
           command: () => {
-            this.route(this.innerProcessCode, false, false)
+            this.route(this.innerProcessCode, true, false)
           }
-        },
-          {
-            label: 'Yeni Rafsız Merkeze İade Oluştur',
-            command: () => {
-              this.route(this.innerProcessCode, true, false)
-            }
-          })
-      }
+        })
 
       var request: string[] = ["S"];
       await this.getGetCountList(request);
