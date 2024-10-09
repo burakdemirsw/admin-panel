@@ -751,7 +751,11 @@ export class ShelfTransferRequestComponent implements OnInit {
 
         var request: FastTransferModel2 = this.checkForm.value;
         request.operationId = this.currentOrderNo;
+        request.processType = this.selectedButton;
         var response = await this.addFastTransferModel(request);
+        await this.getTransferRequestListModel(
+          this.selectedButton.toString()
+        );
         // await this.onSubmit(this.checkForm.value);
       } else {
         this.toasterService.error("Form Geçerli Değil")
@@ -832,6 +836,7 @@ export class ShelfTransferRequestComponent implements OnInit {
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
   async onSubmit(transferModel: FastTransferModel2, check?: boolean): Promise<any> {
+    transferModel.processType = this.selectedButton;
     var uuuid = await this.generalService.generateGUID()
 
     if (transferModel.barcode.includes('=')) {

@@ -814,27 +814,31 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!true) return [3 /*break*/, 4];
+                        if (!true) return [3 /*break*/, 5];
                         this.checkForm.get('barcode').setValue(product.itemCode.toUpperCase());
                         this.checkForm.get('shelfNo').setValue(product.shelfNo.toUpperCase());
                         this.checkForm.get('targetShelfNo').setValue(product.targetShelf.toUpperCase());
                         this.checkForm.get('quantity').setValue(product.transferQuantity);
                         this.checkForm.get('batchCode').setValue(product.batchCode);
-                        if (!this.checkForm.valid) return [3 /*break*/, 2];
+                        if (!this.checkForm.valid) return [3 /*break*/, 3];
                         request = this.checkForm.value;
                         request.operationId = this.currentOrderNo;
+                        request.processType = this.selectedButton;
                         return [4 /*yield*/, this.addFastTransferModel(request)];
                     case 1:
                         response = _a.sent();
-                        return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.getTransferRequestListModel(this.selectedButton.toString())];
                     case 2:
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
                         this.toasterService.error("Form Geçerli Değil");
-                        _a.label = 3;
-                    case 3: return [3 /*break*/, 5];
-                    case 4:
+                        _a.label = 4;
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
                         this.toasterService.error("Yanıt Alınamadı");
-                        _a.label = 5;
-                    case 5: return [2 /*return*/];
+                        _a.label = 6;
+                    case 6: return [2 /*return*/];
                 }
             });
         });
@@ -911,7 +915,9 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
             var uuuid, updated_product, result, shelves, response, qrResponse, response, qrResponse;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.generalService.generateGUID()];
+                    case 0:
+                        transferModel.processType = this.selectedButton;
+                        return [4 /*yield*/, this.generalService.generateGUID()];
                     case 1:
                         uuuid = _a.sent();
                         if (transferModel.barcode.includes('=')) {

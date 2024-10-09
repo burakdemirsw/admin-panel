@@ -227,14 +227,30 @@ var FastTransferListComponent = /** @class */ (function () {
             });
         });
     };
-    FastTransferListComponent.prototype.routeToCPP = function (id) {
+    FastTransferListComponent.prototype.routeToCPP = function (operation) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                if (id.includes("REQ-")) {
-                    this.routeNewPage5(id.split("REQ-")[1]);
+                if (operation.operationId.includes("REQ-")) {
+                    operation.operationId = operation.operationId.split("REQ-")[1];
+                    // this.routeNewPage5(id.split("REQ-")[1])
+                }
+                if (operation.processType == 0) {
+                    this.router.navigate(["shelf-transfer-request", operation.operationId, operation.processType]);
+                }
+                else if (operation.processType == 1) {
+                    this.router.navigate(["shelf-transfer-request", operation.operationId, operation.processType]);
+                }
+                else if (operation.processType == 2) {
+                    this.router.navigate(["shelf-transfer-request", operation.operationId, operation.processType]);
+                }
+                else if (operation.processType == 3) {
+                    this.router.navigate(["shelf-transfer-request", operation.operationId, operation.processType]);
+                }
+                else if (operation.processType == 4) {
+                    this.router.navigate(["shelf-transfer-request", operation.operationId, operation.processType, operation.lastTargetShelfNo]);
                 }
                 else {
-                    this.routeNewPage6(id);
+                    this.router.navigate(["shelf-transfer-request", operation.operationId, operation.processType]);
                 }
                 return [2 /*return*/];
             });

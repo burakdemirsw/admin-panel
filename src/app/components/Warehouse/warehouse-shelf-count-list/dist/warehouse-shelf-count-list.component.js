@@ -223,6 +223,22 @@ var WarehouseShelfCountListComponent = /** @class */ (function () {
         this.selectedOperation = operation;
         this.visible = !this.visible;
     };
+    WarehouseShelfCountListComponent.prototype.goPage = function (count) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                if (count.process == 'C') {
+                    this.router.navigate(["warehouse-shelf-count/count", count.orderNo]);
+                }
+                else if (count.process == 'CO') {
+                    this.router.navigate(["warehouse-shelf-count/remove-product-to-shelf", count.orderNo]);
+                }
+                else if (count.process == 'CI') {
+                    this.router.navigate(["warehouse-shelf-count/add-product-to-shelf", count.orderNo]);
+                }
+                return [2 /*return*/];
+            });
+        });
+    };
     WarehouseShelfCountListComponent.prototype.sendBarcodesToNebim = function (isPackage) {
         return __awaiter(this, void 0, void 0, function () {
             var request, response;

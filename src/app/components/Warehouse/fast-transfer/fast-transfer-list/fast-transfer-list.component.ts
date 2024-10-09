@@ -157,11 +157,27 @@ export class FastTransferListComponent implements OnInit {
     }
 
   }
-  async routeToCPP(id: string) {
-    if (id.includes("REQ-")) {
-      this.routeNewPage5(id.split("REQ-")[1])
+  async routeToCPP(operation: FastTransferListModel) {
+    if (operation.operationId.includes("REQ-")) {
+      operation.operationId = operation.operationId.split("REQ-")[1];
+      // this.routeNewPage5(id.split("REQ-")[1])
+    } if (operation.processType == 0) {
+      this.router.navigate(["shelf-transfer-request", operation.operationId, operation.processType]);
+
+    } else if (operation.processType == 1) {
+      this.router.navigate(["shelf-transfer-request", operation.operationId, operation.processType]);
+
+    } else if (operation.processType == 2) {
+      this.router.navigate(["shelf-transfer-request", operation.operationId, operation.processType]);
+
+    } else if (operation.processType == 3) {
+      this.router.navigate(["shelf-transfer-request", operation.operationId, operation.processType]);
+
+    } else if (operation.processType == 4) {
+      this.router.navigate(["shelf-transfer-request", operation.operationId, operation.processType, operation.lastTargetShelfNo]);
+
     } else {
-      this.routeNewPage6(id)
+      this.router.navigate(["shelf-transfer-request", operation.operationId, operation.processType]);
     }
   }
   //toplanan ürünler sayfasına akatarır fakat önce ilgili siparişin içeriğinden paketNo'değerini çeker.

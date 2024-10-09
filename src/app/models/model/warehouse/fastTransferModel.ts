@@ -24,6 +24,7 @@ export class FastTransferModel2 {
   shelfNo: string;
   targetShelfNo: string;
   warehouseCode: string;
+  processType: number;
   createdDate: Date;
 }
 export class FastTransferListModel {
@@ -31,4 +32,6 @@ export class FastTransferListModel {
   createdDate !: Date;
   totalCount !: number;
   user !: string;
+  processType: number;
+  lastTargetShelfNo: string;
 }

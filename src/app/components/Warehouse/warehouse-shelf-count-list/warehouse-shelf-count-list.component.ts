@@ -137,6 +137,16 @@ export class WarehouseShelfCountListComponent implements OnInit {
     this.visible = !this.visible;
   }
 
+  async goPage(count: CountListModel) {
+    if (count.process == 'C') {
+      this.router.navigate(["warehouse-shelf-count/count", count.orderNo])
+    } else if (count.process == 'CO') {
+      this.router.navigate(["warehouse-shelf-count/remove-product-to-shelf", count.orderNo])
+    } else if (count.process == 'CI') {
+      this.router.navigate(["warehouse-shelf-count/add-product-to-shelf", count.orderNo])
+    }
+  }
+
   async sendBarcodesToNebim(isPackage: boolean) {
     var request = new CreateBarcodeFromOrder_RM(isPackage)
     if (this.selectedOperation.process == 'C') {
