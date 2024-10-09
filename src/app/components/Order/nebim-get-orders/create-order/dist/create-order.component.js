@@ -164,6 +164,7 @@ var CreateOrderComponent = /** @class */ (function () {
         this.sg_product_qty = 0;
         this.clonedProducts = {};
         this.quantityList = [];
+        this.suggestedProductsDialog_new = false;
         //----------------------------------------------------
         //---------------------------------------------------- KARGO
         this.cargoPrices = [{ name: 'DOSYA (₺90)', code: 90 }, { name: 'PAKET (₺80) ', code: 80 }, { name: 'K.KOLİ (₺115)', code: 115 },
@@ -1836,7 +1837,7 @@ var CreateOrderComponent = /** @class */ (function () {
             // stockCode: [null],
         });
     };
-    CreateOrderComponent.prototype.getProducts = function (request, pageType, quantity) {
+    CreateOrderComponent.prototype.getProducts = function (request, pageType, quantity, addStatus) {
         return __awaiter(this, void 0, void 0, function () {
             var result, _request, response, totalQuantity, _i, _a, _product, error_4, result, result, result, check_response, data, response, totalQuantity, _b, _c, _product;
             var _this = this;
@@ -1883,9 +1884,16 @@ var CreateOrderComponent = /** @class */ (function () {
                                         this.toasterService.error("STOK HATASI");
                                         this.products = [];
                                         this.getProductsForm.get('barcode').setValue(null);
-                                        return [4 /*yield*/, this.getsuggestedProducts(_request.barcode, true)];
+                                        return [4 /*yield*/, this.getsuggestedProducts(_request.barcode, true)
+                                            // this.suggestedProductsDialog_new = true;
+                                            // this.quantityList = [];
+                                            // this.quantityList = [0,1];
+                                        ];
                                     case 1:
                                         _a.sent();
+                                        // this.suggestedProductsDialog_new = true;
+                                        // this.quantityList = [];
+                                        // this.quantityList = [0,1];
                                         return [2 /*return*/];
                                     case 2: return [2 /*return*/];
                                 }
@@ -2165,14 +2173,25 @@ var CreateOrderComponent = /** @class */ (function () {
             return;
         }
         if (quantity > this.selectedSuggestedProduct.inventory) {
-            this.toasterService.error('Envanterden Fazla Giriş Yapılamaz');
-            return;
+            if (window.confirm("Terminli Şekilde Eklenecektir Onaylıyor Musunuz")) {
+                var product = Object.assign(this.selectedSuggestedProduct);
+                product.quantity = quantity;
+                this.selectedSuggestedProducts.push(product);
+                this.selectedSuggestedProduct = null;
+                this.selectSuggestedProductDialog = false;
+            }
+            else {
+                return;
+            }
+            // this.toasterService.error('Envanterden Fazla Giriş Yapılamaz');
         }
-        var product = Object.assign(this.selectedSuggestedProduct);
-        product.quantity = quantity;
-        this.selectedSuggestedProducts.push(product);
-        this.selectedSuggestedProduct = null;
-        this.selectSuggestedProductDialog = false;
+        else {
+            var product = Object.assign(this.selectedSuggestedProduct);
+            product.quantity = quantity;
+            this.selectedSuggestedProducts.push(product);
+            this.selectedSuggestedProduct = null;
+            this.selectSuggestedProductDialog = false;
+        }
     };
     CreateOrderComponent.prototype.selectSuggestedProductFromSelectedProduct = function (quantity) {
         var _a;

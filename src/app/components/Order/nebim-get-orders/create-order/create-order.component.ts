@@ -1643,7 +1643,7 @@ export class CreateOrderComponent implements OnInit {
   shelfNumbers: string = 'RAFLAR:'
   qrBarcodeUrl: string = null;
   qrOperationModels: QrOperationModel[] = [];
-  async getProducts(request: any, pageType: boolean, quantity?: number) {
+  async getProducts(request: any, pageType: boolean, quantity?: number, addStatus?: boolean) {
 
     if (pageType) { //HIZLI SATIŞ
       try {
@@ -1685,6 +1685,9 @@ export class CreateOrderComponent implements OnInit {
               this.getProductsForm.get('barcode').setValue(null);
 
               await this.getsuggestedProducts(_request.barcode, true)
+              // this.suggestedProductsDialog_new = true;
+              // this.quantityList = [];
+              // this.quantityList = [0,1];
               return;
             }
 
@@ -1970,14 +1973,25 @@ export class CreateOrderComponent implements OnInit {
       return;
     }
     if (quantity > this.selectedSuggestedProduct.inventory) {
-      this.toasterService.error('Envanterden Fazla Giriş Yapılamaz');
-      return;
+      if (window.confirm("Terminli Şekilde Eklenecektir Onaylıyor Musunuz")) {
+        var product = Object.assign(this.selectedSuggestedProduct);
+        product.quantity = quantity;
+        this.selectedSuggestedProducts.push(product);
+        this.selectedSuggestedProduct = null;
+        this.selectSuggestedProductDialog = false;
+      } else {
+        return;
+      }
+      // this.toasterService.error('Envanterden Fazla Giriş Yapılamaz');
+
+    } else {
+      var product = Object.assign(this.selectedSuggestedProduct);
+      product.quantity = quantity;
+      this.selectedSuggestedProducts.push(product);
+      this.selectedSuggestedProduct = null;
+      this.selectSuggestedProductDialog = false;
     }
-    var product = Object.assign(this.selectedSuggestedProduct);
-    product.quantity = quantity;
-    this.selectedSuggestedProducts.push(product);
-    this.selectedSuggestedProduct = null;
-    this.selectSuggestedProductDialog = false;
+
   }
   selectSuggestedProductFromSelectedProduct(quantity: number) {
     console.log(this.selectedProduct);
@@ -2090,6 +2104,7 @@ export class CreateOrderComponent implements OnInit {
     this.updateProductDialog = false;
     delete this.clonedProducts[product.lineId as string];
   }
+  suggestedProductsDialog_new: boolean = false;
   async onRowEditSave(product: ClientOrderBasketItem, index: number) {
     product.discountedPrice = this.updateProductForm.get('discountedPrice').value;
     product.quantity = this.updateProductForm.get('quantity').value;

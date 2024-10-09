@@ -33,7 +33,7 @@
                       <td>{{ order.orderNumber.split("-")[3] }}</td>
                       <td>
                         {{
-                          order.currAccDescription
+                          order.userDescription
                             ?.toUpperCase()
                             .substring(0, 10)
                         }}
@@ -45,7 +45,7 @@
                       </td>
                       <td>
                         {{
-                          order.subCurrAccDescription?.toUpperCase().substring(0, 10)
+                          order.currAccDescription?.toUpperCase().substring(0, 10)
                         }}
                       </td>
                       <td>
@@ -113,7 +113,7 @@
                       <td>{{ order.orderNumber.split("-")[3] }}</td>
                       <td>
                         {{
-                          order.currAccDescription
+                          order.userDescription
                             ?.toUpperCase()
                             .substring(0, 10)
                         }}
@@ -125,7 +125,7 @@
                       </td>
                       <td>
                         {{
-                          order.subCurrAccDescription?.toUpperCase().substring(0, 10)
+                          order.currAccDescription?.toUpperCase().substring(0, 10)
                         }}
                       </td>
                       <td>

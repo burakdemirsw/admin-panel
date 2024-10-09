@@ -36,4 +36,5 @@ export class OrderStatusModels {
   warehouseCode: string;
   isCancelled: boolean;
   subCurrAccDescription: string;
+  userDescription: string;
 }
