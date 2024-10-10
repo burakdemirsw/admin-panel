@@ -44,7 +44,7 @@
                           (click)="goDown2(product.barcode, product.shelfNo, product.itemCode, product.transferQuantity)">
                         </button>
                         <button pButton type="button" icon="pi pi-plus" class="p-button-primary"
-                          (click)="addProduct(product)">
+                          (click)="addProduct(product,true)">
                         </button>
                         <button pButton type="button" icon="pi pi-trash" class="p-button-primary"
                           (click)="addDeletedItemList(product)">
@@ -388,8 +388,8 @@
         </div>
 
         <div class="card " *ngIf="__transferProducts.length > 0">
-          <p-table [styleClass]="'p-datatable-striped'" [value]="__transferProducts" [paginator]="true" [rows]="10"
-            [tableStyle]="{ 'min-width': '50rem' }" (onFilter)="logFilteredData($event)">
+          <p-table [styleClass]="'p-datatable-striped'" [(selection)]="selectedProducts" [value]="__transferProducts"
+            [paginator]="true" [rows]="10" [tableStyle]="{ 'min-width': '50rem' }" (onFilter)="logFilteredData($event)">
 
             <ng-template pTemplate="caption">
               <p-splitButton label="İşlemler" [model]="items" appendTo="body" />
@@ -400,6 +400,7 @@
             <ng-template pTemplate="header">
 
               <tr>
+
                 <th> Ekle</th>
                 <th>Fotoğraf</th>
                 <th pSortableColumn="brand">
@@ -457,10 +458,14 @@
                 <th>
                   İşlemler
                 </th>
+
               </tr>
               <tr>
+                <th style="width: 4rem">
+                  <p-tableHeaderCheckbox />
+                </th>
                 <th></th>
-                <th></th>
+
                 <!-- <th>
                     <p-columnFilter type="text" field="barcode" [showClearButton]="false"></p-columnFilter>
                   </th> -->
@@ -608,14 +613,13 @@
                 <th>
                   <p-columnFilter type="numeric" field="price" [showClearButton]="false"></p-columnFilter>
                 </th>
+                <th></th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-product>
               <tr>
-                <!-- <td>{{ product.barcode }}</td> -->
                 <td>
-                  <button class="btn btn-primary" (click)="addProduct(product)"><i class="fa fa-plus"
-                      aria-hidden="true"></i></button>
+                  <p-tableCheckbox [value]="product" />
                 </td>
                 <td>
                   <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true">
@@ -637,25 +641,34 @@
                 <td>{{ product.inventory }}</td>
                 <td>{{ product.price }}</td>
                 <td>
-                  <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                  </button>
-                  <ul class="dropdown-menu">
 
-                    <li>
-                      <a class="dropdown-item" data-text=" Kargo" (click)="getShelves(product.barcode)">
-                        <i class="fa-solid fa-bars"></i> Rafları Getir
-                      </a>
-                      <a class="dropdown-item" data-text=" Kargo" (click)="logFilteredData(product)">
-                        <i class="fa fa-arrow-up" aria-hidden="true"></i>
-                        Üste At
-                      </a>
+                  <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                      aria-expanded="false">
+                    </button>
+                    <ul class="dropdown-menu">
+
+                      <li>
+                        <a class="dropdown-item" data-text=" Kargo" (click)="getShelves(product.barcode)">
+                          <i class="fa-solid fa-bars"></i> Rafları Getir
+                        </a>
+                        <a class="dropdown-item" data-text=" Kargo" (click)="logFilteredData(product)">
+                          <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                          Üste At
+                        </a>
 
 
 
-                    </li>
+                      </li>
 
-                  </ul>
+                    </ul>
+
+                    <button class="btn btn-primary" (click)="addProduct(product,true)"><i class="fa fa-plus"
+                        aria-hidden="true"></i></button>
+                  </div>
+
+
+
                 </td>
               </tr>
             </ng-template>

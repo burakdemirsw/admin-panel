@@ -85,6 +85,7 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
         this.transferProducts = [];
         this._transferProducts = [];
         this.__transferProducts = [];
+        this.selectedProducts = [];
         this.transferProductsColums = [
             'Id',
             'Stok Kodu',
@@ -126,6 +127,12 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                 label: 'Filtrelenenleri Aktar',
                 command: function () {
                     _this.addProduct_Toplu();
+                }
+            },
+            {
+                label: 'Seçilenleri Aktar',
+                command: function () {
+                    _this.addProduct_Toplu_2();
                 }
             }
         ];
@@ -781,14 +788,15 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        _b.trys.push([0, 6, , 7]);
-                        console.log(this.lastFilteredData);
+                        _b.trys.push([0, 9, , 10]);
+                        if (!(this.lastFilteredData.length > 0)) return [3 /*break*/, 7];
+                        if (!window.confirm(this.lastFilteredData.length.toString() + " Adet Ürün Aktarılacaktır. Devam Edilsin Mi?")) return [3 /*break*/, 6];
                         _i = 0, _a = this.lastFilteredData;
                         _b.label = 1;
                     case 1:
                         if (!(_i < _a.length)) return [3 /*break*/, 4];
                         p = _a[_i];
-                        return [4 /*yield*/, this.addProduct(p)];
+                        return [4 /*yield*/, this.addProduct(p, false)];
                     case 2:
                         _b.sent();
                         this.clearForm();
@@ -799,53 +807,101 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                     case 4: return [4 /*yield*/, this.getTransferRequestListModel(this.selectedButton.toString())];
                     case 5:
                         _b.sent();
-                        return [3 /*break*/, 7];
-                    case 6:
+                        _b.label = 6;
+                    case 6: return [3 /*break*/, 8];
+                    case 7:
+                        this.toasterService.error("Lütfen Filtreleme Yapınız");
+                        _b.label = 8;
+                    case 8: return [3 /*break*/, 10];
+                    case 9:
                         error_2 = _b.sent();
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
+                        return [3 /*break*/, 10];
+                    case 10: return [2 /*return*/];
                 }
             });
         });
     };
-    ShelfTransferRequestComponent.prototype.addProduct = function (product) {
+    ShelfTransferRequestComponent.prototype.addProduct_Toplu_2 = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _i, _a, p, error_3;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 9, , 10]);
+                        if (!(this.selectedProducts.length > 0)) return [3 /*break*/, 7];
+                        if (!window.confirm(this.selectedProducts.length.toString() + " Adet Ürün Aktarılacaktır. Devam Edilsin Mi?")) return [3 /*break*/, 6];
+                        _i = 0, _a = this.selectedProducts;
+                        _b.label = 1;
+                    case 1:
+                        if (!(_i < _a.length)) return [3 /*break*/, 4];
+                        p = _a[_i];
+                        return [4 /*yield*/, this.addProduct(p, false)];
+                    case 2:
+                        _b.sent();
+                        this.clearForm();
+                        _b.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4:
+                        this.selectedProducts = [];
+                        return [4 /*yield*/, this.getTransferRequestListModel(this.selectedButton.toString())];
+                    case 5:
+                        _b.sent();
+                        _b.label = 6;
+                    case 6: return [3 /*break*/, 8];
+                    case 7:
+                        this.toasterService.error("Lütfen Filtreleme Yapınız");
+                        _b.label = 8;
+                    case 8: return [3 /*break*/, 10];
+                    case 9:
+                        error_3 = _b.sent();
+                        return [3 /*break*/, 10];
+                    case 10: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ShelfTransferRequestComponent.prototype.addProduct = function (product, callProducts) {
         return __awaiter(this, void 0, void 0, function () {
             var request, response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!true) return [3 /*break*/, 5];
+                        if (!true) return [3 /*break*/, 6];
                         this.checkForm.get('barcode').setValue(product.itemCode.toUpperCase());
                         this.checkForm.get('shelfNo').setValue(product.shelfNo.toUpperCase());
                         this.checkForm.get('targetShelfNo').setValue(product.targetShelf.toUpperCase());
                         this.checkForm.get('quantity').setValue(product.transferQuantity);
                         this.checkForm.get('batchCode').setValue(product.batchCode);
-                        if (!this.checkForm.valid) return [3 /*break*/, 3];
+                        if (!this.checkForm.valid) return [3 /*break*/, 4];
                         request = this.checkForm.value;
                         request.operationId = this.currentOrderNo;
                         request.processType = this.selectedButton;
                         return [4 /*yield*/, this.addFastTransferModel(request)];
                     case 1:
                         response = _a.sent();
+                        if (!callProducts) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.getTransferRequestListModel(this.selectedButton.toString())];
                     case 2:
                         _a.sent();
-                        return [3 /*break*/, 4];
-                    case 3:
+                        _a.label = 3;
+                    case 3: return [3 /*break*/, 5];
+                    case 4:
                         this.toasterService.error("Form Geçerli Değil");
-                        _a.label = 4;
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
+                        _a.label = 5;
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
                         this.toasterService.error("Yanıt Alınamadı");
-                        _a.label = 6;
-                    case 6: return [2 /*return*/];
+                        _a.label = 7;
+                    case 7: return [2 /*return*/];
                 }
             });
         });
     };
     ShelfTransferRequestComponent.prototype.setFormValues = function (product) {
         return __awaiter(this, void 0, Promise, function () {
-            var result, items, finded_product, updatedProduct, result, updatedProduct, finded_product, error_3;
+            var result, items, finded_product, updatedProduct, result, updatedProduct, finded_product, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -902,8 +958,8 @@ var ShelfTransferRequestComponent = /** @class */ (function () {
                         return [2 /*return*/, updatedProduct];
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_3 = _a.sent();
-                        this.toasterService.error(error_3.message);
+                        error_4 = _a.sent();
+                        this.toasterService.error(error_4.message);
                         return [2 /*return*/, null];
                     case 6: return [2 /*return*/];
                 }

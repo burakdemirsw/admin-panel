@@ -69,6 +69,12 @@ var CreateProposalComponent = /** @class */ (function () {
                 command: function () {
                     _this.addProduct_Toplu();
                 }
+            },
+            {
+                label: 'Seçilenleri Aktar',
+                command: function () {
+                    _this.addProduct_Toplu_2();
+                }
             }
         ];
         this.selectedCustomers = [];
@@ -101,6 +107,7 @@ var CreateProposalComponent = /** @class */ (function () {
         this.attribute1s = [];
         this.attribute2s = [];
         this.allProducts = [];
+        this._selectedProducts = [];
         this.addedProducts = [];
         this.proposal = new proposalProduct_1.ZTMSG_Proposal();
         this.lastFilteredData = [];
@@ -416,8 +423,9 @@ var CreateProposalComponent = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        _b.trys.push([0, 5, , 6]);
-                        console.log(this.lastFilteredData);
+                        _b.trys.push([0, 7, , 8]);
+                        if (!(this.lastFilteredData.length > 0)) return [3 /*break*/, 5];
+                        if (!window.confirm(this.lastFilteredData.length.toString() + " Adet Ürün Aktarılacaktır. Devam Edilsin Mi?")) return [3 /*break*/, 4];
                         _i = 0, _a = this.lastFilteredData;
                         _b.label = 1;
                     case 1:
@@ -432,9 +440,47 @@ var CreateProposalComponent = /** @class */ (function () {
                         return [3 /*break*/, 1];
                     case 4: return [3 /*break*/, 6];
                     case 5:
+                        this.toasterService.error("Lütfen Filtreleme Yapınız");
+                        _b.label = 6;
+                    case 6: return [3 /*break*/, 8];
+                    case 7:
                         error_2 = _b.sent();
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
+                        return [3 /*break*/, 8];
+                    case 8: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CreateProposalComponent.prototype.addProduct_Toplu_2 = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _i, _a, p, error_3;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 7, , 8]);
+                        if (!(this._selectedProducts.length > 0)) return [3 /*break*/, 5];
+                        if (!window.confirm(this._selectedProducts.length.toString() + " Adet Ürün Aktarılacaktır. Devam Edilsin Mi?")) return [3 /*break*/, 4];
+                        _i = 0, _a = this._selectedProducts;
+                        _b.label = 1;
+                    case 1:
+                        if (!(_i < _a.length)) return [3 /*break*/, 4];
+                        p = _a[_i];
+                        return [4 /*yield*/, this.addProduct(p)];
+                    case 2:
+                        _b.sent();
+                        _b.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        this.toasterService.error("Lütfen Filtreleme Yapınız");
+                        _b.label = 6;
+                    case 6: return [3 /*break*/, 8];
+                    case 7:
+                        error_3 = _b.sent();
+                        return [3 /*break*/, 8];
+                    case 8: return [2 /*return*/];
                 }
             });
         });

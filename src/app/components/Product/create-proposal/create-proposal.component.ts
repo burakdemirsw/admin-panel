@@ -35,8 +35,16 @@ export class CreateProposalComponent implements OnInit {
       command: () => {
         this.addProduct_Toplu();
       }
+    },
+    {
+      label: 'Seçilenleri Aktar',
+      command: () => {
+        this.addProduct_Toplu_2();
+      }
     }
   ];
+
+
   [x: string]: any;
   @ViewChild('fileInput') fileInput: ElementRef;
   selectedCustomers: CustomerList_VM[] = []
@@ -218,6 +226,7 @@ export class CreateProposalComponent implements OnInit {
   attribute1s: any[] = []
   attribute2s: any[] = []
   allProducts: FastTransfer_VM[] = [];
+  _selectedProducts: FastTransfer_VM[] = [];
 
   logFilteredData(event: any) {
 
@@ -335,11 +344,31 @@ export class CreateProposalComponent implements OnInit {
   lastFilteredData: any[] = [];
   async addProduct_Toplu() {
     try {
-      console.log(this.lastFilteredData);
-      for (var p of this.lastFilteredData) {
-        await this.addProduct(p);
+      if ((this.lastFilteredData.length > 0)) {
+        if (window.confirm(this.lastFilteredData.length.toString() + " Adet Ürün Aktarılacaktır. Devam Edilsin Mi?"))
+          for (var p of this.lastFilteredData) {
+            await this.addProduct(p);
+          }
+
+      } else {
+        this.toasterService.error("Lütfen Filtreleme Yapınız")
       }
 
+    } catch (error) {
+
+    }
+  }
+  async addProduct_Toplu_2() {
+    try {
+      if ((this._selectedProducts.length > 0)) {
+        if (window.confirm(this._selectedProducts.length.toString() + " Adet Ürün Aktarılacaktır. Devam Edilsin Mi?"))
+          for (var p of this._selectedProducts) {
+            await this.addProduct(p);
+          }
+
+      } else {
+        this.toasterService.error("Lütfen Filtreleme Yapınız")
+      }
     } catch (error) {
 
     }

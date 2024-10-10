@@ -79,6 +79,7 @@ export class ShelfTransferRequestComponent implements OnInit {
   transferProducts: TransferRequestListModel[] = [];
   _transferProducts: TransferRequestListModel[] = [];
   __transferProducts: FastTransfer_VM[] = [];
+  selectedProducts: FastTransfer_VM[] = [];
 
   transferProductsColums: string[] = [
     'Id',
@@ -123,6 +124,12 @@ export class ShelfTransferRequestComponent implements OnInit {
       label: 'Filtrelenenleri Aktar',
       command: () => {
         this.addProduct_Toplu();
+      }
+    },
+    {
+      label: 'Seçilenleri Aktar',
+      command: () => {
+        this.addProduct_Toplu_2();
       }
     }
   ];
@@ -722,21 +729,61 @@ export class ShelfTransferRequestComponent implements OnInit {
   async addProduct_Toplu() {
 
     try {
-      console.log(this.lastFilteredData);
-      for (var p of this.lastFilteredData) {
-        await this.addProduct(p);
 
-        this.clearForm();
+      if ((this.lastFilteredData.length > 0)) {
+        if (window.confirm(this.lastFilteredData.length.toString() + " Adet Ürün Aktarılacaktır. Devam Edilsin Mi?")) {
+          for (var p of this.lastFilteredData) {
+            await this.addProduct(p, false);
+            this.clearForm();
+          }
+
+          await this.getTransferRequestListModel(
+            this.selectedButton.toString()
+          );
+        }
+      } else {
+        this.toasterService.error("Lütfen Filtreleme Yapınız")
       }
-      await this.getTransferRequestListModel(
-        this.selectedButton.toString()
-      );
+
+
+
     } catch (error) {
 
     }
 
   }
-  async addProduct(product) {
+  async addProduct_Toplu_2() {
+
+    try {
+
+      if ((this.selectedProducts.length > 0)) {
+        if (window.confirm(this.selectedProducts.length.toString() + " Adet Ürün Aktarılacaktır. Devam Edilsin Mi?")) {
+          for (var p of this.selectedProducts) {
+            await this.addProduct(p, false);
+
+            this.clearForm();
+          }
+          this.selectedProducts = [];
+          await this.getTransferRequestListModel(
+            this.selectedButton.toString()
+
+          );
+        }
+
+
+
+      } else {
+        this.toasterService.error("Lütfen Filtreleme Yapınız")
+      }
+
+
+
+    } catch (error) {
+
+    }
+
+  }
+  async addProduct(product: any, callProducts: boolean) {
 
     //sladkaslşdkaşld
     // var response = await this.productService.searchProduct3(product.barcode, null, product.shelfNo);
@@ -753,10 +800,11 @@ export class ShelfTransferRequestComponent implements OnInit {
         request.operationId = this.currentOrderNo;
         request.processType = this.selectedButton;
         var response = await this.addFastTransferModel(request);
-        await this.getTransferRequestListModel(
-          this.selectedButton.toString()
-        );
-        // await this.onSubmit(this.checkForm.value);
+        if (callProducts) {
+          await this.getTransferRequestListModel(
+            this.selectedButton.toString()
+          );
+        }
       } else {
         this.toasterService.error("Form Geçerli Değil")
       }
