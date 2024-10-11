@@ -43,7 +43,7 @@
               <p-sortIcon field="phoneNumber"></p-sortIcon>
               <p-columnFilter type="text" field="phoneNumber"></p-columnFilter>
             </th>
-            <th>Rol Ata</th>
+            <!-- <th>Rol Ata</th> -->
             <th>İşlemler</th>
           </tr>
         </ng-template>
@@ -56,11 +56,11 @@
             <td>{{ user.email }}</td>
             <td>****</td>
             <td>{{ user.phoneNumber }}</td>
-            <td>
+            <!-- <td>
               <button class="btn btn-primary" (click)="openModalForUser(user)">
                 <i class="fas fa-user"></i>
               </button>
-            </td>
+            </td> -->
             <td>
               <div class="btn-group" role="group" aria-label="Basic example">
                 <button class="btn btn-primary" [routerLink]="['/user-update', user.id]">
@@ -78,7 +78,7 @@
 
     </div>
 
-    <p-dialog header="{{ listHeader }} Kullanıcısına Rol Ata" [(visible)]="visible2" [style]="{ width: '50vw' }">
+    <!-- <p-dialog header="{{ listHeader }} Kullanıcısına Rol Ata" [(visible)]="visible2" [style]="{ width: '50vw' }">
       <div class="dialog-content">
         <div class="card flex justify-content-center">
           <p-listbox #ms [options]="listItems" [(ngModel)]="selectedItems" optionLabel="label" [style]="{}"
@@ -92,7 +92,7 @@
           </nb-card-body>
         </nb-card>
       </div>
-    </p-dialog>
+    </p-dialog> -->
 
   </section>
 </main>

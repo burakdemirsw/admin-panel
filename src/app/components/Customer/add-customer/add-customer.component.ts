@@ -58,7 +58,7 @@ export class AddCustomerComponent implements OnInit {
       await this.createCustomerFormMethod();
       await this.getAddresses();
 
-      if (params["type"] == "ws") {
+      if (params["type"] == "3") { //toptan müşteri oluşturma
         this.modelType = 2;
         if (params["currAccCode"]) {
           var curr_acc_code: string = params["currAccCode"];
@@ -68,7 +68,7 @@ export class AddCustomerComponent implements OnInit {
             this.router.navigate(["add-customer/r", curr_acc_code]);
           }
         }
-      } else {
+      } else if (params["type"] == "4") { //perakende müşteri oluşturma
         this.modelType = 3;
         if (params["currAccCode"]) {
           var curr_acc_code: string = params["currAccCode"];
@@ -80,28 +80,30 @@ export class AddCustomerComponent implements OnInit {
         }
         this.modelType = 3;
       }
+      else if (params["type"] == "2") { //tedarikçi oluşturma
+        this.modelType = 3;
+
+      }
 
       if (params["currAccCode"]) {
         this.pageType = true;
 
-        if (params["type"] == "ws") {
+        if (params["type"] == "3") {
           this.headerService.updatePageTitle("Toptan Müşteri Güncelle");
 
-        } else {
+        } else if (params["type"] == "4") {
 
           this.headerService.updatePageTitle("Perakende Müşteri Güncelle");
 
         }
+        else if (params["type"] == "2") {
+
+          this.headerService.updatePageTitle("Tedarikçi Güncelle");
+
+        }
         this.currAccCode = params["currAccCode"];
-
         this.addressId = params["addressId"];
-        // var response = await this.orderService.getClientCustomerById(this.currAccCode);
-        // if (response) {
 
-        //   this.findedCustomer = response[0];
-        // } else {
-        //   this.toasterService.error("Müşteriye Ait Bilgi Bulunamadı")
-        // }
         var r: GetCustomerList_CM = new GetCustomerList_CM();
         r.currAccCode = this.currAccCode;
         var address_response: CustomerAddress_VM[] =
@@ -113,16 +115,19 @@ export class AddCustomerComponent implements OnInit {
         }
       } else {
         this.pageType = false;
+        if (params["type"] == "3") {
+          this.headerService.updatePageTitle("Toptan Müşteri Güncelle");
 
-        if (params["type"] == "ws") {
-          this.headerService.updatePageTitle("Toptan Müşteri Oluştur");
+        } else if (params["type"] == "4") {
 
-        } else {
-
-          this.headerService.updatePageTitle("Perakende Müşteri Oluştur");
+          this.headerService.updatePageTitle("Perakende Müşteri Güncelle");
 
         }
+        else if (params["type"] == "2") {
 
+          this.headerService.updatePageTitle("Tedarikçi Güncelle");
+
+        }
 
       }
     });

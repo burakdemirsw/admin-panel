@@ -142,8 +142,12 @@ import { UntransferredOrdersComponent } from './components/marketplace/transferr
 import { CreateWarehouseProcessComponent } from './components/Warehouse/warehouse-operation/create-warehouse-process/create-warehouse-process.component';
 import { RaportComponent } from './components/raport/raport/raport.component';
 
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { KeysPipe } from './components/raport/raport/keys.pipe';
+import { CustomersComponent } from './components/Customer/customers/customers.component';
 @NgModule({
 
   declarations: [
@@ -237,6 +241,7 @@ import { KeysPipe } from './components/raport/raport/keys.pipe';
     UntransferredOrdersComponent,
     CreateWarehouseProcessComponent,
     RaportComponent,
+    CustomersComponent,
     KeysPipe
   ],
 
@@ -282,12 +287,21 @@ import { KeysPipe } from './components/raport/raport/keys.pipe';
     SidebarModule,
     TreeModule,
     ContextMenuModule,
-    OverlayPanelModule, CheckboxModule,
-    FileUploadModule, TableModule, InputTextModule, MessagesModule, FieldsetModule, EditorModule, SplitButtonModule,
+    OverlayPanelModule,
+    CheckboxModule,
+    FileUploadModule,
+    TableModule,
+    InputTextModule,
+    MessagesModule,
+    FieldsetModule,
+    EditorModule,
+    SplitButtonModule,
+    InputGroupModule,
+    InputGroupAddonModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => localStorage.getItem('accessToken'),
-        allowedDomains: ['localhost:7178', 'localhost:7180', '78.135.64.6:3075', '78.135.64.6:3074'],
+        allowedDomains: ['localhost:7178', 'localhost:7180', '109.228.239.225:7178', '109.228.239.225:7179'],
       },
     }),
 

@@ -461,14 +461,13 @@
 
                 </select>
               </div>
-              <div class="form-group">
+              <!-- <div class="form-group">
                 <label for="officeCode">Ofis Kodu</label>
 
                 <select id="officeCode" class="form-control" formControlName="officeCode">
                   <option *ngFor="let g of warehouseOfficeModels" value="{{ g.officeCode}}">
                     {{g.officeCode}}</option>
                 </select>
-                <!-- <input type="text" id="officeCode" class="form-control" formControlName="officeCode"> -->
               </div>
               <div class="form-group mb-3">
                 <label for="warehouseCode">Depo Kodu</label>
@@ -476,9 +475,8 @@
                   <option *ngFor="let g of warehouseOfficeModels" value="{{ g.warehouseCode}}">
                     {{g.warehouseDescription}}</option>
                 </select>
-                <!-- <input type="text" id="warehouseCode" class="form-control" formControlName="warehouseCode"> -->
 
-              </div>
+              </div> -->
               <div class="form-group">
                 <label for="storeCode">Mağaza Kodu</label>
                 <select id="storeCode" class="form-control" formControlName="storeCode">
@@ -553,10 +551,10 @@
                     Uygulama Kodu
                     <p-sortIcon field="applicationCode"></p-sortIcon>
                   </th>
-                  <th pSortableColumn="officeCode">
+                  <!-- <th pSortableColumn="officeCode">
                     Ofis Kodu
                     <p-sortIcon field="officeCode"></p-sortIcon>
-                  </th>
+                  </th> -->
                   <th pSortableColumn="storeCode">
                     Mağaza Kodu
                     <p-sortIcon field="storeCode"></p-sortIcon>
@@ -599,7 +597,7 @@
                   <td>{{ nebim.processCode }}</td>
                   <td>{{ nebim.applicationCode }}</td>
 
-                  <td>{{ nebim.officeCode }}</td>
+                  <!-- <td>{{ nebim.officeCode }}</td> -->
                   <td>{{ nebim.storeCode }}</td>
                   <td>{{ nebim.posTerminalID }}</td>
                   <td>{{ nebim.shipmentMethodCode }}</td>
@@ -646,14 +644,13 @@
                   <option value="Invoice">Faturalaştırma</option>
                 </select>
               </div>
-              <div class="form-group">
+              <!-- <div class="form-group">
                 <label for="officeCode">Ofis Kodu</label>
 
                 <select id="officeCode" class="form-control" formControlName="officeCode">
                   <option *ngFor="let g of warehouseOfficeModels" value="{{ g.officeCode}}">
                     {{g.officeCode}}</option>
                 </select>
-                <!-- <input type="text" id="officeCode" class="form-control" formControlName="officeCode"> -->
               </div>
               <div class="form-group mb-3">
                 <label for="warehouseCode">Depo Kodu</label>
@@ -661,9 +658,7 @@
                   <option *ngFor="let g of warehouseOfficeModels" value="{{ g.warehouseCode}}">
                     {{g.warehouseDescription}}</option>
                 </select>
-                <!-- <input type="text" id="warehouseCode" class="form-control" formControlName="warehouseCode"> -->
-
-              </div>
+              </div> -->
               <div class="form-group">
                 <label for="storeCode">Mağaza Kodu</label>
                 <select id="storeCode" class="form-control" formControlName="storeCode">
@@ -738,10 +733,10 @@
                     Uygulama Kodu
                     <p-sortIcon field="applicationCode"></p-sortIcon>
                   </th>
-                  <th pSortableColumn="officeCode">
+                  <!-- <th pSortableColumn="officeCode">
                     Ofis Kodu
                     <p-sortIcon field="officeCode"></p-sortIcon>
-                  </th>
+                  </th> -->
                   <th pSortableColumn="storeCode">
                     Mağaza Kodu
                     <p-sortIcon field="storeCode"></p-sortIcon>
@@ -784,7 +779,7 @@
                   <td>{{ nebim.processCode }}</td>
                   <td>{{ nebim.applicationCode }}</td>
 
-                  <td>{{ nebim.officeCode }}</td>
+                  <!-- <td>{{ nebim.officeCode }}</td> -->
                   <td>{{ nebim.storeCode }}</td>
                   <td>{{ nebim.posTerminalID }}</td>
                   <td>{{ nebim.shipmentMethodCode }}</td>
@@ -1235,6 +1230,11 @@
               <option *ngFor="let menuInfo of menuInfos" [ngValue]="menuInfo.id">{{ menuInfo.label }}</option>
             </select>
           </div>
+
+          <div class="form-group mb-3">
+            <label for="icon">Sıra</label>
+            <input type="number" id="icon" class="form-control" formControlName="order">
+          </div>
           <button type="submit" class="btn btn-primary" [disabled]="menuInfoForm.invalid">Kaydet</button>
         </form>
         <p-table [tableStyle]="{ 'min-width': '50rem' }" #dt [value]="menuInfos" dataKey="id" [paginator]="true"
@@ -1272,6 +1272,10 @@
                 Üst Menü ID
                 <p-sortIcon field="parentId"></p-sortIcon>
               </th>
+              <th pSortableColumn="order">
+                Sıra
+                <p-sortIcon field="order"></p-sortIcon>
+              </th>
               <th>İşlemler</th>
             </tr>
             <tr>
@@ -1297,6 +1301,9 @@
               <th>
                 <p-columnFilter type="text" field="parentId" [showClearButton]="false"></p-columnFilter>
               </th>
+              <th>
+                <p-columnFilter type="text" field="order" [showClearButton]="false"></p-columnFilter>
+              </th>
               <th></th>
             </tr>
           </ng-template>
@@ -1316,6 +1323,7 @@
                 </button>
               </td>
               <td>{{ menu.parentId }}</td>
+              <td>{{ menu.order }}</td>
               <td>
                 <div class="btn-group">
                   <button class="btn btn-primary" (click)="onEditMenuInfo(menu)">

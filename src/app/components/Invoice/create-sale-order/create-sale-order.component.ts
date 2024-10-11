@@ -14,6 +14,7 @@ import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { HeaderService } from '../../../services/admin/header.service';
 import { CustomerAddress_VM, GetCustomerAddress_CM } from 'src/app/models/model/order/getCustomerList_CM';
 import { BasketProduct_VM } from 'src/app/models/model/warehouse/transferRequestListModel';
+import { UserService } from '../../../services/admin/user.service';
 declare var window: any;
 @Component({
   selector: 'app-create-sale-order',
@@ -57,7 +58,8 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
     private generalService: GeneralService,
     private activatedRoute: ActivatedRoute,
     private headerService: HeaderService,
-    private routerService: Router
+    private routerService: Router,
+    private UserService: UserService
   ) { }
   async ngOnInit() {
 
@@ -131,6 +133,8 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
           if (this.invoiceProcess) {
             await this.getProductOfProcess();
           }
+        } else {
+          this.setFormValueFromUser()
         }
         this.activeIndex = Number(params['activeIndex'])
 
@@ -505,6 +509,37 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
       this.responseHandler(false, "Eklenmedi");
       return;
     }
+  }
+
+  setFormValueFromUser() {
+    var user = this.UserService.getUserClientInfoResponse();
+    const officeCode = user.officeCode;
+    const warehouseCode = this.warehouses.find(o => o.code == user.warehouseCode);
+
+    if (this.processType == 'invoice') {
+      // this.invoiceForm
+      this.invoiceForm.get('officeCode').setValue(officeCode);
+      this.invoiceForm.get('warehouseCode').setValue(warehouseCode);
+    } else if (this.processType == 'proposal' && this.processCode == 'BP') {
+      // Sonra bu değerleri forma atıyoruz
+      //this.proposal_bp_form
+
+      this.proposal_bp_form.get('officeCode').setValue(officeCode);
+      this.proposal_bp_form.get('warehouseCode').setValue(warehouseCode);
+    } else if (this.processType == 'proposal' && this.processCode == 'WS') {
+      //this.proposal_ws_form
+
+      this.proposal_ws_form.get('officeCode').setValue(officeCode);
+      this.proposal_ws_form.get('warehouseCode').setValue(warehouseCode);
+    } else if (this.processType == 'order' && (this.processCode == 'R' || this.processCode == 'WS')) {
+      //this.order_r_form
+      this.order_r_form.get('officeCode').setValue(officeCode);
+      this.order_r_form.get('warehouseCode').setValue(warehouseCode);
+
+    }
+
+
+
   }
   async setFormValueFromProcess(v: InvoiceProcess) {
     this.invoiceProcess = v;
@@ -1182,6 +1217,29 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
     this.toasterService.success('Tüm Ürünler Getirildi')
     // this.mapProducts(this.allProducts);
     this.findProductDialog = true;
+  }
+  search: string = "";
+  async addProductFromSearch() {
+    if (!this.generalService.isNullOrEmpty(this.search)) {
+      if (this.allProducts.length == 0) {
+        this.allProducts = await this.productService.getBasketProducts(this.invoiceProcess.processCode, this.invoiceProcess.applicationCode);
+        if (this.allProducts.length > 0) {
+          var p = this.allProducts.find(p => p.barcode.toLowerCase() == this.search.toLowerCase() || p.itemCode.toLowerCase() == this.search.toLowerCase())
+          if (p) {
+            await this.addProduct(p);
+          }
+        }
+      } else {
+        if (this.allProducts.length > 0) {
+          var p = this.allProducts.find(p => p.barcode.toLowerCase() == this.search.toLowerCase() || p.itemCode.toLowerCase() == this.search.toLowerCase())
+          if (p) {
+            await this.addProduct(p);
+          }
+        }
+      }
+
+      this.search = "";
+    }
   }
   async addProduct(p: BasketProduct_VM) {
     if (!this.invoiceProcess) {

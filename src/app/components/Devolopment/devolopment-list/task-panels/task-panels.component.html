@@ -51,8 +51,17 @@
           <td>{{ panel.createdDate | date : "dd/MM/yyyy" }}</td>
           <td>{{ panel.updatedDate | date : "dd/MM/yyyy" }}</td>
           <td>
-            <p-button icon="pi pi-arrow-right" class="p-button-info" (click)="goToPanel(panel.id)"></p-button>
-            <p-button icon="pi pi-trash" class="p-button-danger" (click)="deleteTaskPanel(panel.id)"></p-button>
+
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button class="btn btn-primary" (click)="goToPanel(panel.id)"><i class="pi pi-arrow-right"
+                  aria-hidden="true"></i></button>
+              <button class="btn btn-danger" (click)="deleteTaskPanel(panel.id)">
+                <i class="pi pi-trash" aria-hidden="true"></i>
+              </button>
+            </div>
+
+
+
           </td>
         </tr>
       </ng-template>

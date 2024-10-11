@@ -206,15 +206,15 @@ export class PagesInfoComponent implements OnInit {
     this.nebimInfoForm = this.fb.group({
       id: [0],
       processCode: [null],
-      officeCode: [null],
       storeCode: [null],
-      warehouseCode: [null],
       posTerminalID: [null],
       shipmentMethodCode: [null],
       deliveryCompanyCode: [null],
       basePriceCode: [null],
       applicationCode: [null],
       sendAutoMail: [null],
+      // warehouseCode: [null],
+      // officeCode: [null],
       // isOrderBase: [null],
       // isShipmentBase: [null]
     });
@@ -326,7 +326,8 @@ export class PagesInfoComponent implements OnInit {
       action: [null],
       icon: [null],
       parentId: [null],
-      isActive: [true]
+      isActive: [true],
+      order: [0, Validators.required],
     });
   }
   createInvoiceEntegratorInfoForm() {
@@ -848,24 +849,40 @@ export class PagesInfoComponent implements OnInit {
 
     try {
       if (this.updatedMenuInfo) {
-        const result = await this.infoService.updateMenuInfo(this.menuInfoForm.value)
-        if (result) {
-          this.toasterService.success('Menü bilgileri başarıyla güncellendi');
-          this.loadMenuInfos();
-          this.updatedMenuInfo = null;
-          this.menuInfoForm.reset();
+
+        const existingMenuWithSameOrder = this.menuInfos
+          .filter(mi => mi.parentId === this.menuInfoForm.value.parentId)
+          .find(mi => mi.order === this.menuInfoForm.value.order && mi.id !== this.updatedMenuInfo.id);
+        if (true) {
+          if (this.menuInfoForm.value.order >= 0) {
+            const result = await this.infoService.updateMenuInfo(this.menuInfoForm.value)
+            if (result) {
+              this.toasterService.success('Menü bilgileri başarıyla güncellendi');
+              this.loadMenuInfos();
+              this.updatedMenuInfo = null;
+              this.menuInfoForm.reset();
+            } else {
+              this.toasterService.error('Menü bilgileri güncellenemedi');
+            }
+          }
         } else {
-          this.toasterService.error('Menü bilgileri güncellenemedi');
+          this.toasterService.warn("Bu sıra ilgili kategoride daha önce kullanıldı")
+
         }
       } else {
-        this.menuInfoForm.value.id = 0;
-        const result = await this.infoService.addMenuInfo(this.menuInfoForm.value)
-        if (result) {
-          this.toasterService.success('Menü bilgileri başarıyla kaydedildi');
-          this.loadMenuInfos();
-          this.menuInfoForm.reset();
-        } else {
-          this.toasterService.error('Menü bilgileri kaydedilemedi');
+
+        const existingMenuWithSameOrder = this.menuInfos
+          .filter(mi => mi.parentId === this.menuInfoForm.value.parentId);
+        if (true) {
+          this.menuInfoForm.value.id = 0;
+          const result = await this.infoService.addMenuInfo(this.menuInfoForm.value)
+          if (result) {
+            this.toasterService.success('Menü bilgileri başarıyla kaydedildi');
+            this.loadMenuInfos();
+            this.menuInfoForm.reset();
+          } else {
+            this.toasterService.error('Menü bilgileri kaydedilemedi');
+          }
         }
       }
     } catch (error) {
@@ -874,6 +891,7 @@ export class PagesInfoComponent implements OnInit {
   }
 
   async onEditMenuInfo(menuInfo: MenuInfo) {
+
     this.updatedMenuInfo = menuInfo;
     this.menuInfoForm.patchValue(menuInfo);
   }

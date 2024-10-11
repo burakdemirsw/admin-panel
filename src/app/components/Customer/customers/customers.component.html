@@ -1,0 +1,209 @@
+<main id="main" class="main">
+  <section class="section">
+    <div class="card custom-card mb-3">
+      <div class="card-body d-flex justify-content-start mt-3" style="overflow-x: auto">
+        <button type="button" class="btn btn-success" routerLink="/register">
+          <i class="fas fa-plus"></i> Müşteri Ekle
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <p-table [value]="customers" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '75rem'}"
+        [responsiveLayout]="'scroll'">
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="currAccCode">
+              Müşteri Kodu
+              <p-sortIcon field="currAccCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="currAccDescription">
+              Müşteri Açıklaması
+              <p-sortIcon field="currAccDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="customerTypeCode">
+              Müşteri Tipi Kodu
+              <p-sortIcon field="customerTypeCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="customerTypeDescription">
+              Müşteri Tipi Açıklaması
+              <p-sortIcon field="customerTypeDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="currencyCode">
+              Para Birimi Kodu
+              <p-sortIcon field="currencyCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="isVIP">
+              VIP
+              <p-sortIcon field="isVIP"></p-sortIcon>
+            </th>
+            <th pSortableColumn="promotionGroupDescription">
+              Promosyon Grubu Açıklaması
+              <p-sortIcon field="promotionGroupDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="companyCode">
+              Şirket Kodu
+              <p-sortIcon field="companyCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="officeCode">
+              Ofis Kodu
+              <p-sortIcon field="officeCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="officeDescription">
+              Ofis Açıklaması
+              <p-sortIcon field="officeDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="officeCountryCode">
+              Ülke Kodu
+              <p-sortIcon field="officeCountryCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="cityDescription">
+              Şehir Açıklaması
+              <p-sortIcon field="cityDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="districtDescription">
+              İlçe Açıklaması
+              <p-sortIcon field="districtDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="identityNum">
+              Kimlik Numarası
+              <p-sortIcon field="identityNum"></p-sortIcon>
+            </th>
+            <th pSortableColumn="taxNumber">
+              Vergi Numarası
+              <p-sortIcon field="taxNumber"></p-sortIcon>
+            </th>
+            <th pSortableColumn="vendorCode">
+              Tedarikçi Kodu
+              <p-sortIcon field="vendorCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="isSubjectToEInvoice">
+              E-Fatura Konusu
+              <p-sortIcon field="isSubjectToEInvoice"></p-sortIcon>
+            </th>
+            <th pSortableColumn="useDBSIntegration">
+              DBS Entegrasyonu Kullan
+              <p-sortIcon field="useDBSIntegration"></p-sortIcon>
+            </th>
+            <th pSortableColumn="isBlocked">
+              Engellendi
+              <p-sortIcon field="isBlocked"></p-sortIcon>
+            </th>
+            <th>
+              İşlemler
+
+            </th>
+          </tr>
+          <tr>
+            <th>
+              <p-columnFilter type="text" field="currAccCode" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="currAccDescription" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="customerTypeCode" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="customerTypeDescription" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="currencyCode" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="boolean" field="isVIP" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="promotionGroupDescription" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="companyCode" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="officeCode" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="officeDescription" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="officeCountryCode" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="cityDescription" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="districtDescription" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="identityNum" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="taxNumber" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="vendorCode" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="boolean" field="isSubjectToEInvoice" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="boolean" field="useDBSIntegration" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="boolean" field="isBlocked" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+
+
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-customer>
+          <tr>
+            <td>{{ customer.currAccCode }}</td>
+            <td>{{ customer.currAccDescription }}</td>
+            <td>{{ customer.customerTypeCode }}</td>
+            <td>{{ customer.customerTypeDescription }}</td>
+            <td>{{ customer.currencyCode }}</td>
+            <td>{{ customer.isVIP ? 'Evet' : 'Hayır' }}</td>
+            <td>{{ customer.promotionGroupDescription }}</td>
+            <td>{{ customer.companyCode }}</td>
+            <td>{{ customer.officeCode }}</td>
+            <td>{{ customer.officeDescription }}</td>
+            <td>{{ customer.officeCountryCode }}</td>
+            <td>{{ customer.cityDescription }}</td>
+            <td>{{ customer.districtDescription }}</td>
+            <td>{{ customer.identityNum }}</td>
+            <td>{{ customer.taxNumber }}</td>
+            <td>{{ customer.vendorCode }}</td>
+            <td>{{ customer.isSubjectToEInvoice ? 'Evet' : 'Hayır' }}</td>
+            <td>{{ customer.useDBSIntegration ? 'Evet' : 'Hayır' }}</td>
+            <td>{{ customer.isBlocked ? 'Evet' : 'Hayır' }}</td>
+            <td> <button class="btn btn-primary"><i class="fa fa-pencil" aria-hidden="true"
+                  (click)="goPage(customer)"></i></button></td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+
+    </div>
+
+    <!-- <p-dialog header="{{ listHeader }} Kullanıcısına Rol Ata" [(visible)]="visible2" [style]="{ width: '50vw' }">
+      <div class="dialog-content">
+        <div class="card flex justify-content-center">
+          <p-listbox #ms [options]="listItems" [(ngModel)]="selectedItems" optionLabel="label" [style]="{}"
+            [virtualScroll]="true" [filter]="true" [virtualScrollItemSize]="50" [multiple]="true" [checkbox]="true"
+            [showToggleAll]="false" [metaKeySelection]="false" [showToggleAll]="true"
+            [listStyle]="{ 'max-height': '220px' }"></p-listbox>
+        </div>
+        <nb-card>
+          <nb-card-body>
+            <button class="btn btn-primary" (click)="assignRoleToUser()">Kaydet</button>
+          </nb-card-body>
+        </nb-card>
+      </div>
+    </p-dialog> -->
+
+  </section>
+</main>

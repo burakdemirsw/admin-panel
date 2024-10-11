@@ -63,13 +63,14 @@ export class NebimInvoiceInfo extends BaseEntity {
 
 export class NebimInfo extends BaseEntity {
   processCode?: string;
-  officeCode?: string;
   storeCode?: string;
+  // officeCode?: string;
   posTerminalID?: string;
   shipmentMethodCode?: string;
   deliveryCompanyCode?: string;
   basePriceCode: string;
   sendAutoMail: boolean;
+  order: number;
 }
 
 export class MarketPlaceInfo extends BaseEntity {
@@ -140,6 +141,7 @@ export class MenuInfo {
   action?: string;
   parentId?: number;
   isActive?: boolean;
+  order: number;
 }
 export class MenuInfo_VM {
   id?: number;
@@ -158,6 +160,7 @@ export class MenuItem {
   action?: string;
   children?: MenuItem[];
   isActive: boolean;
+  order: number;
   permittedRoleIds?: number[]
 
 }

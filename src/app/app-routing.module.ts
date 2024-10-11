@@ -77,6 +77,7 @@ import { TaskPanelComponent } from './components/Devolopment/devolopment-list/ta
 import { UntransferredOrdersComponent } from './components/marketplace/transferred-orders/untransferred-orders/untransferred-orders.component';
 import { CreateWarehouseProcessComponent } from './components/Warehouse/warehouse-operation/create-warehouse-process/create-warehouse-process.component';
 import { RaportComponent } from './components/raport/raport/raport.component';
+import { CustomersComponent } from './components/Customer/customers/customers.component';
 
 
 const routes: Routes = [
@@ -368,6 +369,7 @@ const routes: Routes = [
   { path: 'authorization', component: AuthorizationComponent, canActivate: [AuthGuard] },
   { path: 'role-list', component: RoleListComponent, canActivate: [AuthGuard] },
   { path: 'transferred-orders', component: TransferredOrdersComponent, canActivate: [AuthGuard] },
+  { path: 'customers/:type', component: CustomersComponent, canActivate: [AuthGuard] },
 
   //------------------------------------------------------------------------- PERAKENDE
   { path: 'ideasoft/auth', component: IdeasoftComponent, pathMatch: 'prefix', runGuardsAndResolvers: 'always' },

@@ -10,6 +10,9 @@ export class UserRegister_VM {
   roleDescription: string;
   printerName_1?: string
   printerName_2?: string
+  officeCode?: string
+  warehouseCode?: string
+  isUseAllOffice?: string
 }
 export class Token {
   accessToken !: string
@@ -47,6 +50,9 @@ export class UserClientInfoResponse {
   name: string
   surname: string
   roleDescription: string
+  officeCode?: string
+  warehouseCode?: string
+  isUseAllOffice?: string
 }
 export class RefreshTokenCommandResponse {
   state?: boolean;
@@ -64,6 +70,9 @@ export class UserList_VM {
   roleDescription?: string
   printerName_1?: string
   printerName_2?: string
+  officeCode?: string
+  warehouseCode?: string
+  isUseAllOffice?: string
 
 }
 export class PasswordRequest_CM {

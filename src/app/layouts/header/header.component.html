@@ -2,7 +2,7 @@
   <div class="d-flex align-items-center justify-content-between">
     <a routerLink="/dashboard" class="logo d-flex align-items-center">
       <!-- <img src="assets/img/1024LOGO.jpg" alt="" /> -->
-      <span>ASSUR <span style="font-size: 14px"> {{ currentPageTitle }}</span>
+      <span>{{headerTitle}} <span style="font-size: 14px"> {{ currentPageTitle }}</span>
       </span>
     </a>
     <i (click)="sidebarToggle()" class="bi bi-list toggle-sidebar-btn"></i>
@@ -30,12 +30,15 @@
         </a>
         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
           <li class="dropdown-header">
-            <h6>Polar</h6>
-            <span>Şirket Sahibi</span>
+            <h6>{{companyTitle}} </h6>
+            <span>Şirket</span>
           </li>
 
           <li>
-            <a class="dropdown-item d-flex align-items-center" (click)="logOut()" routerLink="/pages-login ">
+            <a class="dropdown-item d-flex align-items-center" routerLink="/user-update/{{userId}}">
+              <i class="fa fa-user"></i> <span>Profil</span>
+            </a>
+            <a class="dropdown-item d-flex align-items-center" (click)="logOut()">
               <i class="bi bi-box-arrow-right"></i> <span>Çıkış Yap</span>
             </a>
           </li>

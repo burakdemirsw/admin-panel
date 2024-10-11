@@ -15,10 +15,10 @@ import { ListItem, Role_VM, AssignRoleToUserCommandRequest } from '../../auth/mo
 export class UserListComponent implements OnInit {
   roles: Role_VM[] = []
   selectedItems: any[] = [];
-  listHeader: string = "null";
-  listItems: any[] = []
-  selectAll = false;
   visible2: boolean = false;
+  listItems: any[] = []
+  listHeader: string = "null";
+  selectAll = false;
   constructor(
     private alertifyService: AlertifyService,
     private formBuilder: FormBuilder,
@@ -37,8 +37,6 @@ export class UserListComponent implements OnInit {
     var filter: GetUserFilter = new GetUserFilter();
     filter.count = 100;
     this.users = await this.userService.getUsers(filter);
-    console.log(this.users);
-    console.log(this.users);
   }
 
   async deleteUser(userId: number) {
@@ -98,23 +96,13 @@ export class UserListComponent implements OnInit {
     var model: AssignRoleToUserCommandRequest = new AssignRoleToUserCommandRequest();
     model.userId = this.selectedUser.id;
     var roles: Role_VM[] = [];
-
-
-
     this.selectedItems.forEach(r => {
-
       var role: Role_VM = new Role_VM();
       role.id = Number(r.value)
       role.roleName = r.label;
       roles.push(role)
-
     });
-
     model.roles = roles;
-
-
-
-    console.log(model);
     var response = await this.userService.assignRoleToUserAsync(model);
     if (response) {
       location.reload();
