@@ -79,3 +79,44 @@ export class cdPOSTerminal {
   lastUpdatedDate: Date;
   rowGuid: string; // GUID, TypeScript'te string olarak temsil edilir
 }
+export class cdCurrencyDesc {
+  currencyCode: string;
+  langCode: string;
+  currencyDescription: string;
+  createdUserName: string;
+  createdDate: Date;
+  lastUpdatedUserName: string;
+  lastUpdatedDate: Date;
+  rowGuid: string; // Use 'string' for TypeScript, as it doesn’t have a Guid type
+}
+export class CashAccount {
+  cashAccountCode: string; // CashAccountCode
+  cashAccountDescription: string; // CashAccountDescription
+  currencyCode: string; // CurrencyCode
+  currencyDescription: string; // CurrencyDescription
+  companyCode: number; // CompanyCode
+  officeCode: string; // OfficeCode
+  officeDescription: string; // OfficeDescription
+  storeCode: string; // StoreCode
+  isBlocked: boolean; // IsBlocked
+}
+export class bsCurrAccTypeDesc {
+  currAccTypeCode: number; // CurrAccTypeCode
+  langCode: string; // LangCode
+  currAccTypeDescription: string; // CurrAccTypeDescription
+  rowGuid: string; // RowGuid (using string for GUID)
+}
+export class bsCashTransTypeDesc {
+  cashTransTypeCode: number; // CashTransTypeCode
+  langCode: string; // LangCode
+  cashTransTypeDescription: string; // CashTransTypeDescription
+  rowGuid: string; // RowGuid (using string for GUID)
+}
+export class bsBankTransTypeDesc {
+  bankTransTypeCode: number; // BankTransTypeCode
+  langCode: string; // LangCode
+  bankTransTypeDescription: string; // BankTransTypeDescription
+  rowGuid: string; // RowGuid (using string for GUID)
+
+
+}

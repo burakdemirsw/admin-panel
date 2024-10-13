@@ -141,6 +141,7 @@ import { AutoMaximizeDialogDirective } from './directives/auto-maximize-dialog.d
 import { UntransferredOrdersComponent } from './components/marketplace/transferred-orders/untransferred-orders/untransferred-orders.component';
 import { CreateWarehouseProcessComponent } from './components/Warehouse/warehouse-operation/create-warehouse-process/create-warehouse-process.component';
 import { RaportComponent } from './components/raport/raport/raport.component';
+import { DividerModule } from 'primeng/divider';
 
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -148,6 +149,8 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { KeysPipe } from './components/raport/raport/keys.pipe';
 import { CustomersComponent } from './components/Customer/customers/customers.component';
+import { CashProcessComponent } from './components/cash/cash-process/cash-process.component';
+import { BankProcessComponent } from './components/bank/bank-process/bank-process.component';
 @NgModule({
 
   declarations: [
@@ -242,7 +245,9 @@ import { CustomersComponent } from './components/Customer/customers/customers.co
     CreateWarehouseProcessComponent,
     RaportComponent,
     CustomersComponent,
-    KeysPipe
+    KeysPipe,
+    CashProcessComponent,
+    BankProcessComponent
   ],
 
 
@@ -250,6 +255,8 @@ import { CustomersComponent } from './components/Customer/customers/customers.co
     NgxPopperjsModule,
     ToolbarModule,
     SkeletonModule,
+    DividerModule,
+    FieldsetModule,
     FormsModule,
     DragDropModule,
     ReactiveFormsModule,
@@ -293,7 +300,6 @@ import { CustomersComponent } from './components/Customer/customers/customers.co
     TableModule,
     InputTextModule,
     MessagesModule,
-    FieldsetModule,
     EditorModule,
     SplitButtonModule,
     InputGroupModule,

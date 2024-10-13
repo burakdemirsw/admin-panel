@@ -2,7 +2,7 @@
   <section class="section">
     <div class="card custom-card mb-3">
       <div class="card-body d-flex justify-content-start mt-3" style="overflow-x: auto">
-        <button type="button" class="btn btn-success" routerLink="/register">
+        <button type="button" class="btn btn-success" routerLink="/add-customer/{{this.route}}">
           <i class="fas fa-plus"></i> Müşteri Ekle
         </button>
       </div>
@@ -188,22 +188,5 @@
 
 
     </div>
-
-    <!-- <p-dialog header="{{ listHeader }} Kullanıcısına Rol Ata" [(visible)]="visible2" [style]="{ width: '50vw' }">
-      <div class="dialog-content">
-        <div class="card flex justify-content-center">
-          <p-listbox #ms [options]="listItems" [(ngModel)]="selectedItems" optionLabel="label" [style]="{}"
-            [virtualScroll]="true" [filter]="true" [virtualScrollItemSize]="50" [multiple]="true" [checkbox]="true"
-            [showToggleAll]="false" [metaKeySelection]="false" [showToggleAll]="true"
-            [listStyle]="{ 'max-height': '220px' }"></p-listbox>
-        </div>
-        <nb-card>
-          <nb-card-body>
-            <button class="btn btn-primary" (click)="assignRoleToUser()">Kaydet</button>
-          </nb-card-body>
-        </nb-card>
-      </div>
-    </p-dialog> -->
-
   </section>
 </main>

@@ -9,8 +9,9 @@ import {
   InvoiceIntegratorInfo,
   NebimInvoiceInfo
 } from 'src/app/models/model/company/companyInfo';
-import { cdColorDesc, cdCreditCardTypeDesc, cdDeliveryCompanyDesc, cdItemDim1Desc, cdPOSTerminal, cdShipmentMethodDesc } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
+import { bsBankTransTypeDesc, bsCashTransTypeDesc, bsCurrAccTypeDesc, CashAccount, cdColorDesc, cdCreditCardTypeDesc, cdCurrencyDesc, cdDeliveryCompanyDesc, cdItemDim1Desc, cdPOSTerminal, cdShipmentMethodDesc } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
+import { BankAccount } from 'src/app/models/model/invoice/createPurchaseInvoice';
 
 @Injectable({
   providedIn: 'root'
@@ -381,11 +382,38 @@ export class InfoService {
     const response = await this.httpClientService.get<cdCreditCardTypeDesc>({ controller: 'Infos/get-credit-card-types' }).toPromise();
     return response;
   }
+
+  async getCurrencyDesc(): Promise<cdCurrencyDesc[]> {
+    const response = await this.httpClientService.get<cdCurrencyDesc>({ controller: 'Infos/get-currency-desc' }).toPromise();
+    return response;
+  }
   async getPosTerminals(): Promise<cdPOSTerminal[]> {
     const response = await this.httpClientService.get<cdPOSTerminal>({ controller: 'Infos/get-pos-terminals' }).toPromise();
     return response;
   }
 
+  //
+  async getCashTransTypeDesc(): Promise<bsCashTransTypeDesc[]> {
+    const response = await this.httpClientService.get<bsCashTransTypeDesc>({ controller: 'Infos/get-cash-trans-type-desc' }).toPromise();
+    return response;
+  }
+  async getBankTransTypeDesc(): Promise<bsBankTransTypeDesc[]> {
+    const response = await this.httpClientService.get<bsBankTransTypeDesc>({ controller: 'Infos/get-bank-trans-type-desc' }).toPromise();
+    return response;
+  }
+  async getCurrAccTypeDesc(): Promise<bsCurrAccTypeDesc[]> {
+    const response = await this.httpClientService.get<bsCurrAccTypeDesc>({ controller: 'Infos/get-curr-acc-type-desc' }).toPromise();
+    return response;
+  }
+
+  async getCashAccounts(): Promise<CashAccount[]> {
+    const response = await this.httpClientService.get<CashAccount>({ controller: 'Infos/get-cash-accounts' }).toPromise();
+    return response;
+  }
+  async getBankAccounts(): Promise<BankAccount[]> {
+    const response = await this.httpClientService.get<BankAccount>({ controller: 'Infos/get-bank-accounts' }).toPromise();
+    return response;
+  }
   async getWarehouseAndOffices(): Promise<WarehouseOfficeModel[]> {
     try {
       const data = await this.httpClientService

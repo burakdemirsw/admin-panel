@@ -1,8 +1,18 @@
 <main id="main" class="main">
   <section class="section">
     <div class="row">
+      <div class="card custom-card mb-3">
+        <div class="card-body d-flex justify-content-start mt-3" style="overflow-x: auto">
+          <button type="button" class="btn btn-primary" (click)="this.addCustomerDialog=true">
+            Müşteri Ekle
+          </button>
+        </div>
+      </div>
 
       <div class="card">
+        <div>
+
+        </div>
         <p-tabView [activeIndex]="activeIndex" (onChange)="logger($event)">
           @if(true){
           <!-- Sipariş BİLGİLERİ (R-WS) ------------------------------------------------------------------------------------------------>
@@ -31,9 +41,9 @@
                     [filter]="true"></p-dropdown>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="taxTypeCode">Fatura Tipi</label>
+                  <label for="taxTypeCode">Vergi Tipi</label>
                   <p-dropdown formControlName="taxTypeCode" [options]="taxTypeCodeList" [showClear]="true"
-                    optionLabel="name" placeholder="Fatura Tipi"></p-dropdown>
+                    optionLabel="name" placeholder="Vergi Tipi"></p-dropdown>
                 </div>
 
 
@@ -91,8 +101,8 @@
 
           <!-- FATURA BİLGİLERİ (R-WS) ------------------------------------------------------------------------------------------------>
 
-          <p-tabPanel header="Fatura Başlığı"
-            *ngIf="((this.processCode == 'R'||'WS') && this.processType=='invoice')&& !this.invoiceProcess?.isCompleted">
+          <p-tabPanel header="Fatura Başlığı" *ngIf="((this.processCode == 'R'|| this.processCode =='WS') && this.processType=='invoice')&&
+            !this.invoiceProcess?.isCompleted">
             <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit(invoiceForm.value)">
               <div class="row mb-3">
                 <div class="form-group col-md-6">
@@ -115,9 +125,9 @@
                     [filter]="true"></p-dropdown>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="taxTypeCode">Fatura Tipi</label>
+                  <label for="taxTypeCode">Vergi Tipi</label>
                   <p-dropdown formControlName="taxTypeCode" [options]="taxTypeCodeList" [showClear]="true"
-                    optionLabel="name" placeholder="Fatura Tipi"></p-dropdown>
+                    optionLabel="name" placeholder="Vergi Tipi"></p-dropdown>
                 </div>
               </div>
 
@@ -170,6 +180,8 @@
 
               <div class="row mb-3">
                 <div class="form-group col">
+
+
                   <button type="button" class="btn btn-primary" style="width: 100%"
                     (click)="updateInvocieProcess(this.invoiceForm.value)" [disabled]="
                     this.invoiceProcess?.isCompleted">
@@ -182,8 +194,8 @@
 
           <!-- FATURA BİLGİLERİ (BP) ------------------------------------------------------------------------------------------------>
 
-          <p-tabPanel header="Fatura Başlığı"
-            *ngIf="(this.processCode == 'BP' && this.processType=='invoice') && !this.invoiceProcess?.isCompleted">
+          <p-tabPanel header="Fatura Başlığı" *ngIf="((this.processCode == 'BP' || this.processCode == 'ES') &&
+            this.processType=='invoice' ) && !this.invoiceProcess?.isCompleted">
             <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit(invoiceForm.value)">
               <div class="row mb-3">
                 <div class="form-group col-md-6">
@@ -206,9 +218,9 @@
                     [filter]="true"></p-dropdown>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="taxTypeCode">Fatura Tipi</label>
+                  <label for="taxTypeCode">Vergi Tipi</label>
                   <p-dropdown formControlName="taxTypeCode" [options]="taxTypeCodeList" [showClear]="true"
-                    optionLabel="name" placeholder="Fatura Tipi"></p-dropdown>
+                    optionLabel="name" placeholder="Vergi Tipi"></p-dropdown>
                 </div>
               </div>
               <div class="row mb-3">
@@ -293,9 +305,9 @@
                     [filter]="true"></p-dropdown>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="taxTypeCode">Fatura Tipi</label>
+                  <label for="taxTypeCode">Vergi Tipi</label>
                   <p-dropdown formControlName="taxTypeCode" [options]="taxTypeCodeList" [showClear]="true"
-                    optionLabel="name" placeholder="Fatura Tipi"></p-dropdown>
+                    optionLabel="name" placeholder="Vergi Tipi"></p-dropdown>
                 </div>
               </div>
               <div class="row mb-3">
@@ -384,9 +396,9 @@
               </div>
 
               <div class="row mb-3">
-                <label for="taxTypeCode">Fatura Tipi</label>
+                <label for="taxTypeCode">Vergi Tipi</label>
                 <p-dropdown formControlName="taxTypeCode" [options]="taxTypeCodeList" [showClear]="true"
-                  optionLabel="name" placeholder="Fatura Tipi"></p-dropdown>
+                  optionLabel="name" placeholder="Vergi Tipi"></p-dropdown>
               </div>
               <div class="row mb-3">
                 <label for="salesPersonCode">Satış Elemanı</label>
@@ -485,7 +497,7 @@
             </form>
           </p-tabPanel>
           <p-tabPanel header="{{lineHeading}}" *ngIf="(this.invoiceProcess && !this.invoiceProcess?.isCompleted) && (this.invoiceProcess?.applicationCode  !='Order'
-            && this.invoiceProcess?.applicationCode !='Proposal')">
+            && this.invoiceProcess?.applicationCode !='Proposal' && this.invoiceProcess?.applicationCode !='Invoice')">
             <!-- FATURA ÜRÜN FORMU------------------------------------------------------------------------------------------------>
             <form [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
               <div class="row mb-3">
@@ -537,7 +549,7 @@
           </p-tabPanel>
           <!-- FATURA KONTROL  *ngIf="this.invoiceProcess && this.invoiceProducts.length>0"------------------------------------------------------------------------------------------------>
           <p-tabPanel header="{{detailHeading}}" *ngIf="(this.invoiceProcess && invoiceProducts.length > 0 ) || (this.invoiceProcess?.applicationCode  =='Order'
-            || this.invoiceProcess?.applicationCode =='Proposal')">
+            || this.invoiceProcess?.applicationCode =='Proposal' ||this.invoiceProcess?.applicationCode =='Invoice')">
 
             <!-- BULUNAN ÜRÜNLER DİALOGU------------------------------------------------------------------------------------------------>
 
@@ -667,8 +679,8 @@
                 <strong>Uyarı:</strong> Şu an düzenleme modundasınız. Lütfen siparişi tamamlayınız.
               </div>
             </div>
-            <div *ngIf="this.invoiceProcess?.applicationCode=='Order'
-              || this.invoiceProcess?.applicationCode =='Proposal' && !this.invoiceProcess.isCompleted">
+            <div *ngIf="(this.invoiceProcess?.applicationCode=='Order'   || this.invoiceProcess?.applicationCode == 'Invoice'
+              || this.invoiceProcess?.applicationCode =='Proposal' )&& !this.invoiceProcess.isCompleted">
               <div class="row mb-3">
                 <p-inputGroup>
                   <input type="text" pInputText placeholder="Ara" [(ngModel)]="search"
@@ -949,7 +961,8 @@
       </div>
       <!-- ÜRÜN LİSTESİ ------------------------------------------------------------------------------------------------>
 
-      <div class="card" *ngIf="invoiceProducts.length > 0 && activeIndex==1 &&  !this.invoiceProcess?.isCompleted">
+      <div class="card"
+        *ngIf="(invoiceProducts.length > 0 && activeIndex==1 &&  !this.invoiceProcess?.isCompleted) && false">
         <p-table [value]="invoiceProducts" class="table" [paginator]="true" [rows]="10"
           [tableStyle]="{ 'min-width': '50rem' }">
           <ng-template pTemplate="header">
@@ -1110,5 +1123,14 @@
 
       </div>
     </div>
+
+    <!-- Ürün Güncelle----------------------------------------------------------------------------------------------------->
+    <p-dialog header="Müşteri ekle" [(visible)]="addCustomerDialog" [modal]="true" [closable]="false"
+      [ariaExpanded]="true" [style]="{width: '300px'}">
+      <app-add-customer [_type]="processCode === 'ws' ? 'whosale' : (processCode === 'r' ? 'retail' : 'vendor')">
+      </app-add-customer>
+
+    </p-dialog>
+
   </section>
 </main>

@@ -17,6 +17,9 @@ th {
   padding: 0rem;
 }
 
+::ng-deep .p-fieldset {
+  border: 1px solid #e5e7eb !important
+}
 
 ::ng-deep .p-button {
 

@@ -1,80 +1,442 @@
-<main id="main" class="main">
-  <section class="section">
-
-
+<main id="{{ this._pageType ? 'main' : '' }}" ngClass="{{ this._pageType ? 'main' : '' }}">
+  <section ngClass="{{ this._pageType ? 'section' : 'main' }}">
     <div class="card">
       <div class="card-body">
-        <form [formGroup]="createCustomerForm" class="mt-4">
-          <div class="row mb-3">
-            <div class="col-md-12">
-              <input pInputText type="text" class="form-control" id="currAccDescription" placeholder="Firma Adı"
-                formControlName="currAccDescription" />
+        <p-tabView>
+          <p-tabPanel header="Müşteri Ekle" *ngIf="!this.currAccCode">
+            <p-fieldset legend="Genel Bilgiler">
+              <form [formGroup]="createCustomerForm" class="mt-2"
+                (ngSubmit)="submitAddressForm(createCustomerForm.value)">
+                <div class="row mb-3">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="currAccDescription">Müşteri Açıklaması</label>
+                      <input pInputText type="text" class="form-control" id="currAccDescription"
+                        placeholder="Müşteri Açıklaması" formControlName="currAccDescription"
+                        [ngClass]="{'is-invalid': createCustomerForm.controls['currAccDescription'].invalid && createCustomerForm.controls['currAccDescription'].touched}" />
+                      <!-- Error message to display when field is invalid and touched -->
+                      <div
+                        *ngIf="createCustomerForm.controls['currAccDescription'].invalid && createCustomerForm.controls['currAccDescription'].touched"
+                        class="invalid-feedback">
+                        Müşteri Açıklaması zorunludur.
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="mail">Mail</label>
+                    <input pInputText type="text" class="form-control" id="mail" placeholder="Mail"
+                      formControlName="mail"
+                      [ngClass]="{'is-invalid': createCustomerForm.controls['mail'].invalid && createCustomerForm.controls['mail'].touched}" />
+                    <!-- Error message for Mail -->
+                    <div
+                      *ngIf="createCustomerForm.controls['mail'].invalid && createCustomerForm.controls['mail'].touched"
+                      class="invalid-feedback">
+                      Geçerli bir mail adresi girin.
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="phoneNumber">Telefon</label>
+                    <input pInputText type="text" class="form-control" id="phoneNumber" placeholder="(05XX XXX XX XX)"
+                      formControlName="phoneNumber"
+                      [ngClass]="{'is-invalid': createCustomerForm.controls['phoneNumber'].invalid && createCustomerForm.controls['phoneNumber'].touched}" />
+                    <!-- Error message for Telefon -->
+                    <div
+                      *ngIf="createCustomerForm.controls['phoneNumber'].invalid && createCustomerForm.controls['phoneNumber'].touched"
+                      class="invalid-feedback">
+                      Geçerli bir telefon numarası girin.
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="form-group mb-3">
+                  <label for="currencyCode">Para Birimi</label>
+                  <select id="currencyCode" class="form-control" formControlName="currencyCode">
+                    <option *ngFor="let g of cdCurrencyDescriptions" value="{{ g.currencyCode}}">
+                      {{g.currencyDescription}}</option>
+                  </select>
+                  <!-- <input type="text" id="storeCode" class="form-control" formControlName="storeCode"> -->
+                </div>
+
+                <div class="form-group mb-3">
+                  <label for="identity_number">TC Kimlik Numaranız</label>
+                  <input placeholder="TC Kimlik Numaranız" minlength="11" maxlength="11" pInputText type="text"
+                    class="form-control" id="identity_number" name="identity_number" fullWidth
+                    formControlName="identity_number" />
+                </div>
+                <div class="form-group mb-3">
+                  <label for="tax_number">Vergi Numaranız</label>
+                  <input placeholder="Vergi Numaranız" minlength="9" maxlength="10" pInputText type="text"
+                    class="form-control" id="tax_number" name="tax_number" fullWidth formControlName="tax_number" />
+                </div>
+
+
+                <div class="form-group mb-3">
+                  <label>Kullanım Dışı</label>
+                  <p-inputSwitch id="isBlocked" class="form-control" formControlName="isBlocked">
+                  </p-inputSwitch>
+                </div>
+
+                <div class="form-group mb-3">
+                  <label>VIP</label>
+                  <p-inputSwitch id="isVIP" class="form-control" formControlName="isVIP">
+                  </p-inputSwitch>
+                </div>
+
+                <!-- <div class="form-group" *ngIf="!this.pageType">
+                  <button pButton pRipple class="p-button-success" icon="fa fa-plus" type="submit"
+                    label="Müşteri Ekle"></button>
+                </div>
+
+                <div class="form-group" *ngIf="this.pageType">
+                  <button pButton pRipple class="p-button-success" icon="fa fa-plus" type="submit"
+                    label="Müşteri Güncelle"></button>
+                </div> -->
+              </form>
+            </p-fieldset>
+
+
+            <div class="mb-3"></div>
+            <p-fieldset legend="Adres">
+              <form [formGroup]="createCustomerForm" class="mt-2"
+                (ngSubmit)="submitAddressForm(createCustomerForm.value)">
+                <!-- Country Dropdown -->
+                <div class="form-group mb-3">
+                  <label>Ülke</label>
+
+                  <p-dropdown formControlName="address_country" [options]="_countries" optionLabel="name"
+                    [showClear]="true" placeholder="Ülke"
+                    [ngClass]="{'is-invalid': createCustomerForm.controls['address_country'].invalid && createCustomerForm.controls['address_country'].touched}">
+                  </p-dropdown>
+                  <div
+                    *ngIf="createCustomerForm.controls['address_country'].invalid && createCustomerForm.controls['address_country'].touched"
+                    class="invalid-feedback">
+                    Ülke seçmek zorunludur.
+                  </div>
+                </div>
+
+                <!-- Region Dropdown -->
+                <div class="form-group mb-3">
+                  <label>Bölge</label>
+                  <p-dropdown formControlName="address_region" [options]="_regions" optionLabel="name"
+                    [showClear]="true" placeholder="Bölge"
+                    [ngClass]="{'is-invalid': createCustomerForm.controls['address_region'].invalid && createCustomerForm.controls['address_region'].touched}">
+                  </p-dropdown>
+                  <div
+                    *ngIf="createCustomerForm.controls['address_region'].invalid && createCustomerForm.controls['address_region'].touched"
+                    class="invalid-feedback">
+                    Bölge seçmek zorunludur.
+                  </div>
+                </div>
+
+                <!-- Province Dropdown -->
+                <div class="form-group mb-3">
+                  <label>İl</label>
+                  <p-dropdown formControlName="address_province" [options]="_provinces" optionLabel="name"
+                    [showClear]="true" placeholder="İl"
+                    [ngClass]="{'is-invalid': createCustomerForm.controls['address_province'].invalid && createCustomerForm.controls['address_province'].touched}">
+                  </p-dropdown>
+                  <div
+                    *ngIf="createCustomerForm.controls['address_province'].invalid && createCustomerForm.controls['address_province'].touched"
+                    class="invalid-feedback">
+                    İl seçmek zorunludur.
+                  </div>
+                </div>
+
+                <!-- District Dropdown -->
+                <div class="form-group mb-3">
+                  <label>İlçe</label>
+                  <p-dropdown formControlName="address_district" [options]="_districts" optionLabel="name"
+                    [showClear]="true" placeholder="İlçe"
+                    [ngClass]="{'is-invalid': createCustomerForm.controls['address_district'].invalid && createCustomerForm.controls['address_district'].touched}">
+                  </p-dropdown>
+                  <div
+                    *ngIf="createCustomerForm.controls['address_district'].invalid && createCustomerForm.controls['address_district'].touched"
+                    class="invalid-feedback">
+                    İlçe seçmek zorunludur.
+                  </div>
+                </div>
+
+                <!-- Tax Office Dropdown -->
+                <div class="form-group mb-3">
+                  <label>Vergi Dairesi</label>
+                  <p-dropdown formControlName="address_taxOffice" [options]="_taxOffices" optionLabel="name"
+                    [showClear]="true" placeholder="Vergi Dairesi"
+                    [ngClass]="{'is-invalid': createCustomerForm.controls['address_taxOffice'].invalid && createCustomerForm.controls['address_taxOffice'].touched}">
+                  </p-dropdown>
+                  <div
+                    *ngIf="createCustomerForm.controls['address_taxOffice'].invalid && createCustomerForm.controls['address_taxOffice'].touched"
+                    class="invalid-feedback">
+                    Vergi dairesi seçmek zorunludur.
+                  </div>
+                </div>
+
+                <!-- Address Input -->
+                <div class="form-group mb-3">
+                  <label>Adres</label>
+                  <input placeholder="Adres" pInputText type="text" class="form-control" id="address_description"
+                    name="address_description" fullWidth formControlName="address_description"
+                    [ngClass]="{'is-invalid': createCustomerForm.controls['address_description'].invalid && createCustomerForm.controls['address_description'].touched}" />
+                  <div
+                    *ngIf="createCustomerForm.controls['address_description'].invalid && createCustomerForm.controls['address_description'].touched"
+                    class="invalid-feedback">
+                    Adres zorunludur.
+                  </div>
+                </div>
+
+                <!-- Postal Code Input -->
+                <div class="form-group mb-3">
+                  <label>Posta Kodu</label>
+                  <input placeholder="Posta Kodu" pInputText type="text" id="address_postalCode"
+                    name="address_postalCode" fullWidth formControlName="address_postalCode" class="form-control" />
+
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="form-group" *ngIf="!this.pageType">
+                  <button pButton pRipple class="p-button-success" icon="fa fa-plus" type="submit"
+                    label="Müşteri Ekle"></button>
+                </div>
+                <div class="form-group" *ngIf="this.pageType">
+                  <button pButton pRipple class="p-button-success" icon="fa fa-plus" type="submit"
+                    label="Müşteri Güncelle"></button>
+                </div>
+              </form>
+
+            </p-fieldset>
+
+          </p-tabPanel>
+
+          <p-tabPanel header="Müşteri" *ngIf="this.currAccCode">
+            <form [formGroup]="createCustomerForm" class="mt-2">
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <label for="currencyCode">Müşteri Açıklaması</label>
+                  <input pInputText type="text" class="form-control" id="currAccDescription"
+                    placeholder="Müşteri Açıklamasıı" formControlName="currAccDescription" />
+                </div>
+              </div>
+
+
+              <div class="form-group mb-3">
+                <label for="currencyCode">Para Birimi</label>
+                <select id="currencyCode" class="form-control" formControlName="currencyCode">
+                  <option *ngFor="let g of cdCurrencyDescriptions" value="{{ g.currencyCode}}">
+                    {{g.currencyDescription}}</option>
+                </select>
+                <!-- <input type="text" id="storeCode" class="form-control" formControlName="storeCode"> -->
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="identity_number">TC Kimlik Numaranız</label>
+                <input placeholder="TC Kimlik Numaranız" minlength="11" maxlength="11" pInputText type="text"
+                  class="form-control" id="identity_number" name="identity_number" fullWidth
+                  formControlName="identity_number" />
+              </div>
+              <div class="form-group mb-3">
+                <label for="tax_number">Vergi Numaranız</label>
+                <input placeholder="Vergi Numaranız" minlength="9" maxlength="10" pInputText type="text"
+                  class="form-control" id="tax_number" name="tax_number" fullWidth formControlName="tax_number" />
+              </div>
+
+
+              <div class="form-group mb-3">
+                <label>Kullanım Dışı</label>
+                <p-inputSwitch id="isBlocked" class="form-control" formControlName="isBlocked">
+                </p-inputSwitch>
+              </div>
+
+              <div class="form-group mb-3">
+                <label>VIP</label>
+                <p-inputSwitch id="isVIP" class="form-control" formControlName="isVIP">
+                </p-inputSwitch>
+              </div>
+              <div class="form-group">
+                <button pButton pRipple class="p-button-success" icon="fa fa-plus" (click)="updateCustomer()"
+                  label="Güncelle"></button>
+              </div>
+
+            </form>
+
+          </p-tabPanel>
+          <p-tabPanel header="İletişim Bilgileri" *ngIf="this.response?.communications?.length > 0 && this.currAccCode">
+            <div class="d-flex justify-content-between mb-2">
+              <button pButton type="button" label="Yeni Ekle" (click)="openDialogForAdd()"></button>
             </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <input pInputText type="text" class="form-control" id="mail" placeholder="Mail" formControlName="mail" />
+
+            <p-table [value]="response.communications" [paginator]="true" [rows]="10"
+              [tableStyle]="{'min-width': '50rem'}" [responsiveLayout]="'scroll'">
+
+              <ng-template pTemplate="header">
+                <tr>
+
+                  <th pSortableColumn="communicationTypeCode">
+                    İletişim Türü Kodu
+                    <p-sortIcon field="communicationTypeCode"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="commAddress">
+                    İletişim Adresi
+                    <p-sortIcon field="commAddress"></p-sortIcon>
+                  </th>
+                  <th>İşlemler</th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-communication>
+                <tr>
+                  <td>{{ communication.communicationTypeCode == 7 ? "Telefon" : "Mail" }}</td>
+                  <td>{{ communication.commAddress }}</td>
+                  <td>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                      <button class="btn btn-primary" (click)="openDialogForEdit(communication)"> <i
+                          class="fa fa-pencil" aria-hidden="true"></i></button>
+                      <button class="btn btn-danger"
+                        (click)="deleteCustomerCommunication(communication.communicationID)"><i class="fa fa-trash"
+                          aria-hidden="true"></i></button>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+
+            <!-- Dialog for Add/Edit -->
+            <p-dialog header="İletişim Bilgileri" [(visible)]="displayDialog" [modal]="true" [responsive]="true">
+              <form [formGroup]="updateCommunicationForm" class="mt-2">
+
+                <div class="p-fluid">
+                  <div class="field" *ngIf="!this.selectedCommunication">
+                    <label for="communicationTypeCode">İletişim Türü Kodu</label>
+
+                    <select id="communicationTypeCode" class="form-control" formControlName="communicationTypeCode">
+                      <option *ngFor="let g of communicationTypeOptions" value="{{ g.value}}">
+                        {{g.label}}</option>
+                    </select>
+                  </div>
+                  <div class="field mb-3">
+                    <label for="commAddress">İletişim Adresi</label>
+                    <input id="commAddress" formControlName="commAddress" type="text" pInputText />
+                  </div>
+                </div>
+                <p-footer>
+                  <button class="btn btn-primary" (click)="updateCommunication()" *ngIf="isEditing">Güncelle</button>
+                  <button class="btn btn-primary" (click)="addCommunication()" *ngIf="!isEditing">Ekle</button>
+                  <button class="btn btn-danger" (click)="closeDialog()"> İptal</button>
+                </p-footer>
+
+              </form>
+
+            </p-dialog>
+          </p-tabPanel>
+
+          <p-tabPanel header="Adres Bilgileri" *ngIf="this.response?.addresses?.length>0 && this.currAccCode">
+            <div class="d-flex justify-content-between mb-2">
+              <button pButton type="button" label="Yeni Ekle" (click)="openDialogForAddAddress()"></button>
             </div>
-            <div class="col-md-6">
-              <input pInputText type="text" class="form-control" id="phoneNumber" placeholder="(05XX XXX XX XX)"
-                formControlName="phoneNumber" />
-            </div>
-          </div>
+            <p-table [value]="response.addresses" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
+              [responsiveLayout]="'scroll'">
+
+              <ng-template pTemplate="header">
+                <tr>
 
 
-        </form>
-        <form [formGroup]="createCustomerForm" (ngSubmit)="submitAddressForm(createCustomerForm.value)">
-          <div class="form-group mb-3">
-            <p-dropdown formControlName="address_country" [options]="_countries" optionLabel="name" [showClear]="true"
-              placeholder="Ülke"></p-dropdown>
-          </div>
-          <div class="form-group mb-3">
-            <p-dropdown formControlName="address_region" [options]="_regions" optionLabel="name" [showClear]="true"
-              placeholder="Bölge"></p-dropdown>
-          </div>
-          <div class="form-group mb-3">
-            <p-dropdown formControlName="address_province" [options]="_provinces" optionLabel="name" [showClear]="true"
-              placeholder="il"></p-dropdown>
-          </div>
+                  <th pSortableColumn="countryDescription">
+                    Ülke Açıklaması
+                    <p-sortIcon field="countryDescription"></p-sortIcon>
+                  </th>
 
-          <div class="form-group mb-3">
-            <p-dropdown formControlName="address_taxOffice" [options]="_taxOffices" optionLabel="name"
-              [showClear]="true" placeholder="Vergi Dairesi"></p-dropdown>
-          </div>
+                  <th pSortableColumn="stateDescription">
+                    Eyalet Açıklaması
+                    <p-sortIcon field="stateDescription"></p-sortIcon>
+                  </th>
 
-          <div class="form-group mb-3">
-            <p-dropdown formControlName="address_district" [options]="_districts" optionLabel="name" [showClear]="true"
-              placeholder="İlçe"></p-dropdown>
-          </div>
-          <div class="form-group mb-3">
-            <input placeholder="TC Kimlik Numaranız" minlength="11" maxlength="11" pInputText type="text"
-              class="form-control" id="identity_number" name="identity_number" fullWidth
-              formControlName="identity_number" />
-          </div>
-          <div class="form-group mb-3">
-            <input placeholder="Vergi Numaranız" minlength="9" maxlength="10" pInputText type="text"
-              class="form-control" id="tax_number" name="tax_number" fullWidth formControlName="tax_number" />
-          </div>
-          <div class="form-group mb-3">
-            <input placeholder="Adres*" pInputText type="text" class="form-control" id="address_description"
-              name="address_description" fullWidth formControlName="address_description" />
-          </div>
+                  <th pSortableColumn="cityDescription">
+                    Şehir Açıklaması
+                    <p-sortIcon field="cityDescription"></p-sortIcon>
+                  </th>
 
-          <div class="form-group mb-3">
-            <input placeholder="Posta Kodu" pInputText type="text" id="address_postalCode" name="address_postalCode"
-              fullWidth formControlName="address_postalCode" class="form-control" />
-          </div>
+                  <th pSortableColumn="districtDescription">
+                    İlçe Açıklaması
+                    <p-sortIcon field="districtDescription"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="address">
+                    Adres
+                    <p-sortIcon field="address"></p-sortIcon>
+                  </th>
+                  <th>İşlemler</th>
+                </tr>
+              </ng-template>
 
-          <div class="form-group" *ngIf="!this.pageType">
-            <button pButton pRipple class="p-button-success" icon="fa fa-plus" type="submit"
-              label="Müşteri Ekle"></button>
-          </div>
+              <ng-template pTemplate="body" let-address>
+                <tr>
+                  <td>{{ address?.countryDescription }}</td>
+                  <td>{{ address?.stateDescription }}</td>
+                  <td>{{ address?.cityDescription }}</td>
+                  <td>{{ address?.districtDescription }}</td>
+                  <td>{{ address?.address }}</td>
 
-          <div class="form-group" *ngIf="this.pageType">
-            <button pButton pRipple class="p-button-success" icon="fa fa-plus" type="submit"
-              label="Müşteri Güncelle"></button>
-          </div>
-        </form>
+                  <td>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                      <button class="btn btn-primary" (click)="openDialogForEdit2(address)"> <i class="fa fa-pencil"
+                          aria-hidden="true"></i></button>
+                      <button class="btn btn-danger" (click)="deleteCustomerAddress(address.postalAddressID)"><i
+                          class="fa fa-trash" aria-hidden="true"></i></button>
+                    </div>
+                  </td>
+
+                </tr>
+              </ng-template>
+            </p-table>
+
+            <p-dialog header="Adres Bilgileri" [(visible)]="displayDialog2" [modal]="true" [responsive]="true">
+              <form [formGroup]="updateAddressForm" class="mt-2">
+
+                <div class="form-group mb-3">
+                  <p-dropdown formControlName="country" [options]="_countries" optionLabel="name" [showClear]="true"
+                    placeholder="Ülke"></p-dropdown>
+                </div>
+                <div class="form-group mb-3">
+                  <p-dropdown formControlName="region" [options]="_regions" optionLabel="name" [showClear]="true"
+                    placeholder="Bölge"></p-dropdown>
+                </div>
+                <div class="form-group mb-3">
+                  <p-dropdown formControlName="province" [options]="_provinces" optionLabel="name" [showClear]="true"
+                    placeholder="il"></p-dropdown>
+                </div>
+                <div class="form-group mb-3">
+                  <p-dropdown formControlName="district" [options]="_districts" optionLabel="name" [showClear]="true"
+                    placeholder="İlçe"></p-dropdown>
+                </div>
+                <div class="form-group mb-3">
+                  <p-dropdown formControlName="taxOffice" [options]="_taxOffices" optionLabel="name" [showClear]="true"
+                    placeholder="Vergi Dairesi"></p-dropdown>
+                </div>
+
+                <div class="form-group mb-3">
+                  <input placeholder="Adres*" pInputText type="text" class="form-control" id="address" name="address"
+                    fullWidth formControlName="address" />
+                </div>
+
+                <div class="form-group mb-3">
+                  <input placeholder="Posta Kodu" pInputText type="text" id="postalCode" name="postalCode" fullWidth
+                    formControlName="postalCode" class="form-control" />
+                </div>
+
+                <p-footer>
+                  <button class="btn btn-primary" (click)="updateAddress()" *ngIf="isEditing2">Güncelle</button>
+                  <button class="btn btn-primary" (click)="addAddress()" *ngIf="!isEditing2">Ekle</button>
+                  <button class="btn btn-danger" (click)="closeDialog()"> İptal</button>
+                </p-footer>
+
+              </form>
+
+            </p-dialog>
+
+          </p-tabPanel>
+        </p-tabView>
+
       </div>
     </div>
   </section>

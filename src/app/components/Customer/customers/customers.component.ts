@@ -33,23 +33,28 @@ export class CustomersComponent {
   ) { }
 
   type: string;
+  route: string;
+
   async ngOnInit() {
     this.activatedRoute.params.subscribe(async (params) => {
       if (params) {
-        if (params["type"] == "1") {
-          this.type = params["type"]
+        if (params["type"] == "vendor") {
+          this.route = params["type"]
+          this.type = "1"
           this.headerService.updatePageTitle("Tedarikçi Listesi")
           this.customers = await this.warehouseService.getCustomerList(this.type);
 
         }
-        if (params["type"] == "4") {
-          this.type = params["type"]
+        if (params["type"] == "retail") {
+          this.route = params["type"]
+          this.type = "4"
           this.headerService.updatePageTitle("Perakende Müşteri Listesi")
           this.customers = await this.warehouseService.getCustomerList(this.type);
 
         }
-        if (params["type"] == "3") {
-          this.type = params["type"]
+        if (params["type"] == "whosale") {
+          this.route = params["type"]
+          this.type = "3"
           this.headerService.updatePageTitle("Toptan Müşteri Listesi")
           this.customers = await this.warehouseService.getCustomerList(this.type);
 
@@ -60,12 +65,6 @@ export class CustomersComponent {
   }
 
   goPage(customer: CustomerModel) {
-    if (customer.customerTypeCode == 1) {
-
-    } else if (customer.customerTypeCode == 3) {
-
-    } else if (customer.customerTypeCode == 4) {
-
-    }
+    this.routerService.navigate(["add-customer", this.route, customer.currAccCode])
   }
 }

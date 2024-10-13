@@ -21,3 +21,16 @@ thead {
   border: 1px solid #e2e8f0;
   border-width: 0 0 1px 0;
 }
+
+legend {
+  float: none;
+  width: auto;
+  padding: 0.5rem !important;
+  margin-bottom: initial;
+
+  line-height: normal;
+}
+
+fieldset {
+  padding: 0.5rem !important;
+}

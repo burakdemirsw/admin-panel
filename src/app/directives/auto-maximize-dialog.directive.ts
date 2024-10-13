@@ -15,6 +15,7 @@ export class AutoMaximizeDialogDirective implements AfterViewInit {
       this.dialog.closable = true;
       this.dialog.position = 'center';
       this.dialog.resizable = true;
+
       this.dialog.style = { 'min-width': '50vw' }; // Stil nesnesi olarak atanmalı
 
     }

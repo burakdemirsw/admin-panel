@@ -24,7 +24,7 @@ export class InvoiceListComponent implements OnInit {
 
   ) { }
   offices: any[] = ["Alış", "Satış"]
-  processCodes: string[] = ["WS", "BP", "R", "ws", "bp", "r", "prws"]
+  processCodes: string[] = ["WS", "BP", "R", "ES", "es", "ws", "bp", "r", "prws"]
   processTypes: string[] = ["invoice", "order", "proposal", "shipment"]
   barcode: string = null;
   quantity: string = null;
@@ -54,7 +54,12 @@ export class InvoiceListComponent implements OnInit {
         else if ((this.processCode == 'BP' && this.processType == 'invoice')) {
           this.headerService.updatePageTitle("Alış Faturaları");
           await this.getInvoiceList();
-        } else if ((this.processCode == 'WS' && this.processType == 'proposal')) {
+        }
+        else if ((this.processCode == 'ES' && this.processType == 'invoice')) {
+          this.headerService.updatePageTitle("Masraf Faturaları");
+          await this.getInvoiceList();
+        }
+        else if ((this.processCode == 'WS' && this.processType == 'proposal')) {
           this.headerService.updatePageTitle("Toptan Satış Teklifleri");
           await this.getInvoiceList();
         } else if ((this.processCode == 'R' && this.processType == 'order')) {

@@ -1,0 +1,11 @@
+::ng-deep .p-dropdown {
+  width: 100% !important;
+}
+
+::ng-deep .p-toolbar {
+  background-color: #ffffff;
+}
+
+::ng-deep .p-dropdown {
+  width: 100% !important;
+}

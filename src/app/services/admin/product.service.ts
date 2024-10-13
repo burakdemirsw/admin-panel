@@ -568,9 +568,9 @@ export class ProductService {
   }
 
 
-  async getBasketProducts(processCode: string, applicationCode: string): Promise<BasketProduct_VM[]> {
+  async getBasketProducts(itemTypeCode: number, processCode: string, applicationCode: string): Promise<BasketProduct_VM[]> {
     const response = await this.httpClientService
-      .get<BasketProduct_VM>({ controller: 'Products/search-product-5/' + processCode }, applicationCode)
+      .get<BasketProduct_VM>({ controller: 'Products/search-product-5/' + itemTypeCode + "/" + processCode }, applicationCode)
       .toPromise();
 
     return response;

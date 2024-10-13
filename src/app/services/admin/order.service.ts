@@ -6,11 +6,11 @@ import { Observable } from 'rxjs/internal/Observable';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { InvocieFilterModel } from 'src/app/models/model/filter/invoiceFilterModel';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
-import { CollectedInvoiceProduct, CreatePurchaseInvoice, InvoiceProcess, ProductDetail_VM } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { BankHeader, BankLine, CashHeader, CashLine, CollectedInvoiceProduct, CreatePurchaseInvoice, InvoiceProcess, NebimResponse, ProductDetail_VM } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
 import { OrderBillingRequestModel } from 'src/app/models/model/invoice/orderBillingRequestModel';
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
-import { GetCustomerAddress_CM, GetCustomerList_CM } from 'src/app/models/model/order/getCustomerList_CM';
+import { GetCustomerAddress_CM, GetCustomerList_CM, NebimCustomerDto } from 'src/app/models/model/order/getCustomerList_CM';
 import { GetNebimOrders_RM } from 'src/app/models/model/order/getOrder_RM';
 import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, NebimOrder_2 } from 'src/app/models/model/order/nebimOrder';
 import { OrderStatus } from 'src/app/models/model/order/orderStatus';
@@ -548,6 +548,39 @@ export class OrderService {
     }
   }
 
+
+  async deleteCustomerCommunication(communicationID: string): Promise<any> {
+    try {
+      var response = await this.httpClientService.get_new<boolean>({ controller: "order/delete-customer-communication" }, communicationID).toPromise();
+
+      return response;
+    } catch (error: any) {
+      // console.log(error.message);
+      return null;
+    }
+  }
+
+  async deleteCustomerAddress(postalAddressID: string): Promise<any> {
+    try {
+      var response = await this.httpClientService.get_new<boolean>({ controller: "order/delete-customer-address" }, postalAddressID).toPromise();
+
+      return response;
+    } catch (error: any) {
+      // console.log(error.message);
+      return null;
+    }
+  }
+
+  async getCustomerDetail(currAccCode: string): Promise<any> {
+    try {
+      var response = await this.httpClientService.get_new<NebimCustomerDto>({ controller: "order/get-customer-detail" }, currAccCode).toPromise();
+
+      return response;
+    } catch (error: any) {
+      // console.log(error.message);
+      return null;
+    }
+  }
   async getCustomerAddress(request: GetCustomerAddress_CM): Promise<any> {
     try {
       var response = await this.httpClientService.post<GetCustomerAddress_CM>({ controller: "order/get-customer-address" }, request).toPromise();
@@ -1000,4 +1033,171 @@ export class OrderService {
     return response;
   }
   //------------------------------------------------------------
+  async completeCashPayment(request: string): Promise<NebimResponse> {
+    const response = await this.httpClientService
+      .get_new<NebimResponse>(
+        { controller: 'Order/complete-cash-payment' },
+        request
+      )
+      .toPromise();
+
+    return response;
+  }
+
+
+
+  async getCashHeadersById(id: string): Promise<CashHeader> {
+    const response = await this.httpClientService
+      .get_new<CashHeader>(
+        { controller: 'Order/get-cash-header-by-id' }, id
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async editCashHeader(request: CashHeader): Promise<CashHeader> {
+    const response = await this.httpClientService
+      .post<CashHeader>(
+        { controller: 'Order/edit-cash-header' },
+        request
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async deleteCashHeader(id: string): Promise<boolean> {
+    const response = await this.httpClientService
+      .get_new<boolean>(
+        { controller: 'Order/delete-cash-header' },
+        id
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async addCashLine(request: CashLine): Promise<boolean> {
+    const response = await this.httpClientService
+      .post<boolean>(
+        { controller: 'Order/add-cash-line' },
+        request
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async updateCashLine(request: CashLine): Promise<boolean> {
+    const response = await this.httpClientService
+      .post<boolean>(
+        { controller: 'Order/update-cash-line' },
+        request
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async deleteCashLine(id: string): Promise<boolean> {
+    const response = await this.httpClientService
+      .get_new<boolean>(
+        { controller: 'Order/delete-cash-line' },
+        id
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async getCashLinesByHeaderId(cashHeaderId: string): Promise<CashLine[]> {
+    const response = await this.httpClientService
+      .get<CashLine>(
+        { controller: 'Order/get-cash-lines' },
+        cashHeaderId
+      )
+      .toPromise();
+
+    return response;
+  }
+  //------------------------------------------------------------
+  async getBankHeaderById(id: string): Promise<BankHeader> {
+    const response = await this.httpClientService
+      .get_new<BankHeader>(
+        { controller: 'Bank/get-bank-header-by-id' },
+        id
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async editBankHeader(request: BankHeader): Promise<BankHeader> {
+    const response = await this.httpClientService
+      .post<BankHeader>(
+        { controller: 'Bank/edit-bank-header' },
+        request
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async deleteBankHeader(id: string): Promise<boolean> {
+    const response = await this.httpClientService
+      .get_new<boolean>(
+        { controller: 'Bank/delete-bank-header' },
+        id
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async addBankLine(request: BankLine): Promise<boolean> {
+    const response = await this.httpClientService
+      .post<boolean>(
+        { controller: 'Bank/add-bank-line' },
+        request
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async updateBankLine(request: BankLine): Promise<boolean> {
+    const response = await this.httpClientService
+      .post<boolean>(
+        { controller: 'Bank/update-bank-line' },
+        request
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async deleteBankLine(id: string): Promise<boolean> {
+    const response = await this.httpClientService
+      .get_new<boolean>(
+        { controller: 'Bank/delete-bank-line' },
+        id
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async getBankLinesByHeaderId(bankHeaderId: string): Promise<BankLine[]> {
+    const response = await this.httpClientService
+      .get<BankLine>(
+        { controller: 'Bank/get-bank-lines' },
+        bankHeaderId
+      )
+      .toPromise();
+
+    return response;
+  }
+
+
 }

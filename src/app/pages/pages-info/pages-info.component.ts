@@ -221,7 +221,7 @@ export class PagesInfoComponent implements OnInit {
   }
 
   createNebimInvoiceInfoForm() {
-    this.nebimInfoForm = this.fb.group({
+    this.nebimInvoiceInfoForm = this.fb.group({
       id: [0],
       processCode: [null],
       officeCode: [null],
@@ -232,9 +232,9 @@ export class PagesInfoComponent implements OnInit {
       deliveryCompanyCode: [null],
       basePriceCode: [null],
       applicationCode: [null],
-      sendAutoMail: [null],
-      isOrderBase: [null],
-      isShipmentBase: [null]
+      sendAutoMail: [false],
+      isOrderBase: [false],
+      isShipmentBase: [false]
     });
   }
   createMailInfoForm() {
@@ -544,11 +544,11 @@ export class PagesInfoComponent implements OnInit {
 
       } else {
         this.nebimInvoiceInfoForm.value.id = 0;
-        var result = await this.infoService.addNebimInfo(this.nebimInvoiceInfoForm.value);
+        var result = await this.infoService.addNebimInvoiceInfo(this.nebimInvoiceInfoForm.value);
 
       }
       if (result) {
-        await this.loadNebimInfos();
+        await this.loadNebimInvoiceInfos();
         this.toasterService.success('Nebim Fatura bilgileri başarıyla kaydedildi');
         this.updatedNebimInvoiceInfo = null;
         this.nebimInfoForm.reset();

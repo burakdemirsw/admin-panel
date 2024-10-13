@@ -23,7 +23,7 @@ declare var window: any;
 })
 export class CreateSaleOrderComponent implements OnInit, OnDestroy {
   //----------
-  processCodes: string[] = ["WS", "BP", "R", "ws", "bp", "r", "prws"]
+  processCodes: string[] = ["WS", "BP", "R", "ES", "ws", "bp", "r", "prws", "es"]
   processTypes: string[] = ["invoice", "order", "proposal", "shipment"]
   taxTypeCodeList: any[] = [{ name: 'Vergili', code: '0' }, { name: 'Vergisiz', code: '4' }]; //vergi tipi
   processCode: string;
@@ -49,6 +49,8 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
   infoProducts: CreatePurchaseInvoice[] = [];
   selectedCustomer: any;
   applicationCode: string;
+  itemTypeCode = 1;
+  addCustomerDialog: boolean = false;
   constructor(
     private formBuilder: FormBuilder,
     private toasterService: ToasterService,
@@ -85,13 +87,21 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
           }
 
         } else if (this.processCode == "BP" && this.processType == "invoice") {
-          this.headerService.updatePageTitle('Alış Faturası (BP)');
+          this.headerService.updatePageTitle('Alış Faturası (ES)');
           this.applicationCode = "Invoice";
           this.invoice_bp_formGenerator();
           await this.getWarehouseAndOffices();
 
           await this.getCustomerList('1'); //Tedarikçileri Çeker
-        } else if (this.processCode == "WS" && this.processType == "proposal") {//teklif paneli
+        }
+        else if (this.processCode == "ES" && this.processType == "invoice") {
+          this.headerService.updatePageTitle('Masraf Faturası (ES)');
+          this.applicationCode = "Invoice";
+          this.invoice_bp_formGenerator();
+          await this.getWarehouseAndOffices();
+          await this.getCustomerList('1'); //Tedarikçileri Çeker
+        }
+        else if (this.processCode == "WS" && this.processType == "proposal") {//teklif paneli
           this.headerService.updatePageTitle('Toptan Satış Teklif Oluştur');
           this.applicationCode = "Proposal";
           this.proposal_ws_formGenerator();
@@ -125,6 +135,13 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
           this.order_r_formGenerator();
           await this.getWarehouseAndOffices();
           await this.getCustomerList('3');
+        }
+
+
+        if (this.processCode != "ES") {
+          this.itemTypeCode = 1;
+        } else {
+          this.itemTypeCode = 4;
         }
         this.setHeaders();
         if (params['processId']) {
@@ -448,7 +465,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
     request.isReturn = formValue.isReturn;
     request.invoiceNumber = this.invoiceNumber;
     request.currAccCode = ((this.processCode == 'R' || this.processCode == 'WS') || (this.processType == 'order')) ? formValue.currAccCode.code : null;
-    request.vendorCode = this.processCode == 'BP' ? formValue.vendorCode.code : null;
+    request.vendorCode = (this.processCode == 'BP' || this.processCode == 'ES') ? formValue.vendorCode.code : null;
     // request.eInvoiceNumber = formValue.eInvoiceNumber;
     request.eInvoiceNumber = this.invoiceProcess.eInvoiceNumber;
     request.description = formValue.description;
@@ -483,7 +500,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
     request.invoiceNumber = this.invoiceNumber;
     request.officeCode = formValue.officeCode;
     request.currAccCode = ((this.processCode == 'R' || this.processCode == 'WS') || (this.processType == 'order')) ? formValue.currAccCode.code : null;
-    request.vendorCode = this.processCode == 'BP' ? formValue.vendorCode.code : null;
+    request.vendorCode = (this.processCode == 'BP' || this.processCode == 'ES') ? formValue.vendorCode.code : null;
     request.eInvoiceNumber = formValue.eInvoiceNumber;
     request.description = formValue.description;
     request.internalDescription = formValue.internalDescription;
@@ -567,7 +584,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
       this.invoiceForm.get('warehouseCode').setValue(warehouseCode);
       this.invoiceForm.get('salesPersonCode').setValue(salesPersonCode);
       this.selectedCustomer = currAccCode
-      if (this.processCode == 'R' || 'WS') {
+      if (this.processCode == 'R' || this.processCode == 'WS') {
 
         this.invoiceForm.get('currAccCode').setValue(currAccCode);
       } else {
@@ -580,7 +597,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
       this.invoiceForm.get('description').setValue(description);
       this.invoiceForm.get('internalDescription').setValue(internalDescription);
       if (shippingPostalAddressId) {
-        this.invoiceForm.get('shippingPostalAdressId').setValue(shippingPostalAddressId);
+        this.invoiceForm.get('shippingPostalAddressId').setValue(shippingPostalAddressId);
       }
       if (billingPostalAddressId) {
         this.invoiceForm.get('billingPostalAddressId').setValue(billingPostalAddressId);
@@ -1211,7 +1228,8 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
   }
   async getAllProducts() {
     if (this.allProducts.length == 0) {
-      this.allProducts = await this.productService.getBasketProducts(this.invoiceProcess.processCode, this.invoiceProcess.applicationCode);
+
+      this.allProducts = await this.productService.getBasketProducts(this.itemTypeCode, this.invoiceProcess.processCode, this.invoiceProcess.applicationCode);
 
     }
     this.toasterService.success('Tüm Ürünler Getirildi')
@@ -1222,7 +1240,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
   async addProductFromSearch() {
     if (!this.generalService.isNullOrEmpty(this.search)) {
       if (this.allProducts.length == 0) {
-        this.allProducts = await this.productService.getBasketProducts(this.invoiceProcess.processCode, this.invoiceProcess.applicationCode);
+        this.allProducts = await this.productService.getBasketProducts(this.itemTypeCode, this.invoiceProcess.processCode, this.invoiceProcess.applicationCode);
         if (this.allProducts.length > 0) {
           var p = this.allProducts.find(p => p.barcode.toLowerCase() == this.search.toLowerCase() || p.itemCode.toLowerCase() == this.search.toLowerCase())
           if (p) {

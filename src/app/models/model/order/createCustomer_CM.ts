@@ -17,6 +17,9 @@ export class CreateCustomer_CM {
   warehouseCode: string;
   address: Address;
   currAccCode: string;
+  isVIP: boolean;
+  isBlocked: boolean;
+  currencyCode: string;
   constructor() {
     this.address = new Address();
     this.mersisNum = "";
