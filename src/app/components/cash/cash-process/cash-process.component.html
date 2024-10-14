@@ -153,13 +153,13 @@
 
                 <div class="row">
                   <div class="col-md-6">
-                    <button type="button" class="btn btn-primary" (click)="addLine()" [disabled]="!this.headerForm.valid ||
+                    <button type="button" class="btn btn-primary" (click)="addLine()" [disabled]="!this.lineForm.valid ||
                       this.cashHeader.isCompleted" style="width: 100%;">Ekle</button>
                   </div>
 
                   <div class="col-md-6">
                     <button type="button" class="btn btn-primary" (click)="completeCashPayment()"
-                      [disabled]="!this.headerForm.valid || this.cashHeader.isCompleted" style="width: 100%;">
+                      [disabled]="!this.lineForm.valid || this.cashHeader.isCompleted" style="width: 100%;">
                       Tamamla</button>
                   </div>
                 </div>

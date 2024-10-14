@@ -1,0 +1,101 @@
+<main id="main" class="main">
+  <section class="section">
+    <p-table [value]="debitHeaders" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
+      [responsiveLayout]="'scroll'">
+
+      <!-- Table Headers with Sorting -->
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="applicationCode">
+            Uygulama Kodu
+            <p-sortIcon field="applicationCode"></p-sortIcon>
+          </th>
+          <th pSortableColumn="currAccTypeCode">
+            Cari Hesap Tipi Kodu
+            <p-sortIcon field="currAccTypeCode"></p-sortIcon>
+          </th>
+          <th pSortableColumn="debitTypeCode">
+            Borç Tipi Kodu
+            <p-sortIcon field="debitTypeCode"></p-sortIcon>
+          </th>
+          <th pSortableColumn="currAccDescription">
+            Cari Hesap Açıklaması
+            <p-sortIcon field="currAccDescription"></p-sortIcon>
+          </th>
+          <th pSortableColumn="currAccCode">
+            Cari Hesap Kodu
+            <p-sortIcon field="currAccCode"></p-sortIcon>
+          </th>
+          <th pSortableColumn="officeCode">
+            Ofis Kodu
+            <p-sortIcon field="officeCode"></p-sortIcon>
+          </th>
+          <th pSortableColumn="user">
+            Kullanıcı
+            <p-sortIcon field="user"></p-sortIcon>
+          </th>
+          <th pSortableColumn="totalCreditAmount">
+            Toplam Kredi Tutarı
+            <p-sortIcon field="totalCreditAmount"></p-sortIcon>
+          </th>
+          <th pSortableColumn="totalDebitAmount">
+            Toplam Borç Tutarı
+            <p-sortIcon field="totalDebitAmount"></p-sortIcon>
+          </th>
+          <th pSortableColumn="createdDate">
+            Oluşturulma Tarihi
+            <p-sortIcon field="createdDate"></p-sortIcon>
+          </th>
+        </tr>
+        <tr>
+          <th>
+            <p-columnFilter type="text" field="applicationCode" [showClearButton]="true"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="numeric" field="currAccTypeCode" [showClearButton]="true"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="numeric" field="debitTypeCode" [showClearButton]="true"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="currAccDescription" [showClearButton]="true"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="currAccCode" [showClearButton]="true"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="officeCode" [showClearButton]="true"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="user" [showClearButton]="true"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="numeric" field="totalCreditAmount" [showClearButton]="true"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="numeric" field="totalDebitAmount" [showClearButton]="true"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="date" field="createdDate" [showClearButton]="true"></p-columnFilter>
+          </th>
+        </tr>
+      </ng-template>
+
+      <!-- Table Body -->
+      <ng-template pTemplate="body" let-debitHeader>
+        <tr>
+          <td>{{ debitHeader.applicationCode }}</td>
+          <td>{{ debitHeader.currAccTypeCode }}</td>
+          <td>{{ debitHeader.debitTypeCode }}</td>
+          <td>{{ debitHeader.currAccDescription }}</td>
+          <td>{{ debitHeader.currAccCode }}</td>
+          <td>{{ debitHeader.officeCode }}</td>
+          <td>{{ debitHeader.user }}</td>
+          <td>{{ debitHeader.totalCreditAmount | currency }}</td>
+          <td>{{ debitHeader.totalDebitAmount | currency }}</td>
+          <td>{{ debitHeader.createdDate | date }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </section>
+</main>

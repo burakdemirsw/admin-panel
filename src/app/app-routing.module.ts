@@ -80,6 +80,10 @@ import { RaportComponent } from "./components/raport/raport/raport.component";
 import { CustomersComponent } from "./components/Customer/customers/customers.component";
 import { CashProcessComponent } from "./components/cash/cash-process/cash-process.component";
 import { BankProcessComponent } from "./components/bank/bank-process/bank-process.component";
+import { DebitProcessComponent } from "./components/debit/debit-process/debit-process.component";
+import { CashProcessListComponent } from "./components/cash/cash-process/cash-process-list/cash-process-list.component";
+import { BankProcessListComponent } from "./components/bank/bank-process/bank-process-list/bank-process-list.component";
+import { DebitProcessListComponent } from "./components/debit/debit-process/debit-process-list/debit-process-list.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -242,6 +246,21 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: "debit-process-list",
+    component: DebitProcessListComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "bank-process-list",
+    component: BankProcessListComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "cash-process-list",
+    component: CashProcessListComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: "create-cash-process/:applicationCode/:cashTransTypeCode",
     component: CashProcessComponent,
     canActivate: [AuthGuard],
@@ -272,7 +291,21 @@ const routes: Routes = [
     component: BankProcessComponent,
     canActivate: [AuthGuard],
   },
-
+  {
+    path: "create-debit-process/:applicationCode/:debitTypeCode/:currAccTypeCode",
+    component: DebitProcessComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "create-debit-process/:applicationCode/:debitTypeCode/:currAccTypeCode/:activeIndex",
+    component: DebitProcessComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "create-debit-process/:applicationCode/:debitTypeCode/:currAccTypeCode/:activeIndex/:id",
+    component: DebitProcessComponent,
+    canActivate: [AuthGuard],
+  },
   {
     path: "create-process/:processType/:processCode/:activeIndex",
     component: CreateSaleOrderComponent,

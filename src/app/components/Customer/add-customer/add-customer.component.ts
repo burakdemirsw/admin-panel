@@ -447,7 +447,7 @@ export class AddCustomerComponent implements OnInit {
   openDialogForAdd() {
     this.isEditing = false;
     this.selectedCommunicationCommAddress = '';
-    this.selectedCommunicationTypeCode = null; // Reset the type code
+    this.selectedCommunicationTypeCode = null; // Reset the type codeforeach
     this.updateCommunicationForm.reset();
     this.displayDialog = true;
   }

@@ -135,6 +135,8 @@ export class BankHeader {
   id: string;
   bankTransTypeCode: number; // BankTransTypeCode
   bankTransNumber?: string; // BankTransNumber, nullable
+  bankCurrAccTypeCode?: number; // BankCurrAccTypeCode, nullable
+  bankCurrAccCode?: string; // BankCurrAccCode, nullable
   description?: string; // Description, nullable
   cashCurrAccCode?: string; // CashCurrAccCode, nullable
   officeCode: string; // OfficeCode
@@ -151,8 +153,6 @@ export class BankHeader {
 export class BankLine {
   id: string;
   bankHeaderId: string; // BankHeaderId, GUID olarak string kullanılır
-  bankCurrAccTypeCode?: number; // BankCurrAccTypeCode, nullable
-  bankCurrAccCode?: string; // BankCurrAccCode, nullable
   currAccTypeCode?: number; // CurrAccTypeCode, nullable
   currAccCode?: string; // CurrAccCode, nullable
   lineDescription?: string; // LineDescription, nullable
@@ -162,4 +162,71 @@ export class BankLine {
   currAccAmount: number; // CurrAccAmount,
   createdDate?: Date;
   updatedDate?: Date;
+}
+export class DebitHeader {
+  id: string; // UNIQUEIDENTIFIER
+  debitTypeCode: number; // DebitTypeCode
+  debitNumber?: string; // Kasa Fiş Referans Numarası, nullable
+  description?: string; // Açıklama, nullable
+  currAccTypeCode?: number; // Cari Hesap Tipi Kodu, nullable
+  currAccCode?: string; // Cari Hesap Kodu, nullable
+  officeCode: string; // Ofis Kodu
+  storeTypeCode: number; // Mağaza Tipi Kodu
+  storeCode?: string; // Mağaza Kodu, nullable
+  applicationCode: string; // Uygulama Kodu
+  raportUrl?: string; // Rapor URL'si, nullable
+  userId: number; // Kullanıcı ID
+  isCompleted: boolean; // Tamamlanma Durumu
+  createdDate?: Date; // Oluşturulma Tarihi, nullable
+  updatedDate?: Date; // Güncellenme Tarihi, nullable
+}
+export class DebitLine {
+  id: string; // UNIQUEIDENTIFIER
+  debitHeaderId: string; // DebitHeader ile ilişkilendirilmiş ID
+  lineDescription?: string; // Satır Açıklaması, nullable
+  docCurrencyCode?: string; // Doküman Para Birimi Kodu, nullable
+  currAccCurrencyCode?: string; // Cari Hesap Para Birimi Kodu, nullable
+  creditAmount: number; // Kredi Tutarı
+  debitAmount: number; // Borç Tutarı
+  dueDate: Date;
+  debitReasonCode: string
+  createdDate?: Date; // Oluşturulma Tarihi, nullable
+  updatedDate?: Date; // Güncellenme Tarihi, nullable
+}
+export class CashHeader_VM {
+  applicationCode?: string; // ApplicationCode
+  id: string; // Guid
+  currAccDescription?: string; // CurrAccDescription
+  cashCurrAccTypeCode: number; // CashCurrAccTypeCode
+  cashCurrAccCode?: string; // CashCurrAccCode
+  officeCode?: string; // OfficeCode
+  user?: string; // User
+  total: number; // Total
+  createdDate: Date; // CreatedDate
+}
+
+export class DebitHeader_VM {
+  applicationCode?: string; // ApplicationCode
+  currAccTypeCode: number; // CurrAccTypeCode
+  debitTypeCode: number; // DebitTypeCode
+  id: string; // Guid
+  currAccDescription?: string; // CurrAccDescription
+  currAccCode?: string; // CurrAccCode
+  officeCode?: string; // OfficeCode
+  user?: string; // User
+  totalCreditAmount: number; // TotalCreditAmount
+  totalDebitAmount: number; // TotalDebitAmount
+  createdDate: Date; // CreatedDate
+}
+
+export class BankHeader_VM {
+  applicationCode?: string; // ApplicationCode
+  bankTransTypeCode: number; // BankTransTypeCode
+  id: string; // Guid
+  currAccDescription?: string; // CurrAccDescription
+  bankCurrAccCode?: string; // BankCurrAccCode
+  officeCode?: string; // OfficeCode
+  user?: string; // User
+  total: number; // Total
+  createdDate: Date; // CreatedDate
 }

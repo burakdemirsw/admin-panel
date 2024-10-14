@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { InvocieFilterModel } from 'src/app/models/model/filter/invoiceFilterModel';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
-import { BankHeader, BankLine, CashHeader, CashLine, CollectedInvoiceProduct, CreatePurchaseInvoice, InvoiceProcess, NebimResponse, ProductDetail_VM } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { BankHeader, BankHeader_VM, BankLine, CashHeader, CashHeader_VM, CashLine, CollectedInvoiceProduct, CreatePurchaseInvoice, DebitHeader, DebitHeader_VM, DebitLine, InvoiceProcess, NebimResponse, ProductDetail_VM } from 'src/app/models/model/invoice/createPurchaseInvoice';
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
 import { OrderBillingRequestModel } from 'src/app/models/model/invoice/orderBillingRequestModel';
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
@@ -1122,10 +1122,23 @@ export class OrderService {
     return response;
   }
   //------------------------------------------------------------
+
+  async completeBankPayment(request: string): Promise<NebimResponse> {
+    const response = await this.httpClientService
+      .get_new<NebimResponse>(
+        { controller: 'Order/complete-bank-payment' },
+        request
+      )
+      .toPromise();
+
+    return response;
+  }
+
+
   async getBankHeaderById(id: string): Promise<BankHeader> {
     const response = await this.httpClientService
       .get_new<BankHeader>(
-        { controller: 'Bank/get-bank-header-by-id' },
+        { controller: 'Order/get-bank-header-by-id' },
         id
       )
       .toPromise();
@@ -1136,7 +1149,7 @@ export class OrderService {
   async editBankHeader(request: BankHeader): Promise<BankHeader> {
     const response = await this.httpClientService
       .post<BankHeader>(
-        { controller: 'Bank/edit-bank-header' },
+        { controller: 'Order/edit-bank-header' },
         request
       )
       .toPromise();
@@ -1147,7 +1160,7 @@ export class OrderService {
   async deleteBankHeader(id: string): Promise<boolean> {
     const response = await this.httpClientService
       .get_new<boolean>(
-        { controller: 'Bank/delete-bank-header' },
+        { controller: 'Order/delete-bank-header' },
         id
       )
       .toPromise();
@@ -1158,7 +1171,7 @@ export class OrderService {
   async addBankLine(request: BankLine): Promise<boolean> {
     const response = await this.httpClientService
       .post<boolean>(
-        { controller: 'Bank/add-bank-line' },
+        { controller: 'Order/add-bank-line' },
         request
       )
       .toPromise();
@@ -1169,7 +1182,7 @@ export class OrderService {
   async updateBankLine(request: BankLine): Promise<boolean> {
     const response = await this.httpClientService
       .post<boolean>(
-        { controller: 'Bank/update-bank-line' },
+        { controller: 'Order/update-bank-line' },
         request
       )
       .toPromise();
@@ -1180,7 +1193,7 @@ export class OrderService {
   async deleteBankLine(id: string): Promise<boolean> {
     const response = await this.httpClientService
       .get_new<boolean>(
-        { controller: 'Bank/delete-bank-line' },
+        { controller: 'Order/delete-bank-line' },
         id
       )
       .toPromise();
@@ -1191,9 +1204,131 @@ export class OrderService {
   async getBankLinesByHeaderId(bankHeaderId: string): Promise<BankLine[]> {
     const response = await this.httpClientService
       .get<BankLine>(
-        { controller: 'Bank/get-bank-lines' },
+        { controller: 'Order/get-bank-lines' },
         bankHeaderId
       )
+      .toPromise();
+
+    return response;
+  }
+  //-----------------------
+  async completeDebitPayment(request: string): Promise<NebimResponse> {
+    const response = await this.httpClientService
+      .get_new<NebimResponse>(
+        { controller: 'Order/complete-debit-payment' }, // Endpoint URL
+        request
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async getDebitHeaderById(id: string): Promise<DebitHeader> {
+    const response = await this.httpClientService
+      .get_new<DebitHeader>(
+        { controller: 'Order/get-debit-header-by-id' },
+        id
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async editDebitHeader(request: DebitHeader): Promise<DebitHeader> {
+    const response = await this.httpClientService
+      .post<DebitHeader>(
+        { controller: 'Order/edit-debit-header' },
+        request
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async deleteDebitHeader(id: string): Promise<boolean> {
+    const response = await this.httpClientService
+      .get_new<boolean>(
+        { controller: 'Order/delete-debit-header' },
+        id
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async addDebitLine(request: DebitLine): Promise<boolean> {
+    const response = await this.httpClientService
+      .post<boolean>(
+        { controller: 'Order/add-debit-line' },
+        request
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async updateDebitLine(request: DebitLine): Promise<boolean> {
+    const response = await this.httpClientService
+      .post<boolean>(
+        { controller: 'Order/update-debit-line' },
+        request
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async deleteDebitLine(id: string): Promise<boolean> {
+    const response = await this.httpClientService
+      .get_new<boolean>(
+        { controller: 'Order/delete-debit-line' },
+        id
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async getDebitLinesByHeaderId(debitHeaderId: string): Promise<DebitLine[]> {
+    const response = await this.httpClientService
+      .get<DebitLine>(
+        { controller: 'Order/get-debit-lines' },
+        debitHeaderId
+      )
+      .toPromise();
+
+    return response;
+  }
+
+
+  // Cash Header listesini almak için
+  async getCashHeaders(): Promise<CashHeader_VM[]> {
+    const response = await this.httpClientService
+      .get<CashHeader_VM>({
+        controller: 'Order/get-cash-header-list'
+      })
+      .toPromise();
+
+    return response;
+  }
+
+  // Debit Header'ı almak için
+  async getDebitHeaders(): Promise<DebitHeader_VM[]> {
+    const response = await this.httpClientService
+      .get<DebitHeader_VM>({
+        controller: 'Order/get-debit-header-list'
+      })
+      .toPromise();
+ 
+    return response;
+  }
+
+  // Bank Header'ı almak için
+  async getBankHeaders(): Promise<BankHeader_VM[]> {
+    const response = await this.httpClientService
+      .get<BankHeader_VM>({
+        controller: 'Order/get-bank-header-list'
+      })
       .toPromise();
 
     return response;

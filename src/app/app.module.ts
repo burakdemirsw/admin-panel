@@ -151,6 +151,10 @@ import { KeysPipe } from './components/raport/raport/keys.pipe';
 import { CustomersComponent } from './components/Customer/customers/customers.component';
 import { CashProcessComponent } from './components/cash/cash-process/cash-process.component';
 import { BankProcessComponent } from './components/bank/bank-process/bank-process.component';
+import { DebitProcessComponent } from './components/debit/debit-process/debit-process.component';
+import { BankProcessListComponent } from './components/bank/bank-process/bank-process-list/bank-process-list.component';
+import { CashProcessListComponent } from './components/cash/cash-process/cash-process-list/cash-process-list.component';
+import { DebitProcessListComponent } from './components/debit/debit-process/debit-process-list/debit-process-list.component';
 @NgModule({
 
   declarations: [
@@ -247,7 +251,11 @@ import { BankProcessComponent } from './components/bank/bank-process/bank-proces
     CustomersComponent,
     KeysPipe,
     CashProcessComponent,
-    BankProcessComponent
+    BankProcessComponent,
+    DebitProcessComponent,
+    BankProcessListComponent,
+    CashProcessListComponent,
+    DebitProcessListComponent
   ],
 
 

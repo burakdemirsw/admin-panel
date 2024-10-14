@@ -9,7 +9,7 @@ import {
   InvoiceIntegratorInfo,
   NebimInvoiceInfo
 } from 'src/app/models/model/company/companyInfo';
-import { bsBankTransTypeDesc, bsCashTransTypeDesc, bsCurrAccTypeDesc, CashAccount, cdColorDesc, cdCreditCardTypeDesc, cdCurrencyDesc, cdDeliveryCompanyDesc, cdItemDim1Desc, cdPOSTerminal, cdShipmentMethodDesc } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
+import { bsBankTransTypeDesc, bsCashTransTypeDesc, bsCurrAccTypeDesc, CashAccount, cdColorDesc, cdCreditCardTypeDesc, cdCurrencyDesc, cdDebitReasonDesc, cdDeliveryCompanyDesc, cdItemDim1Desc, cdPOSTerminal, cdShipmentMethodDesc } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { BankAccount } from 'src/app/models/model/invoice/createPurchaseInvoice';
 
@@ -399,6 +399,11 @@ export class InfoService {
   }
   async getBankTransTypeDesc(): Promise<bsBankTransTypeDesc[]> {
     const response = await this.httpClientService.get<bsBankTransTypeDesc>({ controller: 'Infos/get-bank-trans-type-desc' }).toPromise();
+    return response;
+  }
+
+  async getDebitReasonDesc(): Promise<cdDebitReasonDesc[]> {
+    const response = await this.httpClientService.get<cdDebitReasonDesc>({ controller: 'Infos/get-debit-reason-desc' }).toPromise();
     return response;
   }
   async getCurrAccTypeDesc(): Promise<bsCurrAccTypeDesc[]> {

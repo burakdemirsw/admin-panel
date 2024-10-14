@@ -46,7 +46,7 @@
                 <div class="row">
                   <div class="col-md-12">
                     <div class="form-group">
-                      <label for="bankCurrAccCode">Nakit Hesap Kodu</label>
+                      <label for="bankCurrAccCode">Banka Hesap Kodu</label>
                       <select id="bankCurrAccCode" class="form-control" formControlName="bankCurrAccCode">
                         <option value="" selected>Seçin</option>
                         <option *ngFor="let g of bankAccounts" [value]="g.bankAccountCode">
@@ -56,7 +56,7 @@
                       <div
                         *ngIf="headerForm.get('bankCurrAccCode')?.touched && headerForm.get('bankCurrAccCode')?.invalid"
                         class="text-danger">
-                        Nakit Hesap Kodu alanı zorunludur.
+                        Banka Hesap Kodu alanı zorunludur.
                       </div>
                     </div>
                   </div>
@@ -153,13 +153,13 @@
 
                 <div class="row">
                   <div class="col-md-6">
-                    <button type="button" class="btn btn-primary" (click)="addLine()" [disabled]="!this.headerForm.valid ||
-                      this.bankHeader.isCompleted" style="width: 100%;">Ekle</button>
+                    <button type="button" class="btn btn-primary" (click)="addLine()" [disabled]="!this.lineForm.valid ||
+                      this.bankHeader?.isCompleted" style="width: 100%;">Ekle</button>
                   </div>
 
                   <div class="col-md-6">
                     <button type="button" class="btn btn-primary" (click)="completeBankPayment()"
-                      [disabled]="!this.headerForm.valid || this.bankHeader.isCompleted" style="width: 100%;">
+                      [disabled]=" this.bankHeader?.isCompleted" style="width: 100%;">
                       Tamamla</button>
                   </div>
                 </div>
