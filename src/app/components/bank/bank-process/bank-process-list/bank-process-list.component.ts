@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BankHeader_VM } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { BankHeader_VM } from "src/app/models/model/invoice/BankHeader_VM";
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { InfoService } from 'src/app/services/admin/info.service';
@@ -47,4 +47,11 @@ export class BankProcessListComponent implements OnInit {
       console.error(error);
     }
   }
+  async deleteProcess(header: BankHeader_VM) {
+    var response = await this.orderService.deleteBankHeader(header.id);
+    if (response) {
+      this.loadBankHeaders();
+    }
+  }
+
 }

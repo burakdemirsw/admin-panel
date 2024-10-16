@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { OrderService } from 'src/app/services/admin/order.service';
-import { DebitHeader_VM } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { DebitHeader_VM } from "src/app/models/model/invoice/DebitHeader_VM";
+import { HeaderService } from '../../../../services/admin/header.service';
 
 @Component({
   selector: 'app-debit-process-list',
@@ -13,10 +14,12 @@ export class DebitProcessListComponent implements OnInit {
 
   constructor(
     private toasterService: ToasterService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private headerService: HeaderService
   ) { }
 
   async ngOnInit() {
+    this.headerService.updatePageTitle("Borç/Sair Girişleri")
     await this.loadDebitHeaders(); // Bileşen yü  klendiğinde debit headers'ı yükle
   }
 
@@ -27,6 +30,13 @@ export class DebitProcessListComponent implements OnInit {
     } catch (error) {
       this.toasterService.error("Debit headers yüklenirken bir hata oluştu."); // Hata durumunda bildirim
       console.error(error);
+    }
+  }
+
+  async deleteProcess(header: DebitHeader_VM) {
+    var response = await this.orderService.deleteDebitHeader(header.id);
+    if (response) {
+      this.loadDebitHeaders();
     }
   }
 }

@@ -8,7 +8,7 @@ import {
   BarcodeModel_A,
 } from 'src/app/models/model/barcode/barcodeModel_A';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
-import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { CreatePurchaseInvoice } from "src/app/models/model/invoice/CreatePurchaseInvoice.1";
 import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';
 import { GetProductExtract_RM, GetProductStock_RM } from 'src/app/models/model/product/getProductStock';
 import { ProductCountModel2 } from 'src/app/models/model/product/productCountModel2';

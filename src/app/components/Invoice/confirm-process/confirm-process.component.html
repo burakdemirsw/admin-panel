@@ -1,0 +1,442 @@
+<main id="main" class="main">
+  <section class="section">
+
+    <div *ngIf="this.processType=='proposal'">
+      <div class="card" *ngIf="products.length > 0">
+        <div class="card-header" style="color:#374151; font-weight: bold;">Teklifin Ürünleri</div>
+
+        <p-table [value]="products" [scrollable]="true" scrollHeight="600px" [tableStyle]="{ 'min-width': '50rem' }">
+
+
+
+          <ng-template pTemplate="header">
+            <tr>
+              <th scope="col">Fotoğraf</th>
+              <th pSortableColumn="barcode">
+                Barkod
+                <p-sortIcon field="barcode"></p-sortIcon>
+              </th>
+              <th pSortableColumn="itemCode">
+                Ürün Kodu
+                <p-sortIcon field="itemCode"></p-sortIcon>
+              </th>
+              <th pSortableColumn="quantity">
+                Sipariş Miktarı / Talep / Onay
+                <p-sortIcon field="quantity"></p-sortIcon>
+              </th>
+
+
+
+              <th scope="col">İşlemler</th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-product let-i="index">
+            <tr>
+              <td>
+                <p-image src="{{ product.photoUrl }}" [preview]="true" alt="Image" width="50px">
+                  <ng-template pTemplate="indicator">
+                    <i class="pi pi-check"></i>
+                  </ng-template>
+                </p-image>
+              </td>
+              <td>{{ product.barcode }}</td>
+              <td>{{ product.itemCode }}</td>
+              <td>
+                <ng-container *ngIf="checkCount2(product) > 0 || checkCount3(product) > 0; else showQuantity">
+                  <span style="text-decoration: line-through;color: red;">{{ product.quantity }}</span>
+                  <span> / {{ checkCount3(product) }}</span>
+                  <span> / {{ checkCount2(product) }}</span>
+                </ng-container>
+                <ng-template #showQuantity>
+                  {{ product.quantity }}
+                </ng-template>
+              </td>
+
+
+
+
+              <td>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                  <button class="btn btn-primary" type="button" (click)="openUpdateDialog(product)"
+                    [disabled]="checkDisable2(product)">
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                  </button>
+
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <!-- Ürün Güncelle----------------------------------------------------------------------------------------------------->
+        <p-dialog header="Ürün Güncelle" [(visible)]="updateProductDialog" [modal]="true" [closable]="false"
+          [style]="{width: '300px'}">
+          <form [formGroup]="updateProductForm">
+            <div class="p-fluid">
+              <!-- <div class="p-field">
+              <label for="price">Fiyat</label>
+              <input id="price" type="number" pInputText formControlName="price">
+            </div>
+            <div class="p-field">
+              <label for="priceVI">Fiyat (VD)</label>
+              <input id="priceVI" type="number" pInputText formControlName="priceVI">
+            </div> -->
+              <!-- <div class="p-field mb-3">
+              <label for="quantity">Adet</label>
+              <input id="quantity" type="number" pInputText formControlName="quantity">
+            </div> -->
+              <div class="p-field mb-3">
+                <label for="quantity">Sevk Adedi</label>
+                <input id="quantity" type="number" pInputText formControlName="quantity">
+              </div>
+
+              <div class="p-field mb-3">
+                <button type="submit" pButton label="Ekle" (click)="addProposalLineDetail()"></button>
+              </div>
+
+              <div class="p-field">
+                <button type="button" pButton label="Kapat" (click)="this.updateProductDialog =false"></button>
+              </div>
+            </div>
+          </form>
+        </p-dialog>
+      </div>
+      <div class="card" *ngIf="__products.length > 0">
+        <div class="card-header" style="color:#374151; font-weight: bold;">Sevk Ürünleri</div>
+
+        <p-table [value]="__products" [scrollable]="true" scrollHeight="600px" [tableStyle]="{ 'min-width': '50rem' }">
+
+
+
+          <ng-template pTemplate="header">
+            <tr>
+              <th scope="col">Fotoğraf</th>
+
+              <th pSortableColumn="itemCode">
+                Ürün Kodu
+                <p-sortIcon field="itemCode"></p-sortIcon>
+              </th>
+
+              <th pSortableColumn="requestedShipmentQuantity">
+                Talep Edilen Sevk Miktarı
+                <p-sortIcon field="requestedShipmentQuantity"></p-sortIcon>
+              </th>
+              <th pSortableColumn="confirmedShipmentQuantity">
+                Onaylanan Edilen Sevk Miktarı
+                <p-sortIcon field="confirmedShipmentQuantity"></p-sortIcon>
+              </th>
+              <th pSortableColumn="barcode">
+                Barkod
+                <p-sortIcon field="barcode"></p-sortIcon>
+              </th>
+
+
+              <th scope="col">İşlemler</th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-product let-i="index">
+            <tr>
+              <td>
+                <p-image src="{{ product.photoUrl }}" [preview]="true" alt="Image" width="50px">
+                  <ng-template pTemplate="indicator">
+                    <i class="pi pi-check"></i>
+                  </ng-template>
+                </p-image>
+              </td>
+              <td>{{ product.itemCode }}</td>
+
+              <td>{{ product.requestedShipmentQuantity }}</td>
+              <td>{{ product.confirmedShipmentQuantity }}</td>
+
+              <td>{{ product.barcode }}</td>
+
+
+              <button class="btn btn-danger" *ngIf="product.quantity- product.confirmedShipmentQuantity == 0">
+                <i class="fa fa-ban" aria-hidden="true"></i>
+              </button>
+              <td>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                  <button class="btn btn-primary" type="button" (click)="openUpdateDialog(product)" [disabled]="
+                  product.quantity- product.confirmedShipmentQuantity ==0 ">
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                  </button>
+                  <button class="btn btn-danger" type="button" (click)="deleteProposalLineDetail(product)">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+      </div>
+
+      <div class="card border-0 shadow-lg text-center mt-4 p-2" *ngIf="false">
+        <div class="card-body">
+          <div class="d-flex justify-content-center align-items-center mb-3">
+            <i class="fas fa-exclamation-circle fa-3x text-danger"></i>
+          </div>
+          <h5 class="card-title text-uppercase font-weight-bold">Önemli</h5>
+          <p class="card-text text-muted">Bu Sevk Tamamlanmıştır.
+            Değişiklik Yapılamaz.</p>
+
+        </div>
+      </div>
+
+      <div class="card mt-3 ">
+        <div class="card-body p-3">
+          <div class=" row">
+
+            <div class="col-md-12"><button class="btn btn-success" style="width: 100%;"
+                (click)="convertConfirmedWSProposalToWSOrder(this.processCode,this.processId)">Teklifi Siparişe
+                Çevir</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="this.processType=='order'">
+
+      <div class="card border-0 shadow-lg text-center mt-4 p-2" *ngIf="this.state2==false">
+        <div class="card-body">
+          <div class="d-flex justify-content-center align-items-center mb-3">
+            <i class="fas fa-exclamation-circle fa-3x text-danger"></i>
+          </div>
+          <h5 class="card-title text-uppercase font-weight-bold">Önemli</h5>
+          <p class="card-text text-muted">Bu Sevk Tamamlanmıştır.
+            Değişiklik Yapılamaz.</p>
+
+        </div>
+      </div>
+
+
+      <div class="card mb-3" *ngIf="products.length > 0">
+        <div class="card-header" style="color:#374151; font-weight: bold;">Siparişin Ürünleri</div>
+        <div class="card-body" style="padding: 0px;">
+          <p-table [value]="products" [scrollable]="true" scrollHeight="600px" [tableStyle]="{ 'min-width': '50rem' }">
+
+
+
+            <ng-template pTemplate="header">
+              <tr>
+                <th scope="col">Fotoğraf</th>
+                <th pSortableColumn="barcode">
+                  Barkod
+                  <p-sortIcon field="barcode"></p-sortIcon>
+                </th>
+                <th pSortableColumn="itemCode">
+                  Ürün Kodu
+                  <p-sortIcon field="itemCode"></p-sortIcon>
+                </th>
+                <th pSortableColumn="quantity">
+                  Sipariş Miktarı / Sevk Miktarı
+                  <p-sortIcon field="quantity"></p-sortIcon>
+                </th>
+                <!-- <th pSortableColumn="requestedShipmentQuantity">
+                Talep Edilen Sevk Miktarı
+                <p-sortIcon field="requestedShipmentQuantity"></p-sortIcon>
+              </th>
+              <th pSortableColumn="confirmedShipmentQuantity">
+                Onaylanan Edilen Sevk Miktarı
+                <p-sortIcon field="confirmedShipmentQuantity"></p-sortIcon>
+              </th>
+
+
+              <th> Durum </th> -->
+                <th scope="col">İşlemler</th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-product let-i="index">
+              <tr>
+                <td>
+                  <p-image src="{{ product.photoUrl }}" [preview]="true" alt="Image" width="50px">
+                    <ng-template pTemplate="indicator">
+                      <i class="pi pi-check"></i>
+                    </ng-template>
+                  </p-image>
+                </td>
+                <td>{{ product.barcode }}</td>
+                <td>{{ product.itemCode }}</td>
+                <td>
+                  <ng-container *ngIf="checkCount(product) > 0; else showQuantity">
+                    <span style="text-decoration: line-through;color: red;">{{ product.quantity }}</span>
+                    <span> / {{ checkCount(product) }}</span>
+                  </ng-container>
+                  <ng-template #showQuantity>
+                    {{ product.quantity }}
+                  </ng-template>
+                </td>
+
+
+
+                <!-- <td>{{ product.requestedShipmentQuantity }}</td>
+              <td>{{ product.confirmedShipmentQuantity }}</td>
+
+
+              <td>
+                <button class="btn btn-success" *ngIf="product.quantity- product.confirmedShipmentQuantity != 0 ">
+                  <i class="fa fa-check"></i>
+                </button>
+                <button class="btn btn-danger" *ngIf="product.quantity- product.confirmedShipmentQuantity == 0">
+                  <i class="fa fa-ban" aria-hidden="true"></i>
+                </button>
+              </td> -->
+
+                <td>
+                  <div class="btn-group" role="group" aria-label="Basic example">
+                    <button class="btn btn-primary" type="button" (click)="openUpdateDialog2(product)"
+                      [disabled]="checkDisable(product)">
+                      <i class="fa fa-pencil" aria-hidden="true"></i>
+                    </button>
+
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+
+
+      </div>
+
+      <div class="card mb-3" *ngIf="_products.length > 0">
+        <div class="card-header" style="color:#374151; font-weight: bold;">Sevkiyat Ürünleri</div>
+        <div class="card-body" style="padding: 0px;">
+          <p-table [value]="_products" [scrollable]="true" scrollHeight="600px" [tableStyle]="{ 'min-width': '50rem' }">
+
+
+
+            <ng-template pTemplate="header">
+              <tr>
+                <th scope="col">Fotoğraf</th>
+                <th pSortableColumn="barcode">
+                  Barkod
+                  <p-sortIcon field="barcode"></p-sortIcon>
+                </th>
+                <th pSortableColumn="itemCode">
+                  Ürün Kodu
+                  <p-sortIcon field="itemCode"></p-sortIcon>
+                </th>
+                <th pSortableColumn="warehouseCode">
+                  Depo Kodu
+                  <p-sortIcon field="warehouseCode"></p-sortIcon>
+                </th>
+                <th pSortableColumn="quantity">
+                  Sevk Miktarı
+                  <p-sortIcon field="quantity"></p-sortIcon>
+                </th>
+                <!-- <th pSortableColumn="requestedShipmentQuantity">
+                Talep Edilen Sevk Miktarı
+                <p-sortIcon field="requestedShipmentQuantity"></p-sortIcon>
+              </th>
+              <th pSortableColumn="confirmedShipmentQuantity">
+                Onaylanan Edilen Sevk Miktarı
+                <p-sortIcon field="confirmedShipmentQuantity"></p-sortIcon>
+              </th>
+
+
+              <th> Durum </th> -->
+                <th scope="col">İşlemler</th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-product let-i="index">
+              <tr>
+                <td>
+                  <p-image src="{{ product.photoUrl }}" [preview]="true" alt="Image" width="50px">
+                    <ng-template pTemplate="indicator">
+                      <i class="pi pi-check"></i>
+                    </ng-template>
+                  </p-image>
+                </td>
+                <td>{{ product.barcode }}</td>
+                <td>{{ product.itemCode }}</td>
+                <td>{{ product.warehouseCode }}</td>
+
+
+                <td>{{ product.requestedShipmentQuantity }}</td>
+                <!-- <td>{{ product.requestedShipmentQuantity }}</td>
+              <td>{{ product.confirmedShipmentQuantity }}</td>
+
+
+              <td>
+                <button class="btn btn-success" *ngIf="product.quantity- product.confirmedShipmentQuantity != 0 ">
+                  <i class="fa fa-check"></i>
+                </button>
+                <button class="btn btn-danger" *ngIf="product.quantity- product.confirmedShipmentQuantity == 0">
+                  <i class="fa fa-ban" aria-hidden="true"></i>
+                </button>
+              </td> -->
+
+                <td>
+                  <div class="btn-group" role="group" aria-label="Basic example">
+                    <button class="btn btn-danger" type="button" (click)="deleteOrderLineDetail(product)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+
+
+      </div>
+      <!-- Ürün Güncelle----------------------------------------------------------------------------------------------------->
+      <p-dialog header="Ürün Güncelle" [(visible)]="updateProductDialog2" [modal]="true" [closable]="false"
+        [style]="{width: '300px'}">
+        <form [formGroup]="updateProductForm2">
+          <div class="p-fluid">
+            <!-- <div class="p-field">
+              <label for="price">Fiyat</label>
+              <input id="price" type="number" pInputText formControlName="price">
+            </div>
+            <div class="p-field">
+              <label for="priceVI">Fiyat (VD)</label>
+              <input id="priceVI" type="number" pInputText formControlName="priceVI">
+            </div> -->
+            <!-- <div class="p-field mb-3">
+              <label for="quantity">Adet</label>
+              <input id="quantity" type="number" pInputText formControlName="quantity">
+            </div> -->
+            <div class="form-group">
+              <label for="warehouseCode">Depo</label>
+              <p-dropdown formControlName="warehouseCode" [options]="warehouses" [showClear]="true" placeholder="Depo"
+                optionLabel="name" className="mobile-spacing"></p-dropdown>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="requestedShipmentQuantity">Sevk Adedi</label>
+              <input id="requestedShipmentQuantity" type="number" pInputText
+                formControlName="requestedShipmentQuantity">
+            </div>
+
+            <div class="p-field mb-3">
+              <button type="submit" pButton label="Ekle" (click)="addOrderLineDetail()"></button>
+            </div>
+
+            <div class="p-field">
+              <button type="button" pButton label="Kapat" (click)="this.updateProductDialog2 =false"></button>
+            </div>
+          </div>
+        </form>
+      </p-dialog>
+
+
+      <!-- <div class="card mt-3 ">
+        <div class="card-body p-3">
+          <div class=" row">
+
+            <div class="col-md-12"><button class="btn btn-success" style="width: 100%;" [disabled]="this.state==false"
+                (click)="convertConfirmedWSProposalToWSOrder(this.processCode,this.processId)">Teklifi Siparişe
+                Çevir</button>
+            </div>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </section>
+</main>

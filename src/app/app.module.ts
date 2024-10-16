@@ -155,6 +155,7 @@ import { DebitProcessComponent } from './components/debit/debit-process/debit-pr
 import { BankProcessListComponent } from './components/bank/bank-process/bank-process-list/bank-process-list.component';
 import { CashProcessListComponent } from './components/cash/cash-process/cash-process-list/cash-process-list.component';
 import { DebitProcessListComponent } from './components/debit/debit-process/debit-process-list/debit-process-list.component';
+import { ConfirmProcessComponent } from './components/Invoice/confirm-process/confirm-process.component';
 @NgModule({
 
   declarations: [
@@ -255,7 +256,8 @@ import { DebitProcessListComponent } from './components/debit/debit-process/debi
     DebitProcessComponent,
     BankProcessListComponent,
     CashProcessListComponent,
-    DebitProcessListComponent
+    DebitProcessListComponent,
+    ConfirmProcessComponent
   ],
 
 

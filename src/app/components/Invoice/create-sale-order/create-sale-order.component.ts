@@ -2,7 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
-import { CollectedInvoiceProduct, CreatePurchaseInvoice, InvoiceProcess } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { InvoiceProcess } from "src/app/models/model/invoice/InvoiceProcess";
+import { CreatePurchaseInvoice } from "src/app/models/model/invoice/CreatePurchaseInvoice.1";
+import { CollectedInvoiceProduct } from "src/app/models/model/invoice/CollectedInvoiceProduct";
 import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
@@ -403,10 +405,9 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
   async updateProduct(product: CollectedInvoiceProduct) {
     console.log(product);
     product.price = this.updateProductForm.get('price').value;
-
     product.priceVI = this.updateProductForm.get('priceVI').value;
-
     product.quantity = this.updateProductForm.get('quantity').value;
+
 
     var response = await this.orderService.updateCollectedInvoiceProduct(product);
     if (response) {
@@ -960,8 +961,32 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
           name: model.address
         };
       });
+      if (this.addresses_vm.length > 0) {
+        if (this.processType == 'invoice') {
+          this.invoiceForm.get("billingPostalAddressId").setValue(this.addresses_vm[0])
+          this.invoiceForm.get("shippingPostalAddressId").setValue(this.addresses_vm[0])
+          this.invoiceForm.get("taxTypeCode").setValue(this.taxTypeCodeList[1])
 
-      console.log(this.addresses_vm)
+        } else if (this.processType == 'proposal' && this.processCode == 'BP') {
+          this.proposal_bp_form.get("billingPostalAddressId").setValue(this.addresses_vm[0])
+          this.proposal_bp_form.get("shippingPostalAddressId").setValue(this.addresses_vm[0])
+          this.proposal_bp_form.get("taxTypeCode").setValue(this.taxTypeCodeList[1])
+
+        } else if (this.processType == 'proposal' && this.processCode == 'WS') {
+          this.proposal_ws_form.get("billingPostalAddressId").setValue(this.addresses_vm[0])
+          this.proposal_ws_form.get("shippingPostalAddressId").setValue(this.addresses_vm[0])
+          this.proposal_ws_form.get("taxTypeCode").setValue(this.taxTypeCodeList[1])
+
+        } else if (this.processType == 'order' && (this.processCode == 'R' || this.processCode == 'WS')) {
+          this.order_r_form.get("billingPostalAddressId").setValue(this.addresses_vm[0])
+          this.order_r_form.get("shippingPostalAddressId").setValue(this.addresses_vm[0])
+          this.order_r_form.get("taxTypeCode").setValue(this.taxTypeCodeList[1])
+
+        }
+
+      }
+
+      // console.log(this.addresses_vm)
 
       // this.selectCurrentAddress(this.addresses[0])
       // this.selectAddressDialog = false;
@@ -1295,6 +1320,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
       request.discountRate1 = 0;
       request.discountRate2 = 0;
       request.taxRate = product_detail.taxRate;
+
 
       var response = await this.orderService.addCollectedInvoiceProduct(request);
       if (response) {

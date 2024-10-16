@@ -7,7 +7,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ProductList_VM } from 'src/app/models/model/product/productList_VM';
 import { BarcodeSearch_RM, ProductService } from 'src/app/services/admin/product.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { CreatePurchaseInvoice } from "src/app/models/model/invoice/CreatePurchaseInvoice.1";
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';

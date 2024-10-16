@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { OrderService } from 'src/app/services/admin/order.service';
-import { CashHeader_VM } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { CashHeader_VM } from "src/app/models/model/invoice/CashHeader_VM";
+import { HeaderService } from 'src/app/services/admin/header.service';
 
 @Component({
   selector: 'app-cash-process-list',
@@ -15,10 +16,13 @@ export class CashProcessListComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private toasterService: ToasterService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private headerService: HeaderService
+
   ) { }
 
   ngOnInit(): void {
+    this.headerService.updatePageTitle("Nakit Kasa Hareketleri")
     this.loadCashHeaders(); // Bileşen yüklendiğinde cash headers'ı yükle
   }
 
@@ -29,6 +33,13 @@ export class CashProcessListComponent implements OnInit {
     } catch (error) {
       this.toasterService.error("Cash headers yüklenirken bir hata oluştu."); // Hata durumunda bildirim
       console.error(error);
+    }
+  }
+
+  async deleteProcess(header: CashHeader_VM) {
+    var response = await this.orderService.deleteCashHeader(header.id);
+    if (response) {
+      this.loadCashHeaders();
     }
   }
 }

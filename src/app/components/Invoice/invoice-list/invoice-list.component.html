@@ -27,12 +27,18 @@
             <th>Seç</th>
             <th pSortableColumn="currAccDescription">Müşteri <p-sortIcon field="currAccDescription"></p-sortIcon>
             </th>
-            <th pSortableColumn="eInvoiceNumber">İç Numara <p-sortIcon field="eInvoiceNumber"></p-sortIcon>
+            <th *ngIf="this.processType=='invoice'" pSortableColumn="eInvoiceNumber">E-Fatura Numarası <p-sortIcon
+                field="eInvoiceNumber"></p-sortIcon>
             </th>
             <th pSortableColumn="amount">Tutar <p-sortIcon field="amount"></p-sortIcon>
             </th>
             <th pSortableColumn="totalProduct">Toplam Ürün Sayısı <p-sortIcon field="totalProduct"></p-sortIcon>
             </th>
+            <th pSortableColumn="invoiceNumber">İç Numara <p-sortIcon field="invoiceNumber"></p-sortIcon>
+            </th>
+            <th pSortableColumn="isCompleted">Tamamlandı Mı? <p-sortIcon field="isCompleted"></p-sortIcon>
+            </th>
+
             <th pSortableColumn="lastUpdateDate">Tarih <p-sortIcon field="lastUpdateDate"></p-sortIcon>
             </th>
             <th>İşlemler</th>
@@ -44,7 +50,7 @@
             <th>
               <p-columnFilter type="text" field="currAccDescription" [showClearButton]="false"></p-columnFilter>
             </th>
-            <th>
+            <th *ngIf="this.processType=='invoice'">
               <p-columnFilter type="text" field="eInvoiceNumber" [showClearButton]="false"></p-columnFilter>
             </th>
             <th>
@@ -52,6 +58,12 @@
             </th>
             <th>
               <p-columnFilter type="numeric" field="totalProduct" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="invoiceNumber" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="boolean" field="isCompleted" [showClearButton]="false"></p-columnFilter>
             </th>
             <th>
               <p-columnFilter type="date" field="lastUpdateDate" [showClearButton]="false"></p-columnFilter>
@@ -66,9 +78,22 @@
               <p-tableCheckbox [value]="invoice"></p-tableCheckbox>
             </td>
             <td>{{ invoice.currAccDescription }}</td>
-            <td>{{ invoice.eInvoiceNumber }}</td>
+            <td *ngIf="this.processType=='invoice'">{{ invoice.eInvoiceNumber }}</td>
             <td>{{ invoice.amount | currency : "₺" }}</td>
             <td>{{ invoice.totalProduct }}</td>
+            <td>{{ invoice.invoiceNumber }}</td>
+
+
+            <td>
+              <button class="btn btn-success" *ngIf="invoice.isCompleted">
+                <i class="fa fa-check"></i>
+              </button>
+              <button class="btn btn-danger" *ngIf="!invoice.isCompleted">
+                <i class="fa fa-ban" aria-hidden="true"></i>
+              </button>
+            </td>
+
+
             <td>{{ invoice.createdDate | date : "dd.MM.yyyy HH:mm:ss" }}</td>
             <td>
               <div class="btn-group">
@@ -82,6 +107,13 @@
                 <button *ngIf="this.processType =='proposal'" class="btn btn-primary" title="Teklifi Siparişe Çevir"
                   (click)="convertWSProposalToWSOrder(invoice.processCode,invoice.id)">
                   <i class="fas fa-receipt    "></i> </button>
+
+                <button *ngIf="this.processType =='proposal'" class="btn btn-primary" title="Teklifi Onayla"
+                  routerLink="/confirm-process/proposal/{{invoice.processCode}}/{{invoice.id}}">
+                  <i class="fa fa-check" aria-hidden="true"></i> </button>
+                <button *ngIf="this.processType =='order'" class="btn btn-primary" title="Siparişi Onayla"
+                  routerLink="/confirm-process/order/{{invoice.processCode}}/{{invoice.id}}">
+                  <i class="fa fa-check" aria-hidden="true"></i> </button>
                 <button class="btn btn-danger" title="Sil" (click)="deleteInvoice(invoice.id)">
                   <i class="fas fa-trash"></i>
                 </button>

@@ -11,7 +11,7 @@ import {
 } from 'src/app/models/model/company/companyInfo';
 import { bsBankTransTypeDesc, bsCashTransTypeDesc, bsCurrAccTypeDesc, CashAccount, cdColorDesc, cdCreditCardTypeDesc, cdCurrencyDesc, cdDebitReasonDesc, cdDeliveryCompanyDesc, cdItemDim1Desc, cdPOSTerminal, cdShipmentMethodDesc } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
-import { BankAccount } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { BankAccount } from "src/app/models/model/invoice/BankAccount";
 
 @Injectable({
   providedIn: 'root'

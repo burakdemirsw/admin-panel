@@ -71,10 +71,10 @@
                 Toplanalabilir Miktar
                 <p-sortIcon field="remainingQty"></p-sortIcon>
               </th> -->
-            <!-- <th pSortableColumn="warehouseCode" style="width: 10%">
-                Depo
-                <p-sortIcon field="warehouseCode"></p-sortIcon>
-              </th> -->
+            <th pSortableColumn="warehouseCode" style="width: 10%">
+              Depo
+              <p-sortIcon field="warehouseCode"></p-sortIcon>
+            </th>
             <th>Kargo</th>
             <th *ngIf="invoiceStatus==1">Fatura</th>
             <th>İşlemler</th>
@@ -135,13 +135,9 @@
                   [showClearButton]="false"
                 ></p-columnFilter>
               </th> -->
-            <!-- <th>
-                <p-columnFilter
-                  type="text"
-                  field="warehouseCode"
-                  [showClearButton]="false"
-                ></p-columnFilter>
-              </th> -->
+            <th>
+              <p-columnFilter type="text" field="warehouseCode" [showClearButton]="false"></p-columnFilter>
+            </th>
             <th>
               <p-columnFilter type="boolean" field="isShipped" [showClearButton]="false"></p-columnFilter>
             </th>
@@ -170,7 +166,7 @@
             <td>{{ order.price.toString() | currency : "₺" }}</td>
             <!-- <td>{{ order.collectedQty }}</td>
               <td>{{ order.remainingQty }}</td> -->
-            <!-- <td>{{ order.warehouseCode }}</td> -->
+            <td>{{ order.warehouseCode }}</td>
             <td>
               <button class="btn" [ngClass]="{
                     'btn-success': order.isShipped,

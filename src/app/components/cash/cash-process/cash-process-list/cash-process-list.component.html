@@ -22,6 +22,10 @@
                 Uygulama Kodu
                 <p-sortIcon field="applicationCode"></p-sortIcon>
               </th>
+              <th pSortableColumn="cashTransNumber">
+                İç Numara
+                <p-sortIcon field="cashTransNumber"></p-sortIcon>
+              </th>
               <th pSortableColumn="currAccDescription">
                 Cari Hesap Açıklaması
                 <p-sortIcon field="currAccDescription"></p-sortIcon>
@@ -51,12 +55,18 @@
                 <p-sortIcon field="createdDate"></p-sortIcon>
               </th>
               <th>
+                Tamamlandı Mı
+              </th>
+              <th>
                 İşlemler
               </th>
             </tr>
             <tr>
               <th>
                 <p-columnFilter type="text" field="applicationCode" [showClearButton]="true"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="text" field="cashTransNumber" [showClearButton]="true"></p-columnFilter>
               </th>
               <th>
                 <p-columnFilter type="text" field="currAccDescription" [showClearButton]="true">
@@ -82,6 +92,11 @@
                 <p-columnFilter type="date" field="createdDate" [showClearButton]="true"></p-columnFilter>
               </th>
               <th>
+                <p-columnFilter type="boolean" field="isCompleted" [showClearButton]="true">
+                </p-columnFilter>
+
+              </th>
+              <th>
               </th>
             </tr>
           </ng-template>
@@ -90,6 +105,7 @@
           <ng-template pTemplate="body" let-cashHeader>
             <tr>
               <td>{{ cashHeader.applicationCode }}</td>
+              <td>{{ cashHeader.cashTransNumber }}</td>
               <td>{{ cashHeader.currAccDescription }}</td>
               <td>{{ cashHeader.cashCurrAccTypeCode }}</td>
               <td>{{ cashHeader.cashCurrAccCode }}</td>
@@ -97,9 +113,25 @@
               <td>{{ cashHeader.user }}</td>
               <td>{{ cashHeader.total | currency }}</td>
               <td>{{ cashHeader.createdDate | date }}</td>
-              <td><button class="btn btn-primary"
-                  routerLink="/create-bank-process/{{cashHeader.applicationCode}}/{{cashHeader.bankTransTypeCode}}/1/{{cashHeader.id}}"><i
-                    class="fa fa-pencil" aria-hidden="true"></i></button></td>
+              <td>
+                <button class="btn btn-success" *ngIf="cashHeader.isCompleted">
+                  <i class="fa fa-check"></i>
+                </button>
+                <button class="btn btn-danger" *ngIf="!cashHeader.isCompleted">
+                  <i class="fa fa-ban" aria-hidden="true"></i>
+                </button>
+              </td>
+              <td>
+
+                <div class="btn-group" role="group" aria-label="Basic example">
+                  <button class="btn btn-primary"
+                    routerLink="/create-bank-process/{{cashHeader.applicationCode}}/{{cashHeader.bankTransTypeCode}}/1/{{cashHeader.id}}"><i
+                      class="fa fa-pencil" aria-hidden="true"></i></button>
+                  <button type="button" class="btn btn-danger" (click)="deleteProcess(cashHeader)"><i
+                      class="fa fa-trash" aria-hidden="true"></i></button>
+
+                </div>
+              </td>
             </tr>
           </ng-template>
         </p-table>

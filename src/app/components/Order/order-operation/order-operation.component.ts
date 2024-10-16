@@ -15,7 +15,7 @@ import { OrderService } from '../../../services/admin/order.service';
 import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
 import { Exception } from '@zxing/library';
 import { MenuItem } from 'primeng/api';
-import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { CreatePurchaseInvoice } from "src/app/models/model/invoice/CreatePurchaseInvoice.1";
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
 import { OrderStatus } from 'src/app/models/model/order/orderStatus';
 import { CollectedProduct } from 'src/app/models/model/product/collectedProduct';

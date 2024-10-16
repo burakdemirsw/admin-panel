@@ -6,7 +6,21 @@ import { Observable } from 'rxjs/internal/Observable';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { InvocieFilterModel } from 'src/app/models/model/filter/invoiceFilterModel';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
-import { BankHeader, BankHeader_VM, BankLine, CashHeader, CashHeader_VM, CashLine, CollectedInvoiceProduct, CreatePurchaseInvoice, DebitHeader, DebitHeader_VM, DebitLine, InvoiceProcess, NebimResponse, ProductDetail_VM } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { InvoiceProcess } from "src/app/models/model/invoice/InvoiceProcess";
+import { CreatePurchaseInvoice } from "src/app/models/model/invoice/CreatePurchaseInvoice.1";
+import { OrderLineDetail_VM } from "src/app/models/model/invoice/OrderLineDetail_VM";
+import { OrderLineDetail } from "src/app/models/model/invoice/OrderLineDetail";
+import { BankHeader_VM } from "src/app/models/model/invoice/BankHeader_VM";
+import { DebitHeader_VM } from "src/app/models/model/invoice/DebitHeader_VM";
+import { CashHeader_VM } from "src/app/models/model/invoice/CashHeader_VM";
+import { DebitLine } from "src/app/models/model/invoice/DebitLine";
+import { DebitHeader } from "src/app/models/model/invoice/DebitHeader";
+import { BankLine } from "src/app/models/model/invoice/BankLine";
+import { BankHeader } from "src/app/models/model/invoice/BankHeader";
+import { CashLine, NebimResponse } from "src/app/models/model/invoice/CashLine";
+import { CashHeader } from "src/app/models/model/invoice/CashHeader";
+import { ProductDetail_VM } from "src/app/models/model/invoice/ProductDetail_VM";
+import { CollectedInvoiceProduct } from "src/app/models/model/invoice/CollectedInvoiceProduct";
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
 import { OrderBillingRequestModel } from 'src/app/models/model/invoice/orderBillingRequestModel';
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
@@ -27,6 +41,7 @@ import { AddCustomerAddress_CM, CreateCustomer_CM } from '../../models/model/ord
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 import { Invoice_RPM } from 'src/app/models/model/order/RPMs/invoice_RPM';
+import { ProposalLineDetail } from 'src/app/models/model/invoice/ProposalLineDetail';
 
 @Injectable({
   providedIn: 'root',
@@ -1032,6 +1047,106 @@ export class OrderService {
 
     return response;
   }
+  async convertConfirmedWSProposalToWSOrder(processType: string, processCode: string, id: string) {
+    const response = await this.httpClientService
+      .get_new<boolean>(
+        { controller: 'Order/convert-confirmed-ws-proposal-to-ws-order' },
+        processType + "/" + processCode + "/" + id
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  // OrderLineDetail'ları almak için
+  async getOrderLineDetails(processId: string): Promise<OrderLineDetail_VM[]> {
+    const response = await this.httpClientService
+      .get_new<OrderLineDetail_VM[]>({
+        controller: 'Order/get-order-line-details'
+      }, processId)
+      .toPromise();
+
+    return response;
+  }
+
+  // Yeni OrderLineDetail eklemek için
+  async addOrderLineDetail(request: OrderLineDetail): Promise<boolean> {
+    const response = await this.httpClientService
+      .post<boolean>({
+        controller: 'Order/add-order-line-detail'
+      }, request)
+      .toPromise();
+
+    return response;
+  }
+
+  // Var olan OrderLineDetail güncellemek için
+  async updateOrderLineDetail(request: OrderLineDetail): Promise<boolean> {
+    const response = await this.httpClientService
+      .post<boolean>({
+        controller: 'Order/update-order-line-detail'
+      }, request)
+      .toPromise();
+
+    return response;
+  }
+
+  // OrderLineDetail silmek için
+  async deleteOrderLineDetail(id: string): Promise<boolean> {
+    const response = await this.httpClientService
+      .get_new<boolean>({
+        controller: 'Order/delete-order-line-detail'
+      }, id)
+      .toPromise();
+
+    return response;
+  }
+
+  // OrderLineDetail'ları almak için
+  async getProposalLineDetails(processId: string): Promise<OrderLineDetail_VM[]> {
+    const response = await this.httpClientService
+      .get_new<OrderLineDetail_VM[]>({
+        controller: 'Order/get-proposal-line-details'
+      }, processId)
+      .toPromise();
+
+    return response;
+  }
+
+  // Yeni OrderLineDetail eklemek için
+  async addProposalLineDetail(request: ProposalLineDetail): Promise<boolean> {
+    const response = await this.httpClientService
+      .post<boolean>({
+        controller: 'Order/add-proposal-line-detail'
+      }, request)
+      .toPromise();
+
+    return response;
+  }
+
+  // Var olan OrderLineDetail güncellemek için
+  async updateProposalLineDetail(request: ProposalLineDetail): Promise<boolean> {
+    const response = await this.httpClientService
+      .post<boolean>({
+        controller: 'Order/update-proposal-line-detail'
+      }, request)
+      .toPromise();
+
+    return response;
+  }
+
+  // OrderLineDetail silmek için
+  async deleteProposalLineDetail(id: string): Promise<boolean> {
+    const response = await this.httpClientService
+      .get_new<boolean>({
+        controller: 'Order/delete-proposal-line-detail'
+      }, id)
+      .toPromise();
+
+    return response;
+  }
+
+
   //------------------------------------------------------------
   async completeCashPayment(request: string): Promise<NebimResponse> {
     const response = await this.httpClientService
@@ -1319,7 +1434,7 @@ export class OrderService {
         controller: 'Order/get-debit-header-list'
       })
       .toPromise();
- 
+
     return response;
   }
 

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Exception } from '@zxing/library';
-import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { CreatePurchaseInvoice } from "src/app/models/model/invoice/CreatePurchaseInvoice.1";
 import { ProductList_VM } from 'src/app/models/model/product/productList_VM';
 import { QrCode } from 'src/app/models/model/product/qrCode';
 import { GeneralService } from 'src/app/services/admin/general.service';

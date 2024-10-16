@@ -84,6 +84,7 @@ import { DebitProcessComponent } from "./components/debit/debit-process/debit-pr
 import { CashProcessListComponent } from "./components/cash/cash-process/cash-process-list/cash-process-list.component";
 import { BankProcessListComponent } from "./components/bank/bank-process/bank-process-list/bank-process-list.component";
 import { DebitProcessListComponent } from "./components/debit/debit-process/debit-process-list/debit-process-list.component";
+import { ConfirmProcessComponent } from "./components/Invoice/confirm-process/confirm-process.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -304,6 +305,11 @@ const routes: Routes = [
   {
     path: "create-debit-process/:applicationCode/:debitTypeCode/:currAccTypeCode/:activeIndex/:id",
     component: DebitProcessComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "confirm-process/:processType/:processCode/:processId",
+    component: ConfirmProcessComponent,
     canActivate: [AuthGuard],
   },
   {

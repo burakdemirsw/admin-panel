@@ -277,6 +277,7 @@
                     <th>
                       <p-columnFilter type="numeric" field="currAccAmount" [showClearButton]="true"></p-columnFilter>
                     </th>
+
                     <th>
 
                     </th>
@@ -289,6 +290,8 @@
                     <td>{{ bankLine.currAccCode }}</td>
                     <td>{{ bankLine.lineDescription }}</td>
                     <td>{{ bankLine.currAccAmount }}</td>
+
+
                     <td>
                       <div class="btn-group" role="group" aria-label="Basic example">
                         <button type="button" class="btn btn-primary" (click)="openUpdateDialog(bankLine)"><i

@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Exception } from "@zxing/library";
 import { OrderDetail } from "src/app/components/cargo/create-cargo/models/models";
 import { ClientUrls } from "src/app/models/const/ClientUrls";
-import { CreatePurchaseInvoice } from "src/app/models/model/invoice/createPurchaseInvoice";
+import { CreatePurchaseInvoice } from "src/app/models/model/invoice/CreatePurchaseInvoice.1";
 import { OrderBillingListModel } from "src/app/models/model/order/orderBillingListModel";
 import { ProductOfOrder } from "src/app/models/model/order/productOfOrders";
 import { CountProduct3 } from "src/app/models/model/product/countProduct";

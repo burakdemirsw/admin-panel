@@ -19,4 +19,6 @@ export class Invoice_VM {
   taxTypeCode: string;
   currAccDescription: string;
   amount: number;
+  isCompleted: boolean;
+  invoiceNumber: string;
 }

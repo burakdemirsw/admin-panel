@@ -8,7 +8,7 @@ import { int } from '@zxing/library/esm/customTypings';
 import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
 import { OrderBillingRequestModel } from 'src/app/models/model/invoice/orderBillingRequestModel';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
-import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { CreatePurchaseInvoice } from "src/app/models/model/invoice/CreatePurchaseInvoice.1";
 import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
 import { CountProductRequestModel } from 'src/app/models/model/order/countProductRequestModel';
 import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';

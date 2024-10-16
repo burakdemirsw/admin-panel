@@ -4,7 +4,7 @@ import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { QrOperationResponseModel } from 'src/app/models/model/client/qrOperationResponseModel';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
-import { CreatePurchaseInvoice } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { CreatePurchaseInvoice } from "src/app/models/model/invoice/CreatePurchaseInvoice.1";
 import { QrOperationModel } from 'src/app/models/model/product/qrOperationModel';
 import {
   ProductCountModel

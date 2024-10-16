@@ -17,6 +17,8 @@ import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { CreateBarcodeFromOrder_RM } from '../../Product/create-barcode/models/createBarcode';
 import { MarketplaceService } from 'src/app/services/admin/marketplace.service';
+import { UserService } from '../../../services/admin/user.service';
+import { UserClientInfoResponse } from 'src/app/models/model/user/userRegister_VM';
 
 @Component({
   selector: 'app-order-managament',
@@ -33,7 +35,7 @@ export class OrderManagamentComponent implements OnInit {
     private headerService: HeaderService,
     private httpClientService: HttpClientService,
     private toasterService: ToasterService,
-
+    private userService: UserService,
     private router: Router,
     private orderService: OrderService,
     private formBuilder: FormBuilder,
@@ -44,6 +46,7 @@ export class OrderManagamentComponent implements OnInit {
     private marketplaceService: MarketplaceService
 
   ) { }
+  user: UserClientInfoResponse;
   filterForm: FormGroup;
   pageDescription: boolean = false;
   _pageDescription: boolean = false;
@@ -86,12 +89,12 @@ export class OrderManagamentComponent implements OnInit {
         this.getWayBillReport();
       }
     },
-    {
-      label: 'Sipariş Durumunu Güncelle',
-      command: () => {
-        this.updateOrderStatus();
-      }
-    },
+    // {
+    //   label: 'Sipariş Durumunu Güncelle',
+    //   command: () => {
+    //     this.updateOrderStatus();
+    //   }
+    // },
 
     {
       label: 'Siparişleri Sil',
@@ -126,17 +129,19 @@ export class OrderManagamentComponent implements OnInit {
       if (params['invoiceStatus']) {
         this.invoiceStatus = params['invoiceStatus']
       }
-
-
     });
     if (location.href.includes("missing-list")) {
       this.pageDescription = true
       this.pageDescriptionLine = "Eksik Siparişler"
     }
 
+
     this.formGenerator()
     await this.getOrders(this.status, this.invoiceStatus);
     //this.spinnerService.hide();
+    this.user = this.userService.getUserClientInfoResponse();
+    // console.log(this.user);
+    //this.saleOrderModels = this.saleOrderModels.filter(o => o.warehouseCode == this.user.warehouseCode);
     this.setPageDescription();
 
   }

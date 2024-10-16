@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Dropdown } from 'primeng/dropdown';
-import { InvoiceProcess } from 'src/app/models/model/invoice/createPurchaseInvoice';
+import { InvoiceProcess } from "src/app/models/model/invoice/InvoiceProcess";
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
 import { CustomerAddress_VM, CustomerList_VM, GetCustomerList_CM } from 'src/app/models/model/order/getCustomerList_CM';
 import { Payment } from 'src/app/models/model/order/nebimOrder';
