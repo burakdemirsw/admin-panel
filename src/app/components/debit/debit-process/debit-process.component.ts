@@ -17,6 +17,7 @@ import { ProductService } from 'src/app/services/admin/product.service';
 import { UserService } from 'src/app/services/admin/user.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { DebitService } from 'src/app/services/admin/debit.service';
 
 @Component({
   selector: 'app-debit-process',
@@ -28,8 +29,7 @@ export class DebitProcessComponent {
   constructor(
     private formBuilder: FormBuilder,
     private toasterService: ToasterService,
-    private orderService: OrderService,
-    private productService: ProductService,
+    private debitService: DebitService,
     private warehouseService: WarehouseService,
     private generalService: GeneralService,
     private activatedRoute: ActivatedRoute,
@@ -210,7 +210,7 @@ export class DebitProcessComponent {
   }
   async getLinesOfHeader() {
     try {
-      const response = await this.orderService.getDebitLinesByHeaderId(
+      const response = await this.debitService.getDebitLinesByHeaderId(
         this.id
       );
       this.debitLines = response;
@@ -233,7 +233,7 @@ export class DebitProcessComponent {
 
   async getHeader() {
     if (this.generalService.isGuid(this.id)) {
-      var response = await this.orderService.getDebitHeaderById(this.id);
+      var response = await this.debitService.getDebitHeaderById(this.id);
       if (response != null) {
         this.debitHeader = response;
         this.setFormValueFromProcess();
@@ -263,7 +263,7 @@ export class DebitProcessComponent {
       header.description = _v.description;
       header.userId = this.user.userId
 
-      var response = await this.orderService.editDebitHeader(header);
+      var response = await this.debitService.editDebitHeader(header);
       if (response) {
         this.debitHeader = response;
         this.responseHandler(true, "Güncellendi")
@@ -291,7 +291,7 @@ export class DebitProcessComponent {
       header.description = _v.description;
       header.userId = this.user.userId
 
-      var response = await this.orderService.editDebitHeader(header);
+      var response = await this.debitService.editDebitHeader(header);
       if (response) {
         this.responseHandler(true, "Eklendi");
         this.routerService.navigate([`/create-debit-process/${this.applicationCode}/${this.currAccTypeCode}/${this.debitTypeCode}/0/${response.id}`]);
@@ -346,7 +346,7 @@ export class DebitProcessComponent {
       line.dueDate = _v.dueDate;
       line.lineDescription = _v.lineDescription;
       line.debitReasonCode = _v.debitReasonCode
-      var response = await this.orderService.addDebitLine(line);
+      var response = await this.debitService.addDebitLine(line);
       if (response) {
         await this.getLinesOfHeader();
         this.responseHandler(true, "Eklendi")
@@ -374,7 +374,7 @@ export class DebitProcessComponent {
       line.dueDate = _v.dueDate;
       line.lineDescription = _v.lineDescription;
       line.debitReasonCode = _v.debitReasonCode;
-      var response = await this.orderService.updateDebitLine(line);
+      var response = await this.debitService.updateDebitLine(line);
       if (response) {
         await this.getLinesOfHeader();
         this.responseHandler(true, "Güncellendi")
@@ -392,7 +392,7 @@ export class DebitProcessComponent {
 
   async completeDebitPayment() {
     if (window.confirm("İşlem Tamamlanacakdır. Devam edilsin mi?")) {
-      var response: NebimResponse = await this.orderService.completeDebitPayment(this.debitHeader.id);
+      var response: NebimResponse = await this.debitService.completeDebitPayment(this.debitHeader.id);
       if (response) {
         this.responseHandler(true, "Tamamlandı");
         this.routerService.navigate([`/create-debit-process/${this.applicationCode}/${this.currAccTypeCode}/${this.debitTypeCode}/0/${this.debitHeader.id}`]);

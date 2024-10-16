@@ -6,6 +6,7 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { HeaderService } from '../../../services/admin/header.service';
+import { InvoiceService } from 'src/app/services/admin/invoice.service';
 
 @Component({
   selector: 'app-invoice-list',
@@ -17,6 +18,7 @@ export class InvoiceListComponent implements OnInit {
     private headerService: HeaderService,
     private toasterService: ToasterService,
     private router: Router,
+    private invoiceService: InvoiceService,
     private generalService: GeneralService,
     private formBuilder: FormBuilder,
     private orderService: OrderService,
@@ -119,7 +121,7 @@ export class InvoiceListComponent implements OnInit {
 
   async getInvoiceList(): Promise<any> {
     try {
-      this.invoices = await this.orderService.getInvoiceList(this.processType, this.processCode);
+      this.invoices = await this.invoiceService.getInvoiceList(this.processType, this.processCode);
     } catch (error: any) {
       console.log(error.message);
     }
@@ -136,7 +138,7 @@ export class InvoiceListComponent implements OnInit {
   }
   async convertWSProposalToWSOrder(processCode: string, id: string) {
     if (window.confirm("Teklifi Siparişe Çevirilecektir. Devam edilsin mi?")) {
-      var response = await this.orderService.convertWSProposalToWSOrder(this.processType, processCode, id);
+      var response = await this.invoiceService.convertWSProposalToWSOrder(this.processType, processCode, id);
       if (response) {
         this.toasterService.success("Teklif, Siparişe Dönüştürüldü");
         this.getInvoiceList();
@@ -161,7 +163,7 @@ export class InvoiceListComponent implements OnInit {
 
   }
   async deleteInvoice(id: string) {
-    var response = await this.orderService.deleteInvoiceProcess(id);
+    var response = await this.invoiceService.deleteInvoiceProcess(id);
     if (response) {
       this.toasterService.success("Silindi");
       this.getInvoiceList();

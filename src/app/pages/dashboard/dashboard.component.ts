@@ -3,6 +3,7 @@ import { OrderService } from 'src/app/services/admin/order.service';
 import { Raport_CR } from '../../models/model/raport/raport_CR';
 import { HeaderService } from '../../services/admin/header.service';
 import { style } from '@angular/animations';
+import { RaportService } from 'src/app/services/admin/raport.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,7 +12,11 @@ import { style } from '@angular/animations';
 })
 export class DashboardComponent implements OnInit {
 
-  constructor(private headerService: HeaderService, private elementRef: ElementRef, private orderService: OrderService) { }
+  constructor(
+    private headerService: HeaderService,
+    private elementRef: ElementRef,
+    private orderService: OrderService,
+    private raportService: RaportService) { }
   data: any;
   day = 1;
   options: any;
@@ -31,7 +36,7 @@ export class DashboardComponent implements OnInit {
   }
 
   async saleCountRaport() {
-    const response: Raport_CR = await this.orderService.getRaports(this.day);
+    const response: Raport_CR = await this.raportService.getRaports(this.day);
     this.raportData = response;
     var days: string[] = [];
     var data: number[] = [];
@@ -103,7 +108,7 @@ export class DashboardComponent implements OnInit {
 
   }
   async saleRevenueRaport() {
-    const response: Raport_CR = await this.orderService.getRaports(0);
+    const response: Raport_CR = await this.raportService.getRaports(0);
     this.raportData = response;
     var days: string[] = [];
     var data: number[] = [];

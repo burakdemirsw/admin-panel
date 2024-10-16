@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BankHeader_VM } from "src/app/models/model/invoice/BankHeader_VM";
+import { BankService } from 'src/app/services/admin/bank.service';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { InfoService } from 'src/app/services/admin/info.service';
@@ -20,17 +21,9 @@ export class BankProcessListComponent implements OnInit {
   bankHeaders: BankHeader_VM[] = []; // BankHeaderVm tipinde bir dizi
 
   constructor(
-    private formBuilder: FormBuilder,
     private toasterService: ToasterService,
-    private orderService: OrderService,
-    private productService: ProductService,
-    private warehouseService: WarehouseService,
-    private generalService: GeneralService,
-    private activatedRoute: ActivatedRoute,
     private headerService: HeaderService,
-    private routerService: Router,
-    private userService: UserService,
-    private infoService: InfoService,
+    private bankService: BankService
   ) { }
 
   ngOnInit(): void {
@@ -41,14 +34,14 @@ export class BankProcessListComponent implements OnInit {
   // Bank header verilerini yüklemek için fonksiyon
   async loadBankHeaders() {
     try {
-      this.bankHeaders = await this.orderService.getBankHeaders(); // Servisten veriyi al
+      this.bankHeaders = await this.bankService.getBankHeaders(); // Servisten veriyi al
     } catch (error) {
       this.toasterService.error("Bank headers yüklenirken bir hata oluştu."); // Hata durumunda bildirim
       console.error(error);
     }
   }
   async deleteProcess(header: BankHeader_VM) {
-    var response = await this.orderService.deleteBankHeader(header.id);
+    var response = await this.bankService.deleteBankHeader(header.id);
     if (response) {
       this.loadBankHeaders();
     }

@@ -17,6 +17,7 @@ import { HeaderService } from '../../../services/admin/header.service';
 import { CustomerAddress_VM, GetCustomerAddress_CM } from 'src/app/models/model/order/getCustomerList_CM';
 import { BasketProduct_VM } from 'src/app/models/model/warehouse/transferRequestListModel';
 import { UserService } from '../../../services/admin/user.service';
+import { InvoiceService } from 'src/app/services/admin/invoice.service';
 declare var window: any;
 @Component({
   selector: 'app-create-sale-order',
@@ -57,6 +58,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private toasterService: ToasterService,
     private orderService: OrderService,
+    private invoiceService: InvoiceService,
     private productService: ProductService,
     private warehouseService: WarehouseService,
     private generalService: GeneralService,
@@ -258,7 +260,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
 
     if (discountAmount >= 0 && discountAmount <= 100) {
       this.invoiceProcess.discountRate1 = discountAmount;
-      var response: InvoiceProcess = await this.orderService.editInvoiceProcess(this.invoiceProcess)
+      var response: InvoiceProcess = await this.invoiceService.editInvoiceProcess(this.invoiceProcess)
       if (response) {
         this.invoiceProcess = response;
         this.getFinalTotalPrice2();
@@ -277,7 +279,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
 
   async cashDiscount(discountAmount: number) {
     this.invoiceProcess.discountRate2 = discountAmount;
-    var response: InvoiceProcess = await this.orderService.editInvoiceProcess(this.invoiceProcess);
+    var response: InvoiceProcess = await this.invoiceService.editInvoiceProcess(this.invoiceProcess);
     if (response) {
       this.invoiceProcess = response;
 
@@ -319,7 +321,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
   async resetDiscount() {
     this.invoiceProcess.discountRate2 = 0;
     this.invoiceProcess.discountRate1 = 0
-    var response: InvoiceProcess = await this.orderService.editInvoiceProcess(this.invoiceProcess);
+    var response: InvoiceProcess = await this.invoiceService.editInvoiceProcess(this.invoiceProcess);
     if (response) {
       this.invoiceProcess = response;
 
@@ -388,7 +390,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
   async getInvoiceProcess() {
 
     if (this.generalService.isGuid(this.newOrderNumber)) {
-      var response = await this.orderService.getInvoiceProcessList(this.processCode, this.newOrderNumber);
+      var response = await this.invoiceService.getInvoiceProcessList(this.processCode, this.newOrderNumber);
       if (response.length > 0) {
         this.invoiceProcess = response[0];
         this.setFormValueFromProcess(this.invoiceProcess);
@@ -409,7 +411,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
     product.quantity = this.updateProductForm.get('quantity').value;
 
 
-    var response = await this.orderService.updateCollectedInvoiceProduct(product);
+    var response = await this.invoiceService.updateCollectedInvoiceProduct(product);
     if (response) {
       // this.getTotalPrice2();
       // await this.getProposalProducts();
@@ -443,7 +445,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
   async changeStatusOfProcess(isCompleted: boolean, reload: boolean) {
     var req: InvoiceProcess = Object.assign(this.invoiceProcess);
     req.isCompleted = isCompleted;
-    var response = await this.orderService.editInvoiceProcess(this.invoiceProcess);
+    var response = await this.invoiceService.editInvoiceProcess(this.invoiceProcess);
     if (reload) {
       this.invoiceProcess.isCompleted = false;
       // this.routerService.navigate([`/create-process/${this.processType}/${this.processCode}/1/${response.id}`]);
@@ -478,7 +480,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
     request.billingPostalAddressId = formValue.billingPostalAddressId.code
     request.isCompleted = isCompleted != undefined ? isCompleted : this.invoiceProcess.isCompleted;
     request.applicationCode = this.applicationCode;
-    var response = await this.orderService.editInvoiceProcess(request);
+    var response = await this.invoiceService.editInvoiceProcess(request);
     if (response) {
       this.responseHandler(true, "Güncellendi")
       this.setFormValueFromProcess(response);
@@ -513,7 +515,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
     request.applicationCode = this.applicationCode;
     request.isCompleted = false;
 
-    var response = await this.orderService.editInvoiceProcess(request);
+    var response = await this.invoiceService.editInvoiceProcess(request);
     if (response) {
       // Handle success response
       this.responseHandler(true, "Eklendi");
@@ -688,7 +690,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
   }
   async getProductOfProcess(): Promise<void> {
     try {
-      const response = await this.orderService.getCollectedInvoiceProducts(
+      const response = await this.invoiceService.getCollectedInvoiceProducts(
         this.newOrderNumber
       );
       this.invoiceProducts = response;
@@ -742,7 +744,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
     );
 
     if (confirmation) {
-      var response = await this.orderService.createOrder_New(this.processCode, this.invoiceProcess.id);
+      var response = await this.invoiceService.createOrder_New(this.processCode, this.invoiceProcess.id);
       if (response) {
         this.reloadStatus = false;
         this.toasterService.success('Sipariş Oluşturuldu.');
@@ -759,7 +761,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
   //------------------------------------------------------- FATURA
   async deleteInvoice() {
     if (this.invoiceProcess.id) {
-      var response = await this.orderService.deleteInvoiceProcess(this.invoiceProcess.id);
+      var response = await this.invoiceService.deleteInvoiceProcess(this.invoiceProcess.id);
       if (response) {
         this.toasterService.success("Fatura Silindi");
         this.routerService.navigate([`/create-process/0/${this.processCode}`]);
@@ -779,7 +781,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
     );
 
     if (confirmation) {
-      var response = await this.orderService.createInvoice_New(this.processCode, this.invoiceProcess.id);
+      var response = await this.invoiceService.createInvoice_New(this.processCode, this.invoiceProcess.id);
       if (response) {
         this.toasterService.success('Faturalaştırma Başarılı.');
         this.routerService.navigate([`/create-process/0/${this.processCode}/${this.invoiceProcess.id}`]);
@@ -1043,7 +1045,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
     );
 
     if (confirmDelete) {
-      const response: boolean = await this.orderService.deleteCollectedInvoiceProduct(
+      const response: boolean = await this.invoiceService.deleteCollectedInvoiceProduct(
         id
       );
       if (response) {
@@ -1111,7 +1113,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
         shelves.find((s) => s.toLowerCase() == model.shelfNo.toLowerCase())
       ) {
 
-        var product_detail = await this.orderService.getProductDetailByPriceCode(this.processCode, model.barcode);
+        var product_detail = await this.invoiceService.getProductDetailByPriceCode(this.processCode, model.barcode);
         var request: CollectedInvoiceProduct = new CollectedInvoiceProduct();
 
         request.barcode = model.barcode;
@@ -1131,7 +1133,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
         // var taxed_price = (request.priceVI * mult);
         // request.totalTaxedPrice = request.quantity * product_detail.priceVI;
         // request.totalPrice = request.quantity * product_detail.price
-        var response = await this.orderService.addCollectedInvoiceProduct(request)
+        var response = await this.invoiceService.addCollectedInvoiceProduct(request)
         if (response) {
           this.responseHandler(true, "Eklendi")
           this.getProductOfProcess()
@@ -1148,7 +1150,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
           )
         ) {
 
-          var product_detail = await this.orderService.getProductDetailByPriceCode(this.processCode, model.barcode);
+          var product_detail = await this.invoiceService.getProductDetailByPriceCode(this.processCode, model.barcode);
           var request: CollectedInvoiceProduct = new CollectedInvoiceProduct();
 
           request.barcode = model.barcode;
@@ -1168,7 +1170,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
           // var taxed_price = (request.priceVI * mult);
           // request.totalTaxedPrice = request.quantity * product_detail.priceVI;
           // request.totalPrice = request.quantity * product_detail.price
-          var response = await this.orderService.addCollectedInvoiceProduct(request)
+          var response = await this.invoiceService.addCollectedInvoiceProduct(request)
           if (response) {
             this.responseHandler(true, "Eklendi")
             this.getProductOfProcess()
@@ -1305,7 +1307,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
       }
 
       // Proceed to add the product
-      var product_detail = await this.orderService.getProductDetailByPriceCode(this.processCode, p.barcode);
+      var product_detail = await this.invoiceService.getProductDetailByPriceCode(this.processCode, p.barcode);
       var request: CollectedInvoiceProduct = new CollectedInvoiceProduct();
 
       request.barcode = p.barcode;
@@ -1322,7 +1324,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
       request.taxRate = product_detail.taxRate;
 
 
-      var response = await this.orderService.addCollectedInvoiceProduct(request);
+      var response = await this.invoiceService.addCollectedInvoiceProduct(request);
       if (response) {
         this.responseHandler(true, "Eklendi");
         this.getProductOfProcess();

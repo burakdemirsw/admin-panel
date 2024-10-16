@@ -66,6 +66,7 @@ export class AddCustomerComponent implements OnInit {
 
   @Input() _type: string;
   @Input() _currAccCode: string;
+  @Input() _isInnerPage: string;
   _pageType: boolean;
   async ngOnInit() {
     this.activatedRoute.params.subscribe(async (params) => {
@@ -113,27 +114,33 @@ export class AddCustomerComponent implements OnInit {
         this.createUpdateCommunicationForm();
         this.createAddressForm();
         this.pageType = true;
-        if (this._type == "whosale") {
-          this.headerService.updatePageTitle("Toptan Müşteri Güncelle");
-        } else if (this._type == "retail") {
-          this.headerService.updatePageTitle("Perakende Müşteri Güncelle");
+        if (!this._isInnerPage) {
+          if (this._type == "whosale") {
+            this.headerService.updatePageTitle("Toptan Müşteri Güncelle");
+          } else if (this._type == "retail") {
+            this.headerService.updatePageTitle("Perakende Müşteri Güncelle");
+          }
+          else if (this._type == "vendor") {
+            this.headerService.updatePageTitle("Tedarikçi Güncelle");
+          }
         }
-        else if (this._type == "vendor") {
-          this.headerService.updatePageTitle("Tedarikçi Güncelle");
-        }
+
         this.currAccCode = this._currAccCode;
         this.addressId = params["addressId"];
         await this.reload();
       } else {
         this.pageType = false;
-        if (this._type == "whosale") {
-          this.headerService.updatePageTitle("Toptan Müşteri Oluştur");
-        } else if (this._type == "retail") {
-          this.headerService.updatePageTitle("Perakende Müşteri Oluştur");
+        if (!this._isInnerPage) {
+          if (this._type == "whosale") {
+            this.headerService.updatePageTitle("Toptan Müşteri Oluştur");
+          } else if (this._type == "retail") {
+            this.headerService.updatePageTitle("Perakende Müşteri Oluştur");
+          }
+          else if (this._type == "vendor") {
+            this.headerService.updatePageTitle("Tedarikçi Oluştur");
+          }
         }
-        else if (this._type == "vendor") {
-          this.headerService.updatePageTitle("Tedarikçi Oluştur");
-        }
+
 
       }
     });

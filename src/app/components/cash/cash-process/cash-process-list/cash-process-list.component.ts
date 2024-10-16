@@ -4,6 +4,7 @@ import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { OrderService } from 'src/app/services/admin/order.service';
 import { CashHeader_VM } from "src/app/models/model/invoice/CashHeader_VM";
 import { HeaderService } from 'src/app/services/admin/header.service';
+import { CashService } from 'src/app/services/admin/cash.service';
 
 @Component({
   selector: 'app-cash-process-list',
@@ -17,7 +18,8 @@ export class CashProcessListComponent implements OnInit {
     private formBuilder: FormBuilder,
     private toasterService: ToasterService,
     private orderService: OrderService,
-    private headerService: HeaderService
+    private headerService: HeaderService,
+    private cashService: CashService
 
   ) { }
 
@@ -29,7 +31,7 @@ export class CashProcessListComponent implements OnInit {
   // Cash header verilerini yüklemek için fonksiyon
   async loadCashHeaders() {
     try {
-      this.cashHeaders = await this.orderService.getCashHeaders(); // Servisten veriyi al
+      this.cashHeaders = await this.cashService.getCashHeaders(); // Servisten veriyi al
     } catch (error) {
       this.toasterService.error("Cash headers yüklenirken bir hata oluştu."); // Hata durumunda bildirim
       console.error(error);
@@ -37,7 +39,7 @@ export class CashProcessListComponent implements OnInit {
   }
 
   async deleteProcess(header: CashHeader_VM) {
-    var response = await this.orderService.deleteCashHeader(header.id);
+    var response = await this.cashService.deleteCashHeader(header.id);
     if (response) {
       this.loadCashHeaders();
     }

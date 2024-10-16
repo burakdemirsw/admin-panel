@@ -17,6 +17,7 @@ import { ProductService } from 'src/app/services/admin/product.service';
 import { UserService } from 'src/app/services/admin/user.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { CashService } from 'src/app/services/admin/cash.service';
 
 @Component({
   selector: 'app-cash-process',
@@ -38,6 +39,7 @@ export class CashProcessComponent implements OnInit {
     private routerService: Router,
     private userService: UserService,
     private infoService: InfoService,
+    private cashService: CashService
   ) { }
 
   officeModels: OfficeModel[] = [];
@@ -188,7 +190,7 @@ export class CashProcessComponent implements OnInit {
   }
   async getLinesOfHeader() {
     try {
-      const response = await this.orderService.getCashLinesByHeaderId(
+      const response = await this.cashService.getCashLinesByHeaderId(
         this.id
       );
       this.cashLines = response;
@@ -211,7 +213,7 @@ export class CashProcessComponent implements OnInit {
 
   async getHeader() {
     if (this.generalService.isGuid(this.id)) {
-      var response = await this.orderService.getCashHeadersById(this.id);
+      var response = await this.cashService.getCashHeadersById(this.id);
       if (response != null) {
         this.cashHeader = response;
         this.setFormValueFromProcess();
@@ -241,7 +243,7 @@ export class CashProcessComponent implements OnInit {
       header.description = _v.description;
       header.userId = this.user.userId
 
-      var response = await this.orderService.editCashHeader(header);
+      var response = await this.cashService.editCashHeader(header);
       if (response) {
         this.cashHeader = response;
         this.responseHandler(true, "Güncellendi")
@@ -268,7 +270,7 @@ export class CashProcessComponent implements OnInit {
       header.description = _v.description;
       header.userId = this.user.userId
 
-      var response = await this.orderService.editCashHeader(header);
+      var response = await this.cashService.editCashHeader(header);
       if (response) {
         this.responseHandler(true, "Eklendi");
         this.routerService.navigate([`/create-cash-process/${this.applicationCode}/${this.cashTransTypeCode}/1/${response.id}`]);
@@ -322,7 +324,7 @@ export class CashProcessComponent implements OnInit {
       line.currAccCode = _v.currAccCode.code;
       line.currAccAmount = _v.currAccAmount;
       line.lineDescription = _v.lineDescription;
-      var response = await this.orderService.addCashLine(line);
+      var response = await this.cashService.addCashLine(line);
       if (response) {
         await this.getLinesOfHeader();
         this.responseHandler(true, "Eklendi")
@@ -349,7 +351,7 @@ export class CashProcessComponent implements OnInit {
       line.currAccCode = _v.currAccCode.code;
       line.currAccAmount = _v.currAccAmount;
       line.lineDescription = _v.lineDescription;
-      var response = await this.orderService.updateCashLine(line);
+      var response = await this.cashService.updateCashLine(line);
       if (response) {
         await this.getLinesOfHeader();
         this.responseHandler(true, "Güncellendi")
@@ -367,7 +369,7 @@ export class CashProcessComponent implements OnInit {
 
   async completeCashPayment() {
     if (window.confirm("İşlem Tamamlanacakdır. Devam edilsin mi?")) {
-      var response: NebimResponse = await this.orderService.completeCashPayment(this.cashHeader.id);
+      var response: NebimResponse = await this.cashService.completeCashPayment(this.cashHeader.id);
       if (response) {
         this.responseHandler(true, "Tamamlandı");
         this.routerService.navigate([`/create-cash-process/${this.applicationCode}/${this.cashTransTypeCode}/0/${this.cashHeader.id}`]);

@@ -98,21 +98,24 @@
             <td>
               <div class="btn-group">
 
-                <button class="btn btn-success" (click)="goPage(invoice.id)">
+                <button class="btn btn-primary" (click)="goPage(invoice.id)">
                   <i class="fas fa-sliders-h"></i>
                 </button>
                 <button *ngIf="this.processType =='order'" class="btn btn-primary" title="Siparişi Faturaya Çevir"
-                  (click)="convertWSOrderToWSInvoice(invoice.processCode,invoice.id)">
+                  [disabled]="
+                  !invoice.isCompleted" (click)="convertWSOrderToWSInvoice(invoice.processCode,invoice.id)">
                   <i class="fas fa-receipt    "></i> </button>
                 <button *ngIf="this.processType =='proposal'" class="btn btn-primary" title="Teklifi Siparişe Çevir"
-                  (click)="convertWSProposalToWSOrder(invoice.processCode,invoice.id)">
+                  [disabled]="
+                  !invoice.isCompleted" (click)="convertWSProposalToWSOrder(invoice.processCode,invoice.id)">
                   <i class="fas fa-receipt    "></i> </button>
 
                 <button *ngIf="this.processType =='proposal'" class="btn btn-primary" title="Teklifi Onayla"
-                  routerLink="/confirm-process/proposal/{{invoice.processCode}}/{{invoice.id}}">
+                  routerLink="/confirm-process/proposal/{{invoice.processCode}}/{{invoice.id}}" [disabled]="
+                  !invoice.isCompleted">
                   <i class="fa fa-check" aria-hidden="true"></i> </button>
-                <button *ngIf="this.processType =='order'" class="btn btn-primary" title="Siparişi Onayla"
-                  routerLink="/confirm-process/order/{{invoice.processCode}}/{{invoice.id}}">
+                <button *ngIf="this.processType =='order'" class="btn btn-primary" title="Siparişi Onayla" [disabled]="
+                  !invoice.isCompleted" routerLink="/confirm-process/order/{{invoice.processCode}}/{{invoice.id}}">
                   <i class="fa fa-check" aria-hidden="true"></i> </button>
                 <button class="btn btn-danger" title="Sil" (click)="deleteInvoice(invoice.id)">
                   <i class="fas fa-trash"></i>

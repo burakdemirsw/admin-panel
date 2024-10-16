@@ -30,6 +30,7 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { InvoiceService } from 'src/app/services/admin/invoice.service';
 
 declare var window: any;
 
@@ -39,6 +40,7 @@ declare var window: any;
   styleUrls: ['./order-operation.component.css'],
 })
 export class OrderOperationComponent implements OnInit {
+
   infoProducts: CreatePurchaseInvoice[] = [];
   lastCollectedProducts: CollectedProduct[] = [];
   productsToCollect: ProductOfOrder[] = [];
@@ -68,7 +70,6 @@ export class OrderOperationComponent implements OnInit {
   selectedInvoiceType: any;
   _visible: boolean;
   _visible2: boolean;
-
   items: MenuItem[] = [
     {
       label: 'Seçilenleri Topla',
@@ -77,28 +78,6 @@ export class OrderOperationComponent implements OnInit {
       }
     }
   ];
-
-
-  showDialog() {
-    this._visible = true;
-  }
-
-  constructor(
-    private headerService: HeaderService,
-    private toasterService: ToasterService,
-    private formBuilder: FormBuilder,
-    private orderService: OrderService,
-    private activatedRoute: ActivatedRoute,
-    private router: Router,
-    private httpClient: HttpClient,
-    private productService: ProductService,
-    private warehouseService: WarehouseService,
-    private gs: GeneralService,
-    private title: Title,
-    private sanitizer: DomSanitizer,
-  ) {
-
-  }
   //#region  params
   isBPTransferForm: boolean = false;
   isInvoice: boolean = false;
@@ -134,6 +113,24 @@ export class OrderOperationComponent implements OnInit {
   lastCollectedProduct: ProductOfOrder = null;
   userType: number;
   //#endregion
+  constructor(
+    private headerService: HeaderService,
+    private toasterService: ToasterService,
+    private formBuilder: FormBuilder,
+    private orderService: OrderService,
+    private invoiceService: InvoiceService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private httpClient: HttpClient,
+    private productService: ProductService,
+    private warehouseService: WarehouseService,
+    private gs: GeneralService,
+    private title: Title,
+    private sanitizer: DomSanitizer,
+  ) {
+
+  }
+
   async ngOnInit() {
 
     //this.spinnerService.show();
@@ -203,6 +200,10 @@ export class OrderOperationComponent implements OnInit {
 
       console.log(orderNumberType, this.userType);
     });
+  }
+
+  showDialog() {
+    this._visible = true;
   }
 
   async addOrderStatus() {
@@ -475,7 +476,7 @@ export class OrderOperationComponent implements OnInit {
 
   async collectAndPack_WS(products: ProductOfOrder[]) {
 
-    var _response = await this.orderService.collectAndPack(this.userType, products, this.currentOrderNo, 0);
+    var _response = await this.invoiceService.collectAndPack(this.userType, products, this.currentOrderNo, 0);
     if (_response) {
       this.router.navigate(['/orders-managament/1/2']);
     }

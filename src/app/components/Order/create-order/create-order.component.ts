@@ -27,6 +27,7 @@ import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, Payment }
 import { OrderService } from '../../../services/admin/order.service';
 import { GoogleDriveService } from '../../../services/common/google-drive.service';
 import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from '../../cargo/create-cargo/models/models';
+import { RaportService } from 'src/app/services/admin/raport.service';
 
 @Component({
   selector: 'app-create-order',
@@ -62,7 +63,7 @@ export class CreateOrderComponent implements OnInit {
     private router: Router, private httpClientService: HttpClientService,
     private generalService: GeneralService, private addressService: AddressService,
     private googleDriveService: GoogleDriveService, private productService: ProductService,
-    private formBuilder: FormBuilder, private orderService: OrderService,
+    private formBuilder: FormBuilder, private orderService: OrderService, private raportService: RaportService,
     private cargoService: CargoService) { }
 
   async ngOnInit() {
@@ -299,7 +300,7 @@ export class CreateOrderComponent implements OnInit {
   }
   async sendInvoiceToPrinter(orderNumber: string) {
 
-    var response = await this.orderService.sendInvoiceToPrinter(orderNumber);
+    var response = await this.raportService.sendInvoiceToPrinter(orderNumber);
     if (response) {
       this.toasterService.success("Yazıcıya Gönderildi")
     }

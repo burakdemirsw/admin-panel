@@ -19,6 +19,7 @@ import { ProductService } from 'src/app/services/admin/product.service';
 import { UserService } from 'src/app/services/admin/user.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { BankService } from 'src/app/services/admin/bank.service';
 
 @Component({
   selector: 'app-bank-process',
@@ -30,8 +31,6 @@ export class BankProcessComponent {
   constructor(
     private formBuilder: FormBuilder,
     private toasterService: ToasterService,
-    private orderService: OrderService,
-    private productService: ProductService,
     private warehouseService: WarehouseService,
     private generalService: GeneralService,
     private activatedRoute: ActivatedRoute,
@@ -39,6 +38,7 @@ export class BankProcessComponent {
     private routerService: Router,
     private userService: UserService,
     private infoService: InfoService,
+    private bankService: BankService
   ) { }
 
   officeModels: OfficeModel[] = [];
@@ -195,7 +195,7 @@ export class BankProcessComponent {
   }
   async getLinesOfHeader() {
     try {
-      const response = await this.orderService.getBankLinesByHeaderId(
+      const response = await this.bankService.getBankLinesByHeaderId(
         this.id
       );
       this.bankLines = response;
@@ -218,7 +218,7 @@ export class BankProcessComponent {
 
   async getHeader() {
     if (this.generalService.isGuid(this.id)) {
-      var response = await this.orderService.getBankHeaderById(this.id);
+      var response = await this.bankService.getBankHeaderById(this.id);
       if (response != null) {
         this.bankHeader = response;
         this.setFormValueFromProcess();
@@ -249,7 +249,7 @@ export class BankProcessComponent {
       header.description = _v.description;
       header.userId = this.user.userId
 
-      var response = await this.orderService.editBankHeader(header);
+      var response = await this.bankService.editBankHeader(header);
       if (response) {
         this.bankHeader = response;
         this.responseHandler(true, "Güncellendi")
@@ -277,7 +277,7 @@ export class BankProcessComponent {
       header.description = _v.description;
       header.userId = this.user.userId
 
-      var response = await this.orderService.editBankHeader(header);
+      var response = await this.bankService.editBankHeader(header);
       if (response) {
         this.responseHandler(true, "Eklendi");
         this.routerService.navigate([`/create-bank-process/${this.applicationCode}/${this.bankTransTypeCode}/1/${response.id}`]);
@@ -331,7 +331,7 @@ export class BankProcessComponent {
       line.currAccCode = _v.currAccCode.code;
       line.currAccAmount = _v.currAccAmount;
       line.lineDescription = _v.lineDescription;
-      var response = await this.orderService.addBankLine(line);
+      var response = await this.bankService.addBankLine(line);
       if (response) {
         await this.getLinesOfHeader();
         this.responseHandler(true, "Eklendi")
@@ -358,7 +358,7 @@ export class BankProcessComponent {
       line.currAccCode = _v.currAccCode.code;
       line.currAccAmount = _v.currAccAmount;
       line.lineDescription = _v.lineDescription;
-      var response = await this.orderService.updateBankLine(line);
+      var response = await this.bankService.updateBankLine(line);
       if (response) {
         await this.getLinesOfHeader();
         this.responseHandler(true, "Güncellendi")
@@ -376,7 +376,7 @@ export class BankProcessComponent {
 
   async completeBankPayment() {
     if (window.confirm("İşlem Tamamlanacakdır. Devam edilsin mi?")) {
-      var response: NebimResponse = await this.orderService.completeBankPayment(this.bankHeader.id);
+      var response: NebimResponse = await this.bankService.completeBankPayment(this.bankHeader.id);
       if (response) {
         this.responseHandler(true, "Tamamlandı");
         this.routerService.navigate([`/create-bank-process/${this.applicationCode}/${this.bankTransTypeCode}/0/${this.bankHeader.id}`]);

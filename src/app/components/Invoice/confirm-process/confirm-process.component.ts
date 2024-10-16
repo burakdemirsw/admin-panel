@@ -12,6 +12,7 @@ import { UserService } from 'src/app/services/admin/user.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { ProposalLineDetail } from 'src/app/models/model/invoice/ProposalLineDetail';
+import { InvoiceService } from 'src/app/services/admin/invoice.service';
 
 @Component({
   selector: 'app-confirm-process',
@@ -23,6 +24,7 @@ export class ConfirmProcessComponent implements OnInit {
     private formBuilder: FormBuilder,
     private toasterService: ToasterService,
     private orderService: OrderService,
+    private invoiceService: InvoiceService,
     private generalService: GeneralService,
     private activatedRoute: ActivatedRoute,
     private headerService: HeaderService,
@@ -35,11 +37,15 @@ export class ConfirmProcessComponent implements OnInit {
   processType: string;
   processCode: string;
   selectedProduct: CollectedInvoiceProduct;
+  selectedProposalLine: ProposalLineDetail;
+  selectedOrderLine: OrderLineDetail;
   products: CollectedInvoiceProduct[] = [];
   _products: OrderLineDetail[] = [];
   __products: ProposalLineDetail[] = [];
   updateProductDialog: boolean = false;
   updateProductDialog2: boolean = false;
+  updateProductDialog3: boolean = false;
+  updateProductDialog4: boolean = false;
   state: boolean = false;
   state2: boolean = false;
 
@@ -71,30 +77,61 @@ export class ConfirmProcessComponent implements OnInit {
     throw new Error('Method not implemented.');
   }
 
-  openUpdateDialog(product: CollectedInvoiceProduct) {
+  openAddDialog(product: CollectedInvoiceProduct) {
     this.selectedProduct = product;
     this.updateProductForm.get('quantity').setValue(this.selectedProduct.quantity)
     this.updateProductDialog = true;
   }
 
-  async updateProduct(product: CollectedInvoiceProduct) {
 
-    // product.requestedShipmentQuantity = this.updateProductForm.get('requestedShipmentQuantity').value;
-    // if (product.requestedShipmentQuantity > product.quantity || product.requestedShipmentQuantity < 1) {
-    //   this.updateProductForm.get('requestedShipmentQuantity').setValue(1);
+  openUpdateDialog(product: ProposalLineDetail) {
+    this.selectedProposalLine = product;
+    this.updateProductForm.get('quantity').setValue(this.selectedProposalLine.requestedShipmentQuantity)
+    this.updateProductDialog3 = true;
+  }
 
-    //   this.toasterService.error("Miktar Hatası");
-    //   return;
-    // }
-    // var response = await this.orderService.updateCollectedInvoiceProduct(product);
-    // if (response) {
+  async updateProposalLineDetail() {
+    //daha önce eklenen varsa git onları bul
+    var quantity: number = 0
+    var _v = this.updateProductForm.value;
+    var products = this.__products.filter(p => p.lineId == this.selectedProposalLine.id);
+    if (products.length > 0) {
+      for (var p of products) {
+        quantity += p.requestedShipmentQuantity + p.confirmedShipmentQuantity;
+      }
+    }
+    if (quantity > this.selectedProposalLine.requestedShipmentQuantity) {
+      this.toasterService.info("Miktar Hatası (1)")
+      this.updateProductForm.get('quantity').setValue(1);
+      return;
+    }
 
-    //   this.toasterService.success('Güncellendi')
-    //   this.generalService.beep();
-    //   this.updateProductDialog = false
-    // } else {
-    //   this.toasterService.error('Güncellenmedi')
-    // }
+    if (quantity + _v.quantity > this.selectedProposalLine.requestedShipmentQuantity) {
+      this.toasterService.info("Miktar Hatası (2)")
+      this.updateProductForm.get('quantity').setValue(1);
+      return;
+    }
+
+    var request: ProposalLineDetail = new ProposalLineDetail();
+    request.id = this.selectedProposalLine.id
+    request.lineId = this.selectedProposalLine.lineId;
+    request.requestedShipmentQuantity = _v.quantity;
+    request.confirmedShipmentQuantity = this.selectedProposalLine.confirmedShipmentQuantity;
+    request.userId = this.user.userId;
+    var response = await this.orderService.updateProposalLineDetail(request);
+    if (response) {
+      this.toasterService.success("Güncellendi")
+      await this.getProducts();
+      this.updateProductDialog3 = false;
+      this.selectedProposalLine = null;
+      return;
+    } else {
+      this.toasterService.error("Güncellenemedi");
+      this.updateProductDialog3 = false;
+      this.selectedProposalLine = null;
+      return;
+    }
+
   }
   async deleteProposalLineDetail(lineDetail: ProposalLineDetail) {
     var response = await this.orderService.deleteProposalLineDetail(lineDetail.id);
@@ -117,7 +154,7 @@ export class ConfirmProcessComponent implements OnInit {
     var products = this.__products.filter(p => p.lineId == this.selectedProduct.id);
     if (products.length > 0) {
       for (var p of products) {
-        quantity += p.requestedShipmentQuantity;
+        quantity += p.requestedShipmentQuantity + p.confirmedShipmentQuantity;;
       }
     }
     if (quantity > this.selectedProduct.quantity) {
@@ -172,7 +209,7 @@ export class ConfirmProcessComponent implements OnInit {
 
   async convertConfirmedWSProposalToWSOrder(processCode: string, id: string) {
     if (window.confirm("Onaylanan Teklifin Ürünleri Siparişe Çevirilecektir. Devam edilsin mi?")) {
-      var response = await this.orderService.convertConfirmedWSProposalToWSOrder(this.processType, processCode, id);
+      var response = await this.invoiceService.convertConfirmedWSProposalToWSOrder(this.processType, processCode, id);
       if (response) {
         this.toasterService.success("Teklif, Siparişe Dönüştürüldü");
         this.getProducts()
@@ -236,7 +273,7 @@ export class ConfirmProcessComponent implements OnInit {
 
   //--------------------------------------------------------GENEL KODLAR
   async getProducts() {
-    this.products = await this.orderService.getCollectedInvoiceProducts(this.processId);
+    this.products = await this.invoiceService.getCollectedInvoiceProducts(this.processId);
     if (this.processType != 'order') {
       this.__products = await this.orderService.getProposalLineDetails(this.processId);
 
@@ -328,12 +365,53 @@ export class ConfirmProcessComponent implements OnInit {
     }
 
   }
-  openUpdateDialog2(product: CollectedInvoiceProduct) {
+
+  async updateOrderLineDetail() {
+    //SİPARİŞ MİKTARINI BUL
+    var p = this.products.find(p => p.id == this.selectedOrderLine.lineId).quantity;
+    var _v = this.updateProductForm2.value;
+
+    //istenen adet sipariş miiktarından fazla olamaz
+    if (_v.requestedShipmentQuantity > p) {
+      this.toasterService.info("Talep Edilen Adet Sipariş Adedinden Fazla Olamaz")
+      this.updateProductForm2.get('requestedShipmentQuantity').setValue(p);
+      return;
+    }
+
+    var request: OrderLineDetail = new OrderLineDetail();
+    request.id = this.selectedOrderLine.id;
+    request.lineId = this.selectedOrderLine.lineId;
+    request.requestedShipmentQuantity = _v.requestedShipmentQuantity;
+    request.warehouseCode = _v.warehouseCode.code;
+    request.userId = this.user.userId;
+    var response = await this.orderService.updateOrderLineDetail(request);
+    if (response) {
+      this.toasterService.success("Güncellendi")
+      await this.getProducts();
+      this.updateProductDialog4 = false;
+      this.selectedOrderLine = null;
+      return;
+    } else {
+      this.toasterService.error("Güncellenmedi");
+      this.updateProductDialog4 = false;
+      this.selectedOrderLine = null;
+      return;
+    }
+
+  }
+  openAddDialog2(product: CollectedInvoiceProduct) {
     this.selectedProduct = product;
     // this.updateProductForm2.get('requestedShipmentQuantity').setValue(this.selectedProduct.requestedShipmentQuantity)
     this.updateProductDialog2 = true;
   }
-
+  openUpdateDialog2(product: OrderLineDetail) {
+    this.selectedOrderLine = product;
+    var _v = this.updateProductForm2.value;
+    var _wr = this.warehouses.find(w => w.code == this.selectedOrderLine.warehouseCode);
+    this.updateProductForm2.get('requestedShipmentQuantity').setValue(this.selectedOrderLine.requestedShipmentQuantity)
+    this.updateProductForm2.get('warehouseCode').setValue(_wr)
+    this.updateProductDialog4 = true;
+  }
 
   createUpdateProductForm2() {
     this.updateProductForm2 = this.formBuilder.group({

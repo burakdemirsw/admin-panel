@@ -19,6 +19,7 @@ import { CreateBarcodeFromOrder_RM } from '../../Product/create-barcode/models/c
 import { MarketplaceService } from 'src/app/services/admin/marketplace.service';
 import { UserService } from '../../../services/admin/user.service';
 import { UserClientInfoResponse } from 'src/app/models/model/user/userRegister_VM';
+import { RaportService } from 'src/app/services/admin/raport.service';
 
 @Component({
   selector: 'app-order-managament',
@@ -43,7 +44,8 @@ export class OrderManagamentComponent implements OnInit {
     private productService: ProductService,
     private exportCsvService: ExportCsvService,
     private cargoService: CargoService,
-    private marketplaceService: MarketplaceService
+    private marketplaceService: MarketplaceService,
+    private raportService: RaportService
 
   ) { }
   user: UserClientInfoResponse;
@@ -170,7 +172,7 @@ export class OrderManagamentComponent implements OnInit {
 
   async getWayBillReport() {
     var orderNumberList = this.selectedOrders.map(x => x.orderNumber) as string[];
-    var response = await this.orderService.getWayBillReport(orderNumberList)
+    var response = await this.raportService.getWayBillReport(orderNumberList)
     if (response) {
       this.toasterService.success("İşlem Başarılı")
     } else {
@@ -357,7 +359,7 @@ export class OrderManagamentComponent implements OnInit {
   }
 
   async sendInvoiceToPrinter(orderNumber: string) {
-    var response = await this.orderService.sendInvoiceToPrinter(orderNumber);
+    var response = await this.raportService.sendInvoiceToPrinter(orderNumber);
     if (response) {
       this.toasterService.success("İşlem Başarılı")
     } else {

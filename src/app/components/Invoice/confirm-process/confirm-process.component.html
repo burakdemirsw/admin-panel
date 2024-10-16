@@ -6,9 +6,6 @@
         <div class="card-header" style="color:#374151; font-weight: bold;">Teklifin Ürünleri</div>
 
         <p-table [value]="products" [scrollable]="true" scrollHeight="600px" [tableStyle]="{ 'min-width': '50rem' }">
-
-
-
           <ng-template pTemplate="header">
             <tr>
               <th scope="col">Fotoğraf</th>
@@ -58,7 +55,7 @@
 
               <td>
                 <div class="btn-group" role="group" aria-label="Basic example">
-                  <button class="btn btn-primary" type="button" (click)="openUpdateDialog(product)"
+                  <button class="btn btn-primary" type="button" (click)="openAddDialog(product)"
                     [disabled]="checkDisable2(product)">
                     <i class="fa fa-pencil" aria-hidden="true"></i>
                   </button>
@@ -68,8 +65,8 @@
             </tr>
           </ng-template>
         </p-table>
-        <!-- Ürün Güncelle----------------------------------------------------------------------------------------------------->
-        <p-dialog header="Ürün Güncelle" [(visible)]="updateProductDialog" [modal]="true" [closable]="false"
+        <!-- Ürün Ekle----------------------------------------------------------------------------------------------------->
+        <p-dialog header="Ürün Ekle" [(visible)]="updateProductDialog" [modal]="true" [closable]="false"
           [style]="{width: '300px'}">
           <form [formGroup]="updateProductForm">
             <div class="p-fluid">
@@ -100,6 +97,29 @@
             </div>
           </form>
         </p-dialog>
+
+        <!-- Ürün Güncelle----------------------------------------------------------------------------------------------------->
+        <p-dialog header="Ürün Güncelle" [(visible)]="updateProductDialog3" [modal]="true" [closable]="false"
+          [style]="{width: '300px'}">
+          <form [formGroup]="updateProductForm">
+            <div class="p-fluid">
+
+              <div class="p-field mb-3">
+                <label for="quantity">Sevk Adedi</label>
+                <input id="quantity" type="number" pInputText formControlName="quantity">
+              </div>
+
+              <div class="p-field mb-3">
+                <button type="submit" pButton label="Güncelle" (click)="updateProposalLineDetail()"></button>
+              </div>
+
+              <div class="p-field">
+                <button type="button" pButton label="Kapat" (click)="this.updateProductDialog3 =false"></button>
+              </div>
+            </div>
+          </form>
+        </p-dialog>
+
       </div>
       <div class="card" *ngIf="__products.length > 0">
         <div class="card-header" style="color:#374151; font-weight: bold;">Sevk Ürünleri</div>
@@ -286,7 +306,7 @@
 
                 <td>
                   <div class="btn-group" role="group" aria-label="Basic example">
-                    <button class="btn btn-primary" type="button" (click)="openUpdateDialog2(product)"
+                    <button class="btn btn-primary" type="button" (click)="openAddDialog2(product)"
                       [disabled]="checkDisable(product)">
                       <i class="fa fa-pencil" aria-hidden="true"></i>
                     </button>
@@ -372,6 +392,10 @@
 
                 <td>
                   <div class="btn-group" role="group" aria-label="Basic example">
+                    <button class="btn btn-primary" type="button" (click)="openUpdateDialog2(product)">
+                      <i class="fa fa-pencil" aria-hidden="true"></i>
+                    </button>
+
                     <button class="btn btn-danger" type="button" (click)="deleteOrderLineDetail(product)">
                       <i class="fa fa-trash" aria-hidden="true"></i>
                     </button>
@@ -385,23 +409,11 @@
 
 
       </div>
-      <!-- Ürün Güncelle----------------------------------------------------------------------------------------------------->
-      <p-dialog header="Ürün Güncelle" [(visible)]="updateProductDialog2" [modal]="true" [closable]="false"
+      <!-- Ürün Ekle ----------------------------------------------------------------------------------------------------->
+      <p-dialog header="Ürün Ekle" [(visible)]="updateProductDialog2" [modal]="true" [closable]="false"
         [style]="{width: '300px'}">
         <form [formGroup]="updateProductForm2">
           <div class="p-fluid">
-            <!-- <div class="p-field">
-              <label for="price">Fiyat</label>
-              <input id="price" type="number" pInputText formControlName="price">
-            </div>
-            <div class="p-field">
-              <label for="priceVI">Fiyat (VD)</label>
-              <input id="priceVI" type="number" pInputText formControlName="priceVI">
-            </div> -->
-            <!-- <div class="p-field mb-3">
-              <label for="quantity">Adet</label>
-              <input id="quantity" type="number" pInputText formControlName="quantity">
-            </div> -->
             <div class="form-group">
               <label for="warehouseCode">Depo</label>
               <p-dropdown formControlName="warehouseCode" [options]="warehouses" [showClear]="true" placeholder="Depo"
@@ -425,7 +437,33 @@
         </form>
       </p-dialog>
 
+      <!-- Ürün Güncelle ----------------------------------------------------------------------------------------------------->
+      <p-dialog header="Ürün Güncelle" [(visible)]="updateProductDialog4" [modal]="true" [closable]="false"
+        [style]="{width: '300px'}">
+        <form [formGroup]="updateProductForm2">
+          <div class="p-fluid">
+            <div class="form-group">
+              <label for="warehouseCode">Depo</label>
+              <p-dropdown formControlName="warehouseCode" [options]="warehouses" [showClear]="true" placeholder="Depo"
+                optionLabel="name" className="mobile-spacing"></p-dropdown>
+            </div>
 
+            <div class="form-group mb-3">
+              <label for="requestedShipmentQuantity">Sevk Adedi</label>
+              <input id="requestedShipmentQuantity" type="number" pInputText
+                formControlName="requestedShipmentQuantity">
+            </div>
+
+            <div class="p-field mb-3">
+              <button type="submit" pButton label="Güncelle" (click)="updateOrderLineDetail()"></button>
+            </div>
+
+            <div class="p-field">
+              <button type="button" pButton label="Kapat" (click)="this.updateProductDialog2 =false"></button>
+            </div>
+          </div>
+        </form>
+      </p-dialog>
       <!-- <div class="card mt-3 ">
         <div class="card-body p-3">
           <div class=" row">
