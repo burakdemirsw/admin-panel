@@ -85,6 +85,9 @@ export class CashProcessComponent implements OnInit {
   }
 
 
+  trackChanges(e: any) {
+    this.activeIndex = e.index
+  }
   async getWarehouseAndOffices() {
     var response = await this.warehouseService.getWarehouseAndOffices();
     this.warehouseModels = response;
@@ -364,6 +367,19 @@ export class CashProcessComponent implements OnInit {
       }
     } else {
       this.generalService.whichRowIsInvalid(this.lineForm);
+    }
+  }
+
+  async deleteLine(id: string) {
+    var response = await this.cashService.deleteCashLine(id);
+    if (response) {
+      await this.getLinesOfHeader();
+      this.responseHandler(true, "Silindi")
+
+      return;
+    } else {
+      this.responseHandler(false, "Silinemedi")
+      return;
     }
   }
 

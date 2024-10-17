@@ -748,7 +748,8 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
       if (response) {
         this.reloadStatus = false;
         this.toasterService.success('Sipariş Oluşturuldu.');
-        this.routerService.navigate([`/create-process/0/${this.processCode}/${this.invoiceProcess.id}`]);
+        // this.routerService.navigate([`/create-process/0/${this.processCode}/${this.invoiceProcess.id}`]);
+        this.routerService.navigate([`/process-list/${this.processType}/${this.processCode}`]);
 
         // this.routerService.navigate(["/dashboard"])
       } else {
@@ -784,8 +785,8 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
       var response = await this.invoiceService.createInvoice_New(this.processCode, this.invoiceProcess.id);
       if (response) {
         this.toasterService.success('Faturalaştırma Başarılı.');
-        this.routerService.navigate([`/create-process/0/${this.processCode}/${this.invoiceProcess.id}`]);
-
+        // this.routerService.navigate([`/create-process/0/${this.processCode}/${this.invoiceProcess.id}`]);
+        this.routerService.navigate([`/process-list/${this.processType}/${this.processCode}`]);
         // this.routerService.navigate(["/dashboard"])
       } else {
         this.toasterService.error('Faturalaştırma Başarısız.');
@@ -930,8 +931,9 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
       if (this.invoiceProcess.isCompleted == false && this.invoiceProcess.eInvoiceNumber != null) {
         location.reload()
       } else {
-        this.routerService.navigate([`/create-process/${this.processType}/${this.processCode}/0/${this.invoiceProcess.id}`]);
-
+        this.routerService.navigate([`/process-list/${this.processType}/${this.processCode}`]);
+        // this.routerService.navigate([`/create-process/${this.processType}/${this.processCode}/0/${this.invoiceProcess.id}`]);
+        //process-list/proposal/ws
       }
     }
 
@@ -1342,5 +1344,12 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
     const existingProducts = this.invoiceProducts.filter(item => item.barcode === barcode);
     const totalQuantity = existingProducts.reduce((sum, item) => sum + item.quantity, 0);
     return totalQuantity;
+  }
+
+  onCustomerAdded(event: boolean) {
+    if (event) {
+      console.log("Müşteri başarıyla eklendi.");
+      location.reload();
+    }
   }
 }

@@ -140,5 +140,13 @@ export class RaportService {
       return null;
     }
   }
-
+  async createCollectedProductsOfOrderRaport(request: string): Promise<any> {
+    try {
+      var response = await this.httpClientService.get<any>({ controller: "raports/create-collected-order-products-raports", responseType: 'arraybuffer' }, request).toPromise();
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
 }

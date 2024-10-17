@@ -65,16 +65,17 @@ export class UserService {
       localStorage.setItem("phoneNumber", userClientInfoResponse.phoneNumber.toString() == null ? "" : userClientInfoResponse.phoneNumber.toString());
       localStorage.setItem("name", userClientInfoResponse.name.toString() == null ? "" : userClientInfoResponse.name.toString());
       localStorage.setItem("surname", userClientInfoResponse.surname.toString() == null ? "" : userClientInfoResponse.surname.toString());
-      localStorage.setItem("officeCode", userClientInfoResponse.officeCode.toString() == null ? "" : userClientInfoResponse.officeCode.toString());
-      localStorage.setItem("warehouseCode", userClientInfoResponse.warehouseCode.toString() == null ? "" : userClientInfoResponse.warehouseCode.toString());
-      localStorage.setItem("isUseAllOffice", userClientInfoResponse.isUseAllOffice == null ? "" : userClientInfoResponse.isUseAllOffice);
+      localStorage.setItem("officeCode", userClientInfoResponse.officeCode == null ? null : userClientInfoResponse.officeCode.toString());
+      localStorage.setItem("warehouseCode", userClientInfoResponse.warehouseCode == null ? null : userClientInfoResponse.warehouseCode.toString());
+      localStorage.setItem("isUseAllOffice", userClientInfoResponse.isUseAllOffice == null ? null : userClientInfoResponse.isUseAllOffice);
+      localStorage.setItem("useShelfWhenPickingOrders", userClientInfoResponse.useShelfWhenPickingOrders == false ? 'false' : userClientInfoResponse.useShelfWhenPickingOrders.toString());
 
 
       if (response) {
         // console.log(response);
         return true;
       } else {
-        // console.log("Giriş Başarısız");
+        // console.log("Giriş Başarısız");asd
         return false;
       }
     } catch (error) {
@@ -108,6 +109,9 @@ export class UserService {
     localStorage.setItem("officeCode", userClientInfoResponse.officeCode.toString());
     localStorage.setItem("warehouseCode", userClientInfoResponse.warehouseCode.toString());
     localStorage.setItem("isUseAllOffice", userClientInfoResponse.isUseAllOffice.toString());
+    localStorage.setItem("useShelfWhenPickingOrders", userClientInfoResponse.useShelfWhenPickingOrders.toString());
+
+    //useShelfWhenPickingOrders
     if (response) {
       // console.log(response);
       return true;
@@ -157,7 +161,7 @@ export class UserService {
         model.mail = localStorage.getItem("name")
         model.mail = localStorage.getItem("surname")
         model.roleDescription = localStorage.getItem("roleDescription")
-
+        model.useShelfWhenPickingOrders = localStorage.getItem("useShelfWhenPickingOrders") == 'true' ? true : false
         model.officeCode = localStorage.getItem("officeCode")
         model.warehouseCode = localStorage.getItem("warehouseCode")
         model.isUseAllOffice = localStorage.getItem("isUseAllOffice")

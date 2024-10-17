@@ -103,7 +103,8 @@ export class CollectExportProductsComponent {
   async getCollectedOrderProducts(
     orderNo: string
   ): Promise<CollectedProduct[]> {
-    var response = await this.productService.getCollectedOrderProducts(orderNo);
+    var response = await this.productService.getCollectedOrderProducts(this.currentOrderNo, this.warehouseCode);
+
     this.lastCollectedProducts = response;
 
     this.calculateTotalQty();
@@ -589,7 +590,7 @@ export class CollectExportProductsComponent {
         this.toasterService.success('Silme İşlemi Başarılı');
         this.gs.beep3();
         this.lastCollectedProducts =
-          await this.productService.getCollectedOrderProducts(this.currentOrderNo);
+          await this.productService.getCollectedOrderProducts(this.currentOrderNo, this.warehouseCode);
         await this.getAllProducts();
 
       }

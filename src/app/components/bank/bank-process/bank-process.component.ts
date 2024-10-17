@@ -374,6 +374,18 @@ export class BankProcessComponent {
     }
   }
 
+  async deleteLine(id: string) {
+    var response = await this.bankService.deleteBankLine(id);
+    if (response) {
+      await this.getLinesOfHeader();
+      this.responseHandler(true, "Silindi")
+
+      return;
+    } else {
+      this.responseHandler(false, "Silinemedi")
+      return;
+    }
+  }
   async completeBankPayment() {
     if (window.confirm("İşlem Tamamlanacakdır. Devam edilsin mi?")) {
       var response: NebimResponse = await this.bankService.completeBankPayment(this.bankHeader.id);
@@ -382,7 +394,10 @@ export class BankProcessComponent {
         this.routerService.navigate([`/create-bank-process/${this.applicationCode}/${this.bankTransTypeCode}/0/${this.bankHeader.id}`]);
       }
     }
+  }
 
+  trackChanges(e: any) {
+    this.activeIndex = e.index
   }
 }
 

@@ -66,8 +66,8 @@
               }}{{ customerName != undefined ? "-" + customerName : "" }}
             </h5>
 
-            <form *ngIf="productsToCollect.length > 0" class="mt-3" [formGroup]="checkForm"
-              (ngSubmit)="onSubmit(checkForm.value)">
+            <form *ngIf="productsToCollect.length > 0 && this.user.useShelfWhenPickingOrders" class="mt-3"
+              [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)">
               <div class="row mb-3">
                 <div class="form-group">
                   <div class="input-group">
@@ -114,11 +114,41 @@
                 </div>
               </div>
             </form>
+            <form *ngIf="productsToCollect.length > 0 && !this.user.useShelfWhenPickingOrders" class="mt-3"
+              [formGroup]="checkForm2" (ngSubmit)="onSubmit2(checkForm2.value)">
+              <div class="row mb-3">
+                <div class="form-group">
+                  <label *ngIf="qrBarcodeUrl !== null" for="qrBarcode">{{
+                    qrBarcodeUrl
+                  }}</label>
+                  <input placeholder="Barkod" pInputText type="text" id="barcode" class="form-control"
+                    formControlName="barcode" (keydown.enter)="onSubmit2(checkForm2.value)" />
+                  <div class="input-group-append">
+                    <!-- <button type="button" class="btn btn-primary">Camera</button> -->
+                  </div>
+                </div>
+              </div>
 
+              <div class="row mb-3">
+                <div class="form-group col">
+                  <div class="form-group">
+                    <input pInputText type="number" placeholder="Miktar" id="quantity" class="form-control"
+                      formControlName="quantity" />
+                  </div>
+                </div>
+
+                <div class="form-group col">
+                  <div class="form-group">
+                    <input placeholder="Parti" pInputText type="text" id="batchCode" class="form-control"
+                      formControlName="batchCode" />
+                  </div>
+                </div>
+              </div>
+            </form>
             <div class="row ">
               <div class="col-md-6 mb-3">
                 <button [disabled]="this.productsToCollect.length <=  0" type="button" class="btn btn-primary"
-                  style="width: 100%" (click)="onSubmit(checkForm.value)">
+                  style="width: 100%" (click)="onSubmit2(checkForm2.value)">
                   Ekle
                 </button>
               </div>

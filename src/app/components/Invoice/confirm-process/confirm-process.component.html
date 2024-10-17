@@ -21,9 +21,6 @@
                 Sipariş Miktarı / Talep / Onay
                 <p-sortIcon field="quantity"></p-sortIcon>
               </th>
-
-
-
               <th scope="col">İşlemler</th>
             </tr>
           </ng-template>
@@ -57,7 +54,7 @@
                 <div class="btn-group" role="group" aria-label="Basic example">
                   <button class="btn btn-primary" type="button" (click)="openAddDialog(product)"
                     [disabled]="checkDisable2(product)">
-                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                    <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
 
                 </div>
@@ -65,6 +62,19 @@
             </tr>
           </ng-template>
         </p-table>
+        <!-- ÜRÜN EKLE UYARISI----------------------------------------------------------------------------------------------------->
+
+        <div class="card product-card border-0 shadow-lg text-center mt-4 p-4"
+          *ngIf="this.processType == 'proposal' && __products.length <= 0">
+          <div class="card-body">
+            <div class="icon-container">
+              <i class="fas fa-box-open fa-4x text-primary"></i>
+            </div>
+            <h5 class="card-title text-uppercase font-weight-bold mt-3">Lütfen Ürün Ekleyiniz</h5>
+            <p class="card-text text-muted">Henüz ürün eklenmedi. Devam etmek için ürün eklemeniz gerekmektedir.</p>
+            <button class="btn btn-primary mt-3">Ürün Ekle</button>
+          </div>
+        </div>
         <!-- Ürün Ekle----------------------------------------------------------------------------------------------------->
         <p-dialog header="Ürün Ekle" [(visible)]="updateProductDialog" [modal]="true" [closable]="false"
           [style]="{width: '300px'}">
@@ -308,7 +318,7 @@
                   <div class="btn-group" role="group" aria-label="Basic example">
                     <button class="btn btn-primary" type="button" (click)="openAddDialog2(product)"
                       [disabled]="checkDisable(product)">
-                      <i class="fa fa-pencil" aria-hidden="true"></i>
+                      <i class="fa fa-plus" aria-hidden="true"></i>
                     </button>
 
                   </div>
@@ -317,9 +327,22 @@
             </ng-template>
           </p-table>
         </div>
-
-
       </div>
+
+      <!-- ÜRÜN EKLE UYARISI----------------------------------------------------------------------------------------------------->
+
+      <div class="card product-card border-0 shadow-lg text-center mt-4 p-4"
+        *ngIf="this.processType == 'order' && _products.length <= 0">
+        <div class="card-body">
+          <div class="icon-container">
+            <i class="fas fa-box-open fa-4x text-primary"></i>
+          </div>
+          <h5 class="card-title text-uppercase font-weight-bold mt-3">Lütfen Ürün Ekleyiniz</h5>
+          <p class="card-text text-muted">Henüz ürün eklenmedi. Devam etmek için ürün eklemeniz gerekmektedir.</p>
+          <button class="btn btn-primary mt-3">Ürün Ekle</button>
+        </div>
+      </div>
+
 
       <div class="card mb-3" *ngIf="_products.length > 0">
         <div class="card-header" style="color:#374151; font-weight: bold;">Sevkiyat Ürünleri</div>
@@ -464,17 +487,16 @@
           </div>
         </form>
       </p-dialog>
-      <!-- <div class="card mt-3 ">
+      <div class="card mt-3 ">
         <div class="card-body p-3">
           <div class=" row">
 
-            <div class="col-md-12"><button class="btn btn-success" style="width: 100%;" [disabled]="this.state==false"
-                (click)="convertConfirmedWSProposalToWSOrder(this.processCode,this.processId)">Teklifi Siparişe
-                Çevir</button>
+            <div class="col-md-12"><button class="btn btn-success" style="width: 100%;"
+                routerLink="/orders-managament/1/2">Tamamla</button>
             </div>
           </div>
         </div>
-      </div> -->
+      </div>
     </div>
   </section>
 </main>

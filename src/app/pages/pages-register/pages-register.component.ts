@@ -92,7 +92,7 @@ export class PagesRegisterComponent implements OnInit {
       try {
         this.salesPersonModels = await this.httpClientService
           .get<SalesPersonModel>({
-            controller: 'Order/GetSalesPersonModels',
+            controller: 'Infos/get-sales-person-models',
           })
           .toPromise();
 

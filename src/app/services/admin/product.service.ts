@@ -205,11 +205,11 @@ export class ProductService {
 
   //order operation toplanan ürünleri getirme
   async getCollectedOrderProducts(
-    orderNo: string
+    orderNo: string, warehouseCode: string
   ): Promise<CollectedProduct[]> {
     const response = await this.httpClientService
       .get<CollectedProduct>({
-        controller: 'Order/GetCollectedOrderProducts/' + orderNo, //GET_MSRafCollectedProducts
+        controller: 'Order/get-collected-order-products/' + orderNo + "/" + warehouseCode, //GET_MSRafCollectedProducts
       })
       .toPromise();
     return response;

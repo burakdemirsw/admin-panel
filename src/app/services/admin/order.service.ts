@@ -139,7 +139,8 @@ export class OrderService {
   //toplanacak ürünleri çeker
   async getCollectedProducts(
     orderNo: string,
-    orderNoType: string
+    orderNoType: string,
+    warehouseCode?: string,
   ): Promise<any> {
 
     let endpoint: string = '';
@@ -156,11 +157,18 @@ export class OrderService {
       endpoint = 'Warehouse/GetWarehouseOperationDetailExport/'; //GET_MSRAFOrderListMissing
     }
 
-    var response = await this.httpClientService.get<ProductOfOrder>({
-      controller: endpoint + orderNo,
-    }).toPromise();
+    if ((orderNoType === 'WS' || orderNoType === 'R') && warehouseCode) {
+      var response = await this.httpClientService.get<ProductOfOrder>({
+        controller: endpoint + orderNo + "/" + warehouseCode,
+      }).toPromise();
+      return response;
+    } else {
+      var response = await this.httpClientService.get<ProductOfOrder>({
+        controller: endpoint + orderNo,
+      }).toPromise();
+      return response;
+    }
 
-    return response;
 
 
   }

@@ -92,23 +92,35 @@ export class ConfirmProcessComponent implements OnInit {
 
   async updateProposalLineDetail() {
     //daha önce eklenen varsa git onları bul
-    var quantity: number = 0
-    var _v = this.updateProductForm.value;
-    var products = this.__products.filter(p => p.lineId == this.selectedProposalLine.id);
-    if (products.length > 0) {
-      for (var p of products) {
-        quantity += p.requestedShipmentQuantity + p.confirmedShipmentQuantity;
-      }
-    }
-    if (quantity > this.selectedProposalLine.requestedShipmentQuantity) {
-      this.toasterService.info("Miktar Hatası (1)")
-      this.updateProductForm.get('quantity').setValue(1);
-      return;
-    }
+    // var quantity: number = 0
+    // var _v = this.updateProductForm.value;
+    // var products = this.__products.filter(p => p.lineId == this.selectedProposalLine.id);
+    // if (products.length > 0) {
+    //   for (var p of products) {
+    //     quantity += p.requestedShipmentQuantity + p.confirmedShipmentQuantity;
+    //   }
+    // }
+    // if (quantity > this.selectedProposalLine.requestedShipmentQuantity) {
+    //   this.toasterService.info("Miktar Hatası (1)")
+    //   this.updateProductForm.get('quantity').setValue(1);
+    //   return;
+    // }
 
-    if (quantity + _v.quantity > this.selectedProposalLine.requestedShipmentQuantity) {
-      this.toasterService.info("Miktar Hatası (2)")
-      this.updateProductForm.get('quantity').setValue(1);
+
+
+
+    // if (quantity + _v.quantity > this.selectedProposalLine.requestedShipmentQuantity) {
+    //   this.toasterService.info("Miktar Hatası (2)")
+    //   this.updateProductForm.get('quantity').setValue(1);
+    //   return;
+    // }
+    var p = this.products.find(p => p.id == this.selectedProposalLine.lineId).quantity;
+    var _v = this.updateProductForm.value;
+
+    //istenen adet sipariş miiktarından fazla olamaz
+    if (_v.quantity > p) {
+      this.toasterService.info("Talep Edilen Adet Sipariş Adedinden Fazla Olamaz")
+      this.updateProductForm.get('quantity').setValue(p);
       return;
     }
 
@@ -211,8 +223,9 @@ export class ConfirmProcessComponent implements OnInit {
     if (window.confirm("Onaylanan Teklifin Ürünleri Siparişe Çevirilecektir. Devam edilsin mi?")) {
       var response = await this.invoiceService.convertConfirmedWSProposalToWSOrder(this.processType, processCode, id);
       if (response) {
+        // this.getProducts()
+        this.routerService.navigate(["/process-list/proposal/ws"])
         this.toasterService.success("Teklif, Siparişe Dönüştürüldü");
-        this.getProducts()
         // this.getInvoiceList();
       } else {
         this.toasterService.error("Teklif, Siparişe Dönüştürülemedi");
@@ -477,8 +490,6 @@ export class ConfirmProcessComponent implements OnInit {
         quantity += p.requestedShipmentQuantity;
       }
     }
-
-
     return quantity;
 
   }

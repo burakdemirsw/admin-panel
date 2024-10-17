@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ProcessDefinitionConstants } from "src/app/models/const/processDefinitionConstants";
@@ -27,6 +27,8 @@ import { ClientCustomer } from "../customer-list/customer-list.component";
   styleUrls: ["./add-customer.component.css"],
 })
 export class AddCustomerComponent implements OnInit {
+  @Output() customerAdded: EventEmitter<boolean> = new EventEmitter<boolean>(); // EventEmitter tanımlıyoruz.
+
   createCustomerForm: FormGroup;
   addressForm: FormGroup;
   countries: Address_VM[] = [];
@@ -108,7 +110,10 @@ export class AddCustomerComponent implements OnInit {
         this.type = this._type;
         this.modelType = 69;
       } else {
-        this.router.navigate(["customers/whosale"]);
+        if (!this._isInnerPage) {
+          this.router.navigate(["/customers", this.type]);
+        }
+
       }
       if (this._currAccCode) {
         this.createUpdateCommunicationForm();
@@ -200,7 +205,12 @@ export class AddCustomerComponent implements OnInit {
 
           if (response) {
             this.toasterService.success("Kullanıcı Eklendi");
-            this.router.navigate(["/customers", this.type]);
+            // Müşteri başarıyla eklendiğinde bu event'i yayımlıyoruz.
+            this.customerAdded.emit(true);
+
+            if (!this._isInnerPage) {
+              this.router.navigate(["/customers", this.type]);
+            }
           }
         } catch (error) {
           this.toasterService.error("Bir hata oluştu. Lütfen tekrar deneyin.");

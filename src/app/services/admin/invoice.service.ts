@@ -25,9 +25,9 @@ export class InvoiceService {
     private httpClient: HttpClient
   ) { }
 
-  async getInvoiceList(processType: string, processCode: string): Promise<Invoice_VM[]> {
+  async getInvoiceList(processType: string, processCode: string, userId: number): Promise<Invoice_VM[]> {
     const data = await this.httpClientService
-      .get<Invoice_VM>({ controller: 'Invoices/get-process-list' }, processType + '/' + processCode,) //Get_InvoicesList
+      .get<Invoice_VM>({ controller: 'invoices/get-process-list' }, processType + '/' + processCode + '/' + userId,) //Get_InvoicesList
       .toPromise();
     return data;
   }
@@ -35,7 +35,7 @@ export class InvoiceService {
     model: InvocieFilterModel
   ): Promise<CountListModel[]> {
     const data = await this.httpClientService
-      .post<any>({ controller: 'Invoices/GetInvoiceListByFilter' }, model)
+      .post<any>({ controller: 'invoices/GetInvoiceListByFilter' }, model)
       .toPromise();
     return data;
   }
@@ -76,7 +76,7 @@ export class InvoiceService {
       const response = await this.httpClientService
         .post<OrderBillingRequestModel>(
           {
-            controller: 'Invoices/CollectAndPack/' + model,
+            controller: 'invoices/CollectAndPack/' + model,
           },
           model
         )
@@ -111,7 +111,7 @@ export class InvoiceService {
   async createInvoice_New(processCode: string, processId: string) {
     const response = await this.httpClientService
       .get_new<boolean>(
-        { controller: 'Invoices/create-invoice' },
+        { controller: 'invoices/create-invoice' },
         processCode + "/" + processId
       )
       .toPromise();
@@ -121,7 +121,7 @@ export class InvoiceService {
   async convertWSProposalToWSOrder(processType: string, processCode: string, id: string) {
     const response = await this.httpClientService
       .get_new<boolean>(
-        { controller: 'Invoices/convert-ws-proposal-to-ws-order' },
+        { controller: 'invoices/convert-ws-proposal-to-ws-order' },
         processType + "/" + processCode + "/" + id
       )
       .toPromise();
@@ -131,7 +131,7 @@ export class InvoiceService {
   async convertConfirmedWSProposalToWSOrder(processType: string, processCode: string, id: string) {
     const response = await this.httpClientService
       .get_new<boolean>(
-        { controller: 'Invoices/convert-confirmed-ws-proposal-to-ws-order' },
+        { controller: 'invoices/convert-confirmed-ws-proposal-to-ws-order' },
         processType + "/" + processCode + "/" + id
       )
       .toPromise();
@@ -142,7 +142,7 @@ export class InvoiceService {
   async createOrder_New(processCode: string, processId: string) {
     const response = await this.httpClientService
       .get_new<boolean>(
-        { controller: 'Invoices/create-order' },
+        { controller: 'invoices/create-order' },
         processCode + "/" + processId
       )
       .toPromise();
@@ -152,7 +152,7 @@ export class InvoiceService {
   async getProductDetailByPriceCode(processCode: string, barcode: string): Promise<ProductDetail_VM> {
     const response = await this.httpClientService
       .get_new<ProductDetail_VM>(
-        { controller: 'Invoices/get-product-detail' }, //Get_ProductOfInvoice
+        { controller: 'invoices/get-product-detail' }, //Get_ProductOfInvoice
         processCode + '/' + barcode
       )
       .toPromise();
@@ -162,7 +162,7 @@ export class InvoiceService {
   async updateCollectedInvoiceProduct(request: CollectedInvoiceProduct): Promise<boolean> {
     const response = await this.httpClientService
       .post<boolean>(
-        { controller: 'Invoices/update-collected-invoice-product' }, //Get_ProductOfInvoice
+        { controller: 'invoices/update-collected-invoice-product' }, //Get_ProductOfInvoice
         request
       )
       .toPromise();
@@ -172,7 +172,7 @@ export class InvoiceService {
   async addCollectedInvoiceProduct(request: CollectedInvoiceProduct): Promise<boolean> {
     const response = await this.httpClientService
       .post<boolean>(
-        { controller: 'Invoices/add-collected-invoice-product' }, //Get_ProductOfInvoice
+        { controller: 'invoices/add-collected-invoice-product' }, //Get_ProductOfInvoice
         request
       )
       .toPromise();
@@ -183,7 +183,7 @@ export class InvoiceService {
   async getCollectedInvoiceProducts(orderNo: string): Promise<CollectedInvoiceProduct[]> {
     const response = await this.httpClientService
       .get<CollectedInvoiceProduct>(
-        { controller: 'Invoices/get-collected-invoice-product' }, //Get_ProductOfInvoice
+        { controller: 'invoices/get-collected-invoice-product' }, //Get_ProductOfInvoice
         orderNo
       )
       .toPromise();
@@ -195,7 +195,7 @@ export class InvoiceService {
   async deleteCollectedInvoiceProduct(id: string): Promise<boolean> {
     const response = await this.httpClientService
       .get_new<boolean>(
-        { controller: 'Invoices/delete-collected-invoice-product' }, //Get_ProductOfInvoice
+        { controller: 'invoices/delete-collected-invoice-product' }, //Get_ProductOfInvoice
         id
       )
       .toPromise();
@@ -206,7 +206,7 @@ export class InvoiceService {
   async editInvoiceProcess(request: InvoiceProcess): Promise<InvoiceProcess> {
     const response = await this.httpClientService
       .post<InvoiceProcess>(
-        { controller: 'Invoices/edit-invoice-process' },
+        { controller: 'invoices/edit-invoice-process' },
         request
       )
       .toPromise();
@@ -217,7 +217,7 @@ export class InvoiceService {
   async deleteInvoiceProcess(id: string): Promise<boolean> {
     const response = await this.httpClientService
       .get_new<boolean>(
-        { controller: 'Invoices/delete-invoice-process' },
+        { controller: 'invoices/delete-invoice-process' },
         id
       )
       .toPromise();
@@ -229,8 +229,20 @@ export class InvoiceService {
   async getInvoiceProcessList(processCode: string, processId: string): Promise<InvoiceProcess[]> {
     const response = await this.httpClientService
       .get<InvoiceProcess>(
-        { controller: 'Invoices/get-invoice-process' },
+        { controller: 'invoices/get-invoice-process' },
         processCode + '/' + processId
+      )
+      .toPromise();
+
+    return response;
+  }
+
+
+  async createWSWaybillFromOrder(orderNumber: string, warehouseCode: string) {
+    const response = await this.httpClientService
+      .get_new<boolean>(
+        { controller: 'invoices/create-waybill-from-nebim-order' },
+        orderNumber + "/" + warehouseCode
       )
       .toPromise();
 

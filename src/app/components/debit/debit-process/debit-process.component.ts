@@ -2,22 +2,20 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
-import { DebitLine } from "src/app/models/model/invoice/DebitLine";
-import { DebitHeader } from "src/app/models/model/invoice/DebitHeader";
 import { NebimResponse } from "src/app/models/model/invoice/CashLine";
+import { DebitHeader } from "src/app/models/model/invoice/DebitHeader";
+import { DebitLine } from "src/app/models/model/invoice/DebitLine";
 import { bsCurrAccTypeDesc, cdDebitReasonDesc } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
 import { UserClientInfoResponse } from 'src/app/models/model/user/userRegister_VM';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
+import { DebitService } from 'src/app/services/admin/debit.service';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { InfoService } from 'src/app/services/admin/info.service';
-import { OrderService } from 'src/app/services/admin/order.service';
-import { ProductService } from 'src/app/services/admin/product.service';
 import { UserService } from 'src/app/services/admin/user.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
-import { DebitService } from 'src/app/services/admin/debit.service';
 
 @Component({
   selector: 'app-debit-process',
@@ -76,6 +74,9 @@ export class DebitProcessComponent {
       }
       if (params["activeIndex"]) {
         this.activeIndex = Number(params["activeIndex"]);
+        if (this.debitHeader.isCompleted == true) {
+          this.activeIndex = 1;
+        }
       }
 
 
@@ -83,7 +84,9 @@ export class DebitProcessComponent {
 
   }
 
-
+  trackChanges(e: any) {
+    this.activeIndex = e.index
+  }
   async getWarehouseAndOffices() {
     var response = await this.warehouseService.getWarehouseAndOffices();
     this.warehouseModels = response;
@@ -236,6 +239,7 @@ export class DebitProcessComponent {
       var response = await this.debitService.getDebitHeaderById(this.id);
       if (response != null) {
         this.debitHeader = response;
+
         this.setFormValueFromProcess();
       } else {
         this.routerService.navigate([`/create-debit-process/${this.applicationCode}/${this.currAccTypeCode}/${this.debitTypeCode}/0`]);
@@ -390,6 +394,18 @@ export class DebitProcessComponent {
     }
   }
 
+  async deleteLine(id: string) {
+    var response = await this.debitService.deleteDebitLine(id);
+    if (response) {
+      await this.getLinesOfHeader();
+      this.responseHandler(true, "Silindi")
+
+      return;
+    } else {
+      this.responseHandler(false, "Silinemedi")
+      return;
+    }
+  }
   async completeDebitPayment() {
     if (window.confirm("İşlem Tamamlanacakdır. Devam edilsin mi?")) {
       var response: NebimResponse = await this.debitService.completeDebitPayment(this.debitHeader.id);
@@ -398,6 +414,11 @@ export class DebitProcessComponent {
         this.routerService.navigate([`/create-debit-process/${this.applicationCode}/${this.currAccTypeCode}/${this.debitTypeCode}/0/${this.debitHeader.id}`]);
       }
     }
+
+  }
+
+  getDebitReasonDesc(code: string) {
+    return this.cdDebitReasonDescs.find(d => d.debitReasonCode == code).debitReasonDescription
 
   }
 }

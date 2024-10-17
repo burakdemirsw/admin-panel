@@ -143,7 +143,7 @@ export class OrderManagamentComponent implements OnInit {
     //this.spinnerService.hide();
     this.user = this.userService.getUserClientInfoResponse();
     // console.log(this.user);
-    //this.saleOrderModels = this.saleOrderModels.filter(o => o.warehouseCode == this.user.warehouseCode);
+    // this.saleOrderModels = this.saleOrderModels.filter(o => o.warehouseCode == this.user.warehouseCode);
     this.setPageDescription();
 
   }

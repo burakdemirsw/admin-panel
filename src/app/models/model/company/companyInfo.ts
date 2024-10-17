@@ -26,6 +26,7 @@ export class CompanyInfo extends BaseEntity {
   nebimUrl?: string;
   photoFolderUrl?: string;
   googleDriveFolderId?: string;
+  useShelfWhenPickingOrders: boolean;
 }
 
 export class CargoInfo {

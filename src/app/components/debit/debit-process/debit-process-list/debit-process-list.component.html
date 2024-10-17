@@ -14,147 +14,153 @@
     </div>
 
     <div class="card">
-      <div class="card-body">
-        <p-table [value]="debitHeaders" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
-          [responsiveLayout]="'scroll'">
+      <p-table [value]="debitHeaders" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
+        [responsiveLayout]="'scroll'">
 
-          <!-- Table Headers with Sorting -->
-          <ng-template pTemplate="header">
-            <tr>
-              <th pSortableColumn="applicationCode">
+        <!-- Table Headers with Sorting -->
+        <ng-template pTemplate="header">
+          <tr>
+            <!-- <th pSortableColumn="applicationCode">
                 Uygulama Kodu
                 <p-sortIcon field="applicationCode"></p-sortIcon>
-              </th>
-              <th pSortableColumn="debitNumber">
-                İç Numara
-                <p-sortIcon field="debitNumber"></p-sortIcon>
-              </th>
-              <th pSortableColumn="currAccTypeCode">
+              </th> -->
+
+            <!-- <th pSortableColumn="currAccTypeCode">
                 Cari Hesap Tipi Kodu
                 <p-sortIcon field="currAccTypeCode"></p-sortIcon>
               </th>
               <th pSortableColumn="debitTypeCode">
                 Borç Tipi Kodu
                 <p-sortIcon field="debitTypeCode"></p-sortIcon>
-              </th>
-              <th pSortableColumn="currAccDescription">
-                Cari Hesap Açıklaması
-                <p-sortIcon field="currAccDescription"></p-sortIcon>
-              </th>
-              <th pSortableColumn="currAccCode">
-                Cari Hesap Kodu
-                <p-sortIcon field="currAccCode"></p-sortIcon>
-              </th>
-              <th pSortableColumn="officeCode">
-                Ofis Kodu
-                <p-sortIcon field="officeCode"></p-sortIcon>
-              </th>
-              <th pSortableColumn="user">
-                Kullanıcı
-                <p-sortIcon field="user"></p-sortIcon>
-              </th>
-              <th pSortableColumn="totalCreditAmount">
-                Toplam Kredi Tutarı
-                <p-sortIcon field="totalCreditAmount"></p-sortIcon>
-              </th>
-              <th pSortableColumn="totalDebitAmount">
-                Toplam Borç Tutarı
-                <p-sortIcon field="totalDebitAmount"></p-sortIcon>
-              </th>
-              <th pSortableColumn="createdDate">
-                Oluşturulma Tarihi
-                <p-sortIcon field="createdDate"></p-sortIcon>
-              </th>
-              <th pSortableColumn="isCompleted">
-                Tamamlandı Mı
-                <p-sortIcon field="isCompleted"></p-sortIcon>
-              </th>
-              <th>
-                İşlemler
-              </th>
-            </tr>
-            <tr>
-              <th>
+              </th> -->
+            <th pSortableColumn="currAccDescription">
+              Cari Hesap Açıklaması
+              <p-sortIcon field="currAccDescription"></p-sortIcon>
+            </th>
+            <!-- <th pSortableColumn="currAccCode">
+              Cari Hesap Kodu
+              <p-sortIcon field="currAccCode"></p-sortIcon>
+            </th> -->
+            <th pSortableColumn="officeCode">
+              Ofis Kodu
+              <p-sortIcon field="officeCode"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="totalCreditAmount">
+              Toplam Kredi Tutarı
+              <p-sortIcon field="totalCreditAmount"></p-sortIcon>
+            </th>
+            <th pSortableColumn="totalDebitAmount">
+              Toplam Borç Tutarı
+              <p-sortIcon field="totalDebitAmount"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="debitNumber">
+              İç Numara
+              <p-sortIcon field="debitNumber"></p-sortIcon>
+            </th>
+            <th pSortableColumn="user">
+              Kullanıcı
+              <p-sortIcon field="user"></p-sortIcon>
+            </th>
+            <th pSortableColumn="createdDate">
+              Oluşturulma Tarihi
+              <p-sortIcon field="createdDate"></p-sortIcon>
+            </th>
+            <th pSortableColumn="isCompleted">
+              Tamamlandı Mı
+              <p-sortIcon field="isCompleted"></p-sortIcon>
+            </th>
+            <th>
+              İşlemler
+            </th>
+          </tr>
+          <tr>
+            <!-- <th>
                 <p-columnFilter type="text" field="applicationCode" [showClearButton]="true"></p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter type="text" field="debitNumber" [showClearButton]="true"></p-columnFilter>
-              </th>
-              <th>
+              </th> -->
+
+            <!-- <th>
                 <p-columnFilter type="numeric" field="currAccTypeCode" [showClearButton]="true"></p-columnFilter>
               </th>
               <th>
                 <p-columnFilter type="numeric" field="debitTypeCode" [showClearButton]="true"></p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter type="text" field="currAccDescription" [showClearButton]="true"></p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter type="text" field="currAccCode" [showClearButton]="true"></p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter type="text" field="officeCode" [showClearButton]="true"></p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter type="text" field="user" [showClearButton]="true"></p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter type="numeric" field="totalCreditAmount" [showClearButton]="true"></p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter type="numeric" field="totalDebitAmount" [showClearButton]="true"></p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter type="date" field="createdDate" [showClearButton]="true"></p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter type="boolean" field="isCompleted" [showClearButton]="true"></p-columnFilter>
-              </th>
-              <th>
+              </th> -->
+            <th>
+              <p-columnFilter type="text" field="currAccDescription" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <!-- <th>
+              <p-columnFilter type="text" field="currAccCode" [showClearButton]="true"></p-columnFilter>
+            </th> -->
+            <th>
+              <p-columnFilter type="text" field="officeCode" [showClearButton]="true"></p-columnFilter>
+            </th>
 
-              </th>
-            </tr>
-          </ng-template>
+            <th>
+              <p-columnFilter type="numeric" field="totalCreditAmount" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="totalDebitAmount" [showClearButton]="true"></p-columnFilter>
+            </th>
 
-          <!-- Table Body -->
-          <ng-template pTemplate="body" let-debitHeader>
-            <tr>
-              <td>{{ debitHeader.applicationCode }}</td>
-              <td>{{ debitHeader.debitNumber }}</td>
-              <td>{{ debitHeader.currAccTypeCode }}</td>
-              <td>{{ debitHeader.debitTypeCode }}</td>
-              <td>{{ debitHeader.currAccDescription }}</td>
-              <td>{{ debitHeader.currAccCode }}</td>
-              <td>{{ debitHeader.officeCode }}</td>
-              <td>{{ debitHeader.user }}</td>
-              <td>{{ debitHeader.totalCreditAmount | currency }}</td>
-              <td>{{ debitHeader.totalDebitAmount | currency }}</td>
-              <td>{{ debitHeader.createdDate | date }}</td>
-              <td>
-                <button class="btn btn-success" *ngIf="debitHeader.isCompleted">
-                  <i class="fa fa-check"></i>
+            <th>
+              <p-columnFilter type="text" field="debitNumber" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="user" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="date" field="createdDate" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="boolean" field="isCompleted" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+
+            </th>
+          </tr>
+        </ng-template>
+
+        <!-- Table Body -->
+        <ng-template pTemplate="body" let-debitHeader>
+          <tr>
+            <!-- <td>{{ debitHeader.applicationCode }}</td> -->
+
+            <!-- <td>{{ debitHeader.currAccTypeCode }}</td>
+              <td>{{ debitHeader.debitTypeCode }}</td> -->
+            <td>{{ debitHeader.currAccDescription }}</td>
+            <!-- <td>{{ debitHeader.currAccCode }}</td> -->
+            <td>{{ debitHeader.officeCode }}</td>
+
+            <td>{{ debitHeader.totalCreditAmount | currency }}</td>
+            <td>{{ debitHeader.totalDebitAmount | currency }}</td>
+            <td>{{ debitHeader.debitNumber }}</td>
+            <td>{{ debitHeader.user }}</td>
+            <td>{{ debitHeader.createdDate | date }}</td>
+            <td>
+              <button class="btn btn-success" *ngIf="debitHeader.isCompleted">
+                <i class="fa fa-check"></i>
+              </button>
+              <button class="btn btn-danger" *ngIf="!debitHeader.isCompleted">
+                <i class="fa fa-ban" aria-hidden="true"></i>
+              </button>
+            </td>
+            <td>
+
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button class="btn btn-primary"
+                  routerLink="/create-debit-process/debit/1/{{debitHeader.currAccTypeCode}}/1/{{debitHeader.id}}"><i
+                    class="fa fa-pencil" aria-hidden="true"></i></button>
+                <button type="button" class="btn btn-danger" (click)="deleteProcess(debitHeader)">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
                 </button>
-                <button class="btn btn-danger" *ngIf="!debitHeader.isCompleted">
-                  <i class="fa fa-ban" aria-hidden="true"></i>
-                </button>
-              </td>
-              <td>
 
-                <div class="btn-group" role="group" aria-label="Basic example">
-                  <button class="btn btn-primary"
-                    routerLink="/create-debit-process/debit/1/{{debitHeader.currAccTypeCode}}/1/{{debitHeader.id}}"><i
-                      class="fa fa-pencil" aria-hidden="true"></i></button>
-                  <button type="button" class="btn btn-danger" (click)="deleteProcess(debitHeader)">
-                    <i class="fa fa-trash" aria-hidden="true"></i>
-                  </button>
+              </div>
 
-                </div>
-
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
 
   </section>

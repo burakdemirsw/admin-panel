@@ -1,9 +1,19 @@
 <main id="main" class="main">
   <section class="section">
+    <div class="card border-0 shadow-lg text-center mt-4 p-2" *ngIf="this.debitHeader?.isCompleted ==true">
+      <div class="card-body">
+        <div class="d-flex justify-content-center align-items-center mb-3 p-2">
+          <i class="fas fa-exclamation-circle fa-3x text-danger"></i>
+        </div>
+        <h5 class="card-title text-uppercase font-weight-bold">Önemli</h5>
+        <p class="card-text text-muted">Bu İşlem Tamamlanmıştır.
+          Değişiklik Yapılamaz.</p>
+      </div>
+    </div>
 
     <div class="card">
       <div class="card-body">
-        <p-tabView [activeIndex]="activeIndex">
+        <p-tabView [activeIndex]="activeIndex" (onChange)="trackChanges($event)">
           <p-tabPanel header="Başlık">
 
             <form [formGroup]="headerForm">
@@ -138,9 +148,14 @@
               </div>
 
               <div class="row mb-3">
-                <div class="col-md-12">
-                  <button type="button" class="btn btn-primary" (click)="addLine()"
+                <div class="col-md-6">
+                  <button type="button" class="btn btn-primary" (click)="addLine()" style="width: 100%;"
                     [disabled]="!lineForm.valid">Ekle</button>
+                </div>
+                <div class="col-md-6">
+                  <button type="button" class="btn btn-primary" (click)="completeDebitPayment()"
+                    [disabled]="this.debitHeader?.isCompleted" style="width: 100%;">
+                    Tamamla</button>
                 </div>
               </div>
             </form>
@@ -221,86 +236,19 @@
                 </div>
 
                 <div class="row mb-3">
-                  <div class="col-md-12">
-                    <button type="button" class="btn btn-primary" (click)="addLine()"
-                      [disabled]="!updateLineForm.valid">Ekle</button>
+                  <div class="col-md-6">
+                    <button type="button" class="btn btn-primary" (click)="updateLine()"
+                      [disabled]="!updateLineForm.valid">Güncelle</button>
+                  </div>
+                  <div class="col-md-6">
+                    <button type="button" class="btn btn-danger" (click)="this.displayDialog=false">Kapat</button>
                   </div>
                 </div>
               </form>
 
             </p-dialog>
             <div>
-              <p-table [value]="debitLines" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
-                [responsiveLayout]="'scroll'">
 
-                <!-- Table Headers with Sorting -->
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th pSortableColumn="lineDescription">
-                      Satır Açıklaması
-                      <p-sortIcon field="lineDescription"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="creditAmount">
-                      Kredi Tutarı
-                      <p-sortIcon field="creditAmount"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="debitAmount">
-                      Borç Tutarı
-                      <p-sortIcon field="debitAmount"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="dueDate">
-                      Vade Tarihi
-                      <p-sortIcon field="dueDate"></p-sortIcon>
-                    </th>
-                    <th pSortableColumn="debitReasonCode">
-                      Borç Sebep Kodu
-                      <p-sortIcon field="debitReasonCode"></p-sortIcon>
-                    </th>
-                    <th>
-                      İşlemler
-                    </th>
-                  </tr>
-                  <tr>
-                    <th>
-                      <p-columnFilter type="text" field="lineDescription" [showClearButton]="true"></p-columnFilter>
-                    </th>
-                    <th>
-                      <p-columnFilter type="numeric" field="creditAmount" [showClearButton]="true"></p-columnFilter>
-                    </th>
-                    <th>
-                      <p-columnFilter type="numeric" field="debitAmount" [showClearButton]="true"></p-columnFilter>
-                    </th>
-                    <th>
-                      <p-columnFilter type="date" field="dueDate" [showClearButton]="true"></p-columnFilter>
-                    </th>
-                    <th>
-                      <p-columnFilter type="numeric" field="debitReasonCode" [showClearButton]="true"></p-columnFilter>
-                    </th>
-                    <th>
-                      <!-- Boş bırakıldı, eklemek istediğiniz bir filtre varsa buraya ekleyebilirsiniz -->
-                    </th>
-                  </tr>
-                </ng-template>
-
-                <!-- Table Body -->
-                <ng-template pTemplate="body" let-debitLine>
-                  <tr>
-                    <td>{{ debitLine.lineDescription }}</td>
-                    <td>{{ debitLine.creditAmount | currency }}</td>
-                    <td>{{ debitLine.debitAmount | currency }}</td>
-                    <td>{{ debitLine.dueDate | date }}</td>
-                    <td>{{ debitLine.debitReasonCode }}</td>
-                    <td>
-                      <div class="btn-group" role="group" aria-label="Basic example">
-                        <button type="button" class="btn btn-primary" (click)="openUpdateDialog(debitLine)">
-                          <i class="fa fa-pencil" aria-hidden="true"></i>
-                        </button>
-
-                      </div>
-                    </td>
-                  </tr>
-                </ng-template>
-              </p-table>
 
             </div>
 
@@ -310,6 +258,83 @@
       </div>
     </div>
 
+    <div class="card mt-3" *ngIf="this.activeIndex==1">
+      <p-table [value]="debitLines" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
+        [responsiveLayout]="'scroll'">
+
+        <!-- Table Headers with Sorting -->
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="lineDescription">
+              Satır Açıklaması
+              <p-sortIcon field="lineDescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="creditAmount">
+              Kredi Tutarı
+              <p-sortIcon field="creditAmount"></p-sortIcon>
+            </th>
+            <th pSortableColumn="debitAmount">
+              Borç Tutarı
+              <p-sortIcon field="debitAmount"></p-sortIcon>
+            </th>
+            <th pSortableColumn="dueDate">
+              Vade Tarihi
+              <p-sortIcon field="dueDate"></p-sortIcon>
+            </th>
+            <th pSortableColumn="debitReasonCode">
+              Borç Sebebi
+              <p-sortIcon field="debitReasonCode"></p-sortIcon>
+            </th>
+            <th>
+              İşlemler
+            </th>
+          </tr>
+          <tr>
+            <th>
+              <p-columnFilter type="text" field="lineDescription" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="creditAmount" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="debitAmount" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="date" field="dueDate" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="debitReasonCode" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <!-- Boş bırakıldı, eklemek istediğiniz bir filtre varsa buraya ekleyebilirsiniz -->
+            </th>
+          </tr>
+        </ng-template>
+
+        <!-- Table Body -->
+        <ng-template pTemplate="body" let-debitLine>
+          <tr>
+            <td>{{ debitLine.lineDescription }}</td>
+            <td>{{ debitLine.creditAmount | currency }}</td>
+            <td>{{ debitLine.debitAmount | currency }}</td>
+            <td>{{ debitLine.dueDate | date }}</td>
+            <td>{{ getDebitReasonDesc(debitLine.debitReasonCode)   }}</td>
+            <td>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-primary" (click)="openUpdateDialog(debitLine)"
+                  [disabled]="this.debitHeader?.isCompleted ==true">
+                  <i class="fa fa-pencil" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn btn-danger" (click)="deleteLine(debitLine.id)"
+                  [disabled]="this.debitHeader?.isCompleted ==true">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
 
   </section>
 </main>

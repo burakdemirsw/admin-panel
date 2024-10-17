@@ -3,7 +3,7 @@
 
     <div class="card">
       <div class="card-body">
-        <p-tabView [activeIndex]="activeIndex">
+        <p-tabView [activeIndex]="activeIndex" (onChange)="trackChanges($event)">
           <p-tabPanel header="Başlık">
 
             <form [formGroup]="headerForm">
@@ -293,7 +293,10 @@
                       <div class="btn-group" role="group" aria-label="Basic example">
                         <button type="button" class="btn btn-primary" (click)="openUpdateDialog(cashLine)"><i
                             class="fa fa-pencil" aria-hidden="true"></i></button>
-
+                        <button type="button" class="btn btn-danger" (click)="deleteLine(cashLine.id)"
+                          [disabled]="this.cashHeader?.isCompleted ==true">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
                       </div>
                     </td>
                   </tr>

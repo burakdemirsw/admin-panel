@@ -26,36 +26,49 @@ export class SidebarComponent implements OnInit {
 
   async loadMenu() {
     try {
-      const data: MenuItem[] = await this.infoService.getStructuredMenu(Number(this.userId));
+      // Önce localStorage'da veri olup olmadığını kontrol et
+      const storedMenuData = localStorage.getItem('menuData');
 
-      // Temporary array to hold items that are not "Ayarlar"
-      const otherItems: MenuItem[] = [];
-      let ayarlarItem: MenuItem | null = null;
+      if (storedMenuData) {
+        // Eğer veri varsa, localStorage'dan oku ve doğrudan kullan
+        const data: MenuItem[] = JSON.parse(storedMenuData);
+        this.updateMenuItems(data);
+      } else {
+        // Eğer localStorage'da veri yoksa, API isteği yap
+        const data: MenuItem[] = await this.infoService.getStructuredMenu(Number(this.userId));
 
-      // Separate "Ayarlar" item from the rest
-      for (const item of data) {
-        if (item.label === 'Ayarlar') {
-          ayarlarItem = item;
-        }
-        else if (item.label === 'Anasayfa') {
-          continue;
-        }
-        else {
-          otherItems.push(item);
-        }
+        // Gelen veriyi localStorage'da sakla
+        localStorage.setItem('menuData', JSON.stringify(data));
+
+        // Menü öğelerini güncelle
+        this.updateMenuItems(data);
       }
-
-      // Add "Ayarlar" item to the end if it exists
-      if (ayarlarItem) {
-        otherItems.push(ayarlarItem);
-      }
-
-      // Update menuItems with reordered list
-      this.menuItems = otherItems;
     } catch (error) {
       console.error('Error loading menu', error);
     }
   }
+
+  updateMenuItems(data: MenuItem[]) {
+    const otherItems: MenuItem[] = [];
+    let ayarlarItem: MenuItem | null = null;
+
+    for (const item of data) {
+      if (item.label === 'Ayarlar') {
+        ayarlarItem = item;
+      } else if (item.label === 'Anasayfa') {
+        continue;
+      } else {
+        otherItems.push(item);
+      }
+    }
+
+    if (ayarlarItem) {
+      otherItems.push(ayarlarItem);
+    }
+
+    this.menuItems = otherItems;
+  }
+
 
 
   onAction(action: string, param?: any) {

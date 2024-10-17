@@ -1127,8 +1127,8 @@
     <!-- Ürün Güncelle----------------------------------------------------------------------------------------------------->
     <p-dialog header="Müşteri ekle" [(visible)]="addCustomerDialog" [modal]="true" [closable]="false"
       [ariaExpanded]="true" [style]="{width: '300px'}">
-      <app-add-customer _isInnerPage="false"
-        [_type]="processCode === 'ws' ? 'whosale' : (processCode === 'r' ? 'retail' : 'vendor')">
+      <app-add-customer (customerAdded)="onCustomerAdded($event)" _isInnerPage="false"
+        [_type]="processCode === 'WS' ? 'whosale' : 'vendor'">
       </app-add-customer>
 
     </p-dialog>

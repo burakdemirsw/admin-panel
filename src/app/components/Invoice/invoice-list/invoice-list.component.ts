@@ -7,6 +7,8 @@ import { OrderService } from 'src/app/services/admin/order.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { HeaderService } from '../../../services/admin/header.service';
 import { InvoiceService } from 'src/app/services/admin/invoice.service';
+import { UserClientInfoResponse } from 'src/app/models/model/user/userRegister_VM';
+import { UserService } from 'src/app/services/admin/user.service';
 
 @Component({
   selector: 'app-invoice-list',
@@ -22,9 +24,11 @@ export class InvoiceListComponent implements OnInit {
     private generalService: GeneralService,
     private formBuilder: FormBuilder,
     private orderService: OrderService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private userService: UserService
 
   ) { }
+  user: UserClientInfoResponse;
   offices: any[] = ["Alış", "Satış"]
   processCodes: string[] = ["WS", "BP", "R", "ES", "es", "ws", "bp", "r", "prws"]
   processTypes: string[] = ["invoice", "order", "proposal", "shipment"]
@@ -39,6 +43,7 @@ export class InvoiceListComponent implements OnInit {
   processType: string;
   async ngOnInit() {
 
+    this.user = this.userService.getUserClientInfoResponse();
     this.activatedRoute.params.subscribe(async params => {
 
       if (this.processCodes.includes(params["processCode"]) && this.processTypes.includes(params["processType"])) {
@@ -68,7 +73,7 @@ export class InvoiceListComponent implements OnInit {
           this.headerService.updatePageTitle("Peşin Satışlar");
           await this.getInvoiceList();
         } else if ((this.processCode == 'WS' && this.processType == 'order')) {
-          this.headerService.updatePageTitle("Toptan Satışlar");
+          this.headerService.updatePageTitle("Toptan Satış Siparişleri");
           await this.getInvoiceList();
         }
         else if ((this.processCode == 'WS' && this.processType == 'shipment')) {
@@ -121,7 +126,7 @@ export class InvoiceListComponent implements OnInit {
 
   async getInvoiceList(): Promise<any> {
     try {
-      this.invoices = await this.invoiceService.getInvoiceList(this.processType, this.processCode);
+      this.invoices = await this.invoiceService.getInvoiceList(this.processType, this.processCode, this.user.userId);
     } catch (error: any) {
       console.log(error.message);
     }

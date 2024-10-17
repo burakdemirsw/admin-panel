@@ -111,6 +111,14 @@
             <label for="googleDriveFolderId">Google Drive Dosya Id</label>
             <input type="text" id="googleDriveFolderId" class="form-control" formControlName="googleDriveFolderId">
           </div>
+
+          <div class="form-group">
+            <label for="useShelfWhenPickingOrders">Sipariş Toplarken Raf kullan</label>
+            <p-inputSwitch id="useShelfWhenPickingOrders" class="form-control"
+              formControlName="useShelfWhenPickingOrders" />
+          </div>
+
+
           <button type="submit" class="btn btn-primary" [disabled]="companyInfoForm.invalid">Güncelle</button>
         </form>
       </p-tabPanel>

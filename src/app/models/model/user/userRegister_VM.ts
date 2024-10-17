@@ -53,6 +53,7 @@ export class UserClientInfoResponse {
   officeCode?: string
   warehouseCode?: string
   isUseAllOffice?: string
+  useShelfWhenPickingOrders: boolean;
 }
 export class RefreshTokenCommandResponse {
   state?: boolean;

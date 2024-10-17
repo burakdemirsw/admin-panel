@@ -199,7 +199,8 @@ export class PagesInfoComponent implements OnInit {
       isCreditSale: [null],
       warehouseCode: [null],
       photoFolderUrl: [null],
-      googleDriveFolderId: [null]
+      googleDriveFolderId: [null],
+      useShelfWhenPickingOrders: [null]
     });
   }
   createNebimInfoForm() {
