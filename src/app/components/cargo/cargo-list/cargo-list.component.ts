@@ -184,7 +184,7 @@ export class CargoListComponent implements OnInit {
 
         this.getCargos(this.cargoState);
       } else {
-        this.toasterService.error("BARKOD YAZDIRILAMADI");
+        this.toasterService.error("BARKOD YAZDIRILAMADI");//asda
       }
 
 

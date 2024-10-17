@@ -1,6 +1,6 @@
 <main id="main" class="main">
   <section class="section">
-    <div class="card" *ngIf="this.raportID !=2 && this.raportID !=3">
+    <div class="card" *ngIf="this.raportID ==1">
       <div class="card-body p-4">
         <div class="form-row">
           <div class="form-group col-md-12 mb-3">
@@ -573,5 +573,435 @@
 
 
     </div>
+
+    <div *ngIf="this.raportID == 4 && this.assurSaleReport != null">
+      <p-tabView>
+        <p-tabPanel header="Satış Raporu">
+          <div>
+            <p-table [value]="this.assurSaleReport.saleReports" [paginator]="true" [rows]="10"
+              [globalFilterFields]="['invoice_No', 'customer_Name']">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Fatura No <p-sortIcon field="invoice_No"></p-sortIcon>
+                  </th>
+                  <th>Tarih <p-sortIcon field="date"></p-sortIcon>
+                  </th>
+                  <th>Fatura Türü <p-sortIcon field="invoice_Type"></p-sortIcon>
+                  </th>
+                  <th>Genel Toplam <p-sortIcon field="total_Amount"></p-sortIcon>
+                  </th>
+                  <th>Toplam KDV <p-sortIcon field="total_VAT"></p-sortIcon>
+                  </th>
+                  <th>Cari Kodu <p-sortIcon field="customer_Code"></p-sortIcon>
+                  </th>
+                  <th>Cari Unvanı <p-sortIcon field="customer_Name"></p-sortIcon>
+                  </th>
+                </tr>
+                <tr>
+                  <th>
+                    <p-columnFilter type="text" field="invoice_No" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="date" field="date" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="invoice_Type" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="numeric" field="total_Amount" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="numeric" field="total_VAT" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="customer_Code" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="customer_Name" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-report>
+                <tr>
+                  <td>{{ report.invoice_No }}</td>
+                  <td>{{ report.date | date }}</td>
+                  <td>{{ report.invoice_Type }}</td>
+                  <td>{{ report.total_Amount | currency }}</td>
+                  <td>{{ report.total_VAT | currency }}</td>
+                  <td>{{ report.customer_Code }}</td>
+                  <td>{{ report.customer_Name }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Stok Raporu">
+          <div *ngIf="this.assurSaleReport != null">
+            <p-table [value]="this.assurSaleReport.stockReports" [paginator]="true" [rows]="10"
+              [globalFilterFields]="['stock_Code', 'stock_Name']">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Stok Kodu <p-sortIcon field="stock_Code"></p-sortIcon>
+                  </th>
+                  <th>Stok Adı <p-sortIcon field="stock_Name"></p-sortIcon>
+                  </th>
+                  <th>Birimi <p-sortIcon field="unit"></p-sortIcon>
+                  </th>
+                  <th>Miktarı <p-sortIcon field="quantity"></p-sortIcon>
+                  </th>
+                  <th>Fiyati <p-sortIcon field="price"></p-sortIcon>
+                  </th>
+                  <th>Ara Tutar <p-sortIcon field="subtotal"></p-sortIcon>
+                  </th>
+                  <th>KDVli Toplam <p-sortIcon field="total_With_VAT"></p-sortIcon>
+                  </th>
+                </tr>
+                <tr>
+                  <th>
+                    <p-columnFilter type="text" field="stock_Code" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="stock_Name" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="unit" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="numeric" field="quantity" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="numeric" field="price" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="numeric" field="subtotal" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="numeric" field="total_With_VAT" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-report>
+                <tr>
+                  <td>{{ report.stock_Code }}</td>
+                  <td>{{ report.stock_Name }}</td>
+                  <td>{{ report.unit }}</td>
+                  <td>{{ report.quantity }}</td>
+                  <td>{{ report.price | currency }}</td>
+                  <td>{{ report.subtotal | currency }}</td>
+                  <td>{{ report.total_With_VAT | currency }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Mali Rapor">
+          <div *ngIf="this.assurSaleReport != null">
+            <p-table [value]="this.assurSaleReport.financialReports" [paginator]="true" [rows]="10"
+              [globalFilterFields]="['process']">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Süreç <p-sortIcon field="process"></p-sortIcon>
+                  </th>
+                  <th>Genel Toplam <p-sortIcon field="totalAmount"></p-sortIcon>
+                  </th>
+                  <th>Toplam KDV <p-sortIcon field="total_VAT"></p-sortIcon>
+                  </th>
+                  <th>Toplam İskonto <p-sortIcon field="total_Discount"></p-sortIcon>
+                  </th>
+                </tr>
+                <tr>
+                  <th>
+                    <p-columnFilter type="text" field="process" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="numeric" field="totalAmount" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="numeric" field="total_VAT" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="numeric" field="total_Discount" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-report>
+                <tr>
+                  <td>{{ report.process }}</td>
+                  <td>{{ report.totalAmount | currency }}</td>
+                  <td>{{ report.total_VAT | currency }}</td>
+                  <td>{{ report.total_Discount | currency }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Hesap Raporu">
+          <div *ngIf="this.assurSaleReport != null">
+            <p-table [value]="this.assurSaleReport.accountReports" [paginator]="true" [rows]="10"
+              [globalFilterFields]="['responsible']">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Yetkilisi <p-sortIcon field="responsible"></p-sortIcon>
+                  </th>
+                  <th>Borç Tutarı <p-sortIcon field="debit_Amount"></p-sortIcon>
+                  </th>
+                  <th>Alacak Tutarı <p-sortIcon field="credit_Amount"></p-sortIcon>
+                  </th>
+                </tr>
+                <tr>
+                  <th>
+                    <p-columnFilter type="text" field="responsible" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="numeric" field="debit_Amount" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="numeric" field="credit_Amount" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-report>
+                <tr>
+                  <td>{{ report.responsible }}</td>
+                  <td>{{ report.debit_Amount | currency }}</td>
+                  <td>{{ report.credit_Amount | currency }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Envanter Raporu">
+          <div *ngIf="this.assurSaleReport != null">
+            <p-table [value]="this.assurSaleReport.inventoryReports" [paginator]="true" [rows]="10"
+              [globalFilterFields]="['stock_Code', 'stock_Name']">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Stok Kodu <p-sortIcon field="stock_Code"></p-sortIcon>
+                  </th>
+                  <th>Stok Adı <p-sortIcon field="stock_Name"></p-sortIcon>
+                  </th>
+                  <th>Miktar Giren <p-sortIcon field="incoming_Quantity"></p-sortIcon>
+                  </th>
+                  <th>Miktar Çıkan <p-sortIcon field="outgoing_Quantity"></p-sortIcon>
+                  </th>
+                  <th>Miktar Kalan <p-sortIcon field="remaining_Quantity"></p-sortIcon>
+                  </th>
+                </tr>
+                <tr>
+                  <th>
+                    <p-columnFilter type="text" field="stock_Code" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="text" field="stock_Name" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="numeric" field="incoming_Quantity" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="numeric" field="outgoing_Quantity" [showClearButton]="false"></p-columnFilter>
+                  </th>
+                  <th>
+                    <p-columnFilter type="numeric" field="remaining_Quantity" [showClearButton]="false">
+                    </p-columnFilter>
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-report>
+                <tr>
+                  <td>{{ report.stock_Code }}</td>
+                  <td>{{ report.stock_Name }}</td>
+                  <td>{{ report.incoming_Quantity }}</td>
+                  <td>{{ report.outgoing_Quantity }}</td>
+                  <td>{{ report.remaining_Quantity }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+    <div *ngIf="this.raportID == 4 ">
+      <p-dialog header="Rapor Parametreleri" [visible]="filterDialog" [modal]="true" [closable]="false"
+        [position]="'top'" [responsive]="true" [style]="{width: '500px',height:'500px'}">
+        <div>
+          <label for="startDate">Başlangıç Tarihi:</label>
+          <p-calendar appendTo="body" id="startDate" [(ngModel)]="startDate" dateFormat="mm/dd/yy"
+            placeholder="Tarih Seç" required>
+          </p-calendar>
+
+          <label for="endDate">Bitiş Tarihi:</label>
+          <p-calendar appendTo="body" id="endDate" [(ngModel)]="endDate" dateFormat="mm/dd/yy" placeholder="Tarih Seç"
+            required>
+          </p-calendar>
+
+          <div class="footer">
+            <button pButton label="Raporu Getir" (click)="getAssurSaleReport()"></button>
+            <button pButton label="İptal" (click)="filterDialog = false"></button>
+          </div>
+        </div>
+      </p-dialog>
+
+    </div>
+
+    <div *ngIf="this.raportID == 5">
+
+      <p-table [value]="tillReports" [paginator]="true" [rows]="10"
+        [globalFilterFields]="['cashCode', 'cashName', 'documentNumber', 'description', 'accountCode', 'tradeTitle']">
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="cashCode">Kasa Kodu <p-sortIcon field="cashCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="cashName">Kasa Adı <p-sortIcon field="cashName"></p-sortIcon>
+            </th>
+            <th pSortableColumn="documentNumber">Evrak No <p-sortIcon field="documentNumber"></p-sortIcon>
+            </th>
+            <th pSortableColumn="description">Açıklama <p-sortIcon field="description"></p-sortIcon>
+            </th>
+            <th pSortableColumn="income">Gelir <p-sortIcon field="income"></p-sortIcon>
+            </th>
+            <th pSortableColumn="expense">Gider <p-sortIcon field="expense"></p-sortIcon>
+            </th>
+            <th pSortableColumn="accountCode">Cari Kodu <p-sortIcon field="accountCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="tradeTitle">Ticari Ünvan <p-sortIcon field="tradeTitle"></p-sortIcon>
+            </th>
+          </tr>
+          <tr>
+            <th>
+              <p-columnFilter type="text" field="cashCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="cashName" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="documentNumber" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="description" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="income" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="expense" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="accountCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="tradeTitle" [showClearButton]="false"></p-columnFilter>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-report>
+          <tr>
+            <td>{{ report.cashCode }}</td>
+            <td>{{ report.cashName }}</td>
+            <td>{{ report.documentNumber }}</td>
+            <td>{{ report.description }}</td>
+            <td>{{ report.income | currency }}</td>
+            <td>{{ report.expense | currency }}</td>
+            <td>{{ report.accountCode }}</td>
+            <td>{{ report.tradeTitle }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+    </div>
+    <div *ngIf="this.raportID == 5 ">
+      <p-dialog header="Rapor Parametreleri" [visible]="filterDialog2" [modal]="true" [closable]="false"
+        [position]="'top'" [responsive]="true" [style]="{width: '500px',height:'500px'}">
+        <div>
+          <label for="startDate">Başlangıç Tarihi:</label>
+          <p-calendar appendTo="body" id="startDate" [(ngModel)]="startDate" dateFormat="mm/dd/yy"
+            placeholder="Tarih Seç" required>
+          </p-calendar>
+
+          <label for="endDate">Bitiş Tarihi:</label>
+          <p-calendar appendTo="body" id="endDate" [(ngModel)]="endDate" dateFormat="mm/dd/yy" placeholder="Tarih Seç"
+            required>
+          </p-calendar>
+
+          <div class="footer">
+            <button pButton label="Raporu Getir" (click)="getTillReport()"></button>
+            <button pButton label="İptal" (click)="filterDialog2= false"></button>
+          </div>
+        </div>
+      </p-dialog>
+
+    </div>
+    <div *ngIf="this.raportID == 6">
+      <!-- Assuming raportID for Bank Report is 6 -->
+      <h2>Banka Raporları</h2>
+      <p-table [value]="bankReports" [paginator]="true" [rows]="10"
+        [globalFilterFields]="['cashCode', 'cashName', 'accountType', 'totalDebit', 'totalCredit', 'totalBalance', 'pendingPosPayments', 'availableBalance']">
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="cashCode">Kasa Kodu <p-sortIcon field="cashCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="cashName">Kasa Adı <p-sortIcon field="cashName"></p-sortIcon>
+            </th>
+            <th pSortableColumn="accountType">Hesap Türü <p-sortIcon field="accountType"></p-sortIcon>
+            </th>
+            <th pSortableColumn="totalDebit">Toplam Borç <p-sortIcon field="totalDebit"></p-sortIcon>
+            </th>
+            <th pSortableColumn="totalCredit">Toplam Alacak <p-sortIcon field="totalCredit"></p-sortIcon>
+            </th>
+            <th pSortableColumn="totalBalance">Toplam B/A/S <p-sortIcon field="totalBalance"></p-sortIcon>
+            </th>
+            <th pSortableColumn="pendingPosPayments">Bekleyen POS Ödemeleri <p-sortIcon field="pendingPosPayments">
+              </p-sortIcon>
+            </th>
+            <th pSortableColumn="availableBalance">Kullanılabilir Bakiye <p-sortIcon field="availableBalance">
+              </p-sortIcon>
+            </th>
+          </tr>
+          <tr>
+            <th>
+              <p-columnFilter type="text" field="cashCode" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="cashName" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="accountType" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="totalDebit" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="totalCredit" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="totalBalance" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="pendingPosPayments" [showClearButton]="false"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="availableBalance" [showClearButton]="false"></p-columnFilter>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-report>
+          <tr>
+            <td>{{ report.cashCode }}</td>
+            <td>{{ report.cashName }}</td>
+            <td>{{ report.accountType }}</td>
+            <td>{{ report.totalDebit | currency }}</td>
+            <td>{{ report.totalCredit | currency }}</td>
+            <td>{{ report.totalBalance }}</td>
+            <td>{{ report.pendingPosPayments }}</td>
+            <td>{{ report.availableBalance | currency }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+
   </section>
 </main>

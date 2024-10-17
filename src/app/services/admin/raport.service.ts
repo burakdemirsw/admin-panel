@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { LogFilterModel } from 'src/app/models/model/log/logFilterModel ';
 import { Raport_BestSeller, Raport_ProductExtract, Raport_ProductInventory } from 'src/app/models/model/raport/raport_CR';
-import { bsQueryMaster, bsQueryMasterVm, bsQueryParams, GetFinalQueryRequest } from 'src/app/models/model/raport/bsQueryMaster ';
+import { AssurSaleReport, BankReport, bsQueryMaster, bsQueryMasterVm, bsQueryParams, GetFinalQueryRequest, TillReport } from 'src/app/models/model/raport/bsQueryMaster ';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
 
 @Injectable({
@@ -148,5 +148,18 @@ export class RaportService {
       console.log(error.message);
       return null;
     }
+  }
+
+  async getAssurSaleReport(startDate: string, endDate: string): Promise<any> {
+    const response = await this.httpClientService.get<AssurSaleReport>({ controller: "Raports/get-assur-sale-raport/" + startDate.toString() }, endDate.toString()).toPromise()
+    return response;
+  }
+  async getAssurTillReport(startDate: string, endDate: string, currAccCode: string): Promise<TillReport[]> {
+    const response = await this.httpClientService.get<TillReport>({ controller: "Raports/get-till-report/" + startDate.toString() }, endDate.toString() + "/" + currAccCode).toPromise()
+    return response;
+  }
+  async getBankReport(startDate: string, endDate: string, currAccCode: string): Promise<BankReport[]> {
+    const response = await this.httpClientService.get<BankReport>({ controller: "Raports/get-bank-report/" + startDate.toString() }, endDate.toString() + "/" + currAccCode).toPromise()
+    return response;
   }
 }

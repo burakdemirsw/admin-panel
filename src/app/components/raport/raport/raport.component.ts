@@ -10,7 +10,7 @@ import { OrderService } from 'src/app/services/admin/order.service';
 import { RaportService } from 'src/app/services/admin/raport.service';
 import { ExportCsvService } from 'src/app/services/export-csv.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
-import { bsQueryMasterVm, bsQueryParams, GetFinalQueryRequest } from '../../../models/model/raport/bsQueryMaster ';
+import { AssurSaleReport, BankReport, bsQueryMasterVm, bsQueryParams, GetFinalQueryRequest, TillReport } from '../../../models/model/raport/bsQueryMaster ';
 
 @Component({
 
@@ -91,12 +91,41 @@ export class RaportComponent implements OnInit {
         this.headerService.updatePageTitle('Nebim Raporları');
         this.raportID = 3;
         this.getAllNebimRaports();
+      }
 
+      if (p['type'] == 'assur-sale-report') {
+        this.toasterService.info('Genel Satış Raporu');
+        this.headerService.updatePageTitle('Genel Satış Raporu');
+        this.raportID = 4;
+        setTimeout(() => {
+          this.filterDialog = true; // Open the dialog after 1 second
+        }, 500);
+        // this.getAssurSaleReport();
+      }
 
+      if (p['type'] == 'assur-till-report') {
+        this.toasterService.info('Kasa Raporu');
+        this.headerService.updatePageTitle('Kasa Raporu');
+        this.raportID = 5;
+        setTimeout(() => {
+          this.filterDialog2 = true; // Open the dialog after 1 second
+        }, 500);
+        // this.getAssurSaleReport();
+      }
+      if (p['type'] == 'assur-bank-report') {
+        this.toasterService.info('Banka Raporu');
+        this.headerService.updatePageTitle('Banka Raporu');
+        this.raportID = 6;
+        setTimeout(() => {
+          this.filterDialog3 = true; // Open the dialog after 1 second
+        }, 500);
+        // this.getAssurSaleReport();
       }
     })
   }
-
+  filterDialog: boolean;
+  filterDialog2: boolean;
+  filterDialog3: boolean;
   search: string;
   async handleOnSubmit() {
     if (this.raportID == 0) {
@@ -272,9 +301,6 @@ export class RaportComponent implements OnInit {
     "ParamDistributorSellerWarehouse": "Distribütör Satıcı Deposu Parametresi",
     "ParamWarehouseDetail": "Depo Detayı Parametresi"
   };
-
-
-
   bsQueryMasterVms: bsQueryMasterVm[] = [];
   selectedQueryId: string;
   filteredBsQueryMasterVms: bsQueryMasterVm[] = []; // Filtrelenmiş liste
@@ -322,7 +348,61 @@ export class RaportComponent implements OnInit {
       console.error('Final rapor alınırken hata oluştu', error);
     }
   }
+  bankReports: BankReport[] = [];
 
+  async getBankReports() {
+    if (this.startDate && this.endDate) {
+      // Format dates to YYYY-MM-DD
+      const formattedStartDate = this.startDate.toISOString().split('T')[0]; // Extracts only the date part
+      const formattedEndDate = this.endDate.toISOString().split('T')[0]; // Extracts only the date part
+
+      var response = await this.raportService.getBankReport(formattedStartDate, formattedEndDate, this.currAccCode.code);
+      if (response) {
+        this.filterDialog3 = false;
+        this.bankReports = response;
+      }
+    } else {
+      this.toasterService.error('Lütfen başlangıç ve bitiş tarihlerini seçiniz.');
+    }
+  }
+
+  tillReports: TillReport[] = [];
+  async getTillReport() {
+    if (this.startDate && this.endDate) {
+      // Format dates to YYYY-MM-DD
+      const formattedStartDate = this.startDate.toISOString().split('T')[0]; // Extracts only the date part
+      const formattedEndDate = this.endDate.toISOString().split('T')[0]; // Extracts only the date part
+
+      var response = await this.raportService.getAssurTillReport(formattedStartDate, formattedEndDate, this.currAccCode.code);
+      if (response) {
+        this.filterDialog2 = false;
+        this.tillReports = response;
+      }
+    } else {
+      this.toasterService.error('Lütfen başlangıç ve bitiş tarihlerini seçiniz.');
+    }
+  }
+
+
+  assurSaleReport: AssurSaleReport
+  startDate: Date;
+  endDate: Date;
+  currAccCode: any;
+  async getAssurSaleReport() {
+    if (this.startDate && this.endDate) {
+      // Format dates to YYYY-MM-DD
+      const formattedStartDate = this.startDate.toISOString().split('T')[0]; // Extracts only the date part
+      const formattedEndDate = this.endDate.toISOString().split('T')[0]; // Extracts only the date part
+
+      var response = await this.raportService.getAssurSaleReport(formattedStartDate, formattedEndDate);
+      if (response) {
+        this.filterDialog = false;
+        this.assurSaleReport = response;
+      }
+    } else {
+      this.toasterService.error('Lütfen başlangıç ve bitiş tarihlerini seçiniz.');
+    }
+  }
   async getAllNebimRaports() {
     this.bsQueryMasterVms = await this.raportService.getAllNebimRaports_VM();
 
