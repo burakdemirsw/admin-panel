@@ -76,6 +76,10 @@ export class AddCustomerComponent implements OnInit {
         this._pageType = true;
         this._type = params["type"];
         this._currAccCode = params["currAccCode"];
+      } else if (params["type"]) {
+        this._type = params["type"];
+        this._pageType = false;
+
       } else {
         this._pageType = false;
       }
@@ -148,7 +152,11 @@ export class AddCustomerComponent implements OnInit {
 
 
       }
+      if (this.modelType == 0) {
+        this.toasterService.error("Sayfa Yüklenirken Hata Meydana Geldi");
+      }
     });
+
   }
 
   async submitAddressForm(formValue: any) {
@@ -157,13 +165,21 @@ export class AddCustomerComponent implements OnInit {
       if (this.createCustomerForm.valid) {
         let request: any = {};
         request.ModelType = this.modelType;
-        request.CurrAccCode = "";
+        if (this.modelType != 69) {
+          request.CurrAccCode = "";
+
+        } else {
+          request.CurrAccCode = formValue.phoneNumber;
+        }
         request.OfficeCode = user.officeCode;
         request.CurrAccDescription = formValue.currAccDescription;
         request.TaxNumber = formValue.tax_number;
         request.IdentityNum = formValue.identity_number;
         request.IsBlocked = formValue.isBlocked;
-        request.IsVIP = formValue.isVIP;
+        if (this.modelType != 69) {
+          request.IsVIP = formValue.isVIP;
+
+        }
 
         // Initialize PostalAddresses object if address_country exists
         if (formValue.address_country) {
@@ -389,6 +405,7 @@ export class AddCustomerComponent implements OnInit {
   cdCurrencyDescriptions: cdCurrencyDesc[] = [];
   async getCurrencyDesc() {
     this.cdCurrencyDescriptions = await this.infoService.getCurrencyDesc()
+    this.createCustomerForm.get('currencyCode').setValue(this.cdCurrencyDescriptions.find(c => c.currencyCode == "TRY").currencyCode)
   }
   async getAddresses() {
     // Fetch countries and map the results

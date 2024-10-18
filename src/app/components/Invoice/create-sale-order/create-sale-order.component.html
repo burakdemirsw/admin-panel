@@ -1074,13 +1074,14 @@
           </a>
         </div>
       </div>
+      <!-- asdsad -->
 
 
       <div class=" card text-center"
         *ngIf="activeIndex==1 &&  !this.invoiceProcess?.isCompleted  && this.invoiceProducts.length>0">
         <div class="card-body">
           <h5 class="card-title">Toplanan Ürünler</h5>
-          <h1 class="display-1">{{ totalCount }}</h1>
+          <h1 class="display-1">{{  calculateTotalQty() }}</h1>
           <p class="card-text">
             Adet Ürün Toplandı</p>
         </div>

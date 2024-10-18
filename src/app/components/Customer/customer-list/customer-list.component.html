@@ -1,16 +1,9 @@
 <main id="main" class="main">
   <section class="section">
     <div class="card custom-card mb-3">
-      <div
-        class="card-body d-flex justify-content-start mt-3"
-        style="overflow-x: auto"
-      >
-        <button
-          type="button"
-          class="btn custom-btn-primary"
-          routerLink="/add-customer"
-        >
-          <i class="fas fa-plus"></i> Müşteri Ekle
+      <div class="card-body d-flex justify-content-start mt-3" style="overflow-x: auto">
+        <button type="button" class="btn custom-btn-primary" routerLink="/add-customer">
+          <i class="fas fa-plus"></i> Ekle
         </button>
       </div>
     </div>
@@ -32,29 +25,17 @@
                 <td>{{ customer.description }}</td>
                 <td>{{ customer.currAccCode }}</td>
                 <td>
-                  <p-image
-                    src="{{ customer.stampPhotoUrl }}"
-                    alt="Image"
-                    width="70"
-                    [preview]="true"
-                    appendTo="body"
-                  ></p-image>
+                  <p-image src="{{ customer.stampPhotoUrl }}" alt="Image" width="70" [preview]="true" appendTo="body">
+                  </p-image>
                 </td>
                 <td>
-                  <p-image
-                    src="{{ customer.bussinesCardPhotoUrl }}"
-                    alt="Image"
-                    width="70"
-                    [preview]="true"
-                    appendTo="body"
-                  ></p-image>
+                  <p-image src="{{ customer.bussinesCardPhotoUrl }}" alt="Image" width="70" [preview]="true"
+                    appendTo="body"></p-image>
                 </td>
               </tr>
             </tbody>
           </table>
-          <pagination-controls
-            (pageChange)="currentPage = $event"
-          ></pagination-controls>
+          <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
         </div>
       </div>
     </div>

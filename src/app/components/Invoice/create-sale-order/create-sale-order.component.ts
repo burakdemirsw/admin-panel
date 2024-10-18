@@ -1205,7 +1205,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
     this.invoiceProducts.forEach((item) => {
       totalQty += item.quantity;
     });
-    this.totalCount = totalQty;
+    return totalQty;
   }
 
   goPage() {

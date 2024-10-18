@@ -11,6 +11,9 @@ import { RaportService } from 'src/app/services/admin/raport.service';
 import { ExportCsvService } from 'src/app/services/export-csv.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { AssurSaleReport, BankReport, bsQueryMasterVm, bsQueryParams, GetFinalQueryRequest, TillReport } from '../../../models/model/raport/bsQueryMaster ';
+import { BankAccount } from 'src/app/models/model/invoice/BankAccount';
+import { InfoService } from '../../../services/admin/info.service';
+import { CashAccount } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
 
 @Component({
 
@@ -26,6 +29,7 @@ export class RaportComponent implements OnInit {
     private spinnerService: NgxSpinnerService,
     private raportService: RaportService,
     private headerService: HeaderService,
+    private infoService: InfoService,
     private exportCsvService: ExportCsvService) { }
   raportID = 0;
   tableHeaders: string[] = [
@@ -65,8 +69,8 @@ export class RaportComponent implements OnInit {
   ];
   selectedColumns: any[] = [];
 
-  ngOnInit(): void {
-    this.activatedRoute.params.subscribe(p => {
+  async ngOnInit() {
+    this.activatedRoute.params.subscribe(async (p) => {
       if (p['type'] == 'product-inventory-raport') {
         this.toasterService.info('Ürün Envanter Raporu');
         this.headerService.updatePageTitle('Ürün Envanter Raporu')
@@ -110,9 +114,13 @@ export class RaportComponent implements OnInit {
         setTimeout(() => {
           this.filterDialog2 = true; // Open the dialog after 1 second
         }, 500);
+        this.cashAccounts = await this.infoService.getCashAccounts();
+
         // this.getAssurSaleReport();
       }
       if (p['type'] == 'assur-bank-report') {
+
+        this.bankAccounts = await this.infoService.getBankAccounts();
         this.toasterService.info('Banka Raporu');
         this.headerService.updatePageTitle('Banka Raporu');
         this.raportID = 6;
@@ -123,6 +131,8 @@ export class RaportComponent implements OnInit {
       }
     })
   }
+  cashAccounts: CashAccount[] = [];
+  bankAccounts: BankAccount[] = [];
   filterDialog: boolean;
   filterDialog2: boolean;
   filterDialog3: boolean;
@@ -351,12 +361,13 @@ export class RaportComponent implements OnInit {
   bankReports: BankReport[] = [];
 
   async getBankReports() {
+
     if (this.startDate && this.endDate) {
       // Format dates to YYYY-MM-DD
       const formattedStartDate = this.startDate.toISOString().split('T')[0]; // Extracts only the date part
       const formattedEndDate = this.endDate.toISOString().split('T')[0]; // Extracts only the date part
 
-      var response = await this.raportService.getBankReport(formattedStartDate, formattedEndDate, this.currAccCode.code);
+      var response = await this.raportService.getBankReport(formattedStartDate, formattedEndDate, this.currAccCode);
       if (response) {
         this.filterDialog3 = false;
         this.bankReports = response;
@@ -373,7 +384,7 @@ export class RaportComponent implements OnInit {
       const formattedStartDate = this.startDate.toISOString().split('T')[0]; // Extracts only the date part
       const formattedEndDate = this.endDate.toISOString().split('T')[0]; // Extracts only the date part
 
-      var response = await this.raportService.getAssurTillReport(formattedStartDate, formattedEndDate, this.currAccCode.code);
+      var response = await this.raportService.getAssurTillReport(formattedStartDate, formattedEndDate, this.currAccCode);
       if (response) {
         this.filterDialog2 = false;
         this.tillReports = response;

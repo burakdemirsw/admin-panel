@@ -117,20 +117,18 @@ export class PagesRegisterComponent implements OnInit {
     this.registerForm = this.formBuilder.group({
       firstName: [null, Validators.required],
       lastName: [null, Validators.required],
-      email: [{ value: null, disabled: false }, [Validators.required, Validators.email]],
+      email: [{ value: null, disabled: false }, [Validators.required]],
       phoneNumber: [null, Validators.required],
       salesPersonCode: [null],
       password: [null],
       confirmPassword: [null],
       gender: ["Erkek"],
-      roleDescription: [null],
+      roleDescription: ['admin'],
       printerName_1: [null],
       printerName_2: [null],
       officeCode: [null],
       warehouseCode: [null],
       isUseAllOffice: [false]
-
-
     });
   }
 
@@ -138,6 +136,7 @@ export class PagesRegisterComponent implements OnInit {
 
 
     //ekleme işlemi yapılcak
+    console.log(this.registerForm.value);
     if (!this.isUpdate) {
       //ekleme işlemi yapılcak
       if (this.registerForm.valid) {
@@ -156,7 +155,7 @@ export class PagesRegisterComponent implements OnInit {
             email: this.registerForm.value.email,
             phoneNumber: this.registerForm.value.phoneNumber,
             gender: this.registerForm.value.gender,
-            roleDescription: this.registerForm.value.roleDescription.role,
+            roleDescription: 'admin',
             printerName_1: this.registerForm.value.printerName_1,
             printerName_2: this.registerForm.value.printerName_2,
             officeCode: this.registerForm.value.officeCode,
@@ -166,17 +165,13 @@ export class PagesRegisterComponent implements OnInit {
 
           var response = await this.userService.register(model);
           if (response == true) {
-
-
             this.generalService.waitAndNavigate("İşlem Başaılı: " + "Kullanıcı Sisteme Eklendi", "user-list")
-
           }
 
         } else {
           this.alertifyService.error("Şifreler Uyuşmuyor");
         }
       } else {
-
         this.generalService.whichRowIsInvalid(this.registerForm)
       }
     } else {

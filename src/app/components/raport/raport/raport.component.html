@@ -1,6 +1,6 @@
 <main id="main" class="main">
   <section class="section">
-    <div class="card" *ngIf="this.raportID ==1">
+    <div class="card" *ngIf="this.raportID ==1 || this.raportID==0 ">
       <div class="card-body p-4">
         <div class="form-row">
           <div class="form-group col-md-12 mb-3">
@@ -575,6 +575,11 @@
     </div>
 
     <div *ngIf="this.raportID == 4 && this.assurSaleReport != null">
+      <div class="card mb-3">
+        <div class="card-body p-3">
+          <button class="btn btn-success" style="width: 100%;" (click)="filterDialog=true">Filtreyi Aç</button>
+        </div>
+      </div>
       <p-tabView>
         <p-tabPanel header="Satış Raporu">
           <div>
@@ -848,7 +853,11 @@
     </div>
 
     <div *ngIf="this.raportID == 5">
-
+      <div class="card mb-3">
+        <div class="card-body p-3">
+          <button class="btn btn-success" style="width: 100%;" (click)="filterDialog2=true">Filtreyi Aç</button>
+        </div>
+      </div>
       <p-table [value]="tillReports" [paginator]="true" [rows]="10"
         [globalFilterFields]="['cashCode', 'cashName', 'documentNumber', 'description', 'accountCode', 'tradeTitle']">
         <ng-template pTemplate="header">
@@ -916,16 +925,32 @@
       <p-dialog header="Rapor Parametreleri" [visible]="filterDialog2" [modal]="true" [closable]="false"
         [position]="'top'" [responsive]="true" [style]="{width: '500px',height:'500px'}">
         <div>
-          <label for="startDate">Başlangıç Tarihi:</label>
-          <p-calendar appendTo="body" id="startDate" [(ngModel)]="startDate" dateFormat="mm/dd/yy"
-            placeholder="Tarih Seç" required>
-          </p-calendar>
+          <div class="form-group mb-3">
+            <label for="startDate">Başlangıç Tarihi:</label>
+            <p-calendar appendTo="body" id="startDate" [(ngModel)]="startDate" dateFormat="mm/dd/yy"
+              placeholder="Tarih Seç" required>
+            </p-calendar>
+          </div>
 
-          <label for="endDate">Bitiş Tarihi:</label>
-          <p-calendar appendTo="body" id="endDate" [(ngModel)]="endDate" dateFormat="mm/dd/yy" placeholder="Tarih Seç"
-            required>
-          </p-calendar>
+          <div class="form-group mb-3">
+            <label for="endDate">Bitiş Tarihi:</label>
+            <br>
+            <p-calendar appendTo="body" id="endDate" [(ngModel)]="endDate" dateFormat="mm/dd/yy" placeholder="Tarih Seç"
+              required>
+            </p-calendar>
+          </div>
 
+          <div class="form-group mb-3">
+            <label for="cashCurrAccCode">Nakit Hesap Kodu</label>
+            <select id="cashCurrAccCode" class="form-control" [(ngModel)]="currAccCode">
+              <option value="" selected>Seçin</option>
+              <option *ngFor="let g of cashAccounts" [value]="g.cashAccountCode">
+                {{ g.cashAccountDescription }}
+              </option>
+            </select>
+
+
+          </div>
           <div class="footer">
             <button pButton label="Raporu Getir" (click)="getTillReport()"></button>
             <button pButton label="İptal" (click)="filterDialog2= false"></button>
@@ -935,8 +960,12 @@
 
     </div>
     <div *ngIf="this.raportID == 6">
+      <div class="card mb-3">
+        <div class="card-body p-3">
+          <button class="btn btn-success" style="width: 100%;" (click)="filterDialog3=true">Filtreyi Aç</button>
+        </div>
+      </div>
       <!-- Assuming raportID for Bank Report is 6 -->
-      <h2>Banka Raporları</h2>
       <p-table [value]="bankReports" [paginator]="true" [rows]="10"
         [globalFilterFields]="['cashCode', 'cashName', 'accountType', 'totalDebit', 'totalCredit', 'totalBalance', 'pendingPosPayments', 'availableBalance']">
         <ng-template pTemplate="header">
@@ -1001,7 +1030,46 @@
         </ng-template>
       </p-table>
     </div>
+    <div *ngIf="this.raportID == 6">
+      <p-dialog header="Rapor Parametreleri" [visible]="filterDialog3" [modal]="true" [closable]="false"
+        [position]="'top'" [responsive]="true" [style]="{width: '500px',height:'500px'}">
+        <div>
 
+          <div class="form-group mb-3">
+            <label for="startDate">Başlangıç Tarihi:</label>
+            <br>
+            <p-calendar appendTo="body" id="startDate" [(ngModel)]="startDate" dateFormat="mm/dd/yy"
+              placeholder="Tarih Seç" required>
+            </p-calendar>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="endDate">Bitiş Tarihi:</label>
+            <br>
+            <p-calendar appendTo="body" id="endDate" [(ngModel)]="endDate" dateFormat="mm/dd/yy" placeholder="Tarih Seç"
+              required>
+            </p-calendar>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="bankCurrAccCode">Banka Hesap Kodu</label>
+            <select id="bankCurrAccCode" class="form-control" [(ngModel)]="currAccCode">
+              <option value="" selected>Seçin</option>
+              <option *ngFor="let g of bankAccounts" [value]="g.bankAccountCode">
+                {{ g.bankAccountDescription }}
+              </option>
+            </select>
+
+          </div>
+
+          <div class="footer">
+            <button pButton label="Raporu Getir" (click)="getBankReports()"></button>
+            <button pButton label="İptal" (click)="filterDialog3= false"></button>
+          </div>
+        </div>
+      </p-dialog>
+
+    </div>
 
   </section>
 </main>
