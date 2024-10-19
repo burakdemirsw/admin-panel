@@ -2234,6 +2234,10 @@ var CreateOrderComponent = /** @class */ (function () {
                             line_request.totalPrice = 5 * line_request.totalPrice;
                             line_request.totalTaxedPrice = 5 * line_request.totalTaxedPrice;
                         }
+                        if (!line_request.itemCode.startsWith('FG') && line_request.quantity > 1) {
+                            line_request.totalPrice = line_request.totalPrice * line_request.quantity;
+                            line_request.totalTaxedPrice = line_request.totalTaxedPrice * line_request.quantity;
+                        }
                         return [4 /*yield*/, this.orderService.createClientOrderBasketItem(line_request)];
                     case 2:
                         line_response = _a.sent();

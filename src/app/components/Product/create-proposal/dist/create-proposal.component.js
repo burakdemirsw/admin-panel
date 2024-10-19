@@ -89,6 +89,7 @@ var CreateProposalComponent = /** @class */ (function () {
         this.isCollapsed = false;
         this.isCollapsed_2 = false;
         this.selectableProducts = [];
+        this.completeDialog = false;
         this.updateProductDialog = false;
         this.getCustomerDialog = false;
         this.findProductDialog = false;
@@ -114,6 +115,7 @@ var CreateProposalComponent = /** @class */ (function () {
         this.currentDiscountRate = 0;
         this.selectedSize = '';
         this.currentCashdiscountRate = 0;
+        this.raportType = 1;
         this.findCustomerDialog = false;
         this.customerNames = [];
         this.emails = [];
@@ -817,16 +819,24 @@ var CreateProposalComponent = /** @class */ (function () {
     };
     CreateProposalComponent.prototype.createProposalReport = function () {
         return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.completeDialog = true;
+                return [2 /*return*/];
+            });
+        });
+    };
+    CreateProposalComponent.prototype._createProposalReport = function (type) {
+        return __awaiter(this, void 0, void 0, function () {
             var data, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         if (!window.confirm("Mail Gönderilsin mi?")) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.orderService.createProposalReport(this.proposal.id, true)];
+                        return [4 /*yield*/, this.orderService.createProposalReport(this.proposal.id, true, type)];
                     case 1:
                         data = _a.sent();
                         return [3 /*break*/, 4];
-                    case 2: return [4 /*yield*/, this.orderService.createProposalReport(this.proposal.id, false)];
+                    case 2: return [4 /*yield*/, this.orderService.createProposalReport(this.proposal.id, false, type)];
                     case 3:
                         data = _a.sent();
                         _a.label = 4;

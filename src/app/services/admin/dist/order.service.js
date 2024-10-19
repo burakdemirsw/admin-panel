@@ -1252,14 +1252,14 @@ var OrderService = /** @class */ (function () {
             });
         });
     };
-    OrderService.prototype.createProposalReport = function (request, sendMail) {
+    OrderService.prototype.createProposalReport = function (request, sendMail, type) {
         return __awaiter(this, void 0, Promise, function () {
             var response, file, fileURL, downloadLink, _file, _fileURL, iframe_1, error_38;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/create-proposal-report", responseType: 'arraybuffer' }, request + "/" + sendMail).toPromise()];
+                        return [4 /*yield*/, this.httpClientService.get({ controller: "order/create-proposal-report", responseType: 'arraybuffer' }, request + "/" + sendMail + "/" + type).toPromise()];
                     case 1:
                         response = _a.sent();
                         if (response) {

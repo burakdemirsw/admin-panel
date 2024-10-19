@@ -116,6 +116,19 @@
       </p-table>
     </div>
 
+    <p-dialog header="Teklifi Tamamla" [(visible)]="completeDialog" [modal]="true" [closable]="false"
+      [style]="{width: '500px'}">
+      <div class="row">
 
+        <div class="col-md-4"><button class="btn btn-success" (click)="_createProposalReport(1)">Kdvli Rapor</button>
+        </div>
+        <div class="col-md-4"><button class="btn btn-success" (click)="_createProposalReport(2)">Kdvsiz Rapor</button>
+        </div>
+        <div class="col-md-4"><button class="btn btn-success" (click)="_createProposalReport(3)">Kdvsiz Rapor
+            (Görselsiz)</button>
+        </div>
+
+      </div>
+    </p-dialog>
   </section>
 </main>

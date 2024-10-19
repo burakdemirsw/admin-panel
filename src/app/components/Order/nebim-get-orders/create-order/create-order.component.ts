@@ -1939,7 +1939,6 @@ export class CreateOrderComponent implements OnInit {
   }
   async completeGetProduct(index?: number) {
     if (index >= 0) {
-
       this.closeDialog(index)
     }
     this.selectSuggestedProductDialog = false;
@@ -2023,13 +2022,15 @@ export class CreateOrderComponent implements OnInit {
       var order_request = this.createClientOrder_RM()
       var order_response = await this.orderService.createClientOrder(order_request) //sipariş oluşturuldu varsa güncellendi
       if (order_response) {
-
-
         var line_request = this.createClientOrderBasketItem_RM(request, quantity);
         if (line_request.itemCode.startsWith('FG')) {
           line_request.quantity = 5;
           line_request.totalPrice = 5 * line_request.totalPrice;
           line_request.totalTaxedPrice = 5 * line_request.totalTaxedPrice;
+        }
+        if (!line_request.itemCode.startsWith('FG') && line_request.quantity > 1) {
+          line_request.totalPrice = line_request.totalPrice * line_request.quantity
+          line_request.totalTaxedPrice = line_request.totalTaxedPrice * line_request.quantity
         }
         var line_response = await this.orderService.createClientOrderBasketItem(line_request); //sipariş ürünü oluşturuldu
         if (line_response) {

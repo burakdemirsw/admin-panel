@@ -49,14 +49,30 @@ export class ProposalListComponent implements OnInit {
       }
     }
   }
-  async createProposalReport(proposal: Proposal_VM) {
+  selectedProposal: Proposal_VM;
+  async createProposalReport(selectedProposal: Proposal_VM) {
 
+    this.completeDialog = true;
+    this.selectedProposal = selectedProposal;
+    // if (window.confirm("Mail Gönderilsin mi?")) {
+    //   var data = await this.orderService.createProposalReport(this.proposal.id, true);
+    // } else {
+    //   var data = await this.orderService.createProposalReport(this.proposal.id, false);
+    // }
+  }
+
+  async _createProposalReport(type: number) {
+
+    //this.completeDialog = true;
     if (window.confirm("Mail Gönderilsin mi?")) {
-      var data = await this.orderService.createProposalReport(proposal.id, true);
+      var data = await this.orderService.createProposalReport(this.selectedProposal.id, true, type);
     } else {
-      var data = await this.orderService.createProposalReport(proposal.id, false);
+      var data = await this.orderService.createProposalReport(this.selectedProposal.id, false, type);
     }
   }
+
+  completeDialog: boolean = false;
+  raportType = 1;
   async routeNewPage() {
     var uuid = await this.generalService.generateGUID();
     this.router.navigate(["/create-proposal"])

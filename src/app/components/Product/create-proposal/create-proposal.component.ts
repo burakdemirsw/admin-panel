@@ -181,6 +181,7 @@ export class CreateProposalComponent implements OnInit {
     }
 
   }
+  completeDialog: boolean = false;
 
   updateProductDialog: boolean = false;
   getCustomerDialog: boolean = false;
@@ -617,12 +618,24 @@ export class CreateProposalComponent implements OnInit {
     });
   }
 
+  raportType = 1;
   async createProposalReport() {
 
+    this.completeDialog = true;
+    // if (window.confirm("Mail Gönderilsin mi?")) {
+    //   var data = await this.orderService.createProposalReport(this.proposal.id, true);
+    // } else {
+    //   var data = await this.orderService.createProposalReport(this.proposal.id, false);
+    // }
+  }
+
+  async _createProposalReport(type: number) {
+
+    //this.completeDialog = true;
     if (window.confirm("Mail Gönderilsin mi?")) {
-      var data = await this.orderService.createProposalReport(this.proposal.id, true);
+      var data = await this.orderService.createProposalReport(this.proposal.id, true, type);
     } else {
-      var data = await this.orderService.createProposalReport(this.proposal.id, false);
+      var data = await this.orderService.createProposalReport(this.proposal.id, false, type);
     }
   }
   async deleteAllPRoduct() {

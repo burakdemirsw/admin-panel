@@ -376,7 +376,7 @@
             </th>
 
             <th>
-              <p-columnFilter field="description" matchMode="in" [showMenu]="false">
+              <p-columnFilter field="description" matchMode="equals" [showMenu]="false">
                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                   <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="descriptions"
                     (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
@@ -390,7 +390,7 @@
             </th>
 
             <th>
-              <p-columnFilter field="productHierarchyLevel01" matchMode="in" [showMenu]="false">
+              <p-columnFilter field="productHierarchyLevel01" matchMode="equals" [showMenu]="false">
                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                   <p-dropdown [options]="productHierarchyLevel01s" (onChange)="filter($event.value)"
                     placeholder="Seçiniz" [showClear]="true" filter="true" filterBy="label">
@@ -402,7 +402,7 @@
               </p-columnFilter>
             </th>
             <th>
-              <p-columnFilter field="productHierarchyLevel02" matchMode="in" [showMenu]="false">
+              <p-columnFilter field="productHierarchyLevel02" matchMode="equals" [showMenu]="false">
                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                   <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="productHierarchyLevel02s"
                     (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
@@ -415,7 +415,7 @@
               </p-columnFilter>
             </th>
             <th>
-              <p-columnFilter field="productHierarchyLevel03" matchMode="in" [showMenu]="false">
+              <p-columnFilter field="productHierarchyLevel03" matchMode="equals" [showMenu]="false">
                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                   <p-dropdown virtualScroll="true" virtualScrollItemSize="50" [options]="productHierarchyLevel03s"
                     (onChange)="filter($event.value)" placeholder="Seçiniz" [showClear]="true" filter="true"
@@ -428,7 +428,7 @@
               </p-columnFilter>
             </th>
             <th>
-              <p-columnFilter field="attribute1" matchMode="in" [showMenu]="false">
+              <p-columnFilter field="attribute1" matchMode="equals" [showMenu]="false">
                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                   <p-dropdown [options]="attribute1s" (onChange)="filter($event.value)" placeholder="Seçiniz"
                     [showClear]="true" filter="true" filterBy="label">
@@ -440,7 +440,7 @@
               </p-columnFilter>
             </th>
             <th>
-              <p-columnFilter field="attribute2" matchMode="in" [showMenu]="false">
+              <p-columnFilter field="attribute2" matchMode="equals" [showMenu]="false">
                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                   <p-dropdown [options]="attribute2s" (onChange)="filter($event.value)" placeholder="Seçiniz"
                     [showClear]="true" filter="true" filterBy="label">
@@ -915,5 +915,21 @@
             }
       </div>
     </div>
+
+    <!-- Teklifi Tamamla Güncelle----------------------------------------------------------------------------------------------------->
+    <p-dialog header="Teklifi Tamamla" [(visible)]="completeDialog" [modal]="true" [closable]="false"
+      [style]="{width: '500px'}">
+      <div class="row">
+
+        <div class="col-md-4"><button class="btn btn-success" (click)="_createProposalReport(1)">Kdvli Rapor</button>
+        </div>
+        <div class="col-md-4"><button class="btn btn-success" (click)="_createProposalReport(2)">Kdvsiz Rapor</button>
+        </div>
+        <div class="col-md-4"><button class="btn btn-success" (click)="_createProposalReport(3)">Kdvsiz Rapor
+            (Görselsiz)</button>
+        </div>
+
+      </div>
+    </p-dialog>
   </section>
 </main>

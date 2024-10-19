@@ -936,9 +936,9 @@ export class OrderService {
       return null;
     }
   }
-  async createProposalReport(request: number, sendMail: boolean): Promise<any> {
+  async createProposalReport(request: number, sendMail: boolean, type: number): Promise<any> {
     try {
-      var response: any = await this.httpClientService.get<any>({ controller: "order/create-proposal-report", responseType: 'arraybuffer' }, request + "/" + sendMail).toPromise();
+      var response: any = await this.httpClientService.get<any>({ controller: "order/create-proposal-report", responseType: 'arraybuffer' }, request + "/" + sendMail + "/" + type).toPromise();
       if (response) {
 
 

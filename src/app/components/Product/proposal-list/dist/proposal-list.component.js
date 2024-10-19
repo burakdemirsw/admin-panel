@@ -53,6 +53,8 @@ var ProposalListComponent = /** @class */ (function () {
         this.orderService = orderService;
         this.currentPage = 1;
         this.proposals = [];
+        this.completeDialog = false;
+        this.raportType = 1;
     }
     ProposalListComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -115,18 +117,27 @@ var ProposalListComponent = /** @class */ (function () {
             });
         });
     };
-    ProposalListComponent.prototype.createProposalReport = function (proposal) {
+    ProposalListComponent.prototype.createProposalReport = function (selectedProposal) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.completeDialog = true;
+                this.selectedProposal = selectedProposal;
+                return [2 /*return*/];
+            });
+        });
+    };
+    ProposalListComponent.prototype._createProposalReport = function (type) {
         return __awaiter(this, void 0, void 0, function () {
             var data, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         if (!window.confirm("Mail Gönderilsin mi?")) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.orderService.createProposalReport(proposal.id, true)];
+                        return [4 /*yield*/, this.orderService.createProposalReport(this.selectedProposal.id, true, type)];
                     case 1:
                         data = _a.sent();
                         return [3 /*break*/, 4];
-                    case 2: return [4 /*yield*/, this.orderService.createProposalReport(proposal.id, false)];
+                    case 2: return [4 /*yield*/, this.orderService.createProposalReport(this.selectedProposal.id, false, type)];
                     case 3:
                         data = _a.sent();
                         _a.label = 4;
