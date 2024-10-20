@@ -14,6 +14,7 @@ import { AddCustomerAddress_CM } from '../../../models/model/order/createCustome
 import { PostalAddress } from '../../../models/nebim/customer/nebimCustomer';
 import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from './models/models';
 import { ZTMSG_CreateCargoBarcode_CM } from 'src/app/models/model/cargo/ZTMSG_CreateCargoBarcode_CM';
+import { CustomerService } from 'src/app/services/admin/customer.service';
 
 @Component({
   selector: 'app-create-cargo',
@@ -25,9 +26,17 @@ export class CreateCargoComponent implements OnInit {
   activeIndex: number = 0;
 
   selectedAddresses: CustomerAddress_VM[] = []
-  constructor(private router: Router, private cargoService: CargoService, private addressService: AddressService, private httpClient: HttpClientService, private toasterService: ToasterService, private orderService: OrderService,
-    private activatedRoute: ActivatedRoute, private generalService: GeneralService, private formBuilder: FormBuilder,
-    private spinnerService: NgxSpinnerService) { }
+  constructor(private router: Router,
+    private cargoService: CargoService,
+    private addressService: AddressService,
+    private httpClient: HttpClientService,
+    private toasterService: ToasterService,
+    private orderService: OrderService,
+    private activatedRoute: ActivatedRoute,
+    private generalService: GeneralService,
+    private formBuilder: FormBuilder,
+    private spinnerService: NgxSpinnerService,
+    private customerService: CustomerService) { }
 
   ngOnInit(): void {
 
@@ -46,10 +55,8 @@ export class CreateCargoComponent implements OnInit {
   //----------------------------------------------------ADDRESS
   addresses: CustomerAddress_VM[] = []
   async getCustomerAddresses(request: GetCustomerAddress_CM) {
-    this.addresses = await this.orderService.getCustomerAddress(request)
-
-    this.toasterService.success("Adresler Getirildi")
-
+    this.addresses = await this.customerService.getCustomerAddress(request)
+    this.toasterService.success("Adresler Getirildi");
   }
   selectCurrentAddress(request: CustomerAddress_VM) {
     this.selectedAddresses = [];
@@ -435,7 +442,7 @@ export class CreateCargoComponent implements OnInit {
     postalAddress.address = values.address_description;
     postalAddress.addressTypeCode = "1";
     var request: AddCustomerAddress_CM = new AddCustomerAddress_CM(this.orderDetail.currAccCode, postalAddress);
-    var response = await this.orderService.addCustomerAddress(request)
+    var response = await this.customerService.addCustomerAddress(request)
     if (response) {
       var _request: GetCustomerAddress_CM = new GetCustomerAddress_CM();
       _request.currAccCode = this.orderDetail.currAccCode;

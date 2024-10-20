@@ -205,21 +205,7 @@ export class WarehouseService {
     }
   }
 
-  //müşteri listesini çeker
-  async getCustomerList(customerType: string): Promise<CustomerModel[]> {
-    try {
-      const data = await this.httpClientService
-        .get<CustomerModel>({
-          controller: 'Order/CustomerList/' + customerType,
-        })
-        .toPromise();
 
-      return data;
-    } catch (error: any) {
-      console.log(error.message);
-      return null;
-    }
-  }
 
   //sayım listesini çeker
   async getCountList(): Promise<CountListModel[]> {
@@ -538,28 +524,28 @@ export class WarehouseService {
 
   async getShelves(): Promise<Shelf[]> {
     const data = await this.httpClientService
-      .get_new<Shelf[]>({ controller: 'Order/get-shelves' })
+      .get_new<Shelf[]>({ controller: 'Warehouse/get-shelves' })
       .toPromise();
     return data;
   }
 
   async addShelf(request: Shelf): Promise<boolean> {
     const result = await this.httpClientService
-      .post<boolean>({ controller: 'Order/add-shelf' }, request)
+      .post<boolean>({ controller: 'Warehouse/add-shelf' }, request)
       .toPromise();
     return result;
   }
 
   async updateShelf(request: Shelf): Promise<boolean> {
     const result = await this.httpClientService
-      .post<boolean>({ controller: 'Order/update-shelf' }, request)
+      .post<boolean>({ controller: 'Warehouse/update-shelf' }, request)
       .toPromise();
     return result;
   }
 
   async removeShelf(id: string): Promise<boolean> {
     const result = await this.httpClientService
-      .get_new<boolean>({ controller: 'Order/remove-Shelf' }, id)
+      .get_new<boolean>({ controller: 'Warehouse/remove-Shelf' }, id)
       .toPromise();
     return result;
   }

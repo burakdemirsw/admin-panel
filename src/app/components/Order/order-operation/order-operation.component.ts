@@ -34,6 +34,7 @@ import { InvoiceService } from 'src/app/services/admin/invoice.service';
 import { UserClientInfoResponse } from 'src/app/models/model/user/userRegister_VM';
 import { UserService } from 'src/app/services/admin/user.service';
 import { RaportService } from 'src/app/services/admin/raport.service';
+import { CustomerService } from 'src/app/services/admin/customer.service';
 
 declare var window: any;
 
@@ -133,7 +134,8 @@ export class OrderOperationComponent implements OnInit {
     private title: Title,
     private sanitizer: DomSanitizer,
     private userService: UserService,
-    private raportService: RaportService
+    private raportService: RaportService,
+    private customerService: CustomerService
   ) {
 
   }
@@ -314,7 +316,7 @@ export class OrderOperationComponent implements OnInit {
   async showDialog2() {
     this._visible2 = true;
     this.invoicesOfCustomer = [];
-    var response = await this.orderService.getInvoicesOfCustomer(this.currentOrderNo);
+    var response = await this.customerService.getInvoicesOfCustomer(this.currentOrderNo);
     this.invoicesOfCustomer = response;
   }
 
@@ -533,41 +535,12 @@ export class OrderOperationComponent implements OnInit {
           if (_r) {
             this.toasterService.success("İrsaliye Kesildi")
 
-            var data = await this.raportService.createCollectedProductsOfOrderRaport(this.orderNo);
+            var data = await this.raportService.createCollectedProductsOfOrderRaport(this.orderNo, this.warehouseCode);
             if (data) {
 
-
-              const file = new Blob([data], { type: 'application/pdf' });
-              const fileURL = URL.createObjectURL(file);
-
-              // Create a temporary link element
-              const downloadLink = document.createElement('a');
-              downloadLink.href = fileURL;
-              downloadLink.download = "export.pdf";  // Set the filename for the download
-              document.body.appendChild(downloadLink); // Append to body
-              downloadLink.click();  // Trigger the download
-              document.body.removeChild(downloadLink); // Remove the link after triggering the download
-              URL.revokeObjectURL(fileURL); // Clean up the URL object
-
-
-
-              const _file = new Blob([data], { type: 'application/pdf' });
-              const _fileURL = URL.createObjectURL(_file);
-
-              // Create an iframe element
-              const iframe = document.createElement('iframe');
-              iframe.style.display = 'none';  // Hide the iframe
-              iframe.src = _fileURL;
-
-              // Append the iframe to the body
-              document.body.appendChild(iframe);
-
-              // Wait until the iframe is loaded, then call print
-              iframe.onload = () => {
-                iframe.contentWindow?.print();
-              };
+              this.router.navigate(["/orders-managament/1/2"])
             }
-            this.router.navigate(["/orders-managament/1/2"])
+
           } else {
             this.toasterService.warn("İrsaliye Kesilemedi");
           }

@@ -17,9 +17,22 @@
                 Ürün Kodu
                 <p-sortIcon field="itemCode"></p-sortIcon>
               </th>
+
               <th pSortableColumn="quantity">
                 Sipariş Miktarı / Talep / Onay
                 <p-sortIcon field="quantity"></p-sortIcon>
+              </th>
+              <th pSortableColumn="price">
+                Fiyat
+                <p-sortIcon field="price"></p-sortIcon>
+              </th>
+              <th pSortableColumn="priceVI">
+                Fiyat (VD)
+                <p-sortIcon field="priceVI"></p-sortIcon>
+              </th>
+              <th pSortableColumn="totalTaxedPrice">
+                Toplam Fiyat (VD)
+                <p-sortIcon field="totalTaxedPrice"></p-sortIcon>
               </th>
               <th scope="col">İşlemler</th>
             </tr>
@@ -46,7 +59,10 @@
                   {{ product.quantity }}
                 </ng-template>
               </td>
-
+              <td>{{ product.price | currency: '₺'}}</td>
+              <td>{{ product.priceVI | currency : '₺' }}</td>
+              <!-- <td>{{ product.totalPrice | currency }}</td> -->
+              <td>{{  product.priceVI* product.quantity | currency: '₺'}}</td>
 
 
 

@@ -39,9 +39,12 @@ export class CashProcessListComponent implements OnInit {
   }
 
   async deleteProcess(header: CashHeader_VM) {
-    var response = await this.cashService.deleteCashHeader(header.id);
-    if (response) {
-      this.loadCashHeaders();
+    if (window.confirm("Hareket Silinecektir Emin Misiniz")) {
+      var response = await this.cashService.deleteCashHeader(header.id);
+      if (response) {
+        this.loadCashHeaders();
+      }
     }
+
   }
 }

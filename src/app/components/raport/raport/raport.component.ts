@@ -3,6 +3,8 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MenuItem } from 'primeng/api';
+import { BankAccount } from 'src/app/models/model/invoice/BankAccount';
+import { CashAccount } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
 import { Raport_BestSeller, Raport_ProductExtract, Raport_ProductInventory } from 'src/app/models/model/raport/raport_CR';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
@@ -11,9 +13,7 @@ import { RaportService } from 'src/app/services/admin/raport.service';
 import { ExportCsvService } from 'src/app/services/export-csv.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { AssurSaleReport, BankReport, bsQueryMasterVm, bsQueryParams, GetFinalQueryRequest, TillReport } from '../../../models/model/raport/bsQueryMaster ';
-import { BankAccount } from 'src/app/models/model/invoice/BankAccount';
 import { InfoService } from '../../../services/admin/info.service';
-import { CashAccount } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
 
 @Component({
 
@@ -24,9 +24,9 @@ import { CashAccount } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
 export class RaportComponent implements OnInit {
 
 
-  constructor(private router: Router, private toasterService: ToasterService, private orderService: OrderService,
-    private activatedRoute: ActivatedRoute, private generalService: GeneralService, private formBuilder: FormBuilder,
-    private spinnerService: NgxSpinnerService,
+  constructor(
+    private toasterService: ToasterService,
+    private activatedRoute: ActivatedRoute,
     private raportService: RaportService,
     private headerService: HeaderService,
     private infoService: InfoService,
@@ -148,25 +148,19 @@ export class RaportComponent implements OnInit {
 
     }
   }
-  items: MenuItem[] = [
-    {
-      label: 'Excel\'e Aktar',
-      command: () => {
-        this.exportCsv();
-      }
-    }
-  ];
-  exportCsv() {
-    if (this.raportID == 0) {
-      this.exportCsvService.exportToCsv(this.productInventoryRaports, 'my-data');
-    } else if (this.raportID == 1) {
-      this.exportCsvService.exportToCsv(this.productExtractRaports, 'my-data');
-    } else if (this.raportID == 2) {
-      this.exportCsvService.exportToCsv(this.bestSellers, 'my-data');
-    } else {
-      this.toasterService.error('Veri Yok')
 
-    }
+  exportCsv(data: any[]) {
+
+    this.exportCsvService.exportToCsv(data, 'my-data');
+    // if (this.raportID == 0) {
+    //   this.exportCsvService.exportToCsv(this.productInventoryRaports, 'my-data');
+    // } else if (this.raportID == 1) {
+    //   this.exportCsvService.exportToCsv(this.productExtractRaports, 'my-data');
+    // } else if (this.raportID == 2) {
+    //   this.exportCsvService.exportToCsv(this.bestSellers, 'my-data');
+    // } else {
+    //   this.toasterService.error('Veri Yok')
+    // }
 
   }
 
@@ -358,6 +352,23 @@ export class RaportComponent implements OnInit {
       console.error('Final rapor alınırken hata oluştu', error);
     }
   }
+
+  async getAllNebimRaports() {
+    this.bsQueryMasterVms = await this.raportService.getAllNebimRaports_VM();
+
+  }
+  productInventoryRaports: Raport_ProductInventory[] = [];
+  async getProductInventoryRaport(itemCode: string) {
+    this.productInventoryRaports = await this.raportService.getProductInventoryRaport(itemCode);
+  }
+  productExtractRaports: Raport_ProductExtract[] = [];
+  async getProductExtractQuantity(itemCode: string) {
+    this.productExtractRaports = await this.raportService.getProductExtractQuantity(itemCode);
+  }
+  bestSellers: Raport_BestSeller[] = []
+  async getBestSellers() {
+    this.bestSellers = await this.raportService.getBestSellers();
+  }
   bankReports: BankReport[] = [];
 
   async getBankReports() {
@@ -414,20 +425,210 @@ export class RaportComponent implements OnInit {
       this.toasterService.error('Lütfen başlangıç ve bitiş tarihlerini seçiniz.');
     }
   }
-  async getAllNebimRaports() {
-    this.bsQueryMasterVms = await this.raportService.getAllNebimRaports_VM();
+
+  items_0: MenuItem[] = [
+    {
+      label: 'Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this.productInventoryRaports);
+      }
+    },
+    {
+      label: 'Filtrelenen Datayı Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this._filtered_data_0);
+      }
+    }
+  ];
+  items_1: MenuItem[] = [
+    {
+      label: 'Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this.productExtractRaports);
+      }
+    },
+    {
+      label: 'Filtrelenen Datayı Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this._filtered_data_1);
+      }
+    }
+  ];
+  items_2: MenuItem[] = [
+    {
+      label: 'Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this.bestSellers);
+      }
+    },
+    {
+      label: 'Filtrelenen Datayı Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this._filtered_data_2);
+      }
+    }
+  ]; items_4_1: MenuItem[] = [
+    {
+      label: 'Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this.assurSaleReport.saleReports);
+      }
+    },
+    {
+      label: 'Filtrelenen Datayı Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this._filtered_data_4_1);
+      }
+    }
+  ];
+
+  items_4_2: MenuItem[] = [
+    {
+      label: 'Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this.assurSaleReport.stockReports);
+      }
+    },
+    {
+      label: 'Filtrelenen Datayı Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this._filtered_data_4_2);
+      }
+    }
+  ];
+  items_4_3: MenuItem[] = [
+    {
+      label: 'Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this.assurSaleReport.financialReports);
+      }
+    },
+    {
+      label: 'Filtrelenen Datayı Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this._filtered_data_4_3);
+      }
+    }
+  ];
+  items_4_4: MenuItem[] = [
+    {
+      label: 'Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this.assurSaleReport.accountReports);
+      }
+    },
+    {
+      label: 'Filtrelenen Datayı Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this._filtered_data_4_4);
+      }
+    }
+  ];
+  items_4_5: MenuItem[] = [
+    {
+      label: 'Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this.assurSaleReport.inventoryReports);
+      }
+    },
+    {
+      label: 'Filtrelenen Datayı Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this._filtered_data_4_5);
+      }
+    }
+  ];
+  items_5: MenuItem[] = [
+    {
+      label: 'Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this.tillReports);
+      }
+    },
+    {
+      label: 'Filtrelenen Datayı Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this._filtered_data_5);
+      }
+    }
+  ];
+  items_6: MenuItem[] = [
+    {
+      label: 'Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this.bankReports);
+      }
+    },
+    {
+      label: 'Filtrelenen Datayı Excel\'e Aktar',
+      command: () => {
+        this.exportCsv(this._filtered_data_6);
+      }
+    }
+  ];
+
+  _filtered_data_0: any[] = [];
+  _filtered_data_1: any[] = [];
+  _filtered_data_2: any[] = [];
+  _filtered_data_3: any[] = [];
+  _filtered_data_4_1: any[] = [];
+  _filtered_data_4_2: any[] = [];
+  _filtered_data_4_3: any[] = [];
+  _filtered_data_4_4: any[] = [];
+  _filtered_data_4_5: any[] = [];
+  _filtered_data_5: any[] = [];
+  _filtered_data_6: any[] = [];
+  onFilter(e: any, order: number) {
+    if (order == 0) {
+      if (e.filteredValue && e.filteredValue.length > 0) {
+        this._filtered_data_0 = e.filteredValue;
+      }
+    } else if (order == 1) {
+      if (e.filteredValue && e.filteredValue.length > 0) {
+        this._filtered_data_1 = e.filteredValue;
+      }
+    } else if (order == 2) {
+      if (e.filteredValue && e.filteredValue.length > 0) {
+        this._filtered_data_2 = e.filteredValue;
+      }
+    } else if (order == 3) {
+      if (e.filteredValue && e.filteredValue.length > 0) {
+        this._filtered_data_3 = e.filteredValue;
+      }
+    } else if (order == 4.1) {
+      if (e.filteredValue && e.filteredValue.length > 0) {
+        this._filtered_data_4_1 = e.filteredValue;
+      }
+    } else if (order == 4.2) {
+      if (e.filteredValue && e.filteredValue.length > 0) {
+        this._filtered_data_4_2 = e.filteredValue;
+      }
+    }
+    else if (order == 4.3) {
+      if (e.filteredValue && e.filteredValue.length > 0) {
+        this._filtered_data_4_3 = e.filteredValue;
+      }
+    }
+    else if (order == 4.4) {
+      if (e.filteredValue && e.filteredValue.length > 0) {
+        this._filtered_data_4_4 = e.filteredValue;
+      }
+    }
+    else if (order == 4.5) {
+      if (e.filteredValue && e.filteredValue.length > 0) {
+        this._filtered_data_4_5 = e.filteredValue;
+      }
+    } else if (order == 5) {
+      if (e.filteredValue && e.filteredValue.length > 0) {
+        this._filtered_data_5 = e.filteredValue;
+      }
+    } else if (order == 6) {
+      if (e.filteredValue && e.filteredValue.length > 0) {
+        this._filtered_data_6 = e.filteredValue;
+      }
+    }
+
 
   }
-  productInventoryRaports: Raport_ProductInventory[] = [];
-  async getProductInventoryRaport(itemCode: string) {
-    this.productInventoryRaports = await this.raportService.getProductInventoryRaport(itemCode);
-  }
-  productExtractRaports: Raport_ProductExtract[] = [];
-  async getProductExtractQuantity(itemCode: string) {
-    this.productExtractRaports = await this.raportService.getProductExtractQuantity(itemCode);
-  }
-  bestSellers: Raport_BestSeller[] = []
-  async getBestSellers() {
-    this.bestSellers = await this.raportService.getBestSellers();
-  }
+
 }

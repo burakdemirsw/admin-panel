@@ -8,7 +8,14 @@
           </button>
         </div>
       </div>
+      <!-- Müşteri ekle----------------------------------------------------------------------------------------------------->
+      <p-dialog header="Müşteri ekle" [(visible)]="addCustomerDialog" [modal]="true" [closable]="false"
+        [ariaExpanded]="true" [style]="{width: '300px'}">
+        <app-add-customer (customerAdded)="onCustomerAdded($event)" _isInnerPage="false"
+          [_type]="processCode === 'WS' ? 'whosale' : 'vendor'">
+        </app-add-customer>
 
+      </p-dialog>
       <div class="card">
         <div>
 
@@ -740,7 +747,10 @@
                       Fiyat (VD)
                       <p-sortIcon field="priceVI"></p-sortIcon>
                     </th>
-
+                    <th pSortableColumn="totalTaxedPrice">
+                      Toplam Fiyat (VD)
+                      <p-sortIcon field="totalTaxedPrice"></p-sortIcon>
+                    </th>
                     <th pSortableColumn="taxRate">
                       Vergi Oranı
                       <p-sortIcon field="taxRate"></p-sortIcon>
@@ -764,8 +774,8 @@
                     <td>{{ product.barcode }}</td>
                     <td>{{ product.price | currency: '₺'}}</td>
                     <td>{{ product.priceVI | currency : '₺' }}</td>
-                    <!-- <td>{{ product.totalPrice | currency }}</td>
-                    <td>{{ product.totalTaxedPrice | currency }}</td> -->
+                    <!-- <td>{{ product.totalPrice | currency }}</td> -->
+                    <td>{{  product.priceVI* product.quantity | currency: '₺'}}</td>
                     <td>{{ product.taxRate }}%</td>
                     <!-- <td>{{ product.discountRate1 }}%</td>
                     <td>{{ product.discountRate2 }}₺</td> -->
@@ -794,6 +804,7 @@
                     <td>{{ getTotalQuantity() }}</td>
                     <td colspan="1"></td>
                     <td>{{  getTotal() | currency : '₺'}}</td>
+                    <td colspan="1"></td>
                     <td>{{ getTotalTaxedPrice()| currency : '₺'  }}
                     </td>
                     <td colspan="5"></td>
@@ -943,11 +954,24 @@
                     this.invoiceProcess?.isCompleted || invoiceProducts.length <= 0 ">
               Faturayı Kes
             </button>
-            <button *ngIf="this.processType=='proposal' && this.invoiceProducts.length >0" type=" button"
-              class="btn btn-primary" (click)="createProposalReport()" style="width: 100%;" [disabled]="
+            <div *ngIf="this.processType=='proposal' && this.invoiceProducts.length >0">
+              <div class="row">
+
+                <div class="col-md-6"> <button type=" button" class="btn btn-primary" (click)="createProposalReport()"
+                    style="width: 100%;" [disabled]="
                     this.invoiceProcess?.isCompleted || invoiceProducts.length <= 0 ">
-              Teklifi Oluştur
-            </button>
+                    Pdf Çıktısı Al
+                  </button></div>
+                <div class="col-md-6"> <button type=" button" class="btn btn-primary" (click)="completeProposal()"
+                    style="width: 100%;" [disabled]="
+                    this.invoiceProcess?.isCompleted || invoiceProducts.length <= 0 ">
+                    Teklifi Oluştur
+                  </button></div>
+
+              </div>
+
+            </div>
+
             <button *ngIf="this.processType=='order'" type="button" class="btn btn-primary" (click)="createOrder()"
               style="width: 100%;" [disabled]="
                     this.invoiceProcess?.isCompleted || invoiceProducts.length <= 0 ">
@@ -1125,14 +1149,7 @@
       </div>
     </div>
 
-    <!-- Ürün Güncelle----------------------------------------------------------------------------------------------------->
-    <p-dialog header="Müşteri ekle" [(visible)]="addCustomerDialog" [modal]="true" [closable]="false"
-      [ariaExpanded]="true" [style]="{width: '300px'}">
-      <app-add-customer (customerAdded)="onCustomerAdded($event)" _isInnerPage="false"
-        [_type]="processCode === 'WS' ? 'whosale' : 'vendor'">
-      </app-add-customer>
 
-    </p-dialog>
 
   </section>
 </main>

@@ -96,32 +96,56 @@
 
             <td>{{ invoice.createdDate | date : "dd.MM.yyyy HH:mm:ss" }}</td>
             <td>
-              <div class="btn-group">
+              <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                  data-bs-toggle="dropdown" aria-expanded="false">
 
-                <button class="btn btn-primary" (click)="goPage(invoice.id)">
-                  <i class="fas fa-sliders-h"></i>
                 </button>
-                <button *ngIf="this.processType =='order'" class="btn btn-primary" title="Siparişi Faturaya Çevir"
-                  [disabled]="
-                  !invoice.isCompleted" (click)="convertWSOrderToWSInvoice(invoice.processCode,invoice.id)">
-                  <i class="fas fa-receipt    "></i> </button>
-                <button *ngIf="this.processType =='proposal'" class="btn btn-primary" title="Teklifi Siparişe Çevir"
-                  [disabled]="
-                  !invoice.isCompleted" (click)="convertWSProposalToWSOrder(invoice.processCode,invoice.id)">
-                  <i class="fas fa-receipt    "></i> </button>
-
-                <button *ngIf="this.processType =='proposal'" class="btn btn-primary" title="Teklifi Onayla"
-                  routerLink="/confirm-process/proposal/{{invoice.processCode}}/{{invoice.id}}" [disabled]="
-                  !invoice.isCompleted">
-                  <i class="fa fa-check" aria-hidden="true"></i> </button>
-                <button *ngIf="this.processType =='order'" class="btn btn-primary" title="Siparişi Onayla" [disabled]="
-                  !invoice.isCompleted" routerLink="/confirm-process/order/{{invoice.processCode}}/{{invoice.id}}">
-                  <i class="fa fa-check" aria-hidden="true"></i> </button>
-                <button class="btn btn-danger" title="Sil" (click)="deleteInvoice(invoice.id)">
-                  <i class="fas fa-trash"></i>
-                </button>
-
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <li>
+                    <button class="dropdown-item" (click)="goPage(invoice.id)">
+                      <i class="fas fa-sliders-h"></i> Detay
+                    </button>
+                  </li>
+                  <li *ngIf="this.processType == 'order'">
+                    <button class="dropdown-item" title="Siparişi Faturaya Çevir" [disabled]="!invoice.isCompleted"
+                      (click)="convertWSOrderToWSInvoice(invoice.processCode, invoice.id)">
+                      <i class="fas fa-receipt"></i>Siparişi Faturaya Çevir
+                    </button>
+                  </li>
+                  <li *ngIf="this.processType == 'proposal'">
+                    <button class="dropdown-item" title="Teklifi Siparişe Çevir" [disabled]="!invoice.isCompleted"
+                      (click)="convertWSProposalToWSOrder(invoice.processCode, invoice.id)">
+                      <i class="fas fa-receipt"></i> Teklifi Siparişe Çevir
+                    </button>
+                  </li>
+                  <li *ngIf="this.processType == 'proposal'">
+                    <button class="dropdown-item" title="Teklifi Yazdır" (click)="createProposalReport( invoice.id)">
+                      <i class="fas fa-file"></i>Teklifi Yazdır
+                    </button>
+                  </li>
+                  <li *ngIf="this.processType == 'proposal'">
+                    <a class="dropdown-item" title="Teklifi Onayla"
+                      [routerLink]="'/confirm-process/proposal/' + invoice.processCode + '/' + invoice.id"
+                      [class.disabled]="!invoice.isCompleted">
+                      <i class="fa fa-check" aria-hidden="true"></i>Teklifi Onayla
+                    </a>
+                  </li>
+                  <li *ngIf="this.processType == 'order'">
+                    <a class="dropdown-item" title="Siparişi Onayla"
+                      [routerLink]="'/confirm-process/order/' + invoice.processCode + '/' + invoice.id"
+                      [class.disabled]="!invoice.isCompleted">
+                      <i class="fa fa-check" aria-hidden="true"></i> Siparişi Onayla
+                    </a>
+                  </li>
+                  <li>
+                    <button class="dropdown-item text-danger" title="Sil" (click)="deleteInvoice(invoice.id)">
+                      <i class="fas fa-trash"></i> Sil
+                    </button>
+                  </li>
+                </ul>
               </div>
+
             </td>
           </tr>
         </ng-template>

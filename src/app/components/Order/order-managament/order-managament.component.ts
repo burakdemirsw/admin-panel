@@ -119,8 +119,40 @@ export class OrderManagamentComponent implements OnInit {
       command: () => {
         this.getOrders(1, 2);
       }
+    },
+    {
+      label: 'Sevk Edilen Siparişler',
+      command: () => {
+        this.getOrders(1, 2);
+      }
+    },
+    {
+      label: 'Sevk Edilmeyen Siparişler',
+      command: () => {
+        this.getOrders(1, 2);
+      }
+    },
+    {
+      label: 'Ambar Fişi Oluştur', command: (event) => this.createCollectedProductsOfOrderRaport(this.selectedOrders)
     }
   ];
+
+  calculateDays(orderDate: Date): number {
+    const createdDate = new Date(orderDate); // Convert to Date objectasda
+    const currentDate = new Date(); // Current date
+    const diffTime = currentDate.getTime() - createdDate.getTime(); // Difference in milliseconds
+    const diffDays = Math.floor(diffTime / (1000 * 3600 * 24)); // Convert to days
+    return diffDays; // Return the difference in days
+  }
+
+  async createCollectedProductsOfOrderRaport(orders: SaleOrderModel[]) {
+    if (orders.length > 0) {
+      await this.raportService.createCollectedProductsOfOrderRaport(orders[0].orderNumber, orders[0].warehouseCode);
+    } else {
+      this.toasterService.error("Lütfen Bir Sipariş Seçiniz")
+    }
+  }
+
   async ngOnInit() {
     //this.spinnerService.show();
 

@@ -41,10 +41,10 @@
               Cari Hesap Kodu
               <p-sortIcon field="currAccCode"></p-sortIcon>
             </th> -->
-            <th pSortableColumn="officeCode">
+            <!-- <th pSortableColumn="officeCode">
               Ofis Kodu
               <p-sortIcon field="officeCode"></p-sortIcon>
-            </th>
+            </th> -->
 
             <th pSortableColumn="totalCreditAmount">
               Toplam Kredi Tutarı
@@ -92,9 +92,9 @@
             <!-- <th>
               <p-columnFilter type="text" field="currAccCode" [showClearButton]="true"></p-columnFilter>
             </th> -->
-            <th>
+            <!-- <th>
               <p-columnFilter type="text" field="officeCode" [showClearButton]="true"></p-columnFilter>
-            </th>
+            </th> -->
 
             <th>
               <p-columnFilter type="numeric" field="totalCreditAmount" [showClearButton]="true"></p-columnFilter>
@@ -130,7 +130,7 @@
               <td>{{ debitHeader.debitTypeCode }}</td> -->
             <td>{{ debitHeader.currAccDescription }}</td>
             <!-- <td>{{ debitHeader.currAccCode }}</td> -->
-            <td>{{ debitHeader.officeCode }}</td>
+            <!-- <td>{{ debitHeader.officeCode }}</td> -->
 
             <td>{{ debitHeader.totalCreditAmount | currency }}</td>
             <td>{{ debitHeader.totalDebitAmount | currency }}</td>

@@ -45,26 +45,26 @@ export class InnerLine_VM {
   type: boolean;
   operationNumber: string;
   isCompleted?: boolean
+  isTransferApproved: boolean;
 
 }
 
 export class InnerHeader {
-  id: string;                // GUID türünde benzersiz kimlik
+  id: string;
   innerNumber: string;
-  officeCode: string;         // Office kodu
+  officeCode: string;
   toOfficeCode: string;
   toWarehouseCode: string;
-  warehouseCode: string;      // Depo kodu
-  description?: string;       // Açıklama (opsiyonel)
-  applicationCode?: string;   // Uygulama kodu (opsiyonel)
-  innerProcessType: number;   // İç işlem tipi, 2 ise ekler 3 ise çıkar
+  warehouseCode: string;
+  description?: string;
+  applicationCode?: string;
+  innerProcessType: number;
   isCompleted: boolean;
-  isReturn: boolean;// Tamamlanma durumu
+  isReturn: boolean;
   userId: number
-  createdDate?: Date;         // Oluşturulma tarihi (opsiyonel)
+  createdDate?: Date;
   isShelfBased?: boolean;
-  updatedDate?: Date = new Date();  // Güncellenme tarihi (varsayılan olarak şu anki zaman)
-  innerProcessCode: string;   // İç işlem tipi, 2 ise ekler 3 ise çıkar
-
-
+  updatedDate?: Date = new Date();
+  innerProcessCode: string;
+  isTransferApproved: boolean;
 }

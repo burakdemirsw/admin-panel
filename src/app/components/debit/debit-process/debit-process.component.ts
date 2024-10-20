@@ -9,6 +9,7 @@ import { bsCurrAccTypeDesc, cdDebitReasonDesc } from 'src/app/models/model/nebim
 import { UserClientInfoResponse } from 'src/app/models/model/user/userRegister_VM';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
+import { CustomerService } from 'src/app/services/admin/customer.service';
 import { DebitService } from 'src/app/services/admin/debit.service';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
@@ -35,6 +36,7 @@ export class DebitProcessComponent {
     private routerService: Router,
     private userService: UserService,
     private infoService: InfoService,
+    private customerService: CustomerService
   ) { }
 
   officeModels: OfficeModel[] = [];
@@ -327,7 +329,7 @@ export class DebitProcessComponent {
   customerList: CustomerModel[] = [];
   customerList2: any[] = [];
   async getCustomerList(request: string): Promise<void> {
-    this.customerList = await this.warehouseService.getCustomerList(request);
+    this.customerList = await this.customerService.getCustomerList(request);
 
     // customerList2'yi Set yapısını kullanarak güncelliyoruz
     const updatedCustomerList = new Set(this.customerList.map(c => ({

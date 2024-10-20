@@ -34,10 +34,10 @@
                 Cari Hesap Kodu
                 <p-sortIcon field="cashCurrAccCode"></p-sortIcon>
               </th> -->
-            <th pSortableColumn="officeCode">
+            <!-- <th pSortableColumn="officeCode">
               Ofis Kodu
               <p-sortIcon field="officeCode"></p-sortIcon>
-            </th>
+            </th> -->
 
             <th pSortableColumn="total">
               Toplam
@@ -78,9 +78,9 @@
               <th>
                 <p-columnFilter type="text" field="cashCurrAccCode" [showClearButton]="true"></p-columnFilter>
               </th> -->
-            <th>
+            <!-- <th>
               <p-columnFilter type="text" field="officeCode" [showClearButton]="true"></p-columnFilter>
-            </th>
+            </th> -->
 
             <th>
               <p-columnFilter type="numeric" field="total" [showClearButton]="true"></p-columnFilter>
@@ -111,7 +111,7 @@
             <td>{{ cashHeader.currAccDescription }}</td>
             <!-- <td>{{ cashHeader.cashCurrAccTypeCode }}</td>
             <td>{{ cashHeader.cashCurrAccCode }}</td> -->
-            <td>{{ cashHeader.officeCode }}</td>
+            <!-- <td>{{ cashHeader.officeCode }}</td> -->
             <td>{{ cashHeader.total | currency }}</td>
             <td>{{ cashHeader.cashTransNumber }}</td>
             <td>{{ cashHeader.user }}</td>

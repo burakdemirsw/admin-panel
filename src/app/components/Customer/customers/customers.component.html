@@ -21,19 +21,19 @@
               Müşteri Açıklaması
               <p-sortIcon field="currAccDescription"></p-sortIcon>
             </th>
-            <th pSortableColumn="customerTypeCode">
+            <!-- <th pSortableColumn="customerTypeCode">
               Müşteri Tipi Kodu
               <p-sortIcon field="customerTypeCode"></p-sortIcon>
             </th>
             <th pSortableColumn="customerTypeDescription">
               Müşteri Tipi Açıklaması
               <p-sortIcon field="customerTypeDescription"></p-sortIcon>
-            </th>
+            </th> -->
             <th pSortableColumn="currencyCode">
               Para Birimi Kodu
               <p-sortIcon field="currencyCode"></p-sortIcon>
             </th>
-            <th pSortableColumn="isVIP">
+            <!-- <th pSortableColumn="isVIP">
               VIP
               <p-sortIcon field="isVIP"></p-sortIcon>
             </th>
@@ -56,7 +56,7 @@
             <th pSortableColumn="officeCountryCode">
               Ülke Kodu
               <p-sortIcon field="officeCountryCode"></p-sortIcon>
-            </th>
+            </th> -->
             <th pSortableColumn="cityDescription">
               Şehir Açıklaması
               <p-sortIcon field="cityDescription"></p-sortIcon>
@@ -65,7 +65,7 @@
               İlçe Açıklaması
               <p-sortIcon field="districtDescription"></p-sortIcon>
             </th>
-            <th pSortableColumn="identityNum">
+            <!-- <th pSortableColumn="identityNum">
               Kimlik Numarası
               <p-sortIcon field="identityNum"></p-sortIcon>
             </th>
@@ -88,7 +88,7 @@
             <th pSortableColumn="isBlocked">
               Engellendi
               <p-sortIcon field="isBlocked"></p-sortIcon>
-            </th>
+            </th> -->
             <th>
               İşlemler
 
@@ -101,7 +101,7 @@
             <th>
               <p-columnFilter type="text" field="currAccDescription" [showClearButton]="true"></p-columnFilter>
             </th>
-            <th>
+            <!-- <th>
               <p-columnFilter type="numeric" field="customerTypeCode" [showClearButton]="true"></p-columnFilter>
             </th>
             <th>
@@ -127,14 +127,14 @@
             </th>
             <th>
               <p-columnFilter type="text" field="officeCountryCode" [showClearButton]="true"></p-columnFilter>
-            </th>
+            </th> -->
             <th>
               <p-columnFilter type="text" field="cityDescription" [showClearButton]="true"></p-columnFilter>
             </th>
             <th>
               <p-columnFilter type="text" field="districtDescription" [showClearButton]="true"></p-columnFilter>
             </th>
-            <th>
+            <!-- <th>
               <p-columnFilter type="text" field="identityNum" [showClearButton]="true"></p-columnFilter>
             </th>
             <th>
@@ -151,7 +151,7 @@
             </th>
             <th>
               <p-columnFilter type="boolean" field="isBlocked" [showClearButton]="true"></p-columnFilter>
-            </th>
+            </th> -->
             <th>
 
 
@@ -163,23 +163,23 @@
           <tr>
             <td>{{ customer.currAccCode }}</td>
             <td>{{ customer.currAccDescription }}</td>
-            <td>{{ customer.customerTypeCode }}</td>
-            <td>{{ customer.customerTypeDescription }}</td>
+            <!--  <td>{{ customer.customerTypeCode }}</td>
+            <td>{{ customer.customerTypeDescription }}</td>-->
             <td>{{ customer.currencyCode }}</td>
-            <td>{{ customer.isVIP ? 'Evet' : 'Hayır' }}</td>
+            <!-- <td>{{ customer.isVIP ? 'Evet' : 'Hayır' }}</td>
             <td>{{ customer.promotionGroupDescription }}</td>
             <td>{{ customer.companyCode }}</td>
             <td>{{ customer.officeCode }}</td>
             <td>{{ customer.officeDescription }}</td>
-            <td>{{ customer.officeCountryCode }}</td>
+            <td>{{ customer.officeCountryCode }}</td> -->
             <td>{{ customer.cityDescription }}</td>
             <td>{{ customer.districtDescription }}</td>
-            <td>{{ customer.identityNum }}</td>
+            <!-- <td>{{ customer.identityNum }}</td>
             <td>{{ customer.taxNumber }}</td>
             <td>{{ customer.vendorCode }}</td>
             <td>{{ customer.isSubjectToEInvoice ? 'Evet' : 'Hayır' }}</td>
             <td>{{ customer.useDBSIntegration ? 'Evet' : 'Hayır' }}</td>
-            <td>{{ customer.isBlocked ? 'Evet' : 'Hayır' }}</td>
+            <td>{{ customer.isBlocked ? 'Evet' : 'Hayır' }}</td> -->
             <td> <button class="btn btn-primary"><i class="fa fa-pencil" aria-hidden="true"
                   (click)="goPage(customer)"></i></button></td>
           </tr>

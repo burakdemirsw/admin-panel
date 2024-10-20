@@ -346,6 +346,7 @@ export class AddProductToShelfComponent {
     request.isReturn = status == true ? null : values.isReturn;
     request.userId = this.userInfo.userId;
     request.innerProcessCode = this.innerProcessCode;
+    request.isTransferApproved = false;
 
     var response = await this.warehouseService.updateInnerHeader(request);
     if (response) {
@@ -376,6 +377,7 @@ export class AddProductToShelfComponent {
       status = true;
     }
 
+
     var request: InnerHeader = new InnerHeader();
     request.officeCode = values.officeCode;
     request.warehouseCode = values.warehouseCode.code;
@@ -390,6 +392,7 @@ export class AddProductToShelfComponent {
     request.userId = this.userInfo.userId;
     request.innerProcessCode = this.innerProcessCode;
     request.isShelfBased = this.isShelfBased;
+    request.isTransferApproved = false;
     var response = await this.warehouseService.addInnerHeader(request);
     if (response) {
       this.toasterService.success("İşlem Başarılı");
@@ -406,7 +409,6 @@ export class AddProductToShelfComponent {
           queryParams: { orderNumber: response.description }, // Yeniden yükleme gibi bir etkisi olur
         });
 
-
       } else {
         this.router.navigate([
           "add-product-to-shelf",
@@ -417,13 +419,9 @@ export class AddProductToShelfComponent {
           response.id,
         ]);
       }
-
-
     } else {
       this.toasterService.error("İşlem Başarısız");
     }
-
-
   }
 
   async setInnerHeaderForm() {

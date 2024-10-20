@@ -41,9 +41,12 @@ export class BankProcessListComponent implements OnInit {
     }
   }
   async deleteProcess(header: BankHeader_VM) {
-    var response = await this.bankService.deleteBankHeader(header.id);
-    if (response) {
-      this.loadBankHeaders();
+
+    if (window.confirm("Hareket Silinecektir Emin Misiniz")) {
+      var response = await this.bankService.deleteBankHeader(header.id);
+      if (response) {
+        this.loadBankHeaders();
+      }
     }
   }
 

@@ -20,6 +20,7 @@ import { ToasterService } from "src/app/services/ui/toaster.service";
 import { InfoService } from '../../../services/admin/info.service';
 import { UserService } from '../../../services/admin/user.service';
 import { ClientCustomer } from "../customer-list/customer-list.component";
+import { CustomerService } from "src/app/services/admin/customer.service";
 
 @Component({
   selector: "app-add-customer",
@@ -63,7 +64,8 @@ export class AddCustomerComponent implements OnInit {
     private infoService: InfoService,
     private userService: UserService,
     private googleDriveService: GoogleDriveService,
-    private directRequestService: DirectRequestService
+    private directRequestService: DirectRequestService,
+    private customerService: CustomerService
   ) { }
 
   @Input() _type: string;
@@ -542,7 +544,7 @@ export class AddCustomerComponent implements OnInit {
 
 
   async deleteCustomerCommunication(communicationID: string) {
-    var response = await this.orderService.deleteCustomerCommunication(communicationID);
+    var response = await this.customerService.deleteCustomerCommunication(communicationID);
     if (response) {
       this.toasterService.success("Silindi")
       await this.reload();
@@ -729,7 +731,7 @@ export class AddCustomerComponent implements OnInit {
 
 
   async deleteCustomerAddress(postallAddressID: string) {
-    var response = await this.orderService.deleteCustomerAddress(postallAddressID);
+    var response = await this.customerService.deleteCustomerAddress(postallAddressID);
     if (response) {
       this.toasterService.success("Silindi")
       await this.reload();
@@ -739,7 +741,7 @@ export class AddCustomerComponent implements OnInit {
   //--------------------------------------------------------------
   async reload() {
     var response: NebimCustomerDto =
-      await this.orderService.getCustomerDetail(this.currAccCode);
+      await this.customerService.getCustomerDetail(this.currAccCode);
     this.response = response;
     if (response.addresses.length > 0) {
 

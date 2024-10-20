@@ -16,6 +16,7 @@ export class SaleOrderModel {
   eInvoiceStatusCode: boolean
   isShipped: boolean;
   warehouseCode: string;
+  warehouseDescription: string;
 }
 export class OrderStatusModels {
   warehousePerson: string;

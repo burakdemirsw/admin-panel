@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { descriptors } from 'chart.js/dist/core/core.defaults';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
-import { CashLine, NebimResponse } from "src/app/models/model/invoice/CashLine";
 import { CashHeader } from "src/app/models/model/invoice/CashHeader";
+import { CashLine, NebimResponse } from "src/app/models/model/invoice/CashLine";
 import { bsCashTransTypeDesc, bsCurrAccTypeDesc, CashAccount } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
 import { UserClientInfoResponse } from 'src/app/models/model/user/userRegister_VM';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
+import { CashService } from 'src/app/services/admin/cash.service';
+import { CustomerService } from 'src/app/services/admin/customer.service';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { InfoService } from 'src/app/services/admin/info.service';
@@ -17,7 +18,6 @@ import { ProductService } from 'src/app/services/admin/product.service';
 import { UserService } from 'src/app/services/admin/user.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
-import { CashService } from 'src/app/services/admin/cash.service';
 
 @Component({
   selector: 'app-cash-process',
@@ -30,8 +30,6 @@ export class CashProcessComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private toasterService: ToasterService,
-    private orderService: OrderService,
-    private productService: ProductService,
     private warehouseService: WarehouseService,
     private generalService: GeneralService,
     private activatedRoute: ActivatedRoute,
@@ -39,7 +37,8 @@ export class CashProcessComponent implements OnInit {
     private routerService: Router,
     private userService: UserService,
     private infoService: InfoService,
-    private cashService: CashService
+    private cashService: CashService,
+    private customerService: CustomerService
   ) { }
 
   officeModels: OfficeModel[] = [];
@@ -305,7 +304,7 @@ export class CashProcessComponent implements OnInit {
   customerList: CustomerModel[] = [];
   customerList2: any[] = [];
   async getCustomerList(request: string): Promise<void> {
-    this.customerList = await this.warehouseService.getCustomerList(request);
+    this.customerList = await this.customerService.getCustomerList(request);
 
     // customerList2'yi Set yapısını kullanarak güncelliyoruz
     const updatedCustomerList = new Set(this.customerList.map(c => ({

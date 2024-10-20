@@ -28,6 +28,7 @@ import { OrderService } from '../../../services/admin/order.service';
 import { GoogleDriveService } from '../../../services/common/google-drive.service';
 import { CargoSetting, CreateBarcode_MNG_Request, CreatePackage_MNG_RM, CreatePackage_MNG_RR, CreatePackage_MNG_Request, OrderDetail, OrderPieceListMNG } from '../../cargo/create-cargo/models/models';
 import { RaportService } from 'src/app/services/admin/raport.service';
+import { CustomerService } from 'src/app/services/admin/customer.service';
 
 @Component({
   selector: 'app-create-order',
@@ -64,7 +65,8 @@ export class CreateOrderComponent implements OnInit {
     private generalService: GeneralService, private addressService: AddressService,
     private googleDriveService: GoogleDriveService, private productService: ProductService,
     private formBuilder: FormBuilder, private orderService: OrderService, private raportService: RaportService,
-    private cargoService: CargoService) { }
+    private cargoService: CargoService,
+    private customerService: CustomerService) { }
 
   async ngOnInit() {
 
@@ -134,24 +136,21 @@ export class CreateOrderComponent implements OnInit {
         var customer_request = new GetCustomerList_CM();
         customer_request.currAccCode = this.currAccCode;
         if (customer_request.currAccCode != null) {
-          var customerResponse = await await this.orderService.getCustomerList_2(customer_request)
+          var customerResponse = await await this.customerService.getCustomerList_2(customer_request)
           if (customerResponse) {
             this.selectedCustomers.push(customerResponse[0]);
 
           }
         } else {
           //this.toasterService.error("Eklenecek Müşteri Bulunamadı")
-
         }
-
         var request_address = new GetCustomerAddress_CM();
         request_address.currAccCode = this.currAccCode;
-        var response = await this.orderService.getCustomerAddress(request_address)
+        var response = await this.customerService.getCustomerAddress(request_address)
         if (response) {
           var findedAddress = response.find((x: { postalAddressID: any; }) => x.postalAddressID === order.clientOrder.shippingPostalAddressId);
           if (findedAddress) {
             this.selectedAddresses.push(findedAddress);
-
           } else {
             //this.toasterService.error("Eklenecek Adres Bulunamadı")
           }
@@ -368,7 +367,7 @@ export class CreateOrderComponent implements OnInit {
     postalAddress.address = values.address_description;
     postalAddress.addressTypeCode = "1";
     var request: AddCustomerAddress_CM = new AddCustomerAddress_CM(this.selectedCustomers[0].currAccCode, postalAddress);
-    var response = await this.orderService.addCustomerAddress(request)
+    var response = await this.customerService.addCustomerAddress(request)
     if (response) {
       var _request: GetCustomerAddress_CM = new GetCustomerAddress_CM();
       this.toasterService.success(response.currAccCode);
@@ -583,7 +582,7 @@ export class CreateOrderComponent implements OnInit {
       request.mail = null;
       request.phone = null;
 
-      var response = await this.orderService.getCustomerList_2(request)
+      var response = await this.customerService.getCustomerList_2(request)
       if (response) {
         this.selectableCustomers = [];
         response.forEach(c => {
@@ -600,7 +599,7 @@ export class CreateOrderComponent implements OnInit {
     check_request.currAccCode = formValue.currAccCode;
     check_request.phone = formValue.phoneNumber;
 
-    var check_response = await this.orderService.getCustomerList_2(check_request);
+    var check_response = await this.customerService.getCustomerList_2(check_request);
     if (check_response.length > 0) {
 
       //this.toasterService.error("Bu Müşteri Numarası Zaten Kayıtlı")  asdasasdsa
@@ -641,7 +640,7 @@ export class CreateOrderComponent implements OnInit {
 
 
       if (true) {
-        var response = await this.orderService.createCustomer(request);
+        var response = await this.customerService.createCustomer(request);
         if (response.currAccCode) {
           var clientCustomer_request = new ClientCustomer();
           clientCustomer_request.currAccCode = response.currAccCode;
@@ -803,7 +802,7 @@ export class CreateOrderComponent implements OnInit {
   }
 
   async getCustomers(request: GetCustomerList_CM) {
-    this.customers = await this.orderService.getCustomerList_2(request)
+    this.customers = await this.customerService.getCustomerList_2(request)
 
   }
   async selectCurrentCustomer(request: CustomerList_VM) {
@@ -830,7 +829,7 @@ export class CreateOrderComponent implements OnInit {
   //----------------------------------------------------ADDRESS
   addresses: CustomerAddress_VM[] = []
   async getCustomerAddresses(request: GetCustomerAddress_CM) {
-    this.addresses = await this.orderService.getCustomerAddress(request)
+    this.addresses = await this.customerService.getCustomerAddress(request)
     if (this.addresses.length > 0) {
       this.selectCurrentAddress(this.addresses[0])
       this.selectAddressDialog = false;

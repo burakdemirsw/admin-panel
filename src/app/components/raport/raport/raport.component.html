@@ -20,11 +20,11 @@
 
 
     <div class="card" *ngIf="productInventoryRaports.length > 0 && this.raportID == 0 ">
-      <p-table #dt [value]="productInventoryRaports" dataKey="itemCode" [rows]="10" [paginator]="true"
-        [globalFilterFields]="['itemDescription', 'itemCode', 'warehouseCode']">
+      <p-table #dt (onFilter)="onFilter($event,0)" [value]="productInventoryRaports" dataKey="itemCode" [rows]="10"
+        [paginator]="true" [globalFilterFields]="['itemDescription', 'itemCode', 'warehouseCode']">
         <ng-template pTemplate="caption">
           <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
-            <p-splitButton label="İşlemler" [model]="items" appendTo="body" />
+            <p-splitButton label="İşlemler" [model]="items_0" appendTo="body" />
           </div>
 
         </ng-template>
@@ -99,19 +99,17 @@
 
     </div>
     <div class="card" *ngIf="productExtractRaports.length > 0 && this.raportID == 1">
-      <p-table #dt [value]="productExtractRaports" dataKey="productCode" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
-        [paginator]="true" [globalFilterFields]="['productCode', 'operationDate', 'processCode', 'processDescription']"
+      <p-table #dt (onFilter)="onFilter($event,1)" [value]="productExtractRaports" dataKey="productCode" [rows]="10"
+        [rowsPerPageOptions]="[10, 25, 50]" [paginator]="true"
+        [globalFilterFields]="['productCode', 'operationDate', 'processCode', 'processDescription']"
         [tableStyle]="{ 'min-width': '75rem' }">
 
         <ng-template pTemplate="caption">
           <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
-            <p-splitButton label="İşlemler" [model]="items" appendTo="body" />
+            <p-splitButton label="İşlemler" [model]="items_1" appendTo="body" />
           </div>
 
         </ng-template>
-
-
-
         <ng-template pTemplate="header">
           <tr>
             <th pSortableColumn="productCode">
@@ -122,62 +120,15 @@
               İşlem Tarihi
               <p-sortIcon field="operationDate"></p-sortIcon>
             </th>
-            <th pSortableColumn="processCode">
-              İşlem Kodu
-              <p-sortIcon field="processCode"></p-sortIcon>
-            </th>
             <th pSortableColumn="processDescription">
               İşlem Açıklaması
               <p-sortIcon field="processDescription"></p-sortIcon>
-            </th>
-            <th pSortableColumn="transTypeCode">
-              İşlem Türü Kodu
-              <p-sortIcon field="transTypeCode"></p-sortIcon>
             </th>
             <th pSortableColumn="transTypeDescription">
               İşlem Türü Açıklaması
               <p-sortIcon field="transTypeDescription"></p-sortIcon>
             </th>
-            <th pSortableColumn="isReturn">
-              İade mi?
-              <p-sortIcon field="isReturn"></p-sortIcon>
-            </th>
-            <th pSortableColumn="refNumber">
-              Referans Numarası
-              <p-sortIcon field="refNumber"></p-sortIcon>
-            </th>
-            <th pSortableColumn="documentNumber">
-              Belge Numarası
-              <p-sortIcon field="documentNumber"></p-sortIcon>
-            </th>
-            <th pSortableColumn="currAccTypeCode">
-              Müşteri Hesap Türü Kodu
-              <p-sortIcon field="currAccTypeCode"></p-sortIcon>
-            </th>
-            <th pSortableColumn="currAccTypeDescription">
-              Müşteri Hesap Türü Açıklaması
-              <p-sortIcon field="currAccTypeDescription"></p-sortIcon>
-            </th>
-            <th pSortableColumn="currAccCode">
-              Müşteri Hesap Kodu
-              <p-sortIcon field="currAccCode"></p-sortIcon>
-            </th>
-            <th pSortableColumn="currAccDescription">
-              Müşteri Hesap Açıklaması
-              <p-sortIcon field="currAccDescription"></p-sortIcon>
-            </th>
-            <th pSortableColumn="colorCode">
-              Renk Kodu
-              <p-sortIcon field="colorCode"></p-sortIcon>
-            </th>
-            <th pSortableColumn="colorDescription">
-              Renk Açıklaması
-              <p-sortIcon field="colorDescription"></p-sortIcon>
-            </th>
-            <th pSortableColumn="itemDim1Code">
-              Boyut 1 Kodu
-              <p-sortIcon field="itemDim1Code"></p-sortIcon>
-            </th>
+
             <th pSortableColumn="in_Qty1">
               Giriş Miktarı
               <p-sortIcon field="in_Qty1"></p-sortIcon>
@@ -190,18 +141,7 @@
               Stok Miktarı
               <p-sortIcon field="inventoryQty1"></p-sortIcon>
             </th>
-            <th pSortableColumn="companyCode">
-              Şirket Kodu
-              <p-sortIcon field="companyCode"></p-sortIcon>
-            </th>
-            <th pSortableColumn="officeCode">
-              Ofis Kodu
-              <p-sortIcon field="officeCode"></p-sortIcon>
-            </th>
-            <th pSortableColumn="storeCode">
-              Mağaza Kodu
-              <p-sortIcon field="storeCode"></p-sortIcon>
-            </th>
+
             <th pSortableColumn="warehouseCode">
               Depo Kodu
               <p-sortIcon field="warehouseCode"></p-sortIcon>
@@ -210,91 +150,22 @@
               Depo Açıklaması
               <p-sortIcon field="warehouseDescription"></p-sortIcon>
             </th>
-            <th pSortableColumn="fromOfficeCode">
-              Gönderilen Ofis Kodu
-              <p-sortIcon field="fromOfficeCode"></p-sortIcon>
-            </th>
-            <th pSortableColumn="fromStoreCode">
-              Gönderilen Mağaza Kodu
-              <p-sortIcon field="fromStoreCode"></p-sortIcon>
-            </th>
-            <th pSortableColumn="applicationCode">
-              Uygulama Kodu
-              <p-sortIcon field="applicationCode"></p-sortIcon>
-            </th>
-            <th pSortableColumn="applicationDescription">
-              Uygulama Açıklaması
-              <p-sortIcon field="applicationDescription"></p-sortIcon>
-            </th>
-            <th pSortableColumn="linkedApplicationCode">
-              Bağlantılı Uygulama Kodu
-              <p-sortIcon field="linkedApplicationCode"></p-sortIcon>
-            </th>
-            <th pSortableColumn="linkedApplicationID">
-              Bağlantılı Uygulama ID
-              <p-sortIcon field="linkedApplicationID"></p-sortIcon>
-            </th>
-            <th pSortableColumn="productDescription">
-              Ürün Açıklaması
-              <p-sortIcon field="productDescription"></p-sortIcon>
-            </th>
-            <th pSortableColumn="isBlocked">
-              Engellendi mi?
-              <p-sortIcon field="isBlocked"></p-sortIcon>
-            </th>
-            <th pSortableColumn="refNumber">
-              Referans Numarası
-              <p-sortIcon field="refNumber"></p-sortIcon>
-            </th>
+
           </tr>
           <tr>
-            <th>
-              <p-tableHeaderCheckbox />
-            </th>
+
             <th>
               <p-columnFilter type="text" field="productCode" [showClearButton]="false"></p-columnFilter>
             </th>
             <th>
               <p-columnFilter type="date" field="operationDate" [showClearButton]="false"></p-columnFilter>
             </th>
-            <th>
-              <p-columnFilter type="text" field="processCode" [showClearButton]="false"></p-columnFilter>
-            </th>
+
             <th>
               <p-columnFilter type="text" field="processDescription" [showClearButton]="false"></p-columnFilter>
             </th>
             <th>
-              <p-columnFilter type="text" field="transTypeCode" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="boolean" field="isReturn" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="refNumber" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="documentNumber" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="currAccTypeCode" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="currAccTypeDescription" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="currAccCode" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="currAccDescription" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="colorCode" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="colorDescription" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="itemDim1Code" [showClearButton]="false"></p-columnFilter>
+              <p-columnFilter type="text" field="transTypeDescription" [showClearButton]="false"></p-columnFilter>
             </th>
             <th>
               <p-columnFilter type="numeric" field="in_Qty1" [showClearButton]="false"></p-columnFilter>
@@ -305,85 +176,28 @@
             <th>
               <p-columnFilter type="numeric" field="inventoryQty1" [showClearButton]="false"></p-columnFilter>
             </th>
-            <th>
-              <p-columnFilter type="text" field="companyCode" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="officeCode" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="storeCode" [showClearButton]="false"></p-columnFilter>
-            </th>
+
             <th>
               <p-columnFilter type="text" field="warehouseCode" [showClearButton]="false"></p-columnFilter>
             </th>
             <th>
               <p-columnFilter type="text" field="warehouseDescription" [showClearButton]="false"></p-columnFilter>
             </th>
-            <th>
-              <p-columnFilter type="text" field="fromOfficeCode" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="fromStoreCode" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="applicationCode" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="applicationDescription" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="linkedApplicationCode" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="linkedApplicationID" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="productDescription" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="boolean" field="isBlocked" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="refNumber" [showClearButton]="false"></p-columnFilter>
-            </th>
+
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-product>
           <tr>
             <td>{{ product.productCode }}</td>
             <td>{{ product.operationDate }}</td>
-            <td>{{ product.processCode }}</td>
             <td>{{ product.processDescription }}</td>
-            <td>{{ product.transTypeCode }}</td>
             <td>{{ product.transTypeDescription }}</td>
-            <td>{{ product.isReturn }}</td>
-            <td>{{ product.refNumber }}</td>
-            <td>{{ product.documentNumber }}</td>
-            <td>{{ product.currAccTypeCode }}</td>
-            <td>{{ product.currAccTypeDescription }}</td>
-            <td>{{ product.currAccCode }}</td>
-            <td>{{ product.currAccDescription }}</td>
-            <td>{{ product.colorCode }}</td>
-            <td>{{ product.colorDescription }}</td>
-            <td>{{ product.itemDim1Code }}</td>
             <td>{{ product.in_Qty1 }}</td>
             <td>{{ product.out_Qty1 }}</td>
             <td>{{ product.inventoryQty1 }}</td>
-            <td>{{ product.companyCode }}</td>
-            <td>{{ product.officeCode }}</td>
-            <td>{{ product.storeCode }}</td>
             <td>{{ product.warehouseCode }}</td>
             <td>{{ product.warehouseDescription }}</td>
-            <td>{{ product.fromOfficeCode }}</td>
-            <td>{{ product.fromStoreCode }}</td>
-            <td>{{ product.applicationCode }}</td>
-            <td>{{ product.applicationDescription }}</td>
-            <td>{{ product.linkedApplicationCode }}</td>
-            <td>{{ product.linkedApplicationID }}</td>
-            <td>{{ product.productDescription }}</td>
-            <td>{{ product.isBlocked }}</td>
-            <td>{{ product.refNumber }}</td>
+
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
@@ -396,11 +210,11 @@
     </div>
 
     <div class="card" *ngIf="bestSellers.length > 0 && this.raportID == 2">
-      <p-table #dt [value]="bestSellers" dataKey="productCode" [rows]="50" [paginator]="true"
-        [globalFilterFields]="['productCode', 'productDescription']">
+      <p-table #dt (onFilter)="onFilter($event,2)" [value]="bestSellers" dataKey="productCode" [rows]="50"
+        [paginator]="true" [globalFilterFields]="['productCode', 'productDescription']">
         <ng-template pTemplate="caption">
           <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
-            <p-splitButton label="İşlemler" [model]="items" appendTo="body" />
+            <p-splitButton label="İşlemler" [model]="items_2" appendTo="body" />
           </div>
 
         </ng-template>
@@ -583,8 +397,14 @@
       <p-tabView>
         <p-tabPanel header="Satış Raporu">
           <div>
-            <p-table [value]="this.assurSaleReport.saleReports" [paginator]="true" [rows]="10"
-              [globalFilterFields]="['invoice_No', 'customer_Name']">
+            <p-table (onFilter)="onFilter($event,4.1)" [value]="this.assurSaleReport.saleReports" [paginator]="true"
+              [rows]="10" [globalFilterFields]="['invoice_No', 'customer_Name']">
+              <ng-template pTemplate="caption">
+                <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
+                  <p-splitButton label="İşlemler" [model]="items_4_1" appendTo="body" />
+                </div>
+
+              </ng-template>
               <ng-template pTemplate="header">
                 <tr>
                   <th>Fatura No <p-sortIcon field="invoice_No"></p-sortIcon>
@@ -643,8 +463,14 @@
 
         <p-tabPanel header="Stok Raporu">
           <div *ngIf="this.assurSaleReport != null">
-            <p-table [value]="this.assurSaleReport.stockReports" [paginator]="true" [rows]="10"
-              [globalFilterFields]="['stock_Code', 'stock_Name']">
+            <p-table (onFilter)="onFilter($event,4.2)" [value]="this.assurSaleReport.stockReports" [paginator]="true"
+              [rows]="10" [globalFilterFields]="['stock_Code', 'stock_Name']">
+              <ng-template pTemplate="caption">
+                <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
+                  <p-splitButton label="İşlemler" [model]="items_4_2" appendTo="body" />
+                </div>
+
+              </ng-template>
               <ng-template pTemplate="header">
                 <tr>
                   <th>Stok Kodu <p-sortIcon field="stock_Code"></p-sortIcon>
@@ -703,8 +529,14 @@
 
         <p-tabPanel header="Mali Rapor">
           <div *ngIf="this.assurSaleReport != null">
-            <p-table [value]="this.assurSaleReport.financialReports" [paginator]="true" [rows]="10"
-              [globalFilterFields]="['process']">
+            <p-table (onFilter)="onFilter($event,4.3)" [value]="this.assurSaleReport.financialReports" [paginator]="
+              true" [rows]="10" [globalFilterFields]="['process']">
+              <ng-template pTemplate="caption">
+                <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
+                  <p-splitButton label="İşlemler" [model]="items_4_3" appendTo="body" />
+                </div>
+
+              </ng-template>
               <ng-template pTemplate="header">
                 <tr>
                   <th>Süreç <p-sortIcon field="process"></p-sortIcon>
@@ -745,8 +577,14 @@
 
         <p-tabPanel header="Hesap Raporu">
           <div *ngIf="this.assurSaleReport != null">
-            <p-table [value]="this.assurSaleReport.accountReports" [paginator]="true" [rows]="10"
-              [globalFilterFields]="['responsible']">
+            <p-table (onFilter)="onFilter($event,4.4)" [value]="this.assurSaleReport.accountReports" [paginator]="true"
+              [rows]="10" [globalFilterFields]="['responsible']">
+              <ng-template pTemplate="caption">
+                <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
+                  <p-splitButton label="İşlemler" [model]="items_4_4" appendTo="body" />
+                </div>
+
+              </ng-template>
               <ng-template pTemplate="header">
                 <tr>
                   <th>Yetkilisi <p-sortIcon field="responsible"></p-sortIcon>
@@ -781,8 +619,14 @@
 
         <p-tabPanel header="Envanter Raporu">
           <div *ngIf="this.assurSaleReport != null">
-            <p-table [value]="this.assurSaleReport.inventoryReports" [paginator]="true" [rows]="10"
-              [globalFilterFields]="['stock_Code', 'stock_Name']">
+            <p-table [value]="this.assurSaleReport.inventoryReports" (onFilter)="onFilter($event,4.5)"
+              [paginator]="true" [rows]="10" [globalFilterFields]="['stock_Code', 'stock_Name']">
+              <ng-template pTemplate="caption">
+                <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
+                  <p-splitButton label="İşlemler" [model]="items_4_5" appendTo="body" />
+                </div>
+
+              </ng-template>
               <ng-template pTemplate="header">
                 <tr>
                   <th>Stok Kodu <p-sortIcon field="stock_Code"></p-sortIcon>
@@ -858,8 +702,14 @@
           <button class="btn btn-success" style="width: 100%;" (click)="filterDialog2=true">Filtreyi Aç</button>
         </div>
       </div>
-      <p-table [value]="tillReports" [paginator]="true" [rows]="10"
+      <p-table (onFilter)="onFilter($event,5)" [value]="tillReports" [paginator]="true" [rows]="10"
         [globalFilterFields]="['cashCode', 'cashName', 'documentNumber', 'description', 'accountCode', 'tradeTitle']">
+        <ng-template pTemplate="caption">
+          <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
+            <p-splitButton label="İşlemler" [model]="items_5" appendTo="body" />
+          </div>
+
+        </ng-template>
         <ng-template pTemplate="header">
           <tr>
             <th pSortableColumn="cashCode">Kasa Kodu <p-sortIcon field="cashCode"></p-sortIcon>
@@ -966,8 +816,15 @@
         </div>
       </div>
       <!-- Assuming raportID for Bank Report is 6 -->
-      <p-table [value]="bankReports" [paginator]="true" [rows]="10"
+      <p-table (onFilter)="onFilter($event,6)" [value]="bankReports" [paginator]="true" [rows]="10"
         [globalFilterFields]="['cashCode', 'cashName', 'accountType', 'totalDebit', 'totalCredit', 'totalBalance', 'pendingPosPayments', 'availableBalance']">
+
+        <ng-template pTemplate="caption">
+          <div class="p-4 card-body d-flex justify-content-start" style="overflow-x: auto">
+            <p-splitButton label="İşlemler" [model]="items_6" appendTo="body" />
+          </div>
+
+        </ng-template>
         <ng-template pTemplate="header">
           <tr>
             <th pSortableColumn="cashCode">Kasa Kodu <p-sortIcon field="cashCode"></p-sortIcon>

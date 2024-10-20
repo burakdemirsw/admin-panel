@@ -11,6 +11,7 @@ import {
 } from 'src/app/models/model/shelfNameModel';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
+import { CustomerService } from 'src/app/services/admin/customer.service';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { OrderService } from 'src/app/services/admin/order.service';
@@ -45,7 +46,8 @@ export class CreatePurchaseOrderComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private title: Title,
     private sanitizer: DomSanitizer,
-    private headerService: HeaderService
+    private headerService: HeaderService,
+    private customerService: CustomerService
   ) { }
 
 
@@ -133,7 +135,7 @@ export class CreatePurchaseOrderComponent implements OnInit {
 
 
   async getCustomerList(): Promise<void> {
-    this.customerList = await this.warehouseService.getCustomerList('1');
+    this.customerList = await this.customerService.getCustomerList('1');
   }
 
 

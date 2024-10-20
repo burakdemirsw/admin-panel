@@ -1,6 +1,6 @@
 <main id="main" class="main">
   <section class="section">
-    <img [src]="url" alt="" style="object-fit: cover" />
+
     <div class="card">
       <p-table #dt2 [value]="saleOrderModels" [(selection)]="selectedOrders" dataKey="orderNumber" [paginator]="true"
         [rowsPerPageOptions]="[5, 10, 20]" [rows]="50" [tableStyle]="{ 'min-width': '70rem' }"
@@ -20,18 +20,17 @@
         <ng-template pTemplate="header">
           <tr>
             <th>Seç</th>
-
-            <th pSortableColumn="orderDate">
-              Sipariş Tarihi
-              <p-sortIcon field="orderDate"></p-sortIcon>
+            <th pSortableColumn="currAccDescription">
+              Müşteri Adı
+              <p-sortIcon field="currAccDescription"></p-sortIcon>
             </th>
             <th pSortableColumn="orderNumber">
               Sipariş Numarası
               <p-sortIcon field="orderNumber"></p-sortIcon>
             </th>
-            <th pSortableColumn="warehouseCode" style="width: 10%">
+            <th pSortableColumn="warehouseDescription" style="width: 10%">
               Depo
-              <p-sortIcon field="warehouseCode"></p-sortIcon>
+              <p-sortIcon field="warehouseDescription"></p-sortIcon>
             </th>
 
             <th pSortableColumn="invoiceNumber" *ngIf="invoiceStatus==1">
@@ -43,14 +42,10 @@
                 <p-sortIcon field="currAccCode"></p-sortIcon>
               </th> -->
 
-            <th pSortableColumn="currAccDescription">
-              Müşteri Adı
-              <p-sortIcon field="currAccDescription"></p-sortIcon>
-            </th>
-            <th pSortableColumn="currAccCode">
+            <!-- <th pSortableColumn="currAccCode">
               Müşteri Kodu
               <p-sortIcon field="currAccCode"></p-sortIcon>
-            </th>
+            </th> -->
             <!-- <th pSortableColumn="salespersonCode" style="width: 10%">
                 Satıcı Kodu
                 <p-sortIcon field="salespersonCode"></p-sortIcon>
@@ -76,6 +71,10 @@
                 <p-sortIcon field="remainingQty"></p-sortIcon>
               </th> -->
 
+            <th pSortableColumn="orderDate">
+              Tarih
+              <p-sortIcon field="orderDate"></p-sortIcon>
+            </th>
             <th>Kargo</th>
             <th *ngIf="invoiceStatus==1">Fatura</th>
             <th>İşlemler</th>
@@ -85,13 +84,13 @@
               <p-tableHeaderCheckbox />
             </th>
             <th>
-              <p-columnFilter type="date" field="orderDate" display="menu" [showClearButton]="false"></p-columnFilter>
+              <p-columnFilter type="text" field="currAccDescription" [showClearButton]="false"></p-columnFilter>
             </th>
             <th>
               <p-columnFilter type="text" field="orderNumber" [showClearButton]="false"></p-columnFilter>
             </th>
             <th>
-              <p-columnFilter type="text" field="warehouseCode" [showClearButton]="false"></p-columnFilter>
+              <p-columnFilter type="text" field="warehouseDescription" [showClearButton]="false"></p-columnFilter>
             </th>
             <th *ngIf="invoiceStatus==1">
               <p-columnFilter type="text" field="invoiceNumber" [showClearButton]="false"></p-columnFilter>
@@ -103,12 +102,10 @@
                   [showClearButton]="false"
                 ></p-columnFilter>
               </th> -->
-            <th>
-              <p-columnFilter type="text" field="currAccDescription" [showClearButton]="false"></p-columnFilter>
-            </th>
-            <th>
+
+            <!-- <th>
               <p-columnFilter type="text" field="currAccCode" [showClearButton]="false"></p-columnFilter>
-            </th>
+            </th> -->
             <!-- <th>
                 <p-columnFilter
                   type="text"
@@ -139,6 +136,9 @@
                   [showClearButton]="false"
                 ></p-columnFilter>
               </th> -->
+            <th>
+              <p-columnFilter type="date" field="orderDate" display="menu" [showClearButton]="false"></p-columnFilter>
+            </th>
 
             <th>
               <p-columnFilter type="boolean" field="isShipped" [showClearButton]="false"></p-columnFilter>
@@ -156,17 +156,28 @@
             <td>
               <p-tableCheckbox [value]="order" />
             </td>
-            <td>{{ order.orderDate | date : "MM.dd HH:mm" }}</td>
+            <td>{{ order.currAccDescription }}</td>
             <td>{{ order.orderNumber }}</td>
-            <td>{{ order.warehouseCode }}</td>
+            <td>{{ order.warehouseDescription+' ('+order.warehouseCode+')' }}</td>
             <td *ngIf="invoiceStatus==1">{{ order.invoiceNumber }}</td>
 
-            <td>{{ order.currAccDescription }}</td>
-            <td>{{ order.currAccCode }}</td>
+
+            <!-- <td>{{ order.currAccCode }}</td> -->
             <!-- <td>{{ order.salespersonCode }}</td> -->
             <td>{{ order.description }}</td>
             <td>{{ order.qty1 }}</td>
             <td>{{ order.price.toString() | currency : "₺" }}</td>
+            <td>
+              <span *ngIf="calculateDays(order.orderDate) > 0" [ngStyle]="{ 'color': 'red' , 'font-weight':'bold' }">
+                {{ calculateDays(order.orderDate) }} Gün
+                <i class="fa fa-warning" aria-hidden="true"></i>
+              </span>
+              <span *ngIf="calculateDays(order.orderDate) <= 0">
+                {{ order.orderDate | date : "MM.dd HH:mm" }}
+              </span>
+            </td>
+
+
             <!-- <td>{{ order.collectedQty }}</td>
               <td>{{ order.remainingQty }}</td> -->
 

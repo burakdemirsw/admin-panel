@@ -10,6 +10,7 @@ import { GeneralService } from 'src/app/services/admin/general.service';
 import { ProductService } from 'src/app/services/admin/product.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { UserService } from 'src/app/services/admin/user.service';
+import { CustomerService } from 'src/app/services/admin/customer.service';
 
 @Component({
   selector: 'app-customers',
@@ -29,7 +30,8 @@ export class CustomersComponent {
     private activatedRoute: ActivatedRoute,
     private headerService: HeaderService,
     private routerService: Router,
-    private userService: UserService
+    private userService: UserService,
+    private customerService: CustomerService
   ) { }
 
   type: string;
@@ -42,21 +44,21 @@ export class CustomersComponent {
           this.route = params["type"]
           this.type = "1"
           this.headerService.updatePageTitle("Tedarikçi Listesi")
-          this.customers = await this.warehouseService.getCustomerList(this.type);
+          this.customers = await this.customerService.getCustomerList(this.type);
 
         }
         if (params["type"] == "retail") {
           this.route = params["type"]
           this.type = "4"
           this.headerService.updatePageTitle("Perakende Müşteri Listesi")
-          this.customers = await this.warehouseService.getCustomerList(this.type);
+          this.customers = await this.customerService.getCustomerList(this.type);
 
         }
         if (params["type"] == "whosale") {
           this.route = params["type"]
           this.type = "3"
           this.headerService.updatePageTitle("Toptan Müşteri Listesi")
-          this.customers = await this.warehouseService.getCustomerList(this.type);
+          this.customers = await this.customerService.getCustomerList(this.type);
 
         }
       }

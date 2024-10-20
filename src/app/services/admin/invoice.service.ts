@@ -107,7 +107,16 @@ export class InvoiceService {
     }
     return false;
   }
+  async createProposal_New(processCode: string, processId: string) {
+    const response = await this.httpClientService
+      .get_new<boolean>(
+        { controller: 'invoices/create-proposal' },
+        processCode + "/" + processId
+      )
+      .toPromise();
 
+    return response;
+  }
   async createInvoice_New(processCode: string, processId: string) {
     const response = await this.httpClientService
       .get_new<boolean>(

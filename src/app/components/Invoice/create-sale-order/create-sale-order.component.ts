@@ -18,6 +18,8 @@ import { CustomerAddress_VM, GetCustomerAddress_CM } from 'src/app/models/model/
 import { BasketProduct_VM } from 'src/app/models/model/warehouse/transferRequestListModel';
 import { UserService } from '../../../services/admin/user.service';
 import { InvoiceService } from 'src/app/services/admin/invoice.service';
+import { RaportService } from 'src/app/services/admin/raport.service';
+import { CustomerService } from 'src/app/services/admin/customer.service';
 declare var window: any;
 @Component({
   selector: 'app-create-sale-order',
@@ -65,7 +67,9 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private headerService: HeaderService,
     private routerService: Router,
-    private UserService: UserService
+    private UserService: UserService,
+    private raportService: RaportService,
+    private customerService: CustomerService
   ) { }
   async ngOnInit() {
 
@@ -703,7 +707,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
 
   //--------------------------------------------------------------CUSTOMER
   async getCustomerList(request: string): Promise<void> {
-    this.customerList = await this.warehouseService.getCustomerList(request);
+    this.customerList = await this.customerService.getCustomerList(request);
 
     // customerList2'yi Set yapısını kullanarak güncelliyoruz
     const updatedCustomerList = new Set(this.customerList.map(c => ({
@@ -925,7 +929,15 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
   async createProposalReport() {
 
     if (window.confirm("Teklif Gönderilsin mi?")) {
-      var data = await this.productService.createProposalReport(this.invoiceProcess.id);
+      var data = await this.raportService.createProposalReport(this.invoiceProcess.id);
+      this.toasterService.info("Genel Ayarlarınızda Otomatik Mail Parametresi Açık İse Mail Otomatik Gidecektir")
+    }
+  }
+
+
+  async completeProposal() {
+    if (window.confirm("Teklif Gönderilsin mi?")) {
+      var data = await this.invoiceService.createProposal_New(this.processCode, this.invoiceProcess.id);
       this.toasterService.info("Genel Ayarlarınızda Otomatik Mail Parametresi Açık İse Mail Otomatik Gidecektir")
 
       if (this.invoiceProcess.isCompleted == false && this.invoiceProcess.eInvoiceNumber != null) {
@@ -937,9 +949,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
       }
     }
 
-
   }
-
 
   //----------------------------------------------------------- ADRES
   addresses: CustomerAddress_VM[] = []
@@ -952,7 +962,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
 
     var request: GetCustomerAddress_CM = new GetCustomerAddress_CM();
     request.currAccCode = currAccCode;
-    this.addresses = await this.orderService.getCustomerAddress(request)
+    this.addresses = await this.customerService.getCustomerAddress(request)
     if (this.addresses.length > 0) {
       const addressSet = new Set();
       this.addresses.forEach(model => {

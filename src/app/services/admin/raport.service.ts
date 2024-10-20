@@ -1,12 +1,11 @@
-import { Injectable, model } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { ClientUrls } from 'src/app/models/const/ClientUrls';
+import { AssurSaleReport, BankReport, bsQueryMaster, bsQueryMasterVm, bsQueryParams, GetFinalQueryRequest, TillReport } from 'src/app/models/model/raport/bsQueryMaster ';
+import { Raport_BestSeller, Raport_ProductExtract, Raport_ProductInventory } from 'src/app/models/model/raport/raport_CR';
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
-import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { LogFilterModel } from 'src/app/models/model/log/logFilterModel ';
-import { Raport_BestSeller, Raport_ProductExtract, Raport_ProductInventory } from 'src/app/models/model/raport/raport_CR';
-import { AssurSaleReport, BankReport, bsQueryMaster, bsQueryMasterVm, bsQueryParams, GetFinalQueryRequest, TillReport } from 'src/app/models/model/raport/bsQueryMaster ';
-import { ClientUrls } from 'src/app/models/const/ClientUrls';
 
 @Injectable({
   providedIn: 'root'
@@ -140,9 +139,63 @@ export class RaportService {
       return null;
     }
   }
-  async createCollectedProductsOfOrderRaport(request: string): Promise<any> {
+  async createProposalReport(request: string): Promise<any> {
     try {
-      var response = await this.httpClientService.get<any>({ controller: "raports/create-collected-order-products-raports", responseType: 'arraybuffer' }, request).toPromise();
+      var response: any = await this.httpClientService.get<any>({
+        controller: "Raports/create-proposal-report", responseType: 'arraybuffer'
+      }, request.toString()).toPromise();
+      if (response) {
+        this.openPdf(response);
+      } else {
+        this.toasterService.error("Hata Alındı ")
+      }
+      return response;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+
+  async openPdf(response) {
+
+    const file = new Blob([response], { type: 'application/pdf' });
+    const fileURL = URL.createObjectURL(file);
+
+    // Create a temporary link element
+    const downloadLink = document.createElement('a');
+    downloadLink.href = fileURL;
+    downloadLink.download = "Raport-" + Date.now.toString();  // Set the filename for the download
+    document.body.appendChild(downloadLink); // Append to body
+    downloadLink.click();  // Trigger the download
+    document.body.removeChild(downloadLink); // Remove the link after triggering the download
+    URL.revokeObjectURL(fileURL); // Clean up the URL object
+
+
+
+    const _file = new Blob([response], { type: 'application/pdf' });
+    const _fileURL = URL.createObjectURL(_file);
+
+    // Create an iframe element
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';  // Hide the iframe
+    iframe.src = _fileURL;
+
+    // Append the iframe to the body
+    document.body.appendChild(iframe);
+
+    // Wait until the iframe is loaded, then call print
+    iframe.onload = () => {
+      iframe.contentWindow?.print();
+    };
+
+  }
+  async createCollectedProductsOfOrderRaport(request: string, warehouseCode: string): Promise<any> {
+    try {
+      var response = await this.httpClientService.get<any>({
+        controller: "raports/create-collected-order-products-raports",
+        responseType: 'arraybuffer'
+      }, request + "/" + warehouseCode).toPromise();
+      this.openPdf(response);
       return response;
     } catch (error: any) {
       console.log(error.message);

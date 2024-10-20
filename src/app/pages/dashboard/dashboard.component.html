@@ -1,6 +1,6 @@
 <main id="main" class="main">
   <section class="section dashboard">
-    <div *ngIf="this.roleDescription != 'Admin'">
+    <!-- <div *ngIf="this.roleDescription != 'Admin'">
       <div class="container">
         <div class="error-container p-4">
           <h4 class="mb-4">YETKİSİZ ERİŞİM</h4>
@@ -16,222 +16,221 @@
           </p>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <div *ngIf="this.roleDescription === 'Admin'">
-      <div class="row">
-        <div class="col-lg-12">
+    <div class="row">
+      <div class="col-lg-12">
 
-          <div class="row">
-            <div class="col-xxl-4 col-md-6">
-              <div class="card info-card sales-card">
-                <div class="card-body">
-                  <h5 class="card-title">Siparişler <span>| {{day}} Gün</span></h5>
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-cart"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>{{ raportData?.raport_1?.wsOrderCount }} Adet</h6>
-                    </div>
+        <div class="row">
+          <div class="col-xxl-4 col-md-6">
+            <div class="card info-card sales-card">
+              <div class="card-body">
+                <h5 class="card-title">Siparişler <span>| {{day}} Gün</span></h5>
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="bi bi-cart"></i>
                   </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xxl-4 col-md-6">
-              <div class="card info-card sales-card">
-                <div class="card-body">
-                  <h5 class="card-title">Gelirler <span>| {{day}} Gün</span></h5>
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-currency-dollar"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>
-                        {{ !raportData.raport_1.wsOrderRevenue ? "₺0" : (raportData.raport_1.wsOrderRevenue | currency : "₺" : true) }}
-                      </h6>
-                    </div>
+                  <div class="ps-3">
+                    <h6>{{ raportData?.raport_1?.wsOrderCount }} Adet</h6>
                   </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xxl-4 col-xl-12">
-              <div class="card info-card sales-card">
-                <div class="card-body">
-                  <h5 class="card-title">Müşteriler <span>| {{day}} Gün</span></h5>
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-people"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>{{ raportData.raport_1.customerCount }} Adet</h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xxl-4 col-xl-12">
-              <div class="card info-card sales-card">
-                <div class="card-body">
-                  <h5 class="card-title">İletilen Fatura Sayısı <span>| {{day}} Gün</span></h5>
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="fas fa-file-invoice"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>
-                        {{ raportData.raport_1.sendedEInvoicesCount + raportData.raport_1.sendedEArchiveInvoicesCount }}
-                        Adet</h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xxl-4 col-md-6">
-              <div class="card info-card sales-card">
-                <div class="card-body">
-                  <h5 class="card-title">İletilen/İletilmeyen E-Arşiv Faturası <span>| {{day}} Gün</span></h5>
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="fas fa-file-invoice"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>{{ raportData.raport_1.sendedEArchiveInvoicesCount }} /
-                        {{ raportData.raport_1.unSendedEArchiveInvoicesCount }}</h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xxl-4 col-md-6">
-              <div class="card info-card sales-card">
-                <div class="card-body">
-                  <h5 class="card-title">İletilen/İletilemeyen E-Fatura Faturası <span>| {{day}} Gün</span></h5>
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="fas fa-file-invoice"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>{{ raportData.raport_1.sendedEInvoicesCount }} /
-                        {{ raportData.raport_1.unSendedEInvoicesCount }}
-                      </h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-            <div class=" col-md-6">
-              <div class="card info-card sales-card">
-                <div class="card-body">
-                  <h5 class="card-title">Toplanabilir Perakende Siparişler </h5>
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="fas fa-warehouse    "></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>{{ raportData.raport_1.collectableRetailOrdersCount }}
-                      </h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="card info-card sales-card">
-                <div class="card-body">
-                  <h5 class="card-title">Toplanabilir Toptan Siparişler </h5>
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="fas fa-warehouse   "></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>{{ raportData.raport_1.collectableWhosaleOrdersCount }}
-                      </h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="card">
-                <div class="filter">
-                  <a class="icon" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filtrele</h6>
-                    </li>
-                    <li (click)="saleCountRaport()">
-                      <a class="dropdown-item">Satış Adedi</a>
-                    </li>
-                    <li (click)="saleRevenueRaport()">
-                      <a class="dropdown-item">Kazanç</a>
-                    </li>
-                  </ul>
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">Raporlar <span>/ {{day}} Gün</span></h5>
-                  <!-- <div id="reportsChart"></div> -->
-                  <p-chart type="line" [data]="data" [options]="options" height="300px"></p-chart>
-                </div>
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="card top-selling overflow-auto">
-                <div class="card-body pb-0">
-                  <h5 class="card-title">
-                    En Çok Satanlar <span>| {{day}} Gün</span>
-                  </h5>
-                  <p-table [value]="raportData.raport_4" class="table table-striped" [paginator]="true" [rows]="10"
-                    [responsiveLayout]="'scroll'">
-                    <ng-template pTemplate="header">
-                      <tr>
-                        <th>Önizleme</th>
-                        <th pSortableColumn="product">
-                          Ürün
-                          <p-sortIcon field="product"></p-sortIcon>
-                        </th>
-                        <th pSortableColumn="price">
-                          Fiyat
-                          <p-sortIcon field="price"></p-sortIcon>
-                        </th>
-                        <th pSortableColumn="saleCount">
-                          Satıldı
-                          <p-sortIcon field="saleCount"></p-sortIcon>
-                        </th>
-                        <th pSortableColumn="revenue">
-                          Gelir
-                          <p-sortIcon field="revenue"></p-sortIcon>
-                        </th>
-                      </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-product>
-                      <tr>
-                        <td>
-                          <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true" appendTo="body">
-                          </p-image>
-                        </td>
-                        <td>{{ product.product }}</td>
-                        <td>{{ product.price | currency: '₺' : true }}</td>
-                        <td>{{ product.saleCount }}</td>
-                        <td>{{ product.revenue | currency: '₺' : true }}</td>
-                      </tr>
-                    </ng-template>
-                  </p-table>
-
                 </div>
               </div>
             </div>
           </div>
+
+          <div class="col-xxl-4 col-md-6">
+            <div class="card info-card sales-card">
+              <div class="card-body">
+                <h5 class="card-title">Gelirler <span>| {{day}} Gün</span></h5>
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="bi bi-currency-dollar"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6>
+                      {{ !raportData.raport_1.wsOrderRevenue ? "₺0" : (raportData.raport_1.wsOrderRevenue | currency : "₺" : true) }}
+                    </h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xxl-4 col-xl-12">
+            <div class="card info-card sales-card">
+              <div class="card-body">
+                <h5 class="card-title">Müşteriler <span>| {{day}} Gün</span></h5>
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="bi bi-people"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6>{{ raportData.raport_1.customerCount }} Adet</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xxl-4 col-xl-12">
+            <div class="card info-card sales-card">
+              <div class="card-body">
+                <h5 class="card-title">İletilen Fatura Sayısı <span>| {{day}} Gün</span></h5>
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="fas fa-file-invoice"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6>
+                      {{ raportData.raport_1.sendedEInvoicesCount + raportData.raport_1.sendedEArchiveInvoicesCount }}
+                      Adet</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xxl-4 col-md-6">
+            <div class="card info-card sales-card">
+              <div class="card-body">
+                <h5 class="card-title">İletilen/İletilmeyen E-Arşiv Faturası <span>| {{day}} Gün</span></h5>
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="fas fa-file-invoice"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6>{{ raportData.raport_1.sendedEArchiveInvoicesCount }} /
+                      {{ raportData.raport_1.unSendedEArchiveInvoicesCount }}</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xxl-4 col-md-6">
+            <div class="card info-card sales-card">
+              <div class="card-body">
+                <h5 class="card-title">İletilen/İletilemeyen E-Fatura Faturası <span>| {{day}} Gün</span></h5>
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="fas fa-file-invoice"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6>{{ raportData.raport_1.sendedEInvoicesCount }} /
+                      {{ raportData.raport_1.unSendedEInvoicesCount }}
+                    </h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class=" col-md-6">
+            <div class="card info-card sales-card">
+              <div class="card-body">
+                <h5 class="card-title">Toplanabilir Perakende Siparişler </h5>
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="fas fa-warehouse    "></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6>{{ raportData.raport_1.collectableRetailOrdersCount }}
+                    </h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card info-card sales-card">
+              <div class="card-body">
+                <h5 class="card-title">Toplanabilir Toptan Siparişler </h5>
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="fas fa-warehouse   "></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6>{{ raportData.raport_1.collectableWhosaleOrdersCount }}
+                    </h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="card">
+              <div class="filter">
+                <a class="icon" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                  <li class="dropdown-header text-start">
+                    <h6>Filtrele</h6>
+                  </li>
+                  <li (click)="saleCountRaport()">
+                    <a class="dropdown-item">Satış Adedi</a>
+                  </li>
+                  <li (click)="saleRevenueRaport()">
+                    <a class="dropdown-item">Kazanç</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">Raporlar <span>/ {{day}} Gün</span></h5>
+                <!-- <div id="reportsChart"></div> -->
+                <p-chart type="line" [data]="data" [options]="options" height="300px"></p-chart>
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="card top-selling overflow-auto">
+              <div class="card-body pb-0">
+                <h5 class="card-title">
+                  En Çok Satanlar <span>| {{day}} Gün</span>
+                </h5>
+                <p-table [value]="raportData.raport_4" class="table table-striped" [paginator]="true" [rows]="10"
+                  [responsiveLayout]="'scroll'">
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th>Önizleme</th>
+                      <th pSortableColumn="product">
+                        Ürün
+                        <p-sortIcon field="product"></p-sortIcon>
+                      </th>
+                      <th pSortableColumn="price">
+                        Fiyat
+                        <p-sortIcon field="price"></p-sortIcon>
+                      </th>
+                      <th pSortableColumn="saleCount">
+                        Satıldı
+                        <p-sortIcon field="saleCount"></p-sortIcon>
+                      </th>
+                      <th pSortableColumn="revenue">
+                        Gelir
+                        <p-sortIcon field="revenue"></p-sortIcon>
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-product>
+                    <tr>
+                      <td>
+                        <p-image src="{{ product.photoUrl }}" alt="Image" width="50" [preview]="true" appendTo="body">
+                        </p-image>
+                      </td>
+                      <td>{{ product.product }}</td>
+                      <td>{{ product.price | currency: '₺' : true }}</td>
+                      <td>{{ product.saleCount }}</td>
+                      <td>{{ product.revenue | currency: '₺' : true }}</td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+
+              </div>
+            </div>
+          </div>
         </div>
-        <!-- <div class="col-lg-4">
+      </div>
+      <!-- <div class="col-lg-4">
         <div class="card">
           <div class="filter">
             <a class="icon" data-bs-toggle="dropdown"
@@ -417,7 +416,6 @@
           </div>
         </div>
       </div> -->
-      </div>
     </div>
   </section>
 </main>

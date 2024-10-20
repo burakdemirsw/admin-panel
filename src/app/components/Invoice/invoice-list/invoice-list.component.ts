@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Invoice_VM } from 'src/app/models/model/product/countListModel';
+import { UserClientInfoResponse } from 'src/app/models/model/user/userRegister_VM';
 import { GeneralService } from 'src/app/services/admin/general.service';
+import { InvoiceService } from 'src/app/services/admin/invoice.service';
 import { OrderService } from 'src/app/services/admin/order.service';
+import { UserService } from 'src/app/services/admin/user.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { HeaderService } from '../../../services/admin/header.service';
-import { InvoiceService } from 'src/app/services/admin/invoice.service';
-import { UserClientInfoResponse } from 'src/app/models/model/user/userRegister_VM';
-import { UserService } from 'src/app/services/admin/user.service';
+import { RaportService } from 'src/app/services/admin/raport.service';
 
 @Component({
   selector: 'app-invoice-list',
@@ -21,11 +22,10 @@ export class InvoiceListComponent implements OnInit {
     private toasterService: ToasterService,
     private router: Router,
     private invoiceService: InvoiceService,
-    private generalService: GeneralService,
     private formBuilder: FormBuilder,
-    private orderService: OrderService,
     private activatedRoute: ActivatedRoute,
-    private userService: UserService
+    private userService: UserService,
+    private raportService: RaportService
 
   ) { }
   user: UserClientInfoResponse;
@@ -168,12 +168,26 @@ export class InvoiceListComponent implements OnInit {
 
   }
   async deleteInvoice(id: string) {
-    var response = await this.invoiceService.deleteInvoiceProcess(id);
-    if (response) {
-      this.toasterService.success("Silindi");
-      this.getInvoiceList();
+
+    if (window.confirm("İşleme Dair Tüm Kayıtlar Silinecektir. Onaylıyor Musunuz?")) {
+      var response = await this.invoiceService.deleteInvoiceProcess(id);
+      if (response) {
+        this.toasterService.success("Silindi");
+        this.getInvoiceList();
+      } else {
+        this.toasterService.error("Silinemedi");
+      }
     } else {
-      this.toasterService.error("Silinemedi");
+      this.toasterService.info("İşlem Yapılmadı");
+    }
+
+  }
+
+  async createProposalReport(id: string) {
+
+    if (window.confirm("Teklif Gönderilsin mi?")) {
+      var data = await this.raportService.createProposalReport(id);
+      this.toasterService.info("Genel Ayarlarınızda Otomatik Mail Parametresi Açık İse Mail Otomatik Gidecektir")
     }
   }
 

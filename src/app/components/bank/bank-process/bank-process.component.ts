@@ -1,25 +1,23 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
-import { BankLine } from "src/app/models/model/invoice/BankLine";
-import { BankHeader } from "src/app/models/model/invoice/BankHeader";
 import { BankAccount } from "src/app/models/model/invoice/BankAccount";
+import { BankHeader } from "src/app/models/model/invoice/BankHeader";
+import { BankLine } from "src/app/models/model/invoice/BankLine";
 import { NebimResponse } from "src/app/models/model/invoice/CashLine";
 import { bsBankTransTypeDesc, bsCurrAccTypeDesc } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
 import { UserClientInfoResponse } from 'src/app/models/model/user/userRegister_VM';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
+import { BankService } from 'src/app/services/admin/bank.service';
+import { CustomerService } from 'src/app/services/admin/customer.service';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { InfoService } from 'src/app/services/admin/info.service';
-import { OrderService } from 'src/app/services/admin/order.service';
-import { ProductService } from 'src/app/services/admin/product.service';
 import { UserService } from 'src/app/services/admin/user.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
-import { BankService } from 'src/app/services/admin/bank.service';
 
 @Component({
   selector: 'app-bank-process',
@@ -38,7 +36,8 @@ export class BankProcessComponent {
     private routerService: Router,
     private userService: UserService,
     private infoService: InfoService,
-    private bankService: BankService
+    private bankService: BankService,
+    private customerService: CustomerService
   ) { }
 
   officeModels: OfficeModel[] = [];
@@ -309,7 +308,7 @@ export class BankProcessComponent {
   customerList: CustomerModel[] = [];
   customerList2: any[] = [];
   async getCustomerList(request: string): Promise<void> {
-    this.customerList = await this.warehouseService.getCustomerList(request);
+    this.customerList = await this.customerService.getCustomerList(request);
 
     // customerList2'yi Set yapısını kullanarak güncelliyoruz
     const updatedCustomerList = new Set(this.customerList.map(c => ({
@@ -395,7 +394,13 @@ export class BankProcessComponent {
       }
     }
   }
-
+  onCustomerAdded(event: boolean) {
+    if (event) {
+      console.log("Müşteri başarıyla eklendi.");
+      location.reload();
+    }
+  }
+  addCustomerDialog: boolean = false;
   trackChanges(e: any) {
     this.activeIndex = e.index
   }

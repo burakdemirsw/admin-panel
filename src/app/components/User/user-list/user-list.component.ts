@@ -40,10 +40,13 @@ export class UserListComponent implements OnInit {
   }
 
   async deleteUser(userId: number) {
-    const response = await this.userService.deleteUser(userId);
-    if (response) {
-      await this.getUsers();
+    if (window.confirm("Kullanıcı Silinecektir.Emin Misiniz?")) {
+      const response = await this.userService.deleteUser(userId);
+      if (response) {
+        await this.getUsers();
+      }
     }
+
   }
   registerModel: UserList_VM = null;
   visible: boolean = false;

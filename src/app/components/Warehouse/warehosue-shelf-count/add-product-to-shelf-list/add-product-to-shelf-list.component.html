@@ -37,7 +37,10 @@
               Tamamlandı Mı
               <p-sortIcon field="isCompleted"></p-sortIcon>
             </th>
-
+            <th pSortableColumn="isTransferApproved">
+              Onay
+              <p-sortIcon field="isTransferApproved"></p-sortIcon>
+            </th>
             <th pSortableColumn="isReturn">
               İade Mı
               <p-sortIcon field="isReturn"></p-sortIcon>
@@ -67,6 +70,10 @@
             <th>
               <p-columnFilter type="boolean" field="isCompleted" [showClearButton]="true"></p-columnFilter>
             </th>
+
+            <th>
+              <p-columnFilter type="boolean" field="isTransferApproved" [showClearButton]="true"></p-columnFilter>
+            </th>
             <th>
               <p-columnFilter type="boolean" field="isReturn" [showClearButton]="true"></p-columnFilter>
             </th>
@@ -88,6 +95,8 @@
 
             <td>{{ count.createdDate | date:'dd/MM/yyyy' }}</td>
             <td>{{ count.isCompleted ? 'Evet' : 'Hayır' }}</td>
+            <td>{{ count.isTransferApproved ? 'Evet' : 'Hayır' }}</td>
+
             <td>{{ count.isReturn ? 'Evet' : 'Hayır' }}</td>
             <td>{{ count.innerNumber }}</td>
             <td>

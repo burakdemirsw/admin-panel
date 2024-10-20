@@ -35,9 +35,13 @@ export class DebitProcessListComponent implements OnInit {
   }
 
   async deleteProcess(header: DebitHeader_VM) {
-    var response = await this.debitService.deleteDebitHeader(header.id);
-    if (response) {
-      this.loadDebitHeaders();
+
+    if (window.confirm("Hareket Silinecektir Emin Misiniz")) {
+      var response = await this.debitService.deleteDebitHeader(header.id);
+      if (response) {
+        this.loadDebitHeaders();
+      }
     }
+
   }
 }

@@ -41,6 +41,7 @@ export class PagesRegisterComponent implements OnInit {
     this.activatedRoute.params.subscribe(async (params) => {
       if (params['userId']) {
         this.isUpdate = true;
+        this.clientInfo.userId = Number(params['userId']);
         await this.findUser(Number(params['userId']))
       }
     })
@@ -130,13 +131,19 @@ export class PagesRegisterComponent implements OnInit {
       warehouseCode: [null],
       isUseAllOffice: [false]
     });
+
+    this.registerForm
+      .get("phoneNumber")
+      .valueChanges.subscribe(async (value) => {
+        //illeri getir
+        var _value = this.generalService.formatPhoneNumber(value);
+        this.registerForm.get("phoneNumber").setValue(_value);
+
+      });
+
   }
 
   async submitForm() {
-
-
-    //ekleme işlemi yapılcak
-    console.log(this.registerForm.value);
     if (!this.isUpdate) {
       //ekleme işlemi yapılcak
       if (this.registerForm.valid) {
@@ -162,7 +169,6 @@ export class PagesRegisterComponent implements OnInit {
             warehouseCode: this.registerForm.value.warehouseCode,
             isUseAllOffice: this.registerForm.value.isUseAllOffice,
           };
-
           var response = await this.userService.register(model);
           if (response == true) {
             this.generalService.waitAndNavigate("İşlem Başaılı: " + "Kullanıcı Sisteme Eklendi", "user-list")
@@ -190,7 +196,7 @@ export class PagesRegisterComponent implements OnInit {
             email: this.registerForm.value.email,
             phoneNumber: this.registerForm.value.phoneNumber,
             gender: this.registerForm.value.gender,
-            roleDescription: this.registerForm.value.roleDescription.role,
+            roleDescription: 'admin',
             printerName_1: this.registerForm.value.printerName_1,
             printerName_2: this.registerForm.value.printerName_2,
             officeCode: this.registerForm.value.officeCode,
@@ -200,10 +206,8 @@ export class PagesRegisterComponent implements OnInit {
 
           var response = await this.userService.update(model);
           if (response == true) {
-
             this.generalService.waitAndNavigate("İşlem Başaılı: " + "Kullanıcı Güncellendi", "user-list")
           }
-
         } else {
           this.alertifyService.error("Şifreler Uyuşmuyor");
         }

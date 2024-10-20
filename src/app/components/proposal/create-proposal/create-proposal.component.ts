@@ -9,6 +9,7 @@ import { Payment } from 'src/app/models/model/order/nebimOrder';
 import { ProductList_VM } from 'src/app/models/model/product/productList_VM';
 import { ZTMSG_Proposal, ZTMSG_ProposalProduct } from 'src/app/models/model/product/proposalProduct';
 import { FastTransfer_VM } from 'src/app/models/model/warehouse/transferRequestListModel';
+import { CustomerService } from 'src/app/services/admin/customer.service';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { OrderService } from 'src/app/services/admin/order.service';
@@ -59,6 +60,7 @@ export class CreateProposalComponent implements OnInit {
     private productService: ProductService,
     private formBuilder: FormBuilder,
     private orderService: OrderService,
+    private customerService: CustomerService
   ) { }
 
   async ngOnInit() {
@@ -507,7 +509,6 @@ export class CreateProposalComponent implements OnInit {
     this.docCurrencyCodes = uniqueMap(data, 'docCurrencyCode');
   }
 
-
   async getAllCustomers() {
     if (this._selectableCustomers.length > 0) {
       this.findCustomerDialog = true;
@@ -516,7 +517,7 @@ export class CreateProposalComponent implements OnInit {
       _request.currAccCode = null;
       _request.mail = null;
       _request.phone = null;
-      this._selectableCustomers = await this.orderService.getCustomerList_2(_request)
+      this._selectableCustomers = await this.customerService.getCustomerList_2(_request)
       this.mapCustomers(this._selectableCustomers);
       this.findCustomerDialog = true;
     }

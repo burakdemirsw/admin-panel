@@ -3,19 +3,13 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { int } from '@zxing/library/esm/customTypings';
 import { ClientUrls } from 'src/app/models/const/ClientUrls';
-import { InvocieFilterModel } from 'src/app/models/model/filter/invoiceFilterModel';
 import { OrderFilterModel } from 'src/app/models/model/filter/orderFilterModel';
-import { CollectedInvoiceProduct } from "src/app/models/model/invoice/CollectedInvoiceProduct";
 import { CreatePurchaseInvoice } from "src/app/models/model/invoice/CreatePurchaseInvoice.1";
-import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCustomer_VM';
-import { InvoiceProcess } from "src/app/models/model/invoice/InvoiceProcess";
 import { OrderBillingRequestModel } from 'src/app/models/model/invoice/orderBillingRequestModel';
 import { OrderLineDetail } from "src/app/models/model/invoice/OrderLineDetail";
 import { OrderLineDetail_VM } from "src/app/models/model/invoice/OrderLineDetail_VM";
-import { ProductDetail_VM } from "src/app/models/model/invoice/ProductDetail_VM";
 import { ProposalLineDetail } from 'src/app/models/model/invoice/ProposalLineDetail';
 import { ExchangeRate } from 'src/app/models/model/order/exchangeRate';
-import { GetCustomerAddress_CM, GetCustomerList_CM, NebimCustomerDto } from 'src/app/models/model/order/getCustomerList_CM';
 import { GetNebimOrders_RM } from 'src/app/models/model/order/getOrder_RM';
 import { ClientOrder, ClientOrderBasketItem, NebimInvoice, NebimOrder, NebimOrder_2 } from 'src/app/models/model/order/nebimOrder';
 import { OrderStatus } from 'src/app/models/model/order/orderStatus';
@@ -24,11 +18,9 @@ import { SaleOrderModel } from 'src/app/models/model/order/saleOrderModel';
 import { SalesPersonModel } from 'src/app/models/model/order/salesPersonModel';
 import { BarcodeAddModel } from 'src/app/models/model/product/barcodeAddModel';
 import { CountConfirmData } from 'src/app/models/model/product/countConfirmModel';
-import { CountListModel, Invoice_VM } from 'src/app/models/model/product/countListModel';
 import { InventoryItem } from 'src/app/models/model/product/inventoryItemModel';
 import { ProductCountModel } from 'src/app/models/model/shelfNameModel';
 import { ClientCustomer } from '../../components/Customer/customer-list/customer-list.component';
-import { AddCustomerAddress_CM, CreateCustomer_CM } from '../../models/model/order/createCustomer_CM';
 import { HttpClientService } from '../http-client.service';
 import { ToasterService } from '../ui/toaster.service';
 
@@ -457,93 +449,12 @@ export class OrderService {
     }
   }
 
-  async getInvoicesOfCustomer(orderNumber: string): Promise<InvoiceOfCustomer_VM[]> {
-    try {
-      var response = await this.httpClientService.get<InvoiceOfCustomer_VM>({ controller: "order/get-invoices-of-customer" + "/" + orderNumber }).toPromise();
-
-      return response;
-    } catch (error: any) {
-      // console.log(error.message);
-      return null;
-    }
-  }
-
-  async getCustomerList_2(request: GetCustomerList_CM): Promise<any> {
-    try {
-      var response = await this.httpClientService.post<GetCustomerList_CM>({ controller: "order/get-customer-list-2" }, request).toPromise();
-
-      return response;
-    } catch (error: any) {
-      // console.log(error.message);
-      return null;
-    }
-  }
 
 
-  async deleteCustomerCommunication(communicationID: string): Promise<any> {
-    try {
-      var response = await this.httpClientService.get_new<boolean>({ controller: "order/delete-customer-communication" }, communicationID).toPromise();
 
-      return response;
-    } catch (error: any) {
-      // console.log(error.message);
-      return null;
-    }
-  }
 
-  async deleteCustomerAddress(postalAddressID: string): Promise<any> {
-    try {
-      var response = await this.httpClientService.get_new<boolean>({ controller: "order/delete-customer-address" }, postalAddressID).toPromise();
 
-      return response;
-    } catch (error: any) {
-      // console.log(error.message);
-      return null;
-    }
-  }
 
-  async getCustomerDetail(currAccCode: string): Promise<any> {
-    try {
-      var response = await this.httpClientService.get_new<NebimCustomerDto>({ controller: "order/get-customer-detail" }, currAccCode).toPromise();
-
-      return response;
-    } catch (error: any) {
-      // console.log(error.message);
-      return null;
-    }
-  }
-  async getCustomerAddress(request: GetCustomerAddress_CM): Promise<any> {
-    try {
-      var response = await this.httpClientService.post<GetCustomerAddress_CM>({ controller: "order/get-customer-address" }, request).toPromise();
-
-      return response;
-    } catch (error: any) {
-      // console.log(error.message);
-      return null;
-    }
-  }
-
-  async createCustomer(request: CreateCustomer_CM): Promise<any> {
-    try {
-      var response = await this.httpClientService.post<CreateCustomer_CM>({ controller: "order/create-customer" }, request).toPromise();
-
-      return response;
-    } catch (error: any) {
-      // console.log(error.message);
-      return null;
-    }
-  }
-
-  async updateCustomer(request: CreateCustomer_CM): Promise<any> {
-    try {
-      var response = await this.httpClientService.post<CreateCustomer_CM>({ controller: "order/update-customer" }, request).toPromise();
-
-      return response;
-    } catch (error: any) {
-      // console.log(error.message);
-      return null;
-    }
-  }
 
 
   async getClientOrder(id: string): Promise<any> {
@@ -671,17 +582,6 @@ export class OrderService {
       var query = `${orderId}/${lineId}`
 
       var response = await this.httpClientService.get<any>({ controller: "order/delete-client-order-basket-item" }, query).toPromise();
-
-      return response;
-    } catch (error: any) {
-      // console.log(error.message);
-      return null;
-    }
-  }
-
-  async addCustomerAddress(request: AddCustomerAddress_CM): Promise<any> {
-    try {
-      var response = await this.httpClientService.post<any>({ controller: "order/add-customer-address" }, request).toPromise();
 
       return response;
     } catch (error: any) {
