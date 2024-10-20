@@ -22,6 +22,8 @@ import { ToasterService } from '../ui/toaster.service';
 import { GeneralService } from './general.service';
 import { InnerHeader, InnerLine, InnerLine_VM, ZTMSG_CountedProduct } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { CompleteCountOperation_CM } from 'src/app/models/model/warehouse/completeCount_CM';
+import { ClientUrls } from 'src/app/models/const/ClientUrls';
+import { WarehouseItem } from 'src/app/models/model/warehouse/warehouseItem';
 
 @Injectable({
   providedIn: 'root',
@@ -561,7 +563,7 @@ export class WarehouseService {
       .toPromise();
     return response;
   }
-  async getInnerHeaders(innerProcessCodes: string[]): Promise<InnerLine_VM[]> {
+  async getInnerHeaders(innerProcessCodes: string[]): Promise<InnerHeader[]> {
     const response = await this.httpClientService
       .post<InnerLine_VM>({ controller: 'Warehouse/get-inner-headers', }, innerProcessCodes)
       .toPromise();
@@ -641,6 +643,32 @@ export class WarehouseService {
     return response;
   }
   //---------------------------------------------------------------------------
-
-
+  async transferBetweenStoreWarehouses(id: string): Promise<boolean> {
+    try {
+      const data = await this.httpClientService
+        .get<any>({ controller: '/warehouse/transfer-between-store-warehouses-v2/' }, id)
+        .toPromise();
+      if (data) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error: any) {
+      return false;
+    }
+  }
+  async ApproveTransferBetweenStoreWarehouse(id: string): Promise<boolean> {
+    try {
+      const data = await this.httpClientService
+        .get<any>({ controller: '/warehouse/approve-transfer-between-store-warehouse/' }, id)
+        .toPromise();
+      if (data) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error: any) {
+      return false;
+    }
+  }
 }

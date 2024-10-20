@@ -45,7 +45,6 @@ export class InnerLine_VM {
   type: boolean;
   operationNumber: string;
   isCompleted?: boolean
-  isTransferApproved: boolean;
 
 }
 
@@ -66,5 +65,5 @@ export class InnerHeader {
   isShelfBased?: boolean;
   updatedDate?: Date = new Date();
   innerProcessCode: string;
-  isTransferApproved: boolean;
+  isApproved: boolean;
 }

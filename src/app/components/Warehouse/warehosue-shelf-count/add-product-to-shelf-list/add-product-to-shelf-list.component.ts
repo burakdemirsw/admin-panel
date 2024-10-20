@@ -3,9 +3,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { CreateBarcodeFromOrder_RM } from 'src/app/components/Product/create-barcode/models/createBarcode';
+import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { CountListFilterModel } from 'src/app/models/model/filter/countListFilterModel';
 import { UserClientInfoResponse } from 'src/app/models/model/user/userRegister_VM';
-import { InnerLine_VM } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
+import { WarehouseItem } from 'src/app/models/model/warehouse/warehouseItem';
+import { InnerHeader, InnerLine_VM } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { ProductService } from 'src/app/services/admin/product.service';
@@ -296,11 +298,9 @@ export class AddProductToShelfListComponent {
     } catch (error: any) {
       console.log(error.message);
     }
-
   }
 
-  countList: InnerLine_VM[]
-
+  countList: InnerHeader[]
   async getGetCountList(request: string[]): Promise<any> {
     try {
       this.countList = await this.warehouseService.getInnerHeaders(request);
@@ -315,16 +315,14 @@ export class AddProductToShelfListComponent {
       totalProduct: [null, Validators.required],
       startDate: [null, Validators.required],
       endDate: [null, Validators.required]
-
     });
   }
 
   async deleteCountFromId(orderNumber: string) {
-    // Silme işleminden önce kullanıcıya emin olup olmadığını sormak için bir onay penceresi göster
+
     const confirmDelete = window.confirm("Bu transferi silmek istediğinizden emin misiniz?");
 
     if (confirmDelete) {
-      // Kullanıcı onayladıysa silme işlemini gerçekleştir
       const response = await this.warehouseService.deleteCountFromId(orderNumber);
       if (response === true) {
         location.reload();
@@ -363,4 +361,40 @@ export class AddProductToShelfListComponent {
       this.toasterService.error("İşlem Başarısız")
     }
   }
+
+  //---------------------ONAYLAMALAR
+  async transferBetweenStoreWarehouses(innerHeader: InnerHeader) {
+    if (innerHeader.isApproved) {
+      this.toasterService.error("Bu Transfer Onaylanmış")
+      return;
+    } else {
+      if (innerHeader.id != null && innerHeader.id !== '') {
+        const userConfirmed = window.confirm(
+          innerHeader.id +
+          ' numaralı transfer için İşlemi başlatmak istediğinize emin misiniz?'
+        );
+        if (userConfirmed) {
+          try {
+            const data = await this.warehouseService.transferBetweenStoreWarehouses(innerHeader.id);
+            if (data) {
+              this.toasterService.success('İşlem Başarılı');
+              // await this.getInnerHeaderById(this.currentOrderNo)
+            } else {
+              this.toasterService.error('İşlem Başarısız');
+            }
+          } catch (error: any) {
+
+          }
+        } else {
+          this.toasterService.warn('İşlem iptal edildi.');
+        }
+      } else {
+        this.toasterService.warn('Sipariş No Boş Geliyor.');
+      }
+    }
+
+
+  }
+
+
 }

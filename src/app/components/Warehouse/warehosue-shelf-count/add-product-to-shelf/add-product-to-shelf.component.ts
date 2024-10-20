@@ -174,7 +174,6 @@ export class AddProductToShelfComponent {
       await this.getWarehouseAndOffices();
     }
 
-
     if (this.innerProcessCode != "WS" && this.innerProcessCode != "R") {
       if (this.currentOrderNo) {
         await this.getInnerHeaderById(this.currentOrderNo)
@@ -201,7 +200,6 @@ export class AddProductToShelfComponent {
           this._checkForm.get('officeCode').setValue(officeCode);
           this._checkForm.get('warehouseCode').setValue(this.warehouses.find(w => w.code == wscode));
           this._checkForm.get('description').setValue(orderNumber);
-          console.log(this._checkForm.value);
           if (this._checkForm.valid) {
             this.updateInnerHeader(this._checkForm.value)
           } else {
@@ -346,7 +344,7 @@ export class AddProductToShelfComponent {
     request.isReturn = status == true ? null : values.isReturn;
     request.userId = this.userInfo.userId;
     request.innerProcessCode = this.innerProcessCode;
-    request.isTransferApproved = false;
+    request.isApproved = false;
 
     var response = await this.warehouseService.updateInnerHeader(request);
     if (response) {
@@ -392,7 +390,7 @@ export class AddProductToShelfComponent {
     request.userId = this.userInfo.userId;
     request.innerProcessCode = this.innerProcessCode;
     request.isShelfBased = this.isShelfBased;
-    request.isTransferApproved = false;
+    request.isApproved = false;
     var response = await this.warehouseService.addInnerHeader(request);
     if (response) {
       this.toasterService.success("İşlem Başarılı");
@@ -1408,8 +1406,6 @@ export class AddProductToShelfComponent {
   }
   //------------------SAYIM KODLARI (C)
   dialog: boolean = false;
-
-
   async complete_C(isShelfBased: boolean): Promise<boolean> {
     try {
       // İşlem öncesi kullanıcıya onay iletilisi göster
@@ -1446,7 +1442,7 @@ export class AddProductToShelfComponent {
   }
 
   //------------------TRNASFER KODLARI
-  handleTransfer() {
+  async handleTransfer() {
     if (location.href.includes('/WT/') || location.href.includes('/WT-O/')) {
       this.transferBetweenStoreWarehouses(this.currentOrderNo);
     } else if (location.href.includes('/S/')) {
@@ -1504,7 +1500,6 @@ export class AddProductToShelfComponent {
         this.currentOrderNo +
         ' numaralı transfer için İşlemi başlatmak istediğinize emin misiniz?'
       );
-
       if (userConfirmed) {
         try {
 
@@ -1534,7 +1529,6 @@ export class AddProductToShelfComponent {
     }
 
   }
-
   async transferToNebim(currentOrderNo: string) {
     if (currentOrderNo != null && currentOrderNo !== '') {
       const userConfirmed = window.confirm(
@@ -1572,8 +1566,6 @@ export class AddProductToShelfComponent {
     }
 
   }
-
-
   //----------------------------------------------RAFLAR ARASI TRANSFER KODLARI
   async create_st() {
     if (this.currentOrderNo != null && this.currentOrderNo !== '') {

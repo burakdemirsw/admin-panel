@@ -37,9 +37,9 @@
               Tamamlandı Mı
               <p-sortIcon field="isCompleted"></p-sortIcon>
             </th>
-            <th pSortableColumn="isTransferApproved">
+            <th pSortableColumn="isApproved">
               Onay
-              <p-sortIcon field="isTransferApproved"></p-sortIcon>
+              <p-sortIcon field="isApproved"></p-sortIcon>
             </th>
             <th pSortableColumn="isReturn">
               İade Mı
@@ -72,7 +72,7 @@
             </th>
 
             <th>
-              <p-columnFilter type="boolean" field="isTransferApproved" [showClearButton]="true"></p-columnFilter>
+              <p-columnFilter type="boolean" field="isApproved" [showClearButton]="true"></p-columnFilter>
             </th>
             <th>
               <p-columnFilter type="boolean" field="isReturn" [showClearButton]="true"></p-columnFilter>
@@ -94,26 +94,44 @@
             <td>{{ count.toWarehouseCode }}</td>
 
             <td>{{ count.createdDate | date:'dd/MM/yyyy' }}</td>
-            <td>{{ count.isCompleted ? 'Evet' : 'Hayır' }}</td>
-            <td>{{ count.isTransferApproved ? 'Evet' : 'Hayır' }}</td>
+            <td *ngIf=" count.isCompleted "><i class="fa fa-check" aria-hidden="true"></i></td>
+            <td *ngIf=" !count.isCompleted "><i class="fa fa-ban" aria-hidden="true"></i></td>
 
-            <td>{{ count.isReturn ? 'Evet' : 'Hayır' }}</td>
+            <td *ngIf=" count.isApproved "><i class="fa fa-check" aria-hidden="true"></i></td>
+            <td *ngIf=" !count.isApproved "><i class="fa fa-ban" aria-hidden="true"></i></td>
+
+            <td *ngIf=" count.isReturn "><i class="fa fa-check" aria-hidden="true"></i></td>
+            <td *ngIf=" !count.isReturn "><i class="fa fa-ban" aria-hidden="true"></i></td>
             <td>{{ count.innerNumber }}</td>
             <td>
               <div class="btn-group">
-                <button class="btn btn-success"
-                  [routerLink]="['/add-product-to-shelf', count.innerProcessCode, count.isCompleted, count.id]">
-                  <i class="fa fa-bars" aria-hidden="true"></i>
-                </button>
+                <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li>
+                      <button class="dropdown-item"
+                        [routerLink]="['/add-product-to-shelf', count.innerProcessCode, count.isCompleted, count.id]">
+                        <i class="fas fa-sliders-h"></i> Detay
+                      </button>
+                    </li>
+                    <li>
+                      <button class="dropdown-item" (click)="transferBetweenStoreWarehouses(count)">
+                        <i class="fas fa-check"></i> Transferi Onayla
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+
+
+
               </div>
             </td>
           </tr>
         </ng-template>
       </p-table>
-
-
-
-
     </div>
 
   </section>
