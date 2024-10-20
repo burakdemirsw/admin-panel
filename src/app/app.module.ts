@@ -119,6 +119,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { CreateSaleOrderComponent } from './components/Order/create-sale-order/create-sale-order.component';
 
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { ProductCatalogComponent } from './components/Product/product-catalog/product-catalog.component';
 
 @NgModule({
 
@@ -196,7 +197,8 @@ import { FloatLabelModule } from 'primeng/floatlabel';
     CreateProposalComponent,
     ShelfComponent,
     ServiceManagementComponent,
-    PagesInfoComponent
+    PagesInfoComponent,
+    ProductCatalogComponent
   ],
 
   imports: [

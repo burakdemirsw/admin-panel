@@ -127,6 +127,7 @@ var pages_info_component_1 = require("./pages/pages-info/pages-info.component");
 var multiselect_1 = require("primeng/multiselect");
 var create_sale_order_component_1 = require("./components/Order/create-sale-order/create-sale-order.component");
 var floatlabel_1 = require("primeng/floatlabel");
+var product_catalog_component_1 = require("./components/Product/product-catalog/product-catalog.component");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -205,7 +206,8 @@ var AppModule = /** @class */ (function () {
                 create_proposal_component_1.CreateProposalComponent,
                 shelf_component_1.ShelfComponent,
                 service_management_component_1.ServiceManagementComponent,
-                pages_info_component_1.PagesInfoComponent
+                pages_info_component_1.PagesInfoComponent,
+                product_catalog_component_1.ProductCatalogComponent
             ],
             imports: [
                 toolbar_1.ToolbarModule,

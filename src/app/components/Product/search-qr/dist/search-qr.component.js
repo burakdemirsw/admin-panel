@@ -67,6 +67,22 @@ var SearchQrComponent = /** @class */ (function () {
         this.visible = false;
         this._products = [];
         this.groupedProducts = [];
+        //-------------------------------------------
+        this.overlayOptions = {
+            appendTo: 'body',
+            autoZIndex: true,
+            baseZIndex: 1000,
+            styleClass: 'custom-overlay-class' // Custom CSS class
+        };
+        this.brands = [];
+        this.itemCodes = [];
+        this.shelfNos = [];
+        // targetShelfs: any[] = []
+        this.descriptions = [];
+        this.productHierarchyLevel01s = [];
+        this.productHierarchyLevel02s = [];
+        this.productHierarchyLevel03s = [];
+        this.allProducts = [];
     }
     SearchQrComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -232,14 +248,68 @@ var SearchQrComponent = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.getProducts(value.barcode)];
+                    case 0: 
+                    // await this.getProducts(value.barcode);
+                    return [4 /*yield*/, this.getAllProducts()];
                     case 1:
+                        // await this.getProducts(value.barcode);
                         _a.sent();
                         this.toasterService.success(value.barcode);
                         return [2 /*return*/];
                 }
             });
         });
+    };
+    SearchQrComponent.prototype.getAllProducts = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        if (!(this.allProducts.length == 0)) return [3 /*break*/, 2];
+                        _a = this;
+                        return [4 /*yield*/, this.productService.searchProduct5()];
+                    case 1:
+                        _a.allProducts = _b.sent();
+                        this.mapProducts(this.allProducts);
+                        _b.label = 2;
+                    case 2:
+                        this.toasterService.success('Tüm Ürünler Getirildi');
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    SearchQrComponent.prototype.mapProducts = function (data) {
+        var uniqueMap = function (array, key) {
+            var map = new Map();
+            array.forEach(function (item) {
+                if (!map.has(item[key])) {
+                    map.set(item[key], { label: item[key], value: item[key] });
+                }
+            });
+            return Array.from(map.values()).sort(function (a, b) { return a.label.localeCompare(b.label); });
+        };
+        this.shelfNos = uniqueMap(data, 'shelfNo');
+        this.brands = uniqueMap(data, 'brand');
+        this.itemCodes = uniqueMap(data, 'itemCode');
+        // this.targetShelfs = uniqueMap(this.__transferProducts, 'targetShelf');
+        this.descriptions = uniqueMap(data, 'description');
+        this.productHierarchyLevel01s = uniqueMap(data, 'productHierarchyLevel01');
+        this.productHierarchyLevel02s = uniqueMap(data, 'productHierarchyLevel02');
+        this.productHierarchyLevel03s = uniqueMap(data, 'productHierarchyLevel03');
+    };
+    SearchQrComponent.prototype.logFilteredData = function (event) {
+        try {
+            if (event.filteredValue) {
+                var list = event.filteredValue;
+                this.mapProducts(list);
+                this.toasterService.info("Dinamik Search Güncellendi");
+            }
+        }
+        catch (error) {
+            this.toasterService.error(error.message);
+        }
     };
     SearchQrComponent = __decorate([
         core_1.Component({

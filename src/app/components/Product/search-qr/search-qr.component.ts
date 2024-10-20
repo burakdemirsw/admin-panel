@@ -11,6 +11,8 @@ import { HeaderService } from 'src/app/services/admin/header.service';
 import { BarcodeSearch_RM, ProductService } from 'src/app/services/admin/product.service';
 import { HttpClientService } from 'src/app/services/http-client.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { FastTransfer_VM } from '../../../models/model/warehouse/transferRequestListModel';
+import { OverlayOptions } from 'primeng/api';
 declare var window: any;
 @Component({
   selector: 'app-search-qr',
@@ -22,6 +24,7 @@ export class SearchQrComponent implements OnInit {
   qrCodes: QrCode[] = [];
   showImage = false; // add this property
   view = true;
+
   constructor(
     private toasterService: ToasterService,
 
@@ -193,7 +196,68 @@ export class SearchQrComponent implements OnInit {
     }
   }
   async onSubmit(value: any) {
-    await this.getProducts(value.barcode);
+    // await this.getProducts(value.barcode);
+    await this.getAllProducts();
     this.toasterService.success(value.barcode);
+  }
+  //-------------------------------------------
+  overlayOptions: OverlayOptions = {
+    appendTo: 'body',  // Example of setting where the overlay should be appended
+    autoZIndex: true,
+    baseZIndex: 1000,
+    styleClass: 'custom-overlay-class' // Custom CSS class
+  };
+
+  brands: any[] = []
+  itemCodes: any[] = []
+  shelfNos: any[] = []
+  // targetShelfs: any[] = []
+  descriptions: any[] = []
+  productHierarchyLevel01s: any[] = []
+  productHierarchyLevel02s: any[] = []
+  productHierarchyLevel03s: any[] = []
+
+
+  allProducts: FastTransfer_VM[] = [];
+  async getAllProducts() {
+    if (this.allProducts.length == 0) {
+      this.allProducts = await this.productService.searchProduct5();
+      this.mapProducts(this.allProducts);
+    }
+    this.toasterService.success('Tüm Ürünler Getirildi')
+  }
+
+  mapProducts(data: FastTransfer_VM[]) {
+    const uniqueMap = (array, key) => {
+      const map = new Map();
+      array.forEach(item => {
+        if (!map.has(item[key])) {
+          map.set(item[key], { label: item[key], value: item[key] });
+        }
+      });
+      return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label));
+    };
+
+    this.shelfNos = uniqueMap(data, 'shelfNo');
+    this.brands = uniqueMap(data, 'brand');
+    this.itemCodes = uniqueMap(data, 'itemCode');
+    // this.targetShelfs = uniqueMap(this.__transferProducts, 'targetShelf');
+    this.descriptions = uniqueMap(data, 'description');
+    this.productHierarchyLevel01s = uniqueMap(data, 'productHierarchyLevel01');
+    this.productHierarchyLevel02s = uniqueMap(data, 'productHierarchyLevel02');
+    this.productHierarchyLevel03s = uniqueMap(data, 'productHierarchyLevel03');
+  }
+
+  logFilteredData(event: any) {
+
+    try {
+      if (event.filteredValue) {
+        var list: FastTransfer_VM[] = event.filteredValue;
+        this.mapProducts(list)
+        this.toasterService.info("Dinamik Search Güncellendi")
+      }
+    } catch (error) {
+      this.toasterService.error(error.message)
+    }
   }
 }
