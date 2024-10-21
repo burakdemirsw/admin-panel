@@ -5,7 +5,12 @@ import { InfoService } from 'src/app/services/admin/info.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { ProductPriceList_VM } from '../../models/model/company/companyInfo';
 import { HeaderService } from 'src/app/services/admin/header.service';
-import { cdColorDesc, cdCreditCardTypeDesc, cdDeliveryCompanyDesc, cdItemDim1Desc, cdPOSTerminal, cdShipmentMethodDesc } from '../../models/model/nebim/cdShipmentMethodDesc ';
+import { cdShipmentMethodDesc } from "src/app/models/model/nebim/cdShipmentMethodDesc";
+import { cdColorDesc } from "src/app/models/model/nebim/cdColorDesc";
+import { cdPOSTerminal } from "src/app/models/model/nebim/cdPOSTerminal";
+import { cdItemDim1Desc } from "src/app/models/model/nebim/cdItemDim1Desc";
+import { cdDeliveryCompanyDesc } from "src/app/models/model/nebim/cdDeliveryCompanyDesc";
+import { cdCreditCardTypeDesc } from "src/app/models/model/nebim/cdCreditCardTypeDesc";
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 
 @Component({

@@ -2,34 +2,36 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
-import { NebimResponse } from "src/app/models/model/invoice/CashLine";
-import { DebitHeader } from "src/app/models/model/invoice/DebitHeader";
-import { DebitLine } from "src/app/models/model/invoice/DebitLine";
-import { cdDebitReasonDesc } from "src/app/models/model/nebim/cdDebitReasonDesc";
-import { bsCurrAccTypeDesc } from "src/app/models/model/nebim/bsCurrAccTypeDesc";
+import { NebimResponse } from 'src/app/models/model/invoice/CashLine';
+import { cdBankDesc } from 'src/app/models/model/invoice/cdBankDesc';
+import { CreditCardPaymentHeader, CreditCardPaymentLine } from 'src/app/models/model/invoice/CreditCardPaymentHeader';
+
 import { UserClientInfoResponse } from 'src/app/models/model/user/userRegister_VM';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
+import { CreditCardPaymentService } from 'src/app/services/admin/credit-card-payment.service';
 import { CustomerService } from 'src/app/services/admin/customer.service';
-import { DebitService } from 'src/app/services/admin/debit.service';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { InfoService } from 'src/app/services/admin/info.service';
 import { UserService } from 'src/app/services/admin/user.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { CreditCardPaymentType } from '../../models/model/invoice/CreditCardPaymentType';
+import { cdCreditCardTypeDesc } from 'src/app/models/model/nebim/cdCreditCardTypeDesc';
+import { bsCurrAccTypeDesc } from 'src/app/models/model/nebim/bsCurrAccTypeDesc';
 
 @Component({
-  selector: 'app-debit-process',
-  templateUrl: './debit-process.component.html',
-  styleUrl: './debit-process.component.css'
+  selector: 'app-credit-card-payment-process',
+  templateUrl: './credit-card-payment-process.component.html',
+  styleUrl: './credit-card-payment-process.component.css'
 })
-export class DebitProcessComponent {
+export class CreditCardPaymentProcessComponent {
 
   constructor(
     private formBuilder: FormBuilder,
     private toasterService: ToasterService,
-    private debitService: DebitService,
+    private creditCardPaymentService: CreditCardPaymentService,
     private warehouseService: WarehouseService,
     private generalService: GeneralService,
     private activatedRoute: ActivatedRoute,
@@ -48,28 +50,28 @@ export class DebitProcessComponent {
   user: UserClientInfoResponse;
   applicationCode: string;
   currAccTypeCode: number;
-  debitTypeCode: number;
-  debitHeader: DebitHeader;
-  debitLines: DebitLine[] = [];
+  creditCardPaymentTypeCode: number;
+  creditCardPaymentHeader: CreditCardPaymentHeader;
+  creditCardPaymentLines: CreditCardPaymentLine[] = [];
   activeIndex: number = 0;
   id: string;
-  //debit-process/debit/
+  //creditCardPayment-process/creditCardPayment/
   async ngOnInit() {
 
     this.activatedRoute.params.subscribe(async (params) => {
-      if (params["debitTypeCode"] & params["currAccTypeCode"] && params["applicationCode"]) {
-        this.debitTypeCode = params["debitTypeCode"];
-        this.currAccTypeCode = params["currAccTypeCode"];
+      if (params["creditCardPaymentTypeCode"] && params["applicationCode"]) {
+        this.creditCardPaymentTypeCode = params["creditCardPaymentTypeCode"];
+        // this.currAccTypeCode = params["currAccTypeCode"];
         this.applicationCode = params["applicationCode"];
         await this.getAllDatas();
         this.user = this.userService.getUserClientInfoResponse()
-        this.headerService.updatePageTitle("Borç Girişi");
+        this.headerService.updatePageTitle("Kredi Kartı İle Ödeme Al");
       }
 
       if (params['id']) {
         this.id = params['id'];
         await this.getHeader();
-        if (this.debitHeader) {
+        if (this.creditCardPaymentHeader) {
           await this.getLinesOfHeader();
         }
       } else {
@@ -77,7 +79,7 @@ export class DebitProcessComponent {
       }
       if (params["activeIndex"]) {
         this.activeIndex = Number(params["activeIndex"]);
-        if (this.debitHeader.isCompleted == true) {
+        if (this.creditCardPaymentHeader.isCompleted == true) {
           this.activeIndex = 1;
         }
       }
@@ -113,19 +115,20 @@ export class DebitProcessComponent {
   }
 
 
-  // bsDebitTransTypeDescs: bsDebitTransTypeDesc[] = []
   bsCurrAccTypeDescs: bsCurrAccTypeDesc[] = [];
-  cdDebitReasonDescs: cdDebitReasonDesc[] = []
-  // debitAccounts: DebitAccount[] = [];
+  cdBankDescs: cdBankDesc[] = [];
+  creditCardPaymentTypes: CreditCardPaymentType[] = [];
+  creditCardTypeCodes: cdCreditCardTypeDesc[] = [];
   async getAllDatas() {
     this.headerFormGenerator();
     this.lineFormGenerator();
     this.updatelineFormGenerator();
     await this.getWarehouseAndOffices();
-    await this.getCustomerList(this.currAccTypeCode.toString());
-    this.cdDebitReasonDescs = await this.infoService.getDebitReasonDesc();
+    await this.getCustomerList('3');//toptan müşterileri çeker
     this.bsCurrAccTypeDescs = await this.infoService.getCurrAccTypeDesc();
-    // this.debitAccounts = await this.infoService.getDebitAccounts();
+    this.cdBankDescs = await this.infoService.getBankDesc();
+    this.creditCardPaymentTypes = await this.infoService.getCreditCardPaymentType();
+    this.creditCardTypeCodes = await this.infoService.getCreditCardTypes();
   }
 
   headerForm: FormGroup;
@@ -144,58 +147,47 @@ export class DebitProcessComponent {
   displayDialog: boolean = false;;
   lineFormGenerator() {
     this.lineForm = this.formBuilder.group({
-      creditAmount: [null], //number
-      debitAmount: [null],//number
-      dueDate: [null, Validators.required], //date
-      debitReasonCode: [null, Validators.required],
+      creditCardTypeCode: [null, [Validators.required]],
+      currAccAmount: [null, [Validators.required]],
+      issuerBankCode: [null, [Validators.required]],
+      acquirerBankCode: [null, [Validators.required]],
       lineDescription: [null],
+
     });
 
-    // creditAmount değiştiğinde debitAmount'u sıfırla
-    this.lineForm.get('creditAmount')?.valueChanges.subscribe((value) => {
-      if (value) {
-        this.lineForm.get('debitAmount')?.setValue(null); // Sıfırlama
-      }
-    });
-
-    // debitAmount değiştiğinde creditAmount'u sıfırla
-    this.lineForm.get('debitAmount')?.valueChanges.subscribe((value) => {
-      if (value) {
-        this.lineForm.get('creditAmount')?.setValue(null); // Sıfırlama
-      }
+    this.lineForm.get('creditCardTypeCode')?.valueChanges.subscribe(value => {
+      var _value = this.creditCardTypeCodes.find(pt => pt.creditCardTypeCode == value);
+      var _bankValue = this.cdBankDescs.find(b => b.bankCode == _value.bankCode);
+      this.lineForm.get('issuerBankCode').setValue(_bankValue.bankCode);
+      this.lineForm.get('acquirerBankCode').setValue(_bankValue.bankCode);
     });
   }
-  selectedDebitLine: DebitLine;
-  async openUpdateDialog(line: DebitLine) {
-    this.selectedDebitLine = line;
-    this.updateLineForm.get("creditAmount").setValue(line.creditAmount);
-    this.updateLineForm.get("debitAmount").setValue(line.debitAmount);
-    this.updateLineForm.get("dueDate").setValue(line.dueDate);
+  selectedCreditCardPaymentLine: CreditCardPaymentLine;
+  async openUpdateDialog(line: CreditCardPaymentLine) {
+    this.selectedCreditCardPaymentLine = line;
+    this.updateLineForm.get("creditCardTypeCode").setValue(line.creditCardTypeCode);
+    this.updateLineForm.get("currAccAmount").setValue(line.currAccAmount);
+    this.updateLineForm.get("issuerBankCode").setValue(line.issuerBankCode);
+    this.updateLineForm.get("acquirerBankCode").setValue(line.acquirerBankCode);
     this.updateLineForm.get("lineDescription").setValue(line.lineDescription);
-    this.updateLineForm.get("debitReasonCode").setValue(line.debitReasonCode);
     this.displayDialog = true;
   }
 
   async updatelineFormGenerator() {
     this.updateLineForm = this.formBuilder.group({
-      creditAmount: [null],
-      debitAmount: [null],
-      dueDate: [null, Validators.required],
-      debitReasonCode: [null, Validators.required],
+      creditCardTypeCode: [null, [Validators.required]],
+      currAccAmount: [null, [Validators.required]],
+      issuerBankCode: [null, [Validators.required]],
+      acquirerBankCode: [null, [Validators.required]],
       lineDescription: [null],
-    });
-    // creditAmount değiştiğinde debitAmount'u sıfırla
-    this.updateLineForm.get('creditAmount')?.valueChanges.subscribe((value) => {
-      if (value) {
-        this.updateLineForm.get('debitAmount')?.setValue(null); // Sıfırlama
-      }
+
     });
 
-    // debitAmount değiştiğinde creditAmount'u sıfırla
-    this.updateLineForm.get('debitAmount')?.valueChanges.subscribe((value) => {
-      if (value) {
-        this.updateLineForm.get('creditAmount')?.setValue(null); // Sıfırlama
-      }
+    this.updateLineForm.get('creditCardTypeCode')?.valueChanges.subscribe(value => {
+      var _value = this.creditCardTypeCodes.find(pt => pt.creditCardTypeCode == value);
+      var _bankValue = this.cdBankDescs.find(b => b.bankCode == _value.bankCode);
+      this.updateLineForm.get('issuerBankCode').setValue(_bankValue.bankCode);
+      this.updateLineForm.get('acquirerBankCode').setValue(_bankValue.bankCode);
     });
     // // Subscribe to changes on currAccTypeCode
     // this.updateLineForm.get('currAccTypeCode')?.valueChanges.subscribe(async (value) => {
@@ -204,10 +196,10 @@ export class DebitProcessComponent {
   }
 
   setFormValueFromProcess() {
-    this.headerForm.get("officeCode").setValue(this.debitHeader.officeCode);
-    var c = this.customerList2.find(c => c.code == this.debitHeader.currAccCode)
+    this.headerForm.get("officeCode").setValue(this.creditCardPaymentHeader.officeCode);
+    var c = this.customerList2.find(c => c.code == this.creditCardPaymentHeader.currAccCode)
     this.headerForm.get("currAccCode").setValue(c);
-    this.headerForm.get("description").setValue(this.debitHeader.description);
+    this.headerForm.get("description").setValue(this.creditCardPaymentHeader.description);
 
   }
 
@@ -216,10 +208,10 @@ export class DebitProcessComponent {
   }
   async getLinesOfHeader() {
     try {
-      const response = await this.debitService.getDebitLinesByHeaderId(
+      const response = await this.creditCardPaymentService.getCreditCardPaymentLinesByHeaderId(
         this.id
       );
-      this.debitLines = response;
+      this.creditCardPaymentLines = response;
 
       this.calculateTotalQty();
     } catch (error: any) {
@@ -230,7 +222,7 @@ export class DebitProcessComponent {
   calculateTotalQty() {
     // //toplanan ürünler yazısı için
     // let totalQty = 0;
-    // this.debitLines.forEach((item) => {
+    // this.creditCardPaymentLines.forEach((item) => {
     //   totalQty += item.currAccAmount;
     // });
     // this.totalCount = totalQty;
@@ -239,40 +231,40 @@ export class DebitProcessComponent {
 
   async getHeader() {
     if (this.generalService.isGuid(this.id)) {
-      var response = await this.debitService.getDebitHeaderById(this.id);
+      var response = await this.creditCardPaymentService.getCreditCardPaymentHeaderById(this.id);
       if (response != null) {
-        this.debitHeader = response;
+        this.creditCardPaymentHeader = response;
 
         this.setFormValueFromProcess();
       } else {
-        this.routerService.navigate([`/create-debit-process/${this.applicationCode}/${this.currAccTypeCode}/${this.debitTypeCode}/0`]);
+        this.routerService.navigate([`/create-credit-cart-payment-process/${this.applicationCode}/${this.currAccTypeCode}/${this.creditCardPaymentTypeCode}/0`]);
         this.toasterService.error("İşlem Bulunamadı")
       }
     } else {
-      this.routerService.navigate([`/create-debit-process/${this.applicationCode}/${this.currAccTypeCode}/${this.debitTypeCode}/0`]);
+      this.routerService.navigate([`/create-credit-cart-payment-process/${this.applicationCode}/${this.currAccTypeCode}/${this.creditCardPaymentTypeCode}/0`]);
     }
 
   }
   async updateHeader() {
     if (this.headerForm.valid) {
-      if (!this.debitHeader) {
+      if (!this.creditCardPaymentHeader) {
         await this.addHeader();
       }
       var _v = this.headerForm.value;
-      var header: DebitHeader = new DebitHeader();
-      header.id = this.debitHeader.id;
-      header.applicationCode = this.debitHeader.applicationCode;
-      header.debitTypeCode = this.debitHeader.debitTypeCode;
+      var header: CreditCardPaymentHeader = new CreditCardPaymentHeader();
+      header.id = this.creditCardPaymentHeader.id;
+      header.applicationCode = this.creditCardPaymentHeader.applicationCode;
+      header.creditCardPaymentTypeCode = this.creditCardPaymentHeader.creditCardPaymentTypeCode;
       header.officeCode = _v.officeCode;
       header.currAccTypeCode = this.currAccTypeCode;
       header.currAccCode = _v.currAccCode.code;
-      header.storeTypeCode = this.debitHeader.storeTypeCode;
+      header.storeTypeCode = this.creditCardPaymentHeader.storeTypeCode;
       header.description = _v.description;
       header.userId = this.user.userId
 
-      var response = await this.debitService.editDebitHeader(header);
+      var response = await this.creditCardPaymentService.editCreditCardPaymentHeader(header);
       if (response) {
-        this.debitHeader = response;
+        this.creditCardPaymentHeader = response;
         this.responseHandler(true, "Güncellendi")
         this.setFormValueFromProcess();
         return;
@@ -287,9 +279,9 @@ export class DebitProcessComponent {
   async addHeader() {
     if (this.headerForm.valid) {
       var _v = this.headerForm.value;
-      var header: DebitHeader = new DebitHeader();
+      var header: CreditCardPaymentHeader = new CreditCardPaymentHeader();
       header.applicationCode = this.applicationCode;
-      header.debitTypeCode = this.debitTypeCode;
+      header.creditCardPaymentTypeCode = this.creditCardPaymentTypeCode;
 
       header.officeCode = _v.officeCode;
       header.currAccTypeCode = this.currAccTypeCode;
@@ -298,10 +290,10 @@ export class DebitProcessComponent {
       header.description = _v.description;
       header.userId = this.user.userId
 
-      var response = await this.debitService.editDebitHeader(header);
+      var response = await this.creditCardPaymentService.editCreditCardPaymentHeader(header);
       if (response) {
         this.responseHandler(true, "Eklendi");
-        this.routerService.navigate([`/create-debit-process/${this.applicationCode}/${this.currAccTypeCode}/${this.debitTypeCode}/0/${response.id}`]);
+        this.routerService.navigate([`/create-credit-cart-payment-process/${this.applicationCode}/${this.creditCardPaymentTypeCode}/0/${response.id}`]);
         return;
       } else {
         // Handle failure response
@@ -346,17 +338,18 @@ export class DebitProcessComponent {
   async addLine() {
     if (this.lineForm.valid) {
       var _v = this.lineForm.value;
-      var line: DebitLine = new DebitLine();
-      line.debitHeaderId = this.debitHeader.id;
-      line.creditAmount = _v.creditAmount;
-      line.debitAmount = _v.debitAmount;
-      line.dueDate = _v.dueDate;
+      var line: CreditCardPaymentLine = new CreditCardPaymentLine();
+      line.creditCardPaymentHeaderId = this.creditCardPaymentHeader.id;
+      line.currAccAmount = _v.currAccAmount;
+      line.issuerBankCode = _v.issuerBankCode;
+      line.acquirerBankCode = _v.acquirerBankCode;
+      line.creditCardTypeCode = _v.creditCardTypeCode
       line.lineDescription = _v.lineDescription;
-      line.debitReasonCode = _v.debitReasonCode
-      var response = await this.debitService.addDebitLine(line);
+      var response = await this.creditCardPaymentService.addCreditCardPaymentLine(line);
       if (response) {
         await this.getLinesOfHeader();
         this.responseHandler(true, "Eklendi")
+        this.lineForm.reset();
         return;
       } else {
         this.responseHandler(false, "Eklenmedi")
@@ -373,20 +366,21 @@ export class DebitProcessComponent {
   async updateLine() {
     if (this.updateLineForm.valid) {
       var _v = this.updateLineForm.value;
-      var line: DebitLine = new DebitLine();
-      line.id = this.selectedDebitLine.id;
-      line.debitHeaderId = this.debitHeader.id;
-      line.creditAmount = _v.creditAmount;
-      line.debitAmount = _v.debitAmount;
-      line.dueDate = _v.dueDate;
+      var line: CreditCardPaymentLine = new CreditCardPaymentLine();
+      line.id = this.selectedCreditCardPaymentLine.id;
+      line.creditCardPaymentHeaderId = this.creditCardPaymentHeader.id;
+      line.currAccAmount = _v.currAccAmount;
+      line.issuerBankCode = _v.issuerBankCode;
+      line.acquirerBankCode = _v.acquirerBankCode;
+      line.creditCardTypeCode = _v.creditCardTypeCode
       line.lineDescription = _v.lineDescription;
-      line.debitReasonCode = _v.debitReasonCode;
-      var response = await this.debitService.updateDebitLine(line);
+      var response = await this.creditCardPaymentService.updateCreditCardPaymentLine(line);
       if (response) {
         await this.getLinesOfHeader();
         this.responseHandler(true, "Güncellendi")
+        this.updateLineForm.reset();
         this.displayDialog = false;
-        this.selectedDebitLine = null;
+        this.selectedCreditCardPaymentLine = null;
         return;
       } else {
         this.responseHandler(false, "Güncellenmedi")
@@ -398,7 +392,7 @@ export class DebitProcessComponent {
   }
 
   async deleteLine(id: string) {
-    var response = await this.debitService.deleteDebitLine(id);
+    var response = await this.creditCardPaymentService.deleteCreditCardPaymentLine(id);
     if (response) {
       await this.getLinesOfHeader();
       this.responseHandler(true, "Silindi")
@@ -409,19 +403,16 @@ export class DebitProcessComponent {
       return;
     }
   }
-  async completeDebitPayment() {
+  async completeCreditCardPaymentPayment() {
     if (window.confirm("İşlem Tamamlanacakdır. Devam edilsin mi?")) {
-      var response: NebimResponse = await this.debitService.completeDebitPayment(this.debitHeader.id);
+      var response: NebimResponse = await this.creditCardPaymentService.completeCreditCardPayment(this.creditCardPaymentHeader.id);
       if (response) {
         this.responseHandler(true, "Tamamlandı");
-        this.routerService.navigate([`/create-debit-process/${this.applicationCode}/${this.currAccTypeCode}/${this.debitTypeCode}/0/${this.debitHeader.id}`]);
+        this.routerService.navigate([`/create-credit-cart-payment-process/${this.applicationCode}/${this.currAccTypeCode}/${this.creditCardPaymentTypeCode}/0/${this.creditCardPaymentHeader.id}`]);
       }
     }
 
   }
 
-  getDebitReasonDesc(code: string) {
-    return this.cdDebitReasonDescs.find(d => d.debitReasonCode == code).debitReasonDescription
 
-  }
 }

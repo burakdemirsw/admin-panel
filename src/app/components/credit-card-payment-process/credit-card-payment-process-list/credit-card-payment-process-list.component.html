@@ -1,0 +1,168 @@
+<main id="main" class="main">
+  <section class="section">
+
+    <div class="card custom-card mb-3">
+      <div class="card-body d-flex justify-content-start mt-3" style="overflow-x: auto">
+        <button type="button" class="btn btn-primary" routerLink="/create-credit-cart-payment-process/ccpay/3">
+          <i class=" fas fa-check"></i> Kredi Kartı İle Ödeme Al
+        </button>
+        <button type="button" class="btn btn-primary" routerLink="/create-credit-cart-payment-process/ccpay/4/0">
+          <i class=" fas fa-check"></i> Kredi Kartı İle İade Ödeme Al
+        </button>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <p-table [value]="creditCardPaymentHeaders" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
+        [responsiveLayout]="'scroll'">
+
+        <!-- Table Headers with Sorting -->
+        <ng-template pTemplate="header">
+          <tr>
+            <!-- <th pSortableColumn="applicationCode">
+                Uygulama Kodu
+                <p-sortIcon field="applicationCode"></p-sortIcon>
+              </th> -->
+
+            <!-- <th pSortableColumn="currAccTypeCode">
+                Cari Hesap Tipi Kodu
+                <p-sortIcon field="currAccTypeCode"></p-sortIcon>
+              </th>
+              <th pSortableColumn="creditCardPaymentTypeCode">
+                Borç Tipi Kodu
+                <p-sortIcon field="creditCardPaymentTypeCode"></p-sortIcon>
+              </th> -->
+            <th pSortableColumn="currAccDescription">
+              Cari Hesap Açıklaması
+              <p-sortIcon field="currAccDescription"></p-sortIcon>
+            </th>
+            <!-- <th pSortableColumn="currAccCode">
+              Cari Hesap Kodu
+              <p-sortIcon field="currAccCode"></p-sortIcon>
+            </th> -->
+            <!-- <th pSortableColumn="officeCode">
+              Ofis Kodu
+              <p-sortIcon field="officeCode"></p-sortIcon>
+            </th> -->
+
+            <th pSortableColumn="totalCreditAmount">
+              Toplam Kredi Tutarı
+              <p-sortIcon field="totalCreditAmount"></p-sortIcon>
+            </th>
+            <th pSortableColumn="totalCreditCardPaymentAmount">
+              Toplam Borç Tutarı
+              <p-sortIcon field="totalCreditCardPaymentAmount"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="creditCardPaymentNumber">
+              İç Numara
+              <p-sortIcon field="creditCardPaymentNumber"></p-sortIcon>
+            </th>
+            <th pSortableColumn="user">
+              Kullanıcı
+              <p-sortIcon field="user"></p-sortIcon>
+            </th>
+            <th pSortableColumn="createdDate">
+              Oluşturulma Tarihi
+              <p-sortIcon field="createdDate"></p-sortIcon>
+            </th>
+            <th pSortableColumn="isCompleted">
+              Tamamlandı Mı
+              <p-sortIcon field="isCompleted"></p-sortIcon>
+            </th>
+            <th>
+              İşlemler
+            </th>
+          </tr>
+          <tr>
+            <!-- <th>
+                <p-columnFilter type="text" field="applicationCode" [showClearButton]="true"></p-columnFilter>
+              </th> -->
+
+            <!-- <th>
+                <p-columnFilter type="numeric" field="currAccTypeCode" [showClearButton]="true"></p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter type="numeric" field="creditCardPaymentTypeCode" [showClearButton]="true"></p-columnFilter>
+              </th> -->
+            <th>
+              <p-columnFilter type="text" field="currAccDescription" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <!-- <th>
+              <p-columnFilter type="text" field="currAccCode" [showClearButton]="true"></p-columnFilter>
+            </th> -->
+            <!-- <th>
+              <p-columnFilter type="text" field="officeCode" [showClearButton]="true"></p-columnFilter>
+            </th> -->
+
+            <th>
+              <p-columnFilter type="numeric" field="totalCreditAmount" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="totalCreditCardPaymentAmount" [showClearButton]="true">
+              </p-columnFilter>
+            </th>
+
+            <th>
+              <p-columnFilter type="text" field="creditCardPaymentNumber" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="user" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="date" field="createdDate" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="boolean" field="isCompleted" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+
+            </th>
+          </tr>
+        </ng-template>
+
+        <!-- Table Body -->
+        <ng-template pTemplate="body" let-creditCardPaymentHeader>
+          <tr>
+            <!-- <td>{{ creditCardPaymentHeader.applicationCode }}</td> -->
+
+            <!-- <td>{{ creditCardPaymentHeader.currAccTypeCode }}</td>
+              <td>{{ creditCardPaymentHeader.creditCardPaymentTypeCode }}</td> -->
+            <td>{{ creditCardPaymentHeader.currAccDescription }}</td>
+            <!-- <td>{{ creditCardPaymentHeader.currAccCode }}</td> -->
+            <!-- <td>{{ creditCardPaymentHeader.officeCode }}</td> -->
+
+            <td>{{ creditCardPaymentHeader.totalCreditAmount | currency }}</td>
+            <td>{{ creditCardPaymentHeader.totalCreditCardPaymentAmount | currency }}</td>
+            <td>{{ creditCardPaymentHeader.creditCardPaymentNumber }}</td>
+            <td>{{ creditCardPaymentHeader.user }}</td>
+            <td>{{ creditCardPaymentHeader.createdDate | date }}</td>
+            <td>
+              <button class="btn btn-success" *ngIf="creditCardPaymentHeader.isCompleted">
+                <i class="fa fa-check"></i>
+              </button>
+              <button class="btn btn-danger" *ngIf="!creditCardPaymentHeader.isCompleted">
+                <i class="fa fa-ban" aria-hidden="true"></i>
+              </button>
+            </td>
+            <td>
+
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button class="btn btn-primary"
+                  routerLink="/create-creditCardPayment-process/creditCardPayment/1/{{creditCardPaymentHeader.currAccTypeCode}}/1/{{creditCardPaymentHeader.id}}"><i
+                    class="fa fa-pencil" aria-hidden="true"></i></button>
+                <button type="button" class="btn btn-danger" (click)="deleteProcess(creditCardPaymentHeader)">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+  </section>
+</main>

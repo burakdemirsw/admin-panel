@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MenuItem } from 'primeng/api';
 import { BankAccount } from 'src/app/models/model/invoice/BankAccount';
-import { CashAccount } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
+import { CashAccount } from "src/app/models/model/nebim/CashAccount";
 import { Raport_BestSeller, Raport_ProductExtract, Raport_ProductInventory } from 'src/app/models/model/raport/raport_CR';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';

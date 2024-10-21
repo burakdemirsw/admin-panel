@@ -156,6 +156,8 @@ import { BankProcessListComponent } from './components/bank/bank-process/bank-pr
 import { CashProcessListComponent } from './components/cash/cash-process/cash-process-list/cash-process-list.component';
 import { DebitProcessListComponent } from './components/debit/debit-process/debit-process-list/debit-process-list.component';
 import { ConfirmProcessComponent } from './components/Invoice/confirm-process/confirm-process.component';
+import { CreditCardPaymentProcessComponent } from './components/credit-card-payment-process/credit-card-payment-process.component';
+import { CreditCardPaymentProcessListComponent } from './components/credit-card-payment-process/credit-card-payment-process-list/credit-card-payment-process-list.component';
 @NgModule({
 
   declarations: [
@@ -257,7 +259,9 @@ import { ConfirmProcessComponent } from './components/Invoice/confirm-process/co
     BankProcessListComponent,
     CashProcessListComponent,
     DebitProcessListComponent,
-    ConfirmProcessComponent
+    ConfirmProcessComponent,
+    CreditCardPaymentProcessComponent,
+    CreditCardPaymentProcessListComponent
   ],
 
 

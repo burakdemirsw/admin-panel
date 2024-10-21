@@ -85,6 +85,8 @@ import { CashProcessListComponent } from "./components/cash/cash-process/cash-pr
 import { BankProcessListComponent } from "./components/bank/bank-process/bank-process-list/bank-process-list.component";
 import { DebitProcessListComponent } from "./components/debit/debit-process/debit-process-list/debit-process-list.component";
 import { ConfirmProcessComponent } from "./components/Invoice/confirm-process/confirm-process.component";
+import { CreditCardPaymentProcessComponent } from "./components/credit-card-payment-process/credit-card-payment-process.component";
+import { CreditCardPaymentProcessListComponent } from './components/credit-card-payment-process/credit-card-payment-process-list/credit-card-payment-process-list.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -288,10 +290,33 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: "create-bank-process/:applicationCode/:bankTransTypeCode/:activeIndex/:id",
-    component: BankProcessComponent,
+    path: "credit-cart-payment-process-list",
+    component: CreditCardPaymentProcessListComponent,
     canActivate: [AuthGuard],
   },
+  {
+    path: "create-credit-cart-payment-process/:applicationCode/:creditCardPaymentTypeCode",
+    component: CreditCardPaymentProcessComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "create-create-credit-cart-payment-process/:applicationCode/:creditCardPaymentTypeCode",
+    component: CreditCardPaymentProcessComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "create-credit-cart-payment-process/:applicationCode/:creditCardPaymentTypeCode/:activeIndex",
+    component: CreditCardPaymentProcessComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "create-credit-cart-payment-process/:applicationCode/:creditCardPaymentTypeCode/:activeIndex/:id",
+    component: CreditCardPaymentProcessComponent,
+    canActivate: [AuthGuard],
+  },
+
+
+
   {
     path: "create-debit-process/:applicationCode/:debitTypeCode/:currAccTypeCode",
     component: DebitProcessComponent,

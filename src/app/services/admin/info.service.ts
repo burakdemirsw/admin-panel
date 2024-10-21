@@ -9,10 +9,23 @@ import {
   InvoiceIntegratorInfo,
   NebimInvoiceInfo
 } from 'src/app/models/model/company/companyInfo';
-import { bsBankTransTypeDesc, bsCashTransTypeDesc, bsCurrAccTypeDesc, CashAccount, cdColorDesc, cdCreditCardTypeDesc, cdCurrencyDesc, cdDebitReasonDesc, cdDeliveryCompanyDesc, cdItemDim1Desc, cdPOSTerminal, cdShipmentMethodDesc } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
+import { cdShipmentMethodDesc } from "src/app/models/model/nebim/cdShipmentMethodDesc";
+import { cdColorDesc } from "src/app/models/model/nebim/cdColorDesc";
+import { cdDebitReasonDesc } from "src/app/models/model/nebim/cdDebitReasonDesc";
+import { bsBankTransTypeDesc } from "src/app/models/model/nebim/bsBankTransTypeDesc";
+import { bsCashTransTypeDesc } from "src/app/models/model/nebim/bsCashTransTypeDesc";
+import { bsCurrAccTypeDesc } from "src/app/models/model/nebim/bsCurrAccTypeDesc";
+import { CashAccount } from "src/app/models/model/nebim/CashAccount";
+import { cdCurrencyDesc } from "src/app/models/model/nebim/cdCurrencyDesc";
+import { cdPOSTerminal } from "src/app/models/model/nebim/cdPOSTerminal";
+import { cdItemDim1Desc } from "src/app/models/model/nebim/cdItemDim1Desc";
+import { cdDeliveryCompanyDesc } from "src/app/models/model/nebim/cdDeliveryCompanyDesc";
+import { cdCreditCardTypeDesc } from "src/app/models/model/nebim/cdCreditCardTypeDesc";
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { BankAccount } from "src/app/models/model/invoice/BankAccount";
 import { cdPaymentDesc } from 'src/app/models/model/invoice/cdPaymentDesc';
+import { cdBankDesc } from 'src/app/models/model/invoice/cdBankDesc';
+import { CreditCardPaymentType } from 'src/app/models/model/invoice/CreditCardPaymentType';
 
 @Injectable({
   providedIn: 'root'
@@ -423,6 +436,16 @@ export class InfoService {
 
   async getPaymentDesc(): Promise<cdPaymentDesc[]> {
     const response = await this.httpClientService.get<cdPaymentDesc>({ controller: 'Infos/get-payment-types' }).toPromise();
+    return response;
+  }
+
+  async getBankDesc(): Promise<cdBankDesc[]> {
+    const response = await this.httpClientService.get<cdBankDesc>({ controller: 'Infos/get-bank-desc' }).toPromise();
+    return response;
+  }
+
+  async getCreditCardPaymentType(): Promise<CreditCardPaymentType[]> {
+    const response = await this.httpClientService.get<CreditCardPaymentType>({ controller: 'Infos/get-credit-card-payment-types' }).toPromise();
     return response;
   }
   async getWarehouseAndOffices(): Promise<WarehouseOfficeModel[]> {

@@ -12,7 +12,7 @@ import { CashService } from 'src/app/services/admin/cash.service';
   styleUrls: ['./cash-process-list.component.css']
 })
 export class CashProcessListComponent implements OnInit {
-  cashHeaders: CashHeader_VM[] = []; // CashHeaderVm tipinde bir dizi
+  cashHeaders: CashHeader_VM[] = []; // CashHeaderVm tipinde bir diziadasdsa
 
   constructor(
     private formBuilder: FormBuilder,

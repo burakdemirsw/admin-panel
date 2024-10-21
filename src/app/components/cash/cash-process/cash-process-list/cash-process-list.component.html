@@ -109,7 +109,7 @@
           <tr>
             <!-- <td>{{ cashHeader.applicationCode }}</td> -->
             <td>{{ cashHeader.currAccDescription }}</td>
-            <!-- <td>{{ cashHeader.cashCurrAccTypeCode }}</td>
+            <!-- <td>{{ cashHeader.cashCurrAccTypeCode }}</td>asdas
             <td>{{ cashHeader.cashCurrAccCode }}</td> -->
             <!-- <td>{{ cashHeader.officeCode }}</td> -->
             <td>{{ cashHeader.total | currency }}</td>
@@ -128,7 +128,7 @@
 
               <div class="btn-group" role="group" aria-label="Basic example">
                 <button class="btn btn-primary"
-                  routerLink="/create-bank-process/{{cashHeader.applicationCode}}/{{cashHeader.bankTransTypeCode}}/1/{{cashHeader.id}}"><i
+                  routerLink="/create-cash-process/{{cashHeader.applicationCode}}/{{cashHeader.cashTransTypeCode}}/{{1}}/{{cashHeader.id}}"><i
                     class="fa fa-pencil" aria-hidden="true"></i></button>
                 <button type="button" class="btn btn-danger" (click)="deleteProcess(cashHeader)"><i class="fa fa-trash"
                     aria-hidden="true"></i></button>

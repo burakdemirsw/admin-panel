@@ -1,0 +1,373 @@
+<main id="main" class="main">
+  <section class="section">
+    <div class="card border-0 shadow-lg text-center mt-4 p-2" *ngIf="this.creditCardPaymentHeader?.isCompleted ==true">
+      <div class="card-body">
+        <div class="d-flex justify-content-center align-items-center mb-3 p-2">
+          <i class="fas fa-exclamation-circle fa-3x text-danger"></i>
+        </div>
+        <h5 class="card-title text-uppercase font-weight-bold">Önemli</h5>
+        <p class="card-text text-muted">Bu İşlem Tamamlanmıştır.
+          Değişiklik Yapılamaz.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <p-tabView [activeIndex]="activeIndex" (onChange)="trackChanges($event)">
+          <p-tabPanel header="Başlık">
+
+            <form [formGroup]="headerForm">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="officeCode">Ofis</label>
+                    <select id="officeCode" class="form-control" formControlName="officeCode">
+                      <option value="" selected>Seçin</option>
+                      <option *ngFor="let g of warehouseModels" [value]="g.officeCode">
+                        {{ g.officeCode }}
+                      </option>
+                    </select>
+                    <div *ngIf="headerForm.get('officeCode')?.touched && headerForm.get('officeCode')?.invalid"
+                      class="text-danger">
+                      Ofis alanı zorunludur.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="currAccCode">Müşteri</label>
+                    <p-dropdown placeholder="Müşteri" formControlName="currAccCode" [options]="customerList2"
+                      virtualScroll="true" virtualScrollItemSize="50" optionLabel="name" [filter]="true">
+                    </p-dropdown>
+
+                    <div *ngIf="lineForm.get('currAccCode')?.touched &&
+                              lineForm.get('currAccCode')?.invalid" class="text-danger">
+                      Müşteri alanı zorunludur.
+                    </div>
+                  </div>
+                </div>
+
+
+
+                <div class="row mb-3">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="description">Açıklama</label>
+                      <input type="text" id="description" class="form-control" formControlName="description">
+                      <div *ngIf="headerForm.get('description')?.touched && headerForm.get('description')?.invalid"
+                        class="text-danger">
+                        Açıklama alanı zorunludur.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <button type="button" class="btn btn-primary" (click)="updateHeader()"
+                      [disabled]="!this.headerForm.valid || this.creditCardPaymentHeader?.isCompleted ==true"
+                      style="width: 100%;">Kaydet</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+          </p-tabPanel>
+          <p-tabPanel header="Satırlar" *ngIf="this.creditCardPaymentLines?.length>=0">
+            <form [formGroup]="lineForm" class="mb-3">
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="creditCardTypeCode">Kredi Kartı Tipi</label>
+                    <select id="creditCardTypeCode" class="form-control" formControlName="creditCardTypeCode">
+                      <option value="" selected>Seçin</option>
+                      <option *ngFor="let g of creditCardTypeCodes" [value]="g.creditCardTypeCode">
+                        {{ g.creditCardTypeDescription }}
+                      </option>
+                    </select>
+                    <div *ngIf="headerForm.get('creditCardTypeCode')?.touched &&
+                        headerForm.get('creditCardTypeCode')?.invalid" class="text-danger">
+                      Kredi Kartı Tipi alanı zorunludur.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="acquirerBankCode">İşlem Sahibi Sahibi Banka</label>
+                    <select id="acquirerBankCode" class="form-control" formControlName="acquirerBankCode">
+                      <option value="" selected>Seçin</option>
+                      <option *ngFor="let g of cdBankDescs" [value]="g.bankCode">
+                        {{ g.bankDescription }}
+                      </option>
+                    </select>
+                    <div *ngIf="headerForm.get('acquirerBankCode')?.touched &&
+                        headerForm.get('acquirerBankCode')?.invalid" class="text-danger">
+                      İşlem Sahibi Sahibi Banka alanı zorunludur.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="issuerBankCode">Kart Sahibi Banka</label>
+                    <select id="issuerBankCode" class="form-control" formControlName="issuerBankCode">
+                      <option value="" selected>Seçin</option>
+                      <option *ngFor="let g of cdBankDescs" [value]="g.bankCode">
+                        {{ g.bankDescription }}
+                      </option>
+                    </select>
+                    <div *ngIf="headerForm.get('issuerBankCode')?.touched &&
+                        headerForm.get('issuerBankCode')?.invalid" class="text-danger">
+                      İşlem Sahibi Sahibi Banka alanı zorunludur.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="currAccAmount">Tutar</label>
+                    <input type="text" id="currAccAmount" class="form-control" formControlName="currAccAmount"
+                      placeholder="Açıklama">
+                    <div *ngIf="lineForm.get('currAccAmount')?.touched && lineForm.get('currAccAmount')?.invalid"
+                      class="text-danger">
+                      Tutar alanı zorunludur.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="lineDescription">Açıklama</label>
+                    <input type="text" id="lineDescription" class="form-control" formControlName="lineDescription"
+                      placeholder="Açıklama">
+                    <div *ngIf="lineForm.get('lineDescription')?.touched && lineForm.get('lineDescription')?.invalid"
+                      class="text-danger">
+                      Açıklama alanı zorunludur.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <button type="button" class="btn btn-primary" (click)="addLine()" style="width: 100%;"
+                    [disabled]="!lineForm.valid">Ekle</button>
+                </div>
+                <div class="col-md-6">
+                  <button type="button" class="btn btn-primary" (click)="completeCreditCardPaymentPayment()"
+                    [disabled]="this.creditCardPaymentHeader?.isCompleted" style="width: 100%;">
+                    Tamamla</button>
+                </div>
+              </div>
+            </form>
+
+            <p-dialog header="Satır güncelle" [(visible)]="displayDialog" [modal]="true" [responsive]="true">
+              <form [formGroup]="updateLineForm" class="mb-3">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="creditCardTypeCode">Kredi Kartı Tipi</label>
+                      <select id="creditCardTypeCode" class="form-control" formControlName="creditCardTypeCode">
+                        <option value="" selected>Seçin</option>
+                        <option *ngFor="let g of creditCardTypeCodes" [value]="g.creditCardTypeCode">
+                          {{ g.creditCardTypeDescription }}
+                        </option>
+                      </select>
+                      <div *ngIf="headerForm.get('creditCardTypeCode')?.touched &&
+                        headerForm.get('creditCardTypeCode')?.invalid" class="text-danger">
+                        Kredi Kartı Tipi alanı zorunludur.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="acquirerBankCode">İşlem Sahibi Sahibi Banka</label>
+                      <select id="acquirerBankCode" class="form-control" formControlName="acquirerBankCode">
+                        <option value="" selected>Seçin</option>
+                        <option *ngFor="let g of cdBankDescs" [value]="g.bankCode">
+                          {{ g.bankDescription }}
+                        </option>
+                      </select>
+                      <div *ngIf="headerForm.get('acquirerBankCode')?.touched &&
+                        headerForm.get('acquirerBankCode')?.invalid" class="text-danger">
+                        İşlem Sahibi Sahibi Banka alanı zorunludur.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="issuerBankCode">Kart Sahibi Banka</label>
+                      <select id="issuerBankCode" class="form-control" formControlName="issuerBankCode">
+                        <option value="" selected>Seçin</option>
+                        <option *ngFor="let g of cdBankDescs" [value]="g.bankCode">
+                          {{ g.bankDescription }}
+                        </option>
+                      </select>
+                      <div *ngIf="headerForm.get('issuerBankCode')?.touched &&
+                        headerForm.get('issuerBankCode')?.invalid" class="text-danger">
+                        İşlem Sahibi Sahibi Banka alanı zorunludur.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="currAccAmount">Tutar</label>
+                      <input type="text" id="currAccAmount" class="form-control" formControlName="currAccAmount"
+                        placeholder="Açıklama">
+                      <div *ngIf="lineForm.get('currAccAmount')?.touched && lineForm.get('currAccAmount')?.invalid"
+                        class="text-danger">
+                        Tutar alanı zorunludur.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="lineDescription">Açıklama</label>
+                      <input type="text" id="lineDescription" class="form-control" formControlName="lineDescription"
+                        placeholder="Açıklama">
+                      <div *ngIf="lineForm.get('lineDescription')?.touched && lineForm.get('lineDescription')?.invalid"
+                        class="text-danger">
+                        Açıklama alanı zorunludur.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <button type="button" class="btn btn-primary" (click)="updateLine()"
+                      [disabled]="!updateLineForm.valid" style="width: 100%;">Güncelle</button>
+                  </div>
+                  <div class="col-md-6">
+                    <button type="button" class="btn btn-danger" (click)="this.displayDialog=false"
+                      style="width: 100%;">Kapat</button>
+                  </div>
+                </div>
+              </form>
+
+            </p-dialog>
+            <div>
+
+
+            </div>
+
+          </p-tabPanel>
+
+        </p-tabView>
+      </div>
+    </div>
+
+    <div class="card mt-3" *ngIf="this.activeIndex==1">
+      <p-table [value]="creditCardPaymentLines" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
+        [responsiveLayout]="'scroll'">
+
+        <!-- Table Headers with Sorting -->
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="lineDescription">
+              Satır Açıklaması
+              <p-sortIcon field="lineDescription"></p-sortIcon>
+            </th>
+            <!-- <th pSortableColumn="docCurrencyCode">
+              Döviz Kodu
+              <p-sortIcon field="docCurrencyCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="currAccCurrencyCode">
+              Cari Döviz Kodu
+              <p-sortIcon field="currAccCurrencyCode"></p-sortIcon>
+            </th> -->
+            <th pSortableColumn="acquirerBankCode">
+              Edinimci Banka Kodu
+              <p-sortIcon field="acquirerBankCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="issuerBankCode">
+              İhraç Eden Banka Kodu
+              <p-sortIcon field="issuerBankCode"></p-sortIcon>
+            </th>
+            <th pSortableColumn="currAccAmount">
+              Cari Tutar
+              <p-sortIcon field="currAccAmount"></p-sortIcon>
+            </th>
+            <th pSortableColumn="creditCardTypeCode">
+              Kredi Kartı Türü
+              <p-sortIcon field="creditCardTypeCode"></p-sortIcon>
+            </th>
+            <th>
+              İşlemler
+            </th>
+          </tr>
+          <tr>
+            <th>
+              <p-columnFilter type="text" field="lineDescription" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <!-- <th>
+              <p-columnFilter type="text" field="docCurrencyCode" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="currAccCurrencyCode" [showClearButton]="true"></p-columnFilter>
+            </th> -->
+            <th>
+              <p-columnFilter type="text" field="acquirerBankCode" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="issuerBankCode" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="numeric" field="currAccAmount" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="creditCardTypeCode" [showClearButton]="true"></p-columnFilter>
+            </th>
+            <th>
+              <!-- Boş bırakıldı, eklemek istediğiniz bir filtre varsa buraya ekleyebilirsiniz -->
+            </th>
+          </tr>
+        </ng-template>
+
+        <!-- Table Body -->
+        <ng-template pTemplate="body" let-creditCardPaymentLine>
+          <tr>
+            <td>{{ creditCardPaymentLine.lineDescription }}</td>
+            <!-- <td>{{ creditCardPaymentLine.docCurrencyCode }}</td>
+            <td>{{ creditCardPaymentLine.currAccCurrencyCode }}</td> -->
+            <td>{{ creditCardPaymentLine.acquirerBankCode }}</td>
+            <td>{{ creditCardPaymentLine.issuerBankCode }}</td>
+            <td>{{ creditCardPaymentLine.currAccAmount | currency }}</td>
+            <td>{{ creditCardPaymentLine.creditCardTypeCode }}</td>
+            <td>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-primary" (click)="openUpdateDialog(creditCardPaymentLine)"
+                  [disabled]="this.creditCardPaymentHeader?.isCompleted == true">
+                  <i class="fa fa-pencil" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn btn-danger" (click)="deleteLine(creditCardPaymentLine.id)"
+                  [disabled]="this.creditCardPaymentHeader?.isCompleted == true">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+    </div>
+
+  </section>
+</main>

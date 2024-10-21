@@ -4,7 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
 import { CashHeader } from "src/app/models/model/invoice/CashHeader";
 import { CashLine, NebimResponse } from "src/app/models/model/invoice/CashLine";
-import { bsCashTransTypeDesc, bsCurrAccTypeDesc, CashAccount } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
+import { bsCashTransTypeDesc } from "src/app/models/model/nebim/bsCashTransTypeDesc";
+import { bsCurrAccTypeDesc } from "src/app/models/model/nebim/bsCurrAccTypeDesc";
+import { CashAccount } from "src/app/models/model/nebim/CashAccount";
 import { UserClientInfoResponse } from 'src/app/models/model/user/userRegister_VM';
 import { OfficeModel } from 'src/app/models/model/warehouse/officeModel';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
@@ -62,6 +64,7 @@ export class CashProcessComponent implements OnInit {
       if (params["cashTransTypeCode"] && params["applicationCode"]) {
 
         this.cashTransTypeCode = params["cashTransTypeCode"];
+        this.headerForm.get("cashTransTypeCode").setValue(this.cashTransTypeCode);
         this.applicationCode = params["applicationCode"];
       }
 

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ProcessDefinitionConstants } from "src/app/models/const/processDefinitionConstants";
-import { cdCurrencyDesc } from "src/app/models/model/nebim/cdShipmentMethodDesc ";
+import { cdCurrencyDesc } from "src/app/models/model/nebim/cdCurrencyDesc";
 import { DirectRequest } from "src/app/models/model/nebim/directRequest";
 import {
   Address,
