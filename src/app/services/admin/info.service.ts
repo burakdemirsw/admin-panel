@@ -12,6 +12,7 @@ import {
 import { bsBankTransTypeDesc, bsCashTransTypeDesc, bsCurrAccTypeDesc, CashAccount, cdColorDesc, cdCreditCardTypeDesc, cdCurrencyDesc, cdDebitReasonDesc, cdDeliveryCompanyDesc, cdItemDim1Desc, cdPOSTerminal, cdShipmentMethodDesc } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 import { BankAccount } from "src/app/models/model/invoice/BankAccount";
+import { cdPaymentDesc } from 'src/app/models/model/invoice/cdPaymentDesc';
 
 @Injectable({
   providedIn: 'root'
@@ -417,6 +418,11 @@ export class InfoService {
   }
   async getBankAccounts(): Promise<BankAccount[]> {
     const response = await this.httpClientService.get<BankAccount>({ controller: 'Infos/get-bank-accounts' }).toPromise();
+    return response;
+  }
+
+  async getPaymentDesc(): Promise<cdPaymentDesc[]> {
+    const response = await this.httpClientService.get<cdPaymentDesc>({ controller: 'Infos/get-payment-types' }).toPromise();
     return response;
   }
   async getWarehouseAndOffices(): Promise<WarehouseOfficeModel[]> {

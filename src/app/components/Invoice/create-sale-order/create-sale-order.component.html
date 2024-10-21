@@ -1149,6 +1149,236 @@
       </div>
     </div>
 
+    <div class="card">
+      <div class="card-body p-4">
+        <div class="mb-3">
+          <h5 class="text-center">Ödeme Bilgileri</h5>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>İşlem Id</th>
+                <th>Ödeme Tipi</th>
+                <th>Ödeme Tutarı</th>
+                <th>Vade Tarihi</th>
+                <th>Açıklama</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let payment of paymentsOfProcess">
+                <td>{{ payment.id }}</td>
+                <td>{{ payment.processId }}</td>
+                <td>{{ payment.paymentType }}</td>
+                <td>{{ payment.payment | currency }}</td>
+                <td>{{ payment.dueDate | date: 'shortDate' }}</td>
+                <td>{{ payment.lineDescription }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <p-tabView>
+              <p-tabPanel header="Nakit Ödeme">
+                <form [formGroup]="cashPaymentForm">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="cashAccountCode">Nakit Kasa Hesap Kodu</label>
+                        <select id="cashAccountCode" class="form-control" formControlName="cashAccountCode">
+                          <option value="" selected>Seçin</option>
+                          <option *ngFor="let g of cashAccounts" [value]="g.cashAccountCode">
+                            {{ g.cashAccountDescription }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="docCurrencyCode">Para Birimi</label>
+                        <select id="docCurrencyCode" class="form-control" formControlName="docCurrencyCode">
+                          <option value="" selected>Seçin</option>
+                          <option *ngFor="let g of currencyCodes" [value]="g.currencyCode">
+                            {{ g.currencyDescription }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="lineDescription">Satır Açıklaması</label>
+                        <textarea pInputText class="form-control" id="lineDescription" rows="5"
+                          placeholder="Satır Açıklaması" formControlName="lineDescription" maxlength="200"></textarea>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                      <div class="form-group">
+                        <label for="payment">Ödeme</label>
+                        <input pInputText class="form-control" id="payment" type="number" placeholder="Ödeme"
+                          formControlName="payment">
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <button class="btn btn-success" style="width: 100%;" (click)="onSubmitPayment(1)">Ekle</button>
+                    </div>
+                  </div>
+                </form>
+
+
+              </p-tabPanel>
+              <p-tabPanel header="Kartla Ödeme">
+                <form [formGroup]="this.creditCardPaymentForm">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="creditCardTypeCode">Kredi Kartı Tipi</label>
+                        <select id="creditCardTypeCode" class="form-control" formControlName="creditCardTypeCode">
+                          <option value="" selected>Seçin</option>
+                          <option *ngFor="let g of creditCardTypes" [value]="g.creditCardTypeCode">
+                            {{ g.creditCardTypeDescription }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="docCurrencyCode">Para Birimi</label>
+                        <select id="docCurrencyCode" class="form-control" formControlName="docCurrencyCode">
+                          <option value="" selected>Seçin</option>
+                          <option *ngFor="let g of currencyCodes" [value]="g.currencyCode">
+                            {{ g.currencyDescription }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+
+
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="bankAccountCode">Banka Hesabı</label>
+                        <select id="bankAccountCode" class="form-control" formControlName="bankAccountCode">
+                          <option value="" selected>Seçin</option>
+                          <option *ngFor="let g of bankAccounts" [value]="g.bankAccountCode">
+                            {{ g.bankAccountDescription }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="lineDescription">Satır Açıklaması</label>
+                        <textarea pInputText class="form-control" id="lineDescription" rows="5"
+                          placeholder="Satır Açıklaması" formControlName="lineDescription" maxlength="200"></textarea>
+                      </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                      <div class="form-group">
+                        <label for="payment">Vade Sayısı</label>
+                        <input pInputText class="form-control" id="installmentCount" type="number"
+                          placeholder="Vade Sayısı" formControlName="installmentCount">
+                      </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                      <div class="form-group">
+                        <label for="payment">Ödeme</label>
+                        <input pInputText class="form-control" id="payment" type="number" placeholder="Ödeme"
+                          formControlName="payment">
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <button class="btn btn-success" style="width: 100%;" (click)="onSubmitPayment(2)">Ekle</button>
+                    </div>
+                  </div>
+                </form>
+
+
+              </p-tabPanel>
+              <p-tabPanel header="Havale/Eft Al">
+
+                <form [formGroup]="this.transferPaymentForm">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="bankAccountCode">Banka Hesabı</label>
+                        <select id="bankAccountCode" class="form-control" formControlName="bankAccountCode">
+                          <option value="" selected>Seçin</option>
+                          <option *ngFor="let g of bankAccounts" [value]="g.bankAccountCode">
+                            {{ g.bankAccountDescription }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="docCurrencyCode">Para Birimi</label>
+                        <select id="docCurrencyCode" class="form-control" formControlName="docCurrencyCode">
+                          <option value="" selected>Seçin</option>
+                          <option *ngFor="let g of currencyCodes" [value]="g.currencyCode">
+                            {{ g.currencyDescription }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+
+
+
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="lineDescription">Satır Açıklaması</label>
+                        <textarea pInputText class="form-control" id="lineDescription" rows="5"
+                          placeholder="Satır Açıklaması" formControlName="lineDescription" maxlength="200"></textarea>
+                      </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                      <div class="form-group">
+                        <label for="payment">Ödeme</label>
+                        <input pInputText class="form-control" id="payment" type="number" placeholder="Ödeme"
+                          formControlName="payment">
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <button class="btn btn-success" style="width: 100%;" (click)="onSubmitPayment(3)">Ekle</button>
+                    </div>
+                  </div>
+                </form>
+
+
+              </p-tabPanel>
+              <p-tabPanel header="Cari Ödeme">
+              </p-tabPanel>
+            </p-tabView>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <h5 class="text-center">Ödeme Toplamı</h5>
+            <table class="table table-bordered text-center">
+              <tbody>
+                <tr>
+                  <td>Toplam</td>
+                  <td class="total-row">500,00</td>
+                </tr>
+                <tr>
+                  <td>Ödenen Tutar</td>
+                  <td class="paid-row">0,00</td>
+                </tr>
+                <tr>
+                  <td>Para Üstü</td>
+                  <td class="change-row">0,00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
 
   </section>

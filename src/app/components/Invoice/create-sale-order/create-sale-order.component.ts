@@ -20,6 +20,13 @@ import { UserService } from '../../../services/admin/user.service';
 import { InvoiceService } from 'src/app/services/admin/invoice.service';
 import { RaportService } from 'src/app/services/admin/raport.service';
 import { CustomerService } from 'src/app/services/admin/customer.service';
+import { InfoService } from 'src/app/services/admin/info.service';
+import { cdPaymentDesc } from '../../../models/model/invoice/cdPaymentDesc';
+import { ProcessPayment } from 'src/app/models/model/invoice/ProcessPayment';
+import { BankAccount } from 'src/app/models/model/invoice/BankAccount';
+import { CashAccount, cdCurrencyDesc } from 'src/app/models/model/nebim/cdShipmentMethodDesc ';
+import { cdCreditCardTypeDesc } from '../../../models/model/nebim/cdShipmentMethodDesc ';
+import { DatePipe } from '@angular/common';
 declare var window: any;
 @Component({
   selector: 'app-create-sale-order',
@@ -69,10 +76,12 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
     private routerService: Router,
     private UserService: UserService,
     private raportService: RaportService,
-    private customerService: CustomerService
+    private customerService: CustomerService,
+    private infoService: InfoService
   ) { }
   async ngOnInit() {
 
+    await this.getPaymentDesc();
     this.userId = Number(localStorage.getItem('userId'));
     this.activatedRoute.params.subscribe(async (params) => {
       if (this.processCodes.includes(params["processCode"]) && this.processTypes.includes(params["processType"])) {
@@ -81,7 +90,6 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
 
         this.product_formGenerator();
         this.createUpdateProductForm();
-
         this.createDiscountForm();
         if ((this.processCode == "R" || this.processCode == "WS") && this.processType == "invoice") {
           this.headerService.updatePageTitle(`Satış Faturası ${this.processCode}`);
@@ -821,6 +829,8 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+
   product_formGenerator() {
     this.productForm = this.formBuilder.group({
       shelfNo: [null, [Validators.required, Validators.maxLength(10)]],
@@ -1362,4 +1372,145 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
       location.reload();
     }
   }
+
+  //------------------------
+  paymentsOfProcess: ProcessPayment[] = []
+  cdPaymentDesc: cdPaymentDesc[] = [];
+  bankAccounts: BankAccount[] = [];
+  cashAccounts: CashAccount[] = [];
+  currencyCodes: cdCurrencyDesc[] = [];
+  creditCardTypes: cdCreditCardTypeDesc[] = [];
+
+  async getPaymentDesc() {
+    this.createCashPaymentForm();
+    this.createCreditCardPaymentForm();
+    this.createTransferPaymentForm();
+    this.cdPaymentDesc = await this.infoService.getPaymentDesc();
+    this.bankAccounts = await this.infoService.getBankAccounts();
+    this.cashAccounts = await this.infoService.getCashAccounts();
+    this.currencyCodes = await this.infoService.getCurrencyDesc();
+    this.creditCardTypes = await this.infoService.getCreditCardTypes();
+  }
+  cashPaymentForm: FormGroup;
+  createCashPaymentForm() {
+
+    this.cashPaymentForm = this.formBuilder.group({
+      paymentType: [1],
+      paymentTypeCode: [1],
+      cashAccountCode: [null, Validators.required],
+      // installmentCount: [null, Validators.required],
+      docCurrencyCode: [null, Validators.required],
+      payment: [null, Validators.required],
+      lineDescription: [null],
+    });
+  }
+  creditCardPaymentForm: FormGroup;
+  createCreditCardPaymentForm() {
+    this.creditCardPaymentForm = this.formBuilder.group({
+      paymentType: [2],
+      paymentTypeCode: [2],
+      creditCardTypeCode: [null, Validators.required],
+      installmentCount: [null, Validators.required],
+      docCurrencyCode: [null, Validators.required],
+      payment: [null, Validators.required],
+      bankAccountCode: [null, Validators.required],
+      bankCode: [null],
+      lineDescription: [null],
+    });
+  }
+  transferPaymentForm: FormGroup;
+  createTransferPaymentForm() {
+    this.transferPaymentForm = this.formBuilder.group({
+      paymentType: [4],
+      paymentTypeCode: [4],
+      docCurrencyCode: [null, Validators.required],
+      payment: [null, Validators.required],
+      bankAccountCode: [null, Validators.required],
+      bankCode: [null],
+      lineDescription: [null],
+    });
+  }
+
+  async onSubmitPayment(paymentType: number) {
+    var request: ProcessPayment = new ProcessPayment();
+
+    //NAKIT ÖDEMELER
+    if (paymentType == 1) {
+      if (this.cashPaymentForm.valid) {
+        var _v = this.cashPaymentForm.value;
+        request.paymentType = 1;
+        request.paymentTypeCode = 1;
+        request.processId = this.invoiceProcess.id;
+        request.installmentCount = 0;
+        request.cashAccountCode = _v.cashAccountCode
+        request.docCurrencyCode = _v.docCurrencyCode
+        request.payment = _v.payment;
+        request.lineDescription = _v.lineDescription
+        request.dueDate = new Date();
+
+        var response = await this.invoiceService.addProcessPayment(request);
+        if (response) {
+          this.toasterService.error("Eklendi");
+          this.paymentsOfProcess = await this.invoiceService.getProcessPayments(this.invoiceProcess.id);
+        }
+      } else {
+        this.generalService.whichRowIsInvalid(this.cashPaymentForm)
+      }
+
+    }
+    //KREDİ ÖDEMELER
+    else if (paymentType == 2) {
+      if (this.creditCardPaymentForm.valid) {
+        var _v = this.creditCardPaymentForm.value;
+        request.paymentType = 2;
+        request.paymentTypeCode = 2;
+        request.processId = this.invoiceProcess.id;
+        request.installmentCount = _v.installmentCount
+        request.bankAccountCode = _v.bankAccountCode
+        request.cashAccountCode = _v.cashAccountCode
+        request.docCurrencyCode = _v.docCurrencyCode
+        request.payment = _v.payment;
+        request.lineDescription = _v.lineDescription
+        request.dueDate = new Date();
+        var response = await this.invoiceService.addProcessPayment(request);
+        if (response) {
+          this.toasterService.error("Eklendi");
+          this.paymentsOfProcess = await this.invoiceService.getProcessPayments(this.invoiceProcess.id);
+        }
+      } else {
+        this.generalService.whichRowIsInvalid(this.creditCardPaymentForm)
+      }
+
+    }
+    //HAVALE ÖDEMELER
+    else if (paymentType == 3) {
+      if (this.transferPaymentForm.valid) {
+        var _v = this.transferPaymentForm.value;
+        request.paymentType = 3;
+        request.paymentTypeCode = 3;
+        request.processId = this.invoiceProcess.id;
+
+        request.installmentCount = 0;
+        request.docCurrencyCode = _v.docCurrencyCode
+        request.payment = _v.payment;
+        request.lineDescription = _v.lineDescription
+        request.dueDate = new Date();
+        var response = await this.invoiceService.addProcessPayment(request);
+        if (response) {
+          this.toasterService.error("Eklendi");
+          this.paymentsOfProcess = await this.invoiceService.getProcessPayments(this.invoiceProcess.id);
+        }
+      } else {
+        this.generalService.whichRowIsInvalid(this.transferPaymentForm)
+      }
+
+    }
+    //CARİ ÖDEMELER
+    else if (paymentType == 4) {
+      request.paymentType = 4;
+    }
+
+    console.log(request)
+  }
+
 }

@@ -12,6 +12,7 @@ import { CollectedInvoiceProduct } from 'src/app/models/model/invoice/CollectedI
 import { InvoiceProcess } from 'src/app/models/model/invoice/InvoiceProcess';
 import { ProductDetail_VM } from 'src/app/models/model/invoice/ProductDetail_VM';
 import { ProductOfOrder } from 'src/app/models/model/order/productOfOrders';
+import { ProcessPayment } from 'src/app/models/model/invoice/ProcessPayment';
 
 @Injectable({
   providedIn: 'root'
@@ -245,6 +246,52 @@ export class InvoiceService {
 
     return response;
   }
+
+
+  async addProcessPayment(request: ProcessPayment): Promise<ProcessPayment> {
+    const response = await this.httpClientService
+      .post<ProcessPayment>(
+        { controller: 'invoices/add-process-payment' },
+        request
+      )
+      .toPromise();
+
+    return response;
+  }
+  async updateProcessPayment(request: ProcessPayment): Promise<ProcessPayment> {
+    const response = await this.httpClientService
+      .post<ProcessPayment>(
+        { controller: 'invoices/update-process-payment' },
+        request
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async deleteProcessPayment(id: string): Promise<boolean> {
+    const response = await this.httpClientService
+      .get_new<boolean>(
+        { controller: 'invoices/delete-process-payment' },
+        id
+      )
+      .toPromise();
+
+    return response;
+  }
+
+  async getProcessPayments(processId: string): Promise<ProcessPayment[]> {
+    const response = await this.httpClientService
+      .get<ProcessPayment>(
+        { controller: 'invoices/get-process-payments' },
+        processId
+      )
+      .toPromise();
+
+    return response;
+  }
+
+
 
 
   async createWSWaybillFromOrder(orderNumber: string, warehouseCode: string) {

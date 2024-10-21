@@ -17,3 +17,17 @@
 ::ng-deep .p-dropdown {
   width: 100% !important;
 }
+
+@media (max-width: 1200px) {
+  .products-container {
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 items per row for medium screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .products-container {
+    grid-template-columns: 1fr;
+    /* 1 item per row for small screens */
+  }
+}
