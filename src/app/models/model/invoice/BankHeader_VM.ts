@@ -9,6 +9,7 @@ export class BankHeader_VM {
   officeCode?: string; // OfficeCode
   user?: string; // User
   total: number; // Total
+  description: string;
   createdDate: Date; // CreatedDate
   isCompleted: boolean;
   bankTransNumber: string;

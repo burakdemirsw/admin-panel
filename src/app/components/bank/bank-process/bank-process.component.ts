@@ -331,6 +331,8 @@ export class BankProcessComponent {
       line.currAccCode = _v.currAccCode.code;
       line.currAccAmount = _v.currAccAmount;
       line.lineDescription = _v.lineDescription;
+      line.docCurrencyCode = this.customerList.find(c => c.currAccCode == _v.currAccCode.code).currencyCode;
+      line.currAccCurrencyCode = this.customerList.find(c => c.currAccCode == _v.currAccCode.code).currencyCode;
       var response = await this.bankService.addBankLine(line);
       if (response) {
         await this.getLinesOfHeader();
@@ -358,6 +360,8 @@ export class BankProcessComponent {
       line.currAccCode = _v.currAccCode.code;
       line.currAccAmount = _v.currAccAmount;
       line.lineDescription = _v.lineDescription;
+      line.docCurrencyCode = this.customerList.find(c => c.currAccCode == _v.currAccCode.code).currencyCode;
+      line.currAccCurrencyCode = this.customerList.find(c => c.currAccCode == _v.currAccCode.code).currencyCode;
       var response = await this.bankService.updateBankLine(line);
       if (response) {
         await this.getLinesOfHeader();

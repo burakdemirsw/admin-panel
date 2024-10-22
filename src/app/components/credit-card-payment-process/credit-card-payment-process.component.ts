@@ -61,11 +61,13 @@ export class CreditCardPaymentProcessComponent {
     this.activatedRoute.params.subscribe(async (params) => {
       if (params["creditCardPaymentTypeCode"] && params["applicationCode"]) {
         this.creditCardPaymentTypeCode = params["creditCardPaymentTypeCode"];
+
         // this.currAccTypeCode = params["currAccTypeCode"];
         this.applicationCode = params["applicationCode"];
         await this.getAllDatas();
+        this.headerForm.get('creditCardPaymentTypeCode').setValue(this.creditCardPaymentTypeCode);
         this.user = this.userService.getUserClientInfoResponse()
-        this.headerService.updatePageTitle("Kredi Kartı İle Ödeme Al");
+        this.headerService.updatePageTitle(this.creditCardPaymentTypes.find(pt => pt.creditCardPaymentTypeCode == this.creditCardPaymentTypeCode).creditCardPaymentTypeDescription);
       }
 
       if (params['id']) {
@@ -136,6 +138,7 @@ export class CreditCardPaymentProcessComponent {
     this.headerForm = this.formBuilder.group({
       officeCode: [null, [Validators.required]],
       currAccCode: [null, [Validators.required]],
+      creditCardPaymentTypeCode: [null, [Validators.required]],
       description: [null],
 
     });
@@ -281,8 +284,8 @@ export class CreditCardPaymentProcessComponent {
       var _v = this.headerForm.value;
       var header: CreditCardPaymentHeader = new CreditCardPaymentHeader();
       header.applicationCode = this.applicationCode;
-      header.creditCardPaymentTypeCode = this.creditCardPaymentTypeCode;
-
+      header.creditCardPaymentTypeCode = _v.creditCardPaymentTypeCode;
+      header.currAccTypeCode = 3;
       header.officeCode = _v.officeCode;
       header.currAccTypeCode = this.currAccTypeCode;
       header.currAccCode = _v.currAccCode.code;
@@ -293,7 +296,7 @@ export class CreditCardPaymentProcessComponent {
       var response = await this.creditCardPaymentService.editCreditCardPaymentHeader(header);
       if (response) {
         this.responseHandler(true, "Eklendi");
-        this.routerService.navigate([`/create-credit-cart-payment-process/${this.applicationCode}/${this.creditCardPaymentTypeCode}/0/${response.id}`]);
+        this.routerService.navigate([`/create-credit-cart-payment-process/${this.applicationCode}/${this.creditCardPaymentTypeCode}/1/${response.id}`]);
         return;
       } else {
         // Handle failure response
@@ -338,6 +341,7 @@ export class CreditCardPaymentProcessComponent {
   async addLine() {
     if (this.lineForm.valid) {
       var _v = this.lineForm.value;
+      var _v2 = this.headerForm.value;
       var line: CreditCardPaymentLine = new CreditCardPaymentLine();
       line.creditCardPaymentHeaderId = this.creditCardPaymentHeader.id;
       line.currAccAmount = _v.currAccAmount;
@@ -345,6 +349,8 @@ export class CreditCardPaymentProcessComponent {
       line.acquirerBankCode = _v.acquirerBankCode;
       line.creditCardTypeCode = _v.creditCardTypeCode
       line.lineDescription = _v.lineDescription;
+      line.docCurrencyCode = this.customerList.find(c => c.currAccCode == _v2.currAccCode.code).currencyCode;
+      line.currAccCurrencyCode = this.customerList.find(c => c.currAccCode == _v2.currAccCode.code).currencyCode;
       var response = await this.creditCardPaymentService.addCreditCardPaymentLine(line);
       if (response) {
         await this.getLinesOfHeader();
@@ -374,6 +380,8 @@ export class CreditCardPaymentProcessComponent {
       line.acquirerBankCode = _v.acquirerBankCode;
       line.creditCardTypeCode = _v.creditCardTypeCode
       line.lineDescription = _v.lineDescription;
+      line.docCurrencyCode = this.customerList.find(c => c.currAccCode == _v.currAccCode).currencyCode;
+      line.currAccCurrencyCode = this.customerList.find(c => c.currAccCode == _v.currAccCode).currencyCode;
       var response = await this.creditCardPaymentService.updateCreditCardPaymentLine(line);
       if (response) {
         await this.getLinesOfHeader();
@@ -408,7 +416,7 @@ export class CreditCardPaymentProcessComponent {
       var response: NebimResponse = await this.creditCardPaymentService.completeCreditCardPayment(this.creditCardPaymentHeader.id);
       if (response) {
         this.responseHandler(true, "Tamamlandı");
-        this.routerService.navigate([`/create-credit-cart-payment-process/${this.applicationCode}/${this.currAccTypeCode}/${this.creditCardPaymentTypeCode}/0/${this.creditCardPaymentHeader.id}`]);
+        this.routerService.navigate([`/credit-cart-payment-process-list`]);
       }
     }
 

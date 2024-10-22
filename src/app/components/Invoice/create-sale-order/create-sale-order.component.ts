@@ -1487,9 +1487,11 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
           request.paymentTypeCode = 2;
           request.processId = this.invoiceProcess.id;
           request.installmentCount = _v.installmentCount
-          request.bankAccountCode = _v.bankAccountCode
-          request.cashAccountCode = _v.cashAccountCode
+          // request.cashAccountCode = _v.cashAccountCode
           request.docCurrencyCode = _v.docCurrencyCode
+          request.bankCode = this.bankAccounts.find(ba => ba.bankAccountCode == _v.bankAccountCode).bankCode;
+          request.bankAccountCode = _v.bankAccountCode
+          request.creditCardTypeCode = _v.creditCardTypeCode
           request.payment = _v.payment;
           request.lineDescription = _v.lineDescription
           request.userId = this.userId;
@@ -1512,8 +1514,8 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
           request.paymentType = 4;
           request.paymentTypeCode = 4;
           request.processId = this.invoiceProcess.id;
-
-          request.bankAccountCode = _v.bankAccountCode  //asdasasds
+          request.bankCode = this.bankAccounts.find(ba => ba.bankAccountCode == _v.bankAccountCode).bankCode;
+          request.bankAccountCode = _v.bankAccountCode
           request.installmentCount = 0;
           request.docCurrencyCode = _v.docCurrencyCode
           request.payment = _v.payment;

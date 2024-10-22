@@ -47,6 +47,11 @@
               İç Numara
               <p-sortIcon field="cashTransNumber"></p-sortIcon>
             </th>
+            <th pSortableColumn="description">
+              Açıklama
+              <p-sortIcon field="description"></p-sortIcon>
+            </th>
+
             <th pSortableColumn="user">
               Kullanıcı
               <p-sortIcon field="user"></p-sortIcon>
@@ -89,6 +94,10 @@
               <p-columnFilter type="text" field="cashTransNumber" [showClearButton]="true"></p-columnFilter>
             </th>
             <th>
+              <p-columnFilter type="text" field="description" [showClearButton]="true"></p-columnFilter>
+            </th>
+
+            <th>
               <p-columnFilter type="text" field="user" [showClearButton]="true"></p-columnFilter>
             </th>
             <th>
@@ -112,8 +121,10 @@
             <!-- <td>{{ cashHeader.cashCurrAccTypeCode }}</td>asdas
             <td>{{ cashHeader.cashCurrAccCode }}</td> -->
             <!-- <td>{{ cashHeader.officeCode }}</td> -->
-            <td>{{ cashHeader.total | currency }}</td>
+            <td>{{ cashHeader.total | currency :'₺' }}</td>
             <td>{{ cashHeader.cashTransNumber }}</td>
+            <td>{{ cashHeader.description }}</td>
+
             <td>{{ cashHeader.user }}</td>
             <td>{{ cashHeader.createdDate | date }}</td>
             <td>

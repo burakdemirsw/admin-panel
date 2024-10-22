@@ -38,6 +38,25 @@
               <div class="row">
                 <div class="col-md-12">
                   <div class="form-group">
+                    <label for="creditCardPaymentTypeCode">Kredi Kartı Ödeme Tipi</label>
+                    <select id="creditCardPaymentTypeCode" class="form-control"
+                      formControlName="creditCardPaymentTypeCode">
+                      <option value="" selected>Seçin</option>
+                      <option *ngFor="let g of creditCardPaymentTypes" [value]="g.creditCardPaymentTypeCode">
+                        {{ g.creditCardPaymentTypeDescription }}
+                      </option>
+                    </select>
+                    <div *ngIf="headerForm.get('creditCardPaymentTypeCode')?.touched &&
+                       headerForm.get('creditCardPaymentTypeCode')?.invalid" class="text-danger">
+                      Kredi Kartı Ödeme Tipi alanı zorunludur.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
                     <label for="currAccCode">Müşteri</label>
                     <p-dropdown placeholder="Müşteri" formControlName="currAccCode" [options]="customerList2"
                       virtualScroll="true" virtualScrollItemSize="50" optionLabel="name" [filter]="true">

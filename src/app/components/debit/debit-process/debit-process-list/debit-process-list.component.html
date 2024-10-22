@@ -59,6 +59,11 @@
               İç Numara
               <p-sortIcon field="debitNumber"></p-sortIcon>
             </th>
+            <th pSortableColumn="description">
+              Açıklama
+              <p-sortIcon field="description"></p-sortIcon>
+            </th>
+
             <th pSortableColumn="user">
               Kullanıcı
               <p-sortIcon field="user"></p-sortIcon>
@@ -107,6 +112,11 @@
               <p-columnFilter type="text" field="debitNumber" [showClearButton]="true"></p-columnFilter>
             </th>
             <th>
+              <p-columnFilter type="text" field="description" [showClearButton]="true"></p-columnFilter>
+            </th>
+
+
+            <th>
               <p-columnFilter type="text" field="user" [showClearButton]="true"></p-columnFilter>
             </th>
             <th>
@@ -132,9 +142,11 @@
             <!-- <td>{{ debitHeader.currAccCode }}</td> -->
             <!-- <td>{{ debitHeader.officeCode }}</td> -->
 
-            <td>{{ debitHeader.totalCreditAmount | currency }}</td>
-            <td>{{ debitHeader.totalDebitAmount | currency }}</td>
+            <td>{{ debitHeader.totalCreditAmount  | currency :'₺' }}</td>
+            <td>{{ debitHeader.totalDebitAmount  | currency :'₺' }}</td>
             <td>{{ debitHeader.debitNumber }}</td>
+            <td>{{ debitHeader.description }}</td>
+
             <td>{{ debitHeader.user }}</td>
             <td>{{ debitHeader.createdDate | date }}</td>
             <td>

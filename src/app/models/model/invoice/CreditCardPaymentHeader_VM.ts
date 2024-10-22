@@ -1,11 +1,16 @@
 export class CreditCardPaymentHeader_VM {
-    applicationCode: string | null;
-    id: string;
-    currAccDescription: string | null;
-    cashCurrAccCode: string | null;
-    officeCode: string | null;
-    user: string | null;
-    total: number;
-    createdDate: Date;
-    isCompleted: boolean;
+  applicationCode: string;
+  description: string;
+  currAccTypeCode: number;
+  creditCardPaymentTypeCode: number;
+  id: string;
+  currAccDescription: string;
+  currAccCode: string;
+  officeCode: string;
+  isCompleted: boolean;
+  user: string;
+  total: number;
+  createdDate: Date;
+  creditCardPaymentNumber: string;
+
 }

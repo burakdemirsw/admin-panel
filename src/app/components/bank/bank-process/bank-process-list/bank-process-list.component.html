@@ -51,6 +51,10 @@
               İç Numara
               <p-sortIcon field="bankTransNumber"></p-sortIcon>
             </th>
+            <th pSortableColumn="description">
+              Açıklama
+              <p-sortIcon field="description"></p-sortIcon>
+            </th>
             <th pSortableColumn="user">
               Kullanıcı
               <p-sortIcon field="user"></p-sortIcon>
@@ -90,6 +94,10 @@
             <th>
               <p-columnFilter type="text" field="bankTransNumber" [showClearButton]="true"></p-columnFilter>
             </th>
+
+            <th>
+              <p-columnFilter type="text" field="description" [showClearButton]="true"></p-columnFilter>
+            </th>
             <th>
               <p-columnFilter type="text" field="user" [showClearButton]="true"></p-columnFilter>
             </th>
@@ -113,8 +121,9 @@
             <td>{{ bankHeader.currAccDescription }}</td>
             <!-- <td>{{ bankHeader.bankCurrAccCode }}</td> -->
             <!-- <td>{{ bankHeader.officeCode }}</td> -->
-            <td>{{ bankHeader.total | currency }}</td>
+            <td>{{ bankHeader.total  | currency :'₺' }}</td>
             <td>{{ bankHeader.bankTransNumber }}</td>
+            <td>{{ bankHeader.description }}</td>
             <td>{{ bankHeader.user }}</td>
             <td>{{ bankHeader.createdDate | date }}</td>
             <td>

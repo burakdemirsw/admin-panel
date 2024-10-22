@@ -290,6 +290,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: "create-bank-process/:applicationCode/:bankTransTypeCode/:activeIndex/:id",
+    component: BankProcessComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: "credit-cart-payment-process-list",
     component: CreditCardPaymentProcessListComponent,
     canActivate: [AuthGuard],

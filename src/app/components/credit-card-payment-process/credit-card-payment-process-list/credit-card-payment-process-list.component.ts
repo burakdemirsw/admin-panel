@@ -4,6 +4,8 @@ import { CreditCardPaymentService } from 'src/app/services/admin/credit-card-pay
 
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { InfoService } from '../../../services/admin/info.service';
+import { CreditCardPaymentType } from 'src/app/models/model/invoice/CreditCardPaymentType';
 
 @Component({
   selector: 'app-credit-card-payment-process-list',
@@ -17,13 +19,19 @@ export class CreditCardPaymentProcessListComponent {
     private toasterService: ToasterService,
     private headerService: HeaderService,
     private creditCardPaymentService: CreditCardPaymentService,
+    private infoService: InfoService
   ) { }
-
+  creditCardPaymentTypes: CreditCardPaymentType[] = [];
   async ngOnInit() {
     this.headerService.updatePageTitle("Kredi Kartı Ödemeleri")
-    // await this.loadCreditCardPaymentHeaders(); // Bileşen yü  klendiğinde creditCardPayment headers'ı yükle
+    await this.loadCreditCardPaymentHeaders(); // Bileşen yü  klendiğinde creditCardPayment headers'ı yükle
+    this.creditCardPaymentTypes = await this.infoService.getCreditCardPaymentType();
+
   }
 
+  getDesc(code: Number) {
+    return this.creditCardPaymentTypes.find(cp => cp.creditCardPaymentTypeCode == code).creditCardPaymentTypeDescription
+  }
   // CreditCardPayment header verilerini yüklemek için fonksiyon
   async loadCreditCardPaymentHeaders() {
     try {

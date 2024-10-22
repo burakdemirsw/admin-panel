@@ -3,6 +3,7 @@
 export class CashHeader_VM {
   applicationCode?: string; // ApplicationCode
   id: string; // Guid
+  description: string;
   cashTransNumber: string;
   cashTransTypeCode: number;
   currAccDescription?: string; // CurrAccDescription asdas
