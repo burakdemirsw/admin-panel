@@ -168,9 +168,15 @@ export class AddCustomerComponent implements OnInit {
         let request: any = {};
         request.ModelType = this.modelType;
         if (this.modelType != 69) {
-          request.CurrAccCode = "";
-
+          var c_response = await this.customerService.getLastCurrAccCode(user.officeCode);
+          if (c_response.length > 0) {
+            request.CurrAccCode = c_response[0].currAccCode;
+            this.toasterService.success(c_response[0].currAccCode);
+          } else {
+            request.CurrAccCode = '';
+          }
         } else {
+
           request.CurrAccCode = formValue.phoneNumber;
         }
         request.OfficeCode = user.officeCode;
@@ -180,7 +186,6 @@ export class AddCustomerComponent implements OnInit {
         request.IsBlocked = formValue.isBlocked;
         if (this.modelType != 69) {
           request.IsVIP = formValue.isVIP;
-
         }
 
         // Initialize PostalAddresses object if address_country exists

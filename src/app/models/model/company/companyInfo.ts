@@ -50,6 +50,7 @@ export class DatabaseInfo extends BaseEntity {
 
 export class NebimInvoiceInfo extends BaseEntity {
   processCode?: string;
+  applicationCode?: string;
   officeCode?: string;
   storeCode?: string;
   posTerminalID?: string;

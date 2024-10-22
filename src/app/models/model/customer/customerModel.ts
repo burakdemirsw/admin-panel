@@ -37,4 +37,5 @@ export class CustomerModel {
 
   ısBlocked: boolean;
 
+  createdDate: Date;
 }

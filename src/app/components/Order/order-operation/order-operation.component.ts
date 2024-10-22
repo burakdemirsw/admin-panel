@@ -531,10 +531,10 @@ export class OrderOperationComponent implements OnInit {
 
         if (orderType === 'WS' || orderType === 'MIS' || orderType === 'R') {
           // this.collectAndPack_WS(this.collectedProducts);
-          var _r = await this.invoiceService.createWSWaybillFromOrder(this.currentOrderNo, this.warehouseCode);
+          // var _r = await this.invoiceService.createWSWaybillFromOrder(this.currentOrderNo, this.warehouseCode);
+          var _r = await this.invoiceService.billingOrder(this.currentOrderNo, this.warehouseCode);
           if (_r) {
-            this.toasterService.success("İrsaliye Kesildi")
-
+            this.toasterService.success("Fatura Kesildi")
             var data = await this.raportService.createCollectedProductsOfOrderRaport(this.orderNo, this.warehouseCode);
             if (data) {
 

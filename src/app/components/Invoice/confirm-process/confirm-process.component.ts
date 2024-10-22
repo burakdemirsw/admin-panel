@@ -13,6 +13,11 @@ import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
 import { ProposalLineDetail } from 'src/app/models/model/invoice/ProposalLineDetail';
 import { InvoiceService } from 'src/app/services/admin/invoice.service';
+import { CustomerBalance } from 'src/app/models/model/order/CustomerBalance';
+import { CustomerService } from 'src/app/services/admin/customer.service';
+import { ProcessPayment } from 'src/app/models/model/invoice/ProcessPayment';
+import { cdPaymentDesc } from 'src/app/models/model/invoice/cdPaymentDesc';
+import { InfoService } from 'src/app/services/admin/info.service';
 
 @Component({
   selector: 'app-confirm-process',
@@ -30,7 +35,9 @@ export class ConfirmProcessComponent implements OnInit {
     private headerService: HeaderService,
     private routerService: Router,
     private warehouseService: WarehouseService,
-    private userService: UserService
+    private userService: UserService,
+    private customerService: CustomerService,
+    private infoService: InfoService
   ) { }
   updateProductForm: FormGroup;
   processId: string;
@@ -64,13 +71,18 @@ export class ConfirmProcessComponent implements OnInit {
           this.createUpdateProductForm();
           this.headerService.updatePageTitle("Teklif Onaylama");
           await this.getProducts();
+          await this.getCustomerBalance();
+          await this.getProcessPayments();
         }
-        if (this.processType == "order") {
+        else if (this.processType == "order") {
           this.createUpdateProductForm2();
           await this.getWarehouseAndOffices();
           this.headerService.updatePageTitle("Sipariş Onaylama");
           await this.getProducts();
+          await this.getCustomerBalance();
+          await this.getProcessPayments();
         }
+
 
       }
     })
@@ -285,6 +297,22 @@ export class ConfirmProcessComponent implements OnInit {
   }
 
   //--------------------------------------------------------GENEL KODLAR
+  paymentsOfProcess: ProcessPayment[] = []
+  customerBalances: CustomerBalance[] = [];
+  cdPaymentDesc: cdPaymentDesc[] = [];
+
+  async getProcessPayments() {
+    this.cdPaymentDesc = await this.infoService.getPaymentDesc();
+
+    this.paymentsOfProcess = await this.invoiceService.getProcessPayments(this.processId);
+  }
+
+  async getCustomerBalance() {
+    this.customerBalances = await this.customerService.getCustomerBalance(this.processId);
+  }
+  getPaymentDescription(id: number) {
+    return this.cdPaymentDesc.find(i => i.paymentTypeCode == id).paymentTypeDescription;
+  }
   async getProducts() {
     this.products = await this.invoiceService.getCollectedInvoiceProducts(this.processId);
     if (this.processType != 'order') {

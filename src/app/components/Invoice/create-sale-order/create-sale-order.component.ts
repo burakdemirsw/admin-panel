@@ -1393,19 +1393,50 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
   cashAccounts: CashAccount[] = [];
   currencyCodes: cdCurrencyDesc[] = [];
   creditCardTypes: cdCreditCardTypeDesc[] = [];
-
+  //   1	0	TR	Nakit
+  //   2	0	TR	Kredi Kartı
+  //   3	0	TR	Hediye Kartı
+  //   4	0	TR	Banka Havalesi / EFT
+  //  70	0	TR	Diğer Ödeme Sistemleri
   loadPaymentForms() {
     this.createCashPaymentForm();
     this.createCreditCardPaymentForm();
     this.createTransferPaymentForm();
+    this.createDebitPaymentForm();
   }
   async getPaymentDesc() {
     this.cdPaymentDesc = await this.infoService.getPaymentDesc();
     this.bankAccounts = await this.infoService.getBankAccounts();
     this.cashAccounts = await this.infoService.getCashAccounts();
     this.currencyCodes = await this.infoService.getCurrencyDesc();
+    this.currencyCodes = this.currencyCodes.filter(c => c.currencyCode == 'TRY' || c.currencyCode == 'USD')
     this.creditCardTypes = await this.infoService.getCreditCardTypes();
     await this.getProcessPayments();
+  }
+  setPaymentValue(paymentType: number) {
+
+    if (paymentType == 1) {
+      this.cashPaymentForm.get('payment').setValue(((this.getFinalTotalPrice() + this.calculateTotalTax()) - this.getTotalPaymentValue()).toFixed(2));
+
+    }
+    //KREDİ ÖDEMELER
+    else if (paymentType == 2) {
+      this.creditCardPaymentForm.get('payment').setValue(((this.getFinalTotalPrice() + this.calculateTotalTax()) - this.getTotalPaymentValue()).toFixed(2));
+
+    }
+    //HAVALE ÖDEMELER
+    else if (paymentType == 4) {
+      this.transferPaymentForm.get('payment').setValue(((this.getFinalTotalPrice() + this.calculateTotalTax()) - this.getTotalPaymentValue()).toFixed(2));
+
+
+    }
+    else if (paymentType == 70) {
+
+      this.debitPaymentForm.get('payment').setValue(((this.getFinalTotalPrice() + this.calculateTotalTax()) - this.getTotalPaymentValue()).toFixed(2));
+
+    }
+    this.toasterService.success("Kalan Tutar Çekildi")
+
   }
   cashPaymentForm: FormGroup;
   createCashPaymentForm() {
@@ -1420,13 +1451,25 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
       lineDescription: [null],
     });
   }
+
+  debitPaymentForm: FormGroup;
+  createDebitPaymentForm() {
+
+    this.debitPaymentForm = this.formBuilder.group({
+      payment: [null, Validators.required],
+      dueDate: [null, Validators.required],
+      docCurrrencyCode: [null, Validators.required],
+      lineDescription: [null],
+    });
+  }
+
   creditCardPaymentForm: FormGroup;
   createCreditCardPaymentForm() {
     this.creditCardPaymentForm = this.formBuilder.group({
       paymentType: [2],
       paymentTypeCode: [2],
       creditCardTypeCode: [null, Validators.required],
-      installmentCount: [null, Validators.required],
+      installmentCount: [1, Validators.required],
       docCurrencyCode: [null, Validators.required],
       payment: [null, Validators.required],
       bankAccountCode: [null, Validators.required],
@@ -1466,6 +1509,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
           request.payment = _v.payment;
           request.lineDescription = _v.lineDescription
           request.userId = this.userId;
+          request.isCompleted = false;
           request.dueDate = new Date();
 
           var response = await this.invoiceService.addProcessPayment(request);
@@ -1495,6 +1539,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
           request.payment = _v.payment;
           request.lineDescription = _v.lineDescription
           request.userId = this.userId;
+          request.isCompleted = false;
           request.dueDate = new Date();
           var response = await this.invoiceService.addProcessPayment(request);
           if (response) {
@@ -1521,11 +1566,38 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
           request.payment = _v.payment;
           request.lineDescription = _v.lineDescription
           request.userId = this.userId;
+          request.isCompleted = false;
           request.dueDate = new Date();
           var response = await this.invoiceService.addProcessPayment(request);
           if (response) {
             this.toasterService.success("Eklendi");
             this.transferPaymentForm.reset();
+            this.paymentsOfProcess = await this.invoiceService.getProcessPayments(this.invoiceProcess.id);
+          }
+        } else {
+          this.generalService.whichRowIsInvalid(this.transferPaymentForm)
+        }
+
+      }
+      else if (paymentType == 70) {
+        if (this.debitPaymentForm.valid) {
+          var _v = this.debitPaymentForm.value;
+          request.paymentType = 70;
+          request.paymentTypeCode = 70;
+          request.processId = this.invoiceProcess.id;
+          // request.bankCode = this.bankAccounts.find(ba => ba.bankAccountCode == _v.bankAccountCode).bankCode;
+          // request.bankAccountCode = _v.bankAccountCode
+          request.installmentCount = 0;
+          request.docCurrencyCode = _v.docCurrencyCode
+          request.payment = _v.payment;
+          request.lineDescription = _v.lineDescription
+          request.userId = this.userId;
+          request.isCompleted = false;
+          request.dueDate = _v.dueDate;
+          var response = await this.invoiceService.addProcessPayment(request);
+          if (response) {
+            this.toasterService.success("Eklendi");
+            this.debitPaymentForm.reset();
             this.paymentsOfProcess = await this.invoiceService.getProcessPayments(this.invoiceProcess.id);
           }
         } else {

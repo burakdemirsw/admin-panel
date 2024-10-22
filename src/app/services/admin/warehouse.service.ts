@@ -643,10 +643,10 @@ export class WarehouseService {
     return response;
   }
   //---------------------------------------------------------------------------
-  async transferBetweenStoreWarehouses(id: string): Promise<boolean> {
+  async transferBetweenStoreWarehouses(id: string, userId: number): Promise<boolean> {
     try {
       const data = await this.httpClientService
-        .get<any>({ controller: '/warehouse/transfer-between-store-warehouses-v2/' }, id)
+        .get<any>({ controller: 'Warehouse/transfer-between-store-warehouses-v2' }, id + "/" + userId)
         .toPromise();
       if (data) {
         return true;
@@ -657,6 +657,25 @@ export class WarehouseService {
       return false;
     }
   }
+  async createShipping(id: string, userId: number) {
+
+    try {
+      const data = await this.httpClientService
+        .get<any>({ controller: 'Warehouse/create-shipping' }, id + "/" + userId)
+        .toPromise();
+      if (data) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error: any) {
+      return false;
+    }
+
+
+  }
+
+
   async ApproveTransferBetweenStoreWarehouse(id: string): Promise<boolean> {
     try {
       const data = await this.httpClientService

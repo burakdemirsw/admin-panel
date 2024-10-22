@@ -68,8 +68,8 @@ import { RoleListComponent } from "./components/User/user-list/role/role-list/ro
 import { PagesUnauthorizedComponent } from "./pages/pages-unauthorized/pages-unauthorized.component";
 import { ShelfComponent } from "./components/Warehouse/shelf/shelf.component";
 import { ProductStockReportComponent } from "./components/Product/product-stock-report/product-stock-report.component";
-import { AddProductToShelfComponent } from "./components/Warehouse/warehosue-shelf-count/add-product-to-shelf/add-product-to-shelf.component";
-import { AddProductToShelfListComponent } from "./components/Warehouse/warehosue-shelf-count/add-product-to-shelf-list/add-product-to-shelf-list.component";
+import { AddProductToShelfComponent } from "./components/Warehouse/add-product-to-shelf/add-product-to-shelf.component";
+import { AddProductToShelfListComponent } from "./components/Warehouse/add-product-to-shelf-list/add-product-to-shelf-list.component";
 import { IdeasoftOffersComponent } from "./components/special-panels/ideasoft-offers/ideasoft-offers.component";
 import { TransferredOrdersComponent } from "./components/marketplace/transferred-orders/transferred-orders.component";
 import { TaskPanelsComponent } from "./components/Devolopment/devolopment-list/task-panels/task-panels.component";
@@ -584,6 +584,7 @@ const routes: Routes = [
   { path: "infos", component: PagesInfoComponent, canActivate: [AuthGuard] },
   { path: "unauthorized", component: PagesUnauthorizedComponent },
   { path: "product-stock-report", component: ProductStockReportComponent },
+
   {
     path: "add-product-to-shelf/:innerProcessCode/:isCompleted/:id",
     component: AddProductToShelfComponent,

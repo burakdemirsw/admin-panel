@@ -41,6 +41,16 @@ export class InvoiceService {
     return data;
   }
 
+  async billingOrder(orderNo: string, warehouseCode: string) {
+    const response = await this.httpClientService
+      .get_new<boolean>(
+        { controller: 'invoices/billing-order' },
+        orderNo + "/" + warehouseCode
+      )
+      .toPromise();
+
+    return response;
+  }
   //faturalaştırma ve yazdırma
   async collectAndPack(
     userType: number,

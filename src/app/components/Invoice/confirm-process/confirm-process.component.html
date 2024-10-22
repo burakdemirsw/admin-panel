@@ -1,6 +1,133 @@
 <main id="main" class="main">
   <section class="section">
+    <div class="mb-3">
+      <p-panel [toggleable]="true">
+        <ng-template pTemplate="header">
+          <div class="flex align-items-center gap-2">
+            <span class="font-bold">
+              Müşteri & Ödeme Bilgisi
+            </span>
 
+          </div>
+        </ng-template>
+
+
+        <p class="m-0">
+        <div class="card mb-3" *ngIf="customerBalances.length > 0">
+
+          <div class="card-header" style="color:#374151; font-weight: bold;"> Müşteri Ekstesi</div>
+
+          <p-table [value]="customerBalances" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
+            [responsiveLayout]="'scroll'">
+
+
+
+            <!-- Table Headers with Sorting -->
+            <ng-template pTemplate="header">
+              <tr>
+                <th pSortableColumn="currAccCode">
+                  Hesap Kodu
+                  <p-sortIcon field="currAccCode"></p-sortIcon>
+                </th>
+                <th pSortableColumn="currAccDescription">
+                  Hesap Açıklaması
+                  <p-sortIcon field="currAccDescription"></p-sortIcon>
+                </th>
+
+                <!-- <th pSortableColumn="docCurrencyCode">
+                Para Birimi
+                <p-sortIcon field="docCurrencyCode"></p-sortIcon>
+              </th>
+
+              <th pSortableColumn="debit">
+                Borç
+                <p-sortIcon field="debit"></p-sortIcon>
+              </th>
+              <th pSortableColumn="credit">
+                Alacak
+                <p-sortIcon field="credit"></p-sortIcon>
+              </th> -->
+                <th pSortableColumn="balance">
+                  Bakiye
+                  <p-sortIcon field="balance"></p-sortIcon>
+                </th>
+              </tr>
+            </ng-template>
+
+            <!-- Table Body -->
+            <ng-template pTemplate="body" let-customerBalance>
+              <tr>
+                <td>{{ customerBalance.currAccCode }}</td>
+                <td>{{ customerBalance.currAccDescription }}</td>
+                <!-- <td>{{ customerBalance.docCurrencyCode }}</td>
+              <td>{{ customerBalance.debit }}</td>
+
+              <td>{{ customerBalance.credit }}</td> -->
+                <td style="font-weight: bold;">
+                  {{ customerBalance.balance  |currency : customerBalance.docCurrencyCode}}
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+
+
+        </div>
+        <div class="card mb-3" *ngIf="paymentsOfProcess.length>0">
+          <div class="card-header" style="color:#374151; font-weight: bold;"> Ödeme Bilgileri</div>
+
+          <div class="mb-3" *ngIf="paymentsOfProcess.length > 0">
+
+            <p-table [value]="paymentsOfProcess" [paginator]="true" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
+              [responsiveLayout]="'scroll'" dataKey="id">
+
+              <!-- Table Headers -->
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Ödeme Tipi</th>
+                  <th>Ödeme Tutarı</th>
+                  <th>Vade Tarihi</th>
+                  <th>Açıklama</th>
+                  <th>Ödeme Numarası</th>
+                  <th>Onay</th>
+                </tr>
+              </ng-template>
+
+              <!-- Table Body -->
+              <ng-template pTemplate="body" let-payment>
+                <tr>
+                  <td>{{ getPaymentDescription(payment.paymentType) }}</td>
+                  <td>{{ payment.payment | currency: "₺" }}</td>
+                  <td>{{ payment.dueDate | date: 'shortDate' }}</td>
+                  <td>{{ payment.lineDescription }}</td>
+
+
+
+                  <td>{{ payment.paymentNumber }}</td>
+                  <td>
+                    <button class="btn btn-success" *ngIf="payment.isCompleted">
+                      <i class="fa fa-check"></i>
+                    </button>
+                    <button class="btn btn-danger" *ngIf="!payment.isCompleted">
+                      <i class="fa fa-ban" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                  <!-- Uncomment if you want to include an Actions column -->
+                  <!-- <td>
+          <div class="btn-group" role="group" aria-label="Button group" (click)="deletePayment(payment.id)">
+            <button class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></button>
+          </div>
+        </td> -->
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+
+        </div>
+
+      </p-panel>
+
+
+    </div>
     <div *ngIf="this.processType=='proposal'">
       <div class="card" *ngIf="products.length > 0">
         <div class="card-header" style="color:#374151; font-weight: bold;">Teklifin Ürünleri</div>
@@ -225,7 +352,7 @@
           </div>
           <h5 class="card-title text-uppercase font-weight-bold">Önemli</h5>
           <p class="card-text text-muted">Bu Sevk Tamamlanmıştır.
-            Değişiklik Yapılamaz.</p>
+          </p>
 
         </div>
       </div>
@@ -508,11 +635,12 @@
           <div class=" row">
 
             <div class="col-md-12"><button class="btn btn-success" style="width: 100%;"
-                routerLink="/orders-managament/1/2">Tamamla</button>
+                routerLink="/orders-managament/1/3">Tamamla</button>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <!-- asdasd -->
   </section>
 </main>

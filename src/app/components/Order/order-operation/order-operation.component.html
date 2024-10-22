@@ -48,7 +48,7 @@
             <h5 class="card-title">TÜM ÜRÜNLER TOPLANMIŞTIR</h5>
 
             <h1 class="display-1">
-              <i class="fa fa-check" aria-hidden="true"></i>
+              <i class="fas fa-check-circle text-success" aria-hidden="true"></i>
             </h1>
             <p class="card-text" *ngIf="isInvoice">
               Bu Sipariş Toplanmıştır
@@ -314,7 +314,7 @@
                   <p-sortIcon field="id"></p-sortIcon>
                 </th>
                 <th scope="col">Fotoğraf</th>
-                <th pSortableColumn="shelfNo">
+                <th pSortableColumn="shelfNo" *ngIf="this.user.useShelfWhenPickingOrders">
                   Raf
                   <p-sortIcon field="shelfNo"></p-sortIcon>
                 </th>
@@ -323,7 +323,7 @@
                   <p-sortIcon field="itemCode"></p-sortIcon>
                 </th>
                 <th pSortableColumn="quantity">
-                  Rafa Giren Miktar
+                  {{this.user.useShelfWhenPickingOrders ==true  ?'Rafa Giren Miktar' : 'Toplanan Miktar'}}
                   <p-sortIcon field="quantity"></p-sortIcon>
                 </th>
                 <th pSortableColumn="barcode">
@@ -335,7 +335,7 @@
               <tr>
                 <th></th> <!-- Id sütunu için filtre yok -->
                 <th></th> <!-- Fotoğraf sütunu için filtre yok -->
-                <th>
+                <th *ngIf="this.user.useShelfWhenPickingOrders">
                   <p-columnFilter type="text" field="shelfNo" [showClearButton]="true"></p-columnFilter>
                 </th>
                 <th>
@@ -358,7 +358,7 @@
                   <p-image src="{{ product.photoUrl }}" previewImageSrc="{{ product.photoUrl }}" alt="Image" width="30"
                     [preview]="true"></p-image>
                 </td>
-                <td>{{ product.shelfNo }}</td>
+                <td *ngIf="this.user.useShelfWhenPickingOrders">{{ product.shelfNo }}</td>
                 <td>{{ product.itemCode }}</td>
                 <td>{{ product.quantity }}</td>
                 <td>{{ product.barcode }}</td>

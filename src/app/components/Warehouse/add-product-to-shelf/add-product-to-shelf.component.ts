@@ -345,6 +345,8 @@ export class AddProductToShelfComponent {
     request.userId = this.userInfo.userId;
     request.innerProcessCode = this.innerProcessCode;
     request.isApproved = false;
+    // request.approvedUserId = 0;
+    // request.approveDate = null;
 
     var response = await this.warehouseService.updateInnerHeader(request);
     if (response) {
@@ -391,6 +393,8 @@ export class AddProductToShelfComponent {
     request.innerProcessCode = this.innerProcessCode;
     request.isShelfBased = this.isShelfBased;
     request.isApproved = false;
+    // request.approvedUserId = 0;
+    // request.approveDate = null;
     var response = await this.warehouseService.addInnerHeader(request);
     if (response) {
       this.toasterService.success("İşlem Başarılı");
@@ -1442,6 +1446,35 @@ export class AddProductToShelfComponent {
   }
 
   //------------------TRNASFER KODLARI
+
+  routeListPage() {
+    this.router.navigate([
+      "inner-list",
+      this.innerProcessCode,
+    ]);
+  }
+  async completeInner() {
+    const userConfirmed = window.confirm(
+      this.currentOrderNo +
+      ' numaralı transfer için İşlemi başlatmak istediğinize emin misiniz?'
+    );
+
+    if (userConfirmed) {
+      this.innerHeader.isCompleted = true;
+      this.innerHeader.completionDate = this.generalService.getCurrentDatetime_2();
+      this.innerHeader.completedUserId = this.userInfo.userId;
+      var response = await this.warehouseService.updateInnerHeader(this.innerHeader);
+      if (response) {
+        this.toasterService.success("İşlem Başarılı");
+        this.routeListPage();
+
+      } else {
+        this.toasterService.error("İşlem Başarısız");
+      }
+    }
+
+
+  }
   async handleTransfer() {
     if (location.href.includes('/WT/') || location.href.includes('/WT-O/')) {
       this.transferBetweenStoreWarehouses(this.currentOrderNo);
@@ -1461,22 +1494,16 @@ export class AddProductToShelfComponent {
       if (userConfirmed) {
         try {
 
-          const data = await this.httpClient
-            .get<WarehouseItem | any>(
-              ClientUrls.baseUrl +
-              '/warehouse/create-shipping/' +
-              currentOrderNo
-            )
-            .toPromise();
+          const data = await this.warehouseService.createShipping(currentOrderNo, this.userInfo.userId)
 
           if (data === true) {
             if (this.transferForm.get('isReturn').value == true) {
               this.toasterService.success('Merkeze İade İşlemi Başarıyla Gerçekleşti.');
-              await this.getInnerHeaderById(this.currentOrderNo);
+              // await this.getInnerHeaderById(this.currentOrderNo);
+              this.routeListPage();
             } else {
-
               this.toasterService.success('Mağaza Transfer İrsaliyesi İşlemi Başarıyla Gerçekleşti.');
-
+              // await this.getInnerHeaderById(this.currentOrderNo);
               await this.getInnerHeaderById(this.currentOrderNo);
             }
 
@@ -1503,18 +1530,12 @@ export class AddProductToShelfComponent {
       if (userConfirmed) {
         try {
 
-          const data = await this.httpClient
-            .get<WarehouseItem | any>(
-              ClientUrls.baseUrl +
-              '/warehouse/transfer-between-store-warehouses-v2/' +
-              currentOrderNo
-            )
-            .toPromise();
+          const data = await this.warehouseService.transferBetweenStoreWarehouses(this.innerHeader.id, this.userInfo.userId);
 
           if (data === true) {
             this.toasterService.success('İşlem Başarılı');
-
-            await this.getInnerHeaderById(this.currentOrderNo)
+            this.routeListPage();
+            // await this.getInnerHeaderById(this.currentOrderNo)
           } else {
             this.toasterService.error('İşlem Başarısız');
           }
@@ -1529,6 +1550,8 @@ export class AddProductToShelfComponent {
     }
 
   }
+
+
   async transferToNebim(currentOrderNo: string) {
     if (currentOrderNo != null && currentOrderNo !== '') {
       const userConfirmed = window.confirm(

@@ -108,7 +108,7 @@
                   <label>Ülke</label>
 
                   <p-dropdown formControlName="address_country" [options]="_countries" optionLabel="name"
-                    [showClear]="true" placeholder="Ülke"
+                    [showClear]="true" placeholder="Ülke" filter="true"
                     [ngClass]="{'is-invalid': createCustomerForm.controls['address_country'].invalid && createCustomerForm.controls['address_country'].touched}">
                   </p-dropdown>
                   <div
@@ -122,7 +122,7 @@
                 <div class="form-group mb-3">
                   <label>Bölge</label>
                   <p-dropdown formControlName="address_region" [options]="_regions" optionLabel="name"
-                    [showClear]="true" placeholder="Bölge"
+                    [showClear]="true" placeholder="Bölge" filter="true"
                     [ngClass]="{'is-invalid': createCustomerForm.controls['address_region'].invalid && createCustomerForm.controls['address_region'].touched}">
                   </p-dropdown>
                   <div
@@ -136,7 +136,7 @@
                 <div class="form-group mb-3">
                   <label>İl</label>
                   <p-dropdown formControlName="address_province" [options]="_provinces" optionLabel="name"
-                    [showClear]="true" placeholder="İl"
+                    [showClear]="true" placeholder="İl" filter="true"
                     [ngClass]="{'is-invalid': createCustomerForm.controls['address_province'].invalid && createCustomerForm.controls['address_province'].touched}">
                   </p-dropdown>
                   <div
@@ -150,7 +150,7 @@
                 <div class="form-group mb-3">
                   <label>İlçe</label>
                   <p-dropdown formControlName="address_district" [options]="_districts" optionLabel="name"
-                    [showClear]="true" placeholder="İlçe"
+                    [showClear]="true" placeholder="İlçe" filter="true"
                     [ngClass]="{'is-invalid': createCustomerForm.controls['address_district'].invalid && createCustomerForm.controls['address_district'].touched}">
                   </p-dropdown>
                   <div
@@ -164,7 +164,7 @@
                 <div class="form-group mb-3">
                   <label>Vergi Dairesi</label>
                   <p-dropdown formControlName="address_taxOffice" [options]="_taxOffices" optionLabel="name"
-                    [showClear]="true" placeholder="Vergi Dairesi"
+                    [showClear]="true" placeholder="Vergi Dairesi" filter="true"
                     [ngClass]="{'is-invalid': createCustomerForm.controls['address_taxOffice'].invalid && createCustomerForm.controls['address_taxOffice'].touched}">
                   </p-dropdown>
                   <div

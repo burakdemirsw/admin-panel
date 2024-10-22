@@ -814,106 +814,94 @@
             </div>
             <form [formGroup]="discountForm" *ngIf="invoiceProducts.length > 0 &&  !this.invoiceProcess?.isCompleted"
               class="mb-3 ">
-              <table class="table table-bordered"
-                *ngIf="invoiceProducts.length > 0 &&  !this.invoiceProcess?.isCompleted">
-                <tbody>
+              <p-table [value]="[{}]" [tableStyle]="{'min-width': '50rem'}" [responsiveLayout]="'scroll'">
 
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Özellik</th>
+                    <th>Değer</th>
+                  </tr>
+                </ng-template>
 
+                <ng-template pTemplate="body">
                   <tr *ngIf="this.invoiceProcess?.isCompleted">
-                    <th scope="row" class="text-left">Ofis Kodu:</th>
+                    <td class="text-left">Ofis Kodu:</td>
                     <td class="text-left">{{ this.invoiceProcess?.officeCode || 'Belirtilmemiş' }}</td>
                   </tr>
                   <tr *ngIf="this.invoiceProcess?.isCompleted">
-                    <th scope="row" class="text-left">Depo Kodu:</th>
+                    <td class="text-left">Depo Kodu:</td>
                     <td class="text-left">{{ this.invoiceProcess?.warehouseCode || 'Belirtilmemiş' }}</td>
                   </tr>
-
                   <tr *ngIf="this.invoiceProcess?.isCompleted">
-                    <th scope="row" class="text-left">Satış Elemanı Kodu:</th>
+                    <td class="text-left">Satış Elemanı Kodu:</td>
                     <td class="text-left">{{ this.invoiceProcess?.salesPersonCode || 'Belirtilmemiş' }}</td>
                   </tr>
                   <tr *ngIf="this.invoiceProcess?.isCompleted">
-                    <th scope="row" class="text-left"> Vergi Tipi:</th>
-                    <td class="text-left">{{  this.invoiceProcess?.taxTypeCode|| 'Belirtilmemiş' }}
-                    </td>
+                    <td class="text-left">Vergi Tipi:</td>
+                    <td class="text-left">{{ this.invoiceProcess?.taxTypeCode || 'Belirtilmemiş' }}</td>
                   </tr>
-                  <tr *ngIf="this.invoiceProcess?.isCompleted && this.processType=='invoice'">
-                    <th scope="row" class="text-left">İade
-                      Faturası:</th>
-                    <td class=" text-left">{{  this.invoiceProcess?.isReturn ? 'Evet' : 'Hayır' }}</td>
+                  <tr *ngIf="this.invoiceProcess?.isCompleted && this.processType == 'invoice'">
+                    <td class="text-left">İade Faturası:</td>
+                    <td class="text-left">{{ this.invoiceProcess?.isReturn ? 'Evet' : 'Hayır' }}</td>
                   </tr>
-                  <tr *ngIf="this.invoiceProcess?.isCompleted && (this.processCode =='R' &&this.processType=='order' )">
-                    <th scope="row" class="text-left">
-                      E-Fatura Numarası</th>
+                  <tr
+                    *ngIf="this.invoiceProcess?.isCompleted && (this.processCode == 'R' && this.processType == 'order')">
+                    <td class="text-left">E-Fatura Numarası:</td>
                     <td class="text-left">{{ this.invoiceProcess?.eInvoiceNumber || 'Belirtilmemiş' }}</td>
                   </tr>
                   <tr
-                    *ngIf="this.invoiceProcess?.isCompleted && (this.processCode =='R' &&this.processType=='invoice' )">
-                    <th scope="row" class="text-left">
-                      E-Fatura Numarası</th>
+                    *ngIf="this.invoiceProcess?.isCompleted && (this.processCode == 'R' && this.processType == 'invoice')">
+                    <td class="text-left">E-Fatura Numarası:</td>
                     <td class="text-left">{{ this.invoiceProcess?.eInvoiceNumber || 'Belirtilmemiş' }}</td>
                   </tr>
                   <tr
-                    *ngIf="this.invoiceProcess?.isCompleted && (this.processCode =='R' &&this.processType=='proposal' )">
-                    <th scope="row" class="text-left">
-                      Teklif Numarası</th>
+                    *ngIf="this.invoiceProcess?.isCompleted && (this.processCode == 'R' && this.processType == 'proposal')">
+                    <td class="text-left">Teklif Numarası:</td>
                     <td class="text-left">{{ this.invoiceProcess?.eInvoiceNumber || 'Belirtilmemiş' }}</td>
                   </tr>
-
-
-
-                  <tr *ngIf="this.processCode =='R' ">
-                    <th scope="row" class="text-left">Müşteri:</th>
-                    <td class="text-left">{{  this.invoiceProcess?.currAccCode || 'Belirtilmemiş' }}
-                    </td>
+                  <tr *ngIf="this.processCode == 'R'">
+                    <td class="text-left">Müşteri:</td>
+                    <td class="text-left">{{ this.invoiceProcess?.currAccCode || 'Belirtilmemiş' }}</td>
                   </tr>
-                  <tr *ngIf="this.processCode =='BP' ">
-                    <th scope="row" class="text-left">Tedarikçi:</th>
-                    <td class="text-left">{{  this.invoiceProcess?.vendorCode || 'Belirtilmemiş' }}
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <th scope="row">Alt Toplam</th>
-                    <td>{{ getTotal() | currency : "₺" }}</td>
+                  <tr *ngIf="this.processCode == 'BP'">
+                    <td class="text-left">Tedarikçi:</td>
+                    <td class="text-left">{{ this.invoiceProcess?.vendorCode || 'Belirtilmemiş' }}</td>
                   </tr>
                   <tr>
-                    <th scope="row" class="text-left">Dip İskonto (%) :</th>
+                    <td class="text-left">Alt Toplam:</td>
+                    <td>{{ getTotal() | currency: "₺" }}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Dip İskonto (%):</td>
                     <td class="text-left">{{ this.invoiceProcess?.discountRate1 || 'Belirtilmemiş' }}</td>
                   </tr>
                   <tr>
-                    <th scope="row" class="text-left">Dip İskonto (₺) :</th>
+                    <td class="text-left">Dip İskonto (₺):</td>
                     <td class="text-left">{{ this.invoiceProcess?.discountRate2 || 'Belirtilmemiş' }}</td>
                   </tr>
                   <tr>
-                    <th scope="row">İnd. Alt Toplam</th>
-                    <td>{{ getFinalTotalPrice() | currency : "₺" }}</td>
-                  </tr>
-                  <!-- <tr>
-                    <th scope="row">Toplam KDV</th>
-                    <td>{{ getTotalTax() | currency : "₺" }}</td>
-                  </tr> -->
-                  <tr>
-                    <th scope="row">Toplam KDV</th>
-                    <td>{{   calculateTotalTax()  | currency : "₺" }}</td>
+                    <td class="text-left">İnd. Alt Toplam:</td>
+                    <td>{{ getFinalTotalPrice() | currency: "₺" }}</td>
                   </tr>
                   <tr>
-                    <th scope="row">Genel Toplam (KDV Dahil)</th>
-                    <td>{{ getFinalTotalPrice()+calculateTotalTax()  | currency : "₺" }}</td>
+                    <td class="text-left">Toplam KDV:</td>
+                    <td>{{ calculateTotalTax() | currency: "₺" }}</td>
                   </tr>
-
+                  <tr>
+                    <td class="text-left">Genel Toplam (KDV Dahil):</td>
+                    <td>{{ getFinalTotalPrice() + calculateTotalTax() | currency: "₺" }}</td>
+                  </tr>
                   <tr *ngIf="invoiceNumber">
-                    <th scope="row" class="text-left">Fatura Numarası:</th>
+                    <td class="text-left">Fatura Numarası:</td>
                     <td class="text-left">{{ invoiceNumber }}</td>
                   </tr>
-
-                </tbody>
-              </table>
+                </ng-template>
+              </p-table>
 
               <!-- İNDİRİM FORMU----------------------------------------------------------------------------------------------------->
 
 
-              <div class="row">
+              <div class="row mt-4">
                 <div class="col-md-4  mb-3">
                   <div class="input-group">
                     <div class="input-group-prepend">
@@ -956,19 +944,19 @@
             </button>
             <div *ngIf="this.processType=='proposal' && this.invoiceProducts.length >0">
               <div class="row">
-                <div class="col-md-4"> <button type=" button" class="btn btn-primary" (click)="loadPaymentForm()"
+                <div class="col-md-4 mb-3"> <button type=" button" class="btn btn-primary" (click)="loadPaymentForm()"
                     style="width: 100%;" [disabled]="
                     this.invoiceProcess?.isCompleted || invoiceProducts.length <= 0 ">
                     Ödeme Ekle
                   </button>
                 </div>
-                <div class="col-md-4"> <button type=" button" class="btn btn-primary" (click)="createProposalReport()"
-                    style="width: 100%;" [disabled]="
+                <div class="col-md-4 mb-3"> <button type=" button" class="btn btn-primary"
+                    (click)="createProposalReport()" style="width: 100%;" [disabled]="
                     this.invoiceProcess?.isCompleted || invoiceProducts.length <= 0 ">
                     Pdf Çıktısı Al
                   </button>
                 </div>
-                <div class="col-md-4"> <button type=" button" class="btn btn-primary" (click)="completeProposal()"
+                <div class="col-md-4 mb-3"> <button type=" button" class="btn btn-primary" (click)="completeProposal()"
                     style="width: 100%;" [disabled]="
                     this.invoiceProcess?.isCompleted || invoiceProducts.length <= 0 ">
                     Teklifi Oluştur
@@ -1221,8 +1209,16 @@
                             formControlName="payment">
                         </div>
                       </div>
-                      <div class="col-md-12">
-                        <button class="btn btn-success" style="width: 100%;" (click)="onSubmitPayment(1)">Ekle</button>
+                      <div class="row">
+                        <div class="col-md-12 mb-3">
+                          <button class="btn btn-success" style="width: 100%;" (click)="setPaymentValue(1)">Kalan
+                            Tutarı Al</button>
+                        </div>
+
+                        <div class="col-md-12">
+                          <button class="btn btn-success" style="width: 100%;"
+                            (click)="onSubmitPayment(1)">Ekle</button>
+                        </div>
                       </div>
                     </div>
                   </form>
@@ -1289,8 +1285,16 @@
                             formControlName="payment">
                         </div>
                       </div>
-                      <div class="col-md-12">
-                        <button class="btn btn-success" style="width: 100%;" (click)="onSubmitPayment(2)">Ekle</button>
+                      <div class="row">
+                        <div class="col-md-12 mb-3">
+                          <button class="btn btn-success" style="width: 100%;" (click)="setPaymentValue(2)">Kalan
+                            Tutarı Al</button>
+                        </div>
+
+                        <div class="col-md-12">
+                          <button class="btn btn-success" style="width: 100%;"
+                            (click)="onSubmitPayment(2)">Ekle</button>
+                        </div>
                       </div>
                     </div>
                   </form>
@@ -1340,8 +1344,16 @@
                             formControlName="payment">
                         </div>
                       </div>
-                      <div class="col-md-12">
-                        <button class="btn btn-success" style="width: 100%;" (click)="onSubmitPayment(4)">Ekle</button>
+                      <div class="row">
+                        <div class="col-md-12 mb-3">
+                          <button class="btn btn-success" style="width: 100%;" (click)="setPaymentValue(4)">Kalan
+                            Tutarı Al</button>
+                        </div>
+
+                        <div class="col-md-12">
+                          <button class="btn btn-success" style="width: 100%;"
+                            (click)="onSubmitPayment(4)">Ekle</button>
+                        </div>
                       </div>
                     </div>
                   </form>
@@ -1349,6 +1361,73 @@
 
                 </p-tabPanel>
                 <p-tabPanel header="Cari Ödeme">
+                  <form [formGroup]="debitPaymentForm" class="mb-3">
+                    <div class="row mb-3">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label for="payment">Tutar</label>
+                          <input type="number" id="payment" class="form-control" formControlName="payment"
+                            placeholder="Kredi Tutarı">
+                          <div *ngIf="debitPaymentForm.get('payment')?.touched &&
+                            debitPaymentForm.get('payment')?.invalid" class="text-danger">
+                            Tutar Tutarı zorunludur.
+                          </div>
+                        </div>
+                      </div>
+
+
+                    </div>
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="docCurrencyCode">Para Birimi</label>
+                        <select id="docCurrencyCode" class="form-control" formControlName="docCurrencyCode">
+                          <option value="" selected>Seçin</option>
+                          <option *ngFor="let g of currencyCodes" [value]="g.currencyCode">
+                            {{ g.currencyDescription }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label for="dueDate">Vade Tarihi</label>
+                          <input type="date" id="dueDate" class="form-control" formControlName="dueDate">
+                          <div *ngIf="debitPaymentForm.get('dueDate')?.touched &&
+                            debitPaymentForm.get('dueDate')?.invalid" class="text-danger">
+                            Vade Tarihi zorunludur.
+                          </div>
+                        </div>
+                      </div>
+
+
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label for="lineDescription">Açıklama</label>
+                          <input type="text" id="lineDescription" class="form-control" formControlName="lineDescription"
+                            placeholder="Açıklama">
+
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-12">
+                        <button class="btn btn-success" style="width: 100%;" (click)="setPaymentValue(70)">Kalan Tutarı
+                          Al</button>
+                      </div>
+
+                      <div class="col-md-12">
+                        <button class="btn btn-success" style="width: 100%;" (click)="onSubmitPayment(70)">Ekle</button>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <button class="btn btn-success" style="width: 100%;" (click)="onSubmitPayment(70)">Ekle</button>
+                    </div>
+                  </form>
                 </p-tabPanel>
               </p-tabView>
             </div>
@@ -1356,61 +1435,88 @@
 
           <div class="mb-3" *ngIf="paymentsOfProcess.length>0">
             <h5 class="text-center">Ödeme Bilgileri</h5>
-            <table class="table table-bordered">
-              <thead>
+
+            <p-table [value]="paymentsOfProcess" [rows]="10" [tableStyle]="{'min-width': '50rem'}"
+              [responsiveLayout]="'scroll'" dataKey="id">
+
+              <!-- Table Headers -->
+              <ng-template pTemplate="header">
                 <tr>
                   <th>Ödeme Tipi</th>
                   <th>Ödeme Tutarı</th>
                   <th>Vade Tarihi</th>
                   <th>Açıklama</th>
-                  <th>İşlemler</th>
-
+                  <th>Ödeme Numarası</th>
+                  <th>Onay</th>
+                  <th>İşlem</th>
                 </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let payment of paymentsOfProcess">
+              </ng-template>
 
-                  <td>{{getPaymentDescription( payment.paymentType )}}</td>
-                  <td>{{ payment.payment | currency : "₺" }}</td>
+              <!-- Table Body -->
+              <ng-template pTemplate="body" let-payment>
+                <tr>
+                  <td>{{ getPaymentDescription(payment.paymentType) }}</td>
+                  <td>{{ payment.payment | currency: "₺" }}</td>
                   <td>{{ payment.dueDate | date: 'shortDate' }}</td>
                   <td>{{ payment.lineDescription }}</td>
+
+
+
+                  <td>{{ payment.paymentNumber }}</td>
+                  <td>
+                    <button class="btn btn-success" *ngIf="payment.isCompleted">
+                      <i class="fa fa-check"></i>
+                    </button>
+                    <button class="btn btn-danger" *ngIf="!payment.isCompleted">
+                      <i class="fa fa-ban" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                  <!-- Uncomment if you want to include an Actions column -->
                   <td>
                     <div class="btn-group" role="group" aria-label="Button group" (click)="deletePayment(payment.id)">
                       <button class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></button>
                     </div>
                   </td>
                 </tr>
-              </tbody>
-            </table>
+              </ng-template>
+            </p-table>
           </div>
           <div class="row">
             <div class="col-md-12">
               <h5 class="text-center">Ödeme Toplamı</h5>
-              <table class="table table-bordered text-center">
-                <tbody>
+              <p-table [value]="[{}]" [tableStyle]="{'min-width': '20rem'}">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Özellik</th>
+                    <th>Değer</th>
+                  </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body">
                   <tr>
                     <td>Toplam</td>
-                    <td class="total-row" style="font-size: bold;">
-                      {{ getFinalTotalPrice()+calculateTotalTax()  | currency : "₺" }}</td>
+                    <td class="total-row" style="font-weight: bold;">
+                      {{ getFinalTotalPrice() + calculateTotalTax() | currency: "₺" }}
+                    </td>
                   </tr>
                   <tr>
                     <td>Ödenen Tutar</td>
-                    <td class="paid-row">{{  getTotalPaymentValue()| currency : "₺"}}</td>
+                    <td class="paid-row">{{ getTotalPaymentValue() | currency: "₺" }}</td>
                   </tr>
                   <tr>
                     <td>Kalan</td>
                     <td class="paid-row">
-                      {{ ((getFinalTotalPrice()+calculateTotalTax())-getTotalPaymentValue()).toFixed(2) | currency : "₺"}}
+                      {{ ((getFinalTotalPrice() + calculateTotalTax()) - getTotalPaymentValue()).toFixed(2) | currency: "₺" }}
                     </td>
                   </tr>
                   <tr>
                     <td>Para Üstü</td>
                     <td class="change-row">
-                      {{ getTotalPaymentValue()- (getFinalTotalPrice()+calculateTotalTax()) >0 ? (getTotalPaymentValue()- (getFinalTotalPrice()+calculateTotalTax())).toFixed(2) : 0 }}
+                      {{ (getTotalPaymentValue() - (getFinalTotalPrice() + calculateTotalTax()) > 0) ? (getTotalPaymentValue() - (getFinalTotalPrice() + calculateTotalTax())).toFixed(2) : 0 }}
                     </td>
                   </tr>
-                </tbody>
-              </table>
+                </ng-template>
+              </p-table>
             </div>
           </div>
         </div>

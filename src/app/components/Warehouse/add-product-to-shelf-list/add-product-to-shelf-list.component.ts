@@ -3,11 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { CreateBarcodeFromOrder_RM } from 'src/app/components/Product/create-barcode/models/createBarcode';
-import { ClientUrls } from 'src/app/models/const/ClientUrls';
 import { CountListFilterModel } from 'src/app/models/model/filter/countListFilterModel';
 import { UserClientInfoResponse } from 'src/app/models/model/user/userRegister_VM';
-import { WarehouseItem } from 'src/app/models/model/warehouse/warehouseItem';
-import { InnerHeader, InnerLine_VM } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
+import { InnerHeader } from 'src/app/models/model/warehouse/ztmsg_CountedProduct';
 import { GeneralService } from 'src/app/services/admin/general.service';
 import { HeaderService } from 'src/app/services/admin/header.service';
 import { ProductService } from 'src/app/services/admin/product.service';
@@ -15,6 +13,8 @@ import { UserService } from 'src/app/services/admin/user.service';
 import { WarehouseService } from 'src/app/services/admin/warehouse.service';
 import { ExportCsvService } from 'src/app/services/export-csv.service';
 import { ToasterService } from 'src/app/services/ui/toaster.service';
+import { InfoService } from '../../../services/admin/info.service';
+import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
 
 @Component({
   selector: 'app-add-product-to-shelf-list',
@@ -35,14 +35,18 @@ export class AddProductToShelfListComponent {
     private generalService: GeneralService,
     private activatedRoute: ActivatedRoute,
     private headerService: HeaderService,
-    private userService: UserService
+    private userService: UserService,
+    private infoService: InfoService
   ) { }
   innerProcessCode: string;
   user: UserClientInfoResponse;
+  WarehouseOfficeModel
+  warehouseModels: WarehouseOfficeModel[] = [];
   async ngOnInit() {
     this.user = this.userService.getUserClientInfoResponse();
     //this.spinnerService.show();
     this.formGenerator();
+    this.warehouseModels = await this.infoService.getWarehouseAndOffices();
     this.activatedRoute.paramMap.subscribe(params => {
       const param = params.get('innerProcessCode'); // 'id' parametresini alıyoruz, rota yapınıza göre değiştirin
       this.loadData();
@@ -54,6 +58,10 @@ export class AddProductToShelfListComponent {
       })
     });
 
+  }
+
+  getWarehouseDesc(warehouseCode: string) {
+    return this.warehouseModels.find(w => w.warehouseCode == warehouseCode).warehouseDescription;
   }
   async route(code: string, isReturn?: boolean, isShefBased?: boolean, istransferbetweeenOfficeWarehouses?: boolean) {
     const result = await this.generalService.generateGUID();
@@ -222,13 +230,13 @@ export class AddProductToShelfListComponent {
         ];
       } else {
         this.items.push({
-          label: 'Yeni Rafsız Mağaza Transfer İrsaliyesi Oluştur',
+          label: 'Yeni Mağaza Transfer İrsaliyesi Oluştur',
           command: () => {
             this.route(this.innerProcessCode, false, false)
           }
         },
           {
-            label: 'Yeni Rafsız Merkeze İade Oluştur',
+            label: 'Yeni Merkeze İade Oluştur',
             command: () => {
               this.route(this.innerProcessCode, true, false)
             }
@@ -375,7 +383,7 @@ export class AddProductToShelfListComponent {
         );
         if (userConfirmed) {
           try {
-            const data = await this.warehouseService.transferBetweenStoreWarehouses(innerHeader.id);
+            const data = await this.warehouseService.transferBetweenStoreWarehouses(innerHeader.id, this.user.userId);
             if (data) {
               this.toasterService.success('İşlem Başarılı');
               // await this.getInnerHeaderById(this.currentOrderNo)

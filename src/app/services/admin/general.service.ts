@@ -90,10 +90,22 @@ export class GeneralService {
     }
   }
   getCurrentDatetime(): string {
-    const datetime = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss');
+    const datetime = this.datePipe.transform(new Date().getHours() + 3, 'yyyy-MM-dd HH:mm:ss');
     return datetime;
   }
+  getCurrentDatetime_2(): Date {
+    // Şu anki zamanı al
+    const currentDate = new Date();
 
+    // 3 saat ekle asdsasdsa
+    currentDate.setHours(currentDate.getHours() + 3);
+
+    // İstenilen formata çevir
+    const datetimeString = this.datePipe.transform(currentDate, 'yyyy-MM-dd HH:mm:ss');
+
+    // Yeni bir Date nesnesi olarak döndür
+    return new Date(datetimeString as string);
+  }
   formatPhoneNumber(value: string): string {
     // Sadece sayıları bırak, mevcut formatlama karakterlerini temizle
     let newVal = value.replace(/\D/g, ''); // Boşluk, parantez, tire vb. karakterleri kaldır

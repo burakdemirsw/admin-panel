@@ -101,8 +101,8 @@ import { FastTransferListComponent } from './components/Warehouse/fast-transfer/
 import { FastTransferComponent } from './components/Warehouse/fast-transfer/fast-transfer.component';
 import { ShelfTransferRequestComponent } from './components/Warehouse/shelf-transfer-request/shelf-transfer-request.component';
 import { ShelfComponent } from './components/Warehouse/shelf/shelf.component';
-import { AddProductToShelfListComponent } from './components/Warehouse/warehosue-shelf-count/add-product-to-shelf-list/add-product-to-shelf-list.component';
-import { AddProductToShelfComponent } from './components/Warehouse/warehosue-shelf-count/add-product-to-shelf/add-product-to-shelf.component';
+import { AddProductToShelfListComponent } from './components/Warehouse/add-product-to-shelf-list/add-product-to-shelf-list.component';
+import { AddProductToShelfComponent } from './components/Warehouse/add-product-to-shelf/add-product-to-shelf.component';
 import { WarehosueShelfCountComponent } from './components/Warehouse/warehosue-shelf-count/warehosue-shelf-count.component';
 import { WarehouseOperationConfirmDetailComponent } from './components/Warehouse/warehouse-operation/warehouse-operation-confirm-detail/warehouse-operation-confirm-detail.component';
 import { WarehouseOperationListComponent } from './components/Warehouse/warehouse-operation/warehouse-operation-list/warehouse-operation-list.component';

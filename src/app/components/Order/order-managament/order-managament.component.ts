@@ -85,12 +85,12 @@ export class OrderManagamentComponent implements OnInit {
         this.exportCsv();
       }
     },
-    {
-      label: 'İrsaliye Çıktısı Al',
-      command: () => {
-        this.getWayBillReport();
-      }
-    },
+    // {
+    //   label: 'İrsaliye Çıktısı Al',
+    //   command: () => {
+    //     this.getWayBillReport();
+    //   }
+    // },
     // {
     //   label: 'Sipariş Durumunu Güncelle',
     //   command: () => {
@@ -121,15 +121,15 @@ export class OrderManagamentComponent implements OnInit {
       }
     },
     {
-      label: 'Sevk Edilen Siparişler',
+      label: 'Kapalı Sevkler',
       command: () => {
-        this.getOrders(1, 2);
+        this.getOrders(1, 4);
       }
     },
     {
-      label: 'Sevk Edilmeyen Siparişler',
+      label: 'Açık Sevkler',
       command: () => {
-        this.getOrders(1, 2);
+        this.getOrders(1, 3);
       }
     },
     {
@@ -154,15 +154,15 @@ export class OrderManagamentComponent implements OnInit {
   }
 
   async ngOnInit() {
-    //this.spinnerService.show();
-
-    this.activatedRoute.queryParams.subscribe(params => {
+    this.activatedRoute.params.subscribe(async params => {
       if (params['status']) {
         this.status = params['status']
       }
       if (params['invoiceStatus']) {
         this.invoiceStatus = params['invoiceStatus']
       }
+      this.formGenerator()
+      await this.getOrders(this.status, this.invoiceStatus);
     });
     if (location.href.includes("missing-list")) {
       this.pageDescription = true
@@ -170,12 +170,11 @@ export class OrderManagamentComponent implements OnInit {
     }
 
 
-    this.formGenerator()
-    await this.getOrders(this.status, this.invoiceStatus);
+
     //this.spinnerService.hide();
     this.user = this.userService.getUserClientInfoResponse();
     // console.log(this.user);
-    this.saleOrderModels = this.saleOrderModels.filter(o => o.warehouseCode == this.user.warehouseCode);
+
     this.setPageDescription();
 
   }
@@ -232,6 +231,14 @@ export class OrderManagamentComponent implements OnInit {
     } if (this.status == 0 && this.invoiceStatus == 3) {
 
       this.pageDescriptionLine = "Kısmi Faturalaştırılan Siparişler"
+    }
+    if (this.status == 1 && this.invoiceStatus == 3) {
+
+      this.pageDescriptionLine = "Açık Sevkler"
+    }
+    if (this.status == 1 && this.invoiceStatus == 4) {
+
+      this.pageDescriptionLine = "Kapalı Sevkler"
     }
     this.headerService.updatePageTitle(this.pageDescriptionLine);
 
@@ -323,10 +330,7 @@ export class OrderManagamentComponent implements OnInit {
   }
 
   filterOrdersByRole() {
-    if (localStorage.getItem('roleDescription') != 'Admin') {
-      this.saleOrderModels = this.saleOrderModels.filter(x => x.salespersonCode == localStorage.getItem('salesPersonCode'))
-      this.toasterService.info('Sadece Kendi Siparişlerinizi Görebilirsiniz.')
-    }
+    this.saleOrderModels = this.saleOrderModels.filter(o => o.warehouseCode == this.user.warehouseCode);
   }
   async deleteInvoiceProducts(orderNumber: string) {
 

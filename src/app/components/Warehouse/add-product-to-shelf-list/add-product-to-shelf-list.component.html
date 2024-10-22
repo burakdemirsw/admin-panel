@@ -90,8 +90,8 @@
           <tr>
             <td>{{ count.description }}</td>
             <td>{{ count.innerProcessCode }}</td>
-            <td>{{ count.warehouseCode }}</td>
-            <td>{{ count.toWarehouseCode }}</td>
+            <td>{{getWarehouseDesc(count.warehouseCode)  }}</td>
+            <td>{{getWarehouseDesc( count.toWarehouseCode) }}</td>
 
             <td>{{ count.createdDate | date:'dd/MM/yyyy' }}</td>
             <td *ngIf=" count.isCompleted "><i class="fa fa-check" aria-hidden="true"></i></td>

@@ -58,12 +58,16 @@ export class InnerHeader {
   description?: string;
   applicationCode?: string;
   innerProcessType: number;
-  isCompleted: boolean;
   isReturn: boolean;
   userId: number
   createdDate?: Date;
   isShelfBased?: boolean;
   updatedDate?: Date = new Date();
   innerProcessCode: string;
+  isCompleted: boolean;
+  completionDate: Date;
+  completedUserId: number
   isApproved: boolean;
+  approvedUserId: number
+  approveDate: Date
 }

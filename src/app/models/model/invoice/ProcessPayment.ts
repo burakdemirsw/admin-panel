@@ -13,5 +13,7 @@ export class ProcessPayment {
   dueDate?: Date; // ? ile optional
   docCurrencyCode?: string; // ? ile optional
   userId: number;
+  isCompleted: boolean;
+  paymentNumber: string;
 
 }

@@ -1,5 +1,34 @@
 <main id="main" class="main">
   <section class="section">
+    <div class="card border-0 shadow-lg text-center mt-4 p-2"
+      *ngIf="this.innerHeader?.isCompleted && !this.innerHeader?.isApproved">
+      <div class="card-body">
+        <div class="d-flex justify-content-center align-items-center mb-3">
+          <i class="fas fa-exclamation-circle fa-3x text-danger"></i>
+        </div>
+        <h5 class="card-title text-uppercase font-weight-bold">Önemli</h5>
+        <p class="card-text text-muted">Bu İşlem Tamamlanmıştır. Lütfen Transferi Onaylayınız.
+        </p>
+
+        <button *ngIf="this.innerProcessCode == 'S'||this.innerProcessCode == 'WT' || this.innerProcessCode == 'WT-O' "
+          type="button" class="btn btn-primary" style="margin-left: 10px; color: white" (click)="handleTransfer()"
+          style="width: 100%">
+          Transferi Onayla
+        </button>
+      </div>
+    </div>
+    <div class="card border-0 shadow-lg text-center mt-4 p-2" *ngIf="this.innerHeader?.isApproved">
+      <div class="card-body">
+        <div class="d-flex justify-content-center align-items-center mb-3">
+          <i class="fas fa-check-circle fa-3x text-success"></i>
+        </div>
+        <h5 class="card-title text-uppercase font-weight-bold">Önemli</h5>
+        <p class="card-text text-muted">Bu İşlem Onaylanmıştır;
+        </p>
+
+
+      </div>
+    </div>
     <p-tabView [activeIndex]="activeIndex">
       <p-tabPanel header="Başlık">
         <div class="row">
@@ -110,6 +139,10 @@
         </div>
       </p-tabPanel>
       <p-tabPanel header="Satırlar">
+
+
+
+
         <form [formGroup]="checkForm" (ngSubmit)="onSubmit(checkForm.value)">
           <div class="row mb-3" *ngIf="this.isShelfBased == true">
             <div class="form-group">
@@ -159,7 +192,8 @@
 
           <div class="row mb-1">
             <div class="form-group col">
-              <button type="button" class="btn btn-primary" (click)="onSubmit(checkForm.value)" style="width: 100%">
+              <button type="button" class="btn btn-primary" (click)="onSubmit(checkForm.value)" style="width: 100%"
+                [disabled]="this.innerHeader?.isApproved">
                 Ekle
               </button>
             </div>
@@ -174,10 +208,12 @@
                 style="width: 100%">
                 Sayımı Eşitlemeyi Tamamla
               </button>
+
+              <!-- handleTransfer -->
               <button
                 *ngIf="this.innerProcessCode == 'S'||this.innerProcessCode == 'WT' || this.innerProcessCode == 'WT-O' "
-                type="button" class="btn btn-primary" style="margin-left: 10px; color: white" (click)="handleTransfer()"
-                style="width: 100%">
+                type="button" class="btn btn-primary" style="margin-left: 10px; color: white" (click)="completeInner()"
+                [disabled]="this.innerHeader?.isCompleted" style="width: 100%">
                 Transferi Tamamla
               </button>
 
@@ -229,7 +265,8 @@
                   <td>{{ product.quantity }}</td>
                   <td>
                     <div class="btn-group">
-                      <button class="btn btn-danger" type="submit" (click)="deleteOrderProduct(product.id)">
+                      <button [disabled]="this.innerHeader?.isApproved" class="btn btn-danger" type="submit"
+                        (click)="deleteOrderProduct(product.id)">
                         <i class="fa fa-trash"></i>
                       </button>
                       <!--
@@ -256,11 +293,8 @@
           </div>
         </div> -->
       </p-tabPanel>
-
     </p-tabView>
-
     <p-dialog header="Sayım Tipini Seçiniz" [(visible)]="dialog" [style]="{ width: '25rem' }">
-
       <div class="row">
         <div class="col md-6">
           <button style="width: 100%;" class="btn btn-danger" label="Cancel" severity="secondary"
@@ -273,12 +307,7 @@
             Sayım
           </button>
         </div>
-
-
       </div>
-
-
     </p-dialog>
-
   </section>
 </main>

@@ -7,6 +7,7 @@ import { InvoiceOfCustomer_VM } from 'src/app/models/model/invoice/invoiceOfCust
 import { CustomerModel } from 'src/app/models/model/customer/customerModel';
 import { AddCustomerAddress_CM, CreateCustomer_CM } from 'src/app/models/model/order/createCustomer_CM';
 import { GetCustomerList_CM, NebimCustomerDto, GetCustomerAddress_CM } from 'src/app/models/model/order/getCustomerList_CM';
+import { CustomerBalance, LastCurrAccCode } from 'src/app/models/model/order/CustomerBalance';
 
 @Injectable({
   providedIn: 'root'
@@ -133,8 +134,33 @@ export class CustomerService {
       return null;
     }
   }
+  async getCustomerBalance(id: string): Promise<CustomerBalance[]> {
+    try {
+      const data = await this.httpClientService
+        .get<CustomerBalance>({
+          controller: 'Customers/get-customer-balance'
+        }, id)
+        .toPromise();
 
+      return data;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
+  async getLastCurrAccCode(id: string): Promise<LastCurrAccCode[]> {
+    try {
+      const data = await this.httpClientService
+        .get<LastCurrAccCode>({
+          controller: 'Customers/get-last-curracccode'
+        }, id)
+        .toPromise();
 
-
+      return data;
+    } catch (error: any) {
+      console.log(error.message);
+      return null;
+    }
+  }
 
 }

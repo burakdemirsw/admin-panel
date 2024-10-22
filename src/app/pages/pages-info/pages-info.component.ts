@@ -12,6 +12,7 @@ import { cdItemDim1Desc } from "src/app/models/model/nebim/cdItemDim1Desc";
 import { cdDeliveryCompanyDesc } from "src/app/models/model/nebim/cdDeliveryCompanyDesc";
 import { cdCreditCardTypeDesc } from "src/app/models/model/nebim/cdCreditCardTypeDesc";
 import { WarehouseOfficeModel } from 'src/app/models/model/warehouse/warehouseOfficeModel';
+import { _capitalize } from 'chart.js/dist/helpers/helpers.core';
 
 @Component({
   selector: 'app-pages-info',
@@ -549,6 +550,14 @@ export class PagesInfoComponent implements OnInit {
         var result = await this.infoService.updateNebimInvoiceInfo(this.nebimInvoiceInfoForm.value);
 
       } else {
+        console.log(this.nebimInvoiceInfos);
+        console.log(this.nebimInvoiceInfoForm.value);
+
+        var r = this.nebimInvoiceInfos.some(p => p.processCode == this.nebimInvoiceInfoForm.value.processCode && p.applicationCode == this.nebimInvoiceInfoForm.value.applicationCode)
+        if (r) {
+          this.toasterService.error('Daha Önce Bu Süreç Tanımlandı');
+          return;
+        }
         this.nebimInvoiceInfoForm.value.id = 0;
         var result = await this.infoService.addNebimInvoiceInfo(this.nebimInvoiceInfoForm.value);
 
