@@ -522,5 +522,23 @@ export class ConfirmProcessComponent implements OnInit {
 
   }
 
+  getOrderState() {
+    var q1 = this.products.reduce((total, product) => total + product.quantity, 0);
+    var q2 = this._products.reduce((total, product) => total + product.requestedShipmentQuantity, 0);
+    if (q1 - q2 == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
+  getOrderState2() {
+    var q1 = this.products.reduce((total, product) => total + product.quantity, 0);
+    var q2 = this.__products.reduce((total, product) => total + product.confirmedShipmentQuantity, 0);
+    if (q1 - q2 == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

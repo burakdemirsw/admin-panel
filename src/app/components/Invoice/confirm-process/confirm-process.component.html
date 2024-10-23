@@ -1,5 +1,29 @@
 <main id="main" class="main">
   <section class="section">
+    <div class="card border-0 shadow-lg text-center mt-4 p-2" *ngIf="getOrderState2()">
+      <div class="card-body">
+        <div class="d-flex justify-content-center align-items-center mb-3">
+          <i class="fas fa-exclamation-circle fa-3x text-danger"></i>
+        </div>
+        <h5 class="card-title text-uppercase font-weight-bold">Önemli</h5>
+        <p class="card-text text-muted">Bu Sevk Tamamlanmıştır.
+        </p>
+
+      </div>
+    </div>
+    <div class="card border-0 shadow-lg text-center mt-4 p-2" *ngIf=" getOrderState() ">
+      <div class="card-body">
+        <div class="d-flex justify-content-center align-items-center mb-3">
+          <i class="fas fa-exclamation-circle fa-3x text-danger"></i>
+        </div>
+        <h5 class="card-title text-uppercase font-weight-bold">Önemli</h5>
+        <p class="card-text text-muted">Bu Sevk Tamamlanmıştır.
+          Değişiklik Yapılamaz.</p>
+
+      </div>
+    </div>
+
+
     <div class="mb-3">
       <p-panel [toggleable]="true">
         <ng-template pTemplate="header">
@@ -345,17 +369,7 @@
 
       </div>
 
-      <div class="card border-0 shadow-lg text-center mt-4 p-2" *ngIf="false">
-        <div class="card-body">
-          <div class="d-flex justify-content-center align-items-center mb-3">
-            <i class="fas fa-exclamation-circle fa-3x text-danger"></i>
-          </div>
-          <h5 class="card-title text-uppercase font-weight-bold">Önemli</h5>
-          <p class="card-text text-muted">Bu Sevk Tamamlanmıştır.
-          </p>
 
-        </div>
-      </div>
 
       <div class="card mt-3 ">
         <div class="card-body p-3">
@@ -371,17 +385,6 @@
     </div>
     <div *ngIf="this.processType=='order'">
 
-      <div class="card border-0 shadow-lg text-center mt-4 p-2" *ngIf="this.state2==false">
-        <div class="card-body">
-          <div class="d-flex justify-content-center align-items-center mb-3">
-            <i class="fas fa-exclamation-circle fa-3x text-danger"></i>
-          </div>
-          <h5 class="card-title text-uppercase font-weight-bold">Önemli</h5>
-          <p class="card-text text-muted">Bu Sevk Tamamlanmıştır.
-            Değişiklik Yapılamaz.</p>
-
-        </div>
-      </div>
 
 
       <div class="card mb-3" *ngIf="products.length > 0">
