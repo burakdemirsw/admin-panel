@@ -60,6 +60,8 @@ import { PagesLoginv2Component } from './pages/pages-loginv2/pages-loginv2.compo
 import { PagesRegisterComponent } from './pages/pages-register/pages-register.component';
 import { UsersProfileComponent } from './pages/users-profile/users-profile.component';
 import { HomepageComponent } from './components/Homepage/homepage.component';
+import { ProductCatalogComponent } from './components/Product/product-catalog/product-catalog.component';
+import { ProductCatalogListComponent } from './components/Product/product-catalog/product-catalog-list/product-catalog-list.component';
 
 
 const routes: Routes = [
@@ -113,6 +115,16 @@ const routes: Routes = [
   {
     path: 'category-operation',
     component: CategoryOperationComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'product-catalog/:id',
+    component: ProductCatalogComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'product-catalog-list',
+    component: ProductCatalogListComponent,
     canActivate: [AuthGuard],
   },
   {

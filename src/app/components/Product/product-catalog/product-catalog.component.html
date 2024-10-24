@@ -1,1 +1,266 @@
-<p>product-catalog works!</p>
+<main id="main" class="main">
+  <section class="section">
+    <div class="card p-3  mt-3">
+      <form [formGroup]="qrForm" (ngSubmit)="onSubmit(qrForm.value)" class="mt-4">
+        <div class="form-row">
+          <div class="form-group col-md-13 mb-3">
+            <div class="input-group">
+              <input pInputText placeholder="Barkod" type="search" id="barcode" class="form-control"
+                formControlName="barcode" />
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="submit" style="height: 100%">
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="filter-container">
+        <div class="filter-row d-flex flex-nowrap align-items-center">
+          <!-- Marka Filtreleme -->
+          <div class="filter-item d-flex flex-column">
+            <label class="form-label mb-1">Marka:</label>
+            <p-dropdown [virtualScroll]="true" [itemSize]="50" showClear="true" appendTo="body"
+              [style]="{'width': '150px'}" [(ngModel)]="selectedBrand" [options]="brands" [filter]="true"
+              placeholder="Marka" (onChange)="filterProducts()">
+            </p-dropdown>
+          </div>
+
+          <!-- Ürün Kodu Filtreleme -->
+          <div class="filter-item d-flex flex-column">
+            <label class="form-label mb-1">Ürün Kodu:</label>
+            <p-dropdown [virtualScroll]="true" [itemSize]="50" showClear="true" appendTo="body"
+              [style]="{'width': '150px'}" [(ngModel)]="selectedItemCode" [options]="itemCodes" [filter]="true"
+              placeholder="Ürün Kodu" (onChange)="filterProducts()">
+            </p-dropdown>
+          </div>
+
+          <!-- Raf No Filtreleme -->
+          <div class="filter-item d-flex flex-column">
+            <label class="form-label mb-1">Raf No:</label>
+            <p-dropdown [virtualScroll]="true" [itemSize]="50" showClear="true" appendTo="body"
+              [style]="{'width': '150px'}" [(ngModel)]="selectedShelfNo" [options]="shelfNos" [filter]="true"
+              placeholder="Raf No" (onChange)="filterProducts()">
+            </p-dropdown>
+          </div>
+
+          <!-- Açıklama Filtreleme -->
+          <div class="filter-item d-flex flex-column">
+            <label class="form-label mb-1">Açıklama:</label>
+            <p-dropdown [virtualScroll]="true" [itemSize]="50" showClear="true" appendTo="body"
+              [style]="{'width': '150px'}" [(ngModel)]="selectedDescription" [options]="descriptions" [filter]="true"
+              placeholder="Açıklama" (onChange)="filterProducts()">
+            </p-dropdown>
+          </div>
+
+          <!-- Hiyerarşi 1 Filtreleme -->
+          <div class="filter-item d-flex flex-column">
+            <label class="form-label mb-1">Hiyerarşi 1:</label>
+            <p-dropdown [virtualScroll]="true" [itemSize]="50" showClear="true" appendTo="body"
+              [style]="{'width': '150px'}" [(ngModel)]="selectedHierarchy1" [options]="productHierarchyLevel01s"
+              [filter]="true" placeholder="Hiyerarşi 1" (onChange)="filterProducts()">
+            </p-dropdown>
+          </div>
+
+          <!-- Hiyerarşi 2 Filtreleme -->
+          <div class="filter-item d-flex flex-column">
+            <label class="form-label mb-1">Hiyerarşi 2:</label>
+            <p-dropdown [virtualScroll]="true" [itemSize]="50" showClear="true" appendTo="body"
+              [style]="{'width': '150px'}" [(ngModel)]="selectedHierarchy2" [options]="productHierarchyLevel02s"
+              [filter]="true" placeholder="Hiyerarşi 2" (onChange)="filterProducts()">
+            </p-dropdown>
+          </div>
+
+          <!-- Hiyerarşi 3 Filtreleme -->
+          <div class="filter-item d-flex flex-column">
+            <label class="form-label mb-1">Hiyerarşi 3:</label>
+            <p-dropdown [virtualScroll]="true" [itemSize]="50" showClear="true" appendTo="body"
+              [style]="{'width': '150px'}" [(ngModel)]="selectedHierarchy3" [options]="productHierarchyLevel03s"
+              [filter]="true" placeholder="Hiyerarşi 3" (onChange)="filterProducts()">
+            </p-dropdown>
+          </div>
+
+
+          <div class="filter-item d-flex flex-column">
+            <button class="btn btn-success" (click)="selectFilteredProducts()">Filtrelenenleri Seç</button>
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+
+    <div class="card p-2" *ngIf="paginatedProducts.length > 0">
+      <div class="card-container" style="cursor:  pointer;">
+        <div class="product-card" *ngFor="let product of paginatedProducts">
+          <div class="product-image">
+            <img (click)="addToBasket(product)" *ngIf="product.photoUrl; else noImage" [src]="product.photoUrl"
+              alt="Product Image" loading="lazy" />
+            <ng-template #noImage>
+              <div class="no-image">Resim Yok</div> <!-- Yedek görüntü alanı -->
+            </ng-template>
+          </div>
+          <div class="product-details">
+            <div class="row">
+              <div class="col-md-6">
+                <p style="font-weight: bold; font-size: 10px; color: red;">
+                  {{ product.brand.toUpperCase() }}
+                </p>
+              </div>
+              <div class="col-md-6">
+                <p style="font-weight: bold; font-size: 10px; color: blue; text-align: right;">
+                  {{ product.itemCode.toUpperCase() }}
+                </p>
+              </div>
+            </div>
+            <p style="font-size: 8px;">{{ product.description.toUpperCase() }}</p>
+            <hr>
+            <div class="row">
+              <div class="col-md-6">
+                <p style="font-size: 10px;">
+                  <strong>Fiyat:</strong> {{ product.price }}
+                  <span style="font-size: 8px;">{{ product.currencyCode }}</span>
+                </p>
+              </div>
+              <div class="col-md-6">
+                <p style="font-size: 10px; text-align: right;">
+                  <strong>Stok:</strong> {{ product.inventory }}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="product-actions">
+            <button *ngIf="checkProduct(product)" type="button" class="btn btn-success" style="width: 100%;"
+              (click)="addToBasket(product)">
+              <i class="fa fa-check" aria-hidden="true"></i> Eklendi
+            </button>
+            <button *ngIf="!checkProduct(product)" type="button" class="btn btn-primary" style="width: 100%;"
+              (click)="addToBasket(product)">
+              <i class="fa fa-plus" aria-hidden="true"></i> Ekle
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="filter-controls">
+        <!-- Sayfalama ayarları -->
+        <p-paginator [rows]="itemsPerPage" [totalRecords]="filteredProducts.length"
+          [rowsPerPageOptions]="[112, 224, 448]" (onPageChange)="onPageChange($event)">
+        </p-paginator>
+      </div>
+
+
+    </div>
+
+
+    <div class="card" *ngIf="basketProducts.length>0">
+      <div class="card-header">
+        <div class="dropdown">
+          <a style="color: black;" class="dropdown-toggle" type="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Seçilen Ürünler
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" (click)="deleteBasketProducts()">Seçilenleri Sil</a></li>
+
+          </ul>
+        </div>
+      </div>
+      <div class="mt-4">
+
+        <p-table #dt2 [value]="basketProducts" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,20,50]"
+          dataKey="itemCode" [resizableColumns]="true" styleClass="p-datatable-striped"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Fotoğraf</th>
+              <th pSortableColumn="brand">Marka<p-sortIcon field="brand"></p-sortIcon>
+              </th>
+              <th pSortableColumn="itemCode">Ürün Kodu<p-sortIcon field="itemCode"></p-sortIcon>
+              </th>
+              <th pSortableColumn="barcode">Barkod<p-sortIcon field="barcode"></p-sortIcon>
+              </th>
+              <th pSortableColumn="quantity">Miktar<p-sortIcon field="quantity"></p-sortIcon>
+              </th>
+              <th pSortableColumn="productHierarchyLevel01">Hiyerarşi 1<p-sortIcon field="productHierarchyLevel01">
+                </p-sortIcon>
+              </th>
+              <th pSortableColumn="productHierarchyLevel02">Hiyerarşi 2<p-sortIcon field="productHierarchyLevel02">
+                </p-sortIcon>
+              </th>
+              <th pSortableColumn="productHierarchyLevel03">Hiyerarşi 3<p-sortIcon field="productHierarchyLevel03">
+                </p-sortIcon>
+              </th>
+              <th pSortableColumn="speed">Hız<p-sortIcon field="speed"></p-sortIcon>
+              </th>
+              <th pSortableColumn="inventory">Envanter<p-sortIcon field="inventory"></p-sortIcon>
+              </th>
+              <th pSortableColumn="price">Fiyat<p-sortIcon field="price"></p-sortIcon>
+              </th>
+              <th pSortableColumn="currencyCode">Para Birimi<p-sortIcon field="currencyCode"></p-sortIcon>
+              </th>
+              <th pSortableColumn="description">Açıklama<p-sortIcon field="description"></p-sortIcon>
+              </th>
+              <th>Çıkar</th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-product>
+            <tr>
+              <td>
+                <img [src]="product.photoUrl" alt="Fotoğraf" width="50" height="50"
+                  *ngIf="product.photoUrl; else noImage" />
+                <ng-template #noImage><span>Resim Yok</span></ng-template>
+              </td>
+              <td>{{ product.brand }}</td>
+              <td>{{ product.itemCode }}</td>
+              <td>{{ product.barcode }}</td>
+              <td>{{ product.quantity }}</td>
+              <td>{{ product.productHierarchyLevel01 }}</td>
+              <td>{{ product.productHierarchyLevel02 }}</td>
+              <td>{{ product.productHierarchyLevel03 }}</td>
+              <td>{{ product.speed }}</td>
+              <td>{{ product.inventory }}</td>
+              <td>{{ product.price }}</td>
+              <td>{{ product.currencyCode }}</td>
+              <td>{{ product.description }}</td>
+              <td>
+                <button type="button" class="btn btn-danger btn-sm" (click)="addToBasket(product)">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="14">Henüz sepete eklenen ürün yok.</td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <div class="row mt-3 p-4">
+          <div class="col-md-6">
+            <button style="width: 100%;" type="button" class="btn btn-success"
+              (click)="createCatalogRaport(this.currentId)">
+              Raporu Getir
+            </button>
+          </div>
+          <div class="col-md-6">
+            <button style="width: 100%;" type="button" class="btn btn-success">
+              Tamamla
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+
+
+    <!-- <p-paginator [rows]="itemsPerPage" [totalRecords]="totalItems" (onPageChange)="onPageChange($event)"
+      [rowsPerPageOptions]="[2, 4, 6, 8]" styleClass="paginator">
+    </p-paginator> -->
+  </section>
+</main>

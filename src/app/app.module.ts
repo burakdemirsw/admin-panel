@@ -120,6 +120,8 @@ import { CreateSaleOrderComponent } from './components/Order/create-sale-order/c
 
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { ProductCatalogComponent } from './components/Product/product-catalog/product-catalog.component';
+import { PaginatorModule } from 'primeng/paginator';
+import { ProductCatalogListComponent } from './components/Product/product-catalog/product-catalog-list/product-catalog-list.component';
 
 @NgModule({
 
@@ -198,11 +200,13 @@ import { ProductCatalogComponent } from './components/Product/product-catalog/pr
     ShelfComponent,
     ServiceManagementComponent,
     PagesInfoComponent,
-    ProductCatalogComponent
+    ProductCatalogComponent,
+    ProductCatalogListComponent
   ],
 
   imports: [
     ToolbarModule,
+    PaginatorModule,
     SkeletonModule,
     FormsModule,
     ReactiveFormsModule,

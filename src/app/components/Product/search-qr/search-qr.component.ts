@@ -196,8 +196,8 @@ export class SearchQrComponent implements OnInit {
     }
   }
   async onSubmit(value: any) {
-    // await this.getProducts(value.barcode);
-    await this.getAllProducts();
+    await this.getProducts(value.barcode);
+    // await this.getAllProducts();
     this.toasterService.success(value.barcode);
   }
   //-------------------------------------------
@@ -207,57 +207,92 @@ export class SearchQrComponent implements OnInit {
     baseZIndex: 1000,
     styleClass: 'custom-overlay-class' // Custom CSS class
   };
+  brands: any[] = [];
+  itemCodes: any[] = [];
+  shelfNos: any[] = [];
+  descriptions: any[] = [];
+  productHierarchyLevel01s: any[] = [];
+  productHierarchyLevel02s: any[] = [];
+  productHierarchyLevel03s: any[] = [];
 
-  brands: any[] = []
-  itemCodes: any[] = []
-  shelfNos: any[] = []
-  // targetShelfs: any[] = []
-  descriptions: any[] = []
-  productHierarchyLevel01s: any[] = []
-  productHierarchyLevel02s: any[] = []
-  productHierarchyLevel03s: any[] = []
-
+  // Seçilen filtreleme değerleri
+  selectedBrand: string = '';
+  selectedItemCode: string = '';
+  selectedShelfNo: string = '';
+  selectedDescription: string = '';
+  selectedHierarchy1: string = '';
+  selectedHierarchy2: string = '';
+  selectedHierarchy3: string = '';
 
   allProducts: FastTransfer_VM[] = [];
+  filteredProducts: FastTransfer_VM[] = [];
+
   async getAllProducts() {
-    if (this.allProducts.length == 0) {
+    if (this.allProducts.length === 0) {
       this.allProducts = await this.productService.searchProduct5();
       this.mapProducts(this.allProducts);
+      this.filterProducts(); // İlk başta tüm ürünleri göstermek için çağrılır
     }
-    this.toasterService.success('Tüm Ürünler Getirildi')
+    this.toasterService.success('Tüm Ürünler Getirildi');
   }
 
   mapProducts(data: FastTransfer_VM[]) {
-    const uniqueMap = (array, key) => {
+    const uniqueMap = (array: any[], key: string) => {
       const map = new Map();
       array.forEach(item => {
         if (!map.has(item[key])) {
-          map.set(item[key], { label: item[key], value: item[key] });
+          map.set(item[key], item[key]);
         }
       });
-      return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label));
+      return Array.from(map.values()).sort((a, b) => a.localeCompare(b));
     };
 
     this.shelfNos = uniqueMap(data, 'shelfNo');
     this.brands = uniqueMap(data, 'brand');
     this.itemCodes = uniqueMap(data, 'itemCode');
-    // this.targetShelfs = uniqueMap(this.__transferProducts, 'targetShelf');
     this.descriptions = uniqueMap(data, 'description');
     this.productHierarchyLevel01s = uniqueMap(data, 'productHierarchyLevel01');
     this.productHierarchyLevel02s = uniqueMap(data, 'productHierarchyLevel02');
     this.productHierarchyLevel03s = uniqueMap(data, 'productHierarchyLevel03');
+
+    // Filtreleme işlemi için verileri ilk başta doldurur
+    this.filteredProducts = [...data];
   }
 
-  logFilteredData(event: any) {
+  filterProducts() {
+    this.filteredProducts = this.allProducts.filter(product => {
+      return (
+        (this.selectedBrand ? product.brand === this.selectedBrand : true) &&
+        (this.selectedItemCode ? product.itemCode === this.selectedItemCode : true) &&
+        (this.selectedShelfNo ? product.shelfNo === this.selectedShelfNo : true) &&
+        (this.selectedDescription ? product.description === this.selectedDescription : true) &&
+        (this.selectedHierarchy1 ? product.productHierarchyLevel01 === this.selectedHierarchy1 : true) &&
+        (this.selectedHierarchy2 ? product.productHierarchyLevel02 === this.selectedHierarchy2 : true) &&
+        (this.selectedHierarchy3 ? product.productHierarchyLevel03 === this.selectedHierarchy3 : true)
+      );
+    });
+    this.mapProducts(this.filteredProducts);
 
-    try {
-      if (event.filteredValue) {
-        var list: FastTransfer_VM[] = event.filteredValue;
-        this.mapProducts(list)
-        this.toasterService.info("Dinamik Search Güncellendi")
-      }
-    } catch (error) {
-      this.toasterService.error(error.message)
-    }
   }
+
+
+  getPrice(price: string) {
+    return Number(price).toFixed(2);
+  }
+
+  // Filtre seçimi değiştiğinde çağrılan fonksiyon
+  onFilterChange() {
+    this.filterProducts();
+  }
+
+  // basketProducts: FastTransfer_VM[] = []
+  // addToBasket(p: FastTransfer_VM) {
+  //   var r = this.basketProducts.some(p => p.itemCode == p.itemCode)
+  //   if (r) {
+  //     this.toasterService.error("Bu Ürün Daha Önce Seçildi");
+  //   } else {
+  //     this.basketProducts.push(p);
+  //   }
+
+  // }
 }

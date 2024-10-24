@@ -1,58 +1,118 @@
-.products-row {
+.card-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 20px;
+  gap: 0.5rem;
+  justify-content: center;
 }
 
 .product-card {
-  flex: 1 1 calc(50% - 10px);
-  /* This makes each card take 50% of the width, minus some gap */
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 15px;
-  border: 1px solid #ddd;
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
+  padding: 0.5rem;
+  margin: 0;
+  width: calc(100% / 8 - 0.5rem);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 15px;
   background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 450px;
 }
 
 .product-image {
-  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Resim yüksekliği sabitlendi */
+  overflow: hidden;
+  margin-bottom: 10px;
+  /* Alt boşluk eklendi */
+}
+
+.product-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* height: 100%; */
+  /* Sabit yükseklik */
+  overflow: hidden;
+  margin-bottom: 10px;
 }
 
 .product-image img {
-  border-radius: 4px;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
-.product-details {
-  flex: 1;
+.no-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: #f0f0f0;
+  color: #888;
+  font-size: 14px;
 }
 
-.product-details h3 {
-  margin: 0;
-  font-size: 1.2rem;
-}
-
-.product-details p {
-  margin: 5px 0;
+.product-info {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
 }
 
 .product-actions {
-  text-align: right;
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
 }
 
 .product-actions button {
-  padding: 8px 12px;
-  background-color: #28a745;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+  width: 100%;
+  border-radius: 0;
+  /* Tam genişlik sağlar */
 }
 
-.product-actions button:hover {
-  background-color: #218838;
+@media (max-width: 768px) {
+  .product-card {
+    width: calc(50% - 0.5rem);
+    /* Mobilde her satırda 2 kart */
+    margin: 0.25rem;
+  }
+
+  .card-container {
+    gap: 0.25rem;
+  }
+}
+
+p {
+  margin: 3px;
+}
+
+hr {
+  margin: 0.3rem;
+}
+
+
+.filter-container {
+  padding: 1rem;
+
+  /* Hafif gri arkaplan */
+  border-radius: 8px;
+  /* Köşeleri yuvarlar */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Hafif gölge efekti */
+}
+
+.form-label {
+  font-weight: 600;
+}
+
+.form-select {
+  width: 100%;
+  height: 40px;
+  padding: 5px 10px;
+  border-radius: 5px;
 }

@@ -45,12 +45,11 @@ exports.__esModule = true;
 exports.GeneralService = void 0;
 var core_1 = require("@angular/core");
 var GeneralService = /** @class */ (function () {
-    function GeneralService(spinnerService, router, toasterService, datePipe, httpClientService) {
+    function GeneralService(spinnerService, router, toasterService, datePipe) {
         this.spinnerService = spinnerService;
         this.router = router;
         this.toasterService = toasterService;
         this.datePipe = datePipe;
-        this.httpClientService = httpClientService;
     }
     GeneralService.prototype.focusNextInput = function (nextInputId) {
         var nextInput = document.getElementById(nextInputId);
@@ -59,47 +58,7 @@ var GeneralService = /** @class */ (function () {
         }
     };
     GeneralService.prototype.isNullOrEmpty = function (value) {
-        if (typeof value === 'object') {
-            return value === null || value === undefined;
-        }
-        else {
-            return value === null || value === undefined || value.trim() === '';
-        }
-    };
-    GeneralService.prototype.formatPhoneNumber = function (value) {
-        // Sadece sayıları bırak, mevcut formatlama karakterlerini temizle
-        var newVal = value.replace(/\D/g, ''); // Boşluk, tire vb. karakterleri kaldır
-        // Eğer boşsa hemen boş döndür
-        if (newVal.length === 0) {
-            return ''; // Boş değer durumu
-        }
-        // Maksimum 10 hane (sadece rakamlar) sınırı
-        if (newVal.length > 10) {
-            newVal = newVal.substring(0, 10); // Sadece ilk 10 rakamı al
-        }
-        // Eğer ilk hane 0 ise, 0'ı sil ve tekrar formatlamayı başlat
-        if (newVal.startsWith('0')) {
-            newVal = newVal.substring(1); // İlk haneyi sil
-            this.toasterService.info('Lütfen 5XX-XXX-XX-XX Formatında Numarayı Giriniz');
-        }
-        // Telefon numarasını formatla
-        if (newVal.length <= 3) {
-            newVal = newVal.replace(/^(\d{0,3})/, '($1'); // İlk 3 hane parantez açılır
-        }
-        else if (newVal.length <= 6) {
-            newVal = newVal.replace(/^(\d{0,3})(\d{0,3})/, '($1) $2'); // 3 hane parantez içinde ve ardından 3 hane, boşluk ile ayır
-        }
-        else if (newVal.length <= 8) {
-            newVal = newVal.replace(/^(\d{0,3})(\d{0,3})(\d{0,2})/, '($1) $2-$3'); // 3+3+2 formatı
-        }
-        else if (newVal.length <= 10) {
-            newVal = newVal.replace(/^(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, '($1) $2-$3-$4'); // Tam telefon formatı, tire ile ayır
-        }
-        // Eğer parantez açıldı ama kapatma eksikse bunu manuel olarak sil
-        if (value.length < 5 && value.includes('(') && !value.includes(')')) {
-            newVal = newVal.replace('(', ''); // '(' varsa ama ')' yoksa parantezi kaldır
-        }
-        return newVal;
+        return value === null || value === undefined || value.trim() === '';
     };
     GeneralService.prototype.beep = function () {
         var audio = new Audio('assets/music/qrSound.mp3');
@@ -160,8 +119,49 @@ var GeneralService = /** @class */ (function () {
         }
     };
     GeneralService.prototype.getCurrentDatetime = function () {
-        var datetime = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss');
+        var datetime = this.datePipe.transform(new Date().getHours() + 3, 'yyyy-MM-dd HH:mm:ss');
         return datetime;
+    };
+    GeneralService.prototype.getCurrentDatetime_2 = function () {
+        // Şu anki zamanı al
+        var currentDate = new Date();
+        // 3 saat ekle asdsasdsa
+        currentDate.setHours(currentDate.getHours() + 3);
+        // İstenilen formata çevir
+        var datetimeString = this.datePipe.transform(currentDate, 'yyyy-MM-dd HH:mm:ss');
+        // Yeni bir Date nesnesi olarak döndür
+        return new Date(datetimeString);
+    };
+    GeneralService.prototype.formatPhoneNumber = function (value) {
+        // Sadece sayıları bırak, mevcut formatlama karakterlerini temizle
+        var newVal = value.replace(/\D/g, ''); // Boşluk, parantez, tire vb. karakterleri kaldır
+        // Eğer boşsa hemen boş döndür
+        if (newVal.length === 0) {
+            return ''; // Boş değer durumu
+        }
+        // Maksimum 10 hane (sadece rakamlar) sınırı
+        if (newVal.length > 10) {
+            newVal = newVal.substring(0, 10); // Sadece ilk 10 rakamı al
+        }
+        // Eğer ilk hane 0 ise, 0'ı sil
+        if (newVal.startsWith('0')) {
+            newVal = newVal.substring(1); // İlk haneyi sil
+            this.toasterService.info('Lütfen 5XX XXX XX XX formatında numarayı giriniz');
+        }
+        // Telefon numarasını 3 3 2 2 formatında boşluklarla ayır
+        if (newVal.length <= 3) {
+            newVal = newVal.replace(/^(\d{0,3})/, '$1'); // İlk 3 hane
+        }
+        else if (newVal.length <= 6) {
+            newVal = newVal.replace(/^(\d{0,3})(\d{0,3})/, '$1 $2'); // 3+3 formatı
+        }
+        else if (newVal.length <= 8) {
+            newVal = newVal.replace(/^(\d{0,3})(\d{0,3})(\d{0,2})/, '$1 $2 $3'); // 3+3+2 formatı
+        }
+        else if (newVal.length <= 10) {
+            newVal = newVal.replace(/^(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, '$1 $2 $3 $4'); // 3+3+2+2 formatı
+        }
+        return newVal;
     };
     GeneralService = __decorate([
         core_1.Injectable({

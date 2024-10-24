@@ -128,6 +128,8 @@ var multiselect_1 = require("primeng/multiselect");
 var create_sale_order_component_1 = require("./components/Order/create-sale-order/create-sale-order.component");
 var floatlabel_1 = require("primeng/floatlabel");
 var product_catalog_component_1 = require("./components/Product/product-catalog/product-catalog.component");
+var paginator_1 = require("primeng/paginator");
+var product_catalog_list_component_1 = require("./components/Product/product-catalog/product-catalog-list/product-catalog-list.component");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -207,10 +209,12 @@ var AppModule = /** @class */ (function () {
                 shelf_component_1.ShelfComponent,
                 service_management_component_1.ServiceManagementComponent,
                 pages_info_component_1.PagesInfoComponent,
-                product_catalog_component_1.ProductCatalogComponent
+                product_catalog_component_1.ProductCatalogComponent,
+                product_catalog_list_component_1.ProductCatalogListComponent
             ],
             imports: [
                 toolbar_1.ToolbarModule,
+                paginator_1.PaginatorModule,
                 skeleton_1.SkeletonModule,
                 forms_1.FormsModule,
                 forms_2.ReactiveFormsModule,

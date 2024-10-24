@@ -1,0 +1,38 @@
+<main id="main" class="main">
+  <section class="section">
+    <div class="card">
+      <div class="card-body p-2">
+        <button class="btn btn-primary" (click)="_navigateToProductCatalog()">Yeni</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body p-2">
+        <p-table [value]="raports" [paginator]="true" [rows]="10" responsiveLayout="scroll">
+          <!-- Sütun Tanımları -->
+          <ng-template pTemplate="header">
+            <tr>
+
+              <th>Açıklama</th>
+              <th>Zaman</th>
+              <th>İşlemler</th>
+            </tr>
+          </ng-template>
+
+          <!-- Satır Verileri -->
+          <ng-template pTemplate="body" let-header>
+            <tr>
+              <td>{{ header.description }}</td>
+              <td>{{ header.createdDate}}</td>
+              <td>
+                <button pButton type="button" label="Detay" icon="pi pi-info-circle"
+                  (click)="navigateToProductCatalog(header.id)">
+                </button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+  </section>
+</main>

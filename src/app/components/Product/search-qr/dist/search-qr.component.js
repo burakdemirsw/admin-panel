@@ -41,6 +41,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 exports.__esModule = true;
 exports.SearchQrComponent = void 0;
 var core_1 = require("@angular/core");
@@ -77,12 +84,20 @@ var SearchQrComponent = /** @class */ (function () {
         this.brands = [];
         this.itemCodes = [];
         this.shelfNos = [];
-        // targetShelfs: any[] = []
         this.descriptions = [];
         this.productHierarchyLevel01s = [];
         this.productHierarchyLevel02s = [];
         this.productHierarchyLevel03s = [];
+        // Seçilen filtreleme değerleri
+        this.selectedBrand = '';
+        this.selectedItemCode = '';
+        this.selectedShelfNo = '';
+        this.selectedDescription = '';
+        this.selectedHierarchy1 = '';
+        this.selectedHierarchy2 = '';
+        this.selectedHierarchy3 = '';
         this.allProducts = [];
+        this.filteredProducts = [];
     }
     SearchQrComponent.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -248,12 +263,10 @@ var SearchQrComponent = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: 
-                    // await this.getProducts(value.barcode);
-                    return [4 /*yield*/, this.getAllProducts()];
+                    case 0: return [4 /*yield*/, this.getProducts(value.barcode)];
                     case 1:
-                        // await this.getProducts(value.barcode);
                         _a.sent();
+                        // await this.getAllProducts();
                         this.toasterService.success(value.barcode);
                         return [2 /*return*/];
                 }
@@ -266,12 +279,13 @@ var SearchQrComponent = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        if (!(this.allProducts.length == 0)) return [3 /*break*/, 2];
+                        if (!(this.allProducts.length === 0)) return [3 /*break*/, 2];
                         _a = this;
                         return [4 /*yield*/, this.productService.searchProduct5()];
                     case 1:
                         _a.allProducts = _b.sent();
                         this.mapProducts(this.allProducts);
+                        this.filterProducts(); // İlk başta tüm ürünleri göstermek için çağrılır
                         _b.label = 2;
                     case 2:
                         this.toasterService.success('Tüm Ürünler Getirildi');
@@ -285,31 +299,40 @@ var SearchQrComponent = /** @class */ (function () {
             var map = new Map();
             array.forEach(function (item) {
                 if (!map.has(item[key])) {
-                    map.set(item[key], { label: item[key], value: item[key] });
+                    map.set(item[key], item[key]);
                 }
             });
-            return Array.from(map.values()).sort(function (a, b) { return a.label.localeCompare(b.label); });
+            return Array.from(map.values()).sort(function (a, b) { return a.localeCompare(b); });
         };
         this.shelfNos = uniqueMap(data, 'shelfNo');
         this.brands = uniqueMap(data, 'brand');
         this.itemCodes = uniqueMap(data, 'itemCode');
-        // this.targetShelfs = uniqueMap(this.__transferProducts, 'targetShelf');
         this.descriptions = uniqueMap(data, 'description');
         this.productHierarchyLevel01s = uniqueMap(data, 'productHierarchyLevel01');
         this.productHierarchyLevel02s = uniqueMap(data, 'productHierarchyLevel02');
         this.productHierarchyLevel03s = uniqueMap(data, 'productHierarchyLevel03');
+        // Filtreleme işlemi için verileri ilk başta doldurur
+        this.filteredProducts = __spreadArrays(data);
     };
-    SearchQrComponent.prototype.logFilteredData = function (event) {
-        try {
-            if (event.filteredValue) {
-                var list = event.filteredValue;
-                this.mapProducts(list);
-                this.toasterService.info("Dinamik Search Güncellendi");
-            }
-        }
-        catch (error) {
-            this.toasterService.error(error.message);
-        }
+    SearchQrComponent.prototype.filterProducts = function () {
+        var _this = this;
+        this.filteredProducts = this.allProducts.filter(function (product) {
+            return ((_this.selectedBrand ? product.brand === _this.selectedBrand : true) &&
+                (_this.selectedItemCode ? product.itemCode === _this.selectedItemCode : true) &&
+                (_this.selectedShelfNo ? product.shelfNo === _this.selectedShelfNo : true) &&
+                (_this.selectedDescription ? product.description === _this.selectedDescription : true) &&
+                (_this.selectedHierarchy1 ? product.productHierarchyLevel01 === _this.selectedHierarchy1 : true) &&
+                (_this.selectedHierarchy2 ? product.productHierarchyLevel02 === _this.selectedHierarchy2 : true) &&
+                (_this.selectedHierarchy3 ? product.productHierarchyLevel03 === _this.selectedHierarchy3 : true));
+        });
+        this.mapProducts(this.filteredProducts);
+    };
+    SearchQrComponent.prototype.getPrice = function (price) {
+        return Number(price).toFixed(2);
+    };
+    // Filtre seçimi değiştiğinde çağrılan fonksiyon
+    SearchQrComponent.prototype.onFilterChange = function () {
+        this.filterProducts();
     };
     SearchQrComponent = __decorate([
         core_1.Component({

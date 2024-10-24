@@ -4,7 +4,6 @@ import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToasterService } from '../ui/toaster.service';
-import { HttpClientService } from '../http-client.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,8 +13,7 @@ export class GeneralService {
     private spinnerService: NgxSpinnerService,
     private router: Router,
     private toasterService: ToasterService,
-    private datePipe: DatePipe,
-    private httpClientService: HttpClientService
+    private datePipe: DatePipe
   ) { }
 
   focusNextInput(nextInputId: string) {
@@ -26,50 +24,7 @@ export class GeneralService {
   }
 
   isNullOrEmpty(value: string | null | undefined): boolean {
-    if (typeof value === 'object') {
-      return value === null || value === undefined
-    } else {
-      return value === null || value === undefined || value.trim() === '';
-    }
-
-  }
-  formatPhoneNumber(value: string): string {
-    // Sadece sayıları bırak, mevcut formatlama karakterlerini temizle
-    let newVal = value.replace(/\D/g, ''); // Boşluk, tire vb. karakterleri kaldır
-
-    // Eğer boşsa hemen boş döndür
-    if (newVal.length === 0) {
-      return ''; // Boş değer durumu
-    }
-
-    // Maksimum 10 hane (sadece rakamlar) sınırı
-    if (newVal.length > 10) {
-      newVal = newVal.substring(0, 10); // Sadece ilk 10 rakamı al
-    }
-
-    // Eğer ilk hane 0 ise, 0'ı sil ve tekrar formatlamayı başlat
-    if (newVal.startsWith('0')) {
-      newVal = newVal.substring(1); // İlk haneyi sil
-      this.toasterService.info('Lütfen 5XX-XXX-XX-XX Formatında Numarayı Giriniz');
-    }
-
-    // Telefon numarasını formatla
-    if (newVal.length <= 3) {
-      newVal = newVal.replace(/^(\d{0,3})/, '($1'); // İlk 3 hane parantez açılır
-    } else if (newVal.length <= 6) {
-      newVal = newVal.replace(/^(\d{0,3})(\d{0,3})/, '($1) $2'); // 3 hane parantez içinde ve ardından 3 hane, boşluk ile ayır
-    } else if (newVal.length <= 8) {
-      newVal = newVal.replace(/^(\d{0,3})(\d{0,3})(\d{0,2})/, '($1) $2-$3'); // 3+3+2 formatı
-    } else if (newVal.length <= 10) {
-      newVal = newVal.replace(/^(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, '($1) $2-$3-$4'); // Tam telefon formatı, tire ile ayır
-    }
-
-    // Eğer parantez açıldı ama kapatma eksikse bunu manuel olarak sil
-    if (value.length < 5 && value.includes('(') && !value.includes(')')) {
-      newVal = newVal.replace('(', ''); // '(' varsa ama ')' yoksa parantezi kaldır
-    }
-
-    return newVal;
+    return value === null || value === undefined || value.trim() === '';
   }
 
   beep() {
@@ -135,10 +90,55 @@ export class GeneralService {
     }
   }
   getCurrentDatetime(): string {
-    const datetime = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss');
+    const datetime = this.datePipe.transform(new Date().getHours() + 3, 'yyyy-MM-dd HH:mm:ss');
     return datetime;
   }
+  getCurrentDatetime_2(): Date {
+    // Şu anki zamanı al
+    const currentDate = new Date();
 
+    // 3 saat ekle asdsasdsa
+    currentDate.setHours(currentDate.getHours() + 3);
+
+    // İstenilen formata çevir
+    const datetimeString = this.datePipe.transform(currentDate, 'yyyy-MM-dd HH:mm:ss');
+
+    // Yeni bir Date nesnesi olarak döndür
+    return new Date(datetimeString as string);
+  }
+  formatPhoneNumber(value: string): string {
+    // Sadece sayıları bırak, mevcut formatlama karakterlerini temizle
+    let newVal = value.replace(/\D/g, ''); // Boşluk, parantez, tire vb. karakterleri kaldır
+
+    // Eğer boşsa hemen boş döndür
+    if (newVal.length === 0) {
+      return ''; // Boş değer durumu
+    }
+
+    // Maksimum 10 hane (sadece rakamlar) sınırı
+    if (newVal.length > 10) {
+      newVal = newVal.substring(0, 10); // Sadece ilk 10 rakamı al
+    }
+
+    // Eğer ilk hane 0 ise, 0'ı sil
+    if (newVal.startsWith('0')) {
+      newVal = newVal.substring(1); // İlk haneyi sil
+      this.toasterService.info('Lütfen 5XX XXX XX XX formatında numarayı giriniz');
+    }
+
+    // Telefon numarasını 3 3 2 2 formatında boşluklarla ayır
+    if (newVal.length <= 3) {
+      newVal = newVal.replace(/^(\d{0,3})/, '$1'); // İlk 3 hane
+    } else if (newVal.length <= 6) {
+      newVal = newVal.replace(/^(\d{0,3})(\d{0,3})/, '$1 $2'); // 3+3 formatı
+    } else if (newVal.length <= 8) {
+      newVal = newVal.replace(/^(\d{0,3})(\d{0,3})(\d{0,2})/, '$1 $2 $3'); // 3+3+2 formatı
+    } else if (newVal.length <= 10) {
+      newVal = newVal.replace(/^(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/, '$1 $2 $3 $4'); // 3+3+2+2 formatı
+    }
+
+    return newVal;
+  }
 
 
 }

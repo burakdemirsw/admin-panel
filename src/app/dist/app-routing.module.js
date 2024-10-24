@@ -69,6 +69,8 @@ var pages_loginv2_component_1 = require("./pages/pages-loginv2/pages-loginv2.com
 var pages_register_component_1 = require("./pages/pages-register/pages-register.component");
 var users_profile_component_1 = require("./pages/users-profile/users-profile.component");
 var homepage_component_1 = require("./components/Homepage/homepage.component");
+var product_catalog_component_1 = require("./components/Product/product-catalog/product-catalog.component");
+var product_catalog_list_component_1 = require("./components/Product/product-catalog/product-catalog-list/product-catalog-list.component");
 var routes = [
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     {
@@ -118,6 +120,16 @@ var routes = [
     {
         path: 'category-operation',
         component: category_operation_component_1.CategoryOperationComponent,
+        canActivate: [auth_guard_1.AuthGuard]
+    },
+    {
+        path: 'product-catalog/:id',
+        component: product_catalog_component_1.ProductCatalogComponent,
+        canActivate: [auth_guard_1.AuthGuard]
+    },
+    {
+        path: 'product-catalog-list',
+        component: product_catalog_list_component_1.ProductCatalogListComponent,
         canActivate: [auth_guard_1.AuthGuard]
     },
     {
