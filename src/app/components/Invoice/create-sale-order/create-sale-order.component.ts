@@ -445,7 +445,7 @@ export class CreateSaleOrderComponent implements OnInit, OnDestroy {
     request.currAccCode = ((this.processCode == 'R' || this.processCode == 'WS') || (this.processType == 'order')) ? formValue.currAccCode.code : null;
     request.vendorCode = this.processCode == 'BP' ? formValue.vendorCode.code : null;
     // request.eInvoiceNumber = formValue.eInvoiceNumber;
-    request.eInvoiceNumber = this.invoiceProcess.eInvoiceNumber;
+    request.eInvoiceNumber = formValue.eInvoiceNumber;
     request.description = formValue.description;
     request.internalDescription = formValue.internalDescription;
     request.officeCode = formValue.officeCode;
